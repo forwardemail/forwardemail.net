@@ -2,23 +2,40 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: all
+# mail mongo and redis don't need this
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Certificates
   vars_prompt:
     - name: input_key
-      prompt: Enter path to certificate private key file (e.g. /path/to/.ssl-key)
+      prompt: "Enter path to certificate private key file (e.g. /path/to/.ssl-key) [REQUIRED]"
       private: false
     - name: input_cert
-      prompt: Enter path to certificate full chain/certificate file (e.g. /path/to/.ssl-cert)
+      prompt: "Enter path to certificate full chain/certificate file (e.g. /path/to/.ssl-cert) [REQUIRED]"
       private: false
     - name: input_bundle
-      prompt: "Optional: Leave blank or enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca)"
+      prompt: "Enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca) [REQUIRED]"
       private: false
     - name: input_apple_key
       prompt: "Optional: Leave blank or enter path to Apple K8 certificate key file (e.g. /path/to/AuthKey_00000000000.p8)"
       private: false
 
   tasks:
+    # Validate required inputs
+    - name: Fail if key path is empty
+      fail:
+        msg: "Certificate private key path is required. Please re-run the playbook and provide a valid path."
+      when: (input_key is not defined) or (input_key | length == 0)
+
+    - name: Fail if cert path is empty
+      fail:
+        msg: "Certificate file path is required. Please re-run the playbook and provide a valid path."
+      when: (input_cert is not defined) or (input_cert | length == 0)
+
+    - name: Fail if bundle path is empty
+      fail:
+        msg: "CA bundle file path is required. Please re-run the playbook and provide a valid path."
+      when: (input_bundle is not defined) or (input_bundle | length == 0)
+
     # key file
     - name: Check if key file exists
       local_action: stat path={{ input_key }}
@@ -45,12 +62,11 @@
       local_action: stat path={{ input_bundle }}
       register: local_bundle_file
       become: false
-      when: (input_bundle is defined) and (input_bundle | length > 0)
 
     - name: Fail when local bundle file does not exist
       fail:
         msg: "bundle file does not exist: {{ input_bundle }}"
-      when: (input_bundle is defined) and (input_bundle | length > 0) and (not local_bundle_file.stat.exists)
+      when: not local_bundle_file.stat.exists
 
     # apple_key file
     - name: Check if apple_key file exists
@@ -101,7 +117,6 @@
         owner: deploy
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
-      when: (input_bundle is defined) and (input_bundle | length > 0)
 
     # copy local apple_key
     - name: Copy local apple_key file to server

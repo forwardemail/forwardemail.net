@@ -8,20 +8,68 @@
   import_playbook: ssh-keys.yml
 
 - hosts: redis
-  name: Prepare for certificates
-  become: true
-  become_user: root
+  name: Certificate Paths
+  vars_prompt:
+    - name: input_key
+      prompt: "Enter path to certificate private key file on local machine (e.g. /path/to/.ssl-key) [REQUIRED]"
+      private: false
+    - name: input_cert
+      prompt: "Enter path to certificate full chain/certificate file on local machine (e.g. /path/to/.ssl-cert) [REQUIRED]"
+      private: false
+    - name: input_ca
+      prompt: "Enter path to certificate CA bundle file on local machine (e.g. /path/to/.ssl-ca) [REQUIRED]"
+      private: false
   tasks:
-    - name: Ensure /var/www/production directory exists for certificates
-      file:
-        path: /var/www/production
-        state: directory
-        owner: deploy
-        group: deploy
-        mode: "0755"
+    - name: Fail if key path is empty
+      fail:
+        msg: "Certificate private key path is required. Please re-run the playbook and provide a valid path."
+      when: (input_key is not defined) or (input_key | length == 0)
 
-- name: Import certificates playbook
-  import_playbook: certificates.yml
+    - name: Fail if cert path is empty
+      fail:
+        msg: "Certificate file path is required. Please re-run the playbook and provide a valid path."
+      when: (input_cert is not defined) or (input_cert | length == 0)
+
+    - name: Fail if CA path is empty
+      fail:
+        msg: "CA bundle file path is required. Please re-run the playbook and provide a valid path."
+      when: (input_ca is not defined) or (input_ca | length == 0)
+
+    - name: Check if key file exists locally
+      local_action: stat path={{ input_key }}
+      become: false
+      register: local_key_file
+
+    - name: Fail when local key file does not exist
+      fail:
+        msg: "key file does not exist: {{ input_key }}"
+      when: not local_key_file.stat.exists
+
+    - name: Check if cert file exists locally
+      local_action: stat path={{ input_cert }}
+      become: false
+      register: local_cert_file
+
+    - name: Fail when local cert file does not exist
+      fail:
+        msg: "cert file does not exist: {{ input_cert }}"
+      when: not local_cert_file.stat.exists
+
+    - name: Check if CA file exists locally
+      local_action: stat path={{ input_ca }}
+      become: false
+      register: local_ca_file
+
+    - name: Fail when local CA file does not exist
+      fail:
+        msg: "CA file does not exist: {{ input_ca }}"
+      when: not local_ca_file.stat.exists
+
+    - name: Store certificate paths as facts
+      set_fact:
+        ssl_key_path: "{{ input_key }}"
+        ssl_cert_path: "{{ input_cert }}"
+        ssl_ca_path: "{{ input_ca }}"
 
 - hosts: redis
   name: Hostname
@@ -34,9 +82,6 @@
           - lookup('env', 'REDIS_HOST') != ''
           - lookup('env', 'REDIS_PASSWORD') != ''
           - lookup('env', 'REDIS_TLS_PORT') != ''
-          - lookup('env', 'SSL_CERT_PATH') != ''
-          - lookup('env', 'SSL_KEY_PATH') != ''
-          - lookup('env', 'SSL_CA_PATH') != ''
           - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
           - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
           - lookup('env', 'AWS_ENDPOINT_URL') != ''
@@ -68,9 +113,9 @@
     - name: Reload UFW
       ufw:
         state: reloaded
-    - name: Restart Redis
+    - name: Restart Valkey
       service:
-        name: redis-server
+        name: valkey-server
         state: restarted
   tasks:
     # Redis-specific sysctl optimizations
@@ -165,86 +210,370 @@
         reload: true
         sysctl_file: /etc/sysctl.d/99-redis.conf
 
-    # Ensure Redis SSL directory exists
-    - name: Ensure Redis TLS/SSL configuration directory exists
+    # Install Valkey 8.x from source
+    - name: Install build dependencies
+      apt:
+        name:
+          - build-essential
+          - tcl
+          - pkg-config
+          - libssl-dev
+        state: present
+        update_cache: yes
+
+    - name: Create valkey user
+      user:
+        name: valkey
+        system: yes
+        shell: /bin/false
+        home: /var/lib/valkey
+        create_home: yes
+
+    - name: Create valkey group
+      group:
+        name: valkey
+        system: yes
+
+    - name: Download Valkey 8.0.1 source
+      get_url:
+        url: https://github.com/valkey-io/valkey/archive/refs/tags/8.0.1.tar.gz
+        dest: /tmp/valkey-8.0.1.tar.gz
+        checksum: sha256:1e1d6dfbed2f932a87afbc7402be050a73974a9b19a9116897e537a6638e5e1d
+
+    - name: Extract Valkey source
+      unarchive:
+        src: /tmp/valkey-8.0.1.tar.gz
+        dest: /tmp/
+        remote_src: yes
+        creates: /tmp/valkey-8.0.1
+
+    - name: Compile Valkey
+      shell: |
+        cd /tmp/valkey-8.0.1
+        make BUILD_TLS=yes
+      args:
+        creates: /tmp/valkey-8.0.1/src/valkey-server
+
+    - name: Install Valkey binaries
+      shell: |
+        cd /tmp/valkey-8.0.1
+        make install PREFIX=/usr
+      args:
+        creates: /usr/bin/valkey-server
+
+    - name: Create Valkey directories
       file:
-        path: /etc/redis/ssl
+        path: "{{ item }}"
         state: directory
-        owner: redis
-        group: redis
+        owner: valkey
+        group: valkey
+        mode: '0755'
+      loop:
+        - /etc/valkey
+        - /var/lib/valkey
+        - /var/log/valkey
+
+    - name: Create Valkey systemd service
+      copy:
+        dest: /etc/systemd/system/valkey-server.service
+        content: |
+          [Unit]
+          Description=Valkey In-Memory Data Store
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=valkey
+          Group=valkey
+          ExecStart=/usr/bin/valkey-server /etc/valkey/valkey.conf
+          ExecStop=/bin/kill -s TERM $MAINPID
+          PIDFile=/var/run/valkey/valkey-server.pid
+          TimeoutStartSec=90
+          TimeoutStopSec=90
+          Restart=always
+          RuntimeDirectory=valkey
+          RuntimeDirectoryMode=0755
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    # Create SSL directory for Valkey certificates
+    - name: Create /etc/valkey/ssl directory
+      file:
+        path: /etc/valkey/ssl
+        state: directory
+        owner: valkey
+        group: valkey
         mode: "0750"
 
-    # Copy certificates from /var/www/production to Redis directory
-    - name: Copy SSL certificate from /var/www/production to Redis directory
+    # Copy SSL certificates directly from local machine to Valkey directory
+    - name: Copy SSL certificate to Valkey directory
       copy:
-        src: "{{ lookup('env', 'SSL_CERT_PATH') }}"
-        dest: /etc/redis/ssl/redis.crt
-        owner: redis
-        group: redis
+        src: "{{ hostvars[inventory_hostname]['ssl_cert_path'] }}"
+        dest: /etc/valkey/ssl/valkey.crt
+        owner: valkey
+        group: valkey
         mode: "0400"
-        remote_src: yes
 
-    - name: Copy SSL private key from /var/www/production to Redis directory
+    - name: Copy SSL private key to Valkey directory
       copy:
-        src: "{{ lookup('env', 'SSL_KEY_PATH') }}"
-        dest: /etc/redis/ssl/redis.key
-        owner: redis
-        group: redis
+        src: "{{ hostvars[inventory_hostname]['ssl_key_path'] }}"
+        dest: /etc/valkey/ssl/valkey.key
+        owner: valkey
+        group: valkey
         mode: "0400"
-        remote_src: yes
 
-    - name: Copy CA certificate from /var/www/production to Redis directory
+    - name: Copy CA certificate to Valkey directory
       copy:
-        src: "{{ lookup('env', 'SSL_CA_PATH') }}"
-        dest: /etc/redis/ssl/ca.pem
-        owner: redis
-        group: redis
+        src: "{{ hostvars[inventory_hostname]['ssl_ca_path'] }}"
+        dest: /etc/valkey/ssl/ca.pem
+        owner: valkey
+        group: valkey
         mode: "0400"
-        remote_src: yes
 
-    # Clean up certificates from /var/www/production for security
-    - name: Remove SSL certificate from /var/www/production (security cleanup)
-      file:
-        path: "{{ lookup('env', 'SSL_CERT_PATH') }}"
-        state: absent
+    - name: Ensure Valkey is stopped before configuration
+      service:
+        name: valkey-server
+        state: stopped
+      ignore_errors: yes
 
-    - name: Remove SSL private key from /var/www/production (security cleanup)
-      file:
-        path: "{{ lookup('env', 'SSL_KEY_PATH') }}"
-        state: absent
+    # Calculate dynamic resource limits
+    - name: Get total system memory in MB
+      shell: free -m | awk '/^Mem:/{print $2}'
+      register: total_memory_mb
+      changed_when: false
 
-    - name: Remove CA certificate from /var/www/production (security cleanup)
-      file:
-        path: "{{ lookup('env', 'SSL_CA_PATH') }}"
-        state: absent
+    - name: Calculate maxmemory (75% of total RAM)
+      set_fact:
+        valkey_maxmemory_mb: "{{ (total_memory_mb.stdout | int * 0.75) | int }}"
 
-    # Install Redis using geerlingguy.redis role
-    - name: Install Redis
-      include_role:
-        name: geerlingguy.redis
-      vars:
-        redis_bind_interface: "0.0.0.0"
-        redis_requirepass: "{{ lookup('env', 'REDIS_PASSWORD') }}"
-        redis_port: "{{ lookup('env', 'REDIS_PORT') }}"
-        redis_appendonly: "yes"
-        redis_appendfsync: "everysec"
-        redis_save:
-          - 900 1
-          - 300 10
-          - 60 10000
-        redis_extra_config: |
+    - name: Get number of CPU cores
+      shell: nproc
+      register: cpu_cores
+      changed_when: false
+
+    - name: Set io-threads (number of CPU cores, max 8)
+      set_fact:
+        valkey_io_threads: "{{ [cpu_cores.stdout | int, 8] | min }}"
+
+    - name: Create base Valkey configuration file
+      copy:
+        dest: /etc/valkey/valkey.conf
+        owner: valkey
+        group: valkey
+        mode: '0640'
+        force: no
+        content: |
+          # Valkey configuration file
+          # Generated by Ansible - base configuration with security hardening
+          # Additional custom settings are managed in the ANSIBLE MANAGED BLOCK below
+
+          ################################## GENERAL #####################################
+
+          # By default the server does not run as a daemon.
+          daemonize no
+
+          # Supervised by systemd
+          supervised systemd
+
+          # PID file location
+          pidfile /var/run/valkey/valkey-server.pid
+
+          # Logging
+          loglevel notice
+          logfile /var/log/valkey/valkey-server.log
+
+          # Set the number of databases
+          databases 16
+
+          ################################## SNAPSHOTTING ################################
+
+          # Save the DB to disk (handled by ANSIBLE MANAGED BLOCK)
+          # Default: save 3600 1 300 100 60 10000
+
+          # Compression of string objects using LZF when dump .rdb databases
+          rdbcompression yes
+
+          # RDB file checksum
+          rdbchecksum yes
+
+          # The filename where to dump the DB
+          dbfilename dump.rdb
+
+          # The working directory
+          dir /var/lib/valkey
+
+          ################################# REPLICATION ##################################
+
+          # Disable replication by default
+          # replicaof <masterip> <masterport>
+
+          ################################## SECURITY ####################################
+
+          # Require clients to authenticate (password set in ANSIBLE MANAGED BLOCK)
+          # requirepass <password>
+
+          # Disable dangerous commands
+          rename-command FLUSHDB ""
+          rename-command FLUSHALL ""
+          # rename-command KEYS ""
+          rename-command CONFIG ""
+          rename-command SHUTDOWN ""
+          rename-command BGREWRITEAOF ""
+          rename-command BGSAVE ""
+          rename-command SAVE ""
+          rename-command DEBUG ""
+
+          ################################### CLIENTS ####################################
+
+          # Max number of connected clients (set in ANSIBLE MANAGED BLOCK)
+          # maxclients 10000
+
+          ############################## MEMORY MANAGEMENT ###############################
+
+          # Maximum memory limit (75% of total system RAM)
+          maxmemory {{ valkey_maxmemory_mb }}mb
+
+          # Memory eviction policy
+          maxmemory-policy allkeys-lru
+
+          # LRU and minimal TTL algorithms are not precise but approximated
+          maxmemory-samples 5
+
+          ############################# LAZY FREEING ####################################
+
+          # Lazy freeing to avoid blocking on DEL
+          lazyfree-lazy-eviction yes
+          lazyfree-lazy-expire yes
+          lazyfree-lazy-server-del yes
+          replica-lazy-flush yes
+
+          ############################## APPEND ONLY MODE ###############################
+
+          # AOF persistence (configured in ANSIBLE MANAGED BLOCK)
+          # appendonly yes
+          # appendfsync everysec
+
+          # Rewrite the AOF file in background when it gets too big
+          auto-aof-rewrite-percentage 100
+          auto-aof-rewrite-min-size 64mb
+
+          # Load truncated AOF file
+          aof-load-truncated yes
+
+          # Use RDB-AOF hybrid format
+          aof-use-rdb-preamble yes
+
+          ################################ THREADED I/O #################################
+
+          # Enable threaded I/O for better performance
+          # Number of I/O threads (dynamically set to number of CPU cores, max 8)
+          io-threads {{ valkey_io_threads }}
+          io-threads-do-reads yes
+
+          ################################## SLOW LOG ###################################
+
+          # Log queries slower than this many microseconds
+          slowlog-log-slower-than 10000
+          slowlog-max-len 128
+
+          ################################ LATENCY MONITOR ##############################
+
+          # Latency monitoring
+          latency-monitor-threshold 100
+
+          ############################# EVENT NOTIFICATION ###############################
+
+          # Keyspace notifications (disabled by default for performance)
+          notify-keyspace-events ""
+
+          ############################### ADVANCED CONFIG ################################
+
+          # Hashes are encoded using a memory efficient data structure when small
+          hash-max-listpack-entries 512
+          hash-max-listpack-value 64
+
+          # Lists are encoded in a special way to save space
+          list-max-listpack-size -2
+          list-compress-depth 0
+
+          # Sets have a special encoding when composed of just strings
+          set-max-intset-entries 512
+          set-max-listpack-entries 128
+          set-max-listpack-value 64
+
+          # Sorted sets are encoded to save space
+          zset-max-listpack-entries 128
+          zset-max-listpack-value 64
+
+          # HyperLogLog sparse representation bytes limit
+          hll-sparse-max-bytes 3000
+
+          # Streams macro node max size / items
+          stream-node-max-bytes 4096
+          stream-node-max-entries 100
+
+          # Active rehashing
+          activerehashing yes
+
+          # Client output buffer limits
+          client-output-buffer-limit normal 0 0 0
+          client-output-buffer-limit replica 256mb 64mb 60
+          client-output-buffer-limit pubsub 32mb 8mb 60
+
+          # Frequency of rehashing the main dict
+          hz 10
+
+          # Enable active defragmentation
+          activedefrag yes
+          active-defrag-ignore-bytes 100mb
+          active-defrag-threshold-lower 10
+          active-defrag-threshold-upper 100
+          active-defrag-cycle-min 5
+          active-defrag-cycle-max 75
+
+    - name: Configure Valkey
+      blockinfile:
+        path: /etc/valkey/valkey.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - VALKEY CONFIG"
+        create: yes
+        block: |
+          # Bind to all interfaces
+          bind 0.0.0.0 ::
+
+          # Authentication
+          requirepass {{ lookup('env', 'REDIS_PASSWORD') }}
+
           # TLS/SSL Configuration
           tls-port {{ lookup('env', 'REDIS_TLS_PORT') }}
           port 0
-          tls-cert-file /etc/redis/ssl/redis.crt
-          tls-key-file /etc/redis/ssl/redis.key
-          tls-ca-cert-file /etc/redis/ssl/ca.pem
+          tls-cert-file /etc/valkey/ssl/valkey.crt
+          tls-key-file /etc/valkey/ssl/valkey.key
+          tls-ca-cert-file /etc/valkey/ssl/ca.pem
           tls-auth-clients no
+
+          # Persistence
+          appendonly yes
+          appendfsync everysec
+          save 900 1
+          save 300 10
+          save 60 10000
 
           # Performance Optimizations
           tcp-backlog 65536
           tcp-keepalive 0
           maxclients 10000
+      notify: Restart Valkey
+
+    - name: Ensure Valkey is enabled and started
+      service:
+        name: valkey-server
+        state: started
+        enabled: yes
 
     # UFW Configuration
     - name: Enable ufw
@@ -398,7 +727,7 @@
           AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
           BACKUP_BUCKET="${REDIS_BACKUP_BUCKET:-forwardemail-backups}"
           BACKUP_SECRET="${BACKUP_SECRET}"
-          REDIS_DATA_DIR="${REDIS_DATA_DIR:-/var/lib/redis}"
+          REDIS_DATA_DIR="${REDIS_DATA_DIR:-/var/lib/valkey}"
 
           # Check if BACKUP_SECRET is set
           if [ -z "$BACKUP_SECRET" ]; then
@@ -411,11 +740,11 @@
           BACKUP_NAME="redis-backup-$(date +%Y%m%d-%H%M%S).rdb.gpg"
           S3_PATH="s3://${BACKUP_BUCKET}/redis/${TIMESTAMP}/${BACKUP_NAME}"
 
-          # Trigger Redis BGSAVE
-          redis-cli -a "${REDIS_PASSWORD}" BGSAVE
+          # Trigger Valkey BGSAVE
+          valkey-cli -a "${REDIS_PASSWORD}" BGSAVE
 
           # Wait for BGSAVE to complete
-          while [ "$(redis-cli -a "${REDIS_PASSWORD}" LASTSAVE)" == "$(redis-cli -a "${REDIS_PASSWORD}" LASTSAVE)" ]; do
+          while [ "$(valkey-cli -a "${REDIS_PASSWORD}" LASTSAVE)" == "$(valkey-cli -a "${REDIS_PASSWORD}" LASTSAVE)" ]; do
             sleep 1
           done
 
@@ -448,7 +777,7 @@
           SEVEN_DAYS_AGO=$(date -d "7 days ago" +%s)
 
           # List all backups
-          aws s3 ls "s3://${BACKUP_BUCKET}/redis/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | while read -r line; do
+          aws s3 ls s3://${BACKUP_BUCKET}/redis/ --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | while read -r line; do
             FILE_DATE=$(echo "$line" | awk '{print $1}')
             FILE_PATH=$(echo "$line" | awk '{print $4}')
             FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s)
@@ -496,7 +825,7 @@
           Environment="REDIS_BACKUP_BUCKET={{ lookup('env', 'REDIS_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
-          Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') | default('/var/lib/redis', true) }}"
+          Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') | default('/var/lib/valkey', true) }}"
           ExecStart=/usr/local/bin/backup-redis.sh
           ExecStartPost=/usr/local/bin/cleanup-redis-backups.sh
 

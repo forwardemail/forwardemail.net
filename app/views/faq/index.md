@@ -17,6 +17,11 @@
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
   * [Mobile Devices](#mobile-devices)
+  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
+  * [Command-line Email Clients](#command-line-email-clients)
+  * [Windows Email Configuration](#windows-email-configuration)
   * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
   * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
   * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
@@ -307,6 +312,213 @@ For Android:
 1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
 2. Enter your Forward Email address and password
 3. For server settings, use the same IMAP and SMTP settings as above
+
+### Sendmail SMTP Relay Configuration
+
+You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 20 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration
+
+1.  Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+
+    ```bash
+    sudo nano /etc/mail/sendmail.mc
+    ```
+
+2.  Add the following lines to define the smart host and authentication:
+
+    ```
+    define(`SMART_HOST', `smtp.forwardemail.net')dnl
+    define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+    define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+    ```
+
+3.  Create the authentication file `/etc/mail/authinfo`:
+
+    ```bash
+    sudo nano /etc/mail/authinfo
+    ```
+
+4.  Add your Forward Email credentials to the `authinfo` file:
+
+    ```
+    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+    ```
+
+5.  Generate the authentication database and secure the files:
+
+    ```bash
+    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+    ```
+
+6.  Rebuild the Sendmail configuration and restart the service:
+
+    ```bash
+    sudo make -C /etc/mail
+    sudo systemctl restart sendmail
+    ```
+
+#### Testing
+
+Send a test email to verify the configuration:
+
+```bash
+echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+```
+
+### Exim4 SMTP Relay Configuration
+
+Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration
+
+1.  Run the Exim4 configuration tool:
+
+    ```bash
+    sudo dpkg-reconfigure exim4-config
+    ```
+
+2.  Select the following options:
+    *   **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+    *   **System mail name:** your.hostname
+    *   **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+    *   **Other destinations for which mail is accepted:** (leave blank)
+    *   **Domains to relay mail for:** (leave blank)
+    *   **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+    *   **Hide local mail name in outgoing mail?** No
+    *   **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+    *   **Delivery method for local mail:** Mbox format in /var/mail/
+    *   **Split configuration into small files?** No
+
+3.  Edit the `passwd.client` file to add your credentials:
+
+    ```bash
+    sudo nano /etc/exim4/passwd.client
+    ```
+
+4.  Add the following line:
+
+    ```
+    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+    ```
+
+5.  Update the configuration and restart Exim4:
+
+    ```bash
+    sudo update-exim4.conf
+    sudo systemctl restart exim4
+    ```
+
+#### Testing
+
+Send a test email:
+
+```bash
+echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+```
+
+### msmtp SMTP Client Configuration
+
+msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration
+
+1.  Create or edit the msmtp configuration file at `~/.msmtprc`:
+
+    ```bash
+    nano ~/.msmtprc
+    ```
+
+2.  Add the following configuration:
+
+    ```
+    defaults
+    auth           on
+    tls            on
+    tls_trust_file /etc/ssl/certs/ca-certificates.crt
+    logfile        ~/.msmtp.log
+
+    account        forwardemail
+    host           smtp.forwardemail.net
+    port           587
+    from           your-alias@yourdomain.com
+    user           your-alias@yourdomain.com
+    password       your-generated-password
+
+    account default : forwardemail
+    ```
+
+3.  Set the correct permissions for the configuration file:
+
+    ```bash
+    chmod 600 ~/.msmtprc
+    ```
+
+#### Testing
+
+Send a test email:
+
+```bash
+echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+```
+
+### Command-line Email Clients
+
+Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+
+### Windows Email Configuration
+
+For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
 
 ### Postfix SMTP Relay Configuration
 

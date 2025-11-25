@@ -1,1984 +1,2450 @@
-# الأسئلة الشائعة {#frequently-asked-questions}
+# Frequently Asked Questions {#frequently-asked-questions}
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
-## جدول المحتويات {#table-of-contents}
+## Table of Contents {#table-of-contents}
 
-* [البدء السريع](#quick-start)
-* [مقدمة](#introduction)
-  * [ما هو إعادة توجيه البريد الإلكتروني](#what-is-forward-email)
-  * [من يستخدم إعادة توجيه البريد الإلكتروني؟](#who-uses-forward-email)
-  * [ما هو تاريخ Forward Email؟](#what-is-forward-emails-history)
-  * [ما مدى سرعة هذه الخدمة؟](#how-fast-is-this-service)
-* [عملاء البريد الإلكتروني](#email-clients)
-  * [طائر الرعد](#thunderbird)
-  * [مايكروسوفت أوتلوك](#microsoft-outlook)
-  * [بريد آبل](#apple-mail)
-  * [الأجهزة المحمولة](#mobile-devices)
-  * [كيفية إرسال البريد باسم باستخدام Gmail](#how-to-send-mail-as-using-gmail)
-  * [ما هو الدليل المجاني القديم لإرسال البريد باسم باستخدام Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [تكوين توجيه Gmail المتقدم](#advanced-gmail-routing-configuration)
-  * [تكوين التوجيه المتقدم لبرنامج Outlook](#advanced-outlook-routing-configuration)
-* [استكشاف الأخطاء وإصلاحها](#troubleshooting)
-  * [لماذا لا أتلقى رسائل البريد الإلكتروني الاختبارية الخاصة بي](#why-am-i-not-receiving-my-test-emails)
-  * [كيف أقوم بتكوين عميل البريد الإلكتروني الخاص بي للعمل مع إعادة توجيه البريد الإلكتروني](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [لماذا تصل رسائل البريد الإلكتروني الخاصة بي إلى البريد العشوائي وكيف يمكنني التحقق من سمعة نطاقي](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [ماذا يجب أن أفعل إذا تلقيت رسائل بريد إلكتروني غير مرغوب فيها](#what-should-i-do-if-i-receive-spam-emails)
-  * [لماذا تظهر رسائل البريد الإلكتروني الاختبارية المرسلة إليّ في Gmail على أنها "مشبوهة"؟](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [هل يمكنني إزالة via forwardemail dot net في Gmail؟](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [إدارة البيانات](#data-management)
-  * [أين تقع خوادمك؟](#where-are-your-servers-located)
-  * [كيف أقوم بتصدير صندوق بريدي والنسخ الاحتياطي له؟](#how-do-i-export-and-backup-my-mailbox)
-  * [كيف يمكنني استيراد ونقل صندوق البريد الإلكتروني الحالي الخاص بي](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [هل تدعم الاستضافة الذاتية؟](#do-you-support-self-hosting)
-* [تكوين البريد الإلكتروني](#email-configuration)
-  * [كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [هل يمكنني استخدام عدة بورصات وخوادم MX لإعادة التوجيه المتقدم؟](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [كيف أقوم بإعداد الرد التلقائي أثناء الإجازة (الرد التلقائي خارج المكتب)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [كيف أقوم بإعداد SPF لإعادة توجيه البريد الإلكتروني؟](#how-do-i-set-up-spf-for-forward-email)
-  * [كيف أقوم بإعداد DKIM لإعادة توجيه البريد الإلكتروني](#how-do-i-set-up-dkim-for-forward-email)
-  * [كيف أقوم بإعداد DMARC لإعادة توجيه البريد الإلكتروني](#how-do-i-set-up-dmarc-for-forward-email)
-  * [كيف أقوم بتوصيل جهات الاتصال الخاصة بي وتكوينها](#how-do-i-connect-and-configure-my-contacts)
-  * [كيف أقوم بتوصيل وتكوين تقويماتي؟](#how-do-i-connect-and-configure-my-calendars)
-  * [كيف يمكنني إضافة المزيد من التقويمات وإدارة التقويمات الموجودة](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [كيف أقوم بإعداد SRS لإعادة توجيه البريد الإلكتروني](#how-do-i-set-up-srs-for-forward-email)
-  * [كيف أقوم بإعداد MTA-STS لإعادة توجيه البريد الإلكتروني؟](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [كيف أضيف صورة شخصية إلى عنوان بريدي الإلكتروني](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [الميزات المتقدمة](#advanced-features)
-  * [هل تدعم النشرات الإخبارية أو قوائم البريد الإلكتروني للتسويق؟](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [هل تدعم إرسال البريد الإلكتروني باستخدام واجهة برمجة التطبيقات (API)](#do-you-support-sending-email-with-api)
-  * [هل تدعم تلقي البريد الإلكتروني باستخدام IMAP؟](#do-you-support-receiving-email-with-imap)
-  * [هل تدعم POP3](#do-you-support-pop3)
-  * [هل تدعم التقويمات (CalDAV)](#do-you-support-calendars-caldav)
-  * [هل تدعم جهات الاتصال (CardDAV)](#do-you-support-contacts-carddav)
-  * [هل تدعم إرسال البريد الإلكتروني باستخدام SMTP؟](#do-you-support-sending-email-with-smtp)
-  * [هل تدعم OpenPGP/MIME والتشفير من البداية إلى النهاية ("E2EE") ودليل مفتاح الويب ("WKD")؟](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [هل تدعم MTA-STS؟](#do-you-support-mta-sts)
-  * [هل تدعم مفاتيح المرور وWebAuthn؟](#do-you-support-passkeys-and-webauthn)
-  * [هل تدعم أفضل ممارسات البريد الإلكتروني؟](#do-you-support-email-best-practices)
-  * [هل تدعم خطافات الويب المرتدة؟](#do-you-support-bounce-webhooks)
-  * [هل تدعمون خطافات الويب؟](#do-you-support-webhooks)
-  * [هل تدعم التعبيرات العادية أو التعبيرات العادية؟](#do-you-support-regular-expressions-or-regex)
-  * [ما هي حدود SMTP الصادرة لديك؟](#what-are-your-outbound-smtp-limits)
-  * [هل أحتاج إلى موافقة لتمكين SMTP؟](#do-i-need-approval-to-enable-smtp)
-  * [ما هي إعدادات تكوين خادم SMTP الخاص بك](#what-are-your-smtp-server-configuration-settings)
-  * [ما هي إعدادات تكوين خادم IMAP الخاص بك](#what-are-your-imap-server-configuration-settings)
-  * [ما هي إعدادات تكوين خادم POP3 الخاص بك](#what-are-your-pop3-server-configuration-settings)
-  * [تكوين Postfix SMTP Relay](#postfix-smtp-relay-configuration)
-* [حماية](#security)
-  * [تقنيات تقوية الخادم المتقدمة](#advanced-server-hardening-techniques)
-  * [هل لديك شهادة SOC 2 أو ISO 27001؟](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [هل تستخدم تشفير TLS لإعادة توجيه البريد الإلكتروني؟](#do-you-use-tls-encryption-for-email-forwarding)
-  * [هل تحافظ على رؤوس مصادقة البريد الإلكتروني؟](#do-you-preserve-email-authentication-headers)
-  * [هل تحافظ على عناوين البريد الإلكتروني الأصلية وتمنع التزييف؟](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [كيف تحمي نفسك من البريد العشوائي والإساءة؟](#how-do-you-protect-against-spam-and-abuse)
-  * [هل تقوم بتخزين محتوى البريد الإلكتروني على القرص؟](#do-you-store-email-content-on-disk)
-  * [هل يمكن الكشف عن محتوى البريد الإلكتروني أثناء تعطل النظام؟](#can-email-content-be-exposed-during-system-crashes)
-  * [من لديه حق الوصول إلى البنية التحتية لبريدك الإلكتروني؟](#who-has-access-to-your-email-infrastructure)
-  * [ما هي مقدمي البنية التحتية التي تستخدمها](#what-infrastructure-providers-do-you-use)
-  * [هل تقدم اتفاقية معالجة البيانات (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [كيفية التعامل مع إشعارات خرق البيانات](#how-do-you-handle-data-breach-notifications)
-  * [هل تقدم بيئة اختبار؟](#do-you-offer-a-test-environment)
-  * [هل توفر أدوات المراقبة والتنبيه؟](#do-you-provide-monitoring-and-alerting-tools)
-  * [كيف تضمن توفرًا عاليًا؟](#how-do-you-ensure-high-availability)
-  * [هل أنت متوافق مع المادة 889 من قانون تفويض الدفاع الوطني (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [تفاصيل النظام والتقنية](#system-and-technical-details)
-  * [هل تقوم بتخزين رسائل البريد الإلكتروني ومحتوياتها؟](#do-you-store-emails-and-their-contents)
-  * [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work)
-  * [كيفية معالجة البريد الإلكتروني لإعادة التوجيه](#how-do-you-process-an-email-for-forwarding)
-  * [كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues)
-  * [كيف تتعامل مع حظر عناوين IP الخاصة بك؟](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [ما هي عناوين مدير البريد](#what-are-postmaster-addresses)
-  * [ما هي عناوين عدم الرد](#what-are-no-reply-addresses)
-  * [ما هي عناوين IP الخاصة بخادمك؟](#what-are-your-servers-ip-addresses)
-  * [هل لديك قائمة مسموح بها؟](#do-you-have-an-allowlist)
-  * [ما هي امتدادات أسماء النطاق المسموح بها افتراضيًا](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [ما هي معايير القائمة المسموح بها لديك؟](#what-is-your-allowlist-criteria)
-  * [ما هي امتدادات أسماء النطاقات التي يمكن استخدامها مجانًا](#what-domain-name-extensions-can-be-used-for-free)
-  * [هل لديك قائمة رمادية؟](#do-you-have-a-greylist)
-  * [هل لديك قائمة الرفض؟](#do-you-have-a-denylist)
-  * [هل لديك معدل الحد؟](#do-you-have-rate-limiting)
-  * [كيف تحمي نفسك من التشتت الخلفي؟](#how-do-you-protect-against-backscatter)
-  * [منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين](#prevent-bounces-from-known-mail-from-spammers)
-  * [منع الارتدادات غير الضرورية للحماية من التشتت الخلفي](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [كيف تحدد بصمة البريد الإلكتروني](#how-do-you-determine-an-email-fingerprint)
-  * [هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى منافذ أخرى غير المنفذ 25 (على سبيل المثال إذا قام مزود خدمة الإنترنت الخاص بي بحظر المنفذ 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [هل يدعم رمز ++ للأسماء المستعارة في Gmail؟](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [هل يدعم النطاقات الفرعية](#does-it-support-sub-domains)
-  * [هل يؤدي هذا إلى إعادة توجيه عناوين بريدي الإلكتروني؟](#does-this-forward-my-emails-headers)
-  * [هل تم اختبار هذا جيدا؟](#is-this-well-tested)
-  * [هل تقوم بتمرير رسائل ورموز الاستجابة SMTP؟](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [كيف تمنع مرسلي البريد العشوائي وتضمن سمعة جيدة في إعادة توجيه البريد الإلكتروني](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [كيف تقوم بإجراء عمليات بحث DNS على أسماء النطاقات](#how-do-you-perform-dns-lookups-on-domain-names)
-* [الحساب والفواتير](#account-and-billing)
-  * [هل تقدم ضمان استرداد الأموال على الخطط المدفوعة؟](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [إذا قمت بتغيير الخطط، هل تقومون بتقسيم المبلغ واسترداد الفرق؟](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [هل يمكنني استخدام خدمة إعادة توجيه البريد الإلكتروني هذه كخادم MX "احتياطي" أو "متوقف"؟](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [هل يمكنني تعطيل أسماء مستعارة معينة؟](#can-i-disable-specific-aliases)
-  * [هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى عدة مستلمين؟](#can-i-forward-emails-to-multiple-recipients)
-  * [هل يمكنني الحصول على عدة مستلمين عالميين](#can-i-have-multiple-global-catch-all-recipients)
-  * [هل يوجد حد أقصى لعدد عناوين البريد الإلكتروني التي يمكنني إعادة توجيهها لكل اسم مستعار؟](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [هل يمكنني إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر؟](#can-i-recursively-forward-emails)
-  * [هل يمكن للأشخاص إلغاء التسجيل أو تسجيل إعادة توجيه بريدي الإلكتروني دون إذني؟](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [كيف هو مجاني](#how-is-it-free)
-  * [ما هو الحد الأقصى لحجم البريد الإلكتروني؟](#what-is-the-max-email-size-limit)
-  * [هل تقوم بتخزين سجلات رسائل البريد الإلكتروني؟](#do-you-store-logs-of-emails)
-  * [هل تقوم بتخزين سجلات الأخطاء؟](#do-you-store-error-logs)
-  * [هل تقرأ رسائلي الإلكترونية؟](#do-you-read-my-emails)
-  * [هل يمكنني "إرسال البريد باسم" في Gmail باستخدام هذا؟](#can-i-send-mail-as-in-gmail-with-this)
-  * [هل يمكنني "إرسال البريد باسم" في Outlook باستخدام هذا؟](#can-i-send-mail-as-in-outlook-with-this)
-  * [هل يمكنني "إرسال البريد باسم" في Apple Mail و iCloud Mail باستخدام هذا؟](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [هل يمكنني إعادة توجيه عدد غير محدود من رسائل البريد الإلكتروني باستخدام هذا؟](#can-i-forward-unlimited-emails-with-this)
-  * [هل تقدمون عدد غير محدود من النطاقات بسعر واحد؟](#do-you-offer-unlimited-domains-for-one-price)
-  * [ما هي طرق الدفع التي تقبلونها؟](#which-payment-methods-do-you-accept)
-* [موارد إضافية](#additional-resources)
+* [Quick Start](#quick-start)
+* [Introduction](#introduction)
+  * [What is Forward Email](#what-is-forward-email)
+  * [Who uses Forward Email](#who-uses-forward-email)
+  * [What is Forward Email's history](#what-is-forward-emails-history)
+  * [How fast is this service](#how-fast-is-this-service)
+* [Email Clients](#email-clients)
+  * [Thunderbird](#thunderbird)
+  * [Microsoft Outlook](#microsoft-outlook)
+  * [Apple Mail](#apple-mail)
+  * [eM Client](#em-client)
+  * [Mobile Devices](#mobile-devices)
+  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
+  * [Command-line Email Clients](#command-line-email-clients)
+  * [Windows Email Configuration](#windows-email-configuration)
+  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
+  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
+  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
+  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
+* [Troubleshooting](#troubleshooting)
+  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
+  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Data Management](#data-management)
+  * [Where are your servers located](#where-are-your-servers-located)
+  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
+  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Do you support self-hosting](#do-you-support-self-hosting)
+* [Email Configuration](#email-configuration)
+  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
+  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
+  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
+  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Advanced Features](#advanced-features)
+  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
+  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
+  * [Do you support POP3](#do-you-support-pop3)
+  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
+  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
+  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Do you support MTA-STS](#do-you-support-mta-sts)
+  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Do you support email best practices](#do-you-support-email-best-practices)
+  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Do you support webhooks](#do-you-support-webhooks)
+  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
+  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
+  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
+  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
+  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
+* [Security](#security)
+  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
+  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
+  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
+  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
+  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
+  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
+  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
+  * [Do you offer a test environment](#do-you-offer-a-test-environment)
+  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
+  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
+  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [System and Technical Details](#system-and-technical-details)
+  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
+  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
+  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
+  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
+  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [What are postmaster addresses](#what-are-postmaster-addresses)
+  * [What are no-reply addresses](#what-are-no-reply-addresses)
+  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
+  * [Do you have an allowlist](#do-you-have-an-allowlist)
+  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
+  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
+  * [Do you have a greylist](#do-you-have-a-greylist)
+  * [Do you have a denylist](#do-you-have-a-denylist)
+  * [Do you have rate limiting](#do-you-have-rate-limiting)
+  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
+  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
+  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
+  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Does it support sub-domains](#does-it-support-sub-domains)
+  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
+  * [Is this well-tested](#is-this-well-tested)
+  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Account and Billing](#account-and-billing)
+  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
+  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
+  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
+  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
+  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [How is it free](#how-is-it-free)
+  * [What is the max email size limit](#what-is-the-max-email-size-limit)
+  * [Do you store logs of emails](#do-you-store-logs-of-emails)
+  * [Do you store error logs](#do-you-store-error-logs)
+  * [Do you read my emails](#do-you-read-my-emails)
+  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
+  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
+  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
+  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
+* [Additional Resources](#additional-resources)
 
-## بدء التشغيل السريع {#quick-start}
+## Quick Start {#quick-start}
 
-للبدء في إعادة توجيه البريد الإلكتروني:
+To get started with Forward Email:
 
-1. **إنشاء حساب** على [forwardemail.net/register](https://forwardemail.net/register)
+1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **أضف نطاقك وتحقق منه** ضمن [حسابي → النطاقات](/my-account/domains)
+2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
 
-3. **إضافة وتكوين أسماء مستعارة/صناديق بريد إلكتروني** ضمن [حسابي → النطاقات](/my-account/domains) → أسماء مستعارة
+3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
 
-4. **اختبر إعداداتك** عن طريق إرسال بريد إلكتروني إلى أحد الأسماء المستعارة الجديدة لديك
-
-قد تستغرق تغييرات DNS ما يصل إلى 24-48 ساعة لتنتشر عالميًا، على الرغم من أنها غالبًا ما تُفعّل قبل ذلك بكثير.
-
-لتحسين قابلية التسليم، نوصي بإعداد سجلات [SPF](#how-do-i-set-up-spf-for-forward-email) و[DKIM](#how-do-i-set-up-dkim-for-forward-email) و[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
-
-## مقدمة {#introduction}
-
-### ما هو البريد الإلكتروني المعاد توجيهه {#what-is-forward-email}
-
-خدمة "إعادة توجيه البريد الإلكتروني" مثالية للأفراد والشركات الصغيرة والمطورين الذين يرغبون في عناوين بريد إلكتروني احترافية دون تكلفة وصيانة حلول استضافة البريد الإلكتروني الشاملة.
-
-Forward Email هو **موفر خدمة بريد إلكتروني متكامل الميزات** و**موفر استضافة البريد الإلكتروني لأسماء النطاق المخصصة**.
-
-إنها الخدمة الوحيدة المجانية والمفتوحة المصدر، وتتيح لك استخدام عناوين البريد الإلكتروني للمجال المخصص دون تعقيد إعداد وصيانة خادم البريد الإلكتروني الخاص بك.
-
-تعمل خدمتنا على إعادة توجيه رسائل البريد الإلكتروني المرسلة إلى المجال المخصص الخاص بك إلى حساب البريد الإلكتروني الحالي لديك - ويمكنك حتى استخدامنا كمزود استضافة بريد إلكتروني مخصص لك.
-
-الميزات الرئيسية لخدمة إعادة توجيه البريد الإلكتروني:
-
-* **بريد إلكتروني بنطاق مخصص**: استخدم عناوين بريد إلكتروني احترافية مع اسم نطاقك الخاص.
-* **المستوى المجاني**: إعادة توجيه أساسية للبريد الإلكتروني مجانًا.
-* **خصوصية مُحسّنة**: لا نقرأ رسائلك الإلكترونية ولا نبيع بياناتك.
-* **مفتوح المصدر**: قاعدة بياناتنا البرمجية كاملةً متاحة على GitHub.
-* **دعم SMTP و IMAP و POP3**: إمكانيات إرسال واستقبال بريد إلكتروني كاملة.
-* **التشفير الشامل**: دعم OpenPGP/MIME.
-* **أسماء مستعارة مخصصة**: أنشئ أسماء مستعارة غير محدودة للبريد الإلكتروني.
-
-يمكنك مقارنتنا بأكثر من 56 مزود خدمة بريد إلكتروني آخر على [صفحة مقارنة البريد الإلكتروني لدينا](/blog/best-email-service).
+4. **Test your setup** by sending an email to one of your new aliases
 
 > \[!TIP]
-> تعرّف على المزيد حول إعادة توجيه البريد الإلكتروني من خلال قراءة دليلنا المجاني [الورقة البيضاء الفنية](/technical-whitepaper.pdf)
+> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
 
-### من يستخدم إعادة توجيه البريد الإلكتروني {#who-uses-forward-email}
+> \[!IMPORTANT]
+> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-نحن نقدم خدمة استضافة البريد الإلكتروني وإعادة توجيه البريد الإلكتروني لأكثر من 500000 نطاق وهؤلاء المستخدمين البارزين:
+## Introduction {#introduction}
 
-| عميل | دراسة الحالة |
+### What is Forward Email {#what-is-forward-email}
+
+> \[!NOTE]
+> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+
+Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+
+It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
+
+Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
+
+Key features of Forward Email:
+
+* **Custom Domain Email**: Use professional email addresses with your own domain name
+* **Free Tier**: Basic email forwarding at no cost
+* **Enhanced Privacy**: We don't read your emails or sell your data
+* **Open Source**: Our entire codebase is available on GitHub
+* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
+* **End-to-End Encryption**: Support for OpenPGP/MIME
+* **Custom Catch-All Aliases**: Create unlimited email aliases
+
+You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+
+> \[!TIP]
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+
+### Who uses Forward Email {#who-uses-forward-email}
+
+We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
+
+| Customer | Case Study |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| الأكاديمية البحرية الأمريكية | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| قانوني | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| ألعاب نتفليكس |  |
-| مؤسسة لينكس | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| مؤسسة PHP |  |
-| إذاعة فوكس نيوز |  |
-| مبيعات إعلانات ديزني |  |
-| جيكويري | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| نظام LineageOS |  |
-| أوبونتو | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| حر | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| لوبنتو | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| جامعة كامبريدج | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| جامعة ماريلاند | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| جامعة واشنطن | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| جامعة تافتس | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| كلية سوارثمور | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| حكومة جنوب أستراليا |  |
-| حكومة جمهورية الدومينيكان |  |
-| ذبابة<span>.</span>io |  |
-| فنادق RCD |  |
-| إسحاق ز. شلويتر (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| ديفيد هاينماير هانسون (روبي أون ريلز) |  |
+| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
+| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Netflix Games |  |
+| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| The PHP Foundation |  |
+| Fox News Radio |  |
+| Disney Ad Sales |  |
+| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| LineageOS |  |
+| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Government of South Australia |  |
+| Government of Dominican Republic |  |
+| Fly<span>.</span>io |  |
+| RCD Hotels |  |
+| Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |  |
 
-### ما هو سجل إعادة توجيه البريد الإلكتروني؟ {#what-is-forward-emails-history}
+### What is Forward Email's history {#what-is-forward-emails-history}
 
-يمكنك معرفة المزيد عن إعادة توجيه البريد الإلكتروني على [صفحتنا حول](/about).
+You can learn more about Forward Email on [our About page](/about).
 
-### ما مدى سرعة هذه الخدمة؟ {#how-fast-is-this-service}
+### How fast is this service {#how-fast-is-this-service}
 
-تم تصميم نظامنا لضمان السرعة والموثوقية، مع خوادم احتياطية متعددة لضمان وصول رسائل البريد الإلكتروني الخاصة بك في أسرع وقت.
+> \[!NOTE]
+> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
 
-توفر خدمة Forward Email إمكانية تسليم الرسائل بأقل قدر من التأخير، عادةً في غضون ثوانٍ من استلامها.
+Forward Email delivers messages with minimal delay, typically within seconds of receipt.
 
-مقاييس الأداء:
+Performance metrics:
 
-* **متوسط وقت التسليم**: أقل من ٥-١٠ ثوانٍ من الاستلام إلى إعادة التوجيه ([راجع صفحة مراقبة وقت الوصول إلى البريد الوارد "TTI"](/tti))
-* **مدة التشغيل**: توافر الخدمة بنسبة تزيد عن ٩٩.٩٪
-* **بنية تحتية عالمية**: خوادم موزعة بشكل استراتيجي لضمان التوجيه الأمثل
-* **التوسع التلقائي**: نظامنا يتوسع خلال فترات الذروة في البريد الإلكتروني
+* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
+* **Uptime**: 99.9%+ service availability
+* **Global Infrastructure**: Servers strategically located for optimal routing
+* **Automatic Scaling**: Our system scales during peak email periods
 
-نحن نعمل في الوقت الحقيقي، على عكس مقدمي الخدمات الآخرين الذين يعتمدون على طوابير الانتظار المتأخرة.
+We operate in real-time, unlike other providers which rely upon delayed queues.
 
-نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-## عملاء البريد الإلكتروني {#email-clients}
+## Email Clients {#email-clients}
 
-حامل مكان مؤقت 0 ثندربيرد {حامل مكان مؤقت 1}
+### Thunderbird {#thunderbird}
 
-١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة تحكم إعادة توجيه البريد الإلكتروني.
-٢. افتح Thunderbird وانتقل إلى **تعديل ← إعدادات الحساب ← إجراءات الحساب ← إضافة حساب بريد إلكتروني**.
-٣. أدخل اسمك، وعنوان إعادة توجيه البريد الإلكتروني، وكلمة المرور.
-٤. انقر على **التهيئة يدويًا** وأدخل:
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
+3. Enter your name, Forward Email address, and password
+4. Click **Configure manually** and enter:
+   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Outgoing: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+5. Click **Done**
 
-* البريد الوارد: IMAP، `imap.forwardemail.net`، المنفذ ٩٩٣، SSL/TLS.
-* البريد الصادر: SMTP، `smtp.forwardemail.net`، المنفذ ٥٨٧، STARTTLS.
-٥. انقر على **تم**.
+### Microsoft Outlook {#microsoft-outlook}
 
-حامل مكان مؤقت 0 مايكروسوفت أوتلوك {حامل مكان مؤقت 1}
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **File → Add Account**
+3. Enter your Forward Email address and click **Connect**
+4. Choose **Advanced options** and select **Let me set up my account manually**
+5. Select **IMAP** and enter:
+   * Incoming: `imap.forwardemail.net`, port 993, SSL
+   * Outgoing: `smtp.forwardemail.net`, port 587, TLS
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Connect**
 
-١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة معلومات إعادة توجيه البريد الإلكتروني.
-٢. انتقل إلى **ملف ← إضافة حساب**.
-٣. أدخل عنوان بريدك الإلكتروني لإعادة توجيه البريد الإلكتروني، ثم انقر على **اتصال**.
-٤. اختر **خيارات متقدمة**، ثم حدد **إعداد حسابي يدويًا**.
-٥. حدد **IMAP** وأدخل:
+### Apple Mail {#apple-mail}
 
-* البريد الوارد: `imap.forwardemail.net`، المنفذ ٩٩٣، SSL.
-* البريد الصادر: `smtp.forwardemail.net`، المنفذ ٥٨٧، TLS.
-* اسم المستخدم: عنوان بريدك الإلكتروني الكامل.
-* كلمة المرور: كلمة المرور التي أنشأتها.
-٦. انقر على **اتصال**.
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **Mail → Preferences → Accounts → +**
+3. Select **Other Mail Account**
+4. Enter your name, Forward Email address, and password
+5. For server settings, enter:
+   * Incoming: `imap.forwardemail.net`
+   * Outgoing: `smtp.forwardemail.net`
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Sign In**
 
-### بريد Apple {#apple-mail}
+### eM Client {#em-client}
 
-١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة معلومات إعادة توجيه البريد الإلكتروني.
-٢. انتقل إلى **البريد الإلكتروني ← التفضيلات ← الحسابات ← +**
-٣. حدد **حساب بريد آخر**
-٤. أدخل اسمك، وعنوان إعادة توجيه البريد الإلكتروني، وكلمة المرور.
-٥. لإعدادات الخادم، أدخل:
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open eM Client and go to **Menu → Accounts → + Add Account**
+3. Click on **Mail** and then select **Other**
+4. Enter your Forward Email address and click **Next**
+5. Enter the following server settings:
+   * **Incoming server**: `imap.forwardemail.net`
+   * **Outgoing server**: `smtp.forwardemail.net`
+6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
+7. eM Client will test the connection. Once it passes, click **Next**.
+8. Enter your name and choose an account name.
+9. Click **Finish**.
 
-* الوارد: `imap.forwardemail.net`
-* الصادر: `smtp.forwardemail.net`
-* اسم المستخدم: عنوان بريدك الإلكتروني الكامل
-* كلمة المرور: كلمة المرور المُنشأة.
-٦. انقر على **تسجيل الدخول**
+### Mobile Devices {#mobile-devices}
 
-### الأجهزة المحمولة {#mobile-devices}
+For iOS:
 
-بالنسبة لنظام iOS:
+1. Go to **Settings → Mail → Accounts → Add Account → Other**
+2. Tap **Add Mail Account** and enter your details
+3. For server settings, use the same IMAP and SMTP settings as above
 
-١. انتقل إلى **الإعدادات ← البريد ← الحسابات ← إضافة حساب ← أخرى**
-٢. انقر على **إضافة حساب بريد** وأدخل بياناتك.
-٣. لإعدادات الخادم، استخدم نفس إعدادات IMAP وSMTP المذكورة أعلاه.
+For Android:
 
-للاندرويد:
+1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
+2. Enter your Forward Email address and password
+3. For server settings, use the same IMAP and SMTP settings as above
 
-١. انتقل إلى **الإعدادات ← الحسابات ← إضافة حساب ← شخصي (IMAP)**
-٢. أدخل عنوان بريدك الإلكتروني وكلمة المرور لإعادة التوجيه.
-٣. لإعدادات الخادم، استخدم نفس إعدادات IMAP وSMTP المذكورة أعلاه.
+### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
 
-### كيفية إرسال البريد باسم باستخدام Gmail {#how-to-send-mail-as-using-gmail}
+You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>أقل من ١٠ دقائق</span>
-</div>
-
-<div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-البدء:
-</strong>
-<span>
-إذا اتبعت التعليمات المذكورة أعلاه في قسم <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">كيفية البدء وإعداد إعادة توجيه البريد الإلكتروني</a>، يمكنك متابعة القراءة أدناه.
-</span>
-</div>
-
-<div id="إرسال البريد الإلكتروني كمحتوى">
-
-<div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى التأكد من قراءة <a href="/terms" class="alert-link" target="_blank">الشروط</a>، و<a href="/privacy" class="alert-link" target="_blank">سياسة الخصوصية</a>، و<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">حدود SMTP الصادرة</a>، ويُعتبر استخدامك إقرارًا وموافقة.
-</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 20 minutes</span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت مطورًا، يُرجى مراجعة <a class="alert-link" href="/email-api#outbound-emails" target="_blank">وثائق واجهة برمجة تطبيقات البريد الإلكتروني</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
 </div>
 
-1. انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
+#### Configuration {#configuration}
 
-2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (على سبيل المثال <code><hello@example.com></code>)
+1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
 
-٣. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
+   ```bash
+   sudo nano /etc/mail/sendmail.mc
+   ```
 
-4. انتقل إلى [جيميل](https://gmail.com) وتحت [الإعدادات <i class="fa fa-angle-right"></i> الحسابات والاستيراد <i class="fa fa-angle-right"></i> إرسال البريد باسم](https://mail.google.com/mail/u/0/#settings/accounts)، انقر فوق "إضافة عنوان بريد إلكتروني آخر"
+2. Add the following lines to define the smart host and authentication:
 
-5. عند مطالبتك بـ "الاسم"، أدخل الاسم الذي تريد أن يظهر بريدك الإلكتروني عليه باعتباره "من" (على سبيل المثال "Linus Torvalds").
+   ```
+   define(`SMART_HOST', `smtp.forwardemail.net')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+   FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+   ```
 
-٦. عند طلب "عنوان البريد الإلكتروني"، أدخل عنوان البريد الإلكتروني الكامل للاسم المستعار الذي أنشأته ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+3. Create the authentication file `/etc/mail/authinfo`:
 
-7. قم بإلغاء تحديد "المعاملة كاسم مستعار"
+   ```bash
+   sudo nano /etc/mail/authinfo
+   ```
 
-8. انقر فوق "الخطوة التالية" للمتابعة
+4. Add your Forward Email credentials to the `authinfo` file:
 
-9. عند مطالبتك بـ "خادم SMTP"، أدخل <code>smtp.forwardemail.net</code> واترك المنفذ كما هو <code>587</code>
+   ```
+   AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+   ```
 
-١٠. عند طلب "اسم المستخدم"، أدخل عنوان البريد الإلكتروني الكامل للاسم المستعار الذي أنشأته ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+5. Generate the authentication database and secure the files:
 
-11. عند مطالبتك بـ "كلمة المرور"، الصق كلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> في الخطوة 3 أعلاه
+   ```bash
+   sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+   sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+   ```
 
-12. اترك زر الاختيار محددًا لـ "اتصال آمن باستخدام TLS"
+6. Rebuild the Sendmail configuration and restart the service:
 
-13. انقر فوق "إضافة حساب" للمتابعة
+   ```bash
+   sudo make -C /etc/mail
+   sudo systemctl restart sendmail
+   ```
 
-14. افتح علامة تبويب جديدة في [جيميل](https://gmail.com) وانتظر وصول رسالة التحقق عبر البريد الإلكتروني (ستتلقى رمز تحقق يؤكد ملكيتك لعنوان البريد الإلكتروني الذي تحاول "إرساله كـ")
+#### Testing {#testing}
 
-15. بمجرد وصوله، انسخ ولصق رمز التحقق عند المطالبة التي تلقيتها في الخطوة السابقة
+Send a test email to verify the configuration:
 
-١٦. بعد الانتهاء، ارجع إلى البريد الإلكتروني وانقر على رابط "تأكيد الطلب". ستحتاج على الأرجح إلى تنفيذ هذه الخطوة والخطوة السابقة لضبط البريد الإلكتروني بشكل صحيح.
+```bash
+echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+```
 
-<div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
+### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+
+Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
 </div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
 </div>
 
+#### Configuration {#configuration-1}
+
+1. Run the Exim4 configuration tool:
+
+   ```bash
+   sudo dpkg-reconfigure exim4-config
+   ```
+
+2. Select the following options:
+   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+   * **System mail name:** your.hostname
+   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+   * **Other destinations for which mail is accepted:** (leave blank)
+   * **Domains to relay mail for:** (leave blank)
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **Hide local mail name in outgoing mail?** No
+   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+   * **Delivery method for local mail:** Mbox format in /var/mail/
+   * **Split configuration into small files?** No
+
+3. Edit the `passwd.client` file to add your credentials:
+
+   ```bash
+   sudo nano /etc/exim4/passwd.client
+   ```
+
+4. Add the following line:
+
+   ```
+   smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+   ```
+
+5. Update the configuration and restart Exim4:
+
+   ```bash
+   sudo update-exim4.conf
+   sudo systemctl restart exim4
+   ```
+
+#### Testing {#testing-1}
+
+Send a test email:
+
+```bash
+echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+```
+
+### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+
+msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
-### ما هو الدليل المجاني القديم لإرسال البريد باسم باستخدام Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> هذا الدليل المجاني القديم غير مُستخدم اعتبارًا من مايو ٢٠٢٣، لأن <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we يدعم الآن بروتوكول SMTP الصادر</a>. إذا استخدمت الدليل أدناه، فسيؤدي استخدام <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this إلى ظهور رسالة بريدك الإلكتروني الصادرة</a> "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" في Gmail.</a></div>
+#### Configuration {#configuration-2}
 
-<div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>أقل من ١٠ دقائق</span>
+1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+
+   ```bash
+   nano ~/.msmtprc
+   ```
+
+2. Add the following configuration:
+
+   ```
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
+
+   account        forwardemail
+   host           smtp.forwardemail.net
+   port           587
+   from           your-alias@yourdomain.com
+   user           your-alias@yourdomain.com
+   password       your-generated-password
+
+   account default : forwardemail
+   ```
+
+3. Set the correct permissions for the configuration file:
+
+   ```bash
+   chmod 600 ~/.msmtprc
+   ```
+
+#### Testing {#testing-2}
+
+Send a test email:
+
+```bash
+echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+```
+
+### Command-line Email Clients {#command-line-email-clients}
+
+Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+
+### Windows Email Configuration {#windows-email-configuration}
+
+For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+
+### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+
+You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Installation {#installation}
+
+1. Install Postfix on your server:
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install postfix
+
+# CentOS/RHEL
+sudo yum install postfix
+
+# macOS
+brew install postfix
+```
+
+2. During installation, select "Internet Site" when prompted for configuration type.
+
+#### Configuration {#configuration-3}
+
+1. Edit the main Postfix configuration file:
+
+```bash
+sudo nano /etc/postfix/main.cf
+```
+
+2. Add or modify these settings:
+
+```
+# SMTP relay configuration
+relayhost = [smtp.forwardemail.net]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
+3. Create the SASL password file:
+
+```bash
+sudo nano /etc/postfix/sasl_passwd
+```
+
+4. Add your Forward Email credentials:
+
+```
+[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+```
+
+5. Secure and hash the password file:
+
+```bash
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+```
+
+6. Restart Postfix:
+
+```bash
+sudo systemctl restart postfix
+```
+
+#### Testing {#testing-3}
+
+Test your configuration by sending a test email:
+
+```bash
+echo "Test email body" | mail -s "Test Subject" recipient@example.com
+```
+
+### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-البدء:
-</strong>
-<span>
-إذا اتبعت التعليمات المذكورة أعلاه في قسم <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">كيفية البدء وإعداد إعادة توجيه البريد الإلكتروني</a>، يمكنك متابعة القراءة أدناه.
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="كيفية إرسال بريد إلكتروني باستخدام Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div id="send-mail-as-content">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
+</div>
+
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+7. Uncheck "Treat as an alias"
+
+8. Click "Next Step" to proceed
+
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
+
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+12. Leave the radio button checked for "Secured connection using TLS"
+
+13. Click "Add Account" to proceed
+
+14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
+
+### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+
+<div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert mb-3 alert-success">
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
+</div>
+
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
-١. يجب تفعيل [المصادقة الثنائية في Gmail][gmail-2fa] لتعمل هذه الميزة. تفضل بزيارة <https://www.google.com/landing/2step/> إذا لم تكن مفعلة لديك.
+1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
-2. بمجرد تمكين المصادقة الثنائية (أو إذا كنت قد قمت بتمكينها بالفعل)، قم بزيارة <https://myaccount.google.com/apppasswords>.
+2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
 
-٣. عند طلب "تحديد التطبيق والجهاز الذي تريد إنشاء كلمة مرور له":
-* اختر "البريد" من القائمة المنسدلة "تحديد تطبيق".
-* اختر "أخرى" من القائمة المنسدلة "تحديد جهاز".
-* عند طلب إدخال نص، أدخل عنوان البريد الإلكتروني لنطاقك المخصص الذي تُعيد توجيه الرسائل منه (مثال: <code><hello@example.com></code> - سيساعدك هذا على تتبع الرسائل في حال استخدامك لهذه الخدمة لحسابات متعددة).
+3. When prompted for "Select the app and device you want to generate the app password for":
+   * Select "Mail" under the drop-down for "Select app"
+   * Select "Other" under the drop-down for "Select device"
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
 
-٤. انسخ كلمة المرور المُولّدة تلقائيًا إلى الحافظة.
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم G Suite، فتفضل بزيارة لوحة الإدارة <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">التطبيقات <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> إعدادات Gmail <i class="fa fa-angle-right"></i> الإعدادات</a> وتأكد من تحديد "السماح للمستخدمين بإرسال البريد عبر خادم SMTP خارجي...". قد يستغرق تفعيل هذا التغيير بعض الوقت، لذا يُرجى الانتظار لبضع دقائق.
-</span>
+4. Copy the password to your clipboard that is automatically generated
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Important:
+     </strong>
+     <span>
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+     </span>
+   </div>
+
+5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+
+8. Uncheck "Treat as an alias"
+
+9. Click "Next Step" to proceed
+
+10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
+
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+    <div class="alert my-3 alert-primary">
+      <i class="fa fa-info-circle font-weight-bold"></i>
+      <strong class="font-weight-bold">
+        Important:
+      </strong>
+      <span>
+        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+      </span>
+    </div>
+
+12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+
+13. Leave the radio button checked for "Secured connection using TLS"
+
+14. Click "Add Account" to proceed
+
+15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
 </div>
 
-5. انتقل إلى [جيميل](https://gmail.com) وتحت [الإعدادات <i class="fa fa-angle-right"></i> الحسابات والاستيراد <i class="fa fa-angle-right"></i> إرسال البريد باسم](https://mail.google.com/mail/u/0/#settings/accounts)، انقر فوق "إضافة عنوان بريد إلكتروني آخر"
-
-6. عند مطالبتك بـ "الاسم"، أدخل الاسم الذي تريد أن يظهر بريدك الإلكتروني عليه كـ "من" (على سبيل المثال "لينوس تورفالدس")
-
-7. عند مطالبتك بـ "عنوان البريد الإلكتروني"، أدخل عنوان البريد الإلكتروني مع النطاق المخصص الذي استخدمته أعلاه (على سبيل المثال <code><hello@example.com></code>)
-
-8. قم بإلغاء تحديد "المعاملة كاسم مستعار"
-
-9. انقر فوق "الخطوة التالية" للمتابعة
-
-١٠. عند طلب "خادم SMTP"، أدخل <code>smtp.gmail.com</code> واترك المنفذ كما هو <code>587</code>
-
-١١. عند طلب "اسم المستخدم"، أدخل جزء عنوان Gmail الخاص بك بدون <span>gmail.com</span> (على سبيل المثال، أدخل "المستخدم" فقط إذا كان بريدي الإلكتروني هو <span><user@gmail.com></span>).
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-هام:
-</strong>
-<span>
-إذا كان جزء "اسم المستخدم" يُملأ تلقائيًا، فسيتعين عليك تغييره إلى جزء اسم المستخدم في عنوان Gmail الخاص بك.
-</span>
-</div>
-
-12. عند مطالبتك بإدخال "كلمة المرور"، الصق كلمة المرور التي أنشأتها في الخطوة 2 أعلاه من الحافظة.
-
-13. اترك زر الاختيار محددًا لـ "اتصال آمن باستخدام TLS"
-
-14. انقر فوق "إضافة حساب" للمتابعة
-
-15. افتح علامة تبويب جديدة في [جيميل](https://gmail.com) وانتظر وصول رسالة التحقق عبر البريد الإلكتروني (ستتلقى رمز تحقق يؤكد ملكيتك لعنوان البريد الإلكتروني الذي تحاول "إرساله كـ")
-
-16. بمجرد وصوله، انسخ ولصق رمز التحقق عند المطالبة التي تلقيتها في الخطوة السابقة
-
-١٧. بعد الانتهاء، ارجع إلى البريد الإلكتروني وانقر على رابط "تأكيد الطلب". ستحتاج على الأرجح إلى تنفيذ هذه الخطوة والخطوة السابقة لضبط البريد الإلكتروني بشكل صحيح.
-
-</div>
-
-### تكوين توجيه Gmail المتقدم {#advanced-gmail-routing-configuration}
+### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>15-30 دقيقة</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-إذا كنت تريد إعداد التوجيه المتقدم في Gmail بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني في Forward Email، فاتبع الخطوات التالية:
+If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
 
-١. سجّل الدخول إلى وحدة تحكم مشرف جوجل على [admin.google.com](https://admin.google.com)
-٢. انتقل إلى **التطبيقات ← Google Workspace ← Gmail ← التوجيه**
-٣. انقر على **إضافة مسار** واضبط الإعدادات التالية:
+1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
+2. Go to **Apps → Google Workspace → Gmail → Routing**
+3. Click on **Add Route** and configure the following settings:
 
-**إعدادات المستلم الفردي:**
+**Single Recipient Settings:**
 
-* اختر "تغيير مستلم الظرف" وأدخل عنوان Gmail الرئيسي.
-* فعّل خيار "إضافة رأس X-Gm-Original-To مع المستلم الأصلي".
+* Select "Change envelope recipient" and enter your primary Gmail address
+* Check "Add X-Gm-Original-To header with original recipient"
 
-**أنماط مستلمي المظاريف:**
+**Envelope Recipient Patterns:**
 
-* إضافة نمط يتطابق مع جميع صناديق البريد غير الموجودة (على سبيل المثال، `.*@yourdomain.com`)
+* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
 
-**إعدادات خادم البريد الإلكتروني:**
+**Email Server Settings:**
 
-* حدد "توجيه إلى المضيف" وأدخل `mx1.forwardemail.net` كخادم أساسي.
-* أضف `mx2.forwardemail.net` كخادم احتياطي.
-* اضبط المنفذ على ٢٥.
-* حدد "يتطلب TLS" للأمان.
+* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
+* Add `mx2.forwardemail.net` as the backup server
+* Set port to 25
+* Select "Require TLS" for security
 
-4. انقر فوق **حفظ** لإنشاء المسار
+4. Click **Save** to create the route
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يعمل هذا الإعداد فقط مع حسابات Google Workspace ذات النطاقات المخصصة، وليس مع حسابات Gmail العادية.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+  </span>
 </div>
 
-### تكوين التوجيه المتقدم لبرنامج Outlook {#advanced-outlook-routing-configuration}
+### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>15-30 دقيقة</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-بالنسبة لمستخدمي Microsoft 365 (المعروف سابقًا باسم Office 365) الذين يرغبون في إعداد التوجيه المتقدم بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني الخاصة بـ Forward Email:
+For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
 
-١. سجّل الدخول إلى مركز إدارة Microsoft 365 على [admin.microsoft.com](https://admin.microsoft.com)
-٢. انتقل إلى **Exchange ← تدفق البريد ← القواعد**
-٣. انقر على **إضافة قاعدة** وحدد **إنشاء قاعدة جديدة**
-٤. سمِّ القاعدة (مثلاً، "إعادة توجيه صناديق البريد غير الموجودة إلى إعادة توجيه البريد الإلكتروني")
-٥. ضمن **تطبيق هذه القاعدة إذا**، حدد:
-* "عنوان المستلم يطابق..."
-* أدخل نمطًا يطابق جميع العناوين في نطاقك (مثلاً، `*@yourdomain.com`)
-٦. ضمن **قم بما يلي**، حدد:
-* "إعادة توجيه الرسالة إلى..."
-* اختر "خادم البريد التالي"
-* أدخل `mx1.forwardemail.net` والمنفذ ٢٥
-* أضف `mx2.forwardemail.net` كخادم احتياطي
-٧. ضمن **إلا إذا**، حدد:
-* "المستلم هو..."
-* أضف جميع صناديق البريد الموجودة التي لا يجب أن تكون مُعاد توجيهه
-8. عيّن أولوية القاعدة لضمان تشغيلها بعد قواعد تدفق البريد الأخرى
-9. انقر على **حفظ** لتفعيل القاعدة
+1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
+2. Go to **Exchange → Mail flow → Rules**
+3. Click **Add a rule** and select **Create a new rule**
+4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
+5. Under **Apply this rule if**, select:
+   * "The recipient address matches..."
+   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
+6. Under **Do the following**, select:
+   * "Redirect the message to..."
+   * Choose "The following mail server"
+   * Enter `mx1.forwardemail.net` and port 25
+   * Add `mx2.forwardemail.net` as a backup server
+7. Under **Except if**, select:
+   * "The recipient is..."
+   * Add all your existing mailboxes that should not be forwarded
+8. Set the rule priority to ensure it runs after other mail flow rules
+9. Click **Save** to activate the rule
 
-استكشاف أخطاء ## وإصلاحها {#troubleshooting}
+## Troubleshooting {#troubleshooting}
 
-### لماذا لا أتلقى رسائل البريد الإلكتروني الاختبارية الخاصة بي؟ {#why-am-i-not-receiving-my-test-emails}
+### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
 
-إذا كنت ترسل رسالة بريد إلكتروني اختبارية إلى نفسك، فقد لا تظهر في صندوق الوارد لديك لأنها تحتوي على نفس عنوان "معرف الرسالة".
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
 
-هذه مشكلة معروفة على نطاق واسع، وتؤثر أيضًا على خدمات مثل Gmail. <a href="https://support.google.com/a/answer/1703601">Here هو إجابة Gmail الرسمية بخصوص هذه المشكلة</a>.
+This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 
-إذا استمرت المشاكل، فمن المرجح أن المشكلة تتعلق بانتشار DNS. ستحتاج إلى الانتظار قليلًا والمحاولة مرة أخرى (أو حاول ضبط قيمة TTL أقل لسجلات <strong class="notranslate">TXT</strong>).
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
-**هل لا تزال تواجه مشكلات؟** يرجى <a href="/help">الاتصال بنا</a> حتى نتمكن من مساعدتك في التحقيق في المشكلة وإيجاد حل سريع.
+**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
 
-### كيف أقوم بتكوين عميل البريد الإلكتروني الخاص بي للعمل مع إعادة توجيه البريد الإلكتروني {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-تعمل خدمتنا مع برامج البريد الإلكتروني الشائعة مثل:
-<ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
-<li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> أندرويد&trade;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> لينكس&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> سطح المكتب</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light نص داكن"><i class="fab fa-firefox-browser"></i> موزيلا فايرفوكس&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">سفاري&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> جوجل كروم&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light نص داكن"><i class="fas fa-terminal"></i> طرفية</a></li>
-</ul>
+  Our service works with popular email clients such as:
+  <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
+    <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+  </ul>
 </div>
 
 <div class="alert alert-primary">
-
-اسم المستخدم هو عنوان البريد الإلكتروني لاسمك المستعار، وكلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> ("كلمة مرور عادية").
+  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>إذا كنت تستخدم Thunderbird، فتأكد من ضبط "أمان الاتصال" على "SSL/TLS" وضبط طريقة المصادقة على "كلمة مرور عادية".</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| يكتب | اسم المضيف | بروتوكول | الموانئ |
+| Type | Hostname | Protocol | Ports |
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **المفضل** | `993` و `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **المفضل** أو TLS (STARTTLS) | `465` و`2465` لـ SSL/TLS (أو) `587` و`2587` و`2525` و`25` لـ TLS (STARTTLS) |
+| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
 
-### لماذا تصل رسائل البريد الإلكتروني الخاصة بي إلى مجلد البريد العشوائي وغير المرغوب فيه وكيف يمكنني التحقق من سمعة نطاقي؟ {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-يرشدك هذا القسم إلى ما إذا كان بريدك الصادر يستخدم خوادم SMTP الخاصة بنا (على سبيل المثال `smtp.forwardemail.net`) (أو يتم إعادة توجيهه عبر `mx1.forwardemail.net` أو `mx2.forwardemail.net`) ويتم تسليمه إلى مجلد البريد العشوائي أو غير المرغوب فيه لدى المستلمين.
+This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
 
-نحن نقوم بشكل روتيني بمراقبة [عناوين IP](#what-are-your-servers-ip-addresses) مقابل [جميع قوائم الرفض الخاصة بـ DNS ذات السمعة الطيبة](#how-do-you-handle-your-ip-addresses-becoming-blocked)، **لذلك فمن المرجح أن تكون هذه مشكلة خاصة بسمعة المجال**.
+We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
 
-يمكن أن تصل رسائل البريد الإلكتروني إلى مجلدات البريد العشوائي لعدة أسباب:
+Emails can land in spam folders for several reasons:
 
-1. **المصادقة المفقودة**: إعداد السجلات [SPF](#how-do-i-set-up-spf-for-forward-email)، و[DKIM](#how-do-i-set-up-dkim-for-forward-email)، و[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-2. **سمعة المجال**: غالبًا ما تتمتع المجالات الجديدة بسمعة محايدة حتى يتم إنشاء سجل إرسال.
+2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
 
-3. **محفزات المحتوى**: يمكن لبعض الكلمات أو العبارات أن تؤدي إلى تشغيل مرشحات البريد العشوائي.
+3. **Content Triggers**: Certain words or phrases can trigger spam filters.
 
-4. **أنماط الإرسال**: قد تبدو الزيادة المفاجئة في حجم رسائل البريد الإلكتروني مثيرة للريبة.
+4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
 
-يمكنك محاولة استخدام واحدة أو أكثر من هذه الأدوات للتحقق من سمعة مجال عملك وتصنيفه:
+You can try to use one or more of these tools to check your domain's reputation and categorization:
 
-| اسم الأداة | URL | يكتب |
+| Tool Name | URL | Type |
 | ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| تعليقات حول تصنيف نطاق Cloudflare | <https://radar.cloudflare.com/domains/feedback> | التصنيف |
-| أداة Spamhaus للتحقق من سمعة IP والنطاق | <https://check.spamhaus.org/> | DNSBL |
-| مركز Cisco Talos لسمعة IP والنطاق | <https://talosintelligence.com/reputation_center> | سمعة |
-| البحث عن سمعة IP والنطاق لـ Barracuda | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| التحقق من القائمة السوداء لـ MX Toolbox | <https://mxtoolbox.com/blacklists.aspx> | القائمة السوداء |
-| أدوات مدير البريد من Google | <https://www.gmail.com/postmaster/> | سمعة |
-| مركز مرسل ياهو | <https://senders.yahooinc.com/> | سمعة |
-| التحقق من القائمة السوداء لـ MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
-| درجة المرسل | <https://senderscore.org/act/blocklist-remover/> | سمعة |
-| عدم القيمة | <https://www.invaluement.com/lookup/> | DNSBL |
+| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
+| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
+| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
+| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
+| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
+| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
+| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
+| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
+| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| إزالة IP من Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | إزالة |
-| إزالة IP الخاص بـ Cloudmark | <https://csi.cloudmark.com/ar/reset/> | إزالة |
-| سبام كوب | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| إزالة IP من Microsoft Outlook وOffice 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | إزالة |
-| مستويات UCEPROTECT 1 و2 و3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| backscatterer.org التابع لـ UCEPROTECT | <https://www.backscatterer.org/> | حماية التشتت الخلفي |
-| موقع UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (يتطلب رسومًا) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | إزالة |
-| AOL/Verizon (على سبيل المثال `[IPTS04]`) | <https://senders.yahooinc.com/> | إزالة |
-| شركة كوكس للاتصالات | `unblock.request@cox.net` | إزالة |
-| t-online.de (الألمانية/T-Mobile) | `tobr@rx.t-online.de` | إزالة |
+| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
+| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
+| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
+| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
+| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
+| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
+| AT&T | `abuse_rbl@abuse-att.net` | Removal |
+| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
+| Cox Communications | `unblock.request@cox.net` | Removal |
+| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
 
-ابدأ بإرسال عدد قليل من رسائل البريد الإلكتروني عالية الجودة لبناء سمعة إيجابية قبل إرسال عدد أكبر من الرسائل.
+> \[!TIP]
+> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
 
-إذا كان نطاقك مدرجًا في القائمة السوداء، فلكل قائمة سوداء إجراءات إزالة خاصة بها. راجع مواقعها الإلكترونية للاطلاع على التعليمات.
+> \[!IMPORTANT]
+> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
 
-إذا كنت بحاجة إلى مساعدة إضافية أو وجدت أن بريدنا مدرج كبريد عشوائي من قِبل مزود خدمة بريد إلكتروني معين، يُرجى <a href="/help">التواصل معنا</a>.
+> \[!TIP]
+> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
-### ماذا يجب أن أفعل إذا تلقيت رسائل بريد إلكتروني غير مرغوب فيها؟ {#what-should-i-do-if-i-receive-spam-emails}
+### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
 
-يجب عليك إلغاء الاشتراك في قائمة البريد الإلكتروني (إن أمكن) وحظر المرسل.
+You should unsubscribe from the emailing list (if possible) and block the sender.
 
-يرجى عدم الإبلاغ عن الرسالة باعتبارها رسالة غير مرغوب فيها، بل قم بدلاً من ذلك بتوجيهها إلى نظام منع إساءة الاستخدام الذي تم إعداده يدويًا والذي يركز على الخصوصية.
+Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
 
-**عنوان البريد الإلكتروني لإعادة توجيه البريد العشوائي إليه هو:** <abuse@forwardemail.net>
+**The email address to forward spam to is:** <abuse@forwardemail.net>
 
-### لماذا تظهر رسائل البريد الإلكتروني الاختبارية المرسلة إلى نفسي في Gmail على أنها "مشبوهة"؟ {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-إذا رأيت رسالة الخطأ هذه في Gmail عندما ترسل اختبارًا إلى نفسك، أو عندما يرى الشخص الذي تراسله عبر البريد الإلكتروني باستخدام اسمك المستعار رسالة بريد إلكتروني منك لأول مرة، فلا داعي للقلق، فهذه ميزة أمان مدمجة في Gmail.
+If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
 
-يمكنك ببساطة النقر على "يبدو آمنًا". على سبيل المثال، إذا أرسلتَ رسالة تجريبية باستخدام ميزة "إرسال بريد كـ" (إلى شخص آخر)، فلن يراها.
+You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
-إذا رأوا هذه الرسالة، فذلك لأنهم اعتادوا على رؤية رسائلك من <john@gmail.com> بدلاً من <john@customdomain.com> (مثال). سيُنبه Gmail المستخدمين للتأكد من سلامة الرسائل، تحسبًا لعدم وجود حل بديل.
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
 
-### هل يمكنني إزالة via forwardemail dot net في Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-يرتبط هذا الموضوع بـ [مشكلة معروفة على نطاق واسع في Gmail حيث تظهر معلومات إضافية بجوار اسم المرسل](https://support.google.com/mail/answer/1311182).
+This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
 
-اعتبارًا من مايو 2023، ندعم إرسال البريد الإلكتروني باستخدام SMTP كإضافة لجميع المستخدمين المدفوعين - مما يعني أنه يمكنك إزالة <span class="notranslate">via forwardemail dot net</span> في Gmail.
+As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
-يرجى ملاحظة أن موضوع الأسئلة الشائعة هذا مخصص لأولئك الذين يستخدمون ميزة [كيفية إرسال البريد باسم باستخدام Gmail](#how-to-send-mail-as-using-gmail).
+Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
-يرجى الاطلاع على القسم الخاص بـ [هل تدعم إرسال البريد الإلكتروني باستخدام SMTP؟](#do-you-support-sending-email-with-smtp) للحصول على تعليمات التكوين.
+Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
 
-## إدارة البيانات {#data-management}
+## Data Management {#data-management}
 
-### أين تقع خوادمك؟ {#where-are-your-servers-located}
+### Where are your servers located {#where-are-your-servers-located}
 
-قد نعلن قريبًا عن موقع مركز بياناتنا في الاتحاد الأوروبي المُستضاف تحت [forwardemail.eu](https://forwardemail.eu). اشترك في النقاش على <https://github.com/orgs/forwardemail/discussions/336> للاطلاع على التحديثات.
+> \[!TIP]
+> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
 
-تتواجد خوادمنا بشكل أساسي في دنفر، كولورادو - راجع <https://forwardemail.net/ips> للحصول على القائمة الكاملة لعناوين IP.
+Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
 
-يمكنك التعرف على المعالجات الفرعية لدينا على صفحاتنا [GDPR](/gdpr)، و[DPA](/dpa)، و[خصوصية](/privacy).
+You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
 
-### كيف يمكنني تصدير صندوق البريد الخاص بي والنسخ الاحتياطي له؟ {#how-do-i-export-and-backup-my-mailbox}
+### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
 
-يمكنك في أي وقت تصدير صناديق البريد الخاصة بك بتنسيق [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)، أو [إم بوكس](https://en.wikipedia.org/wiki/Mbox)، أو تنسيق [SQLite](https://en.wikipedia.org/wiki/SQLite) المشفر.
+At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
 
-انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> قم بتنزيل النسخة الاحتياطية وحدد نوع تنسيق التصدير المفضل لديك.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
 
-سيتم إرسال رابط إليك عبر البريد الإلكتروني لتنزيل التصدير بمجرد الانتهاء منه.
+You will be emailed a link to download the export once it has finished.
 
-يرجى ملاحظة أن رابط تنزيل التصدير هذا ينتهي صلاحيته بعد 4 ساعات لأسباب أمنية.
+Note that this export download link expires after 4 hours for security concerns.
 
-إذا كنت بحاجة إلى فحص تنسيقات EML أو Mbox التي قمت بتصديرها، فقد تكون أدوات المصدر المفتوح التالية مفيدة:
+If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
 
-| اسم | شكل | منصة | رابط GitHub |
+| Name | Format | Platform | GitHub URL |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| عارض MBox | إم بوكس | ويندوز | <https://github.com/eneam/mboxviewer> |
-| عارض ويب mbox | إم بوكس | جميع المنصات | <https://github.com/PHMRanger/mbox-web-viewer> |
-| قارئ إيمل | EML | ويندوز | <https://github.com/ayamadori/EmlReader> |
-| عارض البريد الإلكتروني | EML | كود VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| قارئ eml | EML | جميع المنصات | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
+| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
+| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
+| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
 
-بالإضافة إلى ذلك، إذا كنت بحاجة إلى تحويل ملف Mbox إلى ملف EML، فيمكنك استخدام <https://github.com/noelmartinon/mboxzilla>.
+Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### كيف يمكنني استيراد ونقل صندوق البريد الإلكتروني الحالي الخاص بي {#how-do-i-import-and-migrate-my-existing-mailbox}
+### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-يمكنك بسهولة استيراد بريدك الإلكتروني إلى إعادة توجيه البريد الإلكتروني (على سبيل المثال باستخدام [طائر الرعد](https://www.thunderbird.net)) باتباع الإرشادات أدناه:
+You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-
-</strong>
-<span>
-يجب عليك اتباع جميع الخطوات التالية لاستيراد بريدك الإلكتروني الحالي.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to import your existing email.
+  </span>
 </div>
 
-1. قم بتصدير بريدك الإلكتروني من مزود البريد الإلكتروني الحالي لديك:
+1. Export your email from your existing email provider:
 
-| مزود البريد الإلكتروني | تنسيق التصدير | تعليمات التصدير |
+| Email Provider | Export Format | Export Instructions |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| جيميل | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| التوقعات | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">نصيحة:</strong> <span>إذا كنت تستخدم Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">تنسيق تصدير PST</a>)، فيمكنك ببساطة اتباع التعليمات الموجودة ضمن "أخرى" أدناه. مع ذلك، قمنا بتوفير روابط أدناه لتحويل ملفات PST إلى صيغة MBOX/EML بناءً على نظام التشغيل لديك:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba لنظام Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst لنظام Windows cygwin</a> – (على سبيل المثال <code>readpst -u -o $OUT_DIR $IN_DIR</code> استبدال <code>$OUT_DIR</code> و<code>$IN_DIR</code> مع مسارات دليل الإخراج ودليل الإدخال على التوالي).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst لنظامي التشغيل Ubuntu/Linux</a> - (على سبيل المثال <code>sudo apt-get install readpst</code> ثم <code>readpst -u -o $OUT_DIR $IN_DIR</code>، مع استبدال <code>$OUT_DIR</code> و<code>$IN_DIR</code> بمساري دليل الإخراج ودليل الإدخال على التوالي).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst لنظام التشغيل macOS (عبر brew)</a> - (على سبيل المثال <code>brew install libpst</code> ثم <code>readpst -u -o $OUT_DIR $IN_DIR</code>، مع استبدال <code>$OUT_DIR</code> و<code>$IN_DIR</code> بمسارات دليل الإخراج ودليل الإدخال على التوالي).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">محول PST لنظام Windows (GitHub)</a></li></ul><br /></span></div> |
-| بريد آبل | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| البريد السريع | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-تنزيل-جميع-بياناتك#downloadmail> |
-| بريد بروتون | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| توتانوتا | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| يفكر | EML | <https://docs.gandi.net/ar/gandimail/common_operations/backup_email.html#contents> |
-| زوهو | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| آخر | [Use Thunderbird](https://www.thunderbird.net) | أنشئ حساب بريدك الإلكتروني الحالي في Thunderbird، ثم استخدم الإضافة [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) لتصدير بريدك الإلكتروني واستيراده. **يمكنك أيضًا نسخ/لصق أو سحب/إفلات رسائل البريد الإلكتروني بسهولة بين حساب وآخر.** |
+| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
+| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
+| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
+| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
+| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
+| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
+| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
+| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
 
-2. قم بتنزيل [طائر الرعد](https://www.thunderbird.net) وتثبيته وفتحه.
+2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
 
-٣. أنشئ حسابًا جديدًا باستخدام عنوان البريد الإلكتروني الكامل لاسمك المستعار (مثل <code><you@yourdomain.com></code>) وكلمة المرور المُولّدة. <strong>إذا لم تكن لديك كلمة مرور مُولّدة بعد، فراجع <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">تعليمات الإعداد</a></strong>.
+3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
 
-4. قم بتنزيل وتثبيت البرنامج الإضافي [أدوات الاستيراد والتصدير](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird.
+4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
 
-5. قم بإنشاء مجلد محلي جديد في Thunderbird، ثم انقر بزر الماوس الأيمن فوقه → حدد الخيار `ImportExportTools NG` → اختر `Import mbox file` (لتنسيق تصدير MBOX) - أو - `Import messages` / `Import all messages from a directory` (لتنسيق تصدير EML).
+5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
 
-٦. اسحب/أفلت من المجلد المحلي إلى مجلد IMAP جديد (أو موجود) في Thunderbird الذي ترغب في تحميل الرسائل إليه في وحدة تخزين IMAP عبر خدمتنا. سيضمن هذا نسخها احتياطيًا عبر الإنترنت باستخدام وحدة تخزين SQLite المشفرة لدينا.
+6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-إذا كنتَ محتارًا بشأن كيفية الاستيراد إلى Thunderbird، يمكنكَ الرجوع إلى التعليمات الرسمية في <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> و<a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>
+       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+     </span>
+   </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-بعد إتمام عملية التصدير والاستيراد، قد ترغب أيضًا في تفعيل إعادة التوجيه على حساب بريدك الإلكتروني الحالي وإعداد رد تلقائي لإعلام المُرسِلين بوجود عنوان بريد إلكتروني جديد (على سبيل المثال، إذا كنت تستخدم Gmail سابقًا وتستخدم الآن بريدًا إلكترونيًا باسم نطاقك المخصص).
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### هل تدعم الاستضافة الذاتية؟ {#do-you-support-self-hosting}
+### Do you support self-hosting {#do-you-support-self-hosting}
 
-نعم، اعتبارًا من مارس ٢٠٢٥، ندعم خيار الاستضافة الذاتية. اقرأ مدونة [هنا](https://forwardemail.net/blog/docs/self-hosted-solution). اطلع على [دليل مستضاف ذاتيًا](https://forwardemail.net/self-hosted) للبدء. ولمن يرغب في الحصول على نسخة أكثر تفصيلًا خطوة بخطوة، يُرجى الاطلاع على أدلتنا المستندة إلى [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
+Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
-## تكوين البريد الإلكتروني {#email-configuration}
+## Email Configuration {#email-configuration}
 
-### كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني؟ {#how-do-i-get-started-and-set-up-email-forwarding}
+### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>أقل من ١٠ دقائق</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-البدء:
-</strong>
-<span>
-اقرأ الخطوات من واحد إلى ثمانية أدناه بعناية واتبعها. تأكد من استبدال عنوان البريد الإلكتروني <code>user@gmail.com</code> بعنوان البريد الإلكتروني الذي ترغب في إعادة توجيه رسائل البريد الإلكتروني إليه (إن لم يكن صحيحًا). وبالمثل، تأكد من استبدال <code>example.com</code> باسم نطاقك المخصص (إن لم يكن صحيحًا).
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+  </span>
 </div>
 
 <ol>
-<li class="mb-2 mb-md-3 mb-lg-5">إذا كنت قد سجلت اسم نطاقك في موقع ما، فعليك تخطي هذه الخطوة تمامًا والانتقال إلى الخطوة الثانية! وإلا يمكنك <a href="/domain-registration" rel="noopener noreferrer">النقر هنا لتسجيل اسم نطاقك</a>.</li>
-<li class="mb-2 mb-md-3 mb-lg-5">
-هل تتذكر مكان تسجيل نطاقك؟ بعد ذلك، اتبع التعليمات التالية:
+  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">
+  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-
-يجب عليك فتح علامة تبويب جديدة وتسجيل الدخول إلى مُسجِّل نطاقك. يمكنك بسهولة النقر على "مُسجِّل النطاق" أدناه للقيام بذلك تلقائيًا. في هذه العلامة التبويبية الجديدة، يجب عليك الانتقال إلى صفحة إدارة نظام أسماء النطاقات (DNS) لدى مُسجِّل النطاق الخاص بك - وقد وفرنا خطوات التنقل خطوة بخطوة أدناه ضمن عمود "خطوات التهيئة". بعد الانتقال إلى هذه الصفحة في علامة التبويب الجديدة، يمكنك العودة إليها والانتقال إلى الخطوة الثالثة أدناه.
-<strong class="font-weight-bold">لا تغلق علامة التبويب المفتوحة الآن؛ ستحتاج إليها للخطوات المستقبلية!</strong>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
+    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+  </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>مسجل النطاق</th>
-<th>خطوات التهيئة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> مركز النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> تعديل إعدادات DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> المناطق المستضافة <i class="fa fa-angle-right"></i> (اختر نطاقك)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> خوادمي <i class="fa fa-angle-right"></i> إدارة النطاقات <i class="fa fa-angle-right"></i> مدير DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FOR ROCK: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (انقر على أيقونة ▼ بجوار الإدارة) <i class="fa fa-angle-right"></i> DNS
-<br />
-للإصدار القديم: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> محرر المناطق <i class="fa fa-angle-right"></i> (اختر نطاقك)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS بسهولة</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (اختر نطاقك)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> إدارة</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> الشبكات <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> المزيد <i class="fa fa-angle-right"></i> إدارة النطاق</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> في عرض البطاقة، انقر على "إدارة" نطاقك <i class="fa fa-angle-right"></i> في عرض القائمة، انقر على رمز الترس <i class="fa fa-angle-right"></i> نظام أسماء النطاقات وخوادم الأسماء <i class="fa fa-angle-right"></i> سجلات نظام أسماء النطاقات</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> مشاهدة</a>
-</td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> (انقر على رمز الترس) <i class="fa fa-angle-right"></i> انقر على "DNS & Nameservers" في القائمة اليسرى</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1"
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> لوحة التحكم <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> إدارة النطاقات <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2"
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> نظرة عامة <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> محرر بسيط <i class="fa fa-angle-right"></i> السجلات</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3"
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i>الإدارة <i class="fa fa-angle-right"></i>تعديل النطاق</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4"
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5" class="fa fa-play-circle"></i>مشاهدة</a>
-</td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i>إدارة نطاقاتي <i class="fa" fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 نطاقات</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> مشاهدة</a>
-</td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> تهيئة DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8"
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9" class="fa fa-play-circle"></i> مشاهدة</a>
-</td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> قائمة النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> نظام أسماء النطاقات المتقدم</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0"
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إعداد DNS لـ Netlify</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Solutions</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> مدير الحساب <i class="fa fa-angle-right"></i> أسماء نطاقاتي <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> تغيير مواقع النطاقات <i class="fa fa-angle-right"></i> DNS متقدم</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2"
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> مشاهدة</a>
-</td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات المُدارة <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إعدادات DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4"
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> القائمة الرئيسية <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i>
-الإعدادات المتقدمة <i class="fa fa-angle-right"></i> السجلات المخصصة</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
-<td>باستخدام سطر الأوامر "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> صفحة النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> صفحة النطاقات <i class="fa fa-angle-right"></i> (انقر على أيقونة <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> حدد إدارة سجلات DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> نطاقاتي</td>
-</tr>
-<tr>
-<td>أخرى</td>
-<td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> ألا ترى اسم جهة التسجيل الخاصة بك مدرجًا هنا؟ ابحث على الإنترنت عن "كيفية تغيير سجلات DNS على $REGISTRAR" (استبدل $REGISTRAR باسم جهة التسجيل الخاصة بك - على سبيل المثال "كيفية تغيير سجلات DNS على GoDaddy" إذا كنت تستخدم GoDaddy).</div>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Registrar</th>
+      <th>Steps to Configure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
+      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <br />
+      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
+the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
+Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+      </td>
+    </tr>
+  </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">باستخدام صفحة إدارة DNS الخاصة بمسجل النطاقات (علامة التبويب الأخرى التي فتحتها)، اضبط سجلات "MX" التالية:
+<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-
-ملاحظة: يجب ألا تكون هناك أي سجلات MX أخرى. يجب أن يكون كلا السجلين الموضحين أدناه موجودين. تأكد من عدم وجود أخطاء إملائية، وأن يكون كل من mx1 وmx2 مكتوبين بشكل صحيح. إذا كانت هناك سجلات MX موجودة بالفعل، فيُرجى حذفها تمامًا.
-
-ليس بالضرورة أن تكون قيمة "TTL" 3600، ويمكن أن تكون قيمة أقل أو أعلى إذا لزم الأمر.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
+    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الأولوية</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx1.forwardemail.net</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx2.forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Priority</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">باستخدام صفحة إدارة DNS الخاصة بمسجل النطاق الخاص بك (علامة التبويب الأخرى التي فتحتها)، قم بتعيين سجلات <strong class="notranslate">TXT</strong> التالية:
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت مشتركًا في باقة مدفوعة، فعليك تخطي هذه الخطوة تمامًا والانتقال إلى الخطوة الخامسة! أما إذا لم تكن مشتركًا في باقة مدفوعة، فستكون عناوينك المُعاد توجيهها قابلة للبحث العام - انتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> وقم بترقية نطاقك إلى باقة مدفوعة إذا رغبت في ذلك. لمعرفة المزيد عن الباقات المدفوعة، تفضل بزيارة صفحة <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">الأسعار</a>. بخلاف ذلك، يمكنك الاستمرار في اختيار تركيبة واحدة أو أكثر من الخيار (أ) إلى الخيار (و) المذكورة أدناه.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار أ:
-</strong>
-<span>
-إذا كنت تُعيد توجيه جميع رسائل البريد الإلكتروني من نطاقك (مثل "all@example.com"، "hello@example.com"، إلخ) إلى عنوان مُحدد "user@gmail.com":
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option A:
+  </strong>
+  <span>
+    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-تأكد من استبدال القيم أعلاه في عمود "القيمة" بعنوان بريدك الإلكتروني. ليس بالضرورة أن تكون قيمة "TTL" 3600، بل يمكن أن تكون قيمة أقل أو أعلى عند الحاجة. قيمة "TTL" الأقل تضمن نشر أي تغييرات مستقبلية تُجرى على سجلات DNS الخاصة بك عبر الإنترنت بشكل أسرع - تخيل هذا كم من الوقت سيُخزن في الذاكرة مؤقتًا (بالثواني). يمكنك معرفة المزيد حول <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL على ويكيبيديا</a>.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار ب:
-</strong>
-<span>
-إذا كنت تحتاج فقط إلى إعادة توجيه عنوان بريد إلكتروني واحد (مثل <code>hello@example.com</code> إلى <code>user@gmail.com</code>؛ سيؤدي هذا أيضًا إلى إعادة توجيه "hello+test@example.com" إلى "user+test@gmail.com" تلقائيًا):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option B:
+  </strong>
+  <span>
+    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار ج:
-</strong>
-<span>
-إذا كنت تُعيد توجيه عدة رسائل بريد إلكتروني، فافصلها بفاصلة:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option C:
+  </strong>
+  <span>
+    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@" أو "." أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار د:
-</strong>
-<span>
-يمكنك إعداد عدد لا نهائي من رسائل إعادة التوجيه - فقط تأكد من عدم تجاوز 255 حرفًا في سطر واحد، وابدأ كل سطر بـ "forward-email=". إليك مثال:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option D:
+  </strong>
+  <span>
+    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار هـ:
-</strong>
-<span>
-يمكنك أيضًا تحديد اسم نطاق في سجل <strong class="notranslate">TXT</strong> لإعادة توجيه الاسم المستعار عالميًا (على سبيل المثال، سيتم إعادة توجيه "user@example.com" إلى "user@example.net"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option E:
+  </strong>
+  <span>
+    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=example.net</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=example.net</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار F:
-</strong>
-<span>
-يمكنك أيضًا استخدام خطافات الويب كاسم مستعار عام أو فردي لإعادة توجيه رسائل البريد الإلكتروني إليه. راجع المثال والقسم الكامل حول خطافات الويب بعنوان <a href="#do-you-support-webhooks" class="alert-link">هل تدعم خطافات الويب</a> أدناه.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option F:
+  </strong>
+  <span>
+    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@" أو "." أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-الخيار ز:
-</strong>
-<span>
-يمكنك أيضًا استخدام التعبيرات النمطية ("regex") لمطابقة الأسماء المستعارة ومعالجة عمليات الاستبدال لإعادة توجيه رسائل البريد الإلكتروني إليها. راجع الأمثلة والقسم الكامل حول التعبيرات النمطية بعنوان <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">هل تدعم التعبيرات النمطية أم التعبيرات النمطية</a> أدناه.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option G:
+  </strong>
+  <span>
+    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>هل تحتاج إلى تعبيرات عادية متقدمة مع الاستبدال؟</strong> راجع الأمثلة والقسم الكامل حول التعبيرات العادية بعنوان <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">هل تدعم التعبيرات العادية أو التعبيرات العادية</a> أدناه.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يمكن وصف قواعد إعادة التوجيه الشاملة أيضًا بأنها "غير مكتملة". هذا يعني أنه سيتم استخدام رسائل البريد الإلكتروني الواردة التي تتوافق مع قاعدة إعادة توجيه واحدة على الأقل بدلاً من قواعد إعادة التوجيه الشاملة.
-تشمل القواعد المحددة عناوين البريد الإلكتروني والتعبيرات العادية.
-<br /><br />
-على سبيل المثال:
-<br />
-<code>forward-email=hello:first@gmail.com,second@gmail.com</code>
-<br />
-لن تُعاد توجيه رسائل البريد الإلكتروني المُرسَلة إلى <code>hello@example.com</code> إلى <code>second@gmail.com</code> (العنوان العام) باستخدام هذا الإعداد، بل ستُرسَل فقط إلى <code>first@gmail.com</code>.
-</span>
-</div>
-
----
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">باستخدام صفحة إدارة DNS الخاصة بمسجل النطاق الخاص بك (علامة التبويب الأخرى التي فتحتها)، قم أيضًا بتعيين سجل <strong class="notranslate">TXT</strong> التالي:
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Gmail (مثل إرسال البريد باسم) أو G Suite، فستحتاج إلى إضافة <code>include:_spf.google.com</code> إلى القيمة أعلاه، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Catch-all forwarding rules could also be described as "fall-through".
+    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
+    Specific rules include email addresses and regular expressions.
+    <br /><br />
+    For example:
+    <br />
+    <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
+    <br />
+    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+  </span>
+</div>
+
+---
+
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-إذا كان لديك سطر مشابه يحتوي على "v=spf1"، فستحتاج إلى إضافة <code>include:spf.forwardemail.net</code> قبل أي سجل "include:host.com" موجود وقبل "-all" في نفس السطر، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-لاحظ وجود فرق بين "-all" و"~all". تشير "-" إلى فشل فحص SPF في حال عدم التطابق، وتشير "~" إلى فشل فحص SPF. نوصي باستخدام طريقة "-all" لمنع تزوير النطاق.
-<br /><br />
-قد تحتاج أيضًا إلى تضمين سجل SPF لأي مُضيف تُرسل منه البريد (مثل Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">تحقق من سجلات DNS الخاصة بك باستخدام أداة "التحقق من السجلات" المتوفرة في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعداد.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">أرسل بريدًا إلكترونيًا تجريبيًا للتأكد من نجاح العملية. يُرجى العلم أن نشر سجلات DNS قد يستغرق بعض الوقت.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-</span>
-إذا لم تستلم رسائل بريد إلكتروني تجريبية، أو تلقيت رسالة بريد إلكتروني تجريبية تقول "انتبه لهذه الرسالة"، فراجع إجابات <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">لماذا لا أستلم رسائل البريد الإلكتروني التجريبية</a> و<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">لماذا تظهر رسائل البريد الإلكتروني التجريبية المرسلة إليّ في Gmail على أنها "مشبوهة"</a> على التوالي.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+  </span>
+    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">إذا كنت ترغب في "إرسال البريد باسم" من Gmail، فستحتاج إلى <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">مشاهدة هذا الفيديو</a></strong>، أو اتباع الخطوات الموجودة ضمن <a href="#how-to-send-mail-as-using-gmail">How لإرسال البريد باسم باستخدام Gmail</a> أدناه.
+</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
 
 </li></ol>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
-</div>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-
-الإضافات الاختيارية مُدرجة أدناه. يُرجى العلم أن هذه الإضافات اختيارية تمامًا وقد لا تكون ضرورية. نودّ على الأقل تزويدك بمعلومات إضافية عند الحاجة.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-إضافة اختيارية:
-</strong>
-<span>
-إذا كنت تستخدم ميزة <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How لإرسال بريد باسم باستخدام Gmail</a>، فقد ترغب في إضافة نفسك إلى قائمة المسموح لهم. راجع <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">هذه التعليمات من Gmail</a> حول هذا الموضوع.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Optional Add-on:
+  </strong>
+  <span>
+    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+  </span>
 </div>
 
-### هل يمكنني استخدام عدة بورصات وخوادم MX لإعادة التوجيه المتقدم؟ {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-نعم، ولكن **يجب أن يكون لديك بورصة MX واحدة فقط مدرجة في سجلات DNS الخاصة بك**.
+Yes, but **you should only have one MX exchange listed in your DNS records**.
 
-لا تحاول استخدام "الأولوية" كطريقة لتكوين تبادلات MX متعددة.
+Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
 
-بدلاً من ذلك، يتعين عليك تكوين تبادل MX الحالي لديك لإعادة توجيه البريد لجميع الأسماء المستعارة غير المطابقة إلى تبادلات خدمتنا (`mx1.forwardemail.net` و/أو `mx2.forwardemail.net`).
+Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
 
-إذا كنت تستخدم Google Workspace وتريد إعادة توجيه جميع الأسماء المستعارة غير المطابقة إلى خدمتنا، فراجع <https://support.google.com/a/answer/6297084>.
+If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
 
-إذا كنت تستخدم Microsoft 365 (Outlook) وتريد إعادة توجيه جميع الأسماء المستعارة غير المطابقة إلى خدمتنا، فراجع <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> و<https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### كيف أقوم بإعداد مجيب الإجازة (مجيب تلقائي خارج المكتب) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة وقم بإنشاء أو تحرير الاسم المستعار الذي ترغب في تكوين برنامج الرد التلقائي للإجازة له.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
 
-لديك القدرة على تكوين تاريخ البدء وتاريخ الانتهاء والموضوع والرسالة، وتمكينها أو تعطيلها في أي وقت:
+You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
 
-* يدعم حاليًا موضوع ورسالة النص العادي (نستخدم حزمة `striptags` داخليًا لإزالة أي HTML).
-* يقتصر طول الموضوع على 100 حرف.
-* تقتصر الرسالة على 1000 حرف.
-* يتطلب الإعداد تهيئة SMTP الصادر (على سبيل المثال، ستحتاج إلى إعداد سجلات DKIM وDMARC وDNS لمسار الإرجاع).
-* انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تهيئة SMTP الصادر واتبع تعليمات الإعداد.
-* لا يمكن تفعيل المجيب التلقائي على أسماء النطاقات العالمية (على سبيل المثال، لا يدعم [عناوين يمكن التخلص منها](/disposable-addresses)). * لا يمكن تفعيل المجيب التلقائي للأسماء المستعارة التي تحتوي على أحرف بديلة/جمل شاملة (`*`) أو تعبيرات عادية.
+* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
+* Subject is limited to 100 characters.
+* Message is limited to 1000 characters.
+* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
+  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
+* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
 
-على عكس أنظمة البريد مثل `postfix` (على سبيل المثال، التي تستخدم ملحق مرشح الإجازة `sieve`) - يضيف Forward Email توقيع DKIM الخاص بك تلقائيًا، ويمنع مشكلات الاتصال الوهمية عند إرسال استجابات الإجازة (على سبيل المثال، بسبب مشكلات اتصال SSL/TLS الشائعة والخوادم القديمة)، ويدعم حتى تشفير Open WKD وPGP لاستجابات الإجازة.
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
 
 <!--
-* لمنع إساءة الاستخدام، سيتم خصم رصيد SMTP صادر واحد لكل رسالة رد تلقائي مُرسلة.
-* تتضمن جميع الحسابات المدفوعة 300 رصيد يوميًا افتراضيًا. إذا كنت بحاجة إلى مبلغ أكبر، يُرجى التواصل معنا.
+* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
+  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
 -->
 
-1. نرسل مرة واحدة فقط لكل مرسل [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) كل 4 أيام (وهو ما يشبه سلوك Gmail).
+1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
 
-* تستخدم ذاكرة التخزين المؤقت Redis بصمة `alias_id` و`sender`، بينما `alias_id` هو اسم مستعار لمعرف MongoDB، و`sender` هو عنوان المرسل (إذا كان مُدرجًا في القائمة المسموح بها) أو نطاق الجذر في عنوان المرسل (إذا لم يكن مُدرجًا في القائمة المسموح بها). للتبسيط، تم ضبط مدة صلاحية هذه البصمة في ذاكرة التخزين المؤقت على 4 أيام.
+* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
 
-* إن نهجنا المتمثل في استخدام المجال الجذر الذي تم تحليله في عنوان المرسل للمرسلين غير المدرجين في القائمة المسموح بها يمنع إساءة الاستخدام من قبل المرسلين غير المعروفين نسبيًا (مثل الجهات الخبيثة) من إغراق رسائل المستجيب التلقائي.
+* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
 
-2. نرسل فقط عندما لا يكون حقل MAIL FROM و/أو From فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
+2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-3. لا نرسل الرسالة إذا كانت الرسالة الأصلية تحتوي على أي من العناوين التالية (غير حساسة لحالة الأحرف):
+3. We don't send if the original message had any of the following headers (case-insensitive):
 
-* رأس `auto-submitted` بقيمة لا تساوي `no`. * رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
-* رأس `list-id`، أو `list-subscribe`، أو `no`0، أو `no`1، أو `no`2، أو `no`3، أو `no`4، أو `no`5، أو `no`6، أو `no`7 (بغض النظر عن القيمة).
-* رأس `no`8 بقيمة `no`9، أو `x-auto-response-suppress`0، أو `x-auto-response-suppress`1، أو `x-auto-response-suppress`2، أو `x-auto-response-suppress`3.
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-4. لا نقوم بالإرسال إذا كان عنوان البريد الإلكتروني المرسل أو المرسل ينتهي بـ `+donotreply`، أو `-donotreply`، أو `+noreply`، أو `-noreply`.
+4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
 
-5. لا نرسل إذا كان جزء اسم المستخدم في عنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف `X-MDDSN-Message`.
+5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
 
-6. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف في `multipart/report`.
+6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
-### كيف أقوم بإعداد SPF لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-spf-for-forward-email}
+### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-باستخدام صفحة إدارة DNS الخاصة بمسجل النطاق الخاص بك، قم بتعيين سجل <strong class="notranslate">TXT</strong> التالي:
+Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Gmail (مثل إرسال البريد باسم) أو G Suite، فستحتاج إلى إضافة <code>include:_spf.google.com</code> إلى القيمة أعلاه، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Microsoft Outlook أو Live.com، فستحتاج إلى إضافة <code>include:spf.protection.outlook.com</code> إلى سجل SPF <strong class="notranslate">TXT</strong>، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-إذا كان لديك سطر مشابه يحتوي على "v=spf1"، فستحتاج إلى إضافة <code>include:spf.forwardemail.net</code> قبل أي سجل "include:host.com" موجود وقبل "-all" في نفس السطر، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-لاحظ وجود فرق بين "-all" و"~all". تشير "-" إلى فشل فحص SPF في حال عدم التطابق، وتشير "~" إلى فشل فحص SPF. نوصي باستخدام طريقة "-all" لمنع تزوير النطاق.
-<br /><br />
-قد تحتاج أيضًا إلى تضمين سجل SPF لأي مُضيف تُرسل منه البريد (مثل Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-### كيف أقوم بإعداد DKIM لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-dkim-for-forward-email}
+### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### كيف أقوم بإعداد DMARC لإعادة توجيه البريد الإلكتروني {#how-do-i-set-up-dmarc-for-forward-email}
+### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### كيف أقوم بتوصيل جهات الاتصال الخاصة بي وتكوينها؟ {#how-do-i-connect-and-configure-my-contacts}
+### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
 
-**لتكوين جهات الاتصال الخاصة بك، استخدم عنوان URL الخاص بـ CardDAV:** `https://carddav.forwardemail.net` (أو ببساطة `carddav.forwardemail.net` إذا سمح العميل بذلك)
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
 
-### كيف أقوم بتوصيل تقويماتي وتكوينها؟ {#how-do-i-connect-and-configure-my-calendars}
+### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
 
-**لتكوين التقويم الخاص بك، استخدم عنوان URL لـ CalDAV الخاص بـ:** `https://caldav.forwardemail.net` (أو ببساطة `caldav.forwardemail.net` إذا سمح العميل بذلك)
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="مثال إعداد تقويم CalDAV Thunderbird لإعادة توجيه البريد الإلكتروني" />
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### كيف يمكنني إضافة المزيد من التقويمات وإدارة التقويمات الموجودة؟ {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-إذا كنت ترغب في إضافة تقويمات إضافية، فما عليك سوى إضافة عنوان URL للتقويم الجديد: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**تأكد من استبدال `calendar-name` باسم التقويم المطلوب**)
+If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-بإمكانك تغيير اسم التقويم ولونه بعد إنشائه - ما عليك سوى استخدام تطبيق التقويم المفضل لديك (على سبيل المثال Apple Mail أو [طائر الرعد](https://thunderbird.net)).
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
-### كيف أقوم بإعداد SRS لإعادة توجيه البريد الإلكتروني {#how-do-i-set-up-srs-for-forward-email}
+### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-نقوم تلقائيًا بتكوين [مخطط إعادة كتابة المرسل](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") - لا تحتاج إلى القيام بذلك بنفسك.
+**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-### كيف أقوم بإعداد MTA-STS لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-mta-sts-for-forward-email}
+Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
 
-يرجى الرجوع إلى [قسمنا حول MTA-STS](#do-you-support-mta-sts) لمزيد من المعلومات.
+**Setup instructions by platform:**
 
-### كيف أضيف صورة شخصية إلى عنوان بريدي الإلكتروني {#how-do-i-add-a-profile-picture-to-my-email-address}
+**macOS/iOS:**
 
-إذا كنت تستخدم Gmail، فاتبع الخطوات التالية:
+1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
+2. Use `caldav.forwardemail.net` as the server
+3. Enter your Forward Email alias and generated password
+4. After setup, you'll see both "Calendar" and "Reminders" collections
+5. Use the Reminders app to create and manage tasks
 
-١. انتقل إلى <https://google.com> وسجّل الخروج من جميع حسابات البريد الإلكتروني.
-٢. انقر على "تسجيل الدخول"، ثم انقر على "حساب آخر" من القائمة المنسدلة.
-٣. اختر "استخدام حساب آخر".
-٤. اختر "إنشاء حساب".
-٥. اختر "استخدام عنوان بريدي الإلكتروني الحالي بدلاً من ذلك".
-٦. أدخل عنوان البريد الإلكتروني لاسم نطاقك المخصص.
-٧. استرد رسالة التحقق المرسلة إلى بريدك الإلكتروني.
-٨. أدخل رمز التحقق من هذه الرسالة.
-٩. أكمل معلومات ملفك الشخصي لحساب جوجل الجديد.
-١٠. وافق على جميع سياسات الخصوصية وشروط الاستخدام.
-١١. انتقل إلى <https://google.com>، وفي الزاوية العلوية اليمنى، انقر على رمز ملفك الشخصي، ثم انقر على زر "تغيير".
-١٢. حمّل صورة أو صورة رمزية جديدة لحسابك.
-١٣. سيستغرق تطبيق التغييرات من ساعة إلى ساعتين تقريبًا، ولكن قد تكون سريعة جدًا في بعض الأحيان.
-١٤. أرسل بريدًا إلكترونيًا تجريبيًا، وستظهر صورة الملف الشخصي.
+**Android with Tasks.org:**
 
-## الميزات المتقدمة لـ {#advanced-features}
+1. Install Tasks.org from Google Play Store or F-Droid
+2. Go to Settings > Synchronization > Add Account > CalDAV
+3. Enter server: `https://caldav.forwardemail.net`
+4. Enter your Forward Email alias and generated password
+5. Tasks.org will automatically discover your task calendars
 
-### هل تدعم النشرات الإخبارية أو قوائم البريد الإلكتروني للتسويق؟ {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+**Thunderbird:**
 
-نعم، يمكنك قراءة المزيد على <https://forwardemail.net/guides/newsletter-with-listmonk>.
+1. Install the Lightning add-on if not already installed
+2. Create a new calendar with type "CalDAV"
+3. Use URL: `https://caldav.forwardemail.net`
+4. Enter your Forward Email credentials
+5. Both events and tasks will be available in the calendar interface
 
-يرجى العلم أنه للحفاظ على سمعة IP وضمان سهولة التسليم، تُجري Forward Email عملية مراجعة يدوية لكل نطاق لموافقة النشرة الإخبارية. راسل <support@forwardemail.net> أو افتح [طلب المساعدة](https://forwardemail.net/help) للموافقة. عادةً ما يستغرق هذا أقل من 24 ساعة، ويتم الرد على معظم الطلبات خلال ساعة إلى ساعتين. نهدف قريبًا إلى جعل هذه العملية فورية من خلال إضافة عناصر تحكم إضافية في البريد العشوائي والتنبيهات. تضمن هذه العملية وصول رسائلك إلى صندوق الوارد وعدم تصنيفها كرسائل عشوائية.
+### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
 
-### هل تدعم إرسال البريد الإلكتروني باستخدام واجهة برمجة التطبيقات {#do-you-support-sending-email-with-api}
+If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
 
-نعم، اعتبارًا من مايو 2023، ندعم إرسال البريد الإلكتروني باستخدام واجهة برمجة التطبيقات كإضافة لجميع المستخدمين المدفوعين.
+1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+
+2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+
+3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+
+4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+
+5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+
+6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+
+**Common issues:**
+
+* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
+* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
+* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+
+### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+
+Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+
+**Installation and Setup:**
+
+1. **Install Tasks.org**:
+   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+
+2. **Configure CalDAV sync**:
+   * Open Tasks.org
+   * Go to ☰ Menu > Settings > Synchronization
+   * Tap "Add Account"
+   * Select "CalDAV"
+
+3. **Enter Forward Email settings**:
+   * **Server URL**: `https://caldav.forwardemail.net`
+   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
+   * **Password**: Your alias-specific generated password
+   * Tap "Add Account"
+
+4. **Account discovery**:
+   * Tasks.org will automatically discover your task calendars
+   * You should see your "Reminders" collection appear
+   * Tap "Subscribe" to enable sync for the task calendar
+
+5. **Test sync**:
+   * Create a test task in Tasks.org
+   * Check that it appears in other CalDAV clients (like macOS Reminders)
+   * Verify changes sync both ways
+
+**Features available:**
+
+* ✅ Task creation and editing
+* ✅ Due dates and reminders
+* ✅ Task completion and status
+* ✅ Priority levels
+* ✅ Subtasks and task hierarchy
+* ✅ Tags and categories
+* ✅ Two-way sync with other CalDAV clients
+
+**Troubleshooting:**
+
+* If no task calendars appear, try manually refreshing in Tasks.org settings
+* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
+* Check network connectivity to `caldav.forwardemail.net`
+
+### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+
+We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+
+### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+
+Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+
+### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+
+If you're using Gmail, then follow these steps below:
+
+1. Go to <https://google.com> and sign out of all email accounts
+2. Click "Sign In" and on the drop-down click on "other account"
+3. Select "Use another account"
+4. Select "Create account"
+5. Select "Use my current email address instead"
+6. Enter your custom domain name email address
+7. Retrieve the verification email sent to your email address
+8. Enter the verification code from this email
+9. Complete profile information for your new Google account
+10. Agree to all Privacy and Terms of Use policies
+11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
+12. Upload a new photo or avatar for your account
+13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
+14. Send a test email and the profile photo should appear.
+
+## Advanced Features {#advanced-features}
+
+### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+
+Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+
+Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### Do you support sending email with API {#do-you-support-sending-email-with-api}
+
+Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى التأكد من قراءة <a href="/terms" class="alert-link" target="_blank">الشروط</a>، و<a href="/privacy" class="alert-link" target="_blank">سياسة الخصوصية</a>، و<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">حدود SMTP الصادرة</a>، ويُعتبر استخدامك إقرارًا وموافقة.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-يرجى الاطلاع على قسمنا حول [رسائل البريد الإلكتروني](/email-api#outbound-emails) في وثائق واجهة برمجة التطبيقات الخاصة بنا للحصول على الخيارات والأمثلة والمزيد من المعلومات.
+Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
 
-لإرسال بريد إلكتروني صادر باستخدام واجهة برمجة التطبيقات (API) الخاصة بنا، يجب عليك استخدام رمز واجهة برمجة التطبيقات (API) المتاح تحت [أمني](/my-account/security).
+In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
 
-### هل تدعم تلقي البريد الإلكتروني باستخدام IMAP {#do-you-support-receiving-email-with-imap}
+### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
 
-نعم، اعتبارًا من 16 أكتوبر 2023، ندعم استلام رسائل البريد الإلكتروني عبر IMAP كإضافة لجميع المستخدمين المدفوعين. **يرجى قراءة مقالتنا المفصلة** حول [كيف تعمل ميزة تخزين صندوق بريد SQLite المشفر لدينا](/blog/docs/best-quantum-safe-encrypted-email-service).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى التأكد من قراءة <a href="/terms" class="alert-link" target="_blank">الشروط</a> و<a href="/privacy" class="alert-link" target="_blank">سياسة الخصوصية</a>، ويُعتبر استخدامك إقرارًا وموافقة.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-٢. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو هيئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>نوصي باستخدام <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>، <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>، <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>، أو <a href="/blog/open-source" class="alert-link" target="_blank">بديل مفتوح المصدر يركز على الخصوصية</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. عند مطالبتك باسم خادم IMAP، أدخل `imap.forwardemail.net`
+4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
-٥. عند طلب منفذ خادم IMAP، أدخل `993` (SSL/TLS) - راجع [منافذ IMAP البديلة](/faq#what-are-your-imap-server-configuration-settings) إذا لزم الأمر.
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>إذا كنت تستخدم Thunderbird، فتأكد من ضبط "أمان الاتصال" على "SSL/TLS" وضبط طريقة المصادقة على "كلمة مرور عادية".</span>
-</div>
+5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. عند مطالبتك بكلمة مرور خادم IMAP، الصق كلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> في الخطوة 2 أعلاه
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **احفظ إعداداتك** - إذا كنت تواجه مشكلات، فيرجى <a href="/help">الاتصال بنا</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### هل تدعم POP3 {#do-you-support-pop3}
+</div>
 
-نعم، اعتبارًا من 4 ديسمبر 2023، ندعم [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) كإضافة لجميع المستخدمين المدفوعين. **يرجى قراءة مقالتنا المفصلة** حول [كيف تعمل ميزة تخزين صندوق بريد SQLite المشفر لدينا](/blog/docs/best-quantum-safe-encrypted-email-service).
+### Do you support POP3 {#do-you-support-pop3}
+
+Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="pop3-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى التأكد من قراءة <a href="/terms" class="alert-link" target="_blank">الشروط</a> و<a href="/privacy" class="alert-link" target="_blank">سياسة الخصوصية</a>، ويُعتبر استخدامك إقرارًا وموافقة.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-٢. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو هيئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>نوصي باستخدام <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>، <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>، <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>، أو <a href="/blog/open-source" class="alert-link" target="_blank">بديل مفتوح المصدر يركز على الخصوصية</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. عند مطالبتك باسم خادم POP3، أدخل `pop3.forwardemail.net`
+4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
 
-٥. عند طلب منفذ خادم POP3، أدخل `995` (SSL/TLS) - راجع [منافذ POP3 البديلة](/faq#what-are-your-pop3-server-configuration-settings) إذا لزم الأمر.
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>إذا كنت تستخدم Thunderbird، فتأكد من ضبط "أمان الاتصال" على "SSL/TLS" وضبط طريقة المصادقة على "كلمة مرور عادية".</span>
-</div>
+5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. عند مطالبتك بكلمة مرور خادم POP3، الصق كلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> في الخطوة 2 أعلاه
+6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **احفظ إعداداتك** - إذا كنت تواجه مشكلات، فيرجى <a href="/help">الاتصال بنا</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### هل تدعم التقويمات (CalDAV) {#do-you-support-calendars-caldav}
+</div>
 
-نعم، أضفنا هذه الميزة اعتبارًا من 5 فبراير 2024. خادمنا هو `caldav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
+### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
 
-إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذ `443` (HTTPS).
+Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-| تسجيل الدخول | مثال | وصف |
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| اسم المستخدم | `user@example.com` | عنوان البريد الإلكتروني للاسم المستعار الموجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>. |
-| كلمة المرور | `************************` | كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-لاستخدام دعم التقويم، يجب أن يكون **المستخدم** هو عنوان البريد الإلكتروني لاسم مستعار موجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> - ويجب أن تكون **كلمة المرور** كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار.
+In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
 
-### هل تدعم جهات الاتصال (CardDAV) {#do-you-support-contacts-carddav}
+### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-نعم، أضفنا هذه الميزة اعتبارًا من ١٢ يونيو ٢٠٢٥. خادمنا هو `carddav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
+Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذ `443` (HTTPS).
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
 
-| تسجيل الدخول | مثال | وصف |
+**How calendars and lists work:**
+
+* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
+* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
+* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
+* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+
+**Supported task clients:**
+
+* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
+* **iOS Reminders** - Full native support across all iOS devices
+* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
+* **Thunderbird** - Task and calendar support in desktop email client
+* **Any CalDAV-compatible task manager** - Standard VTODO component support
+
+**Task features supported:**
+
+* Task creation, editing, and deletion
+* Due dates and start dates
+* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Task priority levels
+* Recurring tasks
+* Task descriptions and notes
+* Multi-device synchronization
+* Subtasks with RELATED-TO property
+* Task reminders with VALARM
+
+The login credentials are the same as for calendar support:
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| اسم المستخدم | `user@example.com` | عنوان البريد الإلكتروني للاسم المستعار الموجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>. |
-| كلمة المرور | `************************` | كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-لاستخدام دعم جهات الاتصال، يجب أن يكون **المستخدم** هو عنوان البريد الإلكتروني لاسم مستعار موجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> - ويجب أن تكون **كلمة المرور** كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار.
+**Important notes:**
 
-### هل تدعم إرسال البريد الإلكتروني باستخدام SMTP {#do-you-support-sending-email-with-smtp}
+* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
+* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
+* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
-نعم، اعتبارًا من مايو 2023، ندعم إرسال البريد الإلكتروني باستخدام SMTP كإضافة لجميع المستخدمين المدفوعين.
+### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
 
-<div id="تعليمات smtp">
+Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
+
+In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+
+<div id="smtp-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى التأكد من قراءة <a href="/terms" class="alert-link" target="_blank">الشروط</a>، و<a href="/privacy" class="alert-link" target="_blank">سياسة الخصوصية</a>، و<a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">حدود SMTP الصادرة</a>، ويُعتبر استخدامك إقرارًا وموافقة.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Gmail، يُرجى مراجعة <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">دليل إرسال البريد كـ Gmail</a>. إذا كنت مطورًا، يُرجى مراجعة <a class="alert-link" href="/email-api#outbound-emails" target="_blank">وثائق واجهة برمجة تطبيقات البريد الإلكتروني</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
 </div>
 
-1. انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (على سبيل المثال <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-٣. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-٤. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو هيئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
+4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
+
+5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
+
+6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
+
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>نوصي باستخدام <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>، <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>، <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>، أو <a href="/blog/open-source" class="alert-link" target="_blank">بديل مفتوح المصدر يركز على الخصوصية</a>.</span>
-</div>
-
-5. عند مطالبتك باسم خادم SMTP، أدخل `smtp.forwardemail.net`
-
-٦. عند طلب منفذ خادم SMTP، أدخل `465` (SSL/TLS) - راجع [منافذ SMTP البديلة](/faq#what-are-your-smtp-server-configuration-settings) إذا لزم الأمر.
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>إذا كنت تستخدم Thunderbird، فتأكد من ضبط "أمان الاتصال" على "SSL/TLS" وضبط طريقة المصادقة على "كلمة مرور عادية".</span>
-</div>
-
-7. عند مطالبتك بكلمة مرور خادم SMTP، الصق كلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> في الخطوة 3 أعلاه
-
-8. **احفظ إعداداتك وأرسل بريدك الإلكتروني التجريبي الأول** - إذا واجهت أي مشاكل، فيرجى <a href="/help">الاتصال بنا</a>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يرجى العلم أنه للحفاظ على سمعة IP وضمان سهولة التسليم، نعتمد عملية مراجعة يدوية لكل نطاق لموافقة SMTP الصادرة. عادةً ما تستغرق هذه العملية أقل من ٢٤ ساعة، ويتم الرد على معظم الطلبات خلال ساعة إلى ساعتين. نهدف قريبًا إلى جعل هذه العملية فورية من خلال إضافة عناصر تحكم في البريد العشوائي والتنبيهات. تضمن هذه العملية وصول رسائلك إلى صندوق الوارد وعدم تصنيفها كرسائل عشوائية.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### هل تدعم OpenPGP/MIME، والتشفير من البداية إلى النهاية ("E2EE")، ودليل مفتاح الويب ("WKD")؟ {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+</div>
 
-نعم، ندعم [أوبن بي جي بي](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP) و[التشفير من البداية إلى النهاية ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption)، واكتشاف المفاتيح العامة باستخدام [دليل مفتاح الويب ("WKD")](https://wiki.gnupg.org/WKD). يمكنك تكوين OpenPGP باستخدام [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) أو [استضافة مفاتيحك بنفسك](https://wiki.gnupg.org/WKDHosting) (راجع [هذا هو ملخص لإعداد خادم WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-* يتم تخزين عمليات بحث WKD مؤقتًا لمدة ساعة واحدة لضمان تسليم البريد الإلكتروني في الوقت المناسب → لذلك، إذا أضفت أو غيّرت أو حذفت مفتاح WKD الخاص بك، يُرجى مراسلتنا عبر البريد الإلكتروني على `support@forwardemail.net` مع عنوان بريدك الإلكتروني لنقوم بمسح ذاكرة التخزين المؤقت يدويًا.
-* ندعم تشفير PGP للرسائل التي يتم إعادة توجيهها عبر بحث WKD أو باستخدام مفتاح PGP مُحمّل على واجهتنا.
-* تُعتبر المفاتيح المُحمّلة هي السائدة طالما تم تفعيل/تحديد مربع اختيار PGP.
-* الرسائل المُرسلة إلى خطافات الويب غير مُشفّرة حاليًا باستخدام PGP.
-* إذا كان لديك عدة أسماء مستعارة تُطابق عنوان إعادة توجيه مُعيّن (مثل: regex/wildcard/exact combo)، وإذا كان أكثر من واحد منها يحتوي على مفتاح PGP مُحمّل ومُفعّل عليه PGP →، فسنرسل إليك بريدًا إلكترونيًا لتنبيهك بالخطأ ولن نُشفّر الرسالة باستخدام مفتاح PGP المُحمّل. هذا نادر جدًا، وعادةً ما ينطبق فقط على المستخدمين المُتقدّمين الذين لديهم قواعد أسماء مستعارة مُعقّدة.
-* **لن يُطبَّق تشفير PGP على إعادة توجيه البريد الإلكتروني عبر خوادم MX لدينا إذا كان المُرسِل يتبع سياسة رفض DMARC. إذا كنتَ بحاجة إلى تشفير PGP على *جميع* رسائل البريد، فننصحك باستخدام خدمة IMAP لدينا وتكوين مفتاح PGP الخاص بك لاسمك المستعار للبريد الوارد.**
+Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-**يمكنك التحقق من صحة إعداد دليل مفتاح الويب الخاص بك في <https://wkd.chimbosonic.com/> (مفتوح المصدر) أو <https://www.webkeydirectory.com/> (خاص).**
+* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
+* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
+* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
+* Messages sent to webhooks are not currently encrypted with PGP.
+* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
+* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+
+**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-التشفير التلقائي:
-</strong>
-<span>إذا كنت تستخدم <a href="#do-you-support-sending-email-with-smtp" class="alert-link">خدمة SMTP الصادرة</a> وترسل رسائل غير مشفرة، فسنحاول تلقائيًا تشفير الرسائل لكل مستلم باستخدام <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Automatic Encryption:
+  </strong>
+  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-
-</strong>
-<span>
-يجب عليك اتباع جميع الخطوات التالية لتفعيل OpenPGP لاسم نطاقك المخصص.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+  </span>
 </div>
 
-1. قم بتنزيل البرنامج الإضافي الموصى به لعميل البريد الإلكتروني الخاص بك وتثبيته أدناه:
+1. Download and install your email client's recommended plugin below:
 
-| عميل البريد الإلكتروني | منصة | المكونات الإضافية الموصى بها | ملحوظات |
+| Email Client | Platform | Recommended Plugin | Notes |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| طائر الرعد | سطح المكتب | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | يتضمن Thunderbird دعمًا مدمجًا لـ OpenPGP. |
-| جيميل | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | لا يدعم Gmail OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| بريد آبل | ماك أو إس | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | لا يدعم Apple Mail OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| بريد آبل | اي او اس | [PGPro](https://github.com/opensourceios/PGPro/) أو [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (ترخيص خاص) | لا يدعم Apple Mail OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [PGPro](https://github.com/opensourceios/PGPro/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| التوقعات | ويندوز | [gpg4win](https://www.gpg4win.de/index.html) | لا يدعم عميل البريد الإلكتروني لسطح المكتب الخاص بـ Outlook OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [gpg4win](https://www.gpg4win.de/index.html). |
-| التوقعات | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | لا يدعم عميل البريد الإلكتروني المستند إلى الويب الخاص بـ Outlook OpenPGP، ومع ذلك يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| أندرويد | متحرك | [OpenKeychain](https://www.openkeychain.org/) أو [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | تدعم كلٌّ من [Android mail clients](/blog/open-source/android-email-clients)، مثل [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) و[FairEmail](https://github.com/M66B/FairEmail)، المكون الإضافي مفتوح المصدر [OpenKeychain](https://www.openkeychain.org/). يمكنك أيضًا استخدام المكون الإضافي مفتوح المصدر (بترخيص خاص) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| جوجل كروم | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| موزيلا فايرفوكس | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| مايكروسوفت إيدج | المتصفح | [Mailvelope](https://mailvelope.com/) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/). |
-| شجاع | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| خشب البلسا | سطح المكتب | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | يتمتع Balsa بدعم مدمج لـ OpenPGP. |
-| كي ميل | سطح المكتب | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | يتمتع KMail بدعم مدمج لـ OpenPGP. |
-| تطور جنوم | سطح المكتب | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | يتضمن GNOME Evolution دعمًا مدمجًا لـ OpenPGP. |
-| صالة | سطح المكتب | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | بإمكانك استخدام [gpg command line tool](https://www.gnupg.org/download/) مفتوح المصدر لإنشاء مفتاح جديد من سطر الأوامر. |
+| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
+| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
+| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
+| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
+| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
+| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
+| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
+| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
 
-2. افتح البرنامج المساعد، وقم بإنشاء مفتاحك العام، ثم قم بتكوين عميل البريد الإلكتروني الخاص بك لاستخدامه.
+2. Open the plugin, create your public key, and configure your email client to use it.
 
-3. قم بتحميل مفتاحك العام على <https://keys.openpgp.org/upload>.
+3. Upload your public key at <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>يمكنك زيارة <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>" لإدارة مفتاحك في المستقبل.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+   </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-إضافة اختيارية:
-</strong>
-<span>
-إذا كنت تستخدم خدمة <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">التخزين المشفر (IMAP/POP3)</a> وترغب في تشفير جميع رسائل البريد الإلكتروني المخزنة في قاعدة بيانات SQLite (المشفرة مسبقًا) باستخدام مفتاحك العام، فانتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثال: <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> عدّل <i class="fa fa-angle-right"></i> OpenPGP وحمّل مفتاحك العام.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Optional Add-on:
+     </strong>
+     <span>
+       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+     </span>
+   </div>
 
-4. أضف سجل `CNAME` جديدًا إلى اسم المجال الخاص بك (على سبيل المثال `example.com`):
+4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openpgpkey</code></td>
-<td class="text-center">3600</td>
-<td class="notranslate">CNAME</td>
-<td><code>wkd.keys.openpgp.org</code></td>
-</tr>
-</tbody>
-</table>
+     <thead class="thead-dark">
+       <tr>
+         <th>Name/Host/Alias</th>
+         <th class="text-center">TTL</th>
+         <th>Type</th>
+         <th>Answer/Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td><code>openpgpkey</code></td>
+         <td class="text-center">3600</td>
+         <td class="notranslate">CNAME</td>
+         <td><code>wkd.keys.openpgp.org</code></td>
+       </tr>
+     </tbody>
+   </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>إذا كان اسمك المستعار يستخدم <a class="alert-link" href="/disposable-addresses" target="_blank">نطاقاتنا الشخصية/الخاصة</a> (مثل <code>hideaddress.net</code>)، فيمكنك تخطي هذه الخطوة.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+   </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-تهانينا!
-</strong>
-<span>
-لقد أكملت جميع الخطوات بنجاح.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### هل تدعم MTA-STS {#do-you-support-mta-sts}
+### Do you support MTA-STS {#do-you-support-mta-sts}
 
-نعم، اعتبارًا من 2 مارس 2023، ندعم [MTA-STS](https://www.hardenize.com/blog/mta-sts). يمكنك استخدام [هذا القالب](https://github.com/jpawlowski/mta-sts.template) إذا كنت ترغب في تفعيله على نطاقك.
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
 
-يمكن العثور على تكويننا علنًا على GitHub في <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### هل تدعم مفاتيح المرور وWebAuthn؟ {#do-you-support-passkeys-and-webauthn}
+### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-نعم! اعتبارًا من ١٣ ديسمبر ٢٠٢٣، أضفنا دعمًا لمفاتيح المرور [بسبب الطلب المرتفع](https://github.com/orgs/forwardemail/discussions/182).
+Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
 
-تتيح لك مفاتيح المرور تسجيل الدخول بشكل آمن دون الحاجة إلى كلمة مرور أو مصادقة ثنائية العوامل.
+Passkeys allow you to securely log in without requiring a password and two-factor authentication.
 
-يمكنك التحقق من هويتك عن طريق اللمس، أو التعرف على الوجه، أو كلمة المرور المستندة إلى الجهاز، أو رقم التعريف الشخصي (PIN).
+You can validate your identity with touch, facial recognition, device-based password, or PIN.
 
-نحن نسمح لك بإدارة ما يصل إلى 30 مفتاح مرور في وقت واحد، بحيث يمكنك تسجيل الدخول باستخدام جميع أجهزتك بسهولة.
+We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
 
-تعرف على المزيد حول مفاتيح المرور من خلال الروابط التالية:
+Learn more about passkeys at the following links:
 
-* حامل مكان مؤقت ٠ (جوجل)
-* حامل مكان مؤقت ١ (آبل)
-* حامل مكان مؤقت ٢)
+* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### هل تدعم أفضل ممارسات البريد الإلكتروني؟ {#do-you-support-email-best-practices}
+### Do you support email best practices {#do-you-support-email-best-practices}
 
-نعم. نوفر دعمًا مدمجًا لـ SPF وDKIM وDMARC وARC وSRS في جميع الباقات. كما عملنا بشكل مكثف مع المؤلفين الأصليين لهذه المواصفات وخبراء البريد الإلكتروني الآخرين لضمان الجودة العالية وسهولة التوصيل.
+Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
 
-### هل تدعم خطافات الويب المرتدة؟ {#do-you-support-bounce-webhooks}
+### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-هل تبحث عن وثائق حول خطافات البريد الإلكتروني؟ راجع <a href="/faq#do-you-support-webhooks" class="alert-link">هل تدعمون خطافات البريد الإلكتروني؟</a> لمزيد من المعلومات.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-نعم، أضفنا هذه الميزة اعتبارًا من ١٤ أغسطس ٢٠٢٤. يمكنك الآن الانتقال إلى حسابي ← النطاقات ← الإعدادات ← عنوان URL لخطاف الويب المرتد وتكوين عنوان URL `http://` أو `https://` الذي سنرسل إليه طلب `POST` عند ارتداد رسائل البريد الإلكتروني الصادرة عبر SMTP.
+Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
-يعد هذا مفيدًا لك لإدارة ومراقبة SMTP الصادر الخاص بك - ويمكن استخدامه للحفاظ على المشتركين، وإلغاء الاشتراك، واكتشاف متى تحدث الارتدادات.
+This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
 
-يتم إرسال حمولات Bounce Webhook بتنسيق JSON مع الخصائص التالية:
+Bounce webhook payloads are sent as a JSON with these properties:
 
-* `email_id` (سلسلة) - مُعرّف البريد الإلكتروني المُطابق لرسالة بريد إلكتروني في "حسابي" ← رسائل البريد الإلكتروني (SMTP صادر).
-* `list_id` (سلسلة) - قيمة رأس `List-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `list_unsubscribe` (سلسلة) - قيمة رأس `List-Unsubscribe` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `feedback_id` (سلسلة) - قيمة رأس `Feedback-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `recipient` (سلسلة) - عنوان البريد الإلكتروني للمستلم الذي ارتد أو احتوى على خطأ.
-* `message` (سلسلة) - رسالة خطأ مُفصلة لـ ارتداد
-* `response` (سلسلة نصية) - رسالة استجابة SMTP
-* `list_id`0 (رقم) - رمز استجابة SMTP المُحلل
-* `list_id`1 (سلسلة نصية) - إذا كان رمز الاستجابة من مصدر موثوق، فسيتم ملء هذه القيمة باسم نطاق الجذر (مثل `list_id`2 أو `list_id`3)
-* `list_id`4 (كائن) - كائن يحتوي على الخصائص التالية التي تُفصّل حالة الارتداد والرفض
-* `list_id`5 (سلسلة نصية) - إجراء الارتداد (مثل `list_id`6)
-* `list_id`7 (سلسلة نصية) - سبب الارتداد (مثل `list_id`8)
-* `list_id`9 (سلسلة نصية) - فئة الارتداد (مثل: `List-ID`0)
-* `List-ID`1 (رقم) - رمز حالة الارتداد (مثل: `List-ID`2)
-* `List-ID`3 (سلسلة نصية) - رمز الارتداد من رسالة الرد (مثل: `List-ID`4)
-* `List-ID`5 (رقم) - رقم السطر المُحلل، إن وجد، `List-ID`6 (مثل: `List-ID`7)
-* `List-ID`8 (كائن) - زوج رؤوس قيمة المفتاح للبريد الإلكتروني الصادر
-* `List-ID`9 (سلسلة نصية) - تاريخ مُنسّق `list_unsubscribe`0 لوقت حدوث خطأ الارتداد
+* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
+* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
+* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
+* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
+* `recipient` (String) - the email address of the recipient that bounced or errored
+* `message` (String) - a detailed error message for the bounce
+* `response` (String) - the SMTP response message
+* `response_code` (Number) - the parsed SMTP response code
+* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
+* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
+  * `action` (String) - bounce action (e.g. `"reject"`)
+  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce category (e.g. `"block"`)
+  * `code` (Number) - bounce status code (e.g. `554`)
+  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
+  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
 
-على سبيل المثال:
+For example:
 
 ```json
 {
@@ -2001,108 +2467,108 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 }
 ```
 
-فيما يلي بعض الملاحظات الإضافية المتعلقة بخطافات الويب المرتدة:
+Here are a few additional notes regarding bounce webhooks:
 
-* إذا كانت حمولة خطاف الويب تحتوي على قيمة `list_id` أو `list_unsubscribe` أو `feedback_id`، فعليك اتخاذ الإجراء المناسب لإزالة `recipient` من القائمة إذا لزم الأمر.
-* إذا كانت قيمة `bounce.category` هي `"block"` أو `"recipient"` أو `"spam"` أو `"virus"`، فعليك بالتأكيد إزالة المستخدم من القائمة.
-* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك استخدام [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون `list_unsubscribe`0.
-* يمكنك أيضًا التحقق من عنوان IP باستخدام `list_unsubscribe`1.
-* انتقل إلى حسابي ← النطاقات ← الإعدادات ← مفتاح التحقق من حمولة توقيع خطاف الويب للحصول على مفتاح خطاف الويب الخاص بك.
-* يمكنك تغيير هذا المفتاح في أي وقت لأسباب أمنية.
-* احسب وقارن قيمة `list_unsubscribe`2 من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك في `list_unsubscribe`3.
-* راجع المناقشة في <`list_unsubscribe`4 لمزيد من المعلومات.
-* سننتظر حتى `list_unsubscribe`5 ثانية حتى تستجيب نقطة نهاية خطاف الويب الخاصة بك برمز الحالة `list_unsubscribe`6، وسنعيد المحاولة حتى `list_unsubscribe`7 مرة.
-* إذا اكتشفنا وجود خطأ في عنوان URL لخطاف الويب المرتد أثناء محاولتنا إرسال طلب إليه، فسنرسل إليك بريدًا إلكترونيًا مجانيًا مرة واحدة أسبوعيًا.
+* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
+  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
+* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
 
-### هل تدعم خطافات الويب؟ {#do-you-support-webhooks}
+### Do you support webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-هل تبحث عن وثائق حول خطافات الويب المرتدة؟ راجع <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">هل تدعم خطافات الويب المرتدة؟</a> لمزيد من المعلومات.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-نعم، أضفنا هذه الميزة اعتبارًا من ١٥ مايو ٢٠٢٠. يمكنك ببساطة إضافة خطاف ويب (خطافات ويب) كما تفعل مع أي مستلم! يُرجى التأكد من إضافة بروتوكول "http" أو "https" في عنوان URL الخاص بخطاف الويب.
+Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-حماية خصوصية مُحسّنة:
-</strong>
-<span>
-إذا كنت مشتركًا في باقة مدفوعة (تتميز بحماية خصوصية مُحسّنة)، يُرجى الانتقال إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> والنقر على "الأسماء المستعارة" بجوار نطاقك لتكوين خطافات الويب. لمعرفة المزيد عن الباقات المدفوعة، يُرجى زيارة صفحة <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">الأسعار</a>. أو يُمكنك متابعة التعليمات أدناه.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS جديد <strong class="notranslate">TXT</strong> كما هو موضح أدناه:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تنتقل إلى `alias@example.com` إلى نقطة نهاية اختبار جديدة [صندوق الطلبات](https://requestbin.com/r/en8pfhdgcculn?inspect):
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
-</table>
-
-أو ربما تريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تذهب إلى `example.com` إلى نقطة النهاية هذه:
+For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
 </table>
 
-**فيما يلي ملاحظات إضافية بخصوص خطافات الويب:**
+Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
 
-* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك استخدام [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون إما `mx1.forwardemail.net` أو `mx2.forwardemail.net`.
-* يمكنك أيضًا التحقق من عنوان IP باستخدام [عناوين IP المنشورة لدينا](#what-are-your-servers-ip-addresses).
-* إذا كنت مشتركًا في باقة مدفوعة، فانتقل إلى حسابي ← النطاقات ← الإعدادات ← مفتاح التحقق من حمولة توقيع خطاف الويب للحصول على مفتاح خطاف الويب الخاص بك.
-* يمكنك تغيير هذا المفتاح في أي وقت لأسباب أمنية.
-* احسب وقارن قيمة `X-Webhook-Signature` من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك في [هذه التدوينة من Stack Overflow](https://stackoverflow.com/a/68885281).
-* راجع المناقشة في <https://github.com/forwardemail/free-email-forwarding/issues/235> لمزيد من المعلومات.
-* إذا لم يستجب خطاف الويب برمز الحالة `200`، فسنخزن استجابته في [تم إنشاء سجل الأخطاء](#do-you-store-error-logs) - وهو أمر مفيد لتصحيح الأخطاء.
-* ستُعاد محاولة طلبات خطاف الويب HTTP حتى 3 مرات لكل محاولة اتصال SMTP، مع مهلة زمنية أقصاها 60 ثانية لكل طلب POST لنقطة النهاية. **ملاحظة: هذا لا يعني إعادة المحاولة 3 مرات فقط**، بل سيُعاد المحاولة باستمرار بمرور الوقت عن طريق إرسال رمز SMTP 421 (الذي يُشير إلى المُرسِل بإعادة المحاولة لاحقًا) بعد محاولة طلب HTTP POST الفاشلة الثالثة. هذا يعني أن البريد الإلكتروني سيُعاد المحاولة باستمرار لأيام حتى يتم الوصول إلى رمز الحالة 200.
-* سنُعيد المحاولة تلقائيًا بناءً على الحالة الافتراضية ورموز الخطأ المستخدمة في [طريقة إعادة المحاولة للوكيل الفائق](https://ladjs.github.io/superagent/#retrying-requests) (نحن المسؤولون عن الصيانة).
-* نقوم بتجميع طلبات خطاف الويب HTTP إلى نفس نقطة النهاية في طلب واحد بدلاً من طلبات متعددة لتوفير الموارد وتسريع وقت الاستجابة. على سبيل المثال، إذا أرسلتَ بريدًا إلكترونيًا إلى <webhook1@example.com> و<webhook2@example.com> و<webhook3@example.com>، وكانت جميعها مُهيأة للوصول إلى عنوان URL لنقطة النهاية *الدقيقة* نفسها، فسيتم إرسال طلب واحد فقط. نُجمّع الرسائل معًا حسب مطابقة نقطة النهاية الدقيقة مع مساواة تامة.
-* لاحظ أننا نستخدم دالة "simpleParser" من مكتبة `mx1.forwardemail.net`0 لتحليل الرسالة إلى كائن متوافق مع JSON.
-* تُعطى قيمة البريد الإلكتروني الخام كسلسلة نصية كخاصية "raw".
-* تُعطى نتائج المصادقة كخصائص "dkim" و"spf" و"arc" و"dmarc" و"bimi".
-* تُعطى رؤوس البريد الإلكتروني المُحللة كخاصية "headers" - ولكن لاحظ أيضًا أنه يمكنك استخدام "headerLines" لتسهيل التكرار والتحليل.
-* يتم تجميع المستلمين المُجمّعين لهذا الخطاف الشبكي معًا، ويُعرَضون كخاصية "المستلمين".
-* تُعرَض معلومات جلسة SMTP كخاصية "الجلسة". تحتوي هذه الخاصية على معلومات حول مُرسِل الرسالة، ووقت وصولها، وHELO، واسم مضيف العميل. قيمة اسم مضيف العميل، `mx1.forwardemail.net`1، إما هي اسم المجال المؤهل بالكامل (من بحث PTR عكسي) أو `mx1.forwardemail.net`2 بين قوسين (مثل `mx1.forwardemail.net`3).
-* إذا كنت بحاجة إلى طريقة سريعة للحصول على قيمة `mx1.forwardemail.net`4، فيمكنك استخدام قيمة `mx1.forwardemail.net`5 (انظر المثال أدناه). رأس الصفحة `mx1.forwardemail.net`6 هو رأس نضيفه إلى الرسائل لتصحيح الأخطاء مع المستلم الأصلي (قبل إعادة التوجيه المُقنّع) للرسالة. * إذا كنت بحاجة إلى إزالة خصائص `mx1.forwardemail.net`7 و/أو `mx1.forwardemail.net`8 من نص الحمولة، فما عليك سوى إضافة `mx1.forwardemail.net`9 أو `mx2.forwardemail.net`0 أو `mx2.forwardemail.net`1 إلى نقطة نهاية خطاف الويب كمعامل سلسلة استعلام (مثل `mx2.forwardemail.net`2).
-* إذا كانت هناك مرفقات، فسيتم إضافتها إلى مصفوفة `mx2.forwardemail.net`3 مع قيم المخزن المؤقت. يمكنك تحليلها وتحويلها إلى محتوى باستخدام طريقة في JavaScript مثل:
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**Here are additional notes regarding webhooks:**
+
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
+* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
+* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
+* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
+* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+* Raw email value as a String is given as the property "raw".
+* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+* The grouped recipients for this webhook are grouped together and given as the property "recipients".
+* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
+* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
 
   ```js
   const data = [
@@ -2128,13 +2594,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
   ```
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-هل ترغب بمعرفة شكل طلب خطاف الويب من رسائل البريد الإلكتروني المُعاد توجيهها؟ أرفقنا لك مثالاً أدناه!
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+  <span>
+  </span>
 </div>
 
 ```json
@@ -2317,845 +2783,797 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 }
 ```
 
-### هل تدعم التعبيرات العادية أو التعبيرات العادية؟ {#do-you-support-regular-expressions-or-regex}
+### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
 
-نعم، أضفنا هذه الميزة اعتبارًا من ٢٧ سبتمبر ٢٠٢١. يمكنك ببساطة كتابة تعبيرات عادية ("regex") لمطابقة الأسماء المستعارة وإجراء عمليات الاستبدال.
+Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
 
-الأسماء المستعارة المدعومة بالتعابير العادية هي تلك التي تبدأ بـ `/` وتنتهي بـ `/`، ومستلموها هم عناوين البريد الإلكتروني أو خطافات الويب. يمكن للمستلمين أيضًا تضمين دعم استبدال التعابير العادية (مثل `$1` و`$2`).
+Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
 
-ندعم علامتي تعبير عادي، هما `i` و`g`. علم `i` الذي لا يراعي حالة الأحرف هو علم افتراضي دائم، ويتم تطبيقه دائمًا. يمكنك إضافة العلم العالمي `g` عن طريق إضافة `/` إلى `/g`.
+We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
 
-لاحظ أننا ندعم أيضًا <a href="#can-i-disable-specific-aliases">disabled alias feature</a> لجزء المستلم من خلال دعمنا لـ regex.
+Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
 
-لا يتم دعم التعبيرات العادية على <a href="/disposable-addresses" target="_blank">المجالات العالمية</a> (حيث يمكن أن يكون هذا بمثابة ثغرة أمنية).
+Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-حماية خصوصية مُحسّنة:
-</strong>
-<span>
-إذا كنت مشتركًا في باقة مدفوعة (تتميز بحماية خصوصية مُحسّنة)، يُرجى الانتقال إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> والنقر على "الأسماء المستعارة" بجوار نطاقك لتكوين التعبيرات العادية. لمعرفة المزيد عن الباقات المدفوعة، يُرجى زيارة صفحة <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">الأسعار</a>. أو يُمكنك متابعة التعليمات أدناه.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+  </span>
 </div>
 
-إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS جديد <strong class="notranslate">TXT</strong> باستخدام واحد أو أكثر من الأمثلة المقدمة أدناه:
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
-</div>
+#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال الاسم الأول واسم العائلة:</strong> تخيل أن جميع عناوين البريد الإلكتروني لشركتك من النمط `firstname.lastname@example.com`. إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى النمط `firstname.lastname@example.com` إلى النمط `firstname.lastname@company.com` مع دعم الاستبدال (<a href="https://regexr.com/66hnu" class="alert-link">عرض الاختبار على RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال تصفية رمز الزائد:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `info@example.com` أو `support@example.com` إلى `user+info@gmail.com` أو `user+support@gmail.com` على التوالي (مع دعم الاستبدال) (<a href="https://regexr.com/66ho7" class="alert-link">عرض الاختبار على RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال سلسلة استعلام خطاف الويب:</strong> ربما تريد أن تنتقل جميع رسائل البريد الإلكتروني التي تصل إلى `example.com` إلى <a href="#do-you-support-webhooks" class="alert-link">خطاف الويب</a> وأن يكون مفتاح سلسلة استعلام ديناميكي "to" بقيمة اسم المستخدم في عنوان البريد الإلكتروني (<a href="https://regexr.com/66ho4" class="alert-link">عرض الاختبار على RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على الرفض الهادئ:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تتوافق مع نمط معين ورفضها بهدوء (تبدو للمرسل كما لو أن الرسالة قد أُرسلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان) برمز الحالة `250` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يمكنني تعطيل أسماء مستعارة معينة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب واحدة "!". هذا يُشير للمرسل إلى أن الرسالة قد وصلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان (مثل blackhole أو `/dev/null`).
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على الرفض المؤقت:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تُطابق نمطًا مُعينًا، ثم رفضها مؤقتًا برمز الحالة `421` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يُمكنني تعطيل أسماء مستعارة مُحددة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب مزدوجة "!!". يُشير هذا إلى مُرسِل الرسالة لإعادة محاولة إرسال بريده الإلكتروني، وسيتم إعادة محاولة إرسال الرسائل المُرسَلة إلى هذا الاسم المستعار لمدة 5 أيام تقريبًا، ثم سيتم رفضها نهائيًا.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على الرفض النهائي:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تُطابق نمطًا مُعينًا، ورفضها نهائيًا برمز الحالة `550` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يُمكنني تعطيل أسماء مستعارة مُحددة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب ثلاثية "!!!". يُشير هذا إلى وجود خطأ دائم في الرسائل، ولن تُعاد مُحاولة إرسالها، وسيتم رفضها لهذا الاسم المستعار.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Alias Name</th>
+      <th>Effect</th>
+      <th>Test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/^(linus|torvalds)$/</code></td>
+      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+    <tr>
+      <td><code>/^24highst(reet)$/</code></td>
+      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-هل ترغب في معرفة كيفية كتابة تعبير نمطي أو اختبار بديله؟ يمكنك زيارة موقع اختبار التعبيرات النمطية المجاني <a href="https://regexr.com" class="alert-link">RegExr</a> على <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+  <span>
+  </span>
 </div>
 
-### ما هي حدود SMTP الصادرة لديك؟ {#what-are-your-outbound-smtp-limits}
+#### Examples for the free plan {#examples-for-the-free-plan}
 
-نحدد للمستخدمين والنطاقات الحد الأقصى المسموح به لرسائل SMTP الصادرة يوميًا بـ 300 رسالة. هذا يعني متوسط 9000 رسالة بريد إلكتروني شهريًا. إذا كنت بحاجة إلى تجاوز هذا العدد أو لديك عدد كبير من رسائل البريد الإلكتروني باستمرار، يُرجى استخدام [اتصل بنا](https://forwardemail.net/help).
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
-### هل أحتاج إلى موافقة لتمكين SMTP {#do-i-need-approval-to-enable-smtp}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+</div>
 
-نعم، يُرجى العلم أنه للحفاظ على سمعة IP وضمان إمكانية التسليم، تُجري Forward Email عملية مراجعة يدوية لكل نطاق لموافقة SMTP الصادرة. راسل <support@forwardemail.net> أو افتح [طلب المساعدة](https://forwardemail.net/help) للموافقة. عادةً ما يستغرق هذا أقل من 24 ساعة، ويتم الرد على معظم الطلبات خلال ساعة إلى ساعتين. نهدف قريبًا إلى جعل هذه العملية فورية من خلال ضوابط إضافية للرسائل غير المرغوب فيها والتنبيهات. تضمن هذه العملية وصول رسائلك إلى صندوق الوارد وعدم تصنيفها كرسائل غير مرغوب فيها.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-### ما هي إعدادات تكوين خادم SMTP الخاص بك؟ {#what-are-your-smtp-server-configuration-settings}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+</div>
 
-خادمنا هو `smtp.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنافذ `465` و `2465` لـ SSL/TLS و `587` و `2587` و `2525` و `25` لـ TLS (STARTTLS).
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+</div>
 
-| بروتوكول | اسم المضيف | الموانئ | IPv4 | IPv6 |
-| :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
-| `SSL/TLS` **مفضل** | `smtp.forwardemail.net` | `465`, `2465` | :علامة_التحقق_البيضاء: | :علامة_التحقق_البيضاء: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :علامة_التحقق_البيضاء: | :علامة_التحقق_البيضاء: |
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-| تسجيل الدخول | مثال | وصف |
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+  <span>
+  </span>
+</div>
+
+### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+
+### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+
+Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+
+Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+
+**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+
+| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
+| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| اسم المستخدم | `user@example.com` | عنوان البريد الإلكتروني للاسم المستعار الموجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>. |
-| كلمة المرور | `************************` | كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias |
 
-لإرسال بريد إلكتروني صادر باستخدام SMTP، يجب أن يكون **مستخدم SMTP** هو عنوان البريد الإلكتروني لاسم مستعار موجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> - ويجب أن تكون **كلمة مرور SMTP** كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار.
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
 
-يرجى الرجوع إلى [هل تدعم إرسال البريد الإلكتروني باستخدام SMTP؟](#do-you-support-sending-email-with-smtp) للحصول على تعليمات خطوة بخطوة.
+Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
-### ما هي إعدادات تكوين خادم IMAP الخاص بك؟ {#what-are-your-imap-server-configuration-settings}
+### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
 
-خادمنا هو `imap.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
+Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذين `993` و `2993` لـ SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-| بروتوكول | اسم المضيف | الموانئ | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **مفضل** | `imap.forwardemail.net` | `993`, `2993` | :علامة_التحقق_البيضاء: | :علامة_التحقق_البيضاء: |
+| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| تسجيل الدخول | مثال | وصف |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| اسم المستخدم | `user@example.com` | عنوان البريد الإلكتروني للاسم المستعار الموجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>. |
-| كلمة المرور | `************************` | كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-للاتصال بـ IMAP، يجب أن يكون **مستخدم IMAP** هو عنوان البريد الإلكتروني لاسم مستعار موجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> - ويجب أن تكون **كلمة مرور IMAP** كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار.
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-يرجى الرجوع إلى [هل تدعم تلقي البريد الإلكتروني باستخدام IMAP؟](#do-you-support-receiving-email-with-imap) للحصول على تعليمات خطوة بخطوة.
+Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
-### ما هي إعدادات تكوين خادم POP3 الخاص بك؟ {#what-are-your-pop3-server-configuration-settings}
+### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
 
-خادمنا هو `pop3.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
+Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذين `995` و `2995` لـ SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-| بروتوكول | اسم المضيف | الموانئ | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **مفضل** | `pop3.forwardemail.net` | `995`, `2995` | :علامة_التحقق_البيضاء: | :علامة_التحقق_البيضاء: |
+| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
 
-| تسجيل الدخول | مثال | وصف |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| اسم المستخدم | `user@example.com` | عنوان البريد الإلكتروني للاسم المستعار الموجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>. |
-| كلمة المرور | `************************` | كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-للاتصال بـ POP3، يجب أن يكون **مستخدم POP3** هو عنوان البريد الإلكتروني لاسم مستعار موجود للنطاق في <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> - ويجب أن تكون **كلمة مرور IMAP** كلمة مرور تم إنشاؤها خصيصًا للاسم المستعار.
+In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-يرجى الرجوع إلى [هل تدعم POP3](#do-you-support-pop3) للحصول على تعليمات خطوة بخطوة.
+Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
 
-### تكوين مرحل SMTP Postfix {#postfix-smtp-relay-configuration}
+## Security {#security}
 
-يمكنك تهيئة Postfix لإعادة توجيه رسائل البريد الإلكتروني عبر خوادم SMTP التابعة لـ Forward Email. هذا مفيد لتطبيقات الخادم التي تحتاج إلى إرسال رسائل بريد إلكتروني.
-
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">الوقت المُقدّر للإعداد:</strong>
-<span>أقل من ١٥ دقيقة</span>
-</div>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-يتطلب هذا اشتراكًا مدفوعًا مع تفعيل وصول SMTP.
-</span>
-</div>
-
-#### تثبيت {#installation}
-
-1. قم بتثبيت Postfix على الخادم الخاص بك:
-
-```bash
-# Ubuntu/Debian
-sudo apt update && sudo apt install postfix
-
-# CentOS/RHEL
-sudo yum install postfix
-
-# macOS
-brew install postfix
-```
-
-2. أثناء التثبيت، حدد "موقع الإنترنت" عند مطالبتك بنوع التكوين.
-
-#### تكوين {#configuration}
-
-1. قم بتعديل ملف تكوين Postfix الرئيسي:
-
-```bash
-sudo nano /etc/postfix/main.cf
-```
-
-2. إضافة أو تعديل هذه الإعدادات:
-
-```
-# SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-```
-
-3. إنشاء ملف كلمة مرور SASL:
-
-```bash
-sudo nano /etc/postfix/sasl_passwd
-```
-
-4. أضف بيانات اعتماد إعادة توجيه البريد الإلكتروني الخاصة بك:
-
-```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
-```
-
-5. تأمين ملف كلمة المرور وتجزئته:
-
-```bash
-sudo chmod 600 /etc/postfix/sasl_passwd
-sudo postmap /etc/postfix/sasl_passwd
-```
-
-6. إعادة تشغيل Postfix:
-
-```bash
-sudo systemctl restart postfix
-```
-
-#### اختبار {#testing}
-
-اختبر تكوينك عن طريق إرسال بريد إلكتروني اختباري:
-
-```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
-```
-
-## الأمان {#security}
-
-### تقنيات تقوية الخادم المتقدمة {#advanced-server-hardening-techniques}
+### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> تعرّف على المزيد حول بنيتنا التحتية الأمنية على [صفحتنا الأمنية](/security).
+> Learn more about our security infrastructure on [our Security page](/security).
 
-تطبق Forward Email العديد من تقنيات تقوية الخادم لضمان أمان البنية التحتية لدينا وبياناتك:
+Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-١. **أمن الشبكات**:
-* جدار حماية لجداول عناوين IP بقواعد صارمة
-* نظام Fail2ban للحماية من هجمات القوة الغاشمة
-* عمليات تدقيق أمنية واختبار اختراق منتظمة
-* وصول إداري عبر VPN فقط
+1. **Network Security**:
+   * IP tables firewall with strict rules
+   * Fail2ban for brute force protection
+   * Regular security audits and penetration testing
+   * VPN-only administrative access
 
-٢. **تعزيز النظام**:
-* تثبيت حزمة بسيطة
-* تحديثات أمنية منتظمة
-* SELinux في وضع الإنفاذ
-* تعطيل وصول الجذر عبر SSH
-* المصادقة القائمة على المفتاح فقط
+2. **System Hardening**:
+   * Minimal package installation
+   * Regular security updates
+   * SELinux in enforcing mode
+   * Disabled root SSH access
+   * Key-based authentication only
 
-٣. **أمان التطبيق**:
-* رؤوس سياسة أمان المحتوى (CSP)
-* أمان النقل الصارم لـ HTTPS (HSTS)
-* رؤوس حماية XSS
-* خيارات الإطار ورؤوس سياسة المُحيل
-* عمليات تدقيق دورية للتبعيات
+3. **Application Security**:
+   * Content Security Policy (CSP) headers
+   * HTTPS Strict Transport Security (HSTS)
+   * XSS protection headers
+   * Frame options and referrer policy headers
+   * Regular dependency audits
 
-٤. **حماية البيانات**:
-* تشفير كامل للقرص باستخدام LUKS
-* إدارة آمنة للمفاتيح
-* نسخ احتياطية منتظمة مع التشفير
-* ممارسات تقليل البيانات
+4. **Data Protection**:
+   * Full disk encryption with LUKS
+   * Secure key management
+   * Regular backups with encryption
+   * Data minimization practices
 
-٥. **المراقبة والاستجابة**:
-* كشف التسلل في الوقت الفعلي
-* فحص أمني آلي
-* تسجيل وتحليل مركزي
-* إجراءات الاستجابة للحوادث
+5. **Monitoring and Response**:
+   * Real-time intrusion detection
+   * Automated security scanning
+   * Centralized logging and analysis
+   * Incident response procedures
 
-يتم تحديث ممارساتنا الأمنية باستمرار لمعالجة التهديدات والثغرات الأمنية الناشئة.
-
-> \[!TIP]
-> لضمان أقصى درجات الأمان، نوصي باستخدام خدمتنا مع التشفير الشامل عبر OpenPGP.
-
-### هل لديك شهادات SOC 2 أو ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
-
-يعمل البريد الإلكتروني المُعاد توجيهه على بنية تحتية توفرها معالجات فرعية معتمدة لضمان الامتثال لمعايير الصناعة.
-
-لا تحمل خدمة "إعادة توجيه البريد الإلكتروني" شهادات SOC 2 Type II أو ISO 27001 مباشرةً. مع ذلك، تعمل الخدمة على بنية تحتية توفرها معالجات فرعية معتمدة:
-
-* **ديجيتال أوشن**: حاصل على شهادة SOC 2 النوع الثاني وSOC 3 النوع الثاني (خضعت للتدقيق من قِبل شركة شيلمان وشركاه ذ.م.م)، وشهادة ISO 27001 في مراكز بيانات متعددة. التفاصيل: <https://www.digitalocean.com/trust/certification-reports>
-
-* **Vultr**: حاصل على شهادة SOC 2+ (HIPAA)، وشهادات ISO/IEC: 20000-1:2018، 27001:2022، 27017:2015، 27018:2019. التفاصيل: <https://www.vultr.com/legal/compliance/>
-
-* **DataPacket**: متوافق مع معيار SOC 2 (تواصل مع DataPacket مباشرةً للحصول على الشهادة)، مزود بنية تحتية على مستوى المؤسسات (موقعه في دنفر). التفاصيل: <https://www.datapacket.com/datacenters/denver>
-
-تتبع Forward Email أفضل ممارسات الصناعة في عمليات تدقيق الأمان، وتتعاون بانتظام مع باحثين أمنيين مستقلين. المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
-
-### هل تستخدم تشفير TLS لإعادة توجيه البريد الإلكتروني؟ {#do-you-use-tls-encryption-for-email-forwarding}
-
-نعم. يُطبّق تطبيق Forward Email بروتوكول TLS الإصدار 1.2+‎ بشكل صارم على جميع الاتصالات (HTTPS، SMTP، IMAP، POP3) ويُطبّق بروتوكول MTA-STS لدعم TLS مُحسّن. يتضمن التطبيق ما يلي:
-
-* تطبيق TLS 1.2+ لجميع اتصالات البريد الإلكتروني.
-* تبادل مفاتيح ECDHE (منحنى بيضاوي ديفي-هيلمان سريع الزوال) لضمان سرية تامة.
-* مجموعات تشفير حديثة مع تحديثات أمنية منتظمة.
-* دعم HTTP/2 لتحسين الأداء والأمان.
-* HSTS (أمان نقل HTTP الصارم) مع التحميل المسبق في المتصفحات الرئيسية.
-* **أمان نقل البريد الصارم لوكيل نقل البريد (MTA-STS)** لتطبيق TLS صارم.
-
-المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
-
-**تطبيق MTA-STS**: يُطبّق نظام إعادة توجيه البريد الإلكتروني تطبيقًا صارمًا لمعايير MTA-STS في قاعدة البيانات. عند حدوث أخطاء TLS وتطبيق MTA-STS، يُعيد النظام رموز حالة SMTP 421 لضمان إعادة إرسال رسائل البريد الإلكتروني لاحقًا بدلًا من تسليمها بشكل غير آمن. تفاصيل التطبيق:
-
-* اكتشاف خطأ TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* تطبيق MTA-STS في مساعد إرسال البريد الإلكتروني: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
-
-التحقق من صحة الطرف الثالث: <https://www.hardenize.com/report/forwardemail.net/1750312779> يعرض تقييمات "جيدة" لجميع إجراءات أمان النقل وTLS.
-
-### هل تحافظ على رؤوس مصادقة البريد الإلكتروني؟ {#do-you-preserve-email-authentication-headers}
-
-نعم. يُطبّق Forward Email عناوين مصادقة البريد الإلكتروني ويحافظ عليها بشكل شامل:
-
-* **SPF (إطار عمل سياسة المُرسِل)**: مُنفَّذ ومُحافظ عليه بشكل صحيح.
-* **DKIM (البريد المُعرَّف بمفاتيح النطاق)**: دعم كامل مع إدارة مفاتيح سليمة.
-* **DMARC**: تطبيق السياسة على رسائل البريد الإلكتروني التي تفشل في التحقق من صحة SPF أو DKIM.
-* **ARC**: على الرغم من عدم توضيحها بشكل صريح، إلا أن درجات الامتثال المثالية للخدمة تُشير إلى معالجة شاملة لرؤوس المصادقة.
-
-المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
-
-التحقق: أظهر اختبار بريد Internet.nl درجة 100/100 خاصة بتطبيقات "SPF وDKIM وDMARC". يؤكد تقييم Hardenize على التقييم "الجيد" لتطبيقات SPF وDMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
-
-### هل تحافظ على عناوين البريد الإلكتروني الأصلية وتمنع التزييف؟ {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+> \[!IMPORTANT]
+> Our security practices are continuously updated to address emerging threats and vulnerabilities.
 
 > \[!TIP]
-> تُطبّق ميزة "إعادة توجيه البريد الإلكتروني" حمايةً متطورةً ضدّ انتحال البريد الإلكتروني لمنع إساءة استخدام البريد الإلكتروني.
+> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
 
-يحافظ Forward Email على عناوين البريد الإلكتروني الأصلية مع تنفيذ حماية شاملة ضد التزييف من خلال قاعدة بيانات MX:
-
-* **حفظ الرؤوس**: يتم الاحتفاظ برؤوس المصادقة الأصلية أثناء إعادة التوجيه.
-* **مكافحة انتحال الهوية**: يمنع تطبيق سياسة DMARC انتحال الرؤوس من خلال رفض رسائل البريد الإلكتروني التي تفشل في التحقق من صحة SPF أو DKIM.
-* **منع حقن الرؤوس**: التحقق من صحة المدخلات وتعقيمها باستخدام مكتبة striptags.
-* **الحماية المتقدمة**: كشف متطور عن التصيد الاحتيالي مع أنظمة كشف الانتحال ومنع انتحال الهوية وإشعار المستخدم.
-
-**تفاصيل تنفيذ MX**: يتم التعامل مع منطق معالجة البريد الإلكتروني الأساسي بواسطة قاعدة بيانات خادم MX، على وجه التحديد:
-
-* معالج بيانات MX الرئيسي: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* تصفية عشوائية للبريد الإلكتروني (مكافحة انتحال الهوية): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
-
-ينفذ المساعد `isArbitrary` قواعد متطورة لمكافحة التصيد الاحتيالي بما في ذلك اكتشاف انتحال هوية المجال والعبارات المحظورة وأنماط التصيد المختلفة.
-
-المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
-
-### كيف تحمي نفسك من البريد العشوائي والإساءة؟ {#how-do-you-protect-against-spam-and-abuse}
-
-ينفذ Forward Email حماية شاملة متعددة الطبقات:
-
-* **تحديد المعدل**: يُطبّق على محاولات المصادقة، ونقاط نهاية واجهة برمجة التطبيقات (API)، واتصالات SMTP.
-* **عزل الموارد**: بين المستخدمين لمنع تأثير المستخدمين ذوي الاستخدام الكثيف.
-* **حماية DDoS**: حماية متعددة الطبقات من خلال نظامي DataPacket Shield وCloudflare.
-* **التوسع التلقائي**: تعديل ديناميكي للموارد بناءً على الطلب.
-* **منع إساءة الاستخدام**: فحوصات خاصة بالمستخدم لمنع إساءة الاستخدام، وحظر قائم على التجزئة للمحتوى الضار.
-* **مصادقة البريد الإلكتروني**: بروتوكولات SPF وDKIM وDMARC مع كشف متقدم للتصيد الاحتيالي.
-
-مصادر:
-
-* <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (تفاصيل حماية DDoS)
-* <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
-
-### هل تقوم بتخزين محتوى البريد الإلكتروني على القرص {#do-you-store-email-content-on-disk}
-
-يستخدم إعادة توجيه البريد الإلكتروني بنية المعرفة الصفرية التي تمنع كتابة محتوى البريد الإلكتروني على القرص.
-
-* **بنية المعرفة الصفرية**: صناديق بريد SQLite المشفرة بشكل فردي تعني أن خدمة إعادة توجيه البريد الإلكتروني لا يمكنها الوصول إلى محتوى البريد الإلكتروني.
-* **المعالجة في الذاكرة**: تتم معالجة البريد الإلكتروني بالكامل في الذاكرة، مما يتجنب تخزين البيانات على القرص.
-* **عدم تسجيل المحتوى**: "لا نسجل أو نخزن محتوى البريد الإلكتروني أو بياناته الوصفية على القرص".
-* **التشفير المعزول**: لا تُخزّن مفاتيح التشفير على القرص كنص عادي.
-
-**دليل قاعدة بيانات MX**: يُعالج خادم MX رسائل البريد الإلكتروني بالكامل في الذاكرة دون كتابة أي محتوى على القرص. يُظهر مُعالج البريد الإلكتروني الرئيسي هذا النهج في الذاكرة: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-
-مصادر:
-
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (ملخص)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (تفاصيل المعرفة الصفرية)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (تشفير معزول)
-
-### هل يمكن عرض محتوى البريد الإلكتروني أثناء تعطل النظام؟ {#can-email-content-be-exposed-during-system-crashes}
-
-لا. تطبق خدمة Forward Email ضمانات شاملة ضد تعرض البيانات المرتبطة بالأعطال:
-
-* **تعطيل تفريغات النواة**: يمنع تعريض الذاكرة للخطر أثناء الأعطال.
-* **تعطيل ذاكرة المبادلة**: معطل تمامًا لمنع استخراج البيانات الحساسة من ملفات المبادلة.
-* **بنية الذاكرة الداخلية**: يتواجد محتوى البريد الإلكتروني فقط في الذاكرة غير المستقرة أثناء المعالجة.
-* **حماية مفتاح التشفير**: لا تُخزَّن المفاتيح على القرص كنص عادي.
-* **الأمان المادي**: تمنع أقراص LUKS v2 المشفرة الوصول المادي إلى البيانات.
-* **تعطيل تخزين USB**: يمنع استخراج البيانات غير المصرح به.
-
-**معالجة الأخطاء الخاصة بمشكلات النظام**: يستخدم إعادة توجيه البريد الإلكتروني وظائف المساعدة `isCodeBug` و`isTimeoutError` للتأكد من أنه في حالة حدوث أي مشكلات في اتصال قاعدة البيانات أو مشكلات في شبكة DNS/قائمة الحظر أو مشكلات في الاتصال العلوي، يقوم النظام بإرجاع رموز حالة SMTP 421 لضمان إعادة محاولة إرسال رسائل البريد الإلكتروني لاحقًا بدلاً من فقدها أو عرضها.
-
-تفاصيل التنفيذ:
-
-* تصنيف الخطأ: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* معالجة خطأ انتهاء المهلة في معالجة MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-
-المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
-
-### من لديه حق الوصول إلى البنية التحتية لبريدك الإلكتروني؟ {#who-has-access-to-your-email-infrastructure}
-
-تطبق Forward Email ضوابط وصول شاملة لفريق الهندسة الذي يتكون من 2-3 أشخاص مع متطلبات 2FA صارمة:
-
-* **التحكم في الوصول القائم على الأدوار**: لحسابات الفريق ذات الأذونات القائمة على الموارد
-* **مبدأ الحد الأدنى من الامتيازات**: يُطبق في جميع الأنظمة
-* **فصل المهام**: بين الأدوار التشغيلية
-* **إدارة المستخدمين**: فصل مستخدمي النشر ومستخدمي التطوير بصلاحيات مختلفة
-* **تعطيل تسجيل الدخول الجذري**: فرض الوصول من خلال حسابات مُصادق عليها بشكل صحيح
-* **المصادقة الثنائية الصارمة**: لا توجد مصادقة ثنائية عبر الرسائل النصية القصيرة بسبب خطر هجمات MITM - فقط رموز التطبيقات أو الأجهزة
-* **تسجيل التدقيق الشامل**: مع حذف البيانات الحساسة
-* **الكشف التلقائي عن الشذوذ**: لأنماط الوصول غير المعتادة
-* **مراجعات أمنية دورية**: لسجلات الوصول
-* **منع هجوم الخادمة الشريرة**: تعطيل وحدة تخزين USB وإجراءات أمنية مادية أخرى
-
-مصادر:
-
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (عناصر التحكم في التفويض)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (أمان الشبكة)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (منع هجوم الخادمة الشريرة)
-
-### ما هي مزودي البنية التحتية التي تستخدمها؟ {#what-infrastructure-providers-do-you-use}
-
-يستخدم تطبيق "إعادة توجيه البريد الإلكتروني" معالجات فرعية متعددة للبنية التحتية مع شهادات امتثال شاملة.
-
-التفاصيل الكاملة متاحة على صفحة الامتثال لـ GDPR الخاصة بنا: <https://forwardemail.net/gdpr>
-
-**معالجات البنية التحتية الأساسية الفرعية:**
-
-| مزود | إطار عمل خصوصية البيانات المعتمد | صفحة الامتثال لقانون حماية البيانات العامة (GDPR) |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **كلاود فلير** | ✅ نعم | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **حزمة البيانات** | ❌ لا | <https://www.datapacket.com/privacy-policy> |
-| **المحيط الرقمي** | ❌ لا | <https://www.digitalocean.com/legal/gdpr> |
-| **فولتر** | ❌ لا | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
-
-**الشهادات التفصيلية:**
-
-**المحيط الرقمي**
-
-* SOC 2 النوع الثاني وSOC 3 النوع الثاني (مُدقّق من قِبل شركة Schellman & Company LLC)
-* حاصل على شهادة ISO 27001 في مراكز بيانات متعددة
-* متوافق مع PCI-DSS
-* حاصل على شهادة CSA STAR المستوى 1
-* حاصل على شهادة APEC CBPR PRP
-* التفاصيل: <https://www.digitalocean.com/trust/certification-reports>
-
-**فولتر**
-
-* حاصل على شهادة SOC 2+ (HIPAA)
-* متوافق مع PCI Merchant
-* حاصل على شهادة CSA STAR المستوى 1
-* ISO/IEC 20000-1:2018، 27001:2022، 27017:2015، 27018:2019
-* التفاصيل: <https://www.vultr.com/legal/compliance/>
-
-**حزمة البيانات**
-
-* متوافق مع معيار SOC 2 (تواصل مع DataPacket مباشرةً للحصول على الشهادة)
-* بنية تحتية بمستوى المؤسسات (موقع دنفر)
-* حماية من هجمات حجب الخدمة الموزعة (DDoS) من خلال حزمة Shield للأمن السيبراني
-* دعم فني على مدار الساعة طوال أيام الأسبوع
-* شبكة عالمية تغطي 58 مركز بيانات
-* التفاصيل: <https://www.datapacket.com/datacenters/denver>
-
-**معالجات الدفع:**
-
-* **Stripe**: معتمد من إطار عمل خصوصية البيانات - <https://stripe.com/legal/privacy-center>
-* **PayPal**: غير معتمد من إطار عمل خصوصية البيانات - <https://www.paypal.com/uk/legalhub/privacy-full>
-
-### هل تقدم اتفاقية معالجة البيانات (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
-
-نعم، تُقدّم Forward Email اتفاقية شاملة لمعالجة البيانات (DPA) يُمكن توقيعها مع اتفاقية مؤسستنا. تتوفر نسخة من اتفاقية معالجة البيانات (DPA) على الرابط التالي: <https://forwardemail.net/dpa>
-
-**تفاصيل وكالة حماية البيانات:**
-
-* يشمل الامتثال للوائح حماية البيانات العامة (GDPR) وأطر عمل درع الخصوصية بين الاتحاد الأوروبي والولايات المتحدة/سويسرا والولايات المتحدة.
-* يُقبل تلقائيًا عند الموافقة على شروط الخدمة.
-* لا حاجة لتوقيع منفصل لاتفاقية معالجة البيانات القياسية.
-* تتوفر ترتيبات معالجة بيانات مخصصة من خلال ترخيص المؤسسة.
-
-**إطار الامتثال للائحة العامة لحماية البيانات:**
-يُفصّل اتفاق معالجة البيانات لدينا الامتثال للائحة العامة لحماية البيانات، بالإضافة إلى متطلبات نقل البيانات الدولية. تتوفر المعلومات الكاملة على الرابط: <https://forwardemail.net/gdpr>
-
-بالنسبة لعملاء المؤسسات الذين يحتاجون إلى شروط DPA مخصصة أو ترتيبات تعاقدية محددة، فيمكن معالجة هذه الأمور من خلال برنامج **ترخيص المؤسسة (250 دولارًا أمريكيًا/الشهر)** الخاص بنا.
-
-### كيف تتعامل مع إشعارات خرق البيانات؟ {#how-do-you-handle-data-breach-notifications}
+### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> تعمل بنية "عدم المعرفة" في خدمة "Forward Email" على الحد بشكل كبير من تأثير الاختراق.
+> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
 
-* **تعرض محدود للبيانات**: لا يمكن الوصول إلى محتوى البريد الإلكتروني المشفر بسبب بنية المعرفة الصفرية.
-* **جمع بيانات محدود**: معلومات أساسية فقط للمشتركين وسجلات IP محدودة لأغراض الأمان.
-* **أطر عمل المعالجات الفرعية**: تلتزم DigitalOcean وVultr بإجراءات استجابة للحوادث متوافقة مع اللائحة العامة لحماية البيانات.
+Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
 
-**معلومات ممثل اللائحة العامة لحماية البيانات:**
-عيّنت شركة Forward Email ممثلين لها وفقًا للمادة ٢٧ من اللائحة العامة لحماية البيانات:
+* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
 
-**ممثل الاتحاد الأوروبي:**
-شركة أوسانو الدولية لخدمات الامتثال المحدودة
-لعناية: LFHC
-3 دبلن لاندينغز، رصيف نورث وول
-دبلن 1، D01C4E0
+* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
 
-**ممثل المملكة المتحدة:**
-شركة أوسانو للامتثال المحدودة في المملكة المتحدة
-لعناية: LFHC
-42-46 شارع فاونتن، بلفاست
-أنتريم، BT1 - 5EF
+* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
 
-بالنسبة لعملاء المؤسسات الذين يحتاجون إلى اتفاقيات مستوى الخدمة الخاصة بإشعارات الاختراق، فيجب مناقشة ذلك كجزء من اتفاقية **ترخيص المؤسسة**.
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-مصادر:
+### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
+
+Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+
+* TLS 1.2+ enforcement for all email connections
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
+* Modern cipher suites with regular security updates
+* HTTP/2 support for improved performance and security
+* HSTS (HTTP Strict Transport Security) with preloading in major browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+
+**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+
+* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+
+Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+
+### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
+
+Yes. Forward Email comprehensively implements and preserves email authentication headers:
+
+* **SPF (Sender Policy Framework)**: Properly implemented and preserved
+* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
+* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+
+Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+
+### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+
+> \[!TIP]
+> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+
+Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+
+* **Header Preservation**: Original authentication headers are maintained during forwarding
+* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
+* **Header Injection Prevention**: Input validation and sanitization using striptags library
+* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+
+**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+
+* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+
+The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+
+### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
+
+Forward Email implements comprehensive multi-layer protection:
+
+* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
+* **Resource Isolation**: Between users to prevent impact from high-volume users
+* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
+* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=18>
+* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
+
+### Do you store email content on disk {#do-you-store-email-content-on-disk}
+
+> \[!IMPORTANT]
+> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+
+* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
+* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
+* **No Content Logging**: "We do not log or store email content or metadata to disk"
+* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+
+**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+
+### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
+
+No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+
+* **Core Dumps Disabled**: Prevents memory exposure during crashes
+* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
+* **In-Memory Architecture**: Email content exists only in volatile memory during processing
+* **Encryption Key Protection**: Keys are never stored on disk in plaintext
+* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
+* **USB Storage Disabled**: Prevents unauthorized data extraction
+
+**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+
+Implementation details:
+
+* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+
+### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
+
+Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+
+* **Role-Based Access Control**: For team accounts with resource-based permissions
+* **Least Privilege Principle**: Applied throughout all systems
+* **Segregation of Duties**: Between operational roles
+* **User Management**: Separate deploy and devops users with distinct permissions
+* **Root Login Disabled**: Forces access through properly authenticated accounts
+* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
+* **Comprehensive Audit Logging**: With sensitive data redaction
+* **Automated Anomaly Detection**: For unusual access patterns
+* **Regular Security Reviews**: Of access logs
+* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
+
+### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
+
+> \[!IMPORTANT]
+> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+
+Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+
+**Primary Infrastructure Subprocessors:**
+
+| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
+| ---------------- | -------------------------------- | ----------------------------------------------- |
+| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
+| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
+| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
+| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+
+**Detailed Certifications:**
+
+**DigitalOcean**
+
+* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
+* ISO 27001 certified at multiple data centers
+* PCI-DSS compliant
+* CSA STAR Level 1 certified
+* APEC CBPR PRP certified
+* Details: <https://www.digitalocean.com/trust/certification-reports>
+
+**Vultr**
+
+* SOC 2+ (HIPAA) certified
+* PCI Merchant compliant
+* CSA STAR Level 1 certified
+* ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
+* Details: <https://www.vultr.com/legal/compliance/>
+
+**DataPacket**
+
+* SOC 2 compliant (contact DataPacket directly to obtain certification)
+* Enterprise-grade infrastructure (Denver location)
+* DDoS protection through Shield cybersecurity stack
+* 24/7 technical support
+* Global network across 58 data centers
+* Details: <https://www.datapacket.com/datacenters/denver>
+
+**Payment Processors:**
+
+* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+
+### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+
+Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+
+**DPA Details:**
+
+* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
+* Automatically accepted when agreeing to our Terms of Service
+* No separate signature required for standard DPA
+* Custom DPA arrangements available through Enterprise License
+
+**GDPR Compliance Framework:**
+Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+
+For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+
+### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
+
+> \[!NOTE]
+> Forward Email's zero-knowledge architecture significantly limits breach impact.
+
+* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
+* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
+* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
+
+**GDPR Representative Information:**
+Forward Email has appointed GDPR representatives in accordance with Article 27:
+
+**EU Representative:**
+Osano International Compliance Services Limited
+ATTN: LFHC
+3 Dublin Landings, North Wall Quay
+Dublin 1, D01C4E0
+
+**UK Representative:**
+Osano UK Compliance LTD
+ATTN: LFHC
+42-46 Fountain Street, Belfast
+Antrim, BT1 - 5EF
+
+For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### هل تقدم بيئة اختبار {#do-you-offer-a-test-environment}
+### Do you offer a test environment {#do-you-offer-a-test-environment}
 
-لا تصف الوثائق الفنية لبرنامج Forward Email صراحةً وضع الحماية المخصص. مع ذلك، تشمل أساليب الاختبار المحتملة ما يلي:
+Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
 
-* **خيار الاستضافة الذاتية**: إمكانيات استضافة ذاتية شاملة لإنشاء بيئات اختبار.
-* **واجهة برمجة التطبيقات**: إمكانية الاختبار البرمجي للتكوينات.
-* **مفتوح المصدر**: شفرة مفتوحة المصدر بنسبة 100% تتيح للعملاء فحص منطق إعادة التوجيه.
-* **نطاقات متعددة**: دعم نطاقات متعددة يُمكّن من إنشاء نطاق اختبار.
+* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
+* **API Interface**: Potential for programmatic testing of configurations
+* **Open Source**: 100% open-source code allows customers to examine forwarding logic
+* **Multiple Domains**: Support for multiple domains could enable test domain creation
 
-بالنسبة لعملاء المؤسسات الذين يحتاجون إلى إمكانيات الحماية الرسمية، فيجب مناقشة هذا الأمر كجزء من ترتيب **ترخيص المؤسسة**.
+For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
 
-المصدر: <https://github.com/forwardemail/forwardemail.net> (تفاصيل بيئة التطوير)
+Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
 
-### هل توفر أدوات المراقبة والتنبيه؟ {#do-you-provide-monitoring-and-alerting-tools}
+### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
 
-يوفر البريد الإلكتروني المباشر مراقبة في الوقت الفعلي مع بعض القيود:
+Forward Email provides real-time monitoring with some limitations:
 
-**متاح:**
+**Available:**
 
-* **مراقبة التسليم في الوقت الفعلي**: مقاييس أداء مرئية للعامة لكبار مزودي خدمات البريد الإلكتروني.
-* **التنبيهات التلقائية**: يتم تنبيه فريق الهندسة عند تجاوز أوقات التسليم 10 ثوانٍ.
-* **مراقبة شفافة**: أنظمة مراقبة مفتوحة المصدر بنسبة 100%.
-* **مراقبة البنية التحتية**: اكتشاف تلقائي للأخطاء وتسجيل تدقيق شامل.
+* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
+* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
+* **Transparent Monitoring**: 100% open-source monitoring systems
+* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
 
-**القيود:**
+**Limitations:**
 
-* لا يتم توثيق خطافات الويب التي تواجه العملاء أو إشعارات حالة التسليم المستندة إلى واجهة برمجة التطبيقات بشكل صريح
+* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
 
-بالنسبة لعملاء المؤسسات الذين يحتاجون إلى خطافات ويب لحالة التسليم التفصيلية أو تكاملات مراقبة مخصصة، فقد تكون هذه الإمكانات متاحة من خلال ترتيبات **ترخيص المؤسسة**.
+For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
 
-مصادر:
+Sources:
 
-* <https://forwardemail.net> (عرض مراقبة آنية)
-* <https://github.com/forwardemail/forwardemail.net> (تنفيذ المراقبة)
+* <https://forwardemail.net> (Real-time monitoring display)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
 
-### كيف تضمن توفرًا عاليًا؟ {#how-do-you-ensure-high-availability}
+### How do you ensure high availability {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> يُنفِّذ "إعادة توجيه البريد الإلكتروني" التكرار الشامل عبر العديد من موفري البنية التحتية.
+> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
 
-* **البنية التحتية الموزعة**: مزودو خدمات متعددون (DigitalOcean، Vultr، DataPacket) عبر مناطق جغرافية مختلفة.
-* **موازنة الأحمال الجغرافية**: موازنة أحمال جغرافية قائمة على Cloudflare مع إمكانية التعافي التلقائي من الأعطال.
-* **التوسع التلقائي**: تعديل ديناميكي للموارد بناءً على الطلب.
-* **حماية متعددة الطبقات من هجمات DDoS**: من خلال نظام DataPacket Shield وCloudflare.
-* **تكرار الخوادم**: خوادم متعددة لكل منطقة مع إمكانية التعافي التلقائي من الأعطال.
-* **تكرار قاعدة البيانات**: مزامنة البيانات في الوقت الفعلي عبر مواقع متعددة.
-* **المراقبة والتنبيه**: مراقبة على مدار الساعة طوال أيام الأسبوع مع استجابة تلقائية للحوادث.
+* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
+* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
+* **Server Redundancy**: Multiple servers per region with automatic failover
+* **Database Replication**: Real-time data synchronization across multiple locations
+* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
 
-**الالتزام بالوقت الفعلي**: توفر خدمة بنسبة 99.9%+ مع توفر مراقبة شفافة في <https://forwardemail.net>
+**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
 
-مصادر:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### هل أنت متوافق مع المادة 889 من قانون تفويض الدفاع الوطني (NDAA)؟ {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> تتوافق خدمة إعادة توجيه البريد الإلكتروني تمامًا مع المادة 889 من خلال اختيار شركاء البنية التحتية بعناية.
+> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
 
-نعم، خدمة إعادة توجيه البريد الإلكتروني **متوافقة مع المادة 889**. تحظر المادة 889 من قانون تفويض الدفاع الوطني (NDAA) على الهيئات الحكومية استخدام أو التعاقد مع جهات تستخدم معدات اتصالات ومراقبة بالفيديو من شركات محددة (هواوي، وZTE، وهيكفيجن، وداهوا، وهيتيرا).
+Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
 
-**كيف يحقق البريد الإلكتروني المباشر الامتثال للمادة 889:**
+**How Forward Email Achieves Section 889 Compliance:**
 
-تعتمد خدمة Forward Email بشكل حصري على اثنين من مقدمي البنية التحتية الرئيسيين، ولا يستخدم أي منهما معدات محظورة بموجب القسم 889:
+Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
 
-١. **Cloudflare**: شريكنا الرئيسي لخدمات الشبكات وأمان البريد الإلكتروني
-٢. **DataPacket**: مزودنا الرئيسي للبنية التحتية للخوادم (باستخدام معدات Arista Networks وCisco حصريًا)
-٣. **موفرو النسخ الاحتياطي**: تم تأكيد التزام مزودي النسخ الاحتياطي لدينا، Digital Ocean وVultr، كتابيًا بالقسم ٨٨٩.
+1. **Cloudflare**: Our primary partner for network services and email security
+2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
+3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
 
-**التزام Cloudflare**: تنص Cloudflare صراحةً في مدونة قواعد السلوك الخاصة بها على أنها لا تستخدم معدات الاتصالات أو منتجات أو خدمات مراقبة الفيديو من أي كيانات محظورة بموجب القسم 889.
+**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
 
-**حالة استخدام حكومية**: تم التحقق من امتثالنا للمادة 889 عندما اختارت **الأكاديمية البحرية الأمريكية** خدمة Forward Email لتلبية احتياجات إعادة توجيه البريد الإلكتروني الآمنة، الأمر الذي يتطلب توثيق معايير الامتثال الفيدرالية لدينا.
+**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-للحصول على تفاصيل كاملة حول إطار عملنا للامتثال الحكومي، بما في ذلك اللوائح الفيدرالية الأوسع، اقرأ دراسة الحالة الشاملة الخاصة بنا: [خدمة البريد الإلكتروني للحكومة الفيدرالية متوافقة مع المادة 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## تفاصيل النظام والتقنية {#system-and-technical-details}
+## System and Technical Details {#system-and-technical-details}
 
-### هل تقوم بتخزين رسائل البريد الإلكتروني ومحتوياتها؟ {#do-you-store-emails-and-their-contents}
+### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
 
-لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك؟ {#how-does-your-email-forwarding-system-work}
+### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
 
-يعتمد البريد الإلكتروني على [بروتوكول SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). يتكون هذا البروتوكول من أوامر تُرسل إلى خادم (يعمل عادةً على المنفذ 25). يتم إجراء اتصال أولي، ثم يُحدد المُرسِل مصدر البريد ("MAIL FROM")، متبوعًا بالجهة المُرسلة ("RCPT TO")، وأخيرًا عناوين البريد الإلكتروني ونصه ("DATA"). فيما يلي وصف لسير نظام إعادة توجيه البريد الإلكتروني لدينا بالنسبة لكل أمر من أوامر بروتوكول SMTP:
+Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* الاتصال الأولي (بدون اسم أمر، مثل `telnet example.com 25`) - هذا هو الاتصال الأولي. نتحقق من المرسلين غير الموجودين في [القائمة المسموح بها](#do-you-have-an-allowlist) لدينا مقابل [قائمة الرفض](#do-you-have-a-denylist) لدينا. أخيرًا، إذا لم يكن المرسل مدرجًا في قائمة المسموح بها لدينا، فسنتحقق مما إذا كان [مُدرج في القائمة الرمادية](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
-* `HELO` - يشير هذا إلى تحية لتحديد اسم النطاق المؤهل بالكامل (FQDN) للمُرسِل، أو عنوان IP، أو اسم مُعالج البريد. يمكن تزييف هذه القيمة، لذا لا نعتمد على هذه البيانات، بل نستخدم البحث العكسي عن اسم المضيف لعنوان IP الخاص بالاتصال.
+* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - يشير هذا إلى عنوان البريد المرسل من الظرف. في حال إدخال قيمة، يجب أن يكون عنوان بريد إلكتروني صالحًا وفقًا لمعيار RFC 5322. القيم الفارغة مسموح بها. نستخدم [التحقق من التشتت الخلفي](#how-do-you-protect-against-backscatter) هنا، ونتحقق أيضًا من عنوان البريد المرسل مقابل [قائمة الرفض](#do-you-have-a-denylist). أخيرًا، نتحقق من المرسلين غير المدرجين في قائمة المسموح لهم لتحديد معدل الإرسال (للمزيد من المعلومات، راجع قسم [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة المسموح بها](#do-you-have-an-allowlist)).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - يشير هذا إلى مُستلِم/مُستلِمي البريد الإلكتروني. يجب أن تكون هذه العناوين صالحة وفقًا لمعيار RFC 5322. لا نسمح إلا بـ 50 مُستلِمًا لكل رسالة (هذا يختلف عن عنوان "إلى" في البريد الإلكتروني). نتحقق أيضًا من وجود عنوان [مخطط إعادة كتابة المرسل](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") صالح هنا للحماية من انتحال اسم نطاق SRS الخاص بنا.
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
 
-* `DATA` - هذا هو الجزء الأساسي من خدمتنا الذي يُعالج رسائل البريد الإلكتروني. راجع قسم [كيفية معالجة البريد الإلكتروني لإعادة التوجيه](#how-do-you-process-an-email-for-forwarding) أدناه لمزيد من المعلومات.
+* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
-### كيف تقوم بمعالجة البريد الإلكتروني لإعادة التوجيه {#how-do-you-process-an-email-for-forwarding}
+### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
 
-يصف هذا القسم عمليتنا المتعلقة بأمر بروتوكول SMTP `DATA` في القسم [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work) أعلاه - وهو يتعلق بكيفية معالجة رؤوس البريد الإلكتروني ونصه وأمانه وتحديد المكان الذي يجب تسليمه إليه وكيفية التعامل مع الاتصالات.
+This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
 
-1. إذا تجاوز حجم الرسالة الحد الأقصى وهو 50 ميجا بايت، فسيتم رفضها برمز الخطأ 552.
+1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
 
-2. إذا لم تتضمن الرسالة عنوان "من"، أو إذا لم تكن أي من القيم الموجودة في عنوان "من" عناوين بريد إلكتروني صالحة وفقًا لمعيار RFC 5322، فسيتم رفضها برمز الخطأ 550.
+2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
 
-3. إذا كانت الرسالة تحتوي على أكثر من 25 عنوان "مستلمة"، فسيتم تحديد أنها عالقة في حلقة إعادة التوجيه، ويتم رفضها برمز الخطأ 550.
+3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-4. باستخدام بصمة البريد الإلكتروني (راجع القسم الخاص بـ [بصمات الأصابع](#how-do-you-determine-an-email-fingerprint))، سوف نتحقق مما إذا كانت الرسالة قد تمت محاولتها مرة أخرى لأكثر من 5 أيام (والتي تتطابق مع [سلوك البادئة الافتراضية](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime))، وإذا كان الأمر كذلك، فسيتم رفضها برمز الخطأ 550.
+4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
 
-5. نقوم بتخزين النتائج في الذاكرة من مسح البريد الإلكتروني باستخدام [ماسح البريد العشوائي](https://spamscanner.net).
+5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
-٦. في حال وجود أي نتائج عشوائية من Spam Scanner، فسيتم رفضها مع رمز الخطأ ٥٥٤. تشمل النتائج العشوائية اختبار GTUBE فقط وقت كتابة هذه السطور. راجع <https://spamassassin.apache.org/gtube/> لمزيد من المعلومات.
+6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
 
-7. سنضيف العناوين التالية إلى الرسالة لأغراض تصحيح الأخطاء ومنع إساءة الاستخدام:
+7. We will add the following headers to the message for debugging and abuse prevention purposes:
 
-* `Received` - نضيف رأس الاستلام القياسي هذا مع عنوان IP الأصلي والمضيف، ونوع الإرسال، ومعلومات اتصال TLS، والتاريخ/الوقت، والمستلم.
-* `X-Original-To` - المستلم الأصلي للرسالة:
-* هذا مفيد لتحديد مكان تسليم البريد الإلكتروني في الأصل (بالإضافة إلى رأس "الاستلام").
-* يُضاف هذا لكل مستلم عند استخدام IMAP و/أو إعادة التوجيه المقنع (لحماية الخصوصية).
-* `X-Forward-Email-Website` - يحتوي على رابط لموقعنا الإلكتروني <https://forwardemail.net>
-* `X-Forward-Email-Version` - الإصدار الحالي من [سيمفر](https://semver.org/) من `package.json` لقاعدة بياناتنا.
-* `X-Forward-Email-Session-ID` - قيمة معرف جلسة تُستخدم لأغراض التصحيح (تنطبق فقط في البيئات غير الإنتاجية).
-* `X-Forward-Email-Sender` - قائمة مفصولة بفواصل تحتوي على عنوان البريد الأصلي (إن لم يكن فارغًا)، واسم المجال الكامل المؤهل لعميل PTR العكسي (إن وُجد)، وعنوان IP للمُرسِل.
-* `X-Forward-Email-ID` - ينطبق هذا فقط على بروتوكول SMTP الصادر، ويرتبط بمعرف البريد الإلكتروني المُخزّن في "حسابي ← رسائل البريد الإلكتروني".
-* `X-Original-To`0 - بقيمة `X-Original-To`1.
-* `X-Original-To`2 - بقيمة `X-Original-To`3.
-* `X-Original-To`4 - بقيمة `X-Original-To`5.
+* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
+   * `X-Original-To` - the original recipient for the message:
+     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
+     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
+   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
+   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
+   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
+   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
 
-8. نقوم بعد ذلك بالتحقق من الرسالة الخاصة بـ [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)، و[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)، و[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain)، و[DMARC](https://en.wikipedia.org/wiki/DMARC).
+8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* إذا فشلت الرسالة في اجتياز DMARC وكان النطاق يتبع سياسة رفض (مثل `p=reject` [كان في سياسة DMARC](https://wikipedia.org/wiki/DMARC))، فسيتم رفضها برمز خطأ 550. عادةً، يمكن العثور على سياسة DMARC للنطاق في سجل <strong class="notranslate">TXT</strong> للنطاق الفرعي `_dmarc`، (مثل `dig _dmarc.example.com txt`).
+* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
-* إذا فشلت الرسالة في اجتياز SPF وكان النطاق يتبع سياسة فشل تام (مثل `-all` في سياسة SPF بدلاً من `~all` أو لا توجد سياسة على الإطلاق)، فسيتم رفضها برمز خطأ 550. عادةً، يمكن العثور على سياسة SPF للنطاق في سجل <strong class="notranslate">TXT</strong> للنطاق الجذر (مثل `dig example.com txt`). راجع هذا القسم للحصول على مزيد من المعلومات حول [إرسال البريد كما هو الحال مع Gmail](#can-i-send-mail-as-in-gmail-with-this) فيما يتعلق بـ SPF.
+9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
-٩. الآن، نقوم بمعالجة مستلمي الرسالة كما جُمعت من أمر `RCPT TO` في القسم [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work) أعلاه. لكل مستلم، نُجري العمليات التالية:
+* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
+   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
+   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
+   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
+   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
+   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
+   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 
-* نبحث في سجلات <strong class="notranslate">TXT</strong> لاسم النطاق (الجزء الذي يلي رمز `@`، على سبيل المثال `example.com` إذا كان عنوان البريد الإلكتروني `test@example.com`). على سبيل المثال، إذا كان النطاق `example.com`، فإننا نجري بحث DNS مثل `dig example.com txt`.
-* نحلل جميع سجلات <strong class="notranslate">TXT</strong> التي تبدأ إما بـ `forward-email=` (الخطط المجانية) أو `forward-email-site-verification=` (الخطط المدفوعة). يُرجى العلم أننا نحلل كليهما لمعالجة رسائل البريد الإلكتروني أثناء ترقية المستخدم أو تخفيض باقاته.
-* من سجلات <strong class="notranslate">TXT</strong> المُحللة، نُكرر العملية لاستخراج تكوين إعادة التوجيه (كما هو موضح في قسم [كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding) أعلاه). يُرجى العلم أننا ندعم قيمة `forward-email-site-verification=` واحدة فقط، وإذا تم إدخال أكثر من قيمة، فسيحدث خطأ 550 وسيتلقى المُرسِل رسالة ارتداد لهذا المُستلِم.
+10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-* نُكرر العملية بشكل متكرر لتكوين إعادة التوجيه المُستخرج لتحديد إعادة التوجيه الشاملة، وإعادة التوجيه القائمة على التعابير العادية، وجميع تكوينات إعادة التوجيه الأخرى المدعومة - والتي تُعرف الآن باسم "عناوين إعادة التوجيه".
+* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
+    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
+    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
-* لكل عنوان إعادة توجيه، ندعم بحثًا تكراريًا واحدًا (يبدأ سلسلة العمليات هذه على العنوان المُعطى). إذا تم العثور على تطابق تكراري، فسيتم إزالة النتيجة الأصلية من عناوين إعادة التوجيه، وإضافة النتائج الفرعية.
+11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-* يتم تحليل عناوين إعادة التوجيه لضمان تفردها (لأننا لا نريد إرسال رسائل مكررة إلى عنوان واحد أو توليد اتصالات إضافية غير ضرورية عبر عميل SMTP).
-* لكل عنوان إعادة توجيه، نبحث عن اسم نطاقه في نقطة نهاية واجهة برمجة التطبيقات `/v1/max-forwarded-addresses` (لتحديد عدد العناوين المسموح للنطاق بإعادة توجيه البريد الإلكتروني إليها لكل اسم مستعار، على سبيل المثال، 10 عناوين افتراضيًا - راجع قسم `example.com`0). في حال تجاوز هذا الحد، سيحدث خطأ 550 وسيتلقى المرسل إشعارًا برفض البريد لهذا المستلم.
-* نبحث عن إعدادات المستلم الأصلي في نقطة نهاية واجهة برمجة التطبيقات `example.com`1، والتي تدعم البحث عن المستخدمين المدفوعين (مع إمكانية البحث عن المستخدمين المجانيين). يُرجع هذا كائن تكوين للإعدادات المتقدمة لـ `example.com`2 (رقم، مثل `example.com`3)، و`example.com`4 (منطقي)، و`example.com`5 (منطقي)، و`example.com`6 (منطقي)، و`example.com`7 (منطقي).
-* بناءً على هذه الإعدادات، نتحقق بعد ذلك من نتائج فحص البريد العشوائي، وفي حال حدوث أي أخطاء، تُرفض الرسالة برمز خطأ 554 (على سبيل المثال، إذا تم تفعيل `example.com`8، فسنتحقق من نتائج فحص البريد العشوائي بحثًا عن الفيروسات). يُرجى العلم أن جميع مستخدمي الخطة المجانية سيشتركون في عمليات فحص المحتوى للبالغين، والتصيد الاحتيالي، والملفات القابلة للتنفيذ، والفيروسات. بشكل افتراضي، يتم اختيار جميع مستخدمي الخطة المدفوعة أيضًا، ولكن يمكن تغيير هذا التكوين ضمن صفحة الإعدادات للنطاق في لوحة معلومات إعادة توجيه البريد الإلكتروني.
+12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
-10. بالنسبة لكل عنوان إعادة توجيه للمستلم الذي تمت معالجته، نقوم بعد ذلك بإجراء العمليات التالية:
+* If any errors occur while sending emails, then we will store them in-memory for later processing.
+    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * If no errors occurred, then we will send a 250 successful SMTP response status code.
+    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-* يتم التحقق من العنوان مقابل [قائمة الرفض](#do-you-have-a-denylist)، وإذا كان مدرجًا، فسيظهر رمز خطأ 421 (يُشير إلى المُرسِل لإعادة المحاولة لاحقًا).
-* إذا كان العنوان خطافًا ويب، فسنُعيّن قيمة منطقية للعمليات المستقبلية (انظر أدناه - نُجمّع خطافات الويب المتشابهة معًا لإنشاء طلب POST واحد بدلًا من طلبات متعددة للتسليم).
-* إذا كان العنوان عنوان بريد إلكتروني، فسنُحلل المُضيف للعمليات المستقبلية (انظر أدناه - نُجمّع المُضيفات المتشابهة معًا لإنشاء اتصال واحد بدلًا من اتصالات فردية متعددة للتسليم).
+13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
 
-11. إذا لم يكن هناك مستلمون ولا ارتدادات، فسنرد بخطأ 550 "مستلمون غير صالحين".
+14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
-١٢. إذا كان هناك مستلمون، فسنكرر العملية عليهم (مُجمّعين معًا بواسطة نفس المُضيف) ونُسلّم رسائل البريد الإلكتروني. راجع قسم [كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues) أدناه لمزيد من المعلومات.
+### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
 
-* في حال حدوث أي أخطاء أثناء إرسال رسائل البريد الإلكتروني، سنخزنها في الذاكرة لمعالجتها لاحقًا.
-* سنأخذ رمز الخطأ الأقل (إن وُجد) من إرسال رسائل البريد الإلكتروني، ونستخدمه كرمز استجابة لأمر `DATA`. هذا يعني أن رسائل البريد الإلكتروني التي لم تُسلّم ستُعاد عادةً من قِبل المُرسِل الأصلي، بينما لن تُعاد إرسال رسائل البريد الإلكتروني التي تم تسليمها بالفعل في المرة التالية التي تُرسَل فيها الرسالة (لأننا نستخدم [بصمات الأصابع](#how-do-you-determine-an-email-fingerprint)).
-* في حال عدم حدوث أي أخطاء، سنرسل رمز حالة استجابة SMTP ناجحًا بقيمة 250.
-* يُعَدّ الارتداد أي محاولة تسليم ينتج عنها رمز حالة أكبر من أو يساوي 500 (أعطال دائمة).
+Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
 
-13. إذا لم تحدث أي ارتدادات (فشل دائم)، فسوف نقوم بإرجاع رمز حالة استجابة SMTP لأدنى رمز خطأ من الفشل غير الدائم (أو رمز حالة ناجح 250 إذا لم يكن هناك أي فشل).
+We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 
-١٤. في حال حدوث ارتدادات، سنرسل رسائل بريد إلكتروني مرتدة في الخلفية بعد إرجاع أدنى رمز خطأ إلى المُرسِل. أما إذا كان أدنى رمز خطأ >= ٥٠٠، فلن نُرسل أي رسائل مرتدة. هذا لأنه في حال فعلنا ذلك، سيتلقى المُرسِلون رسالة بريد إلكتروني مرتدة مزدوجة (مثل رسالة من وسيط نقل البريد الصادر، مثل Gmail، ورسالة أخرى منّا أيضًا). راجع قسم [كيف تحمي نفسك من التشتت الخلفي؟](#how-do-you-protect-against-backscatter) أدناه لمزيد من المعلومات.
+Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
-### كيف تتعامل مع مشكلات تسليم البريد الإلكتروني؟ {#how-do-you-handle-email-delivery-issues}
+If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
-يرجى ملاحظة أننا سنُعيد كتابة "من المُرسِل" على رسائل البريد الإلكتروني فقط في حال عدم اجتياز سياسة DMARC الخاصة بالمُرسِل، وعدم توافق توقيعات DKIM مع رأس "من". هذا يعني أننا سنُغيّر رأس "من" في الرسالة، ونُعيّن "من-X الأصلي"، ونُعيّن أيضًا "ردًا إلى" إذا لم يكن مُعيّنًا مسبقًا. سنُعيد أيضًا ختم ختم ARC على الرسالة بعد تعديل هذه الرؤوس.
+Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
-نحن نستخدم أيضًا التحليل الذكي لرسائل الخطأ في كل مستوى من مستويات المكدس لدينا - في الكود الخاص بنا، طلبات DNS، وداخليات Node.js، وطلبات HTTP (على سبيل المثال، يتم تعيين 408 و413 و429 إلى رمز استجابة SMTP 421 إذا كان المستلم عبارة عن خطاف ويب)، واستجابات خادم البريد (على سبيل المثال، سيتم إعادة محاولة الاستجابات التي تحتوي على "تأجيل" أو "إبطاء" كأخطاء 421).
+If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
-منطقنا مُحصّن ضد الأخطاء، وسيُعيد المحاولة أيضًا في حال وجود أخطاء SSL/TLS، أو مشاكل في الاتصال، وغيرها. الهدف من هذا المُحصّن هو زيادة إمكانية توصيل الرسائل إلى جميع المستلمين في إعدادات إعادة التوجيه.
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
 
-إذا كان المستلم هو خطاف ويب، فسنسمح بفترة انتظار مدتها 60 ثانية لإكمال الطلب مع ما يصل إلى 3 محاولات إعادة (أي 4 طلبات إجمالاً قبل الفشل). يُرجى العلم أننا نحلل رموز الخطأ 408 و413 و429 بشكل صحيح ونربطها برمز استجابة SMTP 421.
+### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-إذا كان المستلم عنوان بريد إلكتروني، فسنحاول إرسال البريد الإلكتروني باستخدام بروتوكول TLS (نحاول استخدام STARTTLS إذا كان متوفرًا على خادم بريد المستلم). في حال حدوث خطأ في SSL/TLS أثناء محاولة إرسال البريد الإلكتروني، فسنحاول إرساله بدون بروتوكول TLS (بدون استخدام STARTTLS).
+We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-إذا حدثت أي أخطاء DNS أو أخطاء اتصال، فسوف نعيد إلى الأمر `DATA` رمز استجابة SMTP 421، وإلا إذا كان هناك أخطاء بمستوى >= 500، فسيتم إرسال الارتدادات.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
-إذا اكتشفنا أن خادم البريد الإلكتروني الذي نحاول تسليم البريد إليه لديه عنوان IP واحد أو أكثر من عناوين تبادل البريد الإلكتروني لدينا محظور (على سبيل المثال، بواسطة أي تقنية يستخدمونها لتأجيل مرسلي البريد العشوائي)، فسنرسل رمز استجابة SMTP 421 للمرسل لإعادة محاولة إرسال رسالته لاحقًا (ونحن ننبه إلى المشكلة حتى نتمكن من حلها قبل المحاولة التالية).
+Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
 
-### كيف تتعامل مع حظر عناوين IP الخاصة بك؟ {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### What are postmaster addresses {#what-are-postmaster-addresses}
 
-نقوم بشكل روتيني بمراقبة جميع قوائم الرفض الرئيسية لـ DNS وإذا تم إدراج أي من عناوين IP لتبادل البريد ("MX") في قائمة رفض رئيسية، فسنقوم بسحبها من جولة سجلات DNS A ذات الصلة إذا كان ذلك ممكنًا حتى يتم حل المشكلة.
-
-في وقت كتابة هذه السطور، نُدرج أيضًا في عدة قوائم DNS المسموح بها، ونأخذ مراقبة قوائم الحظر على محمل الجد. إذا لاحظت أي مشاكل قبل أن نتمكن من حلها، يُرجى إبلاغنا كتابيًا على <support@forwardemail.net>.
-
-عناوين IP الخاصة بنا متاحة للعامة، [انظر هذا القسم أدناه لمزيد من المعلومات](#what-are-your-servers-ip-addresses).
-
-### ما هي عناوين مدير مكتب البريد؟ {#what-are-postmaster-addresses}
-
-من أجل منع عمليات الارتداد الخاطئة وإرسال رسائل الرد التلقائي إلى صناديق بريد غير مراقبة أو غير موجودة، فإننا نحتفظ بقائمة من أسماء المستخدمين مثل برنامج البريد الإلكتروني:
+In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
 
 * `automailer`
 * `autoresponder`
@@ -3174,13 +3592,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [وأي عنوان لا يمكن الرد عليه](#what-are-no-reply-addresses)
+* [and any no-reply address](#what-are-no-reply-addresses)
 
-راجع [RFC 5320 القسم 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) للحصول على مزيد من المعلومات حول كيفية استخدام القوائم مثل هذه لإنشاء أنظمة بريد إلكتروني فعالة.
+See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
 
-### ما هي عناوين عدم الرد {#what-are-no-reply-addresses}
+### What are no-reply addresses {#what-are-no-reply-addresses}
 
-تعتبر أسماء مستخدمي البريد الإلكتروني التي تساوي أيًا من الأسماء التالية (غير حساسة لحالة الأحرف) بمثابة عناوين عدم الرد:
+Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3201,1435 +3619,1461 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * `noreply`
 * `noreplys`
 
-يتم صيانة هذه القائمة [كمشروع مفتوح المصدر على GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### ما هي عناوين IP الخاصة بخادمك؟ {#what-are-your-servers-ip-addresses}
+### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
 
-نقوم بنشر عناوين IP الخاصة بنا على <https://forwardemail.net/ips>.
+We publish our IP addresses at <https://forwardemail.net/ips>.
 
-### هل لديك قائمة مسموح بها {#do-you-have-an-allowlist}
+### Do you have an allowlist {#do-you-have-an-allowlist}
 
-نعم، لدينا [قائمة امتدادات اسم النطاق](#what-domain-name-extensions-are-allowlisted-by-default) المسموح بها بشكل افتراضي وقائمة مسموح بها ديناميكية ومخزنة مؤقتًا ومتجددة استنادًا إلى [معايير صارمة](#what-is-your-allowlist-criteria).
+Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-سيتم إضافة جميع رسائل البريد الإلكتروني والمجالات والمستلمين من العملاء المشتركين في الخطط المدفوعة تلقائيًا إلى القائمة المسموح بها لدينا.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
 
-### ما هي امتدادات أسماء النطاق المسموح بها افتراضيًا؟ {#what-domain-name-extensions-are-allowlisted-by-default}
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
-تعتبر امتدادات أسماء النطاقات التالية مدرجة في القائمة المسموح بها بشكل افتراضي (بغض النظر عما إذا كانت مدرجة في قائمة الشعبية الشاملة أم لا):
+### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
 
-<ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">edu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov</code></li>
-<li class="list-inline-item"><code class="notranslate">mil</code></li>
-<li class="list-inline-item"><code class="notranslate">int</code></li>
-<li class="list-inline-item"><code class="notranslate">arpa</code></li>
-<li class="list-inline-item"><code class="notranslate">dni.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fed.us</code></li>
-<li class="list-inline-item"><code class="notranslate">isa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">kids.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ak.us</code></li>
-<li class="list-inline-item"><code class="notranslate">al.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ar.us</code></li>
-<li class="list-inline-item"><code class="notranslate">as.us</code></li>
-<li class="list-inline-item"><code class="notranslate">az.us</code></li>
-<li فئة "list-inline-item"><code class="notranslate">ca.us</code></li>
-<li class="list-inline-item"><code class="notranslate">co.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ct.us</code></li>
-<li class="list-inline-item"><code class="notranslate">dc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">de.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fl.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ga.us</code></li>
-<li class="list-inline-item"><code class="notranslate">gu.us</code></li>
-<li class="list-inline-item"><code class="notranslate">hi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ia.us</code></li>
-<li class="list-inline-item"><code class="notranslate">id.us</code></li>
-<li class="list-inline-item"><code class="notranslate">il.us</code></li>
-<li class="list-inline-item"><code class="notranslate">in.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ks.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ky.us</code></li>
-<li فئة "list-inline-item"><code class="notranslate">la.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ma.us</code></li>
-<li class="list-inline-item"><code class="notranslate">md.us</code></li>
-<li class="list-inline-item"><code class="notranslate">me.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mo.us</code></li>
-<li class="list-inline-item"><code ms.us
-<li class="list-inline-item"><code class="notranslate">mt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ne.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nj.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nm.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ny.us</code></li>
-<li class="list-inline-item"><code class="notranslate">oh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ok.us</code></li>
-<li class="list-inline-item"><code class="notranslate">or.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pr.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ri.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tx.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ut.us</code></li>
-<li class="list-inline-item"><code class="notranslate">va.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wy.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.au</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.at</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.br</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">school.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">health.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.in</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.in</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.in</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.za</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.za</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.za</code></li>
-<li class="list-inline-item"><code class="notranslate">school.za</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">es.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.es</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.th</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.th</code></li>
-<li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
-<li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">go.id</code></li>
-<li فئة "list-inline-item"><code class="notranslate">go.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">go.ke</code></li>
-<li class="list-inline-item"><code class="notranslate">go.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">go.th</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.es</code></li>
-<li class="list-inline-item"><code gob.mx
-<!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.af</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.al</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.am</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.au</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.az</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.be</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
-<li class="list-inline-item"><code gov.by
-<li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.co</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.il</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.im</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.in</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.it</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.je</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.my</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.np</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.py</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.se</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.si</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.za</code></li>
-<li class="list-inline-item"><code class="notranslate">government.pn</code></li>
-<li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gv.at</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
-<li class="list-inline-item"><code البرلمان البريطاني (parliament.uk)
-<li class="list-inline-item"><code class="notranslate">الشرطة البريطانية (police.uk)</code></li>
-<li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">الملكية البريطانية (royal.uk)</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
-</ul>
-
-بالإضافة إلى ذلك، يتم إدراج [نطاقات المستوى الأعلى للعلامات التجارية والشركات](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) هذه في القائمة المسموح بها بشكل افتراضي (على سبيل المثال، `apple` لـ `applecard.apple` لكشوف حسابات بنك Apple Card):
+The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">aaa</code></li>
-<li class="list-inline-item"><code class="notranslate">aarp</code></li>
-<li class="list-inline-item"><code class="notranslate">abarth</code></li>
-<li class="list-inline-item"><code class="notranslate">abb</code></li>
-<li class="list-inline-item"><code class="notranslate">abbott</code></li>
-<li class="list-inline-item"><code class="notranslate">abbvie</code></li>
-<li class="list-inline-item"><code class="notranslate">abc</code></li>
-<li class="list-inline-item"><code class="notranslate">أكسنتشر</code></li>
-<li class="list-inline-item"><code class="notranslate">أكو</code></li>
-<li class="list-inline-item"><code class="notranslate">إيج</code></li>
-<li class="list-inline-item"><code class="notranslate">أيتنا</code></li>
-<li class="list-inline-item"><code class="notranslate">أفل</code></li>
-<li class="list-inline-item"><code class="notranslate">أغاخان</code></li>
-<li class="list-inline-item"><code class="notranslate">إيج</code></li>
-<li class="list-inline-item"><code class="notranslate">إيغو</code></li>
-<li class="list-inline-item"><code إيرباص
-<li class="list-inline-item"><code class="notranslate">إيرتل</code></li>
-<li class="list-inline-item"><code class="notranslate">akdn</code></li>
-<li class="list-inline-item"><code class="notranslate">ألفاروميو</code></li>
-<li class="list-inline-item"><code class="notranslate">علي بابا</code></li>
-<li class="list-inline-item"><code class="notranslate">ألي باي</code></li>
-<li class="list-inline-item"><code class="notranslate">أل فينانز</code></li>
-<li class="list-inline-item"><code class="notranslate">أول ستيت</code></li>
-<li class="list-inline-item"><code class="notranslate">ally</code></li>
-<li class="list-inline-item"><code class="notranslate">alstom</code></li>
-<li class="list-inline-item"><code class="notranslate">amazon</code></li>
-<li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
-<li class="list-inline-item"><code class="notranslate">amex</code></li>
-<li class="list-inline-item"><code class="notranslate">amica</code></li>
-<li class="list-inline-item"><code class="notranslate">android</code></li>
-<li class="list-inline-item"><code class="notranslate">anz</code></li>
-<li class="list-inline-item"><code class="notranslate">aol</code></li>
-<li class="list-inline-item"><code class="notranslate">apple</code></li>
-<li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
-<li class="list-inline-item"><code class="notranslate">أرامكو</code></li>
-<li class="list-inline-item"><code class="notranslate">أودي</code></li>
-<li class="list-inline-item"><code class="notranslate">auspost</code></li>
-<li class="list-inline-item"><code class="notranslate">aws</code></li>
-<li class="list-inline-item"><code class="notranslate">axa</code></li>
-<li class="list-inline-item"><code class="notranslate">أزور</code></li>
-<li class="list-inline-item"><code class="notranslate">بايدو</code></li>
-<li class="list-inline-item"><code class="notranslate">بانانا ريبوبليك</code></li>
-<li class="list-inline-item"><code class="notranslate">باركلاي كارد</code></li>
-<li class="list-inline-item"><code class="notranslate">باركلايز</code></li>
-<li class="list-inline-item"><code class="notranslate">كرة السلة</code></li>
-<li class="list-inline-item"><code class="notranslate">باوهاوس</code></li>
-<li class="list-inline-item"><code class="notranslate">بي بي سي</code></li>
-<li class="list-inline-item"><code class="notranslate">bbt</code></li>
-<li class="list-inline-item"><code class="notranslate">bbva</code></li>
-<li class="list-inline-item"><code class="notranslate">bcg</code></li>
-<li class="list-inline-item"><code class="notranslate">بنتلي</code></li>
-<li class="list-inline-item"><code class="notranslate">بهارتي</code></li>
-<li class="list-inline-item"><code class="notranslate">بينج</code></li>
-<li class="list-inline-item"><code class="notranslate">بلانكو</code></li>
-<li class="list-inline-item"><code class="notranslate">بلومبرغ</code></li>
-<li class="list-inline-item"><code class="notranslate">bms</code></li>
-<li class="list-inline-item"><code class="notranslate">bmw</code></li>
-<li class="list-inline-item"><code class="notranslate">bnl</code></li>
-<li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
-<li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-<li class="list-inline-item"><code class="notranslate">bond</code></li>
-<li class="list-inline-item"><code class="notranslate">booking</code></li>
-<li class="list-inline-item"><code class="notranslate">bosch</code></li>
-<li فئة "list-inline-item"><code class="notranslate">بوستيك</code></li>
-<li class="list-inline-item"><code class="notranslate">براديسكو</code></li>
-<li class="list-inline-item"><code class="notranslate">بريدجستون</code></li>
-<li class="list-inline-item"><code class="notranslate">براذر</code></li>
-<li class="list-inline-item"><code class="notranslate">بوجاتي</code></li>
-<li class="list-inline-item"><code class="notranslate">كال</code></li>
-<li class="list-inline-item"><code class="notranslate">كالفنكلين</code></li>
-<li class="list-inline-item"><code class="notranslate">كانون</code></li>
-<li class="list-inline-item"><code class="notranslate">كابيتالون</code></li>
-<li class="list-inline-item"><code class="notranslate">كارافان</code></li>
-<li class="list-inline-item"><code class="notranslate">كارتييه</code></li>
-<li class="list-inline-item"><code class="notranslate">سي بي إيه</code></li>
-<li class="list-inline-item"><code class="notranslate">سي بي إن</code></li>
-<li class="list-inline-item"><code class="notranslate">سي بي آر إي</code></li>
-<li class="list-inline-item"><code class="notranslate">سي بي إس</code></li>
-<li class="list-inline-item"><code class="notranslate">سيرن</code></li>
-<li class="list-inline-item"><code class="notranslate">cfa</code></li>
-<li class="list-inline-item"><code class="notranslate">chanel</code></li>
-<li class="list-inline-item"><code class="notranslate">chase</code></li>
-<li class="list-inline-item"><code class="notranslate">chintai</code></li>
-<li class="list-inline-item"><code class="notranslate">chrome</code></li>
-<li class="list-inline-item"><code class="notranslate">chrysler</code></li>
-<li class="list-inline-item"><code class="notranslate">cipriani</code></li>
-<li class="list-inline-item"><code class="notranslate">cisco</code></li>
-<li class="list-inline-item"><code class="notranslate">القلعة</code></li>
-<li class="list-inline-item"><code class="notranslate">سيتي</code></li>
-<li class="list-inline-item"><code class="notranslate">سيتيك</code></li>
-<li class="list-inline-item"><code class="notranslate">كلوبميد</code></li>
-<li class="list-inline-item"><code class="notranslate">كومكاست</code></li>
-<li class="list-inline-item"><code class="notranslate">كومبانك</code></li>
-<li class="list-inline-item"><code class="notranslate">اتحاد ائتماني</code></li>
-<li class="list-inline-item"><code class="notranslate">كراون</code></li>
-<li class="list-inline-item"><code class="notranslate">crs</code></li>
-<li class="list-inline-item"><code class="notranslate">csc</code></li>
-<li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
-<li class="list-inline-item"><code class="notranslate">dabur</code></li>
-<li class="list-inline-item"><code class="notranslate">datsun</code></li>
-<li class="list-inline-item"><code class="notranslate">dealer</code></li>
-<li class="list-inline-item"><code class="notranslate">dell</code></li>
-<li class="list-inline-item"><code class="notranslate">deloitte</code></li>
-<li class="list-inline-item"><code class="notranslate">دلتا</code></li>
-<li class="list-inline-item"><code class="notranslate">دي إتش إل</code></li>
-<li class="list-inline-item"><code class="notranslate">ديسكوفر</code></li>
-<li class="list-inline-item"><code class="notranslate">ديش</code></li>
-<li class="list-inline-item"><code class="notranslate">دي إن بي</code></li>
-<li class="list-inline-item"><code class="notranslate">دودج</code></li>
-<li class="list-inline-item"><code class="notranslate">دنلوب</code></li>
-<li class="list-inline-item"><code class="notranslate">دوبونت</code></li>
-<li class="list-inline-item"><code class="notranslate">dvag</code></li>
-<li class="list-inline-item"><code class="notranslate">edeka</code></li>
-<li class="list-inline-item"><code class="notranslate">emerck</code></li>
-<li class="list-inline-item"><code class="notranslate">epson</code></li>
-<li class="list-inline-item"><code class="notranslate">ericsson</code></li>
-<li class="list-inline-item"><code class="notranslate">erni</code></li>
-<li class="list-inline-item"><code class="notranslate">esurance</code></li>
-<li class="list-inline-item"><code class="notranslate">etisalat</code></li>
-<li class="list-inline-item"><code class="notranslate">يوروفيجن</code></li>
-<li class="list-inline-item"><code class="notranslate">إيفربانك</code></li>
-<li class="list-inline-item"><code class="notranslate">مسافة إضافية</code></li>
-<li class="list-inline-item"><code class="notranslate">فاجي</code></li>
-<li class="list-inline-item"><code class="notranslate">فيرويندز</code></li>
-<li class="list-inline-item"><code class="notranslate">مزارعون</code></li>
-<li class="list-inline-item"><code class="notranslate">فيديكس</code></li>
-<li class="list-inline-item"><code class="notranslate">فيراري</code></li>
-<li فيريرو
-فيات
-فيديليتي
-فايرستون
-فيريرو
-فيريرو
-
-فيريستون
-
-فيريستون
-
-فيريستون
-
-فلسميدث
-<li class="list-inline-item"><code class="notranslate">فورد</code></li>
-<li class="list-inline-item"><code class="notranslate">ثعلب</code></li>
-<li class="list-inline-item"><code class="notranslate">فريسينيوس</code></li>
-<li class="list-inline-item"><code class="notranslate">فوركس</code></li>
-<li class="list-inline-item"><code class="notranslate">فروغانز</code></li>
-<li class="list-inline-item"><code class="notranslate">فرونتير</code></li>
-<li class="list-inline-item"><code class="notranslate">فوجيتسو</code></li>
-<li class="list-inline-item"><code class="notranslate">فوجيكسروكس</code></li>
-<li class="list-inline-item"><code class="notranslate">gallo</code></li>
-<li class="list-inline-item"><code class="notranslate">gallup</code></li>
-<li class="list-inline-item"><code class="notranslate">gap</code></li>
-<li class="list-inline-item"><code class="notranslate">gbiz</code></li>
-<li class="list-inline-item"><code class="notranslate">gea</code></li>
-<li class="list-inline-item"><code class="notranslate">genting</code></li>
-<li class="list-inline-item"><code class="notranslate">giving</code></li>
-<li class="list-inline-item"><code class="notranslate">gle</code></li>
-<li class="list-inline-item"><code class="notranslate">globo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmail</code></li>
-<li class="list-inline-item"><code class="notranslate">gmo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmx</code></li>
-<li class="list-inline-item"><code class="notranslate">godaddy</code></li>
-<li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
-<li class="list-inline-item"><code class="notranslate">goodyear</code></li>
-<li class="list-inline-item"><code class="notranslate">goog</code></li>
-<li class="list-inline-item"><code class="notranslate">جوجل</code></li>
-<li class="list-inline-item"><code class="notranslate">جرينجر</code></li>
-<li class="list-inline-item"><code class="notranslate">غارديان</code></li>
-<li class="list-inline-item"><code class="notranslate">غوتشي</code></li>
-<li class="list-inline-item"><code class="notranslate">إتش بي أو</code></li>
-<li class="list-inline-item"><code class="notranslate">hdfc</code></li>
-<li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
-<li class="list-inline-item"><code class="notranslate">هيرميس</code></li>
-<li class="list-inline-item"><code class="notranslate">هيساميتسو</code></li>
-<li class="list-inline-item"><code class="notranslate">هيتاشي</code></li>
-<li class="list-inline-item"><code class="notranslate">hkt</code></li>
-<li class="list-inline-item"><code class="notranslate">هوندا</code></li>
-<li class="list-inline-item"><code class="notranslate">هونيويل</code></li>
-<li class="list-inline-item"><code class="notranslate">هوتميل</code></li>
-<li class="list-inline-item"><code class="notranslate">إتش إس بي سي</code></li>
-<li class="list-inline-item"><code class="notranslate">هيوز</code></li>
-<li class="list-inline-item"><code class="notranslate">هايات</code></li>
-<li class="list-inline-item"><code class="notranslate">هيونداي</code></li>
-<li class="list-inline-item"><code class="notranslate">آي بي إم</code></li>
-<li class="list-inline-item"><code class="notranslate">ieee</code></li>
-<li class="list-inline-item"><code class="notranslate">ifm</code></li>
-<li class="list-inline-item"><code class="notranslate">إيكانو</code></li>
-<li class="list-inline-item"><code class="notranslate">imdb</code></li>
-<li class="list-inline-item"><code class="notranslate">إنفينيتي</code></li>
-<li class="list-inline-item"><code class="notranslate">intel</code></li>
-<li class="list-inline-item"><code class="notranslate">intuit</code></li>
-<li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
-<li class="list-inline-item"><code class="notranslate">iselect</code></li>
-<li class="list-inline-item"><code class="notranslate">itau</code></li>
-<li class="list-inline-item"><code class="notranslate">itv</code></li>
-<li class="list-inline-item"><code class="notranslate">iveco</code></li>
-<li class="list-inline-item"><code class="notranslate">jaguar</code></li>
-<li class="list-inline-item"><code class="notranslate">java</code></li>
-<li class="list-inline-item"><code class="notranslate">jcb</code></li>
-<li class="list-inline-item"><code class="notranslate">jcp</code></li>
-<li class="list-inline-item"><code class="notranslate">jeep</code></li>
-<li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
-<li class="list-inline-item"><code class="notranslate">juniper</code></li>
-<li class="list-inline-item"><code class="notranslate">kddi</code></li>
-<li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
-<li class="list-inline-item"><code class="notranslate">كيري لوجيستكس</code></li>
-<li class="list-inline-item"><code class="notranslate">كيري بروبرتيز</code></li>
-<li class="list-inline-item"><code class="notranslate">كيه إف إتش</code></li>
-<li class="list-inline-item"><code class="notranslate">كيا</code></li>
-<li class="list-inline-item"><code class="notranslate">كيندر</code></li>
-<li class="list-inline-item"><code class="notranslate">كيندل</code></li>
-<li class="list-inline-item"><code class="notranslate">كوماتسو</code></li>
-<li class="list-inline-item"><code class="notranslate">kpmg</code></li>
-<li class="list-inline-item"><code class="notranslate">kred</code></li>
-<li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
-<li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
-<li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
-<li class="list-inline-item"><code class="notranslate">lancaster</code></li>
-<li class="list-inline-item"><code class="notranslate">lancia</code></li>
-<li لانكوم
-<li class="list-inline-item"><code class="notranslate">لاند روفر</code></li>
-<li class="list-inline-item"><code class="notranslate">لانكسيس</code></li>
-<li class="list-inline-item"><code class="notranslate">لاسال</code></li>
-<li class="list-inline-item"><code class="notranslate">لاتروب</code></li>
-<li class="list-inline-item"><code class="notranslate">lds</code></li>
-<li class="list-inline-item"><code class="notranslate">ليكلير</code></li>
-<li class="list-inline-item"><code class="notranslate">ليغو</code></li>
-<li class="list-inline-item"><code class="notranslate">رابطة</code></li>
-<li class="list-inline-item"><code class="notranslate">لكزس</code></li>
-<li class="list-inline-item"><code class="notranslate">ليدل</code></li>
-<li class="list-inline-item"><code class="notranslate">نمط حياة</code></li>
-<li class="list-inline-item"><code class="notranslate">ليلي</code></li>
-<li class="list-inline-item"><code class="notranslate">لينكولن</code></li>
-<li class="list-inline-item"><code class="notranslate">ليند</code></li>
-<li class="list-inline-item"><code class="notranslate">ليبسي</code></li>
-<li ليكسيل
-<li class="list-inline-item"><code class="notranslate">لوكس</code></li>
-<li class="list-inline-item"><code class="notranslate">لوت</code></li>
-<li class="list-inline-item"><code class="notranslate">lpl</code></li>
-<li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
-<li class="list-inline-item"><code class="notranslate">لوندبيك</code></li>
-<li class="list-inline-item"><code class="notranslate">لوبين</code></li>
-<li class="list-inline-item"><code class="notranslate">مايسيز</code></li>
-<li class="list-inline-item"><code class="notranslate">مايف</code></li>
-<li class="list-inline-item"><code class="notranslate">مان</code></li>
-<li class="list-inline-item"><code class="notranslate">مانجو</code></li>
-<li class="list-inline-item"><code class="notranslate">ماريوت</code></li>
-<li class="list-inline-item"><code class="notranslate">مازيراتي</code></li>
-<li class="list-inline-item"><code class="notranslate">ماتيل</code></li>
-<li class="list-inline-item"><code class="notranslate">ماكينزي</code></li>
-<li class="list-inline-item"><code class="notranslate">ميتلايف</code></li>
-<li مايكروسوفت
-<li class="list-inline-item"><code class="notranslate">ميني</code></li>
-<li class="list-inline-item"><code class="notranslate">ميت</code></li>
-<li class="list-inline-item"><code class="notranslate">ميتسوبيشي</code></li>
-<li class="list-inline-item"><code class="notranslate">إم إل بي</code></li>
-<li class="list-inline-item"><code class="notranslate">إم إم إيه</code></li>
-<li class="list-inline-item"><code class="notranslate">موناش</code></li>
-<li class="list-inline-item"><code class="notranslate">مورمون</code></li>
-<li class="list-inline-item"><code class="notranslate">moto</code></li>
-<li class="list-inline-item"><code class="notranslate">movistar</code></li>
-<li class="list-inline-item"><code class="notranslate">msd</code></li>
-<li class="list-inline-item"><code class="notranslate">mtn</code></li>
-<li class="list-inline-item"><code class="notranslate">mtr</code></li>
-<li class="list-inline-item"><code class="notranslate">mutual</code></li>
-<li class="list-inline-item"><code class="notranslate">nadex</code></li>
-<li class="list-inline-item"><code class="notranslate">nationalwide</code></li>
-<li class="list-inline-item"><code class="notranslate">الطبيعة</code></ li>
-<li class="list-inline-item"><code class="notranslate">nba</code></li>
-<li class="list-inline-item"><code class="notranslate">nec</code></li>
-<li class="list-inline-item"><code class="notranslate">netflix</code></li>
-<li class="list-inline-item"><code class="notranslate">neustar</code></li>
-<li class="list-inline-item"><code class="notranslate">newholland</code></li>
-<li class="list-inline-item"><code class="notranslate">nfl</code></li>
-<li class="list-inline-item"><code class="notranslate">nhk</code></li>
-<li class="list-inline-item"><code نيكو
-<li class="list-inline-item"><code class="notranslate">نايكي</code></li>
-<li class="list-inline-item"><code class="notranslate">نيكون</code></li>
-<li class="list-inline-item"><code class="notranslate">نيسان</code></li>
-<li class="list-inline-item"><code class="notranslate">نيساي</code></li>
-<li class="list-inline-item"><code class="notranslate">نوكيا</code></li>
-<li class="list-inline-item"><code class="notranslate">نورثويسترن ميوتشوال</code></li>
-<li class="list-inline-item"><code class="notranslate">نورتون</code></li>
-<li class="list-inline-item"><code class="notranslate">nra</code></li>
-<li class="list-inline-item"><code class="notranslate">ntt</code></li>
-<li class="list-inline-item"><code class="notranslate">obi</code></li>
-<li class="list-inline-item"><code class="notranslate">office</code></li>
-<li class="list-inline-item"><code class="notranslate">omega</code></li>
-<li class="list-inline-item"><code class="notranslate">oracle</code></li>
-<li class="list-inline-item"><code class="notranslate">orange</code></li>
-<li class="list-inline-item"><code class="notranslate">otsuka</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
-<li class="list-inline-item"><code class="notranslate">باناسونيك</code></li>
-<li class="list-inline-item"><code class="notranslate">pccw</code></li>
-<li class="list-inline-item"><code class="notranslate">فايزر</code></li>
-<li class="list-inline-item"><code class="notranslate">فيليبس</code></li>
-<li class="list-inline-item"><code class="notranslate">بياجيه</code></li>
-<li class="list-inline-item"><code class="notranslate">بيكتيت</code></li>
-<li class="list-inline-item"><code class="notranslate">بينغ</code></li>
-<li class="list-inline-item"><code class="notranslate">رائد</code></li>
-<li class="list-inline-item"><code class="notranslate">لعب</code></li>
-<li class="list-inline-item"><code class="notranslate">بلاي ستيشن</code></li>
-<li class="list-inline-item"><code class="notranslate">بوهل</code></li>
-<li class="list-inline-item"><code class="notranslate">سياسة</code></li>
-<li class="list-inline-item"><code class="notranslate">ممارسة</code></li>
-<li class="list-inline-item"><code class="notranslate">إنتاج</code></li>
-<li class="list-inline-item"><code class="notranslate">تقدمي</code></li>
-<li class="list-inline-item"><code class="notranslate">pru</code></li>
-<li class="list-inline-item"><code class="notranslate">prudential</code></li>
-<li class="list-inline-item"><code class="notranslate">pwc</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
-<li class="list-inline-item"><code class="notranslate">qvc</code></li>
-<li class="list-inline-item"><code class="notranslate">redstone</code></li>
-<li class="list-inline-item"><code class="notranslate">reliance</code></li>
-<li class="list-inline-item"><code class="notranslate">ريكسروث</code></li>
-<li class="list-inline-item"><code class="notranslate">ريكو</code></li>
-<li class="list-inline-item"><code class="notranslate">رميت</code></li>
-<li class="list-inline-item"><code class="notranslate">روشيه</code></li>
-<li class="list-inline-item"><code class="notranslate">روجرز</code></li>
-<li class="list-inline-item"><code class="notranslate">روي</code></li>
-<li class="list-inline-item"><code class="notranslate">سلامة</code></li>
-<li class="list-inline-item"><code class="notranslate">ساكورا</code></li>
-<li class="list-inline-item"><code سامسونج
-<li class="list-inline-item"><code class="notranslate">ساندفيك</code></li>
-<li class="list-inline-item"><code class="notranslate">ساندفيك كورومانت</code></li>
-<li class="list-inline-item"><code class="notranslate">سانوفي</code></li>
-<li class="list-inline-item"><code class="notranslate">ساب</code></li>
-<li class="list-inline-item"><code class="notranslate">ساكسو</code></li>
-<li class="list-inline-item"><code class="notranslate">إس بي آي</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">إس بي إس</code></li>-->
-<li class="list-inline-item"><code class="notranslate">sca</code></li>
-<li class="list-inline-item"><code class="notranslate">scb</code></li>
-<li class="list-inline-item"><code class="notranslate">شايفلر</code></li>
-<li class="list-inline-item"><code class="notranslate">شميدت</code></li>
-<li class="list-inline-item"><code class="notranslate">شوارتز</code></li>
-<li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
-<li class="list-inline-item"><code class="notranslate">scor</code></li>
-<li class="list-inline-item"><code class="notranslate">مقعد</code></li>
-<li class="list-inline-item"><code class="notranslate">sener</code></li>
-<li class="list-inline-item"><code class="notranslate">ses</code></li>
-<li class="list-inline-item"><code class="notranslate">sew</code></li>
-<li class="list-inline-item"><code class="notranslate">seven</code></li>
-<li class="list-inline-item"><code class="notranslate">sfr</code></li>
-<li class="list-inline-item"><code class="notranslate">seek</code></li>
-<li class="list-inline-item"><code class="notranslate">shangrila</code></li>
-<li class="list-inline-item"><code class="notranslate">sharp</code></li>
-<li فئة "list-inline-item"><code class="notranslate">شو</code></li>
-<li class="list-inline-item"><code class="notranslate">شل</code></li>
-<li class="list-inline-item"><code class="notranslate">شريرام</code></li>
-<li class="list-inline-item"><code class="notranslate">سينا</code></li>
-<li class="list-inline-item"><code class="notranslate">سكاي</code></li>
-<li class="list-inline-item"><code class="notranslate">سكايب</code></li>
-<li class="list-inline-item"><code class="notranslate">سمارت</code></li>
-<li class="list-inline-item"><code class="notranslate">sncf</code></li>
-<li سوفت بنك
-<li class="list-inline-item"><code class="notranslate">سوهو</code></li>
-<li class="list-inline-item"><code class="notranslate">سوني</code></li>
-<li class="list-inline-item"><code class="notranslate">سبيغل</code></li>
-<li class="list-inline-item"><code class="notranslate">ستادا</code></li>
-<li class="list-inline-item"><code class="notranslate">ستابلز</code></li>
-<li class="list-inline-item"><code class="notranslate">ستار</code></li>
-<li class="list-inline-item"><code class="notranslate">ستار هب</code></li>
-<li class="list-inline-item"><code class="notranslate">statebank</code></li>
-<li class="list-inline-item"><code class="notranslate">statefarm</code></li>
-<li class="list-inline-item"><code class="notranslate">statoil</code></li>
-<li class="list-inline-item"><code class="notranslate">stc</code></li>
-<li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">suzuki</code></li>
-<li class="list-inline-item"><code class="notranslate">swatch</code></li>
-<li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
-<li class="list-inline-item"><code class="notranslate">symantec</code></li>
-<li class="list-inline-item"><code class="notranslate">taobao</code></li>
-<li class="list-inline-item"><code class="notranslate">target</code></li>
-<li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
-<li class="list-inline-item"><code class="notranslate">tdk</code></li>
-<li class="list-inline-item"><code class="notranslate">telecity</code></li>
-<li class="list-inline-item"><code class="notranslate">telefonica</code></li>
-<li class="list-inline-item"><code تيماسيك
-<li class="list-inline-item"><code class="notranslate">تيڤا</code></li>
-<li class="list-inline-item"><code class="notranslate">تيفاني</code></li>
-<li class="list-inline-item"><code class="notranslate">تي جي إكس</code></li>
-<li class="list-inline-item"><code class="notranslate">توراي</code></li>
-<li class="list-inline-item"><code class="notranslate">توشيبا</code></li>
-<li class="list-inline-item"><code class="notranslate">الإجمالي</code></li>
-<li class="list-inline-item"><code class="notranslate">تويوتا</code></li>
-<li class="list-inline-item"><code قناة السفر
-<li class="list-inline-item"><code class="notranslate">مسافرون</code></li>
-<li class="list-inline-item"><code class="notranslate">توي</code></li>
-<li class="list-inline-item"><code class="notranslate">تلفزيونات</code></li>
-<li class="list-inline-item"><code class="notranslate">يو بي إس</code></li>
-<li class="list-inline-item"><code class="notranslate">يونيكوم</code></li>
-<li class="list-inline-item"><code class="notranslate">uol</code></li>
-<li class="list-inline-item"><code class="notranslate">يو بي إس</code></li>
-<li class="list-inline-item"><code class="notranslate">فانغارد</code></li>
-<li class="list-inline-item"><code class="notranslate">فيريساين</code></li>
-<li class="list-inline-item"><code class="notranslate">فيج</code></li>
-<li class="list-inline-item"><code class="notranslate">فايكنج</code></li>
-<li class="list-inline-item"><code class="notranslate">فيرجن</code></li>
-<li class="list-inline-item"><code class="notranslate">فيزا</code></li>
-<li class="list-inline-item"><code class="notranslate">فيستا</code></li>
-<li class="list-inline-item"><code class="notranslate">فيستابرينت</code></li>
-<li class="list-inline-item"><code فيفو
-<li class="list-inline-item"><code class="notranslate">فولكس فاجن</code></li>
-<li class="list-inline-item"><code class="notranslate">فولفو</code></li>
-<li class="list-inline-item"><code class="notranslate">وول مارت</code></li>
-<li class="list-inline-item"><code class="notranslate">والتر</code></li>
-<li class="list-inline-item"><code class="notranslate">ويذر تشانيل</code></li>
-<li class="list-inline-item"><code class="notranslate">ويبر</code></li>
-<li class="list-inline-item"><code class="notranslate">وير</code></li>
-<li class="list-inline-item"><code class="notranslate"> class="notranslate">williamhill</code></li>
-<li class="list-inline-item"><code class="notranslate">windows</code></li>
-<li class="list-inline-item"><code class="notranslate">wme</code></li>
-<li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
-<li class="list-inline-item"><code class="notranslate">woodside</code></li>
-<li class="list-inline-item"><code class="notranslate">wtc</code></li>
-<li class="list-inline-item"><code class="notranslate">xbox</code></li>
-<li class="list-inline-item"><code class="notranslate">xerox</code></li>
-<li class="list-inline-item"><code class="notranslate">xfinity</code></li>
-<li class="list-inline-item"><code class="notranslate">yahoo</code></li>
-<li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
-<li class="list-inline-item"><code class="notranslate">yandex</code></li>
-<li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
-<li class="list-inline-item"><code class="notranslate">youtube</code></li>
-<li class="list-inline-item"><code class="notranslate">zappos</code></li>
-<li class="list-inline-item"><code class="notranslate">zara</code></li>
-<li فئة "list-inline-item"><code class="notranslate">زيبو</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil</code></li>
+  <li class="list-inline-item"><code class="notranslate">int</code></li>
+  <li class="list-inline-item"><code class="notranslate">arpa</code></li>
+  <li class="list-inline-item"><code class="notranslate">dni.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fed.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">isa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">kids.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ak.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">al.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">as.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">az.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">co.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ct.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">dc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">de.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fl.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ga.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">gu.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">hi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ia.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">id.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">il.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">in.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ks.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ky.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">la.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ma.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">md.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">me.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mo.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ne.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nj.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nm.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ny.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">oh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ok.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">or.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ri.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tx.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ut.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">va.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.br</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">health.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">es.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.id</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.af</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.al</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.am</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.az</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.be</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gov.by</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.co</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.il</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.im</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.it</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.je</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.my</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.np</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.py</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.se</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.si</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">government.pn</code></li>
+  <li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gv.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">police.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-اعتبارًا من 18 مارس 2025، أضفنا أيضًا هذه الأقاليم الفرنسية الخارجية إلى هذه القائمة ([وفقًا لطلب GitHub هذا](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">bzh</code></li>
-<li class="list-inline-item"><code class="notranslate">gf</code></li>
-<li class="list-inline-item"><code class="notranslate">gp</code></li>
-<li class="list-inline-item"><code class="notranslate">mq</code></li>
-<li class="list-inline-item"><code class="notranslate">nc</code></li>
-<li class="list-inline-item"><code class="notranslate">pf</code></li>
-<li class="list-inline-item"><code class="notranslate">pm</code></li>
-<li class="list-inline-item"><code <li class="list-inline-item"><code class="notranslate">tf</code></li>
-<li class="list-inline-item"><code class="notranslate">wf</code></li>
-<li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">aaa</code></li>
+  <li class="list-inline-item"><code class="notranslate">aarp</code></li>
+  <li class="list-inline-item"><code class="notranslate">abarth</code></li>
+  <li class="list-inline-item"><code class="notranslate">abb</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbott</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbvie</code></li>
+  <li class="list-inline-item"><code class="notranslate">abc</code></li>
+  <li class="list-inline-item"><code class="notranslate">accenture</code></li>
+  <li class="list-inline-item"><code class="notranslate">aco</code></li>
+  <li class="list-inline-item"><code class="notranslate">aeg</code></li>
+  <li class="list-inline-item"><code class="notranslate">aetna</code></li>
+  <li class="list-inline-item"><code class="notranslate">afl</code></li>
+  <li class="list-inline-item"><code class="notranslate">agakhan</code></li>
+  <li class="list-inline-item"><code class="notranslate">aig</code></li>
+  <li class="list-inline-item"><code class="notranslate">aigo</code></li>
+  <li class="list-inline-item"><code class="notranslate">airbus</code></li>
+  <li class="list-inline-item"><code class="notranslate">airtel</code></li>
+  <li class="list-inline-item"><code class="notranslate">akdn</code></li>
+  <li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
+  <li class="list-inline-item"><code class="notranslate">alibaba</code></li>
+  <li class="list-inline-item"><code class="notranslate">alipay</code></li>
+  <li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
+  <li class="list-inline-item"><code class="notranslate">allstate</code></li>
+  <li class="list-inline-item"><code class="notranslate">ally</code></li>
+  <li class="list-inline-item"><code class="notranslate">alstom</code></li>
+  <li class="list-inline-item"><code class="notranslate">amazon</code></li>
+  <li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
+  <li class="list-inline-item"><code class="notranslate">amex</code></li>
+  <li class="list-inline-item"><code class="notranslate">amica</code></li>
+  <li class="list-inline-item"><code class="notranslate">android</code></li>
+  <li class="list-inline-item"><code class="notranslate">anz</code></li>
+  <li class="list-inline-item"><code class="notranslate">aol</code></li>
+  <li class="list-inline-item"><code class="notranslate">apple</code></li>
+  <li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
+  <li class="list-inline-item"><code class="notranslate">aramco</code></li>
+  <li class="list-inline-item"><code class="notranslate">audi</code></li>
+  <li class="list-inline-item"><code class="notranslate">auspost</code></li>
+  <li class="list-inline-item"><code class="notranslate">aws</code></li>
+  <li class="list-inline-item"><code class="notranslate">axa</code></li>
+  <li class="list-inline-item"><code class="notranslate">azure</code></li>
+  <li class="list-inline-item"><code class="notranslate">baidu</code></li>
+  <li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclays</code></li>
+  <li class="list-inline-item"><code class="notranslate">basketball</code></li>
+  <li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbt</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbva</code></li>
+  <li class="list-inline-item"><code class="notranslate">bcg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bentley</code></li>
+  <li class="list-inline-item"><code class="notranslate">bharti</code></li>
+  <li class="list-inline-item"><code class="notranslate">bing</code></li>
+  <li class="list-inline-item"><code class="notranslate">blanco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bms</code></li>
+  <li class="list-inline-item"><code class="notranslate">bmw</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnl</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
+  <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
+  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <li class="list-inline-item"><code class="notranslate">booking</code></li>
+  <li class="list-inline-item"><code class="notranslate">bosch</code></li>
+  <li class="list-inline-item"><code class="notranslate">bostik</code></li>
+  <li class="list-inline-item"><code class="notranslate">bradesco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">brother</code></li>
+  <li class="list-inline-item"><code class="notranslate">bugatti</code></li>
+  <li class="list-inline-item"><code class="notranslate">cal</code></li>
+  <li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
+  <li class="list-inline-item"><code class="notranslate">canon</code></li>
+  <li class="list-inline-item"><code class="notranslate">capitalone</code></li>
+  <li class="list-inline-item"><code class="notranslate">caravan</code></li>
+  <li class="list-inline-item"><code class="notranslate">cartier</code></li>
+  <li class="list-inline-item"><code class="notranslate">cba</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbn</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbre</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbs</code></li>
+  <li class="list-inline-item"><code class="notranslate">cern</code></li>
+  <li class="list-inline-item"><code class="notranslate">cfa</code></li>
+  <li class="list-inline-item"><code class="notranslate">chanel</code></li>
+  <li class="list-inline-item"><code class="notranslate">chase</code></li>
+  <li class="list-inline-item"><code class="notranslate">chintai</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrome</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrysler</code></li>
+  <li class="list-inline-item"><code class="notranslate">cipriani</code></li>
+  <li class="list-inline-item"><code class="notranslate">cisco</code></li>
+  <li class="list-inline-item"><code class="notranslate">citadel</code></li>
+  <li class="list-inline-item"><code class="notranslate">citi</code></li>
+  <li class="list-inline-item"><code class="notranslate">citic</code></li>
+  <li class="list-inline-item"><code class="notranslate">clubmed</code></li>
+  <li class="list-inline-item"><code class="notranslate">comcast</code></li>
+  <li class="list-inline-item"><code class="notranslate">commbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">creditunion</code></li>
+  <li class="list-inline-item"><code class="notranslate">crown</code></li>
+  <li class="list-inline-item"><code class="notranslate">crs</code></li>
+  <li class="list-inline-item"><code class="notranslate">csc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
+  <li class="list-inline-item"><code class="notranslate">dabur</code></li>
+  <li class="list-inline-item"><code class="notranslate">datsun</code></li>
+  <li class="list-inline-item"><code class="notranslate">dealer</code></li>
+  <li class="list-inline-item"><code class="notranslate">dell</code></li>
+  <li class="list-inline-item"><code class="notranslate">deloitte</code></li>
+  <li class="list-inline-item"><code class="notranslate">delta</code></li>
+  <li class="list-inline-item"><code class="notranslate">dhl</code></li>
+  <li class="list-inline-item"><code class="notranslate">discover</code></li>
+  <li class="list-inline-item"><code class="notranslate">dish</code></li>
+  <li class="list-inline-item"><code class="notranslate">dnp</code></li>
+  <li class="list-inline-item"><code class="notranslate">dodge</code></li>
+  <li class="list-inline-item"><code class="notranslate">dunlop</code></li>
+  <li class="list-inline-item"><code class="notranslate">dupont</code></li>
+  <li class="list-inline-item"><code class="notranslate">dvag</code></li>
+  <li class="list-inline-item"><code class="notranslate">edeka</code></li>
+  <li class="list-inline-item"><code class="notranslate">emerck</code></li>
+  <li class="list-inline-item"><code class="notranslate">epson</code></li>
+  <li class="list-inline-item"><code class="notranslate">ericsson</code></li>
+  <li class="list-inline-item"><code class="notranslate">erni</code></li>
+  <li class="list-inline-item"><code class="notranslate">esurance</code></li>
+  <li class="list-inline-item"><code class="notranslate">etisalat</code></li>
+  <li class="list-inline-item"><code class="notranslate">eurovision</code></li>
+  <li class="list-inline-item"><code class="notranslate">everbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">extraspace</code></li>
+  <li class="list-inline-item"><code class="notranslate">fage</code></li>
+  <li class="list-inline-item"><code class="notranslate">fairwinds</code></li>
+  <li class="list-inline-item"><code class="notranslate">farmers</code></li>
+  <li class="list-inline-item"><code class="notranslate">fedex</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrari</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrero</code></li>
+  <li class="list-inline-item"><code class="notranslate">fiat</code></li>
+  <li class="list-inline-item"><code class="notranslate">fidelity</code></li>
+  <li class="list-inline-item"><code class="notranslate">firestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">firmdale</code></li>
+  <li class="list-inline-item"><code class="notranslate">flickr</code></li>
+  <li class="list-inline-item"><code class="notranslate">flir</code></li>
+  <li class="list-inline-item"><code class="notranslate">flsmidth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ford</code></li>
+  <li class="list-inline-item"><code class="notranslate">fox</code></li>
+  <li class="list-inline-item"><code class="notranslate">fresenius</code></li>
+  <li class="list-inline-item"><code class="notranslate">forex</code></li>
+  <li class="list-inline-item"><code class="notranslate">frogans</code></li>
+  <li class="list-inline-item"><code class="notranslate">frontier</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallup</code></li>
+  <li class="list-inline-item"><code class="notranslate">gap</code></li>
+  <li class="list-inline-item"><code class="notranslate">gbiz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gea</code></li>
+  <li class="list-inline-item"><code class="notranslate">genting</code></li>
+  <li class="list-inline-item"><code class="notranslate">giving</code></li>
+  <li class="list-inline-item"><code class="notranslate">gle</code></li>
+  <li class="list-inline-item"><code class="notranslate">globo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmx</code></li>
+  <li class="list-inline-item"><code class="notranslate">godaddy</code></li>
+  <li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
+  <li class="list-inline-item"><code class="notranslate">goodyear</code></li>
+  <li class="list-inline-item"><code class="notranslate">goog</code></li>
+  <li class="list-inline-item"><code class="notranslate">google</code></li>
+  <li class="list-inline-item"><code class="notranslate">grainger</code></li>
+  <li class="list-inline-item"><code class="notranslate">guardian</code></li>
+  <li class="list-inline-item"><code class="notranslate">gucci</code></li>
+  <li class="list-inline-item"><code class="notranslate">hbo</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">hermes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hisamitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">hitachi</code></li>
+  <li class="list-inline-item"><code class="notranslate">hkt</code></li>
+  <li class="list-inline-item"><code class="notranslate">honda</code></li>
+  <li class="list-inline-item"><code class="notranslate">honeywell</code></li>
+  <li class="list-inline-item"><code class="notranslate">hotmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">hsbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hughes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyatt</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyundai</code></li>
+  <li class="list-inline-item"><code class="notranslate">ibm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ieee</code></li>
+  <li class="list-inline-item"><code class="notranslate">ifm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ikano</code></li>
+  <li class="list-inline-item"><code class="notranslate">imdb</code></li>
+  <li class="list-inline-item"><code class="notranslate">infiniti</code></li>
+  <li class="list-inline-item"><code class="notranslate">intel</code></li>
+  <li class="list-inline-item"><code class="notranslate">intuit</code></li>
+  <li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
+  <li class="list-inline-item"><code class="notranslate">iselect</code></li>
+  <li class="list-inline-item"><code class="notranslate">itau</code></li>
+  <li class="list-inline-item"><code class="notranslate">itv</code></li>
+  <li class="list-inline-item"><code class="notranslate">iveco</code></li>
+  <li class="list-inline-item"><code class="notranslate">jaguar</code></li>
+  <li class="list-inline-item"><code class="notranslate">java</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcb</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcp</code></li>
+  <li class="list-inline-item"><code class="notranslate">jeep</code></li>
+  <li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
+  <li class="list-inline-item"><code class="notranslate">juniper</code></li>
+  <li class="list-inline-item"><code class="notranslate">kddi</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
+  <li class="list-inline-item"><code class="notranslate">kfh</code></li>
+  <li class="list-inline-item"><code class="notranslate">kia</code></li>
+  <li class="list-inline-item"><code class="notranslate">kinder</code></li>
+  <li class="list-inline-item"><code class="notranslate">kindle</code></li>
+  <li class="list-inline-item"><code class="notranslate">komatsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">kpmg</code></li>
+  <li class="list-inline-item"><code class="notranslate">kred</code></li>
+  <li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
+  <li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
+  <li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancaster</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancia</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancome</code></li>
+  <li class="list-inline-item"><code class="notranslate">landrover</code></li>
+  <li class="list-inline-item"><code class="notranslate">lanxess</code></li>
+  <li class="list-inline-item"><code class="notranslate">lasalle</code></li>
+  <li class="list-inline-item"><code class="notranslate">latrobe</code></li>
+  <li class="list-inline-item"><code class="notranslate">lds</code></li>
+  <li class="list-inline-item"><code class="notranslate">leclerc</code></li>
+  <li class="list-inline-item"><code class="notranslate">lego</code></li>
+  <li class="list-inline-item"><code class="notranslate">liaison</code></li>
+  <li class="list-inline-item"><code class="notranslate">lexus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lidl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lifestyle</code></li>
+  <li class="list-inline-item"><code class="notranslate">lilly</code></li>
+  <li class="list-inline-item"><code class="notranslate">lincoln</code></li>
+  <li class="list-inline-item"><code class="notranslate">linde</code></li>
+  <li class="list-inline-item"><code class="notranslate">lipsy</code></li>
+  <li class="list-inline-item"><code class="notranslate">lixil</code></li>
+  <li class="list-inline-item"><code class="notranslate">locus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lotte</code></li>
+  <li class="list-inline-item"><code class="notranslate">lpl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
+  <li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
+  <li class="list-inline-item"><code class="notranslate">lupin</code></li>
+  <li class="list-inline-item"><code class="notranslate">macys</code></li>
+  <li class="list-inline-item"><code class="notranslate">maif</code></li>
+  <li class="list-inline-item"><code class="notranslate">man</code></li>
+  <li class="list-inline-item"><code class="notranslate">mango</code></li>
+  <li class="list-inline-item"><code class="notranslate">marriott</code></li>
+  <li class="list-inline-item"><code class="notranslate">maserati</code></li>
+  <li class="list-inline-item"><code class="notranslate">mattel</code></li>
+  <li class="list-inline-item"><code class="notranslate">mckinsey</code></li>
+  <li class="list-inline-item"><code class="notranslate">metlife</code></li>
+  <li class="list-inline-item"><code class="notranslate">microsoft</code></li>
+  <li class="list-inline-item"><code class="notranslate">mini</code></li>
+  <li class="list-inline-item"><code class="notranslate">mit</code></li>
+  <li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
+  <li class="list-inline-item"><code class="notranslate">mlb</code></li>
+  <li class="list-inline-item"><code class="notranslate">mma</code></li>
+  <li class="list-inline-item"><code class="notranslate">monash</code></li>
+  <li class="list-inline-item"><code class="notranslate">mormon</code></li>
+  <li class="list-inline-item"><code class="notranslate">moto</code></li>
+  <li class="list-inline-item"><code class="notranslate">movistar</code></li>
+  <li class="list-inline-item"><code class="notranslate">msd</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtr</code></li>
+  <li class="list-inline-item"><code class="notranslate">mutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">nadex</code></li>
+  <li class="list-inline-item"><code class="notranslate">nationwide</code></li>
+  <li class="list-inline-item"><code class="notranslate">natura</code></li>
+  <li class="list-inline-item"><code class="notranslate">nba</code></li>
+  <li class="list-inline-item"><code class="notranslate">nec</code></li>
+  <li class="list-inline-item"><code class="notranslate">netflix</code></li>
+  <li class="list-inline-item"><code class="notranslate">neustar</code></li>
+  <li class="list-inline-item"><code class="notranslate">newholland</code></li>
+  <li class="list-inline-item"><code class="notranslate">nfl</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nico</code></li>
+  <li class="list-inline-item"><code class="notranslate">nike</code></li>
+  <li class="list-inline-item"><code class="notranslate">nikon</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissan</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissay</code></li>
+  <li class="list-inline-item"><code class="notranslate">nokia</code></li>
+  <li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">norton</code></li>
+  <li class="list-inline-item"><code class="notranslate">nra</code></li>
+  <li class="list-inline-item"><code class="notranslate">ntt</code></li>
+  <li class="list-inline-item"><code class="notranslate">obi</code></li>
+  <li class="list-inline-item"><code class="notranslate">office</code></li>
+  <li class="list-inline-item"><code class="notranslate">omega</code></li>
+  <li class="list-inline-item"><code class="notranslate">oracle</code></li>
+  <li class="list-inline-item"><code class="notranslate">orange</code></li>
+  <li class="list-inline-item"><code class="notranslate">otsuka</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
+  <li class="list-inline-item"><code class="notranslate">pccw</code></li>
+  <li class="list-inline-item"><code class="notranslate">pfizer</code></li>
+  <li class="list-inline-item"><code class="notranslate">philips</code></li>
+  <li class="list-inline-item"><code class="notranslate">piaget</code></li>
+  <li class="list-inline-item"><code class="notranslate">pictet</code></li>
+  <li class="list-inline-item"><code class="notranslate">ping</code></li>
+  <li class="list-inline-item"><code class="notranslate">pioneer</code></li>
+  <li class="list-inline-item"><code class="notranslate">play</code></li>
+  <li class="list-inline-item"><code class="notranslate">playstation</code></li>
+  <li class="list-inline-item"><code class="notranslate">pohl</code></li>
+  <li class="list-inline-item"><code class="notranslate">politie</code></li>
+  <li class="list-inline-item"><code class="notranslate">praxi</code></li>
+  <li class="list-inline-item"><code class="notranslate">prod</code></li>
+  <li class="list-inline-item"><code class="notranslate">progressive</code></li>
+  <li class="list-inline-item"><code class="notranslate">pru</code></li>
+  <li class="list-inline-item"><code class="notranslate">prudential</code></li>
+  <li class="list-inline-item"><code class="notranslate">pwc</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">qvc</code></li>
+  <li class="list-inline-item"><code class="notranslate">redstone</code></li>
+  <li class="list-inline-item"><code class="notranslate">reliance</code></li>
+  <li class="list-inline-item"><code class="notranslate">rexroth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ricoh</code></li>
+  <li class="list-inline-item"><code class="notranslate">rmit</code></li>
+  <li class="list-inline-item"><code class="notranslate">rocher</code></li>
+  <li class="list-inline-item"><code class="notranslate">rogers</code></li>
+  <li class="list-inline-item"><code class="notranslate">rwe</code></li>
+  <li class="list-inline-item"><code class="notranslate">safety</code></li>
+  <li class="list-inline-item"><code class="notranslate">sakura</code></li>
+  <li class="list-inline-item"><code class="notranslate">samsung</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvik</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
+  <li class="list-inline-item"><code class="notranslate">sanofi</code></li>
+  <li class="list-inline-item"><code class="notranslate">sap</code></li>
+  <li class="list-inline-item"><code class="notranslate">saxo</code></li>
+  <li class="list-inline-item"><code class="notranslate">sbi</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">sca</code></li>
+  <li class="list-inline-item"><code class="notranslate">scb</code></li>
+  <li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
+  <li class="list-inline-item"><code class="notranslate">schmidt</code></li>
+  <li class="list-inline-item"><code class="notranslate">schwarz</code></li>
+  <li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
+  <li class="list-inline-item"><code class="notranslate">scor</code></li>
+  <li class="list-inline-item"><code class="notranslate">seat</code></li>
+  <li class="list-inline-item"><code class="notranslate">sener</code></li>
+  <li class="list-inline-item"><code class="notranslate">ses</code></li>
+  <li class="list-inline-item"><code class="notranslate">sew</code></li>
+  <li class="list-inline-item"><code class="notranslate">seven</code></li>
+  <li class="list-inline-item"><code class="notranslate">sfr</code></li>
+  <li class="list-inline-item"><code class="notranslate">seek</code></li>
+  <li class="list-inline-item"><code class="notranslate">shangrila</code></li>
+  <li class="list-inline-item"><code class="notranslate">sharp</code></li>
+  <li class="list-inline-item"><code class="notranslate">shaw</code></li>
+  <li class="list-inline-item"><code class="notranslate">shell</code></li>
+  <li class="list-inline-item"><code class="notranslate">shriram</code></li>
+  <li class="list-inline-item"><code class="notranslate">sina</code></li>
+  <li class="list-inline-item"><code class="notranslate">sky</code></li>
+  <li class="list-inline-item"><code class="notranslate">skype</code></li>
+  <li class="list-inline-item"><code class="notranslate">smart</code></li>
+  <li class="list-inline-item"><code class="notranslate">sncf</code></li>
+  <li class="list-inline-item"><code class="notranslate">softbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">sohu</code></li>
+  <li class="list-inline-item"><code class="notranslate">sony</code></li>
+  <li class="list-inline-item"><code class="notranslate">spiegel</code></li>
+  <li class="list-inline-item"><code class="notranslate">stada</code></li>
+  <li class="list-inline-item"><code class="notranslate">staples</code></li>
+  <li class="list-inline-item"><code class="notranslate">star</code></li>
+  <li class="list-inline-item"><code class="notranslate">starhub</code></li>
+  <li class="list-inline-item"><code class="notranslate">statebank</code></li>
+  <li class="list-inline-item"><code class="notranslate">statefarm</code></li>
+  <li class="list-inline-item"><code class="notranslate">statoil</code></li>
+  <li class="list-inline-item"><code class="notranslate">stc</code></li>
+  <li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">suzuki</code></li>
+  <li class="list-inline-item"><code class="notranslate">swatch</code></li>
+  <li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
+  <li class="list-inline-item"><code class="notranslate">symantec</code></li>
+  <li class="list-inline-item"><code class="notranslate">taobao</code></li>
+  <li class="list-inline-item"><code class="notranslate">target</code></li>
+  <li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
+  <li class="list-inline-item"><code class="notranslate">tdk</code></li>
+  <li class="list-inline-item"><code class="notranslate">telecity</code></li>
+  <li class="list-inline-item"><code class="notranslate">telefonica</code></li>
+  <li class="list-inline-item"><code class="notranslate">temasek</code></li>
+  <li class="list-inline-item"><code class="notranslate">teva</code></li>
+  <li class="list-inline-item"><code class="notranslate">tiffany</code></li>
+  <li class="list-inline-item"><code class="notranslate">tjx</code></li>
+  <li class="list-inline-item"><code class="notranslate">toray</code></li>
+  <li class="list-inline-item"><code class="notranslate">toshiba</code></li>
+  <li class="list-inline-item"><code class="notranslate">total</code></li>
+  <li class="list-inline-item"><code class="notranslate">toyota</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelers</code></li>
+  <li class="list-inline-item"><code class="notranslate">tui</code></li>
+  <li class="list-inline-item"><code class="notranslate">tvs</code></li>
+  <li class="list-inline-item"><code class="notranslate">ubs</code></li>
+  <li class="list-inline-item"><code class="notranslate">unicom</code></li>
+  <li class="list-inline-item"><code class="notranslate">uol</code></li>
+  <li class="list-inline-item"><code class="notranslate">ups</code></li>
+  <li class="list-inline-item"><code class="notranslate">vanguard</code></li>
+  <li class="list-inline-item"><code class="notranslate">verisign</code></li>
+  <li class="list-inline-item"><code class="notranslate">vig</code></li>
+  <li class="list-inline-item"><code class="notranslate">viking</code></li>
+  <li class="list-inline-item"><code class="notranslate">virgin</code></li>
+  <li class="list-inline-item"><code class="notranslate">visa</code></li>
+  <li class="list-inline-item"><code class="notranslate">vista</code></li>
+  <li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
+  <li class="list-inline-item"><code class="notranslate">vivo</code></li>
+  <li class="list-inline-item"><code class="notranslate">volkswagen</code></li>
+  <li class="list-inline-item"><code class="notranslate">volvo</code></li>
+  <li class="list-inline-item"><code class="notranslate">walmart</code></li>
+  <li class="list-inline-item"><code class="notranslate">walter</code></li>
+  <li class="list-inline-item"><code class="notranslate">weatherchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">weber</code></li>
+  <li class="list-inline-item"><code class="notranslate">weir</code></li>
+  <li class="list-inline-item"><code class="notranslate">williamhill</code></li>
+  <li class="list-inline-item"><code class="notranslate">windows</code></li>
+  <li class="list-inline-item"><code class="notranslate">wme</code></li>
+  <li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
+  <li class="list-inline-item"><code class="notranslate">woodside</code></li>
+  <li class="list-inline-item"><code class="notranslate">wtc</code></li>
+  <li class="list-inline-item"><code class="notranslate">xbox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xfinity</code></li>
+  <li class="list-inline-item"><code class="notranslate">yahoo</code></li>
+  <li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
+  <li class="list-inline-item"><code class="notranslate">yandex</code></li>
+  <li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
+  <li class="list-inline-item"><code class="notranslate">youtube</code></li>
+  <li class="list-inline-item"><code class="notranslate">zappos</code></li>
+  <li class="list-inline-item"><code class="notranslate">zara</code></li>
+  <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
 
-اعتبارًا من 8 يوليو 2025، أضفنا البلدان التالية الخاصة بأوروبا:
+As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ax</code></li>
-<li class="list-inline-item"><code class="notranslate">bg</code></li>
-<li class="list-inline-item"><code class="notranslate">fo</code></li>
-<li class="list-inline-item"><code class="notranslate">gi</code></li>
-<li class="list-inline-item"><code class="notranslate">gr</code></li>
-<li class="list-inline-item"><code class="notranslate">hr</code></li>
-<li class="list-inline-item"><code class="notranslate">hu</code></li>
-<li class="list-inline-item"><code class="notranslate">lt</code></li>
-<li class="list-inline-item"><code class="notranslate">lu</code></li>
-<li class="list-inline-item"><code class="notranslate">mc</code></li>
-<li class="list-inline-item"><code class="notranslate">mk</code></li>
-<li class="list-inline-item"><code class="notranslate">mt</code></li>
-<li class="list-inline-item"><code class="notranslate">ro</code></li>
-<li class="list-inline-item"><code class="notranslate">sk</code></li>
-<li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-لم نقم على وجه التحديد بتضمين `cz` و`ru` و`ua` بسبب نشاط البريد العشوائي المرتفع.
-
-### ما هي معايير القائمة المسموح بها لديك؟ {#what-is-your-allowlist-criteria}
-
-لدينا قائمة ثابتة من [امتدادات اسم النطاق المسموح بها افتراضيًا](#what-domain-name-extensions-are-allowlisted-by-default) - ونحافظ أيضًا على قائمة مسموح بها ديناميكية ومخزنة ومتجددة استنادًا إلى المعايير الصارمة التالية:
-
-* يجب أن يكون نطاق جذر المُرسِل من فئة [امتداد اسم النطاق الذي يتطابق مع القائمة التي نقدمها في خطتنا المجانية](#what-domain-name-extensions-can-be-used-for-free) (مع إضافة `biz` و`info`). كما نُضمِّن تطابقات جزئية لـ `edu` و`gov` و`mil`، مثل `xyz.gov.au` و`xyz.edu.au`.
-* يجب أن يكون نطاق جذر المُرسِل ضمن أفضل 100,000 نتيجة تحليل فريدة لنطاق جذر من [قائمة شعبية المظلة](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* يجب أن يكون نطاق جذر المُرسِل ضمن أفضل 50,000 نتيجة من نطاقات جذر فريدة تظهر في 4 أيام على الأقل من أصل 7 أيام من UPL (أكثر من 50%).
-* يجب ألا يكون نطاق جذر المُرسِل من فئة [مصنفة](https://radar.cloudflare.com/categorization-feedback/) كمحتوى للبالغين أو برامج ضارة من Cloudflare. * يجب أن يحتوي نطاق جذر المُرسِل على سجلات A أو MX.
-* يجب أن يحتوي نطاق جذر المُرسِل على سجلات A، أو سجلات MX، أو سجل DMARC مع `biz`0 أو `biz`1، أو سجل SPF مع المؤهل `biz`2 أو `biz`3.
-
-في حال استيفاء هذا المعيار، سيتم تخزين نطاق جذر المُرسِل مؤقتًا لمدة 7 أيام. يُرجى العلم بأن مهمتنا الآلية تعمل يوميًا، وبالتالي فهي عبارة عن ذاكرة تخزين مؤقتة لقائمة السماح المتجددة تُحدَّث يوميًا.
-
-ستقوم مهمتنا الآلية بتنزيل الأيام السبعة السابقة من UPL الموجودة في الذاكرة، وفك ضغطها، ثم تحليل الذاكرة وفقًا للمعايير الصارمة المذكورة أعلاه.
-
-تتضمن هذه القائمة بالطبع المجالات الشهيرة في وقت كتابة هذه السطور، مثل Google وYahoo وMicrosoft وAmazon وMeta وTwitter وNetflix وSpotify والمزيد.
-
-إذا كنتَ مُرسِلًا غير مُدرج في قائمتنا المسموح بها، ففي أول مرة يُرسِل فيها نطاق جذر اسم النطاق الكامل المؤهل (FQDN) أو عنوان IP الخاص بك بريدًا إلكترونيًا، سيكون اسمك [معدل محدود](#do-you-have-rate-limiting) و[مُدرج في القائمة الرمادية](#do-you-have-a-greylist). يُرجى العلم أن هذه ممارسة مُتّبعة كمعيار للبريد الإلكتروني. ستُحاول مُعظم برامج خادم البريد الإلكتروني إعادة المحاولة إذا تلقّت خطأً في حدّ السرعة أو في القائمة الرمادية (مثل رمز حالة خطأ بمستوى 421 أو 4xx).
-
-**لاحظ أن المرسلين المحددين مثل `a@gmail.com` و`b@xyz.edu` و`c@gov.au` لا يزالون قادرين على أن يكونوا [تم رفضه](#do-you-have-a-denylist)** (على سبيل المثال، إذا اكتشفنا تلقائيًا البريد العشوائي أو التصيد الاحتيالي أو البرامج الضارة من هؤلاء المرسلين).
-
-### ما هي امتدادات اسم النطاق التي يمكن استخدامها مجانًا {#what-domain-name-extensions-can-be-used-for-free}
-
-اعتبارًا من 31 مارس 2023، قمنا بتطبيق قاعدة عامة جديدة بشأن البريد العشوائي لحماية مستخدمينا وخدماتنا.
-
-تسمح هذه القاعدة الجديدة باستخدام امتدادات اسم النطاق التالية فقط في خطتنا المجانية:
+As of July 8, 2025 we have added these Europe-specific countries:
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ac</code></li>
-<li class="list-inline-item"><code class="notranslate">ad</code></li>
-<li class="list-inline-item"><code class="notranslate">ag</code></li>
-<li class="list-inline-item"><code class="notranslate">ai</code></li>
-<li class="list-inline-item"><code class="notranslate">al</code></li>
-<li class="list-inline-item"><code class="notranslate">am</code></li>
-<li class="list-inline-item"><code class="notranslate">app</code></li>
-<li class="list-inline-item"><code class="notranslate">as</code></li>
-<li class="list-inline-item"><code class="notranslate">at</code></li>
-<li class="list-inline-item"><code class="notranslate">au</code></li>
-<li class="list-inline-item"><code class="notranslate">ba</code></li>
-<li class="list-inline-item"><code class="notranslate">be</code></li>
-<li class="list-inline-item"><code class="notranslate">br</code></li>
-<li class="list-inline-item"><code class="notranslate">by</code></li>
-<li class="list-inline-item"><code class="notranslate">ca</code></li>
-<li class="list-inline-item"><code class="notranslate">cc</code></li>
-<li class="list-inline-item"><code class="notranslate">cd</code></li>
-<li class="list-inline-item"><code class="notranslate">ch</code></li>
-<li class="list-inline-item"><code class="notranslate">ck</code></li>
-<li class="list-inline-item"><code class="notranslate">co</code></li>
-<li class="list-inline-item"><code class="notranslate">com</code></li>
-<li class="list-inline-item"><code class="notranslate">de</code></li>
-<li class="list-inline-item"><code class="notranslate">dev</code></li>
-<li class="list-inline-item"><code class="notranslate">dj</code></li>
-<li class="list-inline-item"><code class="notranslate">dk</code></li>
-<li class="list-inline-item"><code class="notranslate">ee</code></li>
-<li class="list-inline-item"><code class="notranslate">es</code></li>
-<li class="list-inline-item"><code class="notranslate">eu</code></li>
-<li class="list-inline-item"><code class="notranslate">family</code></li>
-<li class="list-inline-item"><code class="notranslate">fi</code></li>
-<li class="list-inline-item"><code class="notranslate">fm</code></li>
-<li class="list-inline-item"><code class="notranslate">fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gl</code></li>
-<li class="list-inline-item"><code class="notranslate">id</code></li>
-<li class="list-inline-item"><code class="notranslate">ie</code></li>
-<li class="list-inline-item"><code class="notranslate">il</code></li>
-<li class="list-inline-item"><code class="notranslate">im</code></li>
-<li class="list-inline-item"><code class="notranslate">in</code></li>
-<li class="list-inline-item"><code class="notranslate">io</code></li>
-<li class="list-inline-item"><code class="notranslate">ir</code></li>
-<li class="list-inline-item"><code class="notranslate">is</code></li>
-<li class="list-inline-item"><code class="notranslate">it</code></li>
-<li class="list-inline-item"><code class="notranslate">je</code></li>
-<li class="list-inline-item"><code class="notranslate">jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ke</code></li>
-<li class="list-inline-item"><code class="notranslate">kr</code></li>
-<li class="list-inline-item"><code class="notranslate">la</code></li>
-<li class="list-inline-item"><code class="notranslate">li</code></li>
-<li class="list-inline-item"><code class="notranslate">lv</code></li>
-<li class="list-inline-item"><code class="notranslate">ly</code></li>
-<li class="list-inline-item"><code class="notranslate">md</code></li>
-<li class="list-inline-item"><code class="notranslate">me</code></li>
-<li class="list-inline-item"><code class="notranslate">mn</code></li>
-<li class="list-inline-item"><code class="notranslate">ms</code></li>
-<li class="list-inline-item"><code class="notranslate">mu</code></li>
-<li class="list-inline-item"><code class="notranslate">mx</code></li>
-<li class="list-inline-item"><code class="notranslate">net</code></li>
-<li class="list-inline-item"><code class="notranslate">ni</code></li>
-<li class="list-inline-item"><code class="notranslate">nl</code></li>
-<li class="list-inline-item"><code class="notranslate">no</code></li>
-<li class="list-inline-item"><code class="notranslate">nu</code></li>
-<li class="list-inline-item"><code class="notranslate">nz</code></li>
-<li class="list-inline-item"><code class="notranslate">org</code></li>
-<li class="list-inline-item"><code class="notranslate">pl</code></li>
-<li class="list-inline-item"><code class="notranslate">pr</code></li>
-<li class="list-inline-item"><code class="notranslate">pt</code></li>
-<li class="list-inline-item"><code class="notranslate">pw</code></li>
-<li class="list-inline-item"><code class="notranslate">rs</code></li>
-<li class="list-inline-item"><code class="notranslate">sc</code></li>
-<li class="list-inline-item"><code class="notranslate">se</code></li>
-<li class="list-inline-item"><code class="notranslate">sh</code></li>
-<li class="list-inline-item"><code class="notranslate">si</code></li>
-<li class="list-inline-item"><code class="notranslate">sm</code></li>
-<li class="list-inline-item"><code class="notranslate">sr</code></li>
-<li class="list-inline-item"><code class="notranslate">st</code></li>
-<li class="list-inline-item"><code class="notranslate">tc</code></li>
-<li class="list-inline-item"><code class="notranslate">tm</code></li>
-<li class="list-inline-item"><code class="notranslate">to</code></li>
-<li class="list-inline-item"><code class="notranslate">tv</code></li>
-<li class="list-inline-item"><code المملكة المتحدة
-<li class="list-inline-item"><code class="notranslate">us</code></li>
-<li class="list-inline-item"><code class="notranslate">uz</code></li>
-<li class="list-inline-item"><code class="notranslate">vc</code></li>
-<li class="list-inline-item"><code class="notranslate">vg</code></li>
-<li class="list-inline-item"><code class="notranslate">vu</code></li>
-<li class="list-inline-item"><code class="notranslate">ws</code></li>
-<li class="list-inline-item"><code class="notranslate">xyz</code></li>
-<li class="list-inline-item"><code class="notranslate">زا</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-### هل لديك قائمة رمادية {#do-you-have-a-greylist}
+In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
 
-نعم، لدينا سياسة متساهلة جدًا ([القائمة الرمادية للبريد الإلكتروني](https://en.wikipedia.org/wiki/Greylisting_\(email\)). يُطبق الإدراج في القائمة الرمادية فقط على المُرسِلين غير المُدرجين في قائمتنا المسموح بها، ويستمر في ذاكرة التخزين المؤقت لدينا لمدة 30 يومًا.
+We specifically did not include `ru` and `ua` due to high spam activity.
 
-لأي مُرسِل جديد، نُخزّن مفتاحًا في قاعدة بيانات Redis لمدة 30 يومًا بقيمة مُعيّنة لوقت الوصول الأولي لطلبه الأول. ثم نرفض رسالته الإلكترونية برمز حالة إعادة المحاولة 450، ولا نسمح بمرورها إلا بعد مرور 5 دقائق.
+### What is your allowlist criteria {#what-is-your-allowlist-criteria}
 
-إذا نجحوا في الانتظار لمدة 5 دقائق من وقت الوصول الأولي هذا، فسيتم قبول رسائل البريد الإلكتروني الخاصة بهم ولن يتلقوا رمز الحالة 450 هذا.
+We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
 
-يتكون المفتاح إما من نطاق جذر اسم المجال المؤهل بالكامل (FQDN) أو عنوان IP للمُرسِل. هذا يعني أن أي نطاق فرعي يتجاوز القائمة الرمادية سيُصبح أيضًا نطاقًا جذرًا، والعكس صحيح (هذا ما نعنيه بسياسة "متساهلة للغاية").
+* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
+* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
+* Sender root domain must have either A or MX records set.
+* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
 
-على سبيل المثال، إذا وردت رسالة بريد إلكتروني من `test.example.com` قبل أن نستقبل رسالة من `example.com`، فإن أي رسالة بريد إلكتروني من `test.example.com` و/أو `example.com` ستنتظر 5 دقائق من وقت وصول الاتصال الأولي. لا نطلب من `test.example.com` و`example.com` الانتظار لمدة 5 دقائق (تنطبق سياسة القائمة الرمادية لدينا على مستوى النطاق الجذر).
+If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
 
-يرجى ملاحظة أن القائمة الرمادية لا تنطبق على أي مرسل على [القائمة المسموح بها](#do-you-have-an-allowlist) الخاص بنا (على سبيل المثال Meta وAmazon وNetflix وGoogle وMicrosoft في وقت كتابة هذه السطور).
+Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
 
-### هل لديك قائمة رفض {#do-you-have-a-denylist}
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
 
-نعم، نحن ندير قائمة الحظر الخاصة بنا ونقوم بتحديثها تلقائيًا في الوقت الفعلي ويدويًا بناءً على البريد العشوائي والأنشطة الضارة التي تم اكتشافها.
+If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
 
-نقوم أيضًا بسحب جميع عناوين IP من قائمة الرفض UCEPROTECT Level 1 في <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> كل ساعة وإدخالها في قائمة الرفض الخاصة بنا مع انتهاء الصلاحية لمدة 7 أيام.
+**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
 
-سيتلقى المرسلون الموجودون في قائمة الرفض رمز الخطأ 421 (يشير إلى المرسل لإعادة المحاولة لاحقًا) إذا قاموا بـ [غير مسموح بها](#do-you-have-an-allowlist).
+### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
 
-من خلال استخدام رمز الحالة 421 بدلاً من رمز الحالة 554، يمكن التخفيف من احتمالية حدوث نتائج إيجابية خاطئة في الوقت الفعلي ومن ثم يمكن تسليم الرسالة بنجاح في المحاولة التالية.
+As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
 
-**صُمم هذا بخلاف خدمات البريد الأخرى**، حيث يحدث عطل دائم وصعب في حال إدراجك في قائمة الحظر. غالبًا ما يكون من الصعب مطالبة المُرسِلين بإعادة إرسال الرسائل (خاصةً من المؤسسات الكبيرة)، ولذلك يمنح هذا النهج المُرسِل أو المُستلِم أو نحن حوالي 5 أيام من تاريخ المحاولة الأولى للتدخل وحل المشكلة (عن طريق طلب إزالة قائمة الحظر).
+This new rule allows only the following domain name extensions to be used on our free plan:
 
-يتم مراقبة جميع طلبات إزالة القائمة المرفوضة في الوقت الفعلي بواسطة المسؤولين (على سبيل المثال، حتى يتمكن المسؤولون من إدراج الإيجابيات الخاطئة المتكررة في القائمة المرفوضة بشكل دائم).
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ac</code></li>
+  <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ag</code></li>
+  <li class="list-inline-item"><code class="notranslate">ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">al</code></li>
+  <li class="list-inline-item"><code class="notranslate">am</code></li>
+  <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">as</code></li>
+  <li class="list-inline-item"><code class="notranslate">at</code></li>
+  <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">ba</code></li>
+  <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">br</code></li>
+  <li class="list-inline-item"><code class="notranslate">by</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cat</code></li>
+  <li class="list-inline-item"><code class="notranslate">cc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cd</code></li>
+  <li class="list-inline-item"><code class="notranslate">ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">ck</code></li>
+  <li class="list-inline-item"><code class="notranslate">co</code></li>
+  <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">de</code></li>
+  <li class="list-inline-item"><code class="notranslate">dev</code></li>
+  <li class="list-inline-item"><code class="notranslate">dj</code></li>
+  <li class="list-inline-item"><code class="notranslate">dk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ee</code></li>
+  <li class="list-inline-item"><code class="notranslate">es</code></li>
+  <li class="list-inline-item"><code class="notranslate">eu</code></li>
+  <li class="list-inline-item"><code class="notranslate">family</code></li>
+  <li class="list-inline-item"><code class="notranslate">fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">fm</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">id</code></li>
+  <li class="list-inline-item"><code class="notranslate">ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">il</code></li>
+  <li class="list-inline-item"><code class="notranslate">im</code></li>
+  <li class="list-inline-item"><code class="notranslate">in</code></li>
+  <li class="list-inline-item"><code class="notranslate">io</code></li>
+  <li class="list-inline-item"><code class="notranslate">ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">is</code></li>
+  <li class="list-inline-item"><code class="notranslate">it</code></li>
+  <li class="list-inline-item"><code class="notranslate">je</code></li>
+  <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">la</code></li>
+  <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">md</code></li>
+  <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">mu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mx</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">net</code></li>
+  <li class="list-inline-item"><code class="notranslate">ni</code></li>
+  <li class="list-inline-item"><code class="notranslate">nl</code></li>
+  <li class="list-inline-item"><code class="notranslate">no</code></li>
+  <li class="list-inline-item"><code class="notranslate">nu</code></li>
+  <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">rs</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc</code></li>
+  <li class="list-inline-item"><code class="notranslate">se</code></li>
+  <li class="list-inline-item"><code class="notranslate">sh</code></li>
+  <li class="list-inline-item"><code class="notranslate">si</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sm</code></li>
+  <li class="list-inline-item"><code class="notranslate">sr</code></li>
+  <li class="list-inline-item"><code class="notranslate">st</code></li>
+  <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">tm</code></li>
+  <li class="list-inline-item"><code class="notranslate">to</code></li>
+  <li class="list-inline-item"><code class="notranslate">tv</code></li>
+  <li class="list-inline-item"><code class="notranslate">uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">us</code></li>
+  <li class="list-inline-item"><code class="notranslate">uz</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">vc</code></li>
+  <li class="list-inline-item"><code class="notranslate">vg</code></li>
+  <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">ws</code></li>
+  <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">za</code></li>
+</ul>
 
-يمكن تقديم طلبات إزالة القائمة المحظورة على <https://forwardemail.net/denylist>.. تتم معالجة طلبات إزالة القائمة المحظورة للمستخدمين المدفوعين على الفور، بينما يتعين على المستخدمين غير المدفوعين انتظار المسؤولين لمعالجة طلباتهم.
+### Do you have a greylist {#do-you-have-a-greylist}
 
-سيتم إضافة المرسلين الذين يتم اكتشاف إرسالهم لمحتوى غير مرغوب فيه أو فيروسي إلى قائمة الرفض بالطريقة التالية:
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
 
-١. يُدرج [بصمة الرسالة الأولية](#how-do-you-determine-an-email-fingerprint) في القائمة الرمادية عند اكتشاف بريد عشوائي أو حظر من مُرسِل "موثوق" (مثل `gmail.com`، `microsoft.com`، `apple.com`).
-* إذا كان المُرسِل مُدرجًا في القائمة المسموح بها، تُدرج الرسالة في القائمة الرمادية لمدة ساعة واحدة.
-* إذا لم يكن المُرسِل مُدرجًا في القائمة المسموح بها، تُدرج الرسالة في القائمة الرمادية لمدة 6 ساعات.
+For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
-٢. نُحلل مفاتيح القائمة المحظورة من معلومات المُرسِل والرسالة، ولكلٍّ من هذه المفاتيح، نُنشئ عدادًا (إن لم يكن موجودًا بالفعل)، ونزيد قيمته بمقدار ١، ونُخزّنه مؤقتًا لمدة ٢٤ ساعة.
+If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
 
-* للمُرسِلين المُدرَجين في القائمة المسموح بها:
-* أضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "MAIL FROM" إذا كان لديه SPF مُفعَّل أو بدون SPF، ولم يكن [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) أو [اسم مستخدم بدون رد](#what-are-no-reply-addresses).
-* إذا كان رأس "From" مُدرَجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "From" إذا كان لديه SPF مُفعَّل أو DKIM مُفعَّل ومُحاذي.
-* إذا لم يكن رأس "From" مُدرَجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "From" واسم نطاقه الجذري المُحلَّل.
-* للمُرسِلين غير المُدرَجين في القائمة المسموح بها:
-* أضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "MAIL FROM" إذا كان لديه SPF مُفعَّل.
-* إذا كان رأس "From" مُدرَجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "From" إذا كان لديه SPF مُفعَّل أو DKIM مُفعَّل ومُحاذي. * إذا لم يكن عنوان "من" مدرجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني في العنوان "من" واسم نطاقه الجذري المُحلل.
-* أضف مفتاحًا لعنوان IP البعيد للمُرسِل.
-* أضف مفتاحًا لاسم المضيف الذي حلّه العميل عن طريق البحث العكسي من عنوان IP للمُرسِل (إن وُجد).
-* أضف مفتاحًا للنطاق الجذر لاسم المضيف الذي حلّه العميل (إن وُجد، وإذا كان مختلفًا عن اسم المضيف الذي حلّه العميل).
+The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
 
-3. إذا وصل العداد إلى 5 لمُرسِل ومفتاح غير مدرجين في القائمة المسموح بها، فسيتم حظر المفتاح لمدة 30 يومًا، وسيتم إرسال بريد إلكتروني إلى فريق إساءة الاستخدام لدينا. قد تتغير هذه الأرقام وسيتم تحديثها هنا أثناء مراقبة إساءة الاستخدام.
+For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
-4. إذا وصل العداد إلى 10 لمُرسِل ومفتاح مدرجين في القائمة المسموح بها، فسيتم حظر المفتاح لمدة 7 أيام، وسيتم إرسال بريد إلكتروني إلى فريق إساءة الاستخدام لدينا. قد تتغير هذه الأرقام وسيتم تحديثها هنا أثناء مراقبة إساءة الاستخدام.
+Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
-> **ملاحظة:** سنُطلق قريبًا ميزة مراقبة السمعة. ستحسب هذه الميزة متى يجب حظر مُرسِل بناءً على نسبة مئوية (بدلاً من عدّاد بدائي كما ذُكر سابقًا).
+### Do you have a denylist {#do-you-have-a-denylist}
 
-### هل لديك حد للسعر {#do-you-have-rate-limiting}
+Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
 
-يتم تحديد معدل الإرسال إما عن طريق تحليل نطاق الجذر من خلال بحث عكسي عن PTR على عنوان IP الخاص بالمرسل، أو إذا لم يُسفر ذلك عن نتيجة، فسيتم ببساطة استخدام عنوان IP الخاص بالمرسل. يُرجى ملاحظة أننا نشير إلى هذا بـ `Sender` أدناه.
+We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
 
-تحتوي خوادم MX الخاصة بنا على حدود يومية للبريد الوارد المستلم لـ [تخزين IMAP المشفر](/blog/docs/best-quantum-safe-encrypted-email-service):
+Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
 
-* بدلاً من تحديد معدل إرسال البريد الوارد بناءً على اسم مستعار فردي (مثل `you@yourdomain.com`)، نحدد المعدل بناءً على اسم نطاق الاسم المستعار نفسه (مثل `yourdomain.com`). هذا يمنع `Senders` من إغراق صناديق الوارد بجميع الأسماء المستعارة في نطاقك دفعة واحدة.
-* لدينا حدود عامة تُطبق على جميع عناوين `Senders` في خدمتنا بغض النظر عن المستلم:
-* عناوين `Senders` التي نعتبرها "موثوقة" كمصدر موثوق (مثل `gmail.com`، `microsoft.com`، `apple.com`) محدودة بإرسال 100 جيجابايت يوميًا.
-* عناوين `Senders` التي تحمل اسم [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) محدودة بإرسال 10 جيجابايت يوميًا. * جميع `yourdomain.com`0 الأخرى محدودة بإرسال 1 غيغابايت و/أو 1000 رسالة يوميًا.
-* لدينا حدّ أقصى محدد لكل `yourdomain.com`1 و`yourdomain.com`2 وهو 1 غيغابايت و/أو 1000 رسالة يوميًا.
+By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
 
-تقوم خوادم MX أيضًا بالحد من الرسائل التي يتم إعادة توجيهها إلى مستلم واحد أو أكثر من خلال تحديد المعدل - ولكن هذا ينطبق فقط على `Senders` وليس على [القائمة المسموح بها](#do-you-have-an-allowlist):
+**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
 
-* نسمح فقط بما يصل إلى ١٠٠ اتصال في الساعة، لكل نطاق جذر FQDN مُحلَّل `Sender` (أو) عنوان IP بعيد `Sender` (في حال عدم توفر PTR عكسي)، ولكل مستلم مغلف. نخزن المفتاح لتحديد السرعة كتجزئة تشفيرية في قاعدة بيانات Redis الخاصة بنا.
+All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
 
-* إذا كنت ترسل بريدًا إلكترونيًا عبر نظامنا، فيرجى التأكد من إعداد PTR عكسي لجميع عناوين IP الخاصة بك (وإلا فسيتم تقييد معدل كل نطاق جذر FQDN فريد أو عنوان IP ترسل منه).
+Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
 
-* لاحظ أنه إذا قمت بالإرسال عبر نظام شائع مثل Amazon SES، فلن يتم تقييد سعرك نظرًا لأن (في وقت كتابة هذه السطور) Amazon SES مدرج في القائمة المسموح بها لدينا.
+Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
 
-* إذا كنت ترسل من نطاق مثل `test.abc.123.example.com`، فسيتم فرض حد السرعة على `example.com`. يستخدم العديد من مرسلي البريد العشوائي مئات النطاقات الفرعية للالتفاف على مرشحات البريد العشوائي الشائعة التي تفرض حدًا أقصى على أسماء المضيفين الفريدة فقط، بدلاً من نطاقات الجذر المؤهلة بالكامل (FQDN) الفريدة.
+1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
+   * If the sender was allowlisted, the message is greylisted for 1 hour.
+   * If the sender is not allowlisted, the message is greylisted for 6 hours.
+2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
+   * For allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+   * For non-allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+     * Add a key for the remote IP address of the sender.
+     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
+     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
+3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
 
-* سيتم رفض `Senders` التي تتجاوز حد المعدل مع ظهور خطأ 421.
+> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
 
-تحد خوادم IMAP وSMTP الخاصة بنا من حصول الأسماء المستعارة لديك على أكثر من `60` من الاتصالات المتزامنة في وقت واحد.
+### Do you have rate limiting {#do-you-have-rate-limiting}
 
-تقوم خوادم MX الخاصة بنا بتقييد مرسلي [غير مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) من إنشاء أكثر من 10 اتصالات متزامنة (مع انتهاء صلاحية ذاكرة التخزين المؤقت لمدة 3 دقائق للعداد، وهو ما يعكس مهلة المقبس الخاصة بنا لمدة 3 دقائق).
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-### كيف تحمي نفسك من التشتت الخلفي؟ {#how-do-you-protect-against-backscatter}
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-يمكن أن تتسبب الارتدادات الموجهة بشكل خاطئ أو رسائل البريد العشوائي المرتدة (المعروفة باسم "[التشتت الخلفي](https://en.wikipedia.org/wiki/Backscatter_\(email\))") في سمعة سلبية لعناوين IP الخاصة بالمرسل.
+* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
+* We have general limits that apply to all `Senders` across our service regardless of recipient:
+  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
+  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
+  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
+* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
-نحن نتخذ خطوتين للحماية من التشتت الخلفي، والتي تم تفصيلها في الأقسام التالية [منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين](#prevent-bounces-from-known-mail-from-spammers) و[منع الارتدادات غير الضرورية للحماية من التشتت الخلفي](#prevent-unnecessary-bounces-to-protect-against-backscatter) أدناه.
+The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
-### منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين {#prevent-bounces-from-known-mail-from-spammers}
+* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
-نقوم بسحب القائمة من [Backscatter.org](https://www.backscatterer.org/) (مدعومة بواسطة [UCEPROTECT](https://www.uceprotect.net/)) في <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> كل ساعة ونقوم بإدخالها في قاعدة بيانات Redis الخاصة بنا (نقوم أيضًا بمقارنة الفرق مسبقًا؛ في حالة إزالة أي عناوين IP تحتاج إلى الالتزام).
+* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
-إذا كان MAIL FROM فارغًا أو مساويًا (غير حساس لحالة الأحرف) لأي من [عناوين مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني)، فسنتحقق لمعرفة ما إذا كان عنوان IP الخاص بالمرسل يتطابق مع أحد هذه القائمة.
+* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
 
-إذا كان عنوان IP للمُرسِل مُدرجًا (وليس في [القائمة المسموح بها](#do-you-have-an-allowlist))، فسنُرسل خطأ 554 مع الرسالة `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. سيتم تنبيهنا إذا كان المُرسِل مُدرجًا في قائمتي Backscatterer وSmartlist، حتى نتمكن من حل المشكلة عند الحاجة.
+* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
 
-تلتزم التقنيات الموضحة في هذا القسم بتوصية "الوضع الآمن" في <https://www.backscatterer.org/?target=usage> - حيث نتحقق فقط من عنوان IP الخاص بالمرسل إذا تم استيفاء شروط معينة بالفعل.
+* `Senders` that exceed the rate limit will be rejected with a 421 error.
 
-### منع الارتدادات غير الضرورية للحماية من التشتت الخلفي {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
-الارتدادات هي رسائل بريد إلكتروني تشير إلى فشل إعادة توجيه البريد الإلكتروني إلى المستلم تمامًا ولن تتم إعادة محاولة إرسال البريد الإلكتروني.
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
 
-السبب الشائع لإدراجك في قائمة Backscatterer هو الارتدادات الموجهة بشكل خاطئ أو البريد العشوائي المرتد، لذا يتعين علينا الحماية من ذلك بعدة طرق:
+### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
 
-1. نرسل فقط عندما تحدث أخطاء رمز الحالة >= 500 (عندما تفشل محاولات إعادة توجيه رسائل البريد الإلكتروني، على سبيل المثال، يستجيب Gmail بخطأ مستوى 500).
+Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
 
-٢. نرسل مرة واحدة فقط (نستخدم مفتاح بصمة ارتداد محسوبًا ونخزنه في ذاكرة التخزين المؤقت لمنع إرسال رسائل مكررة). بصمة الارتداد هي مفتاح بصمة الرسالة، مضافًا إليه تجزئة عنوان الارتداد ورمز الخطأ الخاص به. راجع قسم [بصمات الأصابع](#how-do-you-determine-an-email-fingerprint) لمزيد من المعلومات حول كيفية حساب بصمة الرسالة. تنتهي صلاحية بصمات الارتداد المرسلة بنجاح بعد ٧ أيام في ذاكرة التخزين المؤقت Redis.
+We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
 
-3. نقوم بالإرسال فقط عندما لا يكون حقل MAIL FROM و/أو From فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
+### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
 
-4. لا نرسل الرسالة إذا كانت الرسالة الأصلية تحتوي على أي من العناوين التالية (غير حساسة لحالة الأحرف):
+We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-* رأس `auto-submitted` بقيمة لا تساوي `no`. * رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
-* رأس `list-id`، أو `list-subscribe`، أو `no`0، أو `no`1، أو `no`2، أو `no`3، أو `no`4، أو `no`5، أو `no`6، أو `no`7 (بغض النظر عن القيمة).
-* رأس `no`8 بقيمة `no`9، أو `x-auto-response-suppress`0، أو `x-auto-response-suppress`1، أو `x-auto-response-suppress`2، أو `x-auto-response-suppress`3.
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-5. لا نقوم بالإرسال إذا كان عنوان البريد الإلكتروني المرسل أو المرسل ينتهي بـ `+donotreply`، أو `-donotreply`، أو `+noreply`، أو `-noreply`.
+If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
-6. لا نرسل إذا كان جزء اسم المستخدم في عنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف وهو `X-MDDSN-Message`.
+The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
 
-7. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف في `multipart/report`.
+### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-### كيف يمكنك تحديد بصمة البريد الإلكتروني {#how-do-you-determine-an-email-fingerprint}
+Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
 
-يتم استخدام بصمة البريد الإلكتروني لتحديد مدى تفرد البريد الإلكتروني ومنع تسليم الرسائل المكررة وإرسال [الارتدادات المكررة](#prevent-unnecessary-bounces-to-protect-against-backscatter).
+A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
 
-يتم حساب بصمة الإصبع من القائمة التالية:
+1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
 
-* اسم مضيف FQDN أو عنوان IP المُحلَّل من قِبل العميل
-* قيمة رأس `Message-ID` (إن وجدت)
-* قيمة رأس `Date` (إن وجدت)
-* قيمة رأس `From` (إن وجدت)
-* قيمة رأس `To` (إن وجدت)
-* قيمة رأس `Cc` (إن وجدت)
-* قيمة رأس `Subject` (إن وجدت)
-* قيمة `Body` (إن وجدت)
+2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
 
-### هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى منافذ أخرى غير 25 (على سبيل المثال إذا قام مزود خدمة الإنترنت الخاص بي بحظر المنفذ 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-نعم، أضفنا هذه الميزة اعتبارًا من 5 مايو 2020. حاليًا، الميزة مخصصة لنطاق محدد، وليست خاصة بالاسم المستعار. إذا كنت ترغب في أن تكون خاصة بالاسم المستعار، يُرجى التواصل معنا لإعلامنا باحتياجاتك.
+4. We don't send if the original message had any of the following headers (case-insensitive):
+
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+
+5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+
+6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+
+7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+
+### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+
+An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+
+The fingerprint is calculated from the following list:
+
+* Client resolved FQDN hostname or IP address
+* `Message-ID` header value (if any)
+* `Date` header value (if any)
+* `From` header value (if any)
+* `To` header value (if any)
+* `Cc` header value (if any)
+* `Subject` header value (if any)
+* `Body` value (if any)
+
+### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+
+Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-
-حماية خصوصية مُحسّنة:
-</strong>
-<span>
-إذا كنت مشتركًا في باقة مدفوعة (تتميز بحماية خصوصية مُحسّنة)، يُرجى الانتقال إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>، والنقر على "إعدادات" بجوار نطاقك، ثم على "الإعدادات". لمعرفة المزيد عن الباقات المدفوعة، يُرجى زيارة صفحة <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">الأسعار</a>. أو يُمكنك متابعة التعليمات أدناه.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS جديد <strong class="notranslate">TXT</strong> كما هو موضح أدناه، ولكن قم بتغيير المنفذ من 25 إلى المنفذ الذي تختاره.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تذهب إلى `example.com` إلى منفذ SMTP الخاص بالمستلمين المستعارين وهو 1337 بدلاً من 25:
+For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email-port=1337</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-port=1337</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-
-الحالة الأكثر شيوعًا لإعداد إعادة توجيه المنفذ المخصص هي عندما ترغب في إعادة توجيه جميع رسائل البريد الإلكتروني المرسلة إلى example.com إلى منفذ مختلف على example.com، بخلاف منفذ SMTP القياسي 25. لإعداد هذا، ما عليك سوى إضافة سجل <strong class="notranslate">TXT</strong> الشامل التالي.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+  <span>
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=example.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=example.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### هل يدعم رمز الجمع + لأسماء Gmail البديلة؟ {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-نعم بالتأكيد.
+Yes, absolutely.
 
-### هل يدعم المجالات الفرعية؟ {#does-it-support-sub-domains}
+### Does it support sub-domains {#does-it-support-sub-domains}
 
-نعم، بالتأكيد. بدلاً من استخدام "@" أو "." أو فراغ كاسم/مضيف/اسم مستعار، استخدم اسم النطاق الفرعي كقيمة.
+Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
-إذا كنت تريد أن يقوم `foo.example.com` بإعادة توجيه رسائل البريد الإلكتروني، فأدخل `foo` كقيمة اسم/مضيف/اسم مستعار في إعدادات DNS (لكل من سجلات MX و<strong class="notranslate">TXT</strong>).
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
-### هل يؤدي هذا إلى إعادة توجيه رؤوس رسائل البريد الإلكتروني الخاصة بي؟ {#does-this-forward-my-emails-headers}
+### Does this forward my email's headers {#does-this-forward-my-emails-headers}
 
-نعم بالتأكيد.
+Yes, absolutely.
 
-### هل تم اختبار هذا جيدًا؟ {#is-this-well-tested}
+### Is this well-tested {#is-this-well-tested}
 
-نعم، فهو يحتوي على اختبارات مكتوبة باستخدام [افا](https://github.com/avajs/ava) ويحتوي أيضًا على تغطية للكود.
+Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
 
-### هل تقوم بتمرير رسائل ورموز استجابة SMTP؟ {#do-you-pass-along-smtp-response-messages-and-codes}
+### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
 
-نعم، بالتأكيد. على سبيل المثال، إذا كنت ترسل بريدًا إلكترونيًا إلى `hello@example.com` وكان مُسجَّلاً لإعادة التوجيه إلى `user@gmail.com`، فسيتم إرجاع رسالة استجابة SMTP والرمز من خادم SMTP الخاص بـ "gmail.com" بدلاً من خادم الوكيل على "mx1.forwardemail.net" أو "mx2.forwardemail.net".
+Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
 
-### كيف تمنع مرسلي البريد العشوائي وتضمن سمعة جيدة في إعادة توجيه البريد الإلكتروني؟ {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-راجع أقسامنا حول [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work)، و[كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues)، و[كيف تتعامل مع حظر عناوين IP الخاصة بك؟](#how-do-you-handle-your-ip-addresses-becoming-blocked) أعلاه.
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
 
-### كيف تقوم بإجراء عمليات بحث DNS على أسماء النطاقات {#how-do-you-perform-dns-lookups-on-domain-names}
+### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
 
-أنشأنا مشروع برمجي مفتوح المصدر: tangerine: [اليوسفي](https://github.com/forwardemail/tangerine)، ونستخدمه لعمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي `1.1.1.1` و`1.0.0.1`، ويتم تنفيذ استعلامات DNS عبر [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") في طبقة التطبيقات.
+We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
 
-:tangerine: يستخدم [اليوسفي](https://github.com/tangerine) [خدمة DNS للمستهلك التي تضع الخصوصية أولاً في المقام الأول من CloudFlare بشكل افتراضي][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
 
-## الحساب والفواتير {#account-and-billing}
+## Account and Billing {#account-and-billing}
 
-### هل تقدمون ضمان استرداد الأموال على الخطط المدفوعة؟ {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-نعم! يتم استرداد المبالغ المدفوعة تلقائيًا عند ترقية حسابك أو تخفيضه أو إلغائه خلال 30 يومًا من تاريخ بدء اشتراكك. ينطبق هذا فقط على العملاء الجدد.
+Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
-### إذا قمت بتبديل الخطط، فهل تقومون بتوزيع المبلغ واسترداد الفرق؟ {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-لا نقوم بتوزيع الاشتراكات أو برد الفرق عند تغيير باقتك. بدلاً من ذلك، نقوم بتحويل المدة المتبقية من تاريخ انتهاء صلاحية باقتك الحالية إلى أقرب مدة نسبية لباقتك الجديدة (مقربًا حسب الشهر).
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
-يرجى ملاحظة أنه إذا قمت بالترقية أو التخفيض بين الخطط المدفوعة خلال فترة 30 يومًا منذ بدء خطة مدفوعة لأول مرة، فسوف نقوم تلقائيًا برد المبلغ بالكامل من خطتك الحالية.
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
-### هل يمكنني استخدام خدمة إعادة توجيه البريد الإلكتروني هذه كخادم MX "احتياطي" أو "مؤقت"؟ {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-لا، لا يُنصح بذلك، إذ لا يمكنك استخدام سوى خادم تبادل بريد إلكتروني واحد في كل مرة. عادةً لا تُعاد محاولة استخدام البدائل بسبب أخطاء في إعدادات الأولوية وعدم التزام خوادم البريد الإلكتروني بفحص أولوية تبادل البريد الإلكتروني.
+No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
 
-### هل يمكنني تعطيل أسماء مستعارة معينة؟ {#can-i-disable-specific-aliases}
+### Can I disable specific aliases {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت مشتركًا في باقة مدفوعة، فعليك الانتقال إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> تعديل الاسم المستعار <i class="fa fa-angle-right"></i> إلغاء تحديد مربع الاختيار "نشط" <i class="fa fa-angle-right"></i> متابعة.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+  </span>
 </div>
 
-نعم، ما عليك سوى تعديل سجل DNS <strong class="notranslate">TXT</strong> الخاص بك وإضافة بادئة للاسم المستعار إما بعلامة تعجب واحدة أو اثنتين أو ثلاث علامات تعجب (انظر أدناه).
+Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
 
-لاحظ أنه *يجب* عليك الحفاظ على تعيين ":"، حيث أن هذا مطلوب إذا قررت إيقاف تشغيله (ويستخدم أيضًا للاستيراد إذا قمت بالترقية إلى إحدى خططنا المدفوعة).
+Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
 
-**للرفض الهادئ (يبدو للمرسل كما لو أن الرسالة تم إرسالها بنجاح، ولكنها في الواقع لا تذهب إلى أي مكان) (رمز الحالة `250`):** إذا قمت بإضافة بادئة "!" (علامة تعجب واحدة) إلى اسم مستعار، فسوف يعيد رمز حالة ناجح `250` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان، ولكن رسائل البريد الإلكتروني نفسها لن تذهب إلى أي مكان (على سبيل المثال، ثقب أسود أو `/dev/null`).
+**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
 
-**بالنسبة للرفض الناعم (رمز الحالة `421`):** إذا قمت بإضافة بادئة "!!" (علامة تعجب مزدوجة) إلى اسم مستعار، فسوف يتم إرجاع رمز حالة خطأ ناعم `421` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان، وغالبًا ما تتم إعادة محاولة إرسال رسائل البريد الإلكتروني لمدة تصل إلى 5 أيام قبل الرفض والارتداد.
+**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
 
-**للرفض النهائي (رمز الحالة `550`):** إذا قمت بإضافة البادئة "!!!" (علامة تعجب ثلاثية) إلى اسم مستعار، فسوف يتم إرجاع رمز حالة خطأ دائم `550` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان وسيتم رفض رسائل البريد الإلكتروني وترتد.
+**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
 
-على سبيل المثال، إذا كنت أريد أن تتوقف جميع رسائل البريد الإلكتروني التي تذهب إلى `alias@example.com` عن التدفق إلى `user@gmail.com` ويتم رفضها وترتد (على سبيل المثال، استخدم ثلاث علامات تعجب):
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:user@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:user@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-يمكنك أيضًا إعادة كتابة عنوان المستلم المُعاد توجيهه إلى "nobody@forwardemail.net"، مما سيؤدي إلى عدم توجيهه إلى أي شخص كما في المثال أدناه.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة الإرسال</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@" أو "." أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-إذا كنت ترغب في زيادة الأمان، يمكنك أيضًا إزالة الجزء ":user@gmail.com" (أو ":nobody@forwardemail.net")، مع ترك "!!!alias" فقط كما في المثال أدناه.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### هل يمكنني إعادة توجيه رسائل البريد الإلكتروني إلى عدة مستلمين؟ {#can-i-forward-emails-to-multiple-recipients}
+### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
 
-نعم، بالتأكيد. ما عليك سوى تحديد عدة مستلمين في سجلات <strong class="notranslate">TXT</strong>.
+Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
 
-على سبيل المثال، إذا كنت أريد توجيه بريد إلكتروني يذهب إلى `hello@example.com` إلى `user+a@gmail.com` و`user+b@gmail.com`، فسيبدو سجل <strong class="notranslate">TXT</strong> الخاص بي على هذا النحو:
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@" أو "." أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-أو يمكنك تحديدهم في سطرين منفصلين، مثل هذا:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-الأمر متروك لك!
+It's up to you!
 
-### هل يمكنني الحصول على عدة مستلمين عالميين شاملين {#can-i-have-multiple-global-catch-all-recipients}
+### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
 
-نعم، يمكنك ذلك. ما عليك سوى تحديد عدة مستلمين عالميين في سجلات <strong class="notranslate">TXT</strong>.
+Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه كل بريد إلكتروني يذهب إلى `*@example.com` (العلامة النجمية تعني أنه حرف بدل أو ما شابه ذلك) إلى `user+a@gmail.com` و`user+b@gmail.com`، فإن سجل <strong class="notranslate">TXT</strong> الخاص بي سيبدو كما يلي:
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فارغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-أو يمكنك تحديدهم في سطرين منفصلين، مثل هذا:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
-<th>النوع</th>
-<th>الإجابة/القيمة</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", أو فراغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>@, ".", أو فراغ</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>@, ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-الأمر متروك لك!
+It's up to you!
 
-### هل يوجد حد أقصى لعدد عناوين البريد الإلكتروني التي يمكنني إعادة توجيهها لكل اسم مستعار {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-نعم، الحد الأقصى الافتراضي هو ١٠. هذا لا يعني أنه يمكنك استخدام ١٠ أسماء مستعارة فقط على اسم نطاقك. يمكنك استخدام أي عدد تريده من الأسماء المستعارة (عدد غير محدود). هذا يعني أنه يمكنك إعادة توجيه اسم مستعار واحد فقط إلى ١٠ عناوين بريد إلكتروني فريدة. يمكنك استخدام `hello:user+1@gmail.com`، `hello:user+2@gmail.com`، `hello:user+3@gmail.com`، ... (من ١ إلى ١٠) - وأي رسائل بريد إلكتروني إلى `hello@example.com` ستُعاد توجيهها إلى `user+1@gmail.com`، `user+2@gmail.com`، `user+3@gmail.com`، ... (من ١ إلى ١٠).
+Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-نصيحة:
-</strong>
-<span>
-هل تحتاج لأكثر من ١٠ مستلمين لكل اسم مستعار؟ راسلنا عبر البريد الإلكتروني، وسيسعدنا زيادة حد حساباتك.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+  </span>
 </div>
 
-### هل يمكنني إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر؟ {#can-i-recursively-forward-emails}
+### Can I recursively forward emails {#can-i-recursively-forward-emails}
 
-نعم، يمكنك ذلك، ولكن يجب عليك الالتزام بالحد الأقصى. إذا كان لديك `hello:linus@example.com` و`linus:user@gmail.com`، فسيتم إعادة توجيه رسائل البريد الإلكتروني المرسلة إلى `hello@example.com` إلى `linus@example.com` و`user@gmail.com`. يُرجى العلم أنه سيتم عرض خطأ إذا حاولت إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر بعد تجاوز الحد الأقصى.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
 
-### هل يمكن للأشخاص إلغاء التسجيل أو تسجيل إعادة توجيه بريدي الإلكتروني دون إذني؟ {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-نستخدم التحقق من سجلات MX و<strong class="notranslate">TXT</strong>، لذا إذا أضفتَ سجلات MX و<strong class="notranslate">TXT</strong> الخاصة بهذه الخدمة، فأنتَ مُسجَّل. إذا أزلتَها، فأنتَ غير مُسجَّل. أنت تملك نطاقك وإدارة DNS، لذا إذا كان بإمكان أي شخص الوصول إليها، فهذه مشكلة.
+We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
-### كيف يكون مجانيًا {#how-is-it-free}
+### How is it free {#how-is-it-free}
 
-يقدم Forward Email طبقة مجانية من خلال مجموعة من التطوير مفتوح المصدر والبنية الأساسية الفعالة والخطط المدفوعة الاختيارية التي تدعم الخدمة.
+Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
 
-يتم دعم المستوى المجاني لدينا بواسطة:
+Our free tier is supported by:
 
-1. **التطوير مفتوح المصدر**: قاعدة الكود الخاصة بنا مفتوحة المصدر، مما يسمح بمساهمات المجتمع والتشغيل الشفاف.
+1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
 
-2. **البنية التحتية الفعالة**: لقد قمنا بتحسين أنظمتنا للتعامل مع إعادة توجيه البريد الإلكتروني باستخدام الحد الأدنى من الموارد.
+2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
 
-3. **خطط الدفع المميزة**: يمكن للمستخدمين الذين يحتاجون إلى ميزات إضافية مثل إرسال SMTP أو استلام IMAP أو خيارات الخصوصية المحسنة الاشتراك في خططنا المدفوعة.
+3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
 
-4. **حدود الاستخدام المعقولة**: تتمتع الطبقة المجانية بسياسات الاستخدام العادل لمنع إساءة الاستخدام.
+4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
 
-نحن ملتزمون بتوفير خدمة إعادة توجيه البريد الإلكتروني الأساسية مجانًا، مع توفير ميزات مميزة للمستخدمين ذوي الاحتياجات المتقدمة.
+> \[!NOTE]
+> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
 
-إذا وجدت خدمتنا قيّمة، ففكّر في الترقية إلى خطة مدفوعة لدعم التطوير والصيانة المستمرة.
+> \[!TIP]
+> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
 
-### ما هو الحد الأقصى لحجم البريد الإلكتروني؟ {#what-is-the-max-email-size-limit}
+### What is the max email size limit {#what-is-the-max-email-size-limit}
 
-الحد الأقصى للحجم الافتراضي هو 50 ميغابايت، ويشمل المحتوى والرؤوس والمرفقات. يُرجى العلم أن خدمات مثل Gmail وOutlook تسمح فقط بـ 25 ميغابايت، وفي حال تجاوز الحد عند الإرسال إلى عناوين لدى هذه الخدمات، ستتلقى رسالة خطأ.
+We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
 
-يتم إرجاع خطأ في رمز الاستجابة الصحيح إذا تم تجاوز حد حجم الملف.
+An error with the proper response code is returned if the file size limit is exceeded.
 
-### هل تقوم بتخزين سجلات رسائل البريد الإلكتروني {#do-you-store-logs-of-emails}
+### Do you store logs of emails {#do-you-store-logs-of-emails}
 
-لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### هل تقوم بتخزين سجلات الأخطاء {#do-you-store-error-logs}
+### Do you store error logs {#do-you-store-error-logs}
 
-**نعم. يمكنك الوصول إلى سجلات الأخطاء ضمن [حسابي → السجلات](/my-account/logs) أو [حسابي → النطاقات](/my-account/domains).**
+**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
 
-اعتبارًا من فبراير 2023، نقوم بتخزين سجلات الأخطاء لرموز استجابة SMTP `4xx` و`5xx` لمدة 7 أيام - والتي تحتوي على خطأ SMTP والمغلف ورؤوس البريد الإلكتروني (نحن **لا** نخزن نص البريد الإلكتروني أو المرفقات).
+As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
 
-تتيح لك سجلات الأخطاء التحقق من رسائل البريد الإلكتروني المهمة المفقودة والحد من ظهور نتائج إيجابية خاطئة للرسائل غير المرغوب فيها لـ [نطاقاتك](/my-account/domains). كما أنها مصدر ممتاز لتصحيح أخطاء [خطافات البريد الإلكتروني](#do-you-support-webhooks) (لأن سجلات الأخطاء تحتوي على استجابة نقطة نهاية خطاف الويب).
+Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
 
-لا يمكن الوصول إلى سجلات الأخطاء الخاصة بـ [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة الرمادية](#do-you-have-a-greylist) لأن الاتصال ينتهي مبكرًا (على سبيل المثال، قبل أن يتم إرسال أوامر `RCPT TO` و`MAIL FROM`).
+Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
 
-راجع [سياسة الخصوصية](/privacy) للحصول على مزيد من المعلومات.
+See our [Privacy Policy](/privacy) for more insight.
 
-### هل تقرأ رسائل البريد الإلكتروني الخاصة بي؟ {#do-you-read-my-emails}
+### Do you read my emails {#do-you-read-my-emails}
 
-لا، على الإطلاق. راجع [سياسة الخصوصية](/privacy).
+No, absolutely not.  See our [Privacy Policy](/privacy).
 
-تخزن العديد من خدمات إعادة توجيه البريد الإلكتروني الأخرى رسائلك الإلكترونية، وقد تقرأها. لا داعي لتخزين رسائل البريد الإلكتروني المُعاد توجيهها على القرص الصلب، ولذلك صممنا أول حل مفتوح المصدر يُجري كل ذلك في الذاكرة.
+Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
 
-نؤمن بحقك في الخصوصية، ونحترمه تمامًا. الكود المُستخدم على الخادم هو [برمجيات مفتوحة المصدر على GitHub](https://github.com/forwardemail) لضمان الشفافية وبناء الثقة.
+We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
 
-### هل يمكنني "إرسال البريد باسم" في Gmail باستخدام هذا {#can-i-send-mail-as-in-gmail-with-this}
+### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
 
-نعم! اعتبارًا من ٢ أكتوبر ٢٠١٨، أضفنا هذه الميزة. انظر [كيفية إرسال البريد باسم باستخدام Gmail](#how-to-send-mail-as-using-gmail) أعلاه!
+Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
 
-يجب عليك أيضًا تعيين سجل SPF لـ Gmail في سجل <strong class="notranslate">TXT</strong> لتكوين DNS الخاص بك.
+You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Gmail (مثل إرسال البريد باسم) أو G Suite، فستحتاج إلى إضافة <code>include:_spf.google.com</code> إلى سجل SPF <strong class="notranslate">TXT</strong>، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
-### هل يمكنني "إرسال البريد باسم" في Outlook باستخدام هذا {#can-i-send-mail-as-in-outlook-with-this}
+### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
 
-نعم! ابتداءً من ٢ أكتوبر ٢٠١٨، أضفنا هذه الميزة. ما عليك سوى الاطلاع على هذين الرابطين من مايكروسوفت أدناه:
+Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-يجب عليك أيضًا تعيين سجل SPF لبرنامج Outlook في سجل <strong class="notranslate">TXT</strong> الخاص بتكوين DNS.
+You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-هام:
-</strong>
-<span>
-إذا كنت تستخدم Microsoft Outlook أو Live.com، فستحتاج إلى إضافة <code>include:spf.protection.outlook.com</code> إلى سجل SPF <strong class="notranslate">TXT</strong>، على سبيل المثال:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
-### هل يمكنني "إرسال البريد باسم" في Apple Mail وiCloud Mail باستخدام هذا {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-إذا كنت مشتركًا في iCloud+، فيمكنك استخدام نطاق مخصص. [خدمتنا متوافقة أيضًا مع Apple Mail](#apple-mail).
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
 
-يرجى الاطلاع على <https://support.apple.com/en-us/102540> لمزيد من المعلومات.
+Please see <https://support.apple.com/en-us/102540> for more information.
 
-### هل يمكنني إعادة توجيه عدد غير محدود من رسائل البريد الإلكتروني باستخدام هذا {#can-i-forward-unlimited-emails-with-this}
+### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
 
-نعم، ولكن بالنسبة للمرسلين "غير المعروفين نسبيًا"، يقتصر معدل الإرسال على 100 اتصال في الساعة لكل اسم مضيف أو عنوان IP. راجع قسم [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة الرمادية](#do-you-have-a-greylist) أعلاه.
+Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
-بـ "غير معروف نسبيًا"، فإننا نعني المرسلين الذين لا يظهرون في [القائمة المسموح بها](#do-you-have-an-allowlist).
+By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
-إذا تم تجاوز هذا الحد، فإننا نرسل رمز استجابة 421 الذي يخبر خادم البريد الخاص بالمرسل بإعادة المحاولة لاحقًا.
+If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
 
-### هل تقدمون عددًا غير محدود من النطاقات بسعر واحد؟ {#do-you-offer-unlimited-domains-for-one-price}
+### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
 
-نعم. بغض النظر عن الباقة التي تختارها، ستدفع رسمًا شهريًا واحدًا فقط، يغطي جميع نطاقاتك.
+Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
 
-### ما هي طرق الدفع التي تقبلها؟ {#which-payment-methods-do-you-accept}
+### Which payment methods do you accept {#which-payment-methods-do-you-accept}
 
-تقبل خدمة Forward Email طرق الدفع التالية لمرة واحدة أو شهرية/ربع سنوية/سنوية:
+Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
 
-١. **بطاقات الائتمان/الخصم/التحويلات المصرفية**: فيزا، ماستركارد، أمريكان إكسبريس، ديسكوفر، جيه سي بي، داينرز كلوب، إلخ.
-٢. **باي بال**: اربط حساب باي بال الخاص بك لتسهيل الدفع.
-٣. **العملات المشفرة**: نقبل الدفع عبر عملة سترايب المستقرة على شبكات إيثريوم، بوليجون، وسولانا.
+1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
+2. **PayPal**: Connect your PayPal account for easy payments
+3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
 
 > \[!NOTE]
-> نخزن معلومات دفع محدودة على خوادمنا، والتي تتضمن فقط معرفات الدفع ومراجع معاملات [شريط](https://stripe.com/global) و[باي بال](https://www.paypal.com)، ومعرفات العميل والاشتراك والدفع.
+> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
 
 > \[!TIP]
-> للحصول على أقصى قدر من الخصوصية، فكّر في استخدام مدفوعات العملات المشفرة.
+> For maximum privacy, consider using cryptocurrency payments.
 
-تتم معالجة جميع المدفوعات بأمان عبر Stripe أو PayPal. لا يتم تخزين بيانات دفعك على خوادمنا.
+All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
 
-## موارد إضافية {#additional-resources}
+## Additional Resources {#additional-resources}
 
 > \[!TIP]
-> يتم تحديث مقالاتنا أدناه بانتظام بأدلة ونصائح ومعلومات تقنية جديدة. تابعونا باستمرار للاطلاع على أحدث المحتوى.
+> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
 
-* [دراسات الحالة ووثائق المطورين](/blog/docs)
-* [موارد](/resources)
-* [أدلة](/guides)
+* [Case Studies & Developer Documentation](/blog/docs)
+* [Resources](/resources)
+* [Guides](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

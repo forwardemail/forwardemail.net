@@ -18,27 +18,6 @@
         name: ssh
         state: restarted
   tasks:
-    # Patch DNS role for Ansible compatibility
-    # The DNS role from Ansible Galaxy has a broken conditional that fails with newer Ansible versions
-    # The issue is that 'when: item.value' treats string values as conditionals, which Ansible 2.15+ doesn't allow
-    # Solution: Simply remove the 'when' clause - the lineinfile module handles empty values gracefully
-    - name: Check if DNS role exists
-      stat:
-        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
-      register: dns_role_file
-      delegate_to: localhost
-      become: false
-
-    - name: Remove broken conditional from DNS role
-      lineinfile:
-        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
-        regexp: '^  when: item\.value.*$'
-        state: absent
-        backup: yes
-      delegate_to: localhost
-      become: false
-      when: dns_role_file.stat.exists
-
     - name: Delete Digital Ocean Networking Configuration
       ansible.builtin.file:
         state: absent
@@ -217,6 +196,7 @@
           - ipset
           - build-essential
           - curl
+          - ufw
           - git
           - vim
           - wget
@@ -754,6 +734,8 @@
       # TODO: add IMAP, POP3, and SMTP with pm2 error log output
       # https://www.teaparty.net/technotes/fail2ban.html#:~:text=I%20added%20the%20following%20to%20my%20jail.conf%3A
 
-    # https://github.com/jnv/ansible-role-unattended-upgrades
-    - role: unattended-upgrades
+    # https://github.com/hifis-net/ansible-collection-toolkit (new)
+    # https://github.com/jnv/ansible-role-unattended-upgrades (old)
+    # - role: unattended-upgrades
+    - role: hifis.toolkit.unattended_upgrades
       unattended_automatic_reboot_time: "02:00"

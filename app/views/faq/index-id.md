@@ -1,1978 +1,2450 @@
-# Pertanyaan yang Sering Diajukan {#frequently-asked-questions}
+# Frequently Asked Questions {#frequently-asked-questions}
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
-## Daftar Isi {#table-of-contents}
+## Table of Contents {#table-of-contents}
 
-* [Mulai Cepat](#quick-start)
-* [Perkenalan](#introduction)
-  * [Apa itu Email Terusan](#what-is-forward-email)
-  * [Siapa yang menggunakan Forward Email](#who-uses-forward-email)
-  * [Apa sejarah Forward Email](#what-is-forward-emails-history)
-  * [Seberapa cepat layanan ini?](#how-fast-is-this-service)
-* [Klien Email](#email-clients)
-  * [Burung Guntur](#thunderbird)
+* [Quick Start](#quick-start)
+* [Introduction](#introduction)
+  * [What is Forward Email](#what-is-forward-email)
+  * [Who uses Forward Email](#who-uses-forward-email)
+  * [What is Forward Email's history](#what-is-forward-emails-history)
+  * [How fast is this service](#how-fast-is-this-service)
+* [Email Clients](#email-clients)
+  * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
-  * [Perangkat Seluler](#mobile-devices)
-  * [Cara Mengirim Email Menggunakan Gmail](#how-to-send-mail-as-using-gmail)
-  * [Apa panduan gratis lama untuk Kirim Email Sebagai menggunakan Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Konfigurasi Perutean Gmail Lanjutan](#advanced-gmail-routing-configuration)
-  * [Konfigurasi Perutean Outlook Lanjutan](#advanced-outlook-routing-configuration)
-* [Pemecahan Masalah](#troubleshooting)
-  * [Mengapa saya tidak menerima email pengujian saya?](#why-am-i-not-receiving-my-test-emails)
-  * [Bagaimana cara mengonfigurasi klien email saya agar berfungsi dengan Forward Email?](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Mengapa email saya masuk ke Spam dan Junk dan bagaimana cara memeriksa reputasi domain saya](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [Apa yang harus saya lakukan jika saya menerima email spam?](#what-should-i-do-if-i-receive-spam-emails)
-  * [Mengapa email percobaan yang saya kirim ke saya sendiri di Gmail ditampilkan sebagai "mencurigakan"?](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Bisakah saya menghapus via forwardemail dot net di Gmail?](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Manajemen Data](#data-management)
-  * [Di mana server Anda berada?](#where-are-your-servers-located)
-  * [Bagaimana cara mengekspor dan mencadangkan kotak surat saya?](#how-do-i-export-and-backup-my-mailbox)
-  * [Bagaimana cara mengimpor dan memigrasikan kotak surat saya yang sudah ada?](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Apakah Anda mendukung self-hosting?](#do-you-support-self-hosting)
-* [Konfigurasi Email](#email-configuration)
-  * [Bagaimana cara memulai dan mengatur penerusan email?](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Bisakah saya menggunakan beberapa bursa dan server MX untuk penerusan lanjutan?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Bagaimana cara mengatur penjawab saat libur (penjawab otomatis saat sedang tidak di kantor)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [Bagaimana cara mengatur SPF untuk Email Terusan?](#how-do-i-set-up-spf-for-forward-email)
-  * [Bagaimana cara mengatur DKIM untuk Penerusan Email?](#how-do-i-set-up-dkim-for-forward-email)
-  * [Bagaimana cara mengatur DMARC untuk Meneruskan Email?](#how-do-i-set-up-dmarc-for-forward-email)
-  * [Bagaimana cara menghubungkan dan mengonfigurasi kontak saya?](#how-do-i-connect-and-configure-my-contacts)
-  * [Bagaimana cara menghubungkan dan mengonfigurasi kalender saya?](#how-do-i-connect-and-configure-my-calendars)
-  * [Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang sudah ada?](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [Bagaimana cara mengatur SRS untuk Meneruskan Email?](#how-do-i-set-up-srs-for-forward-email)
-  * [Bagaimana cara mengatur MTA-STS untuk Meneruskan Email?](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [Bagaimana cara menambahkan gambar profil ke alamat email saya?](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Fitur Lanjutan](#advanced-features)
-  * [Apakah Anda mendukung buletin atau milis untuk email terkait pemasaran?](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Apakah Anda mendukung pengiriman email dengan API?](#do-you-support-sending-email-with-api)
-  * [Apakah Anda mendukung penerimaan email dengan IMAP?](#do-you-support-receiving-email-with-imap)
-  * [Apakah Anda mendukung POP3?](#do-you-support-pop3)
-  * [Apakah Anda mendukung kalender (CalDAV)](#do-you-support-calendars-caldav)
-  * [Apakah Anda mendukung kontak (CardDAV)](#do-you-support-contacts-carddav)
-  * [Apakah Anda mendukung pengiriman email dengan SMTP?](#do-you-support-sending-email-with-smtp)
-  * [Apakah Anda mendukung OpenPGP/MIME, enkripsi ujung ke ujung ("E2EE"), dan Direktori Kunci Web ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Apakah Anda mendukung MTA-STS?](#do-you-support-mta-sts)
-  * [Apakah Anda mendukung kunci sandi dan WebAuthn?](#do-you-support-passkeys-and-webauthn)
-  * [Apakah Anda mendukung praktik terbaik email?](#do-you-support-email-best-practices)
-  * [Apakah Anda mendukung webhook bounce?](#do-you-support-bounce-webhooks)
-  * [Apakah Anda mendukung webhook?](#do-you-support-webhooks)
-  * [Apakah Anda mendukung ekspresi reguler atau regex?](#do-you-support-regular-expressions-or-regex)
-  * [Berapa batas SMTP keluar Anda?](#what-are-your-outbound-smtp-limits)
-  * [Apakah saya perlu persetujuan untuk mengaktifkan SMTP?](#do-i-need-approval-to-enable-smtp)
-  * [Apa pengaturan konfigurasi server SMTP Anda?](#what-are-your-smtp-server-configuration-settings)
-  * [Apa pengaturan konfigurasi server IMAP Anda?](#what-are-your-imap-server-configuration-settings)
-  * [Apa pengaturan konfigurasi server POP3 Anda?](#what-are-your-pop3-server-configuration-settings)
-  * [Konfigurasi Relai SMTP Postfix](#postfix-smtp-relay-configuration)
-* [Keamanan](#security)
-  * [Teknik Pengerasan Server Lanjutan](#advanced-server-hardening-techniques)
-  * [Apakah Anda memiliki sertifikasi SOC 2 atau ISO 27001?](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Apakah Anda menggunakan enkripsi TLS untuk penerusan email?](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Apakah Anda menyimpan header otentikasi email?](#do-you-preserve-email-authentication-headers)
-  * [Apakah Anda mempertahankan header email asli dan mencegah spoofing?](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [Bagaimana Anda melindungi diri dari spam dan penyalahgunaan?](#how-do-you-protect-against-spam-and-abuse)
-  * [Apakah Anda menyimpan konten email di disk?](#do-you-store-email-content-on-disk)
-  * [Dapatkah konten email terekspos saat sistem mengalami crash?](#can-email-content-be-exposed-during-system-crashes)
-  * [Siapa yang memiliki akses ke infrastruktur email Anda](#who-has-access-to-your-email-infrastructure)
-  * [Penyedia infrastruktur apa yang Anda gunakan?](#what-infrastructure-providers-do-you-use)
-  * [Apakah Anda menawarkan Perjanjian Pemrosesan Data (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
-  * [Bagaimana Anda menangani pemberitahuan pelanggaran data?](#how-do-you-handle-data-breach-notifications)
-  * [Apakah Anda menawarkan lingkungan pengujian?](#do-you-offer-a-test-environment)
-  * [Apakah Anda menyediakan alat pemantauan dan peringatan?](#do-you-provide-monitoring-and-alerting-tools)
-  * [Bagaimana Anda memastikan ketersediaan tinggi?](#how-do-you-ensure-high-availability)
-  * [Apakah Anda mematuhi Bagian 889 dari Undang-Undang Otorisasi Pertahanan Nasional (NDAA)?](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [Sistem dan Detail Teknis](#system-and-technical-details)
-  * [Apakah Anda menyimpan email dan isinya?](#do-you-store-emails-and-their-contents)
-  * [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work)
-  * [Bagaimana Anda memproses email untuk diteruskan?](#how-do-you-process-an-email-for-forwarding)
-  * [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues)
-  * [Bagaimana Anda menangani alamat IP Anda yang diblokir?](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Apa itu alamat kepala kantor pos?](#what-are-postmaster-addresses)
-  * [Apa itu alamat no-reply?](#what-are-no-reply-addresses)
-  * [Apa alamat IP server Anda?](#what-are-your-servers-ip-addresses)
-  * [Apakah Anda memiliki daftar yang diizinkan?](#do-you-have-an-allowlist)
-  * [Ekstensi nama domain apa yang diizinkan secara default](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [Apa kriteria daftar putih Anda?](#what-is-your-allowlist-criteria)
-  * [Ekstensi nama domain apa yang bisa digunakan secara gratis?](#what-domain-name-extensions-can-be-used-for-free)
-  * [Apakah Anda memiliki daftar abu-abu?](#do-you-have-a-greylist)
-  * [Apakah Anda memiliki daftar penolakan?](#do-you-have-a-denylist)
-  * [Apakah Anda memiliki pembatasan tarif?](#do-you-have-rate-limiting)
-  * [Bagaimana Anda melindungi dari hamburan balik?](#how-do-you-protect-against-backscatter)
-  * [Cegah pantulan dari pengirim MAIL FROM yang diketahui](#prevent-bounces-from-known-mail-from-spammers)
-  * [Cegah pantulan yang tidak perlu untuk melindungi dari hamburan balik](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [Bagaimana cara menentukan sidik jari email?](#how-do-you-determine-an-email-fingerprint)
-  * [Bisakah saya meneruskan email ke port selain 25 (misalnya jika ISP saya memblokir port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Apakah ini mendukung simbol plus + untuk alias Gmail?](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Apakah ini mendukung subdomain?](#does-it-support-sub-domains)
-  * [Apakah ini meneruskan header email saya?](#does-this-forward-my-emails-headers)
-  * [Apakah ini sudah teruji dengan baik?](#is-this-well-tested)
-  * [Apakah Anda meneruskan pesan dan kode respons SMTP?](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [Bagaimana Anda mencegah spammer dan memastikan reputasi penerusan email yang baik?](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [Bagaimana Anda melakukan pencarian DNS pada nama domain?](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Akun dan Penagihan](#account-and-billing)
-  * [Apakah Anda menawarkan jaminan uang kembali pada paket berbayar?](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [Jika saya mengganti paket, apakah Anda akan memberikan prorata dan mengembalikan selisihnya?](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Bisakah saya menggunakan layanan penerusan email ini sebagai server MX "fallback" atau "fallover"?](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Bisakah saya menonaktifkan alias tertentu?](#can-i-disable-specific-aliases)
-  * [Bisakah saya meneruskan email ke beberapa penerima?](#can-i-forward-emails-to-multiple-recipients)
-  * [Bisakah saya memiliki beberapa penerima global yang dapat menangkap semua?](#can-i-have-multiple-global-catch-all-recipients)
-  * [Apakah ada batasan maksimum jumlah alamat email yang dapat saya teruskan per alias?](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Bisakah saya meneruskan email secara rekursif?](#can-i-recursively-forward-emails)
-  * [Bisakah orang membatalkan pendaftaran atau mendaftarkan penerusan email saya tanpa izin saya?](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [Bagaimana ini gratis?](#how-is-it-free)
-  * [Berapa batas ukuran email maksimum?](#what-is-the-max-email-size-limit)
-  * [Apakah Anda menyimpan log email?](#do-you-store-logs-of-emails)
-  * [Apakah Anda menyimpan log kesalahan?](#do-you-store-error-logs)
-  * [Apakah kamu membaca emailku?](#do-you-read-my-emails)
-  * [Bisakah saya "mengirim email sebagai" di Gmail dengan ini](#can-i-send-mail-as-in-gmail-with-this)
-  * [Bisakah saya "mengirim email sebagai" di Outlook dengan ini](#can-i-send-mail-as-in-outlook-with-this)
-  * [Bisakah saya "mengirim email sebagai" di Apple Mail dan iCloud Mail dengan ini](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Bisakah saya meneruskan email tanpa batas dengan ini?](#can-i-forward-unlimited-emails-with-this)
-  * [Apakah Anda menawarkan domain tak terbatas dengan satu harga?](#do-you-offer-unlimited-domains-for-one-price)
-  * [Metode pembayaran apa yang Anda terima?](#which-payment-methods-do-you-accept)
-* [Sumber Daya Tambahan](#additional-resources)
+  * [eM Client](#em-client)
+  * [Mobile Devices](#mobile-devices)
+  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
+  * [Command-line Email Clients](#command-line-email-clients)
+  * [Windows Email Configuration](#windows-email-configuration)
+  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
+  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
+  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
+  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
+* [Troubleshooting](#troubleshooting)
+  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
+  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Data Management](#data-management)
+  * [Where are your servers located](#where-are-your-servers-located)
+  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
+  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Do you support self-hosting](#do-you-support-self-hosting)
+* [Email Configuration](#email-configuration)
+  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
+  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
+  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
+  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Advanced Features](#advanced-features)
+  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
+  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
+  * [Do you support POP3](#do-you-support-pop3)
+  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
+  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
+  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Do you support MTA-STS](#do-you-support-mta-sts)
+  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Do you support email best practices](#do-you-support-email-best-practices)
+  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Do you support webhooks](#do-you-support-webhooks)
+  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
+  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
+  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
+  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
+  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
+* [Security](#security)
+  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
+  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
+  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
+  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
+  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
+  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
+  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
+  * [Do you offer a test environment](#do-you-offer-a-test-environment)
+  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
+  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
+  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [System and Technical Details](#system-and-technical-details)
+  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
+  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
+  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
+  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
+  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [What are postmaster addresses](#what-are-postmaster-addresses)
+  * [What are no-reply addresses](#what-are-no-reply-addresses)
+  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
+  * [Do you have an allowlist](#do-you-have-an-allowlist)
+  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
+  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
+  * [Do you have a greylist](#do-you-have-a-greylist)
+  * [Do you have a denylist](#do-you-have-a-denylist)
+  * [Do you have rate limiting](#do-you-have-rate-limiting)
+  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
+  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
+  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
+  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Does it support sub-domains](#does-it-support-sub-domains)
+  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
+  * [Is this well-tested](#is-this-well-tested)
+  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Account and Billing](#account-and-billing)
+  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
+  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
+  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
+  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
+  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [How is it free](#how-is-it-free)
+  * [What is the max email size limit](#what-is-the-max-email-size-limit)
+  * [Do you store logs of emails](#do-you-store-logs-of-emails)
+  * [Do you store error logs](#do-you-store-error-logs)
+  * [Do you read my emails](#do-you-read-my-emails)
+  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
+  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
+  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
+  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
+* [Additional Resources](#additional-resources)
 
-## Mulai Cepat {#quick-start}
+## Quick Start {#quick-start}
 
-Untuk memulai dengan Forward Email:
+To get started with Forward Email:
 
-1. **Buat akun** di [forwardemail.net/register](https://forwardemail.net/register)
+1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **Tambahkan dan verifikasi domain Anda** di bawah [Akun Saya → Domain](/my-account/domains)
+2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
 
-3. **Tambahkan dan konfigurasikan alias email/kotak surat** di bawah [Akun Saya → Domain](/my-account/domains) → Alias
+3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
 
-4. **Uji pengaturan Anda** dengan mengirimkan email ke salah satu alias baru Anda
+4. **Test your setup** by sending an email to one of your new aliases
 
 > \[!TIP]
-> Perubahan DNS dapat memakan waktu hingga 24-48 jam untuk diterapkan secara global, meskipun sering kali berlaku jauh lebih cepat.
+> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
 
 > \[!IMPORTANT]
-> Untuk meningkatkan kemampuan pengiriman, kami sarankan untuk menyiapkan rekaman [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), dan [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-## Pendahuluan {#introduction}
+## Introduction {#introduction}
 
-### Apa itu Email Terusan {#what-is-forward-email}
+### What is Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email sangat cocok untuk individu, usaha kecil, dan pengembang yang menginginkan alamat email profesional tanpa biaya dan pemeliharaan solusi hosting email lengkap.
+> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
 
-Forward Email adalah **penyedia layanan email berfitur lengkap** dan **penyedia hosting email untuk nama domain khusus**.
+Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
-Ini satu-satunya layanan gratis dan sumber terbuka, dan memungkinkan Anda menggunakan alamat email domain khusus tanpa kerumitan dalam menyiapkan dan memelihara server email Anda sendiri.
+It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
 
-Layanan kami meneruskan email yang dikirim ke domain khusus Anda ke akun email Anda yang sudah ada – dan Anda bahkan dapat menggunakan kami sebagai penyedia hosting email khusus Anda.
+Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
 
-Fitur utama Forward Email:
+Key features of Forward Email:
 
-* **Email Domain Kustom**: Gunakan alamat email profesional dengan nama domain Anda sendiri
-* **Paket Gratis**: Penerusan email dasar tanpa biaya
-* **Privasi yang Ditingkatkan**: Kami tidak membaca email Anda atau menjual data Anda
-* **Sumber Terbuka**: Seluruh basis kode kami tersedia di GitHub
-* **Dukungan SMTP, IMAP, dan POP3**: Kemampuan mengirim dan menerima email secara lengkap
-* **Enkripsi End-to-End**: Dukungan untuk OpenPGP/MIME
-* **Alias Catch-All Kustom**: Buat alias email tanpa batas
+* **Custom Domain Email**: Use professional email addresses with your own domain name
+* **Free Tier**: Basic email forwarding at no cost
+* **Enhanced Privacy**: We don't read your emails or sell your data
+* **Open Source**: Our entire codebase is available on GitHub
+* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
+* **End-to-End Encryption**: Support for OpenPGP/MIME
+* **Custom Catch-All Aliases**: Create unlimited email aliases
 
-Anda dapat membandingkan kami dengan 56+ penyedia layanan email lainnya di [halaman Perbandingan Email kami](/blog/best-email-service).
+You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
 > \[!TIP]
-> Pelajari lebih lanjut tentang Forward Email dengan membaca [Buku Putih Teknis](/technical-whitepaper.pdf) gratis kami
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
 
-### Siapa yang menggunakan Email Terusan {#who-uses-forward-email}
+### Who uses Forward Email {#who-uses-forward-email}
 
-Kami menyediakan layanan hosting email dan penerusan email ke lebih dari 500.000 domain dan pengguna terkemuka berikut:
+We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-| Pelanggan | Studi Kasus |
+| Customer | Case Study |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Akademi Angkatan Laut AS | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Resmi | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Game Netflix |  |
-| Yayasan Linux | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| Yayasan PHP |  |
-| Radio Berita Fox |  |
-| Penjualan Iklan Disney |  |
+| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
+| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Netflix Games |  |
+| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| The PHP Foundation |  |
+| Fox News Radio |  |
+| Disney Ad Sales |  |
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Bebas | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Universitas Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitas Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitas Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitas Tufts | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Pemerintah Australia Selatan |  |
-| Pemerintah Republik Dominika |  |
-| Terbang<span>.</span>io |  |
-| Hotel RCD |  |
+| Government of South Australia |  |
+| Government of Dominican Republic |  |
+| Fly<span>.</span>io |  |
+| RCD Hotels |  |
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Apa riwayat Email Terusan {#what-is-forward-emails-history}
+### What is Forward Email's history {#what-is-forward-emails-history}
 
-Anda dapat mempelajari lebih lanjut tentang Forward Email di [halaman Tentang kami](/about).
+You can learn more about Forward Email on [our About page](/about).
 
-### Seberapa cepat layanan ini {#how-fast-is-this-service}
+### How fast is this service {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Sistem kami dirancang untuk kecepatan dan keandalan, dengan beberapa server redundan untuk memastikan email Anda terkirim tepat waktu.
+> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
 
-Email Terusan menyampaikan pesan dengan penundaan minimal, biasanya dalam hitungan detik setelah diterima.
+Forward Email delivers messages with minimal delay, typically within seconds of receipt.
 
-Metrik kinerja:
+Performance metrics:
 
-* **Waktu Pengiriman Rata-Rata**: Kurang dari 5-10 detik dari penerimaan hingga penerusan ([lihat halaman pemantauan "TTI" Waktu Masuk kami](/tti))
-* **Waktu Aktif**: Ketersediaan layanan 99,9%+
-* **Infrastruktur Global**: Server ditempatkan secara strategis untuk perutean optimal
-* **Penskalaan Otomatis**: Sistem kami diskalakan selama periode email puncak
+* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
+* **Uptime**: 99.9%+ service availability
+* **Global Infrastructure**: Servers strategically located for optimal routing
+* **Automatic Scaling**: Our system scales during peak email periods
 
-Kami beroperasi secara real-time, tidak seperti penyedia lain yang mengandalkan antrean tertunda.
+We operate in real-time, unlike other providers which rely upon delayed queues.
 
-Kami tidak menulis ke disk atau menyimpan log – dengan [pengecualian kesalahan](#do-you-store-error-logs) dan [SMTP keluar](#do-you-support-sending-email-with-smtp) (lihat [Kebijakan Privasi](/privacy) kami).
+We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-## Klien Email {#email-clients}
+## Email Clients {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Buat alias baru dan buat kata sandi di dasbor Email Terusan Anda.
-2. Buka Thunderbird dan buka **Edit → Pengaturan Akun → Tindakan Akun → Tambahkan Akun Email**
-3. Masukkan nama, alamat Email Terusan, dan kata sandi Anda.
-4. Klik **Konfigurasi secara manual** dan masukkan:
-* Masuk: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-* Keluar: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
-5. Klik **Selesai**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
+3. Enter your name, Forward Email address, and password
+4. Click **Configure manually** and enter:
+   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Outgoing: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+5. Click **Done**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Buat alias baru dan buat kata sandi di dasbor Email Terusan Anda
-2. Buka **Berkas → Tambah Akun**
-3. Masukkan alamat Email Terusan Anda dan klik **Hubungkan**
-4. Pilih **Opsi lanjutan** dan pilih **Biarkan saya mengatur akun saya secara manual**
-5. Pilih **IMAP** dan masukkan:
-* Masuk: `imap.forwardemail.net`, port 993, SSL
-* Keluar: `smtp.forwardemail.net`, port 587, TLS
-* Nama pengguna: Alamat email lengkap Anda
-* Kata sandi: Kata sandi yang Anda buat
-6. Klik **Hubungkan**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **File → Add Account**
+3. Enter your Forward Email address and click **Connect**
+4. Choose **Advanced options** and select **Let me set up my account manually**
+5. Select **IMAP** and enter:
+   * Incoming: `imap.forwardemail.net`, port 993, SSL
+   * Outgoing: `smtp.forwardemail.net`, port 587, TLS
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Connect**
 
 ### Apple Mail {#apple-mail}
 
-1. Buat alias baru dan buat kata sandi di dasbor Email Terusan Anda
-2. Buka **Mail → Preferensi → Akun → +**
-3. Pilih **Akun Email Lain**
-4. Masukkan nama, alamat Email Terusan, dan kata sandi Anda
-5. Untuk pengaturan server, masukkan:
-* Masuk: `imap.forwardemail.net`
-* Keluar: `smtp.forwardemail.net`
-* Nama Pengguna: Alamat email lengkap Anda
-* Kata Sandi: Kata sandi yang Anda buat
-6. Klik **Masuk**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **Mail → Preferences → Accounts → +**
+3. Select **Other Mail Account**
+4. Enter your name, Forward Email address, and password
+5. For server settings, enter:
+   * Incoming: `imap.forwardemail.net`
+   * Outgoing: `smtp.forwardemail.net`
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Sign In**
 
-### Perangkat Seluler {#mobile-devices}
+### eM Client {#em-client}
 
-Untuk iOS:
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open eM Client and go to **Menu → Accounts → + Add Account**
+3. Click on **Mail** and then select **Other**
+4. Enter your Forward Email address and click **Next**
+5. Enter the following server settings:
+   * **Incoming server**: `imap.forwardemail.net`
+   * **Outgoing server**: `smtp.forwardemail.net`
+6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
+7. eM Client will test the connection. Once it passes, click **Next**.
+8. Enter your name and choose an account name.
+9. Click **Finish**.
 
-1. Buka **Pengaturan → Mail → Akun → Tambah Akun → Lainnya**
-2. Ketuk **Tambah Akun Mail** dan masukkan detail Anda
-3. Untuk pengaturan server, gunakan pengaturan IMAP dan SMTP yang sama seperti di atas
+### Mobile Devices {#mobile-devices}
 
-Untuk Android:
+For iOS:
 
-1. Buka **Pengaturan → Akun → Tambah Akun → Pribadi (IMAP)**
-2. Masukkan alamat Email Penerusan dan kata sandi Anda
-3. Untuk pengaturan server, gunakan pengaturan IMAP dan SMTP yang sama seperti di atas
+1. Go to **Settings → Mail → Accounts → Add Account → Other**
+2. Tap **Add Mail Account** and enter your details
+3. For server settings, use the same IMAP and SMTP settings as above
 
-### Cara Mengirim Email Menggunakan Gmail {#how-to-send-mail-as-using-gmail}
+For Android:
+
+1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
+2. Enter your Forward Email address and password
+3. For server settings, use the same IMAP and SMTP settings as above
+
+### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+
+You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>Kurang dari 10 menit</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 20 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration {#configuration}
+
+1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+
+   ```bash
+   sudo nano /etc/mail/sendmail.mc
+   ```
+
+2. Add the following lines to define the smart host and authentication:
+
+   ```
+   define(`SMART_HOST', `smtp.forwardemail.net')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+   FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+   ```
+
+3. Create the authentication file `/etc/mail/authinfo`:
+
+   ```bash
+   sudo nano /etc/mail/authinfo
+   ```
+
+4. Add your Forward Email credentials to the `authinfo` file:
+
+   ```
+   AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+   ```
+
+5. Generate the authentication database and secure the files:
+
+   ```bash
+   sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+   sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+   ```
+
+6. Rebuild the Sendmail configuration and restart the service:
+
+   ```bash
+   sudo make -C /etc/mail
+   sudo systemctl restart sendmail
+   ```
+
+#### Testing {#testing}
+
+Send a test email to verify the configuration:
+
+```bash
+echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+```
+
+### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+
+Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration {#configuration-1}
+
+1. Run the Exim4 configuration tool:
+
+   ```bash
+   sudo dpkg-reconfigure exim4-config
+   ```
+
+2. Select the following options:
+   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+   * **System mail name:** your.hostname
+   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+   * **Other destinations for which mail is accepted:** (leave blank)
+   * **Domains to relay mail for:** (leave blank)
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **Hide local mail name in outgoing mail?** No
+   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+   * **Delivery method for local mail:** Mbox format in /var/mail/
+   * **Split configuration into small files?** No
+
+3. Edit the `passwd.client` file to add your credentials:
+
+   ```bash
+   sudo nano /etc/exim4/passwd.client
+   ```
+
+4. Add the following line:
+
+   ```
+   smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+   ```
+
+5. Update the configuration and restart Exim4:
+
+   ```bash
+   sudo update-exim4.conf
+   sudo systemctl restart exim4
+   ```
+
+#### Testing {#testing-1}
+
+Send a test email:
+
+```bash
+echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+```
+
+### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+
+msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration {#configuration-2}
+
+1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+
+   ```bash
+   nano ~/.msmtprc
+   ```
+
+2. Add the following configuration:
+
+   ```
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
+
+   account        forwardemail
+   host           smtp.forwardemail.net
+   port           587
+   from           your-alias@yourdomain.com
+   user           your-alias@yourdomain.com
+   password       your-generated-password
+
+   account default : forwardemail
+   ```
+
+3. Set the correct permissions for the configuration file:
+
+   ```bash
+   chmod 600 ~/.msmtprc
+   ```
+
+#### Testing {#testing-2}
+
+Send a test email:
+
+```bash
+echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+```
+
+### Command-line Email Clients {#command-line-email-clients}
+
+Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+
+### Windows Email Configuration {#windows-email-configuration}
+
+For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+
+### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+
+You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Installation {#installation}
+
+1. Install Postfix on your server:
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install postfix
+
+# CentOS/RHEL
+sudo yum install postfix
+
+# macOS
+brew install postfix
+```
+
+2. During installation, select "Internet Site" when prompted for configuration type.
+
+#### Configuration {#configuration-3}
+
+1. Edit the main Postfix configuration file:
+
+```bash
+sudo nano /etc/postfix/main.cf
+```
+
+2. Add or modify these settings:
+
+```
+# SMTP relay configuration
+relayhost = [smtp.forwardemail.net]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
+3. Create the SASL password file:
+
+```bash
+sudo nano /etc/postfix/sasl_passwd
+```
+
+4. Add your Forward Email credentials:
+
+```
+[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+```
+
+5. Secure and hash the password file:
+
+```bash
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+```
+
+6. Restart Postfix:
+
+```bash
+sudo systemctl restart postfix
+```
+
+#### Testing {#testing-3}
+
+Test your configuration by sending a test email:
+
+```bash
+echo "Test email body" | mail -s "Test Subject" recipient@example.com
+```
+
+### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Memulai:
-</strong>
-<span>
-Jika Anda telah mengikuti petunjuk di atas pada bagian <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Bagaimana cara memulai dan mengatur penerusan email</a>, Anda dapat melanjutkan membaca di bawah ini.
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
 </div>
 
-<div id="kirim-email-sebagai-konten">
+<div id="send-mail-as-content">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">Ketentuan</a>, <a href="/privacy" class="alert-link" target="_blank">Kebijakan Privasi</a>, dan <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Batas SMTP Keluar</a> kami – penggunaan Anda dianggap sebagai pengakuan dan persetujuan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda seorang pengembang, silakan lihat <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentasi API email</a> kami.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
 </div>
 
-1. Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-4. Buka [Gmail](https://gmail.com) dan di bawah [Pengaturan <i class="fa fa-angle-right"></i> Akun dan Impor <i class="fa fa-angle-right"></i> Kirim email sebagai](https://mail.google.com/mail/u/0/#settings/accounts), klik "Tambahkan alamat email lain"
+4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
 
-5. Saat diminta "Nama", masukkan nama yang Anda inginkan untuk dilihat sebagai "Dari" email Anda (misalnya "Linus Torvalds").
+5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
 
-6. Saat diminta "Alamat email", masukkan alamat email lengkap alias yang Anda buat di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-7. Hapus centang "Perlakukan sebagai alias"
+7. Uncheck "Treat as an alias"
 
-8. Klik "Langkah Berikutnya" untuk melanjutkan
+8. Click "Next Step" to proceed
 
-9. Saat diminta "Server SMTP", masukkan <code>smtp.forwardemail.net</code> dan biarkan port sebagai <code>587</code>
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
 
-10. Saat diminta "Nama Pengguna", masukkan alamat email lengkap alias yang Anda buat di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-11. Saat diminta "Kata Sandi", tempel kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Hasilkan Kata Sandi</strong> pada langkah 3 di atas
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
-12. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS".
+12. Leave the radio button checked for "Secured connection using TLS"
 
-13. Klik "Tambah Akun" untuk melanjutkan
+13. Click "Add Account" to proceed
 
-14. Buka tab baru ke [Gmail](https://gmail.com) dan tunggu email verifikasi Anda tiba (Anda akan menerima kode verifikasi yang mengonfirmasi bahwa Anda adalah pemilik alamat email yang Anda coba "Kirim Email Sebagai")
+14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
 
-15. Setelah sampai, salin dan tempel kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
+15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
 
-16. Setelah itu, kembali ke email dan klik tautan "konfirmasi permintaan". Kemungkinan besar Anda perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
+16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
+
 </div>
 
-Bahasa Indonesia:
+### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-### Apa panduan gratis lama untuk Kirim Email Sebagai menggunakan Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
-
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Penting:</strong> Panduan gratis ini tidak lagi digunakan sejak Mei 2023 karena <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we sekarang mendukung SMTP keluar</a>. Jika Anda menggunakan panduan di bawah ini, maka <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this akan menyebabkan email keluar Anda</a> menampilkan "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" di Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>Kurang dari 10 menit</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Memulai:
-</strong>
-<span>
-Jika Anda telah mengikuti petunjuk di atas pada bagian <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Bagaimana cara memulai dan mengatur penerusan email</a>, Anda dapat melanjutkan membaca di bawah ini.
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Cara Mengirim Email Menggunakan Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
-<div id="panduan-bebas-warisan">
+<div id="legacy-free-guide">
 
-1. Anda perlu mengaktifkan [Autentikasi Dua Faktor Gmail][gmail-2fa] agar ini berfungsi. Kunjungi <https://www.google.com/landing/2step/> jika Anda belum mengaktifkannya.
+1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
-2. Setelah Autentikasi Dua Faktor diaktifkan (atau jika Anda sudah mengaktifkannya), kunjungi <https://myaccount.google.com/apppasswords>.
+2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
 
-3. Saat diminta "Pilih aplikasi dan perangkat yang ingin Anda buatkan kata sandi aplikasinya":
-* Pilih "Mail" di menu tarik-turun untuk "Pilih aplikasi"
-* Pilih "Lainnya" di menu tarik-turun untuk "Pilih perangkat"
-* Saat diminta memasukkan teks, masukkan alamat email domain kustom Anda yang ingin Anda teruskan (misalnya <code><hello@example.com></code> - ini akan membantu Anda melacak jika Anda menggunakan layanan ini untuk beberapa akun)
+3. When prompted for "Select the app and device you want to generate the app password for":
+   * Select "Mail" under the drop-down for "Select app"
+   * Select "Other" under the drop-down for "Select device"
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
 
-4. Salin kata sandi ke clipboard Anda yang dibuat secara otomatis
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan G Suite, kunjungi panel admin Anda <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Aplikasi <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Setelan untuk Gmail <i class="fa fa-angle-right"></i> Setelan</a> dan pastikan untuk mencentang "Izinkan pengguna mengirim email melalui server SMTP eksternal...". Akan ada penundaan hingga perubahan ini diaktifkan, jadi harap tunggu beberapa menit.
-</span>
+4. Copy the password to your clipboard that is automatically generated
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Important:
+     </strong>
+     <span>
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+     </span>
+   </div>
+
+5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+
+8. Uncheck "Treat as an alias"
+
+9. Click "Next Step" to proceed
+
+10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
+
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+    <div class="alert my-3 alert-primary">
+      <i class="fa fa-info-circle font-weight-bold"></i>
+      <strong class="font-weight-bold">
+        Important:
+      </strong>
+      <span>
+        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+      </span>
+    </div>
+
+12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+
+13. Leave the radio button checked for "Secured connection using TLS"
+
+14. Click "Add Account" to proceed
+
+15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
 </div>
 
-5. Buka [Gmail](https://gmail.com) dan di bawah [Pengaturan <i class="fa fa-angle-right"></i> Akun dan Impor <i class="fa fa-angle-right"></i> Kirim email sebagai](https://mail.google.com/mail/u/0/#settings/accounts), klik "Tambahkan alamat email lain"
-
-6. Saat diminta "Nama", masukkan nama yang Anda inginkan untuk dilihat sebagai "Dari" email Anda (misalnya "Linus Torvalds")
-
-7. Saat diminta "Alamat email", masukkan alamat email dengan domain khusus yang Anda gunakan sebelumnya (misalnya <code><hello@example.com></code>)
-
-8. Hapus centang "Perlakukan sebagai alias"
-
-9. Klik "Langkah Berikutnya" untuk melanjutkan
-
-10. Saat diminta "Server SMTP", masukkan <code>smtp.gmail.com</code> dan biarkan port sebagai <code>587</code>
-
-11. Saat diminta "Nama Pengguna", masukkan bagian alamat Gmail Anda tanpa bagian <span>gmail.com</span> (misalnya, cukup "pengguna" jika email saya <span><user@gmail.com></span>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika bagian "Nama Pengguna" terisi otomatis, maka <u><strong>Anda perlu mengubahnya</strong></u> ke bagian nama pengguna alamat Gmail Anda.
-</span>
-</div>
-
-12. Saat diminta "Kata Sandi", tempel dari clipboard kata sandi yang Anda buat pada langkah 2 di atas
-
-13. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS".
-
-14. Klik "Tambah Akun" untuk melanjutkan
-
-15. Buka tab baru ke [Gmail](https://gmail.com) dan tunggu email verifikasi Anda tiba (Anda akan menerima kode verifikasi yang mengonfirmasi bahwa Anda adalah pemilik alamat email yang Anda coba "Kirim Email Sebagai")
-
-16. Setelah sampai, salin dan tempel kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
-
-17. Setelah itu, kembali ke email dan klik tautan "konfirmasi permintaan". Kemungkinan besar Anda perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
-
-Bahasa Indonesia:
-
-### Konfigurasi Perutean Gmail Lanjutan {#advanced-gmail-routing-configuration}
+### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>15-30 menit</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-Jika Anda ingin menyiapkan perutean lanjutan di Gmail sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke pertukaran email Forward Email, ikuti langkah-langkah berikut:
+If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
 
-1. Masuk ke konsol Google Admin Anda di [admin.google.com](https://admin.google.com)
-2. Buka **Aplikasi → Google Workspace → Gmail → Perutean**
-3. Klik **Tambahkan Rute** dan konfigurasikan pengaturan berikut:
+1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
+2. Go to **Apps → Google Workspace → Gmail → Routing**
+3. Click on **Add Route** and configure the following settings:
 
-**Pengaturan Penerima Tunggal:**
+**Single Recipient Settings:**
 
-* Pilih "Ubah penerima amplop" dan masukkan alamat Gmail utama Anda.
-* Centang "Tambahkan header X-Gm-Original-To dengan penerima asli".
+* Select "Change envelope recipient" and enter your primary Gmail address
+* Check "Add X-Gm-Original-To header with original recipient"
 
-**Pola Penerima Amplop:**
+**Envelope Recipient Patterns:**
 
-* Tambahkan pola yang cocok dengan semua kotak surat yang tidak ada (misalnya, `.*@yourdomain.com`)
+* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
 
-**Pengaturan Server Email:**
+**Email Server Settings:**
 
-* Pilih "Rutekan ke host" dan masukkan `mx1.forwardemail.net` sebagai server utama
-* Tambahkan `mx2.forwardemail.net` sebagai server cadangan
-* Atur port ke 25
-* Pilih "Wajibkan TLS" untuk keamanan
+* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
+* Add `mx2.forwardemail.net` as the backup server
+* Set port to 25
+* Select "Require TLS" for security
 
-4. Klik **Simpan** untuk membuat rute
+4. Click **Save** to create the route
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Konfigurasi ini hanya akan berfungsi untuk akun Google Workspace dengan domain khusus, bukan untuk akun Gmail biasa.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+  </span>
 </div>
 
-### Konfigurasi Perutean Outlook Lanjutan {#advanced-outlook-routing-configuration}
+### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>15-30 menit</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-Untuk pengguna Microsoft 365 (sebelumnya Office 365) yang ingin menyiapkan perutean tingkat lanjut sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke pertukaran email Forward Email:
+For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
 
-1. Masuk ke pusat admin Microsoft 365 di [admin.microsoft.com](https://admin.microsoft.com)
-2. Buka **Exchange → Alur email → Aturan**
-3. Klik **Tambahkan aturan** dan pilih **Buat aturan baru**
-4. Beri nama aturan Anda (misalnya, "Teruskan kotak surat yang tidak ada untuk Meneruskan Email")
-5. Pada **Terapkan aturan ini jika**, pilih:
-* "Alamat penerima cocok dengan..."
-* Masukkan pola yang cocok dengan semua alamat di domain Anda (misalnya, `*@yourdomain.com`)
-6. Pada **Lakukan hal berikut**, pilih:
-* "Arahkan pesan ke..."
-* Pilih "Server email berikut"
-* Masukkan `mx1.forwardemail.net` dan port 25
-* Tambahkan `mx2.forwardemail.net` sebagai server cadangan
-7. Pada **Kecuali jika**, pilih:
-* "Penerima adalah..."
-* Tambahkan semua kotak surat Anda yang ada yang tidak boleh diteruskan
-8. Tetapkan prioritas aturan untuk memastikan aturan tersebut berjalan setelah aturan alur email lainnya.
-9. Klik **Simpan** untuk mengaktifkan aturan.
+1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
+2. Go to **Exchange → Mail flow → Rules**
+3. Click **Add a rule** and select **Create a new rule**
+4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
+5. Under **Apply this rule if**, select:
+   * "The recipient address matches..."
+   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
+6. Under **Do the following**, select:
+   * "Redirect the message to..."
+   * Choose "The following mail server"
+   * Enter `mx1.forwardemail.net` and port 25
+   * Add `mx2.forwardemail.net` as a backup server
+7. Under **Except if**, select:
+   * "The recipient is..."
+   * Add all your existing mailboxes that should not be forwarded
+8. Set the rule priority to ensure it runs after other mail flow rules
+9. Click **Save** to activate the rule
 
-## Pemecahan Masalah {#troubleshooting}
+## Troubleshooting {#troubleshooting}
 
-### Mengapa saya tidak menerima email pengujian saya {#why-am-i-not-receiving-my-test-emails}
+### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
 
-Jika Anda mengirim email percobaan kepada diri Anda sendiri, email tersebut mungkin tidak muncul di kotak masuk Anda karena memiliki tajuk "Message-ID" yang sama.
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
 
-Ini adalah masalah yang diketahui secara luas, dan juga memengaruhi layanan seperti Gmail. <a href="https://support.google.com/a/answer/1703601">Here adalah jawaban resmi Gmail mengenai masalah ini</a>.
+This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 
-Jika Anda terus mengalami masalah, kemungkinan besar masalahnya ada pada propagasi DNS. Anda perlu menunggu sedikit lebih lama dan mencoba lagi (atau coba tetapkan nilai TTL yang lebih rendah pada data <strong class="notranslate">TXT</strong> Anda).
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
-**Masih mengalami masalah?** Silakan <a href="/help">hubungi kami</a> agar kami dapat membantu menyelidiki masalah tersebut dan menemukan penyelesaian yang cepat.
+**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
 
-### Bagaimana cara mengonfigurasi klien email saya agar berfungsi dengan Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-Layanan kami kompatibel dengan klien email populer seperti:
-<ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
-<li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox¹</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari¹</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome¹</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+  Our service works with popular email clients such as:
+  <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
+    <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
   </ul>
 </div>
 
 <div class="alert alert-primary">
-Nama pengguna Anda adalah alamat email alias Anda dan kata sandi berasal dari <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> ("Kata Sandi Normal").
+  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Jika Anda menggunakan Thunderbird, pastikan "Keamanan koneksi" diatur ke "SSL/TLS" dan Metode autentikasi diatur ke "Kata sandi normal".</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Jenis | Nama host | Protokol | Pelabuhan |
+| Type | Hostname | Protocol | Ports |
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Diutamakan** | `993` dan `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Diutamakan** atau TLS (STARTTLS) | `465` dan `2465` untuk SSL/TLS (atau) `587`, `2587`, `2525`, dan `25` untuk TLS (STARTTLS) |
+| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
 
-### Mengapa email saya masuk ke Spam dan Junk dan bagaimana cara memeriksa reputasi domain saya {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-Bagian ini memandu Anda jika email keluar Anda menggunakan server SMTP kami (misalnya `smtp.forwardemail.net`) (atau diteruskan melalui `mx1.forwardemail.net` atau `mx2.forwardemail.net`) dan dikirimkan ke folder Spam atau Sampah penerima.
+This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
 
-Kami secara rutin memantau [Alamat IP](#what-are-your-servers-ip-addresses) kami terhadap [semua daftar penolakan DNS yang memiliki reputasi baik](#how-do-you-handle-your-ip-addresses-becoming-blocked), **oleh karena itu kemungkinan besar ini merupakan masalah khusus reputasi domain**.
+We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
 
-Email dapat masuk ke folder spam karena beberapa alasan:
+Emails can land in spam folders for several reasons:
 
-1. **Otentikasi Hilang**: Siapkan rekaman [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), dan [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-2. **Reputasi Domain**: Domain baru sering kali memiliki reputasi netral hingga mereka menetapkan riwayat pengiriman.
+2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
 
-3. **Pemicu Konten**: Kata atau frasa tertentu dapat memicu filter spam.
+3. **Content Triggers**: Certain words or phrases can trigger spam filters.
 
-4. **Pola Pengiriman**: Peningkatan volume email yang tiba-tiba dapat terlihat mencurigakan.
+4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
 
-Anda dapat mencoba menggunakan satu atau beberapa alat ini untuk memeriksa reputasi dan kategorisasi domain Anda:
+You can try to use one or more of these tools to check your domain's reputation and categorization:
 
-| Nama Alat | URL | Jenis |
+| Tool Name | URL | Type |
 | ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Umpan Balik Kategorisasi Domain Cloudflare | <https://radar.cloudflare.com/domains/umpan balik> | Kategorisasi |
-| Pemeriksa Reputasi IP dan Domain Spamhaus | <https://check.spamhaus.org/> | DNSBL |
-| Pusat Reputasi IP dan Domain Cisco Talos | <https://talosintelligence.com/pusat_reputasi> | Reputasi |
-| Pencarian IP dan Reputasi Domain Barracuda | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| Pemeriksaan Daftar Hitam Kotak Alat MX | <https://mxtoolbox.com/daftar hitam.aspx> | Daftar hitam |
-| Alat Google Postmaster | <https://www.gmail.com/postmaster/> | Reputasi |
-| Pusat Pengirim Yahoo | <https://senders.yahooinc.com/> | Reputasi |
-| Pemeriksaan Daftar Hitam MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Skor Pengirim | <https://senderscore.org/act/blocklist-remover/> | Reputasi |
-| Ketidakbernilaian | <https://www.invaluement.com/lookup/> | DNSBL |
+| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
+| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
+| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
+| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
+| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
+| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
+| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
+| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
+| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Penghapusan IP Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | Pemindahan |
-| Penghapusan IP Cloudmark | <https://csi.cloudmark.com/id/atur ulang/> | Pemindahan |
-| Polisi Spam | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Penghapusan IP Microsoft Outlook dan Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Pemindahan |
-| Tingkat 1, 2, dan 3 UCEPROTECT | <https://www.uceprotect.net/id/rblcheck.php> | DNSBL |
-| backscatterer.org UCEPROTECT | <https://www.backscatterer.org/> | Perlindungan Hamburan Balik |
-| Daftar putih UCEPROTECT.org | <https://www.whitelisted.org/> (memerlukan biaya) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Pemindahan |
-| AOL/Verizon (misalnya `[IPTS04]`) | <https://senders.yahooinc.com/> | Pemindahan |
-| Komunikasi Cox | `unblock.request@cox.net` | Pemindahan |
-| t-online.de (Jerman/T-Mobile) | `tobr@rx.t-online.de` | Pemindahan |
+| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
+| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
+| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
+| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
+| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
+| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
+| AT&T | `abuse_rbl@abuse-att.net` | Removal |
+| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
+| Cox Communications | `unblock.request@cox.net` | Removal |
+| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
 
 > \[!TIP]
-> Mulailah dengan email berkualitas tinggi dalam jumlah sedikit untuk membangun reputasi positif sebelum mengirimkan email dalam jumlah yang lebih besar.
+> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
 
 > \[!IMPORTANT]
-> Jika domain Anda masuk daftar hitam, setiap daftar hitam memiliki proses penghapusannya sendiri. Periksa situs web mereka untuk petunjuk lebih lanjut.
+> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
 
 > \[!TIP]
-> Jika Anda memerlukan bantuan tambahan atau mendapati kami tercantum sebagai spam oleh penyedia layanan email tertentu, silakan <a href="/help">hubungi kami</a>.
+> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
-### Apa yang harus saya lakukan jika saya menerima email spam {#what-should-i-do-if-i-receive-spam-emails}
+### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
 
-Anda harus berhenti berlangganan dari milis (jika memungkinkan) dan memblokir pengirimnya.
+You should unsubscribe from the emailing list (if possible) and block the sender.
 
-Harap jangan melaporkan pesan tersebut sebagai spam, tetapi teruskan ke sistem pencegahan penyalahgunaan kami yang dikurasi secara manual dan berfokus pada privasi.
+Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
 
-**Alamat email untuk meneruskan spam adalah:** <abuse@forwardemail.net>
+**The email address to forward spam to is:** <abuse@forwardemail.net>
 
-### Mengapa email percobaan yang saya kirim ke saya sendiri di Gmail ditampilkan sebagai "mencurigakan" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-Jika Anda melihat pesan kesalahan ini di Gmail saat Anda mengirim email percobaan ke diri Anda sendiri, atau saat orang yang Anda kirimi email dengan alias Anda melihat email dari Anda untuk pertama kalinya, maka **jangan khawatir** – karena ini adalah fitur keamanan bawaan Gmail.
+If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
 
-Anda cukup mengeklik "Terlihat aman". Misalnya, jika Anda mengirim pesan percobaan menggunakan fitur "kirim email sebagai" (kepada orang lain), mereka tidak akan melihat pesan ini.
+You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
-Namun, jika mereka melihat pesan ini, itu karena mereka biasanya terbiasa melihat email Anda berasal dari <john@gmail.com>, bukan <john@customdomain.com> (hanya contoh). Gmail akan memberi tahu pengguna hanya untuk memastikan semuanya aman, untuk berjaga-jaga jika tidak ada solusi.
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
 
-### Bisakah saya menghapus via forwardemail dot net di Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-Topik ini terkait dengan [masalah yang diketahui secara luas di Gmail di mana info tambahan muncul di samping nama pengirim](https://support.google.com/mail/answer/1311182).
+This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
 
-Mulai Mei 2023, kami mendukung pengiriman email dengan SMTP sebagai add-on untuk semua pengguna berbayar – yang berarti Anda dapat menghapus <span class="notranslate">via forwardemail dot net</span> di Gmail.
+As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
-Perhatikan bahwa topik FAQ ini khusus untuk mereka yang menggunakan fitur [Cara Mengirim Email Menggunakan Gmail](#how-to-send-mail-as-using-gmail).
+Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
-Silakan lihat bagian [Apakah Anda mendukung pengiriman email dengan SMTP?](#do-you-support-sending-email-with-smtp) untuk petunjuk konfigurasi.
+Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
 
-## Manajemen Data {#data-management}
+## Data Management {#data-management}
 
-### Di mana server Anda berada {#where-are-your-servers-located}
+### Where are your servers located {#where-are-your-servers-located}
 
 > \[!TIP]
-> Kami mungkin akan segera mengumumkan lokasi pusat data Uni Eropa kami yang dihosting di [forwardemail.eu](https://forwardemail.eu). Berlangganan diskusi di <https://github.com/orgs/forwardemail/discussions/336> untuk mendapatkan informasi terbaru.
+> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
 
-Server kami terutama berlokasi di Denver, Colorado – lihat <https://forwardemail.net/ips> untuk daftar lengkap alamat IP kami.
+Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
 
-Anda dapat mempelajari tentang subprosesor kami di halaman [GDPR](/gdpr), [DPA](/dpa), dan [Pribadi](/privacy).
+You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
 
-### Bagaimana cara mengekspor dan mencadangkan kotak surat saya {#how-do-i-export-and-backup-my-mailbox}
+### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
 
-Kapan saja Anda dapat mengekspor kotak surat Anda sebagai format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), atau [SQLite](https://en.wikipedia.org/wiki/SQLite) yang terenkripsi.
+At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
 
-Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Unduh Cadangan dan pilih jenis format ekspor yang Anda inginkan.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
 
-Anda akan dikirimi email berisi tautan untuk mengunduh ekspor setelah selesai.
+You will be emailed a link to download the export once it has finished.
 
-Harap diperhatikan bahwa tautan unduhan ekspor ini kedaluwarsa setelah 4 jam karena masalah keamanan.
+Note that this export download link expires after 4 hours for security concerns.
 
-Jika Anda perlu memeriksa format EML atau Mbox yang diekspor, maka alat sumber terbuka ini mungkin berguna:
+If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
 
-| Nama | Format | Platform | URL GitHub |
+| Name | Format | Platform | GitHub URL |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| Penampil MBox | Mbox | Jendela | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | Semua platform | <https://github.com/PHMRanger/mbox-web-viewer> |
-| Pembaca Eml | EML | Jendela | <https://github.com/ayamadori/EmlReader> |
-| Penampil email | EML | Kode VSC | <https://github.com/joelharkes/vscode_email_viewer> |
-| pembaca eml | EML | Semua platform | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
+| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
+| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
+| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
 
-Selain itu jika Anda perlu mengonversi file Mbox ke file EML, maka Anda dapat menggunakan <https://github.com/noelmartinon/mboxzilla>.
+Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### Bagaimana cara mengimpor dan memigrasikan kotak surat saya yang sudah ada {#how-do-i-import-and-migrate-my-existing-mailbox}
+### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Anda dapat dengan mudah mengimpor email Anda ke Forward Email (misalnya menggunakan [Burung Guntur](https://www.thunderbird.net)) dengan petunjuk di bawah ini:
+You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Anda harus mengikuti semua langkah berikut untuk mengimpor email Anda yang sudah ada.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to import your existing email.
+  </span>
 </div>
 
-1. Ekspor email Anda dari penyedia email Anda yang sudah ada:
+1. Export your email from your existing email provider:
 
-| Penyedia Email | Format Ekspor | Petunjuk Ekspor |
+| Email Provider | Export Format | Export Instructions |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Pandangan | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tips:</strong> <span>Jika Anda menggunakan Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">format ekspor PST</a>), Anda cukup mengikuti petunjuk pada "Lainnya" di bawah ini. Namun, kami telah menyediakan tautan di bawah ini untuk mengonversi PST ke format MBOX/EML berdasarkan sistem operasi Anda:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba untuk Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst untuk Windows cygwin</a> – (misalnya, <code>readpst -u -o $OUT_DIR $IN_DIR</code> mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan direktori keluaran dan jalur direktori masukan masing-masing).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst untuk Ubuntu/Linux</a> – (misalnya <code>sudo apt-get install readpst</code> lalu <code>readpst -u -o $OUT_DIR $IN_DIR</code>, mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan jalur direktori keluaran dan direktori masukan masing-masing).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst untuk macOS (melalui brew)</a> – (misalnya <code>brew install libpst</code> lalu <code>readpst -u -o $OUT_DIR $IN_DIR</code>, mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan jalur direktori keluaran dan direktori masukan masing-masing).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">Konverter PST untuk Windows (GitHub)</a></li></ul><br /></span></div> |
-| Apple Mail | MBOX | <https://support.apple.com/guide/mail/impor-atau-ekspor-kotak-surat-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Unduh-semua-data-anda#downloadmail> |
-| Proton Mail | MBOX/EML | <https://proton.me/support/email-ekspor-aplikasi-ekspor-impor> |
+| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
+| Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
+| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Memikirkan | EML | <https://docs.gandi.net/id/gandimail/operasi_umum/email_cadangan.html#isi> |
+| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Lainnya | [Use Thunderbird](https://www.thunderbird.net) | Siapkan akun email Anda yang sudah ada di Thunderbird, lalu gunakan plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) untuk mengekspor dan mengimpor email Anda. **Anda juga dapat menyalin/menempel atau menyeret/meletakkan email dari satu akun ke akun lainnya.** |
+| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
 
-2. Unduh, instal, dan buka [Burung Guntur](https://www.thunderbird.net).
+2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
 
-3. Buat akun baru menggunakan alamat email lengkap alias Anda (misalnya <code><you@yourdomain.com></code>) dan kata sandi yang Anda buat. <strong>Jika Anda belum memiliki kata sandi, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">lihat petunjuk pengaturan kami</a></strong>.
+3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
 
-4. Unduh dan instal plugin [Alat Impor dan Ekspor OF](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird.
+4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
 
-5. Buat folder lokal baru di Thunderbird, lalu klik kanan padanya → pilih opsi `ImportExportTools NG` → pilih `Import mbox file` (untuk format ekspor MBOX) – atau – `Import messages` / `Import all messages from a directory` (untuk format ekspor EML).
+5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
 
-6. Seret/lepas dari folder lokal ke folder IMAP baru (atau yang sudah ada) di Thunderbird tempat Anda ingin mengunggah pesan ke penyimpanan IMAP dengan layanan kami. Ini akan memastikan pesan dicadangkan secara online dengan penyimpanan terenkripsi SQLite kami.
+6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Jika Anda bingung tentang cara mengimpor ke Thunderbird, Anda dapat merujuk ke instruksi resmi di <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> dan <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>
+       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+     </span>
+   </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Setelah Anda menyelesaikan proses ekspor dan impor, Anda mungkin juga ingin mengaktifkan penerusan pada akun email Anda yang sudah ada dan mengatur penjawab otomatis untuk memberi tahu pengirim bahwa Anda memiliki alamat email baru (misalnya, jika sebelumnya Anda menggunakan Gmail dan sekarang menggunakan email dengan nama domain khusus Anda).
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Apakah Anda mendukung hosting mandiri {#do-you-support-self-hosting}
+### Do you support self-hosting {#do-you-support-self-hosting}
 
-Ya, mulai Maret 2025, kami mendukung opsi hosting mandiri. Baca blog [Di Sini](https://forwardemail.net/blog/docs/self-hosted-solution). Lihat [panduan yang diselenggarakan sendiri](https://forwardemail.net/self-hosted) untuk memulai. Dan bagi yang tertarik dengan versi langkah demi langkah yang lebih rinci, lihat panduan kami yang berbasis [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) atau [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
-## Konfigurasi Email {#email-configuration}
+## Email Configuration {#email-configuration}
 
-### Bagaimana cara memulai dan mengatur penerusan email {#how-do-i-get-started-and-set-up-email-forwarding}
+### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>Kurang dari 10 menit</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Memulai:
-</strong>
-<span>
-Baca dengan saksama dan ikuti langkah satu hingga delapan yang tercantum di bawah ini. Pastikan untuk mengganti alamat email <code>user@gmail.com</code> dengan alamat email tujuan penerusan email (jika belum akurat). Demikian pula, pastikan untuk mengganti <code>example.com</code> dengan nama domain khusus Anda (jika belum akurat).
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+  </span>
 </div>
 
 <ol>
-<li class="mb-2 mb-md-3 mb-lg-5">Jika Anda sudah mendaftarkan nama domain di suatu tempat, Anda harus melewati langkah ini sepenuhnya dan langsung ke langkah kedua! Jika tidak, Anda dapat <a href="/domain-registration" rel="noopener noreferrer">klik di sini untuk mendaftarkan nama domain Anda</a>.</li>
-<li class="mb-2 mb-md-3 mb-lg-5">
-Apakah Anda ingat di mana Anda mendaftarkan domain Anda? Setelah Anda mengingatnya, ikuti petunjuk di bawah ini:
+  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">
+  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Anda harus membuka tab baru dan masuk ke registrar domain Anda. Anda dapat dengan mudah mengeklik "Registrar" di bawah ini untuk melakukannya secara otomatis. Di tab baru ini, Anda harus menavigasi ke halaman manajemen DNS di registrar Anda – dan kami telah menyediakan langkah-langkah navigasi langkah demi langkah di bawah ini di kolom "Langkah-Langkah Konfigurasi". Setelah Anda menavigasi ke halaman ini di tab baru, Anda dapat kembali ke tab ini dan melanjutkan ke langkah ketiga di bawah ini.
-<strong class="font-weight-bold">Jangan tutup tab yang terbuka dulu; Anda akan membutuhkannya untuk langkah selanjutnya!</strong>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
+    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+  </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Registrar</th>
-<th>Langkah-Langkah Konfigurasi</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Pusat Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Edit Pengaturan DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Rute 53</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Zona Hosting <i class="fa fa-angle-right"></i> (Pilih domain Anda)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Server Saya <i class="fa fa-angle-right"></i> Manajemen Domain <i class="fa fa-angle-right"></i> Manajer DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>UNTUK ROCK: Masuk <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Klik ikon ▼ di samping untuk mengelola) <i class="fa fa-angle-right"></i> DNS
-<br />
-UNTUK LEGACY: Masuk <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> Editor Zona <i class="fa fa-angle-right"></i> (Pilih domain Anda)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Dipermudah</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Pilih domain Anda)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Kelola</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Jaringan <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Selengkapnya <i class="fa fa-angle-right"></i> Kelola Domain</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Pada tampilan kartu, klik kelola domain Anda <i class="fa fa-angle-right"></i> Pada tampilan daftar, klik
-ikon roda gigi <i class="fa fa-angle-right"></i> DNS & Server Nama <i class="fa fa-angle-right"></i> Rekaman DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Tonton</a>
-</td>
-<td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> (klik ikon roda gigi) <i class="fa fa-angle-right"></i> Klik DNS & Nameserver di menu sebelah kiri</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
-<td>Masuk <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> Kelola Domain <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
-<td>Masuk <i class="fa fa-angle-right"></i> Ikhtisar <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> Editor Sederhana <i class="fa fa-angle-right"></i> Rekaman</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
-<td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Manajemen <i class="fa fa-angle-right"></i> Edit zona</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Tonton</a>
-</td>
-<td>Masuk <i class="fa fa-angle-right"></i> Kelola Domain Saya <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Domain</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Pantau</a>
-</td>
-<td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Konfigurasi DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Pantau</a>
-</td>
-<td>Masuk <i class="fa fa-angle-right"></i> Daftar Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> DNS Lanjutan</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
-<td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Siapkan DNS Netlify</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Solusi</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Manajer Akun <i class="fa Nama Domain Saya <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> Ubah Arah Domain <i class="fa fa-angle-right"></i> DNS Lanjutan</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Pantau</a>
-</td>
-<td>Masuk <i class="fa fa-angle-right"></i> Domain Terkelola <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Pengaturan DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
-<td>Masuk <i class="fa fa-angle-right"></i> Menu Beranda <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i>
-Pengaturan Lanjutan <i class="fa fa-angle-right"></i> Rekaman Kustom</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Sekarang</a></td>
-<td>Menggunakan "sekarang" CLI <i class="fa fa-angle-right"></i> <code>sekarang tambahkan DNS [domain] '@' MX [nilai-rekaman] [prioritas]</code></td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
-<td>Masuk <i class="fa fa-angle-right"></i> Halaman Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
-<td>Masuk <i class="fa fa-angle-right"></i> Halaman Domain <i class="fa fa-angle-right"></i> (Klik <i class="fa ikon fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Pilih Kelola Data DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
-<td>Masuk <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> Domain Saya</td>
-</tr>
-<tr>
-<td>Lainnya</td>
-<td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Penting:</strong> Tidak melihat nama registrar Anda tercantum di sini? Cukup cari di internet dengan kata kunci "cara mengubah data DNS di $REGISTRAR" (ganti $REGISTRAR dengan nama registrar Anda – misalnya "cara mengubah rekaman DNS di GoDaddy" jika Anda menggunakan GoDaddy).</div>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Registrar</th>
+      <th>Steps to Configure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
+      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <br />
+      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
+the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
+Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+      </td>
+    </tr>
+  </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Gunakan halaman manajemen DNS registrar Anda (tab lain yang telah Anda buka), atur rekaman "MX" berikut:
+<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Perhatikan bahwa TIDAK boleh ada data MX lain yang ditetapkan. Kedua data yang ditampilkan di bawah ini HARUS ada. Pastikan tidak ada kesalahan ketik; dan ejaan mx1 dan mx2 Anda benar. Jika sudah ada data MX yang ada, harap hapus sepenuhnya.
-Nilai "TTL" tidak perlu 3600, bisa lebih rendah atau lebih tinggi jika perlu.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
+    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Prioritas</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx1.forwardemail.net</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx2.forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Priority</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Gunakan halaman manajemen DNS registrar Anda (tab lain yang telah Anda buka), tetapkan rekaman <strong class="notranslate">TXT</strong> berikut:
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan paket berbayar, Anda harus melewati langkah ini sepenuhnya dan langsung ke langkah kelima! Jika Anda tidak menggunakan paket berbayar, alamat penerusan Anda akan dapat dicari secara publik – buka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> dan tingkatkan domain Anda ke paket berbayar jika diinginkan. Jika Anda ingin mempelajari lebih lanjut tentang paket berbayar, lihat halaman <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Harga</a> kami. Jika tidak, Anda dapat terus memilih satu atau beberapa kombinasi dari Opsi A hingga Opsi F yang tercantum di bawah ini.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi A:
-</strong>
-<span>
-Jika Anda meneruskan semua email dari domain Anda (misalnya "all@example.com", "hello@example.com", dll.) ke alamat tertentu "user@gmail.com":
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option A:
+  </strong>
+  <span>
+    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Pastikan untuk mengganti nilai di atas pada kolom "Nilai" dengan alamat email Anda sendiri. Nilai "TTL" tidak perlu 3600, bisa lebih rendah atau lebih tinggi jika perlu. Nilai time to live ("TTL") yang lebih rendah akan memastikan setiap perubahan yang dilakukan pada rekaman DNS Anda di masa mendatang akan disebarkan ke seluruh Internet lebih cepat – anggaplah ini sebagai lamanya waktu penyimpanan cache di memori (dalam detik). Anda dapat mempelajari lebih lanjut tentang <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL di Wikipedia</a>.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi B:
-</strong>
-<span>
-Jika Anda hanya perlu meneruskan satu alamat email (misalnya <code>hello@example.com</code> ke <code>user@gmail.com</code>; ini juga akan meneruskan "hello+test@example.com" ke "user+test@gmail.com" secara otomatis):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option B:
+  </strong>
+  <span>
+    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi C:
-</strong>
-<span>
-Jika Anda meneruskan beberapa email, pisahkan dengan koma:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option C:
+  </strong>
+  <span>
+    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi D:
-</strong>
-<span>
-Anda dapat mengatur penerusan email tanpa batas – pastikan untuk tidak menggabungkan lebih dari 255 karakter dalam satu baris dan memulai setiap baris dengan "forward-email=". Contohnya diberikan di bawah ini:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option D:
+  </strong>
+  <span>
+    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=info:user@gmail.com, beep:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=errors:user@gmail.com, boop:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi E:
-</strong>
-<span>
-Anda juga dapat menentukan nama domain di data <strong class="notranslate">TXT</strong> Anda untuk memiliki penerusan alias global (misalnya, "user@example.com" akan diteruskan ke "user@example.net"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option E:
+  </strong>
+  <span>
+    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=example.net</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=example.net</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi F:
-</strong>
-<span>
-Anda bahkan dapat menggunakan webhook sebagai alias global atau individual untuk meneruskan email. Lihat contoh dan bagian lengkap tentang webhook berjudul <a href="#do-you-support-webhooks" class="alert-link">Apakah Anda mendukung webhook</a> di bawah ini.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option F:
+  </strong>
+  <span>
+    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Opsi G:
-</strong>
-<span>
-Anda bahkan dapat menggunakan ekspresi reguler ("regex") untuk mencocokkan alias dan menangani substitusi untuk meneruskan email. Lihat contoh dan bagian lengkap tentang regex berjudul <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Apakah Anda mendukung ekspresi reguler atau regex</a> di bawah ini.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option G:
+  </strong>
+  <span>
+    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Butuh ekspresi reguler tingkat lanjut dengan substitusi?</strong> Lihat contoh dan bagian lengkap tentang ekspresi reguler berjudul <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Apakah Anda mendukung ekspresi reguler atau ekspresi reguler</a> di bawah ini.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Sederhana:</strong> Jika saya ingin semua email yang masuk ke `linus@example.com` atau `torvalds@example.com` diteruskan ke `user@gmail.com`:
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Aturan penerusan catch-all juga dapat digambarkan sebagai "fall-through".
-Ini berarti email masuk yang cocok dengan setidaknya satu aturan penerusan tertentu akan digunakan, bukan catch-all.
-Aturan spesifik mencakup alamat email dan ekspresi reguler.
-<br /><br />
-Contoh:
-<br />
-<code>forward-email=hello:first@gmail.com,second@gmail.com</code>
-<br />
-Email yang dikirim ke <code>hello@example.com</code> **tidak** akan diteruskan ke <code>second@gmail.com</code> (catch-all) dengan konfigurasi ini, dan hanya akan dikirimkan ke <code>first@gmail.com</code>.
-</span>
-</div>
-
----
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Gunakan halaman manajemen DNS registrar Anda (tab lain yang telah Anda buka), tetapkan juga rekaman <strong class="notranslate">TXT</strong> berikut:
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Gmail (misalnya, Kirim Email Sebagai) atau G Suite, Anda perlu menambahkan <code>include:_spf.google.com</code> ke nilai di atas, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Catch-all forwarding rules could also be described as "fall-through".
+    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
+    Specific rules include email addresses and regular expressions.
+    <br /><br />
+    For example:
+    <br />
+    <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
+    <br />
+    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+  </span>
+</div>
+
+---
+
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Jika Anda sudah memiliki baris serupa dengan "v=spf1", maka Anda perlu menambahkan <code>include:spf.forwardemail.net</code> tepat sebelum rekaman "include:host.com" yang ada dan sebelum "-all" pada baris yang sama, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Perhatikan bahwa ada perbedaan antara "-all" dan "~all". Tanda "-" menunjukkan bahwa pemeriksaan SPF akan GAGAL jika tidak cocok, dan "~" menunjukkan bahwa pemeriksaan SPF akan GAGAL SENDIRI. Kami menyarankan untuk menggunakan pendekatan "-all" guna mencegah pemalsuan domain.
-<br /><br />
-Anda mungkin juga perlu menyertakan catatan SPF untuk host tempat Anda mengirim email (misalnya Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Verifikasi catatan DNS Anda menggunakan alat "Verifikasi Catatan" kami yang tersedia di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Kirim email percobaan untuk memastikannya berfungsi. Harap dicatat bahwa mungkin perlu waktu untuk menyebarkan data DNS Anda.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-</span>
-Jika Anda tidak menerima email percobaan, atau menerima email percobaan yang bertuliskan "Hati-hati dengan pesan ini", lihat jawaban untuk <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Mengapa saya tidak menerima email percobaan saya</a> dan <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Mengapa email percobaan saya yang dikirimkan kepada saya di Gmail ditampilkan sebagai "mencurigakan"</a>.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+  </span>
+    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Jika Anda ingin "Kirim Email Sebagai" dari Gmail, maka Anda perlu <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">menonton video ini</a></strong>, atau ikuti langkah-langkah di bawah <a href="#how-to-send-mail-as-using-gmail">How untuk Mengirim Email Sebagai Menggunakan Gmail</a> di bawah ini.
+</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
 
 </li></ol>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
-</div>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Add-on opsional tercantum di bawah ini. Harap dicatat bahwa add-on ini sepenuhnya opsional dan mungkin tidak diperlukan. Kami ingin setidaknya memberi Anda informasi tambahan jika diperlukan.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Add-on Opsional:
-</strong>
-<span>
-Jika Anda menggunakan fitur <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How untuk Mengirim Email Sebagai menggunakan Gmail</a>, Anda mungkin ingin menambahkan diri Anda ke daftar putih. Lihat <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">petunjuk ini dari Gmail</a> tentang topik ini.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Optional Add-on:
+  </strong>
+  <span>
+    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+  </span>
 </div>
 
-### Bisakah saya menggunakan beberapa bursa dan server MX untuk penerusan lanjutan {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Ya, tetapi **Anda seharusnya hanya memiliki satu pertukaran MX yang tercantum dalam catatan DNS Anda**.
+Yes, but **you should only have one MX exchange listed in your DNS records**.
 
-Jangan mencoba menggunakan "Prioritas" sebagai cara untuk mengonfigurasi beberapa pertukaran MX.
+Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
 
-Sebaliknya, Anda perlu mengonfigurasi pertukaran MX yang ada untuk meneruskan email untuk semua alias yang tidak cocok ke pertukaran layanan kami (`mx1.forwardemail.net` dan/atau `mx2.forwardemail.net`).
+Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
 
-Jika Anda menggunakan Google Workspace dan ingin meneruskan semua alias yang tidak cocok ke layanan kami, lihat <https://support.google.com/a/answer/6297084>.
+If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
 
-Jika Anda menggunakan Microsoft 365 (Outlook) dan ingin meneruskan semua alias yang tidak cocok ke layanan kami, lihat <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> dan <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### Bagaimana cara mengatur penjawab saat libur (penjawab otomatis saat di luar kantor) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias dan buat atau edit alias yang ingin Anda konfigurasikan untuk penjawab otomatis liburan.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
 
-Anda memiliki kemampuan untuk mengonfigurasi tanggal mulai, tanggal akhir, subjek, dan pesan, serta mengaktifkan atau menonaktifkannya kapan saja:
+You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
 
-* Subjek dan pesan teks biasa saat ini didukung (kami menggunakan paket `striptags` secara internal untuk menghapus HTML apa pun).
-* Subjek dibatasi hingga 100 karakter.
-* Pesan dibatasi hingga 1000 karakter.
-* Pengaturan memerlukan konfigurasi SMTP Keluar (misalnya, Anda perlu menyiapkan data DKIM, DMARC, dan DNS Return-Path).
-* Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
-* Penjawab liburan tidak dapat diaktifkan pada nama domain khusus global (misalnya, [alamat sekali pakai](/disposable-addresses) tidak didukung). * Penjawab liburan tidak dapat diaktifkan untuk alias dengan wildcard/catch-all (`*`) maupun ekspresi reguler.
+* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
+* Subject is limited to 100 characters.
+* Message is limited to 1000 characters.
+* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
+  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
+* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
 
-Berbeda dengan sistem surel seperti `postfix` (misalnya yang menggunakan ekstensi filter liburan `sieve`) – Forward Email secara otomatis menambahkan tanda tangan DKIM Anda, mengatasi masalah koneksi secara palsu saat mengirim balasan liburan (misalnya karena masalah koneksi SSL/TLS umum dan server yang dikelola lama), dan bahkan mendukung enkripsi Open WKD dan PGP untuk balasan liburan.
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
 
 <!--
-* Untuk mencegah penyalahgunaan, 1 kredit SMTP keluar akan dipotong untuk setiap pesan balasan tidak terkirim.
-* Semua akun berbayar sudah termasuk 300 kredit per hari secara default. Jika Anda membutuhkan jumlah yang lebih besar, silakan hubungi kami.
+* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
+  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
 -->
 
-1. Kami hanya mengirim satu kali per pengirim [masuk daftar putih](#do-you-have-an-allowlist) setiap 4 hari (mirip dengan perilaku Gmail).
+1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
 
-* Cache Redis kami menggunakan sidik jari `alias_id` dan `sender`, sedangkan `alias_id` adalah alias ID MongoDB dan `sender` adalah alamat Dari (jika diizinkan) atau domain root di alamat Dari (jika tidak diizinkan). Untuk menyederhanakannya, masa berlaku sidik jari ini di cache diatur ke 4 hari.
+* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
 
-* Pendekatan kami dalam menggunakan domain root yang diurai dalam alamat Dari untuk pengirim yang tidak masuk daftar putih mencegah penyalahgunaan dari pengirim yang relatif tidak dikenal (misalnya pelaku jahat) yang membanjiri pesan penjawab liburan.
+* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
 
-2. Kami hanya mengirim bila MAIL FROM dan/atau From tidak kosong dan tidak berisi (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
+2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-3. Kami tidak mengirim jika pesan asli memiliki salah satu tajuk berikut (tidak peka huruf besar-kecil):
+3. We don't send if the original message had any of the following headers (case-insensitive):
 
-* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`.
-* Header `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
-* Header `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, atau `no`7 (terlepas dari nilainya).
-* Header `no`8 dengan nilai `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, atau `x-auto-response-suppress`3.
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-4. Kami tidak mengirim jika alamat email MAIL FROM atau From diakhiri dengan `+donotreply`, `-donotreply`, `+noreply`, atau `-noreply`.
+4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
 
-5. Kami tidak mengirim jika bagian nama pengguna alamat email Dari adalah `mdaemon` dan memiliki header yang tidak peka huruf besar/kecil `X-MDDSN-Message`.
+5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
 
-6. Kami tidak mengirim jika ada header `content-type` yang tidak peka huruf besar/kecil dari `multipart/report`.
+6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
-### Bagaimana cara mengatur SPF untuk Email Terusan {#how-do-i-set-up-spf-for-forward-email}
+### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Dengan menggunakan halaman manajemen DNS pendaftar Anda, tetapkan rekaman <strong class="notranslate">TXT</strong> berikut:
+Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Gmail (misalnya, Kirim Email Sebagai) atau G Suite, Anda perlu menambahkan <code>include:_spf.google.com</code> ke nilai di atas, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Microsoft Outlook atau Live.com, Anda perlu menambahkan <code>include:spf.protection.outlook.com</code> ke data <strong class="notranslate">TXT</strong> SPF Anda, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Jika Anda sudah memiliki baris serupa dengan "v=spf1", maka Anda perlu menambahkan <code>include:spf.forwardemail.net</code> tepat sebelum rekaman "include:host.com" yang ada dan sebelum "-all" pada baris yang sama, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Perhatikan bahwa ada perbedaan antara "-all" dan "~all". Tanda "-" menunjukkan bahwa pemeriksaan SPF akan GAGAL jika tidak cocok, dan "~" menunjukkan bahwa pemeriksaan SPF akan GAGAL SENDIRI. Kami menyarankan untuk menggunakan pendekatan "-all" guna mencegah pemalsuan domain.
-<br /><br />
-Anda mungkin juga perlu menyertakan catatan SPF untuk host tempat Anda mengirim email (misalnya Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-### Bagaimana cara mengatur DKIM untuk Penerusan Email {#how-do-i-set-up-dkim-for-forward-email}
+### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Bagaimana cara mengatur DMARC untuk Meneruskan Email {#how-do-i-set-up-dmarc-for-forward-email}
+### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Bagaimana cara menghubungkan dan mengonfigurasi kontak saya {#how-do-i-connect-and-configure-my-contacts}
+### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
 
-**Untuk mengonfigurasi kontak Anda, gunakan URL CardDAV dari:** `https://carddav.forwardemail.net` (atau cukup `carddav.forwardemail.net` jika klien Anda mengizinkannya)
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
 
-### Bagaimana cara menghubungkan dan mengonfigurasi kalender saya {#how-do-i-connect-and-configure-my-calendars}
+### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
 
-**Untuk mengonfigurasi kalender Anda, gunakan URL CalDAV dari:** `https://caldav.forwardemail.net` (atau cukup `caldav.forwardemail.net` jika klien Anda mengizinkannya)
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Contoh Pengaturan CalDAV Thunderbird untuk Meneruskan Email Kalender" />
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang ada {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Jika Anda ingin menambahkan kalender tambahan, tambahkan saja URL kalender baru: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**pastikan untuk mengganti `calendar-name` dengan nama kalender yang Anda inginkan**)
+If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-Anda dapat mengubah nama dan warna kalender setelah dibuat – cukup gunakan aplikasi kalender pilihan Anda (misalnya Apple Mail atau [Burung Guntur](https://thunderbird.net)).
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
-### Bagaimana cara mengatur SRS untuk Email Terusan {#how-do-i-set-up-srs-for-forward-email}
+### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-Kami secara otomatis mengonfigurasi [Skema Penulisan Ulang Pengirim](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – Anda tidak perlu melakukannya sendiri.
+**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-### Bagaimana cara mengatur MTA-STS untuk Meneruskan Email {#how-do-i-set-up-mta-sts-for-forward-email}
+Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
 
-Silakan lihat [bagian kami tentang MTA-STS](#do-you-support-mta-sts) untuk informasi lebih lanjut.
+**Setup instructions by platform:**
 
-### Bagaimana cara menambahkan gambar profil ke alamat email saya {#how-do-i-add-a-profile-picture-to-my-email-address}
+**macOS/iOS:**
 
-Jika Anda menggunakan Gmail, ikuti langkah-langkah berikut:
+1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
+2. Use `caldav.forwardemail.net` as the server
+3. Enter your Forward Email alias and generated password
+4. After setup, you'll see both "Calendar" and "Reminders" collections
+5. Use the Reminders app to create and manage tasks
 
-1. Buka <https://google.com> dan keluar dari semua akun email.
-2. Klik "Masuk" dan pada menu tarik-turun, klik "akun lain".
-3. Pilih "Gunakan akun lain".
-4. Pilih "Buat akun".
-5. Pilih "Gunakan alamat email saya saat ini".
-6. Masukkan alamat email dengan nama domain khusus Anda.
-7. Terima email verifikasi yang dikirim ke alamat email Anda.
-8. Masukkan kode verifikasi dari email ini.
-9. Lengkapi informasi profil untuk akun Google baru Anda.
-10. Setujui semua kebijakan Privasi dan Ketentuan Penggunaan.
-11. Buka <https://google.com> dan di pojok kanan atas, klik ikon profil Anda, lalu klik tombol "ubah".
-12. Unggah foto atau avatar baru untuk akun Anda.
-13. Perubahan akan memakan waktu sekitar 1-2 jam untuk diterapkan, tetapi terkadang bisa sangat cepat.
-14. Kirim email uji coba dan foto profil akan muncul.
+**Android with Tasks.org:**
 
-## Fitur Lanjutan {#advanced-features}
+1. Install Tasks.org from Google Play Store or F-Droid
+2. Go to Settings > Synchronization > Add Account > CalDAV
+3. Enter server: `https://caldav.forwardemail.net`
+4. Enter your Forward Email alias and generated password
+5. Tasks.org will automatically discover your task calendars
 
-### Apakah Anda mendukung buletin atau milis untuk email terkait pemasaran {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+**Thunderbird:**
 
-Ya, Anda dapat membaca lebih lanjut di <https://forwardemail.net/guides/newsletter-with-listmonk>.
+1. Install the Lightning add-on if not already installed
+2. Create a new calendar with type "CalDAV"
+3. Use URL: `https://caldav.forwardemail.net`
+4. Enter your Forward Email credentials
+5. Both events and tasks will be available in the calendar interface
 
-Harap diperhatikan bahwa untuk menjaga reputasi IP dan memastikan pengiriman, Forward Email memiliki proses peninjauan manual per domain untuk **persetujuan buletin**. Kirimkan email ke <support@forwardemail.net> atau buka [permintaan bantuan](https://forwardemail.net/help) untuk persetujuan. Proses ini biasanya membutuhkan waktu kurang dari 24 jam, dengan sebagian besar permintaan diproses dalam 1-2 jam. Dalam waktu dekat, kami berencana untuk mempercepat proses ini dengan menambahkan kontrol spam dan pemberitahuan. Proses ini memastikan email Anda masuk ke kotak masuk dan pesan Anda tidak ditandai sebagai spam.
+### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
 
-### Apakah Anda mendukung pengiriman email dengan API {#do-you-support-sending-email-with-api}
+If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
 
-Ya, mulai Mei 2023 kami mendukung pengiriman email dengan API sebagai add-on untuk semua pengguna berbayar.
+1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+
+2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+
+3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+
+4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+
+5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+
+6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+
+**Common issues:**
+
+* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
+* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
+* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+
+### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+
+Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+
+**Installation and Setup:**
+
+1. **Install Tasks.org**:
+   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+
+2. **Configure CalDAV sync**:
+   * Open Tasks.org
+   * Go to ☰ Menu > Settings > Synchronization
+   * Tap "Add Account"
+   * Select "CalDAV"
+
+3. **Enter Forward Email settings**:
+   * **Server URL**: `https://caldav.forwardemail.net`
+   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
+   * **Password**: Your alias-specific generated password
+   * Tap "Add Account"
+
+4. **Account discovery**:
+   * Tasks.org will automatically discover your task calendars
+   * You should see your "Reminders" collection appear
+   * Tap "Subscribe" to enable sync for the task calendar
+
+5. **Test sync**:
+   * Create a test task in Tasks.org
+   * Check that it appears in other CalDAV clients (like macOS Reminders)
+   * Verify changes sync both ways
+
+**Features available:**
+
+* ✅ Task creation and editing
+* ✅ Due dates and reminders
+* ✅ Task completion and status
+* ✅ Priority levels
+* ✅ Subtasks and task hierarchy
+* ✅ Tags and categories
+* ✅ Two-way sync with other CalDAV clients
+
+**Troubleshooting:**
+
+* If no task calendars appear, try manually refreshing in Tasks.org settings
+* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
+* Check network connectivity to `caldav.forwardemail.net`
+
+### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+
+We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+
+### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+
+Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+
+### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+
+If you're using Gmail, then follow these steps below:
+
+1. Go to <https://google.com> and sign out of all email accounts
+2. Click "Sign In" and on the drop-down click on "other account"
+3. Select "Use another account"
+4. Select "Create account"
+5. Select "Use my current email address instead"
+6. Enter your custom domain name email address
+7. Retrieve the verification email sent to your email address
+8. Enter the verification code from this email
+9. Complete profile information for your new Google account
+10. Agree to all Privacy and Terms of Use policies
+11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
+12. Upload a new photo or avatar for your account
+13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
+14. Send a test email and the profile photo should appear.
+
+## Advanced Features {#advanced-features}
+
+### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+
+Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+
+Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### Do you support sending email with API {#do-you-support-sending-email-with-api}
+
+Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">Ketentuan</a>, <a href="/privacy" class="alert-link" target="_blank">Kebijakan Privasi</a>, dan <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Batas SMTP Keluar</a> kami – penggunaan Anda dianggap sebagai pengakuan dan persetujuan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-Silakan lihat bagian kami pada [Email](/email-api#outbound-emails) dalam dokumentasi API kami untuk opsi, contoh, dan wawasan lebih lanjut.
+Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
 
-Untuk mengirim email keluar dengan API kami, Anda harus menggunakan token API yang tersedia di [Keamanan Saya](/my-account/security).
+In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
 
-### Apakah Anda mendukung penerimaan email dengan IMAP {#do-you-support-receiving-email-with-imap}
+### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
 
-Ya, mulai 16 Oktober 2023, kami mendukung penerimaan email melalui IMAP sebagai add-on untuk semua pengguna berbayar. **Silakan baca artikel mendalam kami** tentang [cara kerja fitur penyimpanan kotak surat SQLite terenkripsi kami](/blog/docs/best-quantum-safe-encrypted-email-service).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
-<div id="instruksi-imap">
+<div id="imap-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">Ketentuan</a> dan <a href="/privacy" class="alert-link" target="_blank">Kebijakan Privasi</a> kami – penggunaan Anda dianggap sebagai pengakuan dan persetujuan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Gunakan aplikasi email pilihan Anda, tambahkan atau konfigurasikan akun dengan alias yang baru Anda buat (misalnya <code><hello@example.com></code>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Kami merekomendasikan penggunaan <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, atau <a href="/blog/open-source" class="alert-link" target="_blank">alternatif sumber terbuka dan berfokus pada privasi</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Saat diminta nama server IMAP, masukkan `imap.forwardemail.net`
+4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
-5. Saat dimintai port server IMAP, masukkan `993` (SSL/TLS) – lihat [port IMAP alternatif](/faq#what-are-your-imap-server-configuration-settings) jika perlu
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Jika Anda menggunakan Thunderbird, pastikan "Keamanan koneksi" diatur ke "SSL/TLS" dan Metode autentikasi diatur ke "Kata sandi normal".</span>
-</div>
+5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Saat diminta kata sandi server IMAP, tempel kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Hasilkan Kata Sandi</strong> pada langkah 2 di atas
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Simpan pengaturan Anda** – jika Anda mengalami masalah, silakan <a href="/help">hubungi kami</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
+
 </div>
 
-Bahasa Indonesia:
+### Do you support POP3 {#do-you-support-pop3}
 
-### Apakah Anda mendukung POP3 {#do-you-support-pop3}
+Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
-Ya, mulai 4 Desember 2023, kami mendukung [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) sebagai add-on untuk semua pengguna berbayar. **Silakan baca artikel mendalam kami** tentang [cara kerja fitur penyimpanan kotak surat SQLite terenkripsi kami](/blog/docs/best-quantum-safe-encrypted-email-service).
-
-<div id="instruksi-pop3">
+<div id="pop3-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">Ketentuan</a> dan <a href="/privacy" class="alert-link" target="_blank">Kebijakan Privasi</a> kami – penggunaan Anda dianggap sebagai pengakuan dan persetujuan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Gunakan aplikasi email pilihan Anda, tambahkan atau konfigurasikan akun dengan alias yang baru Anda buat (misalnya <code><hello@example.com></code>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Kami merekomendasikan penggunaan <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, atau <a href="/blog/open-source" class="alert-link" target="_blank">alternatif sumber terbuka dan berfokus pada privasi</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Saat diminta nama server POP3, masukkan `pop3.forwardemail.net`
+4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
 
-5. Saat dimintai port server POP3, masukkan `995` (SSL/TLS) – lihat [port POP3 alternatif](/faq#what-are-your-pop3-server-configuration-settings) jika perlu
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Jika Anda menggunakan Thunderbird, pastikan "Keamanan koneksi" diatur ke "SSL/TLS" dan Metode autentikasi diatur ke "Kata sandi normal".</span>
-</div>
+5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Saat diminta kata sandi server POP3, tempel kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Hasilkan Kata Sandi</strong> pada langkah 2 di atas
+6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Simpan pengaturan Anda** – jika Anda mengalami masalah, silakan <a href="/help">hubungi kami</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
+
 </div>
 
-Bahasa Indonesia:
+### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
 
-### Apakah Anda mendukung kalender (CalDAV) {#do-you-support-calendars-caldav}
+Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Ya, kami telah menambahkan fitur ini mulai 5 Februari 2024. Server kami adalah `caldav.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 
-Mendukung IPv4 dan IPv6 dan tersedia melalui port `443` (HTTPS).
-
-| Login | Contoh | Keterangan |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nama belakang | `user@example.com` | Alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>. |
-| Kata sandi | `************************` | Kata sandi yang dibuat khusus alias. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Agar dapat menggunakan dukungan kalender, **pengguna** harus berupa alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> – dan **kata sandi** harus berupa kata sandi yang dibuat khusus untuk alias.
+In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
 
-### Apakah Anda mendukung kontak (CardDAV) {#do-you-support-contacts-carddav}
+### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Ya, fitur ini telah ditambahkan per 12 Juni 2025. Server kami adalah `carddav.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-Mendukung IPv4 dan IPv6 dan tersedia melalui port `443` (HTTPS).
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
 
-| Login | Contoh | Keterangan |
+**How calendars and lists work:**
+
+* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
+* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
+* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
+* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+
+**Supported task clients:**
+
+* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
+* **iOS Reminders** - Full native support across all iOS devices
+* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
+* **Thunderbird** - Task and calendar support in desktop email client
+* **Any CalDAV-compatible task manager** - Standard VTODO component support
+
+**Task features supported:**
+
+* Task creation, editing, and deletion
+* Due dates and start dates
+* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Task priority levels
+* Recurring tasks
+* Task descriptions and notes
+* Multi-device synchronization
+* Subtasks with RELATED-TO property
+* Task reminders with VALARM
+
+The login credentials are the same as for calendar support:
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nama belakang | `user@example.com` | Alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>. |
-| Kata sandi | `************************` | Kata sandi yang dibuat khusus alias. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Agar dapat menggunakan dukungan kontak, **pengguna** harus berupa alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> – dan **kata sandi** harus berupa kata sandi yang dibuat khusus untuk alias.
+**Important notes:**
 
-### Apakah Anda mendukung pengiriman email dengan SMTP {#do-you-support-sending-email-with-smtp}
+* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
+* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
+* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
-Ya, mulai Mei 2023 kami mendukung pengiriman email dengan SMTP sebagai add-on untuk semua pengguna berbayar.
+### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
 
-<div id="instruksi-smtp">
+Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
+
+In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+
+<div id="smtp-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">Ketentuan</a>, <a href="/privacy" class="alert-link" target="_blank">Kebijakan Privasi</a>, dan <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Batas SMTP Keluar</a> kami – penggunaan Anda dianggap sebagai pengakuan dan persetujuan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Gmail, silakan lihat <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Panduan Kirim Email dengan Gmail</a> kami. Jika Anda seorang pengembang, silakan lihat <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentasi API email</a> kami.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
 </div>
 
-1. Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-4. Gunakan aplikasi email pilihan Anda, tambahkan atau konfigurasikan akun dengan alias yang baru Anda buat (misalnya <code><hello@example.com></code>)
+4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
+
+5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
+
+6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
+
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Kami merekomendasikan penggunaan <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, atau <a href="/blog/open-source" class="alert-link" target="_blank">alternatif sumber terbuka dan berfokus pada privasi</a>.</span>
-</div>
-
-5. Saat diminta nama server SMTP, masukkan `smtp.forwardemail.net`
-
-6. Saat dimintai port server SMTP, masukkan `465` (SSL/TLS) – lihat [port SMTP alternatif](/faq#what-are-your-smtp-server-configuration-settings) jika perlu
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Jika Anda menggunakan Thunderbird, pastikan "Keamanan koneksi" diatur ke "SSL/TLS" dan Metode autentikasi diatur ke "Kata sandi normal".</span>
-</div>
-
-7. Saat diminta kata sandi server SMTP, tempel kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Hasilkan Kata Sandi</strong> pada langkah 3 di atas
-
-8. **Simpan pengaturan Anda dan kirim email percobaan pertama Anda** – jika Anda mengalami masalah, silakan <a href="/help">hubungi kami</a>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Harap diperhatikan bahwa untuk menjaga reputasi IP dan memastikan pengiriman, kami memiliki proses peninjauan manual per domain untuk persetujuan SMTP keluar. Proses ini biasanya memakan waktu kurang dari 24 jam, dengan sebagian besar permintaan diproses dalam 1-2 jam. Dalam waktu dekat, kami berencana untuk mempercepat proses ini dengan kontrol spam dan peringatan tambahan. Proses ini memastikan email Anda masuk ke kotak masuk dan pesan Anda tidak ditandai sebagai spam.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
+
 </div>
 
-Bahasa Indonesia:
+### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-### Apakah Anda mendukung OpenPGP/MIME, enkripsi ujung ke ujung ("E2EE"), dan Direktori Kunci Web ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-Ya, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [enkripsi ujung ke ujung ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), dan penemuan kunci publik menggunakan [Direktori Kunci Web ("WKD")](https://wiki.gnupg.org/WKD). Anda dapat mengonfigurasi OpenPGP menggunakan [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) atau [host sendiri kunci Anda](https://wiki.gnupg.org/WKDHosting) (lihat [inti ini untuk pengaturan server WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
+* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
+* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
+* Messages sent to webhooks are not currently encrypted with PGP.
+* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
+* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
 
-* Pencarian WKD di-cache selama 1 jam untuk memastikan pengiriman email yang tepat waktu → oleh karena itu, jika Anda menambahkan, mengubah, atau menghapus kunci WKD Anda, silakan kirimkan email kepada kami di `support@forwardemail.net` dengan alamat email Anda agar kami dapat menghapus cache secara manual.
-* Kami mendukung enkripsi PGP untuk pesan yang diteruskan melalui pencarian WKD atau menggunakan kunci PGP yang diunggah di antarmuka kami.
-* Kunci yang diunggah akan berlaku selama kotak centang PGP diaktifkan/dicentang.
-* Pesan yang dikirim ke webhook saat ini tidak dienkripsi dengan PGP.
-* Jika Anda memiliki beberapa alias yang cocok untuk alamat penerusan tertentu (misalnya kombinasi regex/wildcard/exact) dan jika lebih dari satu alias tersebut berisi kunci PGP yang diunggah dan telah dicentang PGP → maka kami akan mengirimkan email peringatan kesalahan dan tidak akan mengenkripsi pesan dengan kunci PGP yang Anda unggah. Hal ini sangat jarang terjadi dan biasanya hanya berlaku untuk pengguna tingkat lanjut dengan aturan alias yang kompleks. **Enkripsi PGP tidak akan diterapkan pada penerusan email melalui server MX kami jika pengirim memiliki kebijakan penolakan DMARC. Jika Anda memerlukan enkripsi PGP pada *semua* email, kami sarankan untuk menggunakan layanan IMAP kami dan mengonfigurasi kunci PGP Anda untuk alias email masuk.**
-
-**Anda dapat memvalidasi pengaturan Direktori Kunci Web di <https://wkd.chimbosonic.com/> (sumber terbuka) atau <https://www.webkeydirectory.com/> (milik).**
+**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Enkripsi Otomatis:
-</strong>
-<span>Jika Anda menggunakan <a href="#do-you-support-sending-email-with-smtp" class="alert-link">layanan SMTP keluar</a> kami dan mengirimkan pesan yang tidak terenkripsi, maka kami akan secara otomatis mencoba mengenkripsi pesan per penerima menggunakan <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Direktori Kunci ("WKD")</a>.</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Automatic Encryption:
+  </strong>
+  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Anda harus mengikuti semua langkah berikut untuk mengaktifkan OpenPGP untuk nama domain kustom Anda.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+  </span>
 </div>
 
-1. Unduh dan instal plugin yang direkomendasikan klien email Anda di bawah ini:
+1. Download and install your email client's recommended plugin below:
 
-| Klien Email | Platform | Plugin yang Direkomendasikan | Catatan |
+| Email Client | Platform | Recommended Plugin | Notes |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Burung Guntur | Meja kerja | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird memiliki dukungan bawaan untuk OpenPGP. |
-| Gmail | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Gmail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (lisensi kepemilikan) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Pandangan | Jendela | [gpg4win](https://www.gpg4win.de/index.html) | Klien email desktop Outlook tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [gpg4win](https://www.gpg4win.de/index.html). |
-| Pandangan | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Klien email berbasis web Outlook tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Seluler | [OpenKeychain](https://www.openkeychain.org/) atau [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) seperti [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) dan [FairEmail](https://github.com/M66B/FairEmail) keduanya mendukung plugin sumber terbuka [OpenKeychain](https://www.openkeychain.org/). Sebagai alternatif, Anda dapat menggunakan plugin sumber terbuka (lisensi kepemilikan) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Peramban | [Mailvelope](https://mailvelope.com/) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/). |
-| Berani | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Kayu balsa | Meja kerja | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa memiliki dukungan bawaan untuk OpenPGP. |
-| KMail | Meja kerja | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail memiliki dukungan bawaan untuk OpenPGP. |
-| Evolusi GNOME | Meja kerja | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution memiliki dukungan bawaan untuk OpenPGP. |
-| Terminal | Meja kerja | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | Anda dapat menggunakan [gpg command line tool](https://www.gnupg.org/download/) sumber terbuka untuk menghasilkan kunci baru dari baris perintah. |
+| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
+| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
+| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
+| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
+| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
+| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
+| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
+| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
 
-2. Buka plugin, buat kunci publik Anda, dan konfigurasikan klien email Anda untuk menggunakannya.
+2. Open the plugin, create your public key, and configure your email client to use it.
 
-3. Unggah kunci publik Anda di <https://keys.openpgp.org/upload>.
+3. Upload your public key at <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Anda dapat mengunjungi <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> untuk mengelola kunci Anda di masa mendatang.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+   </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Add-on Opsional:
-</strong>
-<span>
-Jika Anda menggunakan layanan <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">penyimpanan terenkripsi (IMAP/POP3)</a> kami dan ingin <i>semua</i> email yang tersimpan di database SQLite Anda (yang sudah terenkripsi) dienkripsi dengan kunci publik Anda, buka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP dan unggah kunci publik Anda.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Optional Add-on:
+     </strong>
+     <span>
+       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+     </span>
+   </div>
 
-4. Tambahkan rekaman `CNAME` baru ke nama domain Anda (misalnya `example.com`):
+4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openpgpkey</code></td>
-<td class="text-center">3600</td>
-<td class="notranslate">CNAME</td>
-<td><code>wkd.keys.openpgp.org</code></td>
-</tr>
-</tbody>
-</table>
+     <thead class="thead-dark">
+       <tr>
+         <th>Name/Host/Alias</th>
+         <th class="text-center">TTL</th>
+         <th>Type</th>
+         <th>Answer/Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td><code>openpgpkey</code></td>
+         <td class="text-center">3600</td>
+         <td class="notranslate">CNAME</td>
+         <td><code>wkd.keys.openpgp.org</code></td>
+       </tr>
+     </tbody>
+   </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>Jika alias Anda menggunakan <a class="alert-link" href="/disposable-addresses" target="_blank">domain khusus/disposable</a> kami (misalnya <code>hideaddress.net</code>), Anda dapat melewati langkah ini.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+   </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Selamat!
-</strong>
-<span>
-Anda telah berhasil menyelesaikan semua langkah.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Apakah Anda mendukung MTA-STS {#do-you-support-mta-sts}
+### Do you support MTA-STS {#do-you-support-mta-sts}
 
-Ya, mulai 2 Maret 2023, kami mendukung [MTA-STS](https://www.hardenize.com/blog/mta-sts). Anda dapat menggunakan [templat ini](https://github.com/jpawlowski/mta-sts.template) jika ingin mengaktifkannya di domain Anda.
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
 
-Konfigurasi kami dapat ditemukan secara publik di GitHub di <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### Apakah Anda mendukung kunci sandi dan WebAuthn {#do-you-support-passkeys-and-webauthn}
+### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-Ya! Mulai 13 Desember 2023, kami telah menambahkan dukungan untuk kunci sandi [karena permintaan yang tinggi](https://github.com/orgs/forwardemail/discussions/182).
+Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
 
-Kunci sandi memungkinkan Anda masuk dengan aman tanpa memerlukan kata sandi dan autentikasi dua faktor.
+Passkeys allow you to securely log in without requiring a password and two-factor authentication.
 
-Anda dapat memvalidasi identitas Anda dengan sentuhan, pengenalan wajah, kata sandi berbasis perangkat, atau PIN.
+You can validate your identity with touch, facial recognition, device-based password, or PIN.
 
-Kami mengizinkan Anda mengelola hingga 30 kata sandi sekaligus, sehingga Anda dapat masuk dengan semua perangkat Anda dengan mudah.
+We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
 
-Pelajari lebih lanjut tentang kunci sandi pada tautan berikut:
+Learn more about passkeys at the following links:
 
-* [Masuk ke aplikasi dan situs web Anda dengan kunci sandi](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Gunakan kunci sandi untuk masuk ke aplikasi dan situs web di iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Artikel Wikipedia tentang Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### Apakah Anda mendukung praktik terbaik email {#do-you-support-email-best-practices}
+### Do you support email best practices {#do-you-support-email-best-practices}
 
-Ya. Kami memiliki dukungan bawaan untuk SPF, DKIM, DMARC, ARC, dan SRS di semua paket. Kami juga telah bekerja sama secara ekstensif dengan para penyusun awal spesifikasi ini dan pakar email lainnya untuk memastikan kesempurnaan dan tingkat pengiriman yang tinggi.
+Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
 
-### Apakah Anda mendukung webhook bounce {#do-you-support-bounce-webhooks}
+### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-Mencari dokumentasi tentang webhook email? Lihat <a href="/faq#do-you-support-webhooks" class="alert-link">Apakah Anda mendukung webhook?</a> untuk informasi lebih lanjut.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Ya, mulai 14 Agustus 2024, kami telah menambahkan fitur ini. Anda sekarang dapat membuka Akun Saya → Domain → Setelan → URL Webhook Pentalan dan mengonfigurasi URL `http://` atau `https://` yang akan kami kirimi permintaan `POST` setiap kali email SMTP keluar terpental.
+Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
-Ini berguna bagi Anda untuk mengelola dan memantau SMTP keluar Anda – dan dapat digunakan untuk mempertahankan pelanggan, memilih keluar, dan mendeteksi setiap kali terjadi pentalan.
+This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
 
-Muatan webhook bounce dikirim sebagai JSON dengan properti berikut:
+Bounce webhook payloads are sent as a JSON with these properties:
 
-* `email_id` (String) - ID email yang sesuai dengan email di Akun Saya → Email (SMTP keluar)
-* `list_id` (String) - nilai header `List-ID` (tanpa memperhatikan huruf besar/kecil), jika ada, dari email keluar asli
-* `list_unsubscribe` (String) - nilai header `List-Unsubscribe` (tanpa memperhatikan huruf besar/kecil), jika ada, dari email keluar asli
-* `feedback_id` (String) - nilai header `Feedback-ID` (tanpa memperhatikan huruf besar/kecil), jika ada, dari email keluar asli
-* `recipient` (String) - alamat email penerima yang terpental atau mengalami kesalahan
-* `message` (String) - pesan kesalahan terperinci untuk email terpental
-* `response` (String) - pesan respons SMTP
-* `list_id`0 (Angka) - kode respons SMTP yang diurai
-* `list_id`1 (String) - jika kode respons berasal dari sumber tepercaya, nilai ini akan diisi dengan nama domain root (misalnya `list_id`2 atau `list_id`3)
-* `list_id`4 (Objek) - objek yang berisi properti berikut yang merinci status pantulan dan penolakan
-* `list_id`5 (String) - tindakan pantulan (misalnya `list_id`6)
-* `list_id`7 (String) - alasan pantulan (misalnya `list_id`8)
-* `list_id`9 (String) - kategori pantulan (misalnya `List-ID`0)
-* `List-ID`1 (Angka) - kode status pantulan (misalnya `List-ID`2)
-* `List-ID`3 (String) - kode pantulan dari pesan balasan (misalnya `List-ID`4)
-* `List-ID`5 (Angka) - nomor baris yang diurai, jika ada, `List-ID`6 (misalnya `List-ID`7)
-* `List-ID`8 (Objek) - pasangan kunci nilai header untuk email keluar
-* `List-ID`9 (String) - Tanggal yang diformat `list_unsubscribe`0 untuk terjadinya kesalahan pantulan
+* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
+* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
+* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
+* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
+* `recipient` (String) - the email address of the recipient that bounced or errored
+* `message` (String) - a detailed error message for the bounce
+* `response` (String) - the SMTP response message
+* `response_code` (Number) - the parsed SMTP response code
+* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
+* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
+  * `action` (String) - bounce action (e.g. `"reject"`)
+  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce category (e.g. `"block"`)
+  * `code` (Number) - bounce status code (e.g. `554`)
+  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
+  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
 
-Misalnya:
+For example:
 
 ```json
 {
@@ -1995,104 +2467,108 @@ Misalnya:
 }
 ```
 
-Berikut beberapa catatan tambahan mengenai webhook pentalan:
+Here are a few additional notes regarding bounce webhooks:
 
-* Jika payload webhook berisi nilai `list_id`, `list_unsubscribe`, atau `feedback_id`, Anda harus mengambil tindakan yang tepat untuk menghapus `recipient` dari daftar jika perlu.
-* Jika nilai `bounce.category` adalah `"block"`, `"recipient"`, `"spam"`, atau `"virus"`, Anda harus menghapus pengguna dari daftar.
-* Jika Anda perlu memverifikasi payload webhook (untuk memastikan payload tersebut benar-benar berasal dari server kami), Anda dapat menggunakan [selesaikan alamat IP klien jarak jauh nama host klien menggunakan pencarian terbalik](https://nodejs.org/api/dns.html#dnspromisesreverseip) – seharusnya `list_unsubscribe`0.
-* Anda juga dapat memeriksa IP dengan `list_unsubscribe`1. * Buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Muatan Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.
-* Anda dapat merotasi kunci ini kapan saja demi alasan keamanan.
-* Hitung dan bandingkan nilai `list_unsubscribe`2 dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini. Contoh cara melakukannya tersedia di `list_unsubscribe`3.
-* Lihat diskusi di <`list_unsubscribe`4 untuk informasi lebih lanjut.
-* Kami akan menunggu hingga `list_unsubscribe`5 detik hingga titik akhir webhook Anda merespons dengan kode status `list_unsubscribe`6, dan kami akan mencoba lagi hingga `list_unsubscribe`7.
-* Jika kami mendeteksi bahwa URL webhook bounce Anda mengalami kesalahan saat kami mencoba mengirimkan permintaan, kami akan mengirimkan email balasan kepada Anda seminggu sekali.
+* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
+  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
+* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
 
-### Apakah Anda mendukung webhook {#do-you-support-webhooks}
+### Do you support webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-Mencari dokumentasi tentang webhook bounce? Lihat <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Apakah Anda mendukung webhook bounce?</a> untuk informasi lebih lanjut.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Ya, mulai 15 Mei 2020, kami telah menambahkan fitur ini. Anda cukup menambahkan webhook seperti yang Anda lakukan dengan penerima lainnya! Pastikan Anda telah menambahkan awalan protokol "http" atau "https" di URL webhook.
+Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Perlindungan Privasi yang Ditingkatkan:
-</strong>
-<span>
-Jika Anda menggunakan paket berbayar (yang dilengkapi perlindungan privasi yang ditingkatkan), silakan buka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> dan klik "Alias" di samping domain Anda untuk mengonfigurasi webhook Anda. Jika Anda ingin mempelajari lebih lanjut tentang paket berbayar, lihat halaman <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Harga</a> kami. Jika tidak, Anda dapat terus mengikuti petunjuk di bawah ini.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="notranslate">TXT</strong> baru seperti yang ditunjukkan di bawah ini:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
-Misalnya, jika saya ingin semua email yang masuk ke `alias@example.com` diteruskan ke titik akhir pengujian [permintaan bin](https://requestbin.com/r/en8pfhdgcculn?inspect) yang baru:
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
-</table>
-
-Atau mungkin Anda ingin semua email yang masuk ke `example.com` diteruskan ke titik akhir ini:
+For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
 </table>
 
-**Berikut catatan tambahan mengenai webhook:**
+Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
 
-* Jika Anda perlu memverifikasi payload webhook (untuk memastikan payload tersebut benar-benar berasal dari server kami), Anda dapat menggunakan [selesaikan alamat IP klien jarak jauh nama host klien menggunakan pencarian terbalik](https://nodejs.org/api/dns.html#dnspromisesreverseip) – sebaiknya `mx1.forwardemail.net` atau `mx2.forwardemail.net`.
-* Anda juga dapat memeriksa IP dengan [alamat IP kami yang dipublikasikan](#what-are-your-servers-ip-addresses).
-* Jika Anda menggunakan paket berbayar, buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Payload Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.
-* Anda dapat merotasi kunci ini kapan saja demi alasan keamanan.
-* Hitung dan bandingkan nilai `X-Webhook-Signature` dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini. Contoh cara melakukannya tersedia di [postingan Stack Overflow ini](https://stackoverflow.com/a/68885281).
-* Lihat diskusi di <https://github.com/forwardemail/free-email-forwarding/issues/235> untuk informasi lebih lanjut. * Jika webhook tidak merespons dengan kode status `200`, kami akan menyimpan responsnya di [log kesalahan dibuat](#do-you-store-error-logs) – yang berguna untuk debugging.
-* Permintaan HTTP webhook akan mencoba ulang hingga 3 kali setiap upaya koneksi SMTP, dengan batas waktu maksimal 60 detik per permintaan POST titik akhir. **Perhatikan bahwa ini tidak berarti webhook hanya mencoba ulang 3 kali**, webhook akan mencoba ulang secara terus-menerus seiring waktu dengan mengirimkan kode SMTP 421 (yang memberi tahu pengirim untuk mencoba ulang nanti) setelah upaya permintaan POST HTTP ke-3 yang gagal. Ini berarti email akan mencoba ulang terus-menerus selama berhari-hari hingga kode status 200 tercapai.
-* Kami akan mencoba ulang secara otomatis berdasarkan status default dan kode kesalahan yang digunakan dalam [metode percobaan ulang superagent](https://ladjs.github.io/superagent/#retrying-requests) (kami adalah pengelola).
-* Kami mengelompokkan permintaan HTTP webhook ke titik akhir yang sama dalam satu permintaan, bukan beberapa) untuk menghemat sumber daya dan mempercepat waktu respons. Misalnya, jika Anda mengirim email ke <webhook1@example.com>, <webhook2@example.com>, dan <webhook3@example.com>, dan semuanya dikonfigurasi untuk mencapai URL titik akhir *persis* yang sama, maka hanya satu permintaan yang akan dibuat. Kami mengelompokkan berdasarkan pencocokan titik akhir yang persis dengan kesetaraan yang ketat.
-* Perhatikan bahwa kami menggunakan metode "simpleParser" dari pustaka `mx1.forwardemail.net`0 untuk mengurai pesan menjadi objek yang ramah JSON.
-* Nilai email mentah sebagai String diberikan sebagai properti "raw".
-* Hasil autentikasi diberikan sebagai properti "dkim", "spf", "arc", "dmarc", dan "bimi".
-* Header email yang telah diurai diberikan sebagai properti "headers" – tetapi perlu diketahui juga bahwa Anda dapat menggunakan "headerLines" untuk iterasi dan penguraian yang lebih mudah.
-* Penerima yang dikelompokkan untuk webhook ini dikelompokkan bersama dan diberikan sebagai properti "recipients". * Informasi sesi SMTP diberikan sebagai properti "session". Properti ini berisi informasi tentang pengirim pesan, waktu kedatangan pesan, HELO, dan nama host klien. Nilai nama host klien sebagai `mx1.forwardemail.net`1 adalah FQDN (dari pencarian PTR terbalik) atau `mx1.forwardemail.net`2 yang diapit tanda kurung (misalnya `mx1.forwardemail.net`3).
-* Jika Anda membutuhkan cara cepat untuk mendapatkan nilai `mx1.forwardemail.net`4, Anda dapat menggunakan nilai `mx1.forwardemail.net`5 (lihat contoh di bawah). Header `mx1.forwardemail.net`6 adalah header yang kami tambahkan ke pesan untuk debugging dengan penerima asli (sebelum penerusan tersamar) untuk pesan tersebut. * Jika Anda perlu menghapus properti `mx1.forwardemail.net`7 dan/atau `mx1.forwardemail.net`8 dari badan payload, cukup tambahkan `mx1.forwardemail.net`9, `mx2.forwardemail.net`0, atau `mx2.forwardemail.net`1 ke titik akhir webhook Anda sebagai parameter querystring (misalnya `mx2.forwardemail.net`2).
-* Jika terdapat lampiran, lampiran tersebut akan ditambahkan ke Array `mx2.forwardemail.net`3 dengan nilai Buffer. Anda dapat mengurainya kembali menjadi konten menggunakan pendekatan dengan JavaScript seperti:
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**Here are additional notes regarding webhooks:**
+
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
+* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
+* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
+* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
+* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+* Raw email value as a String is given as the property "raw".
+* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+* The grouped recipients for this webhook are grouped together and given as the property "recipients".
+* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
+* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
 
   ```js
   const data = [
@@ -2118,13 +2594,13 @@ Atau mungkin Anda ingin semua email yang masuk ke `example.com` diteruskan ke ti
   ```
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-Penasaran seperti apa tampilan permintaan webhook dari email yang diteruskan? Kami telah menyertakan contoh di bawah ini untuk Anda!
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+  <span>
+  </span>
 </div>
 
 ```json
@@ -2307,842 +2783,797 @@ Penasaran seperti apa tampilan permintaan webhook dari email yang diteruskan? Ka
 }
 ```
 
-### Apakah Anda mendukung ekspresi reguler atau regex {#do-you-support-regular-expressions-or-regex}
+### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
 
-Ya, mulai 27 September 2021, kami telah menambahkan fitur ini. Anda cukup menulis ekspresi reguler ("regex") untuk mencocokkan alias dan melakukan substitusi.
+Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
 
-Alias yang didukung ekspresi reguler adalah alias yang dimulai dengan `/` dan diakhiri dengan `/`, dan penerimanya berupa alamat email atau webhook. Penerima juga dapat menyertakan dukungan substitusi regex (misalnya `$1`, `$2`).
+Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
 
-Kami mendukung dua flag ekspresi reguler, yaitu `i` dan `g`. Flag `i` yang tidak peka huruf besar/kecil merupakan default permanen dan selalu diterapkan. Flag global `g` dapat Anda tambahkan dengan menambahkan akhiran `/` dengan `/g`.
+We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
 
-Perhatikan bahwa kami juga mendukung <a href="fitur alias #can-i-disable-specific-aliases">disabled</a> untuk bagian penerima dengan dukungan regex kami.
+Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
 
-Ekspresi reguler tidak didukung pada <a href="/disposable-addresses" target="_blank">domain khusus global</a> (karena ini dapat menjadi kerentanan keamanan).
+Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Perlindungan Privasi yang Ditingkatkan:
-</strong>
-<span>
-Jika Anda menggunakan paket berbayar (yang dilengkapi perlindungan privasi yang ditingkatkan), silakan buka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> dan klik "Alias" di samping domain Anda untuk mengonfigurasi ekspresi reguler. Jika Anda ingin mempelajari lebih lanjut tentang paket berbayar, lihat halaman <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Harga</a> kami. Jika tidak, Anda dapat terus mengikuti petunjuk di bawah ini.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+  </span>
 </div>
 
-Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="notranslate">TXT</strong> baru menggunakan satu atau beberapa contoh yang diberikan di bawah ini:
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Sederhana:</strong> Jika saya ingin semua email yang masuk ke `linus@example.com` atau `torvalds@example.com` diteruskan ke `user@gmail.com`:
-</div>
+#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Substitusi Nama Depan Nama Belakang:</strong> Bayangkan semua alamat email perusahaan Anda berpola `firstname.lastname@example.com`. Jika saya ingin semua email yang berpola `firstname.lastname@example.com` diteruskan ke `firstname.lastname@company.com` dengan dukungan substitusi (<a href="https://regexr.com/66hnu" class="alert-link">lihat pengujian di RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Substitusi Penyaringan Simbol Plus:</strong> Jika saya ingin semua email yang masuk ke `info@example.com` atau `support@example.com` diteruskan ke `user+info@gmail.com` atau `user+support@gmail.com` (dengan dukungan substitusi) (<a href="https://regexr.com/66ho7" class="alert-link">lihat pengujian di RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Substitusi String Kueri Webhook:</strong> Mungkin Anda ingin semua email yang masuk ke `example.com` masuk ke <a href="#do-you-support-webhooks" class="alert-link">webhook</a> dan memiliki kunci string kueri dinamis "kepada" dengan nilai bagian nama pengguna dari alamat email (<a href="https://regexr.com/66ho4" class="alert-link">tampilkan uji coba di RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh penolakan diam-diam:</strong> Jika Anda ingin semua email yang cocok dengan pola tertentu dinonaktifkan dan ditolak diam-diam (tampak bagi pengirim seolah-olah pesan berhasil terkirim, tetapi sebenarnya tidak terkirim) dengan kode status `250` (lihat <a href="#can-i-disable-specific-aliases" class="alert-link">Dapatkah saya menonaktifkan alias tertentu</a>), maka cukup gunakan pendekatan yang sama dengan satu tanda seru "!". Ini menunjukkan kepada pengirim bahwa pesan berhasil terkirim, tetapi sebenarnya tidak terkirim (misalnya, blackhole atau `/dev/null`).
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh penolakan lunak:</strong> Jika Anda ingin semua email yang cocok dengan pola tertentu dinonaktifkan dan ditolak lunak dengan kode status `421` (lihat <a href="#can-i-disable-specific-aliases" class="alert-link">Dapatkah saya menonaktifkan alias tertentu</a>), cukup gunakan pendekatan yang sama dengan tanda seru ganda "!!". Ini memberi tahu pengirim untuk mencoba lagi email mereka, dan email ke alias ini akan dicoba lagi selama kurang lebih 5 hari, lalu ditolak secara permanen.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh penolakan keras:</strong> Jika Anda ingin semua email yang cocok dengan pola tertentu dinonaktifkan dan ditolak keras dengan kode status `550` (lihat <a href="#can-i-disable-specific-aliases" class="alert-link">Dapatkah saya menonaktifkan alias tertentu</a>), cukup gunakan pendekatan yang sama dengan tiga tanda seru "!!!". Ini menandakan kesalahan permanen kepada pengirim dan email tidak akan dicoba lagi, email akan ditolak untuk alias ini.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Alias Name</th>
+      <th>Effect</th>
+      <th>Test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/^(linus|torvalds)$/</code></td>
+      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+    <tr>
+      <td><code>/^24highst(reet)$/</code></td>
+      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-Penasaran cara menulis ekspresi reguler atau perlu menguji penggantinya? Anda dapat mengunjungi situs web pengujian ekspresi reguler gratis <a href="https://regexr.com" class="alert-link">RegExr</a> di <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+  <span>
+  </span>
 </div>
 
-### Berapa batas SMTP keluar Anda {#what-are-your-outbound-smtp-limits}
+#### Examples for the free plan {#examples-for-the-free-plan}
 
-Kami membatasi pengguna dan domain hingga 300 pesan SMTP keluar per hari. Ini berarti rata-rata 9000+ email dalam satu bulan kalender. Jika Anda perlu melebihi jumlah ini atau memiliki email yang terus-menerus berukuran besar, silakan [Hubungi kami](https://forwardemail.net/help).
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
-### Apakah saya perlu persetujuan untuk mengaktifkan SMTP {#do-i-need-approval-to-enable-smtp}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+</div>
 
-Ya, perlu diketahui bahwa untuk menjaga reputasi IP dan memastikan pengiriman, Forward Email memiliki proses peninjauan manual per domain untuk persetujuan SMTP keluar. Kirimkan email ke <support@forwardemail.net> atau buka [permintaan bantuan](https://forwardemail.net/help) untuk persetujuan. Proses ini biasanya membutuhkan waktu kurang dari 24 jam, dengan sebagian besar permintaan diproses dalam 1-2 jam. Dalam waktu dekat, kami berencana untuk mempercepat proses ini dengan menambahkan kontrol spam dan pemberitahuan. Proses ini memastikan email Anda masuk ke kotak masuk dan pesan Anda tidak ditandai sebagai spam.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-### Apa pengaturan konfigurasi server SMTP Anda {#what-are-your-smtp-server-configuration-settings}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+</div>
 
-Server kami adalah `smtp.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Mendukung IPv4 dan IPv6 dan tersedia melalui port `465` dan `2465` untuk SSL/TLS dan `587`, `2587`, `2525`, dan `25` untuk TLS (STARTTLS).
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+</div>
 
-| Protokol | Nama host | Pelabuhan | IPv4 | IPv6 |
-| :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
-| `SSL/TLS` **Diutamakan** | `smtp.forwardemail.net` | `465`, `2465` | :tanda_centang_putih: | :tanda_centang_putih: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :tanda_centang_putih: | :tanda_centang_putih: |
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-| Login | Contoh | Keterangan |
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+  <span>
+  </span>
+</div>
+
+### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+
+### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+
+Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+
+Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+
+**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+
+| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
+| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nama belakang | `user@example.com` | Alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>. |
-| Kata sandi | `************************` | Kata sandi yang dibuat khusus alias. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias |
 
-Agar dapat mengirim email keluar dengan SMTP, **pengguna SMTP** harus berupa alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> – dan **kata sandi SMTP** harus berupa kata sandi yang dibuat khusus untuk alias.
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
 
-Silakan lihat [Apakah Anda mendukung pengiriman email dengan SMTP?](#do-you-support-sending-email-with-smtp) untuk petunjuk langkah demi langkah.
+Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
-### Apa pengaturan konfigurasi server IMAP Anda {#what-are-your-imap-server-configuration-settings}
+### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
 
-Server kami adalah `imap.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Mendukung IPv4 dan IPv6 dan tersedia melalui port `993` dan `2993` untuk SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-| Protokol | Nama host | Pelabuhan | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Diutamakan** | `imap.forwardemail.net` | `993`, `2993` | :tanda_centang_putih: | :tanda_centang_putih: |
+| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Login | Contoh | Keterangan |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nama belakang | `user@example.com` | Alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>. |
-| Kata sandi | `************************` | Kata sandi yang dibuat khusus alias. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Agar dapat terhubung dengan IMAP, **Pengguna IMAP** harus berupa alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> – dan **Kata Sandi IMAP** harus berupa kata sandi yang dibuat khusus untuk alias.
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Silakan lihat [Apakah Anda mendukung penerimaan email dengan IMAP?](#do-you-support-receiving-email-with-imap) untuk petunjuk langkah demi langkah.
+Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
-### Apa pengaturan konfigurasi server POP3 Anda {#what-are-your-pop3-server-configuration-settings}
+### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
 
-Server kami adalah `pop3.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Mendukung IPv4 dan IPv6 dan tersedia melalui port `995` dan `2995` untuk SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-| Protokol | Nama host | Pelabuhan | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Diutamakan** | `pop3.forwardemail.net` | `995`, `2995` | :tanda_centang_putih: | :tanda_centang_putih: |
+| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
 
-| Login | Contoh | Keterangan |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nama belakang | `user@example.com` | Alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>. |
-| Kata sandi | `************************` | Kata sandi yang dibuat khusus alias. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Agar dapat terhubung dengan POP3, **pengguna POP3** harus berupa alamat email alias yang ada untuk domain di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> – dan **kata sandi IMAP** harus berupa kata sandi yang dibuat khusus untuk alias.
+In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Silakan lihat [Apakah Anda mendukung POP3?](#do-you-support-pop3) untuk petunjuk langkah demi langkah.
+Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
 
-### Konfigurasi Relai SMTP Postfix {#postfix-smtp-relay-configuration}
+## Security {#security}
 
-Anda dapat mengonfigurasi Postfix untuk meneruskan email melalui server SMTP Forward Email. Ini berguna untuk aplikasi server yang perlu mengirim email.
-
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Perkiraan Waktu Penyiapan:</strong>
-<span>Kurang dari 15 menit</span>
-</div>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Ini memerlukan paket berbayar dengan akses SMTP yang diaktifkan.
-</span>
-</div>
-
-#### Instalasi {#installation}
-
-1. Instal Postfix di server Anda:
-
-```bash
-# Ubuntu/Debian
-sudo apt update && sudo apt install postfix
-
-# CentOS/RHEL
-sudo yum install postfix
-
-# macOS
-brew install postfix
-```
-
-2. Selama instalasi, pilih "Situs Internet" saat diminta untuk jenis konfigurasi.
-
-#### Konfigurasi {#configuration}
-
-1. Edit file konfigurasi utama Postfix:
-
-```bash
-sudo nano /etc/postfix/main.cf
-```
-
-2. Tambahkan atau ubah pengaturan ini:
-
-```
-# SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-```
-
-3. Buat file kata sandi SASL:
-
-```bash
-sudo nano /etc/postfix/sasl_passwd
-```
-
-4. Tambahkan kredensial Email Terusan Anda:
-
-```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
-```
-
-5. Amankan dan hash file kata sandi:
-
-```bash
-sudo chmod 600 /etc/postfix/sasl_passwd
-sudo postmap /etc/postfix/sasl_passwd
-```
-
-6. Mulai ulang Postfix:
-
-```bash
-sudo systemctl restart postfix
-```
-
-#### Menguji {#testing}
-
-Uji konfigurasi Anda dengan mengirimkan email uji:
-
-```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
-```
-
-## Keamanan {#security}
-
-### Teknik Pengerasan Server Lanjutan {#advanced-server-hardening-techniques}
+### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Pelajari lebih lanjut tentang infrastruktur keamanan kami di [halaman Keamanan kami](/security).
+> Learn more about our security infrastructure on [our Security page](/security).
 
-Forward Email menerapkan berbagai teknik penguatan server untuk memastikan keamanan infrastruktur dan data Anda:
+Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Keamanan Jaringan**:
-* Firewall tabel IP dengan aturan ketat
-* Fail2ban untuk perlindungan brute force
-* Audit keamanan dan uji penetrasi rutin
-* Akses administratif khusus VPN
+1. **Network Security**:
+   * IP tables firewall with strict rules
+   * Fail2ban for brute force protection
+   * Regular security audits and penetration testing
+   * VPN-only administrative access
 
-2. **Pengerasan Sistem**:
-* Instalasi paket minimal
-* Pembaruan keamanan rutin
-* SELinux dalam mode penegakan
-* Akses root SSH dinonaktifkan
-* Hanya autentikasi berbasis kunci
+2. **System Hardening**:
+   * Minimal package installation
+   * Regular security updates
+   * SELinux in enforcing mode
+   * Disabled root SSH access
+   * Key-based authentication only
 
-3. **Keamanan Aplikasi**:
-* Header Kebijakan Keamanan Konten (CSP)
-* Keamanan Transportasi Ketat HTTPS (HSTS)
-* Header perlindungan XSS
-* Header opsi bingkai dan kebijakan rujukan
-* Audit dependensi rutin
+3. **Application Security**:
+   * Content Security Policy (CSP) headers
+   * HTTPS Strict Transport Security (HSTS)
+   * XSS protection headers
+   * Frame options and referrer policy headers
+   * Regular dependency audits
 
-4. **Perlindungan Data**:
-* Enkripsi disk penuh dengan LUKS
-* Manajemen kunci yang aman
-* Pencadangan rutin dengan enkripsi
-* Praktik minimisasi data
+4. **Data Protection**:
+   * Full disk encryption with LUKS
+   * Secure key management
+   * Regular backups with encryption
+   * Data minimization practices
 
-5. **Pemantauan dan Respons**:
-* Deteksi intrusi secara real-time
-* Pemindaian keamanan otomatis
-* Pencatatan dan analisis terpusat
-* Prosedur respons insiden
+5. **Monitoring and Response**:
+   * Real-time intrusion detection
+   * Automated security scanning
+   * Centralized logging and analysis
+   * Incident response procedures
 
 > \[!IMPORTANT]
-> Praktik keamanan kami terus diperbarui untuk mengatasi ancaman dan kerentanan yang muncul.
+> Our security practices are continuously updated to address emerging threats and vulnerabilities.
 
 > \[!TIP]
-> Untuk keamanan maksimal, kami sarankan menggunakan layanan kami dengan enkripsi ujung ke ujung melalui OpenPGP.
+> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
 
-### Apakah Anda memiliki sertifikasi SOC 2 atau ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
+### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email beroperasi pada infrastruktur yang disediakan oleh subprosesor bersertifikat untuk memastikan kepatuhan terhadap standar industri.
+> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
 
-Forward Email tidak secara langsung memiliki sertifikasi SOC 2 Tipe II atau ISO 27001. Namun, layanan ini beroperasi pada infrastruktur yang disediakan oleh subprosesor tersertifikasi:
+Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
 
-**DigitalOcean**: Bersertifikasi SOC 2 Tipe II dan SOC 3 Tipe II (diaudit oleh Schellman & Company LLC), bersertifikat ISO 27001 di beberapa pusat data. Detail: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
 
-* **Vultr**: Bersertifikat SOC 2+ (HIPAA), sertifikasi ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Detail: <https://www.vultr.com/legal/compliance/>
+* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
 
-**DataPacket**: Sesuai SOC 2 (hubungi DataPacket langsung untuk mendapatkan sertifikasi), penyedia infrastruktur kelas perusahaan (lokasi Denver). Detail: <https://www.datapacket.com/datacenters/denver>
+* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
 
-Forward Email mengikuti praktik terbaik industri untuk audit keamanan dan secara rutin bekerja sama dengan peneliti keamanan independen. Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### Apakah Anda menggunakan enkripsi TLS untuk penerusan email {#do-you-use-tls-encryption-for-email-forwarding}
+### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
 
-Ya. Forward Email secara ketat menerapkan TLS 1.2+ untuk semua koneksi (HTTPS, SMTP, IMAP, POP3) dan menerapkan MTA-STS untuk dukungan TLS yang lebih baik. Implementasinya meliputi:
+Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
 
-* Penerapan TLS 1.2+ untuk semua koneksi email
-* Pertukaran kunci ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) untuk kerahasiaan penerusan yang sempurna
-* Rangkaian sandi modern dengan pembaruan keamanan rutin
-* Dukungan HTTP/2 untuk peningkatan kinerja dan keamanan
-* HSTS (HTTP Strict Transport Security) dengan pra-pemuatan di peramban utama
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** untuk penerapan TLS yang ketat
+* TLS 1.2+ enforcement for all email connections
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
+* Modern cipher suites with regular security updates
+* HTTP/2 support for improved performance and security
+* HSTS (HTTP Strict Transport Security) with preloading in major browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
 
-Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-**Implementasi MTA-STS**: Forward Email menerapkan penerapan MTA-STS yang ketat dalam basis kode. Ketika terjadi kesalahan TLS dan MTA-STS diterapkan, sistem akan menampilkan 421 kode status SMTP untuk memastikan email dicoba lagi nanti, alih-alih terkirim secara tidak aman. Detail implementasi:
+**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
 
-* Deteksi kesalahan TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* Penerapan MTA-STS di helper kirim email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Validasi pihak ketiga: <https://www.hardenize.com/report/forwardemail.net/1750312779> menunjukkan peringkat "Baik" untuk semua TLS dan tindakan keamanan transportasi.
+Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
 
-### Apakah Anda menyimpan header autentikasi email {#do-you-preserve-email-authentication-headers}
+### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
 
-Ya. Forward Email mengimplementasikan dan mempertahankan header autentikasi email secara komprehensif:
+Yes. Forward Email comprehensively implements and preserves email authentication headers:
 
-* **SPF (Sender Policy Framework)**: Diimplementasikan dan dipertahankan dengan baik
-* **DKIM (DomainKeys Identified Mail)**: Dukungan penuh dengan manajemen kunci yang tepat
-* **DMARC**: Penegakan kebijakan untuk email yang gagal validasi SPF atau DKIM
-* **ARC**: Meskipun tidak dijelaskan secara rinci, skor kepatuhan layanan yang sempurna menunjukkan penanganan header autentikasi yang komprehensif
+* **SPF (Sender Policy Framework)**: Properly implemented and preserved
+* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
+* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
 
-Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Validasi: Tes Email Internet.nl menunjukkan skor 100/100, khususnya untuk implementasi "SPF, DKIM, dan DMARC". Penilaian Hardenize mengonfirmasi peringkat "Baik" untuk SPF dan DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### Apakah Anda mempertahankan header email asli dan mencegah spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email menerapkan perlindungan anti-spoofing yang canggih untuk mencegah penyalahgunaan email.
+> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
 
-Forward Email mempertahankan header email asli sambil menerapkan perlindungan anti-spoofing yang komprehensif melalui basis kode MX:
+Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
 
-* **Pelestarian Header**: Header autentikasi asli dipertahankan selama penerusan
-* **Anti-Spoofing**: Penegakan kebijakan DMARC mencegah spoofing header dengan menolak email yang gagal validasi SPF atau DKIM
-* **Pencegahan Injeksi Header**: Validasi dan sanitasi input menggunakan pustaka striptags
-* **Perlindungan Lanjutan**: Deteksi phishing canggih dengan deteksi spoofing, pencegahan peniruan identitas, dan sistem notifikasi pengguna
+* **Header Preservation**: Original authentication headers are maintained during forwarding
+* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
+* **Header Injection Prevention**: Input validation and sanitization using striptags library
+* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
 
-**Detail Implementasi MX**: Logika pemrosesan email inti ditangani oleh basis kode server MX, khususnya:
+**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
 
-* Penanganan data MX utama: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Pemfilteran email sewenang-wenang (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-Pembantu `isArbitrary` menerapkan aturan anti-spoofing yang canggih termasuk deteksi peniruan domain, frasa yang diblokir, dan berbagai pola phishing.
+The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
 
-Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
-### Bagaimana Anda melindungi diri dari spam dan penyalahgunaan {#how-do-you-protect-against-spam-and-abuse}
+### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
 
-Forward Email menerapkan perlindungan multi-lapis yang komprehensif:
+Forward Email implements comprehensive multi-layer protection:
 
-* **Pembatasan Kecepatan**: Diterapkan pada upaya autentikasi, titik akhir API, dan koneksi SMTP
-* **Isolasi Sumber Daya**: Antar pengguna untuk mencegah dampak dari pengguna bervolume tinggi
-* **Perlindungan DDoS**: Perlindungan berlapis melalui sistem Shield DataPacket dan Cloudflare
-* **Penskalaan Otomatis**: Penyesuaian sumber daya dinamis berdasarkan permintaan
-* **Pencegahan Penyalahgunaan**: Pemeriksaan pencegahan penyalahgunaan khusus pengguna dan pemblokiran berbasis hash untuk konten berbahaya
-* **Autentikasi Email**: Protokol SPF, DKIM, DMARC dengan deteksi phishing tingkat lanjut
+* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
+* **Resource Isolation**: Between users to prevent impact from high-volume users
+* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
+* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
 
-Sumber:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (Detail perlindungan DDoS)
+* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Apakah Anda menyimpan konten email di disk {#do-you-store-email-content-on-disk}
+### Do you store email content on disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email menggunakan arsitektur zero-knowledge yang mencegah konten email ditulis ke disk.
+> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
 
-* **Arsitektur Tanpa Pengetahuan**: Kotak surat SQLite yang dienkripsi secara individual berarti Forward Email tidak dapat mengakses konten email.
-* **Pemrosesan Dalam Memori**: Pemrosesan email sepenuhnya terjadi di memori, sehingga menghindari penyimpanan disk.
-* **Tanpa Pencatatan Konten**: "Kami tidak mencatat atau menyimpan konten email atau metadata ke disk."
-* **Enkripsi Sandbox**: Kunci enkripsi tidak pernah disimpan di disk dalam bentuk teks biasa.
+* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
+* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
+* **No Content Logging**: "We do not log or store email content or metadata to disk"
+* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
 
-**Bukti Basis Kode MX**: Server MX memproses email sepenuhnya di dalam memori tanpa menulis konten ke disk. Handler pemrosesan email utama mendemonstrasikan pendekatan di dalam memori ini: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sumber:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstrak)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Detail tanpa pengetahuan)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Enkripsi sandbox)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
 
-### Bisakah konten email terekspos saat sistem mengalami crash {#can-email-content-be-exposed-during-system-crashes}
+### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
 
-Tidak. Forward Email menerapkan perlindungan komprehensif terhadap paparan data terkait kerusakan:
+No. Forward Email implements comprehensive safeguards against crash-related data exposure:
 
-**Core Dumps Dinonaktifkan**: Mencegah pemaparan memori saat terjadi crash
-* **Swap Memory Dinonaktifkan**: Dinonaktifkan sepenuhnya untuk mencegah ekstraksi data sensitif dari file swap
-* **Arsitektur Dalam Memori**: Konten email hanya ada di memori volatil selama pemrosesan
-* **Perlindungan Kunci Enkripsi**: Kunci tidak pernah disimpan di disk dalam bentuk teks biasa
-* **Keamanan Fisik**: Disk terenkripsi LUKS v2 mencegah akses fisik ke data
-* **Penyimpanan USB Dinonaktifkan**: Mencegah ekstraksi data tanpa izin
+* **Core Dumps Disabled**: Prevents memory exposure during crashes
+* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
+* **In-Memory Architecture**: Email content exists only in volatile memory during processing
+* **Encryption Key Protection**: Keys are never stored on disk in plaintext
+* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
+* **USB Storage Disabled**: Prevents unauthorized data extraction
 
-**Penanganan Kesalahan untuk Masalah Sistem**: Penerusan Email menggunakan fungsi pembantu `isCodeBug` dan `isTimeoutError` untuk memastikan bahwa jika terjadi masalah konektivitas basis data, masalah jaringan DNS/daftar blokir, atau masalah konektivitas hulu, sistem akan mengembalikan 421 kode status SMTP untuk memastikan email akan dicoba lagi nanti daripada hilang atau terekspos.
+**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
 
-Detail implementasi:
+Implementation details:
 
-* Klasifikasi kesalahan: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Penanganan kesalahan batas waktu dalam pemrosesan MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Siapa yang memiliki akses ke infrastruktur email Anda {#who-has-access-to-your-email-infrastructure}
+### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
 
-Forward Email menerapkan kontrol akses komprehensif untuk akses tim teknik minimal 2-3 orang dengan persyaratan 2FA yang ketat:
+Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
 
-* **Kontrol Akses Berbasis Peran**: Untuk akun tim dengan izin berbasis sumber daya
-* **Prinsip Hak Istimewa Terkecil**: Diterapkan di seluruh sistem
-* **Pemisahan Tugas**: Antar peran operasional
-* **Manajemen Pengguna**: Pisahkan pengguna deploy dan devops dengan izin berbeda
-* **Login Root Dinonaktifkan**: Memaksa akses melalui akun yang diautentikasi dengan benar
-* **2FA Ketat**: Tidak ada 2FA berbasis SMS karena risiko serangan MiTM - hanya token berbasis aplikasi atau perangkat keras
-* **Pencatatan Audit Komprehensif**: Dengan penyuntingan data sensitif
-* **Deteksi Anomali Otomatis**: Untuk pola akses yang tidak biasa
-* **Tinjauan Keamanan Berkala**: Dari log akses
-* **Pencegahan Serangan Evil Maid**: Penyimpanan USB dinonaktifkan dan tindakan keamanan fisik lainnya
+* **Role-Based Access Control**: For team accounts with resource-based permissions
+* **Least Privilege Principle**: Applied throughout all systems
+* **Segregation of Duties**: Between operational roles
+* **User Management**: Separate deploy and devops users with distinct permissions
+* **Root Login Disabled**: Forces access through properly authenticated accounts
+* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
+* **Comprehensive Audit Logging**: With sensitive data redaction
+* **Automated Anomaly Detection**: For unusual access patterns
+* **Regular Security Reviews**: Of access logs
+* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
 
-Sumber:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Kontrol Otorisasi)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Keamanan Jaringan)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Pencegahan Serangan Pembantu Jahat)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
 
-### Penyedia infrastruktur apa yang Anda gunakan {#what-infrastructure-providers-do-you-use}
+### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email menggunakan beberapa subprosesor infrastruktur dengan sertifikasi kepatuhan yang komprehensif.
+> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
 
-Detail lengkap tersedia di halaman kepatuhan GDPR kami: <https://forwardemail.net/gdpr>
+Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
 
-**Subprosesor Infrastruktur Utama:**
+**Primary Infrastructure Subprocessors:**
 
-| Penyedia | Kerangka Kerja Privasi Data Tersertifikasi | Halaman Kepatuhan GDPR |
+| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
 | ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Ya | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **Paket Data** | ❌ Tidak | <https://www.datapacket.com/kebijakan-privasi> |
-| **Samudra Digital** | ❌ Tidak | <https://www.digitalocean.com/legal/gdpr> |
-| **Vultr** | ❌ Tidak | <https://www.vultr.com/legal/eea-gdpr-privasi/> |
+| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
+| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
+| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
+| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 
-**Sertifikasi Terperinci:**
+**Detailed Certifications:**
 
-**Samudra Digital**
+**DigitalOcean**
 
-* SOC 2 Tipe II & SOC 3 Tipe II (diaudit oleh Schellman & Company LLC)
-* Tersertifikasi ISO 27001 di beberapa pusat data
-* Sesuai PCI-DSS
-* Tersertifikasi CSA STAR Level 1
-* Tersertifikasi APEC CBPR PRP
-* Detail: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
+* ISO 27001 certified at multiple data centers
+* PCI-DSS compliant
+* CSA STAR Level 1 certified
+* APEC CBPR PRP certified
+* Details: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* Bersertifikat SOC 2+ (HIPAA)
-* Sesuai dengan PCI Merchant
-* Bersertifikat CSA STAR Level 1
+* SOC 2+ (HIPAA) certified
+* PCI Merchant compliant
+* CSA STAR Level 1 certified
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Detail: <https://www.vultr.com/legal/compliance/>
+* Details: <https://www.vultr.com/legal/compliance/>
 
-**Paket Data**
+**DataPacket**
 
-* Sesuai SOC 2 (hubungi DataPacket langsung untuk mendapatkan sertifikasi)
-* Infrastruktur kelas perusahaan (lokasi Denver)
-* Perlindungan DDoS melalui tumpukan keamanan siber Shield
-* Dukungan teknis 24/7
-* Jaringan global di 58 pusat data
-* Detail: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 compliant (contact DataPacket directly to obtain certification)
+* Enterprise-grade infrastructure (Denver location)
+* DDoS protection through Shield cybersecurity stack
+* 24/7 technical support
+* Global network across 58 data centers
+* Details: <https://www.datapacket.com/datacenters/denver>
 
-**Pemroses Pembayaran:**
+**Payment Processors:**
 
-* **Stripe**: Tersertifikasi Kerangka Kerja Privasi Data - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Tidak tersertifikasi DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Apakah Anda menawarkan Perjanjian Pemrosesan Data (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Ya, Forward Email menawarkan Perjanjian Pemrosesan Data (DPA) komprehensif yang dapat ditandatangani bersama perjanjian perusahaan kami. Salinan DPA kami tersedia di: <https://forwardemail.net/dpa>
+Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
 
-**Rincian DPA:**
+**DPA Details:**
 
-* Mencakup kepatuhan GDPR dan kerangka kerja Perisai Privasi UE-AS/Swiss-AS
-* Diterima secara otomatis saat menyetujui Persyaratan Layanan kami
-* Tidak diperlukan tanda tangan terpisah untuk DPA standar
-* Pengaturan DPA khusus tersedia melalui Lisensi Perusahaan
+* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
+* Automatically accepted when agreeing to our Terms of Service
+* No separate signature required for standard DPA
+* Custom DPA arrangements available through Enterprise License
 
-**Kerangka Kerja Kepatuhan GDPR:**
-DPA kami merinci kepatuhan terhadap GDPR serta persyaratan transfer data internasional. Informasi lengkap tersedia di: <https://forwardemail.net/gdpr>
+**GDPR Compliance Framework:**
+Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
 
-Untuk pelanggan perusahaan yang memerlukan ketentuan DPA khusus atau pengaturan kontraktual tertentu, hal ini dapat diatasi melalui program **Lisensi Perusahaan ($250/bulan)** kami.
+For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
 
-### Bagaimana Anda menangani notifikasi pelanggaran data {#how-do-you-handle-data-breach-notifications}
+### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Arsitektur zero-knowledge Forward Email secara signifikan membatasi dampak pelanggaran.
+> Forward Email's zero-knowledge architecture significantly limits breach impact.
 
-* **Paparan Data Terbatas**: Tidak dapat mengakses konten email terenkripsi karena arsitektur zero-knowledge
-* **Pengumpulan Data Minimal**: Hanya informasi pelanggan dasar dan log IP terbatas untuk keamanan
-* **Kerangka Kerja Subprosesor**: DigitalOcean dan Vultr menerapkan prosedur respons insiden yang sesuai dengan GDPR
+* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
+* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
+* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
 
-**Informasi Perwakilan GDPR:**
-Forward Email telah menunjuk perwakilan GDPR sesuai dengan Pasal 27:
+**GDPR Representative Information:**
+Forward Email has appointed GDPR representatives in accordance with Article 27:
 
-**Perwakilan Uni Eropa:**
+**EU Representative:**
 Osano International Compliance Services Limited
-UP: LFHC
+ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**Perwakilan Inggris:**
+**UK Representative:**
 Osano UK Compliance LTD
-UP: LFHC
+ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-Untuk pelanggan perusahaan yang memerlukan SLA pemberitahuan pelanggaran tertentu, hal ini harus didiskusikan sebagai bagian dari perjanjian **Lisensi Perusahaan**.
+For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
 
-Sumber:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Apakah Anda menawarkan lingkungan pengujian {#do-you-offer-a-test-environment}
+### Do you offer a test environment {#do-you-offer-a-test-environment}
 
-Dokumentasi teknis Forward Email tidak secara eksplisit menjelaskan mode sandbox khusus. Namun, beberapa pendekatan pengujian yang mungkin meliputi:
+Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
 
-**Opsi Hosting Mandiri**: Kemampuan hosting mandiri yang komprehensif untuk menciptakan lingkungan pengujian
-* **Antarmuka API**: Potensi untuk pengujian konfigurasi secara terprogram
-* **Sumber Terbuka**: Kode sumber terbuka 100% memungkinkan pelanggan untuk memeriksa logika penerusan
-* **Beberapa Domain**: Dukungan untuk beberapa domain dapat memungkinkan pembuatan domain pengujian
+* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
+* **API Interface**: Potential for programmatic testing of configurations
+* **Open Source**: 100% open-source code allows customers to examine forwarding logic
+* **Multiple Domains**: Support for multiple domains could enable test domain creation
 
-Untuk pelanggan perusahaan yang memerlukan kemampuan sandbox formal, hal ini harus didiskusikan sebagai bagian dari pengaturan **Lisensi Perusahaan**.
+For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
 
-Sumber: <https://github.com/forwardemail/forwardemail.net> (Detail lingkungan pengembangan)
+Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
 
-### Apakah Anda menyediakan alat pemantauan dan peringatan {#do-you-provide-monitoring-and-alerting-tools}
+### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
 
-Forward Email menyediakan pemantauan waktu nyata dengan beberapa batasan:
+Forward Email provides real-time monitoring with some limitations:
 
-**Tersedia:**
+**Available:**
 
-* **Pemantauan Pengiriman Real-Time**: Metrik kinerja yang dapat dilihat publik untuk penyedia email utama
-* **Pemberitahuan Otomatis**: Tim teknisi akan diberi tahu ketika waktu pengiriman melebihi 10 detik
-* **Pemantauan Transparan**: Sistem pemantauan 100% sumber terbuka
-* **Pemantauan Infrastruktur**: Deteksi anomali otomatis dan pencatatan audit komprehensif
+* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
+* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
+* **Transparent Monitoring**: 100% open-source monitoring systems
+* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
 
-**Keterbatasan:**
+**Limitations:**
 
-* Webhook yang menghadap pelanggan atau pemberitahuan status pengiriman berbasis API tidak didokumentasikan secara eksplisit
+* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
 
-Untuk pelanggan perusahaan yang memerlukan webhook status pengiriman terperinci atau integrasi pemantauan khusus, kemampuan ini mungkin tersedia melalui pengaturan **Lisensi Perusahaan**.
+For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
 
-Sumber:
+Sources:
 
-* <https://forwardemail.net> (Tampilan pemantauan waktu nyata)
-* <https://github.com/forwardemail/forwardemail.net> (Implementasi pemantauan)
+* <https://forwardemail.net> (Real-time monitoring display)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
 
-### Bagaimana Anda memastikan ketersediaan tinggi {#how-do-you-ensure-high-availability}
+### How do you ensure high availability {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email menerapkan redundansi komprehensif di berbagai penyedia infrastruktur.
+> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
 
-* **Infrastruktur Terdistribusi**: Beberapa penyedia (DigitalOcean, Vultr, DataPacket) di seluruh wilayah geografis
-* **Penyeimbangan Beban Geografis**: Penyeimbangan beban berbasis lokasi geografis Cloudflare dengan failover otomatis
-* **Penskalaan Otomatis**: Penyesuaian sumber daya dinamis berdasarkan permintaan
-* **Perlindungan DDoS Multi-Lapisan**: Melalui sistem Shield DataPacket dan Cloudflare
-* **Redundansi Server**: Beberapa server per wilayah dengan failover otomatis
-* **Replikasi Basis Data**: Sinkronisasi data real-time di berbagai lokasi
-* **Pemantauan dan Pemberitahuan**: Pemantauan 24/7 dengan respons insiden otomatis
+* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
+* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
+* **Server Redundancy**: Multiple servers per region with automatic failover
+* **Database Replication**: Real-time data synchronization across multiple locations
+* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
 
-**Komitmen Waktu Aktif**: Ketersediaan layanan 99,9%+ dengan pemantauan transparan tersedia di <https://forwardemail.net>
+**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
 
-Sumber:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Apakah Anda mematuhi Bagian 889 dari Undang-Undang Otorisasi Pertahanan Nasional (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email sepenuhnya mematuhi Bagian 889 melalui pemilihan mitra infrastruktur yang cermat.
+> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
 
-Ya, Forward Email **mematuhi Pasal 889**. Pasal 889 Undang-Undang Otorisasi Pertahanan Nasional (NDAA) melarang instansi pemerintah menggunakan atau berkontrak dengan entitas yang menggunakan peralatan telekomunikasi dan pengawasan video dari perusahaan tertentu (Huawei, ZTE, Hikvision, Dahua, dan Hytera).
+Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
 
-**Bagaimana Email Terusan Mencapai Kepatuhan Bagian 889:**
+**How Forward Email Achieves Section 889 Compliance:**
 
-Forward Email bergantung secara eksklusif pada dua penyedia infrastruktur utama, yang keduanya tidak menggunakan peralatan yang dilarang Bagian 889:
+Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
 
-1. **Cloudflare**: Mitra utama kami untuk layanan jaringan dan keamanan email
-2. **DataPacket**: Penyedia utama kami untuk infrastruktur server (hanya menggunakan peralatan Arista Networks dan Cisco)
-3. **Penyedia Cadangan**: Penyedia cadangan kami, Digital Ocean dan Vultr, juga telah dikonfirmasi secara tertulis bahwa mereka mematuhi Bagian 889.
+1. **Cloudflare**: Our primary partner for network services and email security
+2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
+3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
 
-**Komitmen Cloudflare**: Cloudflare secara tegas menyatakan dalam Kode Etik Pihak Ketiga mereka bahwa mereka tidak menggunakan peralatan telekomunikasi, produk pengawasan video, atau layanan dari entitas mana pun yang dilarang Bagian 889.
+**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
 
-**Kasus Penggunaan Pemerintah**: Kepatuhan Bagian 889 kami divalidasi ketika **Akademi Angkatan Laut AS** memilih Forward Email untuk kebutuhan penerusan email aman mereka, yang memerlukan dokumentasi standar kepatuhan federal kami.
+**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-Untuk detail lengkap tentang kerangka kepatuhan pemerintah kami, termasuk peraturan federal yang lebih luas, baca studi kasus komprehensif kami: [Layanan Email Pemerintah Federal Sesuai Bagian 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## Sistem dan Detail Teknis {#system-and-technical-details}
+## System and Technical Details {#system-and-technical-details}
 
-### Apakah Anda menyimpan email dan isinya {#do-you-store-emails-and-their-contents}
+### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
 
-Tidak, kami tidak menulis ke disk atau menyimpan log – dengan [pengecualian kesalahan](#do-you-store-error-logs) dan [SMTP keluar](#do-you-support-sending-email-with-smtp) (lihat [Kebijakan Privasi](/privacy) kami).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### Bagaimana cara kerja sistem penerusan email Anda {#how-does-your-email-forwarding-system-work}
+### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
 
-Email bergantung pada [Protokol SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Protokol ini terdiri dari perintah-perintah yang dikirim ke server (umumnya berjalan di port 25). Ada koneksi awal, lalu pengirim menunjukkan asal email ("MAIL FROM"), diikuti dengan tujuan ("RCPT TO"), dan terakhir header dan isi email itu sendiri ("DATA"). Alur sistem penerusan email kami dijelaskan relatif terhadap setiap perintah protokol SMTP di bawah ini:
+Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Koneksi Awal (tanpa nama perintah, misalnya `telnet example.com 25`) - Ini adalah koneksi awal. Kami memeriksa pengirim yang tidak ada di [daftar putih](#do-you-have-an-allowlist) dengan [daftar penolakan](#do-you-have-a-denylist). Terakhir, jika pengirim tidak ada dalam daftar putih kami, kami akan memeriksa apakah mereka ada di [masuk daftar abu-abu](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
-* `HELO` - Ini menunjukkan salam untuk mengidentifikasi FQDN, alamat IP, atau nama pengelola email pengirim. Nilai ini dapat dipalsukan, jadi kami tidak mengandalkan data ini dan sebagai gantinya menggunakan pencarian nama host terbalik dari alamat IP koneksi.
+* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - Ini menunjukkan alamat asal surat dari email. Jika ada nilai yang dimasukkan, alamat tersebut harus merupakan alamat email RFC 5322 yang valid. Nilai kosong diperbolehkan. Kami menggunakan [periksa hamburan balik](#how-do-you-protect-against-backscatter) di sini, dan kami juga memeriksa MAIL FROM dengan [daftar penolakan](#do-you-have-a-denylist). Terakhir, kami memeriksa pengirim yang tidak ada dalam daftar yang diizinkan untuk pembatasan tarif (lihat bagian [Pembatasan Kecepatan](#do-you-have-rate-limiting) dan [daftar putih](#do-you-have-an-allowlist) untuk informasi selengkapnya).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - Ini menunjukkan penerima email. Alamat email ini harus valid sesuai RFC 5322. Kami hanya mengizinkan maksimal 50 penerima amplop per pesan (ini berbeda dengan header "Kepada" pada email). Kami juga memeriksa alamat [Skema Penulisan Ulang Pengirim](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") yang valid di sini untuk mencegah pemalsuan nama domain SRS kami.
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
 
-* `DATA` - Ini adalah bagian inti dari layanan kami yang memproses email. Lihat bagian [Bagaimana Anda memproses email untuk diteruskan?](#how-do-you-process-an-email-for-forwarding) di bawah untuk informasi lebih lanjut.
+* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
-### Bagaimana Anda memproses email untuk diteruskan {#how-do-you-process-an-email-for-forwarding}
+### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
 
-Bagian ini menguraikan proses kami yang terkait dengan perintah protokol SMTP `DATA` di bagian [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work) di atas – beginilah cara kami memproses tajuk, isi, keamanan email, menentukan ke mana email perlu dikirimkan, dan cara kami menangani koneksi.
+This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
 
-1. Jika pesan melebihi ukuran maksimum 50mb, maka akan ditolak dengan kode kesalahan 552.
+1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
 
-2. Jika pesan tidak berisi header "Dari", atau jika salah satu nilai dalam header "Dari" bukan alamat email RFC 5322 yang valid, maka pesan akan ditolak dengan kode kesalahan 550.
+2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
 
-3. Jika pesan memiliki lebih dari 25 header "Diterima", maka pesan tersebut dipastikan terjebak dalam loop pengalihan, dan ditolak dengan kode kesalahan 550.
+3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-4. Dengan menggunakan sidik jari email (lihat bagian [Sidik jari](#how-do-you-determine-an-email-fingerprint)), kami akan memeriksa apakah pesan tersebut telah dicoba diulang selama lebih dari 5 hari (yang cocok dengan [perilaku postfix default](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), dan jika ya, maka akan ditolak dengan kode kesalahan 550.
+4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
 
-5. Kami menyimpan hasil pemindaian email menggunakan [Pemindai Spam](https://spamscanner.net) di memori.
+5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
-6. Jika terdapat hasil acak dari Spam Scanner, maka Spam Scanner akan ditolak dengan kode kesalahan 554. Hasil acak ini hanya mencakup pengujian GTUBE pada saat penulisan ini. Lihat <https://spamassassin.apache.org/gtube/> untuk informasi lebih lanjut.
+6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
 
-7. Kami akan menambahkan header berikut ke pesan untuk tujuan debugging dan pencegahan penyalahgunaan:
+7. We will add the following headers to the message for debugging and abuse prevention purposes:
 
-* `Received` - kami menambahkan header Received standar ini dengan IP dan host asal, jenis transmisi, informasi koneksi TLS, tanggal/waktu, dan penerima.
-* `X-Original-To` - penerima asli pesan:
-* Ini berguna untuk menentukan ke mana email awalnya dikirim (selain header "Received").
-* Ini ditambahkan per penerima pada saat penerusan IMAP dan/atau tersamar (untuk melindungi privasi).
-* `X-Forward-Email-Website` - berisi tautan ke situs web kami <https://forwardemail.net>
-* `X-Forward-Email-Version` - versi [SemVer](https://semver.org/) saat ini dari `package.json` basis kode kami.
-* `X-Forward-Email-Session-ID` - nilai ID sesi yang digunakan untuk tujuan debug (hanya berlaku di lingkungan non-produksi). * `X-Forward-Email-Sender` - daftar yang dipisahkan koma berisi alamat MAIL FROM amplop asli (jika tidak kosong), FQDN klien PTR terbalik (jika ada), dan alamat IP pengirim.
-* `X-Forward-Email-ID` - ini hanya berlaku untuk SMTP keluar dan berkorelasi dengan ID email yang tersimpan di Akun Saya → Email
-* `X-Original-To`0 - dengan nilai `X-Original-To`1.
-* `X-Original-To`2 - dengan nilai `X-Original-To`3.
-* `X-Original-To`4 - dengan nilai `X-Original-To`5.
+* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
+   * `X-Original-To` - the original recipient for the message:
+     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
+     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
+   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
+   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
+   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
+   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
 
-8. Kemudian kami memeriksa pesan untuk [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), dan [DMARC](https://en.wikipedia.org/wiki/DMARC).
+8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Jika pesan gagal DMARC dan domain memiliki kebijakan penolakan (misalnya `p=reject` [ada dalam kebijakan DMARC](https://wikipedia.org/wiki/DMARC)), maka pesan akan ditolak dengan kode galat 550. Biasanya, kebijakan DMARC untuk domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> subdomain `_dmarc` (misalnya `dig _dmarc.example.com txt`).
-* Jika pesan gagal SPF dan domain memiliki kebijakan gagal keras (misalnya `-all` ada dalam kebijakan SPF, bukan `~all` atau tidak ada kebijakan sama sekali), maka pesan akan ditolak dengan kode galat 550. Biasanya, kebijakan SPF untuk domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> untuk domain root (misalnya `dig example.com txt`). Lihat bagian ini untuk informasi lebih lanjut tentang [mengirim email seperti dengan Gmail](#can-i-send-mail-as-in-gmail-with-this) mengenai SPF.
+* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
-9. Sekarang, kami memproses penerima pesan yang dikumpulkan dari perintah `RCPT TO` di bagian [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work) di atas. Untuk setiap penerima, kami melakukan operasi berikut:
+9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
-* Kami mencari data <strong class="notranslate">TXT</strong> dari nama domain (bagian setelah simbol `@`, misalnya `example.com` jika alamat emailnya `test@example.com`). Misalnya, jika domainnya `example.com`, kami melakukan pencarian DNS seperti `dig example.com txt`.
-* Kami mengurai semua data <strong class="notranslate">TXT</strong> yang dimulai dengan `forward-email=` (paket gratis) atau `forward-email-site-verification=` (paket berbayar). Perlu diketahui bahwa kami mengurai keduanya untuk memproses email saat pengguna meningkatkan atau menurunkan paket.
-* Dari data <strong class="notranslate">TXT</strong> yang telah diurai ini, kami mengulanginya untuk mengekstrak konfigurasi penerusan (seperti yang dijelaskan di bagian [Bagaimana cara memulai dan mengatur penerusan email?](#how-do-i-get-started-and-set-up-email-forwarding) di atas). Perlu diketahui bahwa kami hanya mendukung satu nilai `forward-email-site-verification=`, dan jika lebih dari satu nilai diberikan, maka akan terjadi kesalahan 550 dan pengirim akan menerima pantulan untuk penerima ini.
-* Secara rekursif, kami mengulangi konfigurasi penerusan yang diekstrak untuk menentukan penerusan global, penerusan berbasis regex, dan semua konfigurasi penerusan lain yang didukung – yang sekarang dikenal sebagai "Alamat Penerusan" kami.
-* Untuk setiap Alamat Penerusan, kami mendukung satu pencarian rekursif (yang akan memulai rangkaian operasi ini pada alamat yang diberikan). Jika kecocokan rekursif ditemukan, maka hasil induk akan dihapus dari Alamat Penerusan, dan turunannya akan ditambahkan.
-* Alamat Penerusan diurai untuk keunikan (karena kami tidak ingin mengirim duplikat ke satu alamat atau memunculkan koneksi klien SMTP yang tidak perlu). * Untuk setiap Alamat Penerusan, kami mencari nama domainnya di titik akhir API `/v1/max-forwarded-addresses` (untuk menentukan berapa banyak alamat yang diizinkan untuk meneruskan email per alias oleh domain tersebut, misalnya 10 secara default – lihat bagian `example.com`0). Jika batas ini terlampaui, maka akan terjadi kesalahan 550 dan pengirim akan menerima pesan pantulan untuk penerima ini.
-* Kami mencari pengaturan penerima asli di titik akhir API `example.com`1, yang mendukung pencarian untuk pengguna berbayar (dengan fallback untuk pengguna gratis). Ini mengembalikan objek konfigurasi untuk pengaturan lanjutan untuk `example.com`2 (Angka, misalnya `example.com`3), `example.com`4 (Boolean), `example.com`5 (Boolean), `example.com`6 (Boolean), dan `example.com`7 (Boolean).
-* Berdasarkan pengaturan ini, kami kemudian memeriksa hasil Pemindai Spam dan jika terjadi kesalahan, pesan akan ditolak dengan kode kesalahan 554 (misalnya, jika `example.com`8 diaktifkan, kami akan memeriksa hasil Pemindai Spam untuk virus). Perlu diketahui bahwa semua pengguna paket gratis akan diikutsertakan dalam pemeriksaan konten dewasa, phishing, file yang dapat dieksekusi, dan virus. Secara default, semua pengguna paket berbayar juga diikutsertakan, tetapi konfigurasi ini dapat diubah di halaman Pengaturan untuk domain di dasbor Teruskan Email).
+* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
+   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
+   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
+   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
+   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
+   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
+   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 
-10. Untuk setiap Alamat Penerusan penerima yang diproses, kami kemudian melakukan operasi berikut:
+10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-* Alamat diperiksa berdasarkan [daftar penolakan](#do-you-have-a-denylist) kami, dan jika tercantum, kode kesalahan 421 akan muncul (mengindikasikan pengirim untuk mencoba lagi nanti).
-* Jika alamatnya adalah webhook, maka kami menetapkan nilai Boolean untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan webhook serupa untuk membuat satu permintaan POST vs. beberapa untuk pengiriman).
-* Jika alamatnya adalah alamat email, maka kami mengurai host untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan host serupa untuk membuat satu koneksi vs. beberapa koneksi individual untuk pengiriman).
+* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
+    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
+    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
-11. Jika tidak ada penerima dan tidak ada pantulan, maka kami akan merespons dengan kesalahan 550 "Penerima tidak valid".
+11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-12. Jika ada penerima, kami akan mengulanginya (dikelompokkan oleh host yang sama) dan mengirimkan email. Lihat bagian [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues) di bawah untuk informasi lebih lanjut.
+12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
-* Jika terjadi kesalahan saat mengirim email, kami akan menyimpannya di memori untuk diproses nanti.
-* Kami akan mengambil kode kesalahan terendah (jika ada) dari pengiriman email – dan menggunakannya sebagai kode respons untuk perintah `DATA`. Ini berarti email yang tidak terkirim biasanya akan dicoba lagi oleh pengirim asli, namun email yang sudah terkirim tidak akan dikirim ulang saat pesan dikirim berikutnya (karena kami menggunakan [Sidik jari](#how-do-you-determine-an-email-fingerprint)).
-* Jika tidak terjadi kesalahan, kami akan mengirimkan kode status respons SMTP 250 yang berhasil.
-* Pentalan ditentukan sebagai setiap upaya pengiriman yang menghasilkan kode status >= 500 (kegagalan permanen).
+* If any errors occur while sending emails, then we will store them in-memory for later processing.
+    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * If no errors occurred, then we will send a 250 successful SMTP response status code.
+    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-13. Jika tidak terjadi pentalan (kegagalan permanen), maka kami akan mengembalikan kode status respons SMTP dengan kode kesalahan terendah dari kegagalan tidak permanen (atau kode status berhasil 250 jika tidak ada).
+13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
 
-14. Jika terjadi pantulan, kami akan mengirimkan email pantulan di latar belakang setelah mengembalikan kode kesalahan terendah kepada pengirim. Namun, jika kode kesalahan terendah >= 500, kami tidak akan mengirimkan email pantulan apa pun. Hal ini karena jika terjadi, pengirim akan menerima email pantulan ganda (misalnya, satu dari MTA keluar mereka, seperti Gmail – dan juga satu dari kami). Lihat bagian [Bagaimana Anda melindungi dari hamburan balik?](#how-do-you-protect-against-backscatter) di bawah untuk informasi lebih lanjut.
+14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
-### Bagaimana Anda menangani masalah pengiriman email {#how-do-you-handle-email-delivery-issues}
+### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
 
-Perlu diketahui bahwa kami akan melakukan penulisan ulang "Friendly-From" pada email jika dan hanya jika kebijakan DMARC pengirim tidak lolos DAN tidak ada tanda tangan DKIM yang selaras dengan header "From". Ini berarti kami akan mengubah header "From" pada pesan, menetapkan "X-Original-From", dan juga menetapkan "Reply-To" jika belum ditetapkan. Kami juga akan menyegel ulang segel ARC pada pesan setelah mengubah header ini.
+Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
 
-Kami juga menggunakan penguraian cerdas pesan kesalahan di setiap tingkat tumpukan kami – dalam kode kami, permintaan DNS, internal Node.js, permintaan HTTP (misalnya 408, 413, dan 429 dipetakan ke kode respons SMTP 421 jika penerima adalah webhook), dan respons server email (misalnya respons dengan "defer" atau "slowdown" akan dicoba lagi sebagai kesalahan 421).
+We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 
-Logika kami anti-dummy dan akan mencoba lagi untuk kesalahan SSL/TLS, masalah koneksi, dan lainnya. Tujuan dari pembuktian dummy adalah untuk memaksimalkan pengiriman ke semua penerima untuk konfigurasi penerusan.
+Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
-Jika penerimanya adalah webhook, kami akan memberikan batas waktu 60 detik agar permintaan selesai dengan maksimal 3 kali percobaan ulang (total 4 permintaan sebelum gagal). Perhatikan bahwa kami mengurai kode kesalahan 408, 413, dan 429 dengan benar dan memetakannya ke kode respons SMTP 421.
+If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
-Jika penerima adalah alamat email, kami akan mencoba mengirim email dengan TLS oportunistik (kami akan mencoba menggunakan STARTTLS jika tersedia di server email penerima). Jika terjadi kesalahan SSL/TLS saat mencoba mengirim email, kami akan mencoba mengirim email tanpa TLS (tanpa menggunakan STARTTLS).
+Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
-Jika terjadi kesalahan DNS atau koneksi, maka kami akan mengembalikan kode respons SMTP 421 ke perintah `DATA`. Sebaliknya, jika terjadi kesalahan level >= 500, maka pantulan akan dikirim.
+If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
-Jika kami mendeteksi bahwa server email yang kami coba kirimi memiliki satu atau beberapa alamat IP pertukaran email yang diblokir (misalnya dengan teknologi apa pun yang mereka gunakan untuk menangguhkan pengirim spam), maka kami akan mengirimkan kode respons SMTP 421 bagi pengirim untuk mencoba lagi pesannya nanti (dan kami akan diberitahu tentang masalah tersebut sehingga kami berharap dapat mengatasinya sebelum percobaan berikutnya).
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
 
-### Bagaimana cara Anda menangani pemblokiran alamat IP Anda {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-Kami secara rutin memantau semua daftar penolakan DNS utama dan jika salah satu alamat IP pertukaran surat ("MX") kami tercantum dalam daftar penolakan utama, kami akan menariknya keluar dari catatan DNS A yang relevan secara bergiliran jika memungkinkan hingga masalah tersebut teratasi.
+We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-Saat artikel ini ditulis, kami juga terdaftar di beberapa daftar DNS yang diizinkan, dan kami menganggap serius pemantauan daftar penolakan. Jika Anda melihat masalah sebelum kami sempat menyelesaikannya, harap beri tahu kami secara tertulis di <support@forwardemail.net>.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
-Alamat IP kami tersedia untuk umum, [lihat bagian di bawah ini untuk wawasan lebih lanjut](#what-are-your-servers-ip-addresses).
+Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
 
-### Apa itu alamat postmaster {#what-are-postmaster-addresses}
+### What are postmaster addresses {#what-are-postmaster-addresses}
 
-Untuk mencegah pantulan yang salah arah dan pengiriman pesan balasan liburan ke kotak surat yang tidak terpantau atau tidak ada, kami menyimpan daftar nama pengguna seperti mailer-daemon:
+In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
 
 * `automailer`
 * `autoresponder`
@@ -3161,13 +3592,13 @@ Untuk mencegah pantulan yang salah arah dan pengiriman pesan balasan liburan ke 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [dan alamat yang tidak dibalas](#what-are-no-reply-addresses)
+* [and any no-reply address](#what-are-no-reply-addresses)
 
-Lihat [RFC 5320 Bagian 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) untuk wawasan lebih lanjut tentang bagaimana daftar seperti ini digunakan untuk membuat sistem email yang efisien.
+See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
 
-### Apa itu alamat no-reply {#what-are-no-reply-addresses}
+### What are no-reply addresses {#what-are-no-reply-addresses}
 
-Nama pengguna email yang sama dengan salah satu dari berikut ini (tidak memperhatikan huruf besar/kecil) dianggap sebagai alamat tanpa balasan:
+Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3188,1430 +3619,1461 @@ Nama pengguna email yang sama dengan salah satu dari berikut ini (tidak memperha
 * `noreply`
 * `noreplys`
 
-Daftar ini dipertahankan pada [sebagai proyek sumber terbuka di GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### Apa alamat IP server Anda {#what-are-your-servers-ip-addresses}
+### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
 
-Kami menerbitkan alamat IP kami di <https://forwardemail.net/ips>.
+We publish our IP addresses at <https://forwardemail.net/ips>.
 
-### Apakah Anda memiliki daftar putih {#do-you-have-an-allowlist}
+### Do you have an allowlist {#do-you-have-an-allowlist}
 
-Ya, kami memiliki [daftar ekstensi nama domain](#what-domain-name-extensions-are-allowlisted-by-default) yang masuk daftar putih secara default dan daftar putih yang dinamis, ter-cache, dan bergulir berdasarkan [kriteria yang ketat](#what-is-your-allowlist-criteria).
+Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-Semua email, domain, dan penerima dari pelanggan pada paket berbayar secara otomatis ditambahkan ke daftar putih kami.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
 
-### Ekstensi nama domain apa yang diizinkan secara default {#what-domain-name-extensions-are-allowlisted-by-default}
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
-Ekstensi nama domain berikut dianggap masuk daftar putih secara default (terlepas dari apakah ekstensi tersebut ada dalam Daftar Popularitas Umbrella atau tidak):
+### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
 
-<ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">edu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov</code></li>
-<li class="list-inline-item"><code class="notranslate">mil</code></li>
-<li class="list-inline-item"><code class="notranslate">int</code></li>
-<li class="list-inline-item"><code class="notranslate">arpa</code></li>
-<li class="list-inline-item"><code class="notranslate">dni.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fed.us</code></li>
-<li class="list-inline-item"><code class="notranslate">isa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">kids.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ak.us</code></li>
-<li class="list-inline-item"><code class="notranslate">al.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ar.us</code></li>
-<li class="list-inline-item"><code class="notranslate">as.us</code></li>
-<li class="list-inline-item"><code class="notranslate">az.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ca.us</code></li>
-<li class="list-inline-item"><code class="notranslate">co.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ct.us</code></li>
-<li class="list-inline-item"><code class="notranslate">dc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">de.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fl.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ga.us</code></li>
-<li class="list-inline-item"><code class="notranslate">gu.us</code></li>
-<li class="list-inline-item"><code class="notranslate">hi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ia.us</code></li>
-<li class="list-inline-item"><code class="notranslate">id.us</code></li>
-<li class="list-inline-item"><code class="notranslate">il.us</code></li>
-<li class="list-inline-item"><code class="notranslate">in.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ks.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ky.us</code></li>
-<li class="list-inline-item"><code class="notranslate">la.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ma.us</code></li>
-<li class="list-inline-item"><code class="notranslate">md.us</code></li>
-<li class="list-inline-item"><code class="notranslate">me.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mo.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ne.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nj.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nm.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ny.us</code></li>
-<li class="list-inline-item"><code class="notranslate">oh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ok.us</code></li>
-<li class="list-inline-item"><code class="notranslate">or.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pr.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ri.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tx.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ut.us</code></li>
-<li class="list-inline-item"><code class="notranslate">va.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wy.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.au</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.at</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.br</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">school.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">health.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.in</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.in</code></li>
-<li class="list-inline-item"><code mil.in</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.za</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.za</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.za</code></li>
-<li class="list-inline-item"><code class="notranslate">school.za</code></li>
-<li class="list-inline-item"><code mil.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">es.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.es</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.th</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.th</code></li>
-<li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
-<li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">go.id</code></li>
-<li class="list-inline-item"><code class="notranslate">go.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">go.ke</code></li>
-<li class="list-inline-item"><code class="notranslate">go.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">go.th</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.es</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.af</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.al</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.am</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.au</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.az</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.be</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gov.by</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.co</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.il</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.im</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.in</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.it</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.je</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.my</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.np</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.py</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.se</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.si</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.za</code></li>
-<li class="list-inline-item"><code class="notranslate">government.pn</code></li>
-<li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gv.at</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">police.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
-</ul>
-
-Selain itu, [domain tingkat atas merek dan perusahaan](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ini masuk daftar putih secara default (misalnya `apple` untuk `applecard.apple` untuk laporan bank Apple Card):
+The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">aaa</code></li>
-<li class="list-inline-item"><code class="notranslate">aarp</code></li>
-<li class="list-inline-item"><code class="notranslate">abarth</code></li>
-<li class="list-inline-item"><code class="notranslate">abb</code></li>
-<li class="list-inline-item"><code class="notranslate">abbott</code></li>
-<li class="list-inline-item"><code class="notranslate">abbvie</code></li>
-<li class="list-inline-item"><code class="notranslate">abc</code></li>
-<li class="list-inline-item"><code class="notranslate">accenture</code></li>
-<li class="list-inline-item"><code class="notranslate">aco</code></li>
-<li class="list-inline-item"><code class="notranslate">aeg</code></li>
-<li class="list-inline-item"><code class="notranslate">aetna</code></li>
-<li class="list-inline-item"><code class="notranslate">afl</code></li>
-<li class="list-inline-item"><code class="notranslate">agakhan</code></li>
-<li class="list-inline-item"><code class="notranslate">aig</code></li>
-<li class="list-inline-item"><code class="notranslate">aigo</code></li>
-<li class="list-inline-item"><code class="notranslate">airbus</code></li>
-<li class="list-inline-item"><code class="notranslate">airtel</code></li>
-<li class="list-inline-item"><code class="notranslate">akdn</code></li>
-<li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
-<li class="list-inline-item"><code class="notranslate">alibaba</code></li>
-<li class="list-inline-item"><code class="notranslate">alipay</code></li>
-<li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
-<li class="list-inline-item"><code class="notranslate">allstate</code></li>
-<li class="list-inline-item"><code class="notranslate">ally</code></li>
-<li class="list-inline-item"><code class="notranslate">alstom</code></li>
-<li class="list-inline-item"><code class="notranslate">amazon</code></li>
-<li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
-<li class="list-inline-item"><code class="notranslate">amex</code></li>
-<li class="list-inline-item"><code class="notranslate">amica</code></li>
-<li class="list-inline-item"><code class="notranslate">android</code></li>
-<li class="list-inline-item"><code class="notranslate">anz</code></li>
-<li class="list-inline-item"><code class="notranslate">aol</code></li>
-<li class="list-inline-item"><code class="notranslate">apple</code></li>
-<li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
-<li class="list-inline-item"><code class="notranslate">aramco</code></li>
-<li class="list-inline-item"><code class="notranslate">audi</code></li>
-<li class="list-inline-item"><code class="notranslate">auspost</code></li>
-<li class="list-inline-item"><code class="notranslate">aws</code></li>
-<li class="list-inline-item"><code class="notranslate">axa</code></li>
-<li class="list-inline-item"><code class="notranslate">azure</code></li>
-<li class="list-inline-item"><code class="notranslate">baidu</code></li>
-<li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
-<li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
-<li class="list-inline-item"><code class="notranslate">barclays</code></li>
-<li class="list-inline-item"><code class="notranslate">basket</code></li>
-<li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
-<li class="list-inline-item"><code class="notranslate">bbc</code></li>
-<li class="list-inline-item"><code class="notranslate">bbt</code></li>
-<li class="list-inline-item"><code class="notranslate">bbva</code></li>
-<li class="list-inline-item"><code class="notranslate">bcg</code></li>
-<li class="list-inline-item"><code class="notranslate">bentley</code></li>
-<li class="list-inline-item"><code class="notranslate">bharti</code></li>
-<li class="list-inline-item"><code class="notranslate">bing</code></li>
-<li class="list-inline-item"><code class="notranslate">blanco</code></li>
-<li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
-<li class="list-inline-item"><code class="notranslate">bms</code></li>
-<li class="list-inline-item"><code class="notranslate">bmw</code></li>
-<li class="list-inline-item"><code class="notranslate">bnl</code></li>
-<li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
-<li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-<li class="list-inline-item"><code class="notranslate">bond</code></li>
-<li class="list-inline-item"><code class="notranslate">pemesanan</code></li>
-<li class="list-inline-item"><code class="notranslate">bosch</code></li>
-<li class="list-inline-item"><code class="notranslate">bostik</code></li>
-<li class="list-inline-item"><code class="notranslate">bradesco</code></li>
-<li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
-<li class="list-inline-item"><code class="notranslate">brother</code></li>
-<li class="list-inline-item"><code Bugatti
-<li class="list-inline-item"><code class="notranslate">cal</code></li>
-<li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
-<li class="list-inline-item"><code class="notranslate">canon</code></li>
-<li class="list-inline-item"><code class="notranslate">capitalone</code></li>
-<li class="list-inline-item"><code class="notranslate">caravan</code></li>
-<li class="list-inline-item"><code class="notranslate">cartier</code></li>
-<li class="list-inline-item"><code class="notranslate">cba</code></li>
-<li class="list-inline-item"><code class="notranslate">cbn</code></li>
-<li class="list-inline-item"><code class="notranslate">cbre</code></li>
-<li class="list-inline-item"><code class="notranslate">cbs</code></li>
-<li class="list-inline-item"><code class="notranslate">cern</code></li>
-<li class="list-inline-item"><code class="notranslate">cfa</code></li>
-<li class="list-inline-item"><code class="notranslate">chanel</code></li>
-<li class="list-inline-item"><code class="notranslate">chase</code></li>
-<li class="list-inline-item"><code class="notranslate">chintai</code></li>
-<li class="list-inline-item"><code class="notranslate">chrome</code></li>
-<li class="list-inline-item"><code Chrysler
-<li class="list-inline-item"><code class="notranslate">Cipriani</code></li>
-<li class="list-inline-item"><code class="notranslate">Cisco</code></li>
-<li class="list-inline-item"><code class="notranslate">Citadel</code></li>
-<li class="list-inline-item"><code class="notranslate">Citi</code></li>
-<li class="list-inline-item"><code class="notranslate">Citic</code></li>
-<li class="list-inline-item"><code class="notranslate">Clubmed</code></li>
-<li class="list-inline-item"><code class="notranslate">Comcast</code></li>
-<li class="list-inline-item"><code class="notranslate">Commbank</code></li>
-<li class="list-inline-item"><code class="notranslate">creditunion</code></li>
-<li class="list-inline-item"><code class="notranslate">crown</code></li>
-<li class="list-inline-item"><code class="notranslate">crs</code></li>
-<li class="list-inline-item"><code class="notranslate">csc</code></li>
-<li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
-<li class="list-inline-item"><code class="notranslate">dabur</code></li>
-<li class="list-inline-item"><code class="notranslate">datsun</code></li>
-<li class="list-inline-item"><code class="notranslate">dealer</code></li>
-<li class="list-inline-item"><code class="notranslate">dell</code></li>
-<li class="list-inline-item"><code class="notranslate">deloitte</code></li>
-<li class="list-inline-item"><code class="notranslate">delta</code></li>
-<li class="list-inline-item"><code class="notranslate">dhl</code></li>
-<li class="list-inline-item"><code class="notranslate">discover</code></li>
-<li class="list-inline-item"><code class="notranslate">dish</code></li>
-<li class="list-inline-item"><code class="notranslate">dnp</code></li>
-<li class="list-inline-item"><code class="notranslate">dodge</code></li>
-<li class="list-inline-item"><code class="notranslate">dunlop</code></li>
-<li class="list-inline-item"><code class="notranslate">dupont</code></li>
-<li class="list-inline-item"><code class="notranslate">dvag</code></li>
-<li class="list-inline-item"><code class="notranslate">edeka</code></li>
-<li class="list-inline-item"><code class="notranslate">emerck</code></li>
-<li class="list-inline-item"><code class="notranslate">epson</code></li>
-<li class="list-inline-item"><code class="notranslate">ericsson</code></li>
-<li class="list-inline-item"><code class="notranslate">erni</code></li>
-<li class="list-inline-item"><code class="notranslate">esurance</code></li>
-<li class="list-inline-item"><code class="notranslate">etisalat</code></li>
-<li class="list-inline-item"><code class="notranslate">Eurovision</code></li>
-<li class="list-inline-item"><code class="notranslate">Everbank</code></li>
-<li class="list-inline-item"><code class="notranslate">Extraspace</code></li>
-<li class="list-inline-item"><code class="notranslate">Fage</code></li>
-<li class="list-inline-item"><code class="notranslate">Fairwinds</code></li>
-<li class="list-inline-item"><code class="notranslate">Farmers</code></li>
-<li class="list-inline-item"><code class="notranslate">Fedex</code></li>
-<li class="list-inline-item"><code class="notranslate">Ferrari</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">ferrero</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">fiat</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">fidelity</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">firestone</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">firmdale</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">flickr</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">flir</code></li>
-<li kelas="daftar-item-sebaris"><kode kelas="notranslate">flsmidth</code></li>
-<li kelas="daftar-item-sebaris"><kode Ford</code></li>
-<li class="list-inline-item"><code class="notranslate">fox</code></li>
-<li class="list-inline-item"><code class="notranslate">fresenius</code></li>
-<li class="list-inline-item"><code class="notranslate">forex</code></li>
-<li class="list-inline-item"><code class="notranslate">frogans</code></li>
-<li class="list-inline-item"><code class="notranslate">frontier</code></li>
-<li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
-<li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
-<li class="list-inline-item"><code class="notranslate">gallo</code></li>
-<li class="list-inline-item"><code class="notranslate">gallup</code></li>
-<li class="list-inline-item"><code class="notranslate">gap</code></li>
-<li class="list-inline-item"><code class="notranslate">gbiz</code></li>
-<li class="list-inline-item"><code class="notranslate">gea</code></li>
-<li class="list-inline-item"><code class="notranslate">genting</code></li>
-<li class="list-inline-item"><code class="notranslate">memberi</code></li>
-<li class="list-inline-item"><code class="notranslate">gle</code></li>
-<li class="list-inline-item"><code class="notranslate">globo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmail</code></li>
-<li class="list-inline-item"><code class="notranslate">gmo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmx</code></li>
-<li class="list-inline-item"><code class="notranslate">godaddy</code></li>
-<li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
-<li class="list-inline-item"><code class="notranslate">goodyear</code></li>
-<li class="list-inline-item"><code class="notranslate">goog</code></li>
-<li class="list-inline-item"><code class="notranslate">google</code></li>
-<li class="list-inline-item"><code class="notranslate">grainger</code></li>
-<li class="list-inline-item"><code class="notranslate">Guardian</code></li>
-<li class="list-inline-item"><code class="notranslate">Gucci</code></li>
-<li class="list-inline-item"><code class="notranslate">HBO</code></li>
-<li class="list-inline-item"><code class="notranslate">Hdfc</code></li>
-<li class="list-inline-item"><code class="notranslate">Hdfcbank</code></li>
-<li class="list-inline-item"><code class="notranslate">Hermes</code></li>
-<li class="list-inline-item"><code class="notranslate">Hisamitsu</code></li>
-<li class="list-inline-item"><code class="notranslate">Hitachi</code></li>
-<li class="list-inline-item"><code class="notranslate">hkt</code></li>
-<li class="list-inline-item"><code class="notranslate">honda</code></li>
-<li class="list-inline-item"><code class="notranslate">honeywell</code></li>
-<li class="list-inline-item"><code class="notranslate">hotmail</code></li>
-<li class="list-inline-item"><code class="notranslate">hsbc</code></li>
-<li class="list-inline-item"><code class="notranslate">hughes</code></li>
-<li class="list-inline-item"><code class="notranslate">hyatt</code></li>
-<li class="list-inline-item"><code class="notranslate">hyundai</code></li>
-<li class="list-inline-item"><code class="notranslate">ibm</code></li>
-<li class="list-inline-item"><code class="notranslate">ieee</code></li>
-<li class="list-inline-item"><code class="notranslate">ifm</code></li>
-<li class="list-inline-item"><code class="notranslate">ikano</code></li>
-<li class="list-inline-item"><code class="notranslate">imdb</code></li>
-<li class="list-inline-item"><code class="notranslate">infiniti</code></li>
-<li class="list-inline-item"><code class="notranslate">intel</code></li>
-<li class="list-inline-item"><code class="notranslate">intuit</code></li>
-<li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
-<li class="list-inline-item"><code class="notranslate">iselect</code></li>
-<li class="list-inline-item"><code class="notranslate">itau</code></li>
-<li class="list-inline-item"><code class="notranslate">itv</code></li>
-<li class="list-inline-item"><code class="notranslate">iveco</code></li>
-<li class="list-inline-item"><code class="notranslate">jaguar</code></li>
-<li class="list-inline-item"><code class="notranslate">java</code></li>
-<li class="list-inline-item"><code class="notranslate">jcb</code></li>
-<li class="list-inline-item"><code class="notranslate">jcp</code></li>
-<li class="list-inline-item"><code class="notranslate">jeep</code></li>
-<li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
-<li class="list-inline-item"><code class="notranslate">juniper</code></li>
-<li class="list-inline-item"><code class="notranslate">kddi</code></li>
-<li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
-<li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
-<li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
-<li class="list-inline-item"><code class="notranslate">kfh</code></li>
-<li class="list-inline-item"><code class="notranslate">kia</code></li>
-<li class="list-inline-item"><code class="notranslate">kinder</code></li>
-<li class="list-inline-item"><code class="notranslate">kindle</code></li>
-<li class="list-inline-item"><code class="notranslate">komatsu</code></li>
-<li class="list-inline-item"><code class="notranslate">kpmg</code></li>
-<li class="list-inline-item"><code class="notranslate">kred</code></li>
-<li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
-<li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
-<li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
-<li class="list-inline-item"><code class="notranslate">Lancaster</code></li>
-<li class="list-inline-item"><code class="notranslate">Lancia</code></li>
-<li class="list-inline-item"><code class="notranslate">Lancome</code></li>
-<li class="list-inline-item"><code class="notranslate">Lanrover</code></li>
-<li class="list-inline-item"><code class="notranslate">Lanxess</code></li>
-<li class="list-inline-item"><code class="notranslate">Lasalle</code></li>
-<li class="list-inline-item"><code class="notranslate">Latrobe</code></li>
-<li class="list-inline-item"><code class="notranslate">LDS</code></li>
-<li class="list-inline-item"><code class="notranslate">leclerc</code></li>
-<li class="list-inline-item"><code class="notranslate">lego</code></li>
-<li class="list-inline-item"><code class="notranslate">liaison</code></li>
-<li class="list-inline-item"><code class="notranslate">lexus</code></li>
-<li class="list-inline-item"><code class="notranslate">lidl</code></li>
-<li class="list-inline-item"><code class="notranslate">gaya hidup</code></li>
-<li class="list-inline-item"><code class="notranslate">lilly</code></li>
-<li class="list-inline-item"><code class="notranslate">lincoln</code></li>
-<li class="list-inline-item"><code class="notranslate">linde</code></li>
-<li class="list-inline-item"><code class="notranslate">lipsy</code></li>
-<li class="list-inline-item"><code class="notranslate">lixil</code></li>
-<li class="list-inline-item"><code class="notranslate">locus</code></li>
-<li class="list-inline-item"><code class="notranslate">lotte</code></li>
-<li class="list-inline-item"><code class="notranslate">lpl</code></li>
-<li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
-<li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
-<li class="list-inline-item"><code class="notranslate">lupin</code></li>
-<li class="list-inline-item"><code class="notranslate">Macys</code></li>
-<li class="list-inline-item"><code class="notranslate">Maif</code></li>
-<li class="list-inline-item"><code class="notranslate">Man</code></li>
-<li class="list-inline-item"><code class="notranslate">Mango</code></li>
-<li class="list-inline-item"><code class="notranslate">Marriott</code></li>
-<li class="list-inline-item"><code class="notranslate">Maserati</code></li>
-<li class="list-inline-item"><code class="notranslate">Mattel</code></li>
-<li class="list-inline-item"><code class="notranslate">Mckinsey</code></li>
-<li class="list-inline-item"><code class="notranslate">Metlife</code></li>
-<li class="list-inline-item"><code class="notranslate">microsoft</code></li>
-<li class="list-inline-item"><code class="notranslate">mini</code></li>
-<li class="list-inline-item"><code class="notranslate">mit</code></li>
-<li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
-<li class="list-inline-item"><code class="notranslate">mlb</code></li>
-<li class="list-inline-item"><code class="notranslate">mma</code></li>
-<li class="list-inline-item"><code class="notranslate">monash</code></li>
-<li class="list-inline-item"><code class="notranslate">mormon</code></li>
-<li class="list-inline-item"><code class="notranslate">moto</code></li>
-<li class="list-inline-item"><code class="notranslate">movistar</code></li>
-<li class="list-inline-item"><code class="notranslate">msd</code></li>
-<li class="list-inline-item"><code class="notranslate">mtn</code></li>
-<li class="list-inline-item"><code class="notranslate">mtr</code></li>
-<li class="list-inline-item"><code class="notranslate">mutual</code></li>
-<li class="list-inline-item"><code class="notranslate">nadex</code></li>
-<li class="list-inline-item"><code class="notranslate">nasional</code></li>
-<li class="list-inline-item"><code class="notranslate">natura</code></ li>
-<li class="list-inline-item"><code class="notranslate">nba</code></li>
-<li class="list-inline-item"><code class="notranslate">nec</code></li>
-<li class="list-inline-item"><code class="notranslate">netflix</code></li>
-<li class="list-inline-item"><code class="notranslate">neustar</code></li>
-<li class="list-inline-item"><code class="notranslate">newholland</code></li>
-<li class="list-inline-item"><code class="notranslate">nfl</code></li>
-<li class="list-inline-item"><code class="notranslate">nhk</code></li>
-<li class="list-inline-item"><code class="notranslate">nico</code></li>
-<li class="list-inline-item"><code class="notranslate">nike</code></li>
-<li class="list-inline-item"><code class="notranslate">nikon</code></li>
-<li class="list-inline-item"><code class="notranslate">nissan</code></li>
-<li class="list-inline-item"><code class="notranslate">nissay</code></li>
-<li class="list-inline-item"><code class="notranslate">nokia</code></li>
-<li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
-<li class="list-inline-item"><code class="notranslate">norton</code></li>
-<li class="list-inline-item"><code class="notranslate">nra</code></li>
-<li class="list-inline-item"><code class="notranslate">ntt</code></li>
-<li class="list-inline-item"><code class="notranslate">obi</code></li>
-<li class="list-inline-item"><code class="notranslate">office</code></li>
-<li class="list-inline-item"><code class="notranslate">omega</code></li>
-<li class="list-inline-item"><code class="notranslate">oracle</code></li>
-<li class="list-inline-item"><code class="notranslate">orange</code></li>
-<li class="list-inline-item"><code class="notranslate">otsuka</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
-<li class="list-inline-item"><code class="notranslate">panasonic</code></li>
-<li class="list-inline-item"><code class="notranslate">pccw</code></li>
-<li class="list-inline-item"><code class="notranslate">pfizer</code></li>
-<li class="list-inline-item"><code class="notranslate">philips</code></li>
-<li class="list-inline-item"><code class="notranslate">piaget</code></li>
-<li class="list-inline-item"><code class="notranslate">pictet</code></li>
-<li class="list-inline-item"><code class="notranslate">ping</code></li>
-<li class="list-inline-item"><code class="notranslate">pioneer</code></li>
-<li class="list-inline-item"><code class="notranslate">play</code></li>
-<li class="list-inline-item"><code class="notranslate">PlayStation</code></li>
-<li class="list-inline-item"><code class="notranslate">Pohl</code></li>
-<li class="list-inline-item"><code class="notranslate">Politie</code></li>
-<li class="list-inline-item"><code class="notranslate">Praxi</code></li>
-<li class="list-inline-item"><code class="notranslate">Prod</code></li>
-<li class="list-inline-item"><code class="notranslate">Progresif</code></li>
-<li class="list-inline-item"><code class="notranslate">Pru</code></li>
-<li class="list-inline-item"><code class="notranslate">Prudensial</code></li>
-<li class="list-inline-item"><code class="notranslate">Pwc</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">pencarian</code></li>-->
-<li class="list-inline-item"><code class="notranslate">qvc</code></li>
-<li class="list-inline-item"><code class="notranslate">batumerah</code></li>
-<li class="list-inline-item"><code class="notranslate">ketergantungan</code></li>
-<li class="list-inline-item"><code class="notranslate">rexroth</code></li>
-<li class="list-inline-item"><code class="notranslate">ricoh</code></li>
-<li class="list-inline-item"><code class="notranslate">rmit</code></li>
-<li class="list-inline-item"><code class="notranslate">rocher</code></li>
-<li class="list-inline-item"><code class="notranslate">rogers</code></li>
-<li class="list-inline-item"><code class="notranslate">rwe</code></li>
-<li class="list-inline-item"><code class="notranslate">keamanan</code></li>
-<li class="list-inline-item"><code class="notranslate">sakura</code></li>
-<li class="list-inline-item"><code class="notranslate">samsung</code></li>
-<li class="list-inline-item"><code class="notranslate">sandvik</code></li>
-<li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
-<li class="list-inline-item"><code class="notranslate">sanofi</code></li>
-<li class="list-inline-item"><code class="notranslate">sap</code></li>
-<li class="list-inline-item"><code class="notranslate">saxo</code></li>
-<li class="list-inline-item"><code class="notranslate">sbi</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
-<li class="list-inline-item"><code class="notranslate">sca</code></li>
-<li class="list-inline-item"><code class="notranslate">scb</code></li>
-<li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
-<li class="list-inline-item"><code class="notranslate">schmidt</code></li>
-<li class="list-inline-item"><code class="notranslate">schwarz</code></li>
-<li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
-<li class="list-inline-item"><code class="notranslate">scor</code></li>
-<li class="list-inline-item"><code class="notranslate">seat</code></li>
-<li class="list-inline-item"><code class="notranslate">sener</code></li>
-<li class="list-inline-item"><code class="notranslate">ses</code></li>
-<li class="list-inline-item"><code class="notranslate">sew</code></li>
-<li class="list-inline-item"><code class="notranslate">seven</code></li>
-<li class="list-inline-item"><code class="notranslate">sfr</code></li>
-<li class="list-inline-item"><code class="notranslate">cari</code></li>
-<li class="list-inline-item"><code class="notranslate">shangrila</code></li>
-<li class="list-inline-item"><code class="notranslate">tajam</code></li>
-<li class="list-inline-item"><code class="notranslate">shaw</code></li>
-<li class="list-inline-item"><code class="notranslate">shell</code></li>
-<li class="list-inline-item"><code class="notranslate">shriram</code></li>
-<li class="list-inline-item"><code class="notranslate">sina</code></li>
-<li class="list-inline-item"><code class="notranslate">langit</code></li>
-<li class="list-inline-item"><code class="notranslate">skype</code></li>
-<li class="list-inline-item"><code class="notranslate">pintar</code></li>
-<li class="list-inline-item"><code class="notranslate">sncf</code></li>
-<li class="list-inline-item"><code class="notranslate">softbank</code></li>
-<li class="list-inline-item"><code class="notranslate">sohu</code></li>
-<li class="list-inline-item"><code class="notranslate">sony</code></li>
-<li class="list-inline-item"><code class="notranslate">kaca</code></li>
-<li class="list-inline-item"><code class="notranslate">stada</code></li>
-<li class="list-inline-item"><code class="notranslate">staples</code></li>
-<li class="list-inline-item"><code class="notranslate">bintang</code></li>
-<li class="list-inline-item"><code class="notranslate">starhub</code></li>
-<li class="list-inline-item"><code class="notranslate">statebank</code></li>
-<li class="list-inline-item"><code class="notranslate">statefarm</code></li>
-<li class="list-inline-item"><code class="notranslate">statoil</code></li>
-<li class="list-inline-item"><code class="notranslate">stc</code></li>
-<li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">suzuki</code></li>
-<li class="list-inline-item"><code class="notranslate">swatch</code></li>
-<li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
-<li class="list-inline-item"><code class="notranslate">symantec</code></li>
-<li class="list-inline-item"><code class="notranslate">taobao</code></li>
-<li class="list-inline-item"><code class="notranslate">target</code></li>
-<li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
-<li class="list-inline-item"><code class="notranslate">tdk</code></li>
-<li class="list-inline-item"><code class="notranslate">telecity</code></li>
-<li class="list-inline-item"><code class="notranslate">telefonica</code></li>
-<li class="list-inline-item"><code class="notranslate">temasek</code></li>
-<li class="list-inline-item"><code class="notranslate">teva</code></li>
-<li class="list-inline-item"><code class="notranslate">tiffany</code></li>
-<li class="list-inline-item"><code class="notranslate">tjx</code></li>
-<li class="list-inline-item"><code class="notranslate">toray</code></li>
-<li class="list-inline-item"><code class="notranslate">toshiba</code></li>
-<li class="list-inline-item"><code class="notranslate">total</code></li>
-<li class="list-inline-item"><code class="notranslate">toyota</code></li>
-<li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
-<li class="list-inline-item"><code class="notranslate">travelers</code></li>
-<li class="list-inline-item"><code class="notranslate">tui</code></li>
-<li class="list-inline-item"><code class="notranslate">tvs</code></li>
-<li class="list-inline-item"><code class="notranslate">ubs</code></li>
-<li class="list-inline-item"><code class="notranslate">unicom</code></li>
-<li class="list-inline-item"><code class="notranslate">uol</code></li>
-<li class="list-inline-item"><code class="notranslate">ups</code></li>
-<li class="list-inline-item"><code class="notranslate">vanguard</code></li>
-<li class="list-inline-item"><code Verisign
-<li class="list-inline-item"><code class="notranslate">vig</code></li>
-<li class="list-inline-item"><code class="notranslate">viking</code></li>
-<li class="list-inline-item"><code class="notranslate">virgin</code></li>
-<li class="list-inline-item"><code class="notranslate">visa</code></li>
-<li class="list-inline-item"><code class="notranslate">vista</code></li>
-<li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
-<li class="list-inline-item"><code class="notranslate">vivo</code></li>
-<li class="list-inline-item"><code class="notranslate">volkswagen</code></li>
-<li class="list-inline-item"><code class="notranslate">volvo</code></li>
-<li class="list-inline-item"><code class="notranslate">walmart</code></li>
-<li class="list-inline-item"><code class="notranslate">walter</code></li>
-<li class="list-inline-item"><code class="notranslate">weatherchannel</code></li>
-<li class="list-inline-item"><code class="notranslate">weber</code></li>
-<li class="list-inline-item"><code class="notranslate">weir</code></li>
-<li class="list-inline-item"><code class="notranslate">williamhill</code></li>
-<li class="list-inline-item"><code class="notranslate">windows</code></li>
-<li class="list-inline-item"><code class="notranslate">wme</code></li>
-<li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
-<li class="list-inline-item"><code class="notranslate">woodside</code></li>
-<li class="list-inline-item"><code class="notranslate">wtc</code></li>
-<li class="list-inline-item"><code class="notranslate">xbox</code></li>
-<li class="list-inline-item"><code class="notranslate">xerox</code></li>
-<li class="list-inline-item"><code class="notranslate">xfinity</code></li>
-<li class="list-inline-item"><code class="notranslate">yahoo</code></li>
-<li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
-<li class="list-inline-item"><code class="notranslate">yandex</code></li>
-<li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
-<li class="list-inline-item"><code class="notranslate">youtube</code></li>
-<li class="list-inline-item"><code class="notranslate">zappos</code></li>
-<li class="list-inline-item"><code class="notranslate">zara</code></li>
-<li class="list-inline-item"><code class="notranslate">zippo</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil</code></li>
+  <li class="list-inline-item"><code class="notranslate">int</code></li>
+  <li class="list-inline-item"><code class="notranslate">arpa</code></li>
+  <li class="list-inline-item"><code class="notranslate">dni.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fed.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">isa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">kids.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ak.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">al.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">as.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">az.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">co.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ct.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">dc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">de.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fl.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ga.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">gu.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">hi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ia.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">id.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">il.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">in.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ks.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ky.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">la.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ma.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">md.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">me.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mo.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ne.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nj.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nm.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ny.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">oh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ok.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">or.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ri.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tx.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ut.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">va.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.br</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">health.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">es.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.id</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.af</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.al</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.am</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.az</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.be</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gov.by</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.co</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.il</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.im</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.it</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.je</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.my</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.np</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.py</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.se</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.si</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">government.pn</code></li>
+  <li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gv.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">police.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-Sampai tanggal 18 Maret 2025, kami juga telah menambahkan wilayah seberang laut Prancis ini ke daftar ini ([sesuai permintaan GitHub ini](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">bzh</code></li>
-<li class="list-inline-item"><code class="notranslate">gf</code></li>
-<li class="list-inline-item"><code class="notranslate">gp</code></li>
-<li class="list-inline-item"><code class="notranslate">mq</code></li>
-<li class="list-inline-item"><code class="notranslate">nc</code></li>
-<li class="list-inline-item"><code class="notranslate">pf</code></li>
-<li class="list-inline-item"><code class="notranslate">pm</code></li>
-<li class="list-inline-item"><code class="notranslate">re</code></li>
-<li class="daftar-item-sebaris"><code class="notranslate">tf</code></li>
-<li class="daftar-item-sebaris"><code class="notranslate">wf</code></li>
-<li class="daftar-item-sebaris"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">aaa</code></li>
+  <li class="list-inline-item"><code class="notranslate">aarp</code></li>
+  <li class="list-inline-item"><code class="notranslate">abarth</code></li>
+  <li class="list-inline-item"><code class="notranslate">abb</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbott</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbvie</code></li>
+  <li class="list-inline-item"><code class="notranslate">abc</code></li>
+  <li class="list-inline-item"><code class="notranslate">accenture</code></li>
+  <li class="list-inline-item"><code class="notranslate">aco</code></li>
+  <li class="list-inline-item"><code class="notranslate">aeg</code></li>
+  <li class="list-inline-item"><code class="notranslate">aetna</code></li>
+  <li class="list-inline-item"><code class="notranslate">afl</code></li>
+  <li class="list-inline-item"><code class="notranslate">agakhan</code></li>
+  <li class="list-inline-item"><code class="notranslate">aig</code></li>
+  <li class="list-inline-item"><code class="notranslate">aigo</code></li>
+  <li class="list-inline-item"><code class="notranslate">airbus</code></li>
+  <li class="list-inline-item"><code class="notranslate">airtel</code></li>
+  <li class="list-inline-item"><code class="notranslate">akdn</code></li>
+  <li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
+  <li class="list-inline-item"><code class="notranslate">alibaba</code></li>
+  <li class="list-inline-item"><code class="notranslate">alipay</code></li>
+  <li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
+  <li class="list-inline-item"><code class="notranslate">allstate</code></li>
+  <li class="list-inline-item"><code class="notranslate">ally</code></li>
+  <li class="list-inline-item"><code class="notranslate">alstom</code></li>
+  <li class="list-inline-item"><code class="notranslate">amazon</code></li>
+  <li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
+  <li class="list-inline-item"><code class="notranslate">amex</code></li>
+  <li class="list-inline-item"><code class="notranslate">amica</code></li>
+  <li class="list-inline-item"><code class="notranslate">android</code></li>
+  <li class="list-inline-item"><code class="notranslate">anz</code></li>
+  <li class="list-inline-item"><code class="notranslate">aol</code></li>
+  <li class="list-inline-item"><code class="notranslate">apple</code></li>
+  <li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
+  <li class="list-inline-item"><code class="notranslate">aramco</code></li>
+  <li class="list-inline-item"><code class="notranslate">audi</code></li>
+  <li class="list-inline-item"><code class="notranslate">auspost</code></li>
+  <li class="list-inline-item"><code class="notranslate">aws</code></li>
+  <li class="list-inline-item"><code class="notranslate">axa</code></li>
+  <li class="list-inline-item"><code class="notranslate">azure</code></li>
+  <li class="list-inline-item"><code class="notranslate">baidu</code></li>
+  <li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclays</code></li>
+  <li class="list-inline-item"><code class="notranslate">basketball</code></li>
+  <li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbt</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbva</code></li>
+  <li class="list-inline-item"><code class="notranslate">bcg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bentley</code></li>
+  <li class="list-inline-item"><code class="notranslate">bharti</code></li>
+  <li class="list-inline-item"><code class="notranslate">bing</code></li>
+  <li class="list-inline-item"><code class="notranslate">blanco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bms</code></li>
+  <li class="list-inline-item"><code class="notranslate">bmw</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnl</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
+  <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
+  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <li class="list-inline-item"><code class="notranslate">booking</code></li>
+  <li class="list-inline-item"><code class="notranslate">bosch</code></li>
+  <li class="list-inline-item"><code class="notranslate">bostik</code></li>
+  <li class="list-inline-item"><code class="notranslate">bradesco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">brother</code></li>
+  <li class="list-inline-item"><code class="notranslate">bugatti</code></li>
+  <li class="list-inline-item"><code class="notranslate">cal</code></li>
+  <li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
+  <li class="list-inline-item"><code class="notranslate">canon</code></li>
+  <li class="list-inline-item"><code class="notranslate">capitalone</code></li>
+  <li class="list-inline-item"><code class="notranslate">caravan</code></li>
+  <li class="list-inline-item"><code class="notranslate">cartier</code></li>
+  <li class="list-inline-item"><code class="notranslate">cba</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbn</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbre</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbs</code></li>
+  <li class="list-inline-item"><code class="notranslate">cern</code></li>
+  <li class="list-inline-item"><code class="notranslate">cfa</code></li>
+  <li class="list-inline-item"><code class="notranslate">chanel</code></li>
+  <li class="list-inline-item"><code class="notranslate">chase</code></li>
+  <li class="list-inline-item"><code class="notranslate">chintai</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrome</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrysler</code></li>
+  <li class="list-inline-item"><code class="notranslate">cipriani</code></li>
+  <li class="list-inline-item"><code class="notranslate">cisco</code></li>
+  <li class="list-inline-item"><code class="notranslate">citadel</code></li>
+  <li class="list-inline-item"><code class="notranslate">citi</code></li>
+  <li class="list-inline-item"><code class="notranslate">citic</code></li>
+  <li class="list-inline-item"><code class="notranslate">clubmed</code></li>
+  <li class="list-inline-item"><code class="notranslate">comcast</code></li>
+  <li class="list-inline-item"><code class="notranslate">commbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">creditunion</code></li>
+  <li class="list-inline-item"><code class="notranslate">crown</code></li>
+  <li class="list-inline-item"><code class="notranslate">crs</code></li>
+  <li class="list-inline-item"><code class="notranslate">csc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
+  <li class="list-inline-item"><code class="notranslate">dabur</code></li>
+  <li class="list-inline-item"><code class="notranslate">datsun</code></li>
+  <li class="list-inline-item"><code class="notranslate">dealer</code></li>
+  <li class="list-inline-item"><code class="notranslate">dell</code></li>
+  <li class="list-inline-item"><code class="notranslate">deloitte</code></li>
+  <li class="list-inline-item"><code class="notranslate">delta</code></li>
+  <li class="list-inline-item"><code class="notranslate">dhl</code></li>
+  <li class="list-inline-item"><code class="notranslate">discover</code></li>
+  <li class="list-inline-item"><code class="notranslate">dish</code></li>
+  <li class="list-inline-item"><code class="notranslate">dnp</code></li>
+  <li class="list-inline-item"><code class="notranslate">dodge</code></li>
+  <li class="list-inline-item"><code class="notranslate">dunlop</code></li>
+  <li class="list-inline-item"><code class="notranslate">dupont</code></li>
+  <li class="list-inline-item"><code class="notranslate">dvag</code></li>
+  <li class="list-inline-item"><code class="notranslate">edeka</code></li>
+  <li class="list-inline-item"><code class="notranslate">emerck</code></li>
+  <li class="list-inline-item"><code class="notranslate">epson</code></li>
+  <li class="list-inline-item"><code class="notranslate">ericsson</code></li>
+  <li class="list-inline-item"><code class="notranslate">erni</code></li>
+  <li class="list-inline-item"><code class="notranslate">esurance</code></li>
+  <li class="list-inline-item"><code class="notranslate">etisalat</code></li>
+  <li class="list-inline-item"><code class="notranslate">eurovision</code></li>
+  <li class="list-inline-item"><code class="notranslate">everbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">extraspace</code></li>
+  <li class="list-inline-item"><code class="notranslate">fage</code></li>
+  <li class="list-inline-item"><code class="notranslate">fairwinds</code></li>
+  <li class="list-inline-item"><code class="notranslate">farmers</code></li>
+  <li class="list-inline-item"><code class="notranslate">fedex</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrari</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrero</code></li>
+  <li class="list-inline-item"><code class="notranslate">fiat</code></li>
+  <li class="list-inline-item"><code class="notranslate">fidelity</code></li>
+  <li class="list-inline-item"><code class="notranslate">firestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">firmdale</code></li>
+  <li class="list-inline-item"><code class="notranslate">flickr</code></li>
+  <li class="list-inline-item"><code class="notranslate">flir</code></li>
+  <li class="list-inline-item"><code class="notranslate">flsmidth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ford</code></li>
+  <li class="list-inline-item"><code class="notranslate">fox</code></li>
+  <li class="list-inline-item"><code class="notranslate">fresenius</code></li>
+  <li class="list-inline-item"><code class="notranslate">forex</code></li>
+  <li class="list-inline-item"><code class="notranslate">frogans</code></li>
+  <li class="list-inline-item"><code class="notranslate">frontier</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallup</code></li>
+  <li class="list-inline-item"><code class="notranslate">gap</code></li>
+  <li class="list-inline-item"><code class="notranslate">gbiz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gea</code></li>
+  <li class="list-inline-item"><code class="notranslate">genting</code></li>
+  <li class="list-inline-item"><code class="notranslate">giving</code></li>
+  <li class="list-inline-item"><code class="notranslate">gle</code></li>
+  <li class="list-inline-item"><code class="notranslate">globo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmx</code></li>
+  <li class="list-inline-item"><code class="notranslate">godaddy</code></li>
+  <li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
+  <li class="list-inline-item"><code class="notranslate">goodyear</code></li>
+  <li class="list-inline-item"><code class="notranslate">goog</code></li>
+  <li class="list-inline-item"><code class="notranslate">google</code></li>
+  <li class="list-inline-item"><code class="notranslate">grainger</code></li>
+  <li class="list-inline-item"><code class="notranslate">guardian</code></li>
+  <li class="list-inline-item"><code class="notranslate">gucci</code></li>
+  <li class="list-inline-item"><code class="notranslate">hbo</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">hermes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hisamitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">hitachi</code></li>
+  <li class="list-inline-item"><code class="notranslate">hkt</code></li>
+  <li class="list-inline-item"><code class="notranslate">honda</code></li>
+  <li class="list-inline-item"><code class="notranslate">honeywell</code></li>
+  <li class="list-inline-item"><code class="notranslate">hotmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">hsbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hughes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyatt</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyundai</code></li>
+  <li class="list-inline-item"><code class="notranslate">ibm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ieee</code></li>
+  <li class="list-inline-item"><code class="notranslate">ifm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ikano</code></li>
+  <li class="list-inline-item"><code class="notranslate">imdb</code></li>
+  <li class="list-inline-item"><code class="notranslate">infiniti</code></li>
+  <li class="list-inline-item"><code class="notranslate">intel</code></li>
+  <li class="list-inline-item"><code class="notranslate">intuit</code></li>
+  <li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
+  <li class="list-inline-item"><code class="notranslate">iselect</code></li>
+  <li class="list-inline-item"><code class="notranslate">itau</code></li>
+  <li class="list-inline-item"><code class="notranslate">itv</code></li>
+  <li class="list-inline-item"><code class="notranslate">iveco</code></li>
+  <li class="list-inline-item"><code class="notranslate">jaguar</code></li>
+  <li class="list-inline-item"><code class="notranslate">java</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcb</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcp</code></li>
+  <li class="list-inline-item"><code class="notranslate">jeep</code></li>
+  <li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
+  <li class="list-inline-item"><code class="notranslate">juniper</code></li>
+  <li class="list-inline-item"><code class="notranslate">kddi</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
+  <li class="list-inline-item"><code class="notranslate">kfh</code></li>
+  <li class="list-inline-item"><code class="notranslate">kia</code></li>
+  <li class="list-inline-item"><code class="notranslate">kinder</code></li>
+  <li class="list-inline-item"><code class="notranslate">kindle</code></li>
+  <li class="list-inline-item"><code class="notranslate">komatsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">kpmg</code></li>
+  <li class="list-inline-item"><code class="notranslate">kred</code></li>
+  <li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
+  <li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
+  <li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancaster</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancia</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancome</code></li>
+  <li class="list-inline-item"><code class="notranslate">landrover</code></li>
+  <li class="list-inline-item"><code class="notranslate">lanxess</code></li>
+  <li class="list-inline-item"><code class="notranslate">lasalle</code></li>
+  <li class="list-inline-item"><code class="notranslate">latrobe</code></li>
+  <li class="list-inline-item"><code class="notranslate">lds</code></li>
+  <li class="list-inline-item"><code class="notranslate">leclerc</code></li>
+  <li class="list-inline-item"><code class="notranslate">lego</code></li>
+  <li class="list-inline-item"><code class="notranslate">liaison</code></li>
+  <li class="list-inline-item"><code class="notranslate">lexus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lidl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lifestyle</code></li>
+  <li class="list-inline-item"><code class="notranslate">lilly</code></li>
+  <li class="list-inline-item"><code class="notranslate">lincoln</code></li>
+  <li class="list-inline-item"><code class="notranslate">linde</code></li>
+  <li class="list-inline-item"><code class="notranslate">lipsy</code></li>
+  <li class="list-inline-item"><code class="notranslate">lixil</code></li>
+  <li class="list-inline-item"><code class="notranslate">locus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lotte</code></li>
+  <li class="list-inline-item"><code class="notranslate">lpl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
+  <li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
+  <li class="list-inline-item"><code class="notranslate">lupin</code></li>
+  <li class="list-inline-item"><code class="notranslate">macys</code></li>
+  <li class="list-inline-item"><code class="notranslate">maif</code></li>
+  <li class="list-inline-item"><code class="notranslate">man</code></li>
+  <li class="list-inline-item"><code class="notranslate">mango</code></li>
+  <li class="list-inline-item"><code class="notranslate">marriott</code></li>
+  <li class="list-inline-item"><code class="notranslate">maserati</code></li>
+  <li class="list-inline-item"><code class="notranslate">mattel</code></li>
+  <li class="list-inline-item"><code class="notranslate">mckinsey</code></li>
+  <li class="list-inline-item"><code class="notranslate">metlife</code></li>
+  <li class="list-inline-item"><code class="notranslate">microsoft</code></li>
+  <li class="list-inline-item"><code class="notranslate">mini</code></li>
+  <li class="list-inline-item"><code class="notranslate">mit</code></li>
+  <li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
+  <li class="list-inline-item"><code class="notranslate">mlb</code></li>
+  <li class="list-inline-item"><code class="notranslate">mma</code></li>
+  <li class="list-inline-item"><code class="notranslate">monash</code></li>
+  <li class="list-inline-item"><code class="notranslate">mormon</code></li>
+  <li class="list-inline-item"><code class="notranslate">moto</code></li>
+  <li class="list-inline-item"><code class="notranslate">movistar</code></li>
+  <li class="list-inline-item"><code class="notranslate">msd</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtr</code></li>
+  <li class="list-inline-item"><code class="notranslate">mutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">nadex</code></li>
+  <li class="list-inline-item"><code class="notranslate">nationwide</code></li>
+  <li class="list-inline-item"><code class="notranslate">natura</code></li>
+  <li class="list-inline-item"><code class="notranslate">nba</code></li>
+  <li class="list-inline-item"><code class="notranslate">nec</code></li>
+  <li class="list-inline-item"><code class="notranslate">netflix</code></li>
+  <li class="list-inline-item"><code class="notranslate">neustar</code></li>
+  <li class="list-inline-item"><code class="notranslate">newholland</code></li>
+  <li class="list-inline-item"><code class="notranslate">nfl</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nico</code></li>
+  <li class="list-inline-item"><code class="notranslate">nike</code></li>
+  <li class="list-inline-item"><code class="notranslate">nikon</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissan</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissay</code></li>
+  <li class="list-inline-item"><code class="notranslate">nokia</code></li>
+  <li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">norton</code></li>
+  <li class="list-inline-item"><code class="notranslate">nra</code></li>
+  <li class="list-inline-item"><code class="notranslate">ntt</code></li>
+  <li class="list-inline-item"><code class="notranslate">obi</code></li>
+  <li class="list-inline-item"><code class="notranslate">office</code></li>
+  <li class="list-inline-item"><code class="notranslate">omega</code></li>
+  <li class="list-inline-item"><code class="notranslate">oracle</code></li>
+  <li class="list-inline-item"><code class="notranslate">orange</code></li>
+  <li class="list-inline-item"><code class="notranslate">otsuka</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
+  <li class="list-inline-item"><code class="notranslate">pccw</code></li>
+  <li class="list-inline-item"><code class="notranslate">pfizer</code></li>
+  <li class="list-inline-item"><code class="notranslate">philips</code></li>
+  <li class="list-inline-item"><code class="notranslate">piaget</code></li>
+  <li class="list-inline-item"><code class="notranslate">pictet</code></li>
+  <li class="list-inline-item"><code class="notranslate">ping</code></li>
+  <li class="list-inline-item"><code class="notranslate">pioneer</code></li>
+  <li class="list-inline-item"><code class="notranslate">play</code></li>
+  <li class="list-inline-item"><code class="notranslate">playstation</code></li>
+  <li class="list-inline-item"><code class="notranslate">pohl</code></li>
+  <li class="list-inline-item"><code class="notranslate">politie</code></li>
+  <li class="list-inline-item"><code class="notranslate">praxi</code></li>
+  <li class="list-inline-item"><code class="notranslate">prod</code></li>
+  <li class="list-inline-item"><code class="notranslate">progressive</code></li>
+  <li class="list-inline-item"><code class="notranslate">pru</code></li>
+  <li class="list-inline-item"><code class="notranslate">prudential</code></li>
+  <li class="list-inline-item"><code class="notranslate">pwc</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">qvc</code></li>
+  <li class="list-inline-item"><code class="notranslate">redstone</code></li>
+  <li class="list-inline-item"><code class="notranslate">reliance</code></li>
+  <li class="list-inline-item"><code class="notranslate">rexroth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ricoh</code></li>
+  <li class="list-inline-item"><code class="notranslate">rmit</code></li>
+  <li class="list-inline-item"><code class="notranslate">rocher</code></li>
+  <li class="list-inline-item"><code class="notranslate">rogers</code></li>
+  <li class="list-inline-item"><code class="notranslate">rwe</code></li>
+  <li class="list-inline-item"><code class="notranslate">safety</code></li>
+  <li class="list-inline-item"><code class="notranslate">sakura</code></li>
+  <li class="list-inline-item"><code class="notranslate">samsung</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvik</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
+  <li class="list-inline-item"><code class="notranslate">sanofi</code></li>
+  <li class="list-inline-item"><code class="notranslate">sap</code></li>
+  <li class="list-inline-item"><code class="notranslate">saxo</code></li>
+  <li class="list-inline-item"><code class="notranslate">sbi</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">sca</code></li>
+  <li class="list-inline-item"><code class="notranslate">scb</code></li>
+  <li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
+  <li class="list-inline-item"><code class="notranslate">schmidt</code></li>
+  <li class="list-inline-item"><code class="notranslate">schwarz</code></li>
+  <li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
+  <li class="list-inline-item"><code class="notranslate">scor</code></li>
+  <li class="list-inline-item"><code class="notranslate">seat</code></li>
+  <li class="list-inline-item"><code class="notranslate">sener</code></li>
+  <li class="list-inline-item"><code class="notranslate">ses</code></li>
+  <li class="list-inline-item"><code class="notranslate">sew</code></li>
+  <li class="list-inline-item"><code class="notranslate">seven</code></li>
+  <li class="list-inline-item"><code class="notranslate">sfr</code></li>
+  <li class="list-inline-item"><code class="notranslate">seek</code></li>
+  <li class="list-inline-item"><code class="notranslate">shangrila</code></li>
+  <li class="list-inline-item"><code class="notranslate">sharp</code></li>
+  <li class="list-inline-item"><code class="notranslate">shaw</code></li>
+  <li class="list-inline-item"><code class="notranslate">shell</code></li>
+  <li class="list-inline-item"><code class="notranslate">shriram</code></li>
+  <li class="list-inline-item"><code class="notranslate">sina</code></li>
+  <li class="list-inline-item"><code class="notranslate">sky</code></li>
+  <li class="list-inline-item"><code class="notranslate">skype</code></li>
+  <li class="list-inline-item"><code class="notranslate">smart</code></li>
+  <li class="list-inline-item"><code class="notranslate">sncf</code></li>
+  <li class="list-inline-item"><code class="notranslate">softbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">sohu</code></li>
+  <li class="list-inline-item"><code class="notranslate">sony</code></li>
+  <li class="list-inline-item"><code class="notranslate">spiegel</code></li>
+  <li class="list-inline-item"><code class="notranslate">stada</code></li>
+  <li class="list-inline-item"><code class="notranslate">staples</code></li>
+  <li class="list-inline-item"><code class="notranslate">star</code></li>
+  <li class="list-inline-item"><code class="notranslate">starhub</code></li>
+  <li class="list-inline-item"><code class="notranslate">statebank</code></li>
+  <li class="list-inline-item"><code class="notranslate">statefarm</code></li>
+  <li class="list-inline-item"><code class="notranslate">statoil</code></li>
+  <li class="list-inline-item"><code class="notranslate">stc</code></li>
+  <li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">suzuki</code></li>
+  <li class="list-inline-item"><code class="notranslate">swatch</code></li>
+  <li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
+  <li class="list-inline-item"><code class="notranslate">symantec</code></li>
+  <li class="list-inline-item"><code class="notranslate">taobao</code></li>
+  <li class="list-inline-item"><code class="notranslate">target</code></li>
+  <li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
+  <li class="list-inline-item"><code class="notranslate">tdk</code></li>
+  <li class="list-inline-item"><code class="notranslate">telecity</code></li>
+  <li class="list-inline-item"><code class="notranslate">telefonica</code></li>
+  <li class="list-inline-item"><code class="notranslate">temasek</code></li>
+  <li class="list-inline-item"><code class="notranslate">teva</code></li>
+  <li class="list-inline-item"><code class="notranslate">tiffany</code></li>
+  <li class="list-inline-item"><code class="notranslate">tjx</code></li>
+  <li class="list-inline-item"><code class="notranslate">toray</code></li>
+  <li class="list-inline-item"><code class="notranslate">toshiba</code></li>
+  <li class="list-inline-item"><code class="notranslate">total</code></li>
+  <li class="list-inline-item"><code class="notranslate">toyota</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelers</code></li>
+  <li class="list-inline-item"><code class="notranslate">tui</code></li>
+  <li class="list-inline-item"><code class="notranslate">tvs</code></li>
+  <li class="list-inline-item"><code class="notranslate">ubs</code></li>
+  <li class="list-inline-item"><code class="notranslate">unicom</code></li>
+  <li class="list-inline-item"><code class="notranslate">uol</code></li>
+  <li class="list-inline-item"><code class="notranslate">ups</code></li>
+  <li class="list-inline-item"><code class="notranslate">vanguard</code></li>
+  <li class="list-inline-item"><code class="notranslate">verisign</code></li>
+  <li class="list-inline-item"><code class="notranslate">vig</code></li>
+  <li class="list-inline-item"><code class="notranslate">viking</code></li>
+  <li class="list-inline-item"><code class="notranslate">virgin</code></li>
+  <li class="list-inline-item"><code class="notranslate">visa</code></li>
+  <li class="list-inline-item"><code class="notranslate">vista</code></li>
+  <li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
+  <li class="list-inline-item"><code class="notranslate">vivo</code></li>
+  <li class="list-inline-item"><code class="notranslate">volkswagen</code></li>
+  <li class="list-inline-item"><code class="notranslate">volvo</code></li>
+  <li class="list-inline-item"><code class="notranslate">walmart</code></li>
+  <li class="list-inline-item"><code class="notranslate">walter</code></li>
+  <li class="list-inline-item"><code class="notranslate">weatherchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">weber</code></li>
+  <li class="list-inline-item"><code class="notranslate">weir</code></li>
+  <li class="list-inline-item"><code class="notranslate">williamhill</code></li>
+  <li class="list-inline-item"><code class="notranslate">windows</code></li>
+  <li class="list-inline-item"><code class="notranslate">wme</code></li>
+  <li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
+  <li class="list-inline-item"><code class="notranslate">woodside</code></li>
+  <li class="list-inline-item"><code class="notranslate">wtc</code></li>
+  <li class="list-inline-item"><code class="notranslate">xbox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xfinity</code></li>
+  <li class="list-inline-item"><code class="notranslate">yahoo</code></li>
+  <li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
+  <li class="list-inline-item"><code class="notranslate">yandex</code></li>
+  <li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
+  <li class="list-inline-item"><code class="notranslate">youtube</code></li>
+  <li class="list-inline-item"><code class="notranslate">zappos</code></li>
+  <li class="list-inline-item"><code class="notranslate">zara</code></li>
+  <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
 
-Per 8 Juli 2025, kami telah menambahkan negara-negara khusus Eropa berikut:
+As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ax</code></li>
-<li class="list-inline-item"><code class="notranslate">bg</code></li>
-<li class="list-inline-item"><code class="notranslate">fo</code></li>
-<li class="list-inline-item"><code class="notranslate">gi</code></li>
-<li class="list-inline-item"><code class="notranslate">gr</code></li>
-<li class="list-inline-item"><code class="notranslate">hr</code></li>
-<li class="list-inline-item"><code class="notranslate">hu</code></li>
-<li class="list-inline-item"><code class="notranslate">lt</code></li>
-<li class="list-inline-item"><code class="notranslate">lu</code></li>
-<li class="list-inline-item"><code class="notranslate">mc</code></li>
-<li class="list-inline-item"><code class="notranslate">mk</code></li>
-<li class="list-inline-item"><code class="notranslate">mt</code></li>
-<li class="list-inline-item"><code class="notranslate">ro</code></li>
-<li class="list-inline-item"><code class="notranslate">sk</code></li>
-<li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-Kami secara khusus tidak menyertakan `cz`, `ru`, dan `ua` karena aktivitas spam yang tinggi.
-
-### Apa kriteria daftar putih Anda {#what-is-your-allowlist-criteria}
-
-Kami memiliki daftar statis [ekstensi nama domain yang diizinkan secara default](#what-domain-name-extensions-are-allowlisted-by-default) – dan kami juga mempertahankan daftar putih dinamis, ter-cache, dan bergulir berdasarkan kriteria ketat berikut:
-
-* Domain root pengirim harus bertipe [ekstensi nama domain yang sesuai dengan daftar yang kami tawarkan pada paket gratis kami](#what-domain-name-extensions-can-be-used-for-free) (dengan tambahan `biz` dan `info`). Kami juga menyertakan kecocokan parsial `edu`, `gov`, dan `mil`, seperti `xyz.gov.au` dan `xyz.edu.au`.
-* Domain root pengirim harus berada dalam 100.000 hasil parsing domain root unik teratas dari [Daftar Popularitas Payung](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Domain root pengirim harus berada dalam 50.000 hasil parsing domain root unik teratas yang muncul setidaknya dalam 4 dari 7 hari terakhir UPL (~50%+).
-* Domain root pengirim tidak boleh bertipe [dikategorikan](https://radar.cloudflare.com/categorization-feedback/) sebagai konten dewasa atau malware oleh Cloudflare. * Domain root pengirim harus memiliki rekaman A atau MX yang ditetapkan.
-* Domain root pengirim harus memiliki rekaman A, rekaman MX, rekaman DMARC dengan kualifikasi `biz`0 atau `biz`1, atau rekaman SPF dengan kualifikasi `biz`2 atau `biz`3.
-
-Jika kriteria ini terpenuhi, domain root pengirim akan di-cache selama 7 hari. Harap dicatat bahwa pekerjaan otomatis kami berjalan setiap hari – oleh karena itu, ini adalah cache daftar putih bergulir yang diperbarui setiap hari.
-
-Pekerjaan otomatis kami akan mengunduh UPL 7 hari sebelumnya dalam memori, mengekstraknya, lalu mengurainya dalam memori sesuai dengan kriteria ketat di atas.
-
-Domain yang populer saat artikel ini ditulis seperti Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, dan lainnya – tentu saja disertakan.
-
-Jika Anda bukan pengirim dalam daftar putih kami, saat pertama kali domain root FQDN atau alamat IP Anda mengirim email, Anda akan menjadi [tarif terbatas](#do-you-have-rate-limiting) dan [masuk daftar abu-abu](#do-you-have-a-greylist). Harap dicatat bahwa ini adalah praktik standar yang diadopsi sebagai standar email. Sebagian besar klien server email akan mencoba lagi jika menerima kesalahan batas kecepatan atau daftar abu-abu (misalnya, kode status kesalahan level 421 atau 4xx).
-
-**Perhatikan bahwa pengirim tertentu seperti `a@gmail.com`, `b@xyz.edu`, dan `c@gov.au` masih dapat menjadi [ditolak](#do-you-have-a-denylist)** (misalnya jika kami secara otomatis mendeteksi spam, phishing, atau malware dari pengirim tersebut).
-
-### Ekstensi nama domain apa yang bisa digunakan secara gratis {#what-domain-name-extensions-can-be-used-for-free}
-
-Mulai 31 Maret 2023, kami memberlakukan aturan spam menyeluruh baru untuk melindungi pengguna dan layanan kami.
-
-Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan pada paket gratis kami:
+As of July 8, 2025 we have added these Europe-specific countries:
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ac</code></li>
-<li class="list-inline-item"><code class="notranslate">iklan</code></li>
-<li class="list-inline-item"><code class="notranslate">ag</code></li>
-<li class="list-inline-item"><code class="notranslate">ai</code></li>
-<li class="list-inline-item"><code class="notranslate">al</code></li>
-<li class="list-inline-item"><code class="notranslate">am</code></li>
-<li class="list-inline-item"><code class="notranslate">aplikasi</code></li>
-<li class="list-inline-item"><code class="notranslate">sebagai</code></li>
-<li class="list-inline-item"><code class="notranslate">sebagai</code></li>
-<li class="list-inline-item"><code class="notranslate">di</code></li>
-<li class="list-inline-item"><code class="notranslate">au</code></li>
-<li class="list-inline-item"><code class="notranslate">ba</code></li>
-<li class="list-inline-item"><code class="notranslate">be</code></li>
-<li class="list-inline-item"><code class="notranslate">br</code></li>
-<li class="list-inline-item"><code class="notranslate">oleh</code></li>
-<li class="list-inline-item"><code class="notranslate">ca</code></li>
-<li class="list-inline-item"><code class="notranslate">cc</code></li>
-<li class="list-inline-item"><code class="notranslate">cd</code></li>
-<li class="list-inline-item"><code class="notranslate">ch</code></li>
-<li class="list-inline-item"><code class="notranslate">ck</code></li>
-<li class="list-inline-item"><code class="notranslate">co</code></li>
-<li class="list-inline-item"><code class="notranslate">com</code></li>
-<li class="list-inline-item"><code class="notranslate">de</code></li>
-<li class="list-inline-item"><code class="notranslate">dev</code></li>
-<li class="list-inline-item"><code class="notranslate">dj</code></li>
-<li class="list-inline-item"><code class="notranslate">dk</code></li>
-<li class="list-inline-item"><code class="notranslate">ee</code></li>
-<li class="list-inline-item"><code class="notranslate">es</code></li>
-<li class="list-inline-item"><code class="notranslate">eu</code></li>
-<li class="list-inline-item"><code class="notranslate">family</code></li>
-<li class="list-inline-item"><code class="notranslate">fi</code></li>
-<li class="list-inline-item"><code class="notranslate">fm</code></li>
-<li class="list-inline-item"><code class="notranslate">fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gl</code></li>
-<li class="list-inline-item"><code class="notranslate">id</code></li>
-<li class="list-inline-item"><code class="notranslate">ie</code></li>
-<li class="list-inline-item"><code class="notranslate">il</code></li>
-<li class="list-inline-item"><code class="notranslate">im</code></li>
-<li class="list-inline-item"><code class="notranslate">in</code></li>
-<li class="list-inline-item"><code class="notranslate">in</code></li>
-<li class="list-inline-item"><code class="notranslate">io</code></li>
-<li class="list-inline-item"><code class="notranslate">ir</code></li>
-<li class="list-inline-item"><code class="notranslate">is</code></li>
-<li class="list-inline-item"><code class="notranslate">it</code></li>
-<li class="list-inline-item"><code class="notranslate">je</code></li>
-<li class="list-inline-item"><code class="notranslate">jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ke</code></li>
-<li class="list-inline-item"><code class="notranslate">kr</code></li>
-<li class="list-inline-item"><code class="notranslate">la</code></li>
-<li class="list-inline-item"><code class="notranslate">li</code></li>
-<li class="list-inline-item"><code class="notranslate">lv</code></li>
-<li class="list-inline-item"><code class="notranslate">ly</code></li>
-<li class="list-inline-item"><code class="notranslate">md</code></li>
-<li class="list-inline-item"><code class="notranslate">me</code></li>
-<li class="list-inline-item"><code class="notranslate">mn</code></li>
-<li class="list-inline-item"><code class="notranslate">ms</code></li>
-<li class="list-inline-item"><code class="notranslate">mu</code></li>
-<li class="list-inline-item"><code class="notranslate">mx</code></li>
-<li class="list-inline-item"><code class="notranslate">net</code></li>
-<li class="list-inline-item"><code class="notranslate">ni</code></li>
-<li class="list-inline-item"><code class="notranslate">nl</code></li>
-<li class="list-inline-item"><code class="notranslate">tidak</code></li>
-<li class="list-inline-item"><code class="notranslate">nu</code></li>
-<li class="list-inline-item"><code class="notranslate">nu</code></li>
-<li class="list-inline-item"><code class="notranslate">nz</code></li>
-<li class="list-inline-item"><code class="notranslate">org</code></li>
-<li class="list-inline-item"><code class="notranslate">pl</code></li>
-<li class="list-inline-item"><code class="notranslate">pr</code></li>
-<li class="list-inline-item"><code class="notranslate">pt</code></li>
-<li class="list-inline-item"><code class="notranslate">pw</code></li>
-<li class="list-inline-item"><code class="notranslate">rs</code></li>
-<li class="list-inline-item"><code class="notranslate">sc</code></li>
-<li class="list-inline-item"><code class="notranslate">se</code></li>
-<li class="list-inline-item"><code class="notranslate">sh</code></li>
-<li class="list-inline-item"><code class="notranslate">si</code></li>
-<li class="list-inline-item"><code class="notranslate">sm</code></li>
-<li class="list-inline-item"><code class="notranslate">sr</code></li>
-<li class="list-inline-item"><code class="notranslate">st</code></li>
-<li class="list-inline-item"><code class="notranslate">tc</code></li>
-<li class="list-inline-item"><code class="notranslate">tm</code></li>
-<li class="list-inline-item"><code class="notranslate">to</code></li>
-<li class="list-inline-item"><code class="notranslate">tv</code></li>
-<li class="list-inline-item"><code class="notranslate">uk</code></li>
-<li class="list-inline-item"><code class="notranslate">us</code></li>
-<li class="list-inline-item"><code class="notranslate">uz</code></li>
-<li class="list-inline-item"><code class="notranslate">vc</code></li>
-<li class="list-inline-item"><code class="notranslate">vg</code></li>
-<li class="list-inline-item"><code class="notranslate">vu</code></li>
-<li class="list-inline-item"><code class="notranslate">ws</code></li>
-<li class="list-inline-item"><code class="notranslate">xyz</code></li>
-<li class="list-inline-item"><code class="notranslate">za</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-### Apakah Anda memiliki daftar abu-abu {#do-you-have-a-greylist}
+In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
 
-Ya, kami menerapkan kebijakan [daftar abu-abu email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) yang sangat longgar. Daftar abu-abu hanya berlaku untuk pengirim yang tidak ada dalam daftar putih kami dan akan tersimpan dalam cache kami selama 30 hari.
+We specifically did not include `ru` and `ua` due to high spam activity.
 
-Untuk setiap pengirim baru, kami menyimpan kunci di basis data Redis kami selama 30 hari dengan nilai yang ditetapkan sesuai waktu kedatangan awal permintaan pertama mereka. Kemudian, kami menolak email mereka dengan kode status coba ulang 450 dan hanya mengizinkannya lewat setelah 5 menit berlalu.
+### What is your allowlist criteria {#what-is-your-allowlist-criteria}
 
-Jika mereka berhasil menunggu selama 5 menit dari waktu kedatangan awal ini, maka email mereka akan diterima dan mereka tidak akan menerima kode status 450 ini.
+We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
 
-Kuncinya terdiri dari domain root FQDN atau alamat IP pengirim. Ini berarti bahwa setiap subdomain yang lolos daftar abu-abu juga akan lolos sebagai domain root, dan sebaliknya (inilah yang kami maksud dengan kebijakan "sangat longgar").
+* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
+* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
+* Sender root domain must have either A or MX records set.
+* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
 
-Misalnya, jika sebuah email datang dari `test.example.com` sebelum kami melihat email datang dari `example.com`, maka email apa pun dari `test.example.com` dan/atau `example.com` harus menunggu 5 menit dari waktu kedatangan awal koneksi. Kami tidak membuat `test.example.com` dan `example.com` menunggu masing-masing selama 5 menit (kebijakan daftar abu-abu kami berlaku di tingkat domain root).
+If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
 
-Perhatikan bahwa daftar abu-abu tidak berlaku untuk pengirim mana pun di [daftar putih](#do-you-have-an-allowlist) kami (misalnya Meta, Amazon, Netflix, Google, Microsoft pada saat penulisan ini).
+Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
 
-### Apakah Anda memiliki daftar penolakan {#do-you-have-a-denylist}
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
 
-Ya, kami mengoperasikan daftar penolakan kami sendiri dan memperbaruinya secara otomatis dalam waktu nyata dan manual berdasarkan spam dan aktivitas berbahaya yang terdeteksi.
+If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
 
-Kami juga menarik semua alamat IP dari daftar penolakan UCEPROTECT Level 1 di <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> setiap jam dan memasukkannya ke dalam daftar penolakan kami dengan masa berlaku 7 hari.
+**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
 
-Pengirim yang ditemukan dalam daftar tolak akan menerima kode kesalahan 421 (menunjukkan kepada pengirim untuk mencoba lagi nanti) jika mereka [tidak masuk daftar yang diizinkan](#do-you-have-an-allowlist).
+### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
 
-Dengan menggunakan kode status 421 dan bukan kode status 554, potensi positif palsu dapat dikurangi secara real-time dan kemudian pesan dapat berhasil disampaikan pada percobaan berikutnya.
+As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
 
-**Layanan ini dirancang berbeda dari layanan email lainnya**, yang mana jika Anda dimasukkan ke dalam daftar blokir, akan terjadi kegagalan permanen yang parah. Seringkali sulit meminta pengirim untuk mencoba lagi pesan (terutama dari organisasi besar), sehingga pendekatan ini memberikan waktu sekitar 5 hari sejak percobaan email pertama bagi pengirim, penerima, atau kami untuk turun tangan dan mengatasi masalah (dengan meminta penghapusan daftar blokir).
+This new rule allows only the following domain name extensions to be used on our free plan:
 
-Semua permintaan penghapusan daftar tolak dipantau secara real-time oleh admin (misalnya agar positif palsu yang berulang dapat dimasukkan ke daftar putih secara permanen oleh admin).
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ac</code></li>
+  <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ag</code></li>
+  <li class="list-inline-item"><code class="notranslate">ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">al</code></li>
+  <li class="list-inline-item"><code class="notranslate">am</code></li>
+  <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">as</code></li>
+  <li class="list-inline-item"><code class="notranslate">at</code></li>
+  <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">ba</code></li>
+  <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">br</code></li>
+  <li class="list-inline-item"><code class="notranslate">by</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cat</code></li>
+  <li class="list-inline-item"><code class="notranslate">cc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cd</code></li>
+  <li class="list-inline-item"><code class="notranslate">ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">ck</code></li>
+  <li class="list-inline-item"><code class="notranslate">co</code></li>
+  <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">de</code></li>
+  <li class="list-inline-item"><code class="notranslate">dev</code></li>
+  <li class="list-inline-item"><code class="notranslate">dj</code></li>
+  <li class="list-inline-item"><code class="notranslate">dk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ee</code></li>
+  <li class="list-inline-item"><code class="notranslate">es</code></li>
+  <li class="list-inline-item"><code class="notranslate">eu</code></li>
+  <li class="list-inline-item"><code class="notranslate">family</code></li>
+  <li class="list-inline-item"><code class="notranslate">fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">fm</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">id</code></li>
+  <li class="list-inline-item"><code class="notranslate">ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">il</code></li>
+  <li class="list-inline-item"><code class="notranslate">im</code></li>
+  <li class="list-inline-item"><code class="notranslate">in</code></li>
+  <li class="list-inline-item"><code class="notranslate">io</code></li>
+  <li class="list-inline-item"><code class="notranslate">ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">is</code></li>
+  <li class="list-inline-item"><code class="notranslate">it</code></li>
+  <li class="list-inline-item"><code class="notranslate">je</code></li>
+  <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">la</code></li>
+  <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">md</code></li>
+  <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">mu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mx</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">net</code></li>
+  <li class="list-inline-item"><code class="notranslate">ni</code></li>
+  <li class="list-inline-item"><code class="notranslate">nl</code></li>
+  <li class="list-inline-item"><code class="notranslate">no</code></li>
+  <li class="list-inline-item"><code class="notranslate">nu</code></li>
+  <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">rs</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc</code></li>
+  <li class="list-inline-item"><code class="notranslate">se</code></li>
+  <li class="list-inline-item"><code class="notranslate">sh</code></li>
+  <li class="list-inline-item"><code class="notranslate">si</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sm</code></li>
+  <li class="list-inline-item"><code class="notranslate">sr</code></li>
+  <li class="list-inline-item"><code class="notranslate">st</code></li>
+  <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">tm</code></li>
+  <li class="list-inline-item"><code class="notranslate">to</code></li>
+  <li class="list-inline-item"><code class="notranslate">tv</code></li>
+  <li class="list-inline-item"><code class="notranslate">uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">us</code></li>
+  <li class="list-inline-item"><code class="notranslate">uz</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">vc</code></li>
+  <li class="list-inline-item"><code class="notranslate">vg</code></li>
+  <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">ws</code></li>
+  <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">za</code></li>
+</ul>
 
-Permintaan penghapusan daftar tolak dapat diajukan di <https://forwardemail.net/denylist>. Pengguna berbayar akan langsung memproses permintaan penghapusan daftar tolak mereka, sedangkan pengguna tidak berbayar harus menunggu admin memproses permintaan mereka.
+### Do you have a greylist {#do-you-have-a-greylist}
 
-Pengirim yang terdeteksi mengirim konten spam atau virus akan ditambahkan ke daftar tolak dengan pendekatan berikut:
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
 
-1. [sidik jari pesan awal](#how-do-you-determine-an-email-fingerprint) masuk daftar abu-abu setelah mendeteksi spam atau daftar blokir dari pengirim "tepercaya" (misalnya `gmail.com`, `microsoft.com`, `apple.com`).
-* Jika pengirim masuk daftar putih, pesan akan masuk daftar abu-abu selama 1 jam.
-* Jika pengirim tidak masuk daftar putih, pesan akan masuk daftar abu-abu selama 6 jam.
-2. Kami mengurai kunci daftar putih dari informasi pengirim dan pesan, dan untuk setiap kunci ini kami membuat (jika belum ada) penghitung, menambahkannya 1, dan menyimpannya dalam cache selama 24 jam.
-* Untuk pengirim yang masuk daftar putih:
-* Tambahkan kunci untuk alamat email amplop "MAIL FROM" jika memiliki SPF yang lolos atau tidak memiliki SPF, dan bukan [nama pengguna postmaster](#what-are-postmaster-addresses) atau [nama pengguna tanpa balasan](#what-are-no-reply-addresses). * Jika header "Dari" diizinkan, tambahkan kunci untuk alamat email header "Dari" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
-* Jika header "Dari" tidak diizinkan, tambahkan kunci untuk alamat email header "Dari" dan nama domain root-nya yang telah diurai.
-* Untuk pengirim yang tidak diizinkan:
-* Tambahkan kunci untuk alamat email amplop "KIRIM DARI" jika memiliki SPF yang lulus.
-* Jika header "Dari" diizinkan, tambahkan kunci untuk alamat email header "Dari" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
-* Jika header "Dari" tidak diizinkan, tambahkan kunci untuk alamat email header "Dari" dan nama domain root-nya yang telah diurai.
-* Tambahkan kunci untuk alamat IP jarak jauh pengirim.
-* Tambahkan kunci untuk nama host yang diselesaikan klien dengan pencarian terbalik dari alamat IP pengirim (jika ada). * Tambahkan kunci untuk domain root dari nama host klien yang telah diselesaikan (jika ada, dan jika berbeda dengan nama host klien yang telah diselesaikan).
-3. Jika penghitung mencapai angka 5 untuk pengirim dan kunci yang tidak masuk daftar putih, kami akan memasukkan kunci tersebut ke dalam daftar hitam selama 30 hari dan mengirimkan email ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
-4. Jika penghitung mencapai angka 10 untuk pengirim dan kunci yang masuk daftar putih, kami akan memasukkan kunci tersebut ke dalam daftar hitam selama 7 hari dan mengirimkan email ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
+For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
-**CATATAN:** Dalam waktu dekat, kami akan memperkenalkan pemantauan reputasi. Pemantauan reputasi akan menghitung kapan harus memasukkan pengirim ke daftar penolakan berdasarkan ambang batas persentase (bukan penghitung dasar seperti yang disebutkan di atas).
+If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
 
-### Apakah Anda memiliki pembatasan kecepatan {#do-you-have-rate-limiting}
+The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
 
-Pembatasan laju pengirim dilakukan oleh domain root yang diurai dari pencarian PTR terbalik pada alamat IP pengirim – atau jika tidak menghasilkan hasil, maka hanya menggunakan alamat IP pengirim. Perhatikan bahwa kami menyebutnya sebagai `Sender` di bawah.
+For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
-Server MX kami memiliki batasan harian untuk surat masuk yang diterima untuk [penyimpanan IMAP terenkripsi](/blog/docs/best-quantum-safe-encrypted-email-service):
+Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
-* Alih-alih membatasi laju email masuk yang diterima berdasarkan alias individual (misalnya `you@yourdomain.com`) – kami membatasi laju email berdasarkan nama domain alias itu sendiri (misalnya `yourdomain.com`). Hal ini mencegah `Senders` membanjiri kotak masuk semua alias di seluruh domain Anda sekaligus.
-* Kami memiliki batasan umum yang berlaku untuk semua `Senders` di seluruh layanan kami, terlepas dari penerimanya:
-* `Senders` yang kami anggap "tepercaya" sebagai sumber kebenaran (misalnya `gmail.com`, `microsoft.com`, `apple.com`) dibatasi hingga 100 GB per hari.
-* `Senders` yang merupakan [masuk daftar putih](#do-you-have-an-allowlist) dibatasi hingga 10 GB per hari.
-* Semua `yourdomain.com`0 lainnya dibatasi untuk mengirim 1 GB dan/atau 1000 pesan per hari.
-* Kami memiliki batas khusus per `yourdomain.com`1 dan `yourdomain.com`2 sebesar 1 GB dan/atau 1000 pesan per hari.
+### Do you have a denylist {#do-you-have-a-denylist}
 
-Server MX juga membatasi pesan yang diteruskan ke satu atau lebih penerima melalui pembatasan kecepatan – tetapi ini hanya berlaku untuk `Senders`, bukan [daftar putih](#do-you-have-an-allowlist):
+Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
 
-* Kami hanya mengizinkan hingga 100 koneksi per jam, per domain root FQDN `Sender` yang telah diselesaikan (atau) alamat IP jarak jauh `Sender` (jika tidak ada PTR terbalik yang tersedia), dan per penerima amplop. Kami menyimpan kunci untuk pembatasan laju sebagai hash kriptografi di basis data Redis kami.
+We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
 
-* Jika Anda mengirim email melalui sistem kami, pastikan Anda telah menyiapkan PTR terbalik untuk semua alamat IP Anda (jika tidak, setiap domain root FQDN atau alamat IP unik yang Anda kirim akan dibatasi kecepatannya).
+Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
 
-* Perlu diketahui bahwa jika Anda mengirim melalui sistem populer seperti Amazon SES, maka Anda tidak akan dibatasi karena (pada saat penulisan ini) Amazon SES tercantum dalam daftar putih kami.
+By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
 
-* Jika Anda mengirim dari domain seperti `test.abc.123.example.com`, maka batas kecepatan akan diberlakukan pada `example.com`. Banyak spammer menggunakan ratusan subdomain untuk mengakali filter spam umum yang hanya membatasi kecepatan nama host unik, bukan domain root FQDN unik.
+**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
 
-* `Senders` yang melampaui batas kecepatan akan ditolak dengan kesalahan 421.
+All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
 
-Server IMAP dan SMTP kami membatasi alias Anda agar tidak memiliki lebih dari `60` koneksi bersamaan sekaligus.
+Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
 
-Server MX kami membatasi pengirim [tidak masuk daftar yang diizinkan](#do-you-have-an-allowlist) dari membuat lebih dari 10 koneksi bersamaan (dengan kedaluwarsa cache 3 menit untuk penghitung, yang mencerminkan batas waktu soket kami selama 3 menit).
+Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
 
-### Bagaimana Anda melindungi dari hamburan balik {#how-do-you-protect-against-backscatter}
+1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
+   * If the sender was allowlisted, the message is greylisted for 1 hour.
+   * If the sender is not allowlisted, the message is greylisted for 6 hours.
+2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
+   * For allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+   * For non-allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+     * Add a key for the remote IP address of the sender.
+     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
+     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
+3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
 
-Pantulan yang salah arah atau spam pantulan (dikenal sebagai "[Hamburan balik](https://en.wikipedia.org/wiki/Backscatter_\(email\))") dapat menyebabkan reputasi negatif pada alamat IP pengirim.
+> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
 
-Kami mengambil dua langkah untuk melindungi terhadap backscatter, yang dirinci dalam bagian berikut [Cegah pantulan dari pengirim MAIL FROM yang diketahui](#prevent-bounces-from-known-mail-from-spammers) dan [Cegah pantulan yang tidak perlu untuk melindungi dari hamburan balik](#prevent-unnecessary-bounces-to-protect-against-backscatter) di bawah.
+### Do you have rate limiting {#do-you-have-rate-limiting}
 
-### Cegah pantulan dari pengirim spam MAIL FROM yang diketahui {#prevent-bounces-from-known-mail-from-spammers}
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-Kami menarik daftar dari [Backscatter.org](https://www.backscatterer.org/) (didukung oleh [UCEPROTECT](https://www.uceprotect.net/)) pada <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> setiap jam dan memasukkannya ke dalam basis data Redis kami (kami juga membandingkan perbedaannya terlebih dahulu; apabila ada IP yang dihapus yang perlu dihormati).
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Jika MAIL FROM kosong ATAU sama dengan (tanpa memperhatikan huruf besar/kecil) salah satu [alamat kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email), maka kami memeriksa apakah IP pengirim cocok dengan salah satu dari daftar ini.
+* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
+* We have general limits that apply to all `Senders` across our service regardless of recipient:
+  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
+  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
+  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
+* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
-Jika IP pengirim tercantum (dan tidak ada di [daftar putih](#do-you-have-an-allowlist) kami), maka kami akan mengirimkan pesan kesalahan 554 dengan `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Kami akan diberi tahu jika pengirim ada di daftar Backscatterer dan daftar putih kami sehingga kami dapat menyelesaikan masalah tersebut jika diperlukan.
+The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
-Teknik yang dijelaskan di bagian ini mematuhi rekomendasi "SAFE MODE" di <https://www.backscatterer.org/?target=usage> – di mana kami hanya memeriksa IP pengirim jika kondisi tertentu telah terpenuhi.
+* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
-### Cegah pantulan yang tidak perlu untuk melindungi dari hamburan balik {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
-Pentalan adalah email yang menunjukkan penerusan email gagal sepenuhnya kepada penerima dan email tidak akan dicoba lagi.
+* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
 
-Salah satu alasan umum mengapa situs Anda masuk dalam daftar Backscatterer adalah pantulan yang salah arah atau spam pantulan, jadi kita harus melindungi diri dari hal ini dengan beberapa cara:
+* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
 
-1. Kami hanya mengirim bila terjadi kesalahan kode status >= 500 (bila email yang dicoba diteruskan gagal, misalnya Gmail merespons dengan kesalahan level 500).
+* `Senders` that exceed the rate limit will be rejected with a 421 error.
 
-2. Kami hanya mengirim sekali dan sekali saja (kami menggunakan kunci sidik jari pantulan yang telah dihitung dan menyimpannya dalam cache untuk mencegah pengiriman duplikat). Sidik jari pantulan adalah kunci yang merupakan sidik jari pesan yang digabungkan dengan hash alamat pantulan dan kode kesalahannya. Lihat bagian [Sidik jari](#how-do-you-determine-an-email-fingerprint) untuk informasi lebih lanjut tentang cara penghitungan sidik jari pesan. Sidik jari pantulan yang berhasil dikirim akan kedaluwarsa setelah 7 hari di cache Redis kami.
+Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
-3. Kami hanya mengirim bila MAIL FROM dan/atau From tidak kosong dan tidak berisi (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
 
-4. Kami tidak mengirim jika pesan asli memiliki salah satu tajuk berikut (tidak peka huruf besar-kecil):
+### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
 
-* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`.
-* Header `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
-* Header `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, atau `no`7 (terlepas dari nilainya).
-* Header `no`8 dengan nilai `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, atau `x-auto-response-suppress`3.
+Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
 
-5. Kami tidak mengirim jika alamat email MAIL FROM atau From diakhiri dengan `+donotreply`, `-donotreply`, `+noreply`, atau `-noreply`.
+We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
 
-6. Kami tidak mengirim jika bagian nama pengguna alamat email Dari adalah `mdaemon` dan memiliki header yang tidak peka huruf besar/kecil `X-MDDSN-Message`.
+### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
 
-7. Kami tidak mengirim jika ada header `content-type` yang tidak peka huruf besar/kecil dari `multipart/report`.
+We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-### Bagaimana cara menentukan sidik jari email {#how-do-you-determine-an-email-fingerprint}
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-Sidik jari email digunakan untuk menentukan keunikan email dan untuk mencegah pesan duplikat terkirim dan [pantulan duplikat](#prevent-unnecessary-bounces-to-protect-against-backscatter) terkirim.
+If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
-Sidik jari dihitung dari daftar berikut:
+The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
 
-* Nama host atau alamat IP FQDN yang telah diselesaikan klien
-* Nilai header `Message-ID` (jika ada)
-* Nilai header `Date` (jika ada)
-* Nilai header `From` (jika ada)
-* Nilai header `To` (jika ada)
-* Nilai header `Cc` (jika ada)
-* Nilai header `Subject` (jika ada)
-* Nilai `Body` (jika ada)
+### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-### Dapatkah saya meneruskan email ke port selain 25 (misalnya jika ISP saya memblokir port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
 
-Ya, kami telah menambahkan fitur ini per 5 Mei 2020. Saat ini, fitur ini bersifat khusus domain, bukan khusus alias. Jika Anda menginginkannya khusus alias, silakan hubungi kami untuk memberi tahu kebutuhan Anda.
+A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
+
+1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+
+2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+
+3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+
+4. We don't send if the original message had any of the following headers (case-insensitive):
+
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+
+5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+
+6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+
+7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+
+### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+
+An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+
+The fingerprint is calculated from the following list:
+
+* Client resolved FQDN hostname or IP address
+* `Message-ID` header value (if any)
+* `Date` header value (if any)
+* `From` header value (if any)
+* `To` header value (if any)
+* `Cc` header value (if any)
+* `Subject` header value (if any)
+* `Body` value (if any)
+
+### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+
+Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Perlindungan Privasi yang Ditingkatkan:
-</strong>
-<span>
-Jika Anda menggunakan paket berbayar (yang dilengkapi perlindungan privasi yang ditingkatkan), silakan buka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>, klik "Pengaturan" di samping domain Anda, lalu klik "Pengaturan". Jika Anda ingin mempelajari lebih lanjut tentang paket berbayar, silakan lihat halaman <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Harga</a> kami. Jika tidak, Anda dapat terus mengikuti petunjuk di bawah ini.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="notranslate">TXT</strong> baru seperti yang ditunjukkan di bawah ini, tetapi ubah port dari 25 ke port pilihan Anda.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
-Misalnya, jika saya ingin semua email yang masuk ke `example.com` diteruskan ke port SMTP penerima alias 1337, bukan 25:
+For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email-port=1337</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-port=1337</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-Skenario paling umum untuk pengaturan penerusan porta khusus adalah ketika Anda ingin meneruskan semua email yang masuk ke example.com ke porta lain di example.com, selain porta standar SMTP 25. Untuk mengaturnya, cukup tambahkan record catch-all <strong class="notranslate">TXT</strong> berikut.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+  <span>
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=example.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=example.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### Apakah mendukung simbol plus + untuk alias Gmail {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Ya, tentu saja.
+Yes, absolutely.
 
-### Apakah ini mendukung subdomain {#does-it-support-sub-domains}
+### Does it support sub-domains {#does-it-support-sub-domains}
 
-Ya, tentu saja. Alih-alih menggunakan "@", ".", atau kosong sebagai nama/host/alias, Anda cukup menggunakan nama subdomain sebagai nilainya.
+Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
-Jika Anda ingin `foo.example.com` meneruskan email, masukkan `foo` sebagai nilai nama/host/alias dalam pengaturan DNS Anda (untuk rekaman MX dan <strong class="notranslate">TXT</strong>).
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
-### Apakah ini meneruskan header email saya {#does-this-forward-my-emails-headers}
+### Does this forward my email's headers {#does-this-forward-my-emails-headers}
 
-Ya, tentu saja.
+Yes, absolutely.
 
-### Apakah ini sudah teruji dengan baik {#is-this-well-tested}
+### Is this well-tested {#is-this-well-tested}
 
-Ya, ia memiliki pengujian yang ditulis dengan [tersedia](https://github.com/avajs/ava) dan juga memiliki cakupan kode.
+Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
 
-### Apakah Anda meneruskan pesan dan kode respons SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
+### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Ya, tentu saja. Misalnya, jika Anda mengirim email ke `hello@example.com` dan terdaftar untuk diteruskan ke `user@gmail.com`, maka pesan respons SMTP dan kode dari server SMTP "gmail.com" akan dikembalikan, bukan server proksi di "mx1.forwardemail.net" atau "mx2.forwardemail.net".
+Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
 
-### Bagaimana cara mencegah spammer dan memastikan reputasi penerusan email yang baik {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-Lihat bagian kami pada [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work), [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues), dan [Bagaimana Anda menangani alamat IP Anda yang diblokir?](#how-do-you-handle-your-ip-addresses-becoming-blocked) di atas.
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
 
-### Bagaimana Anda melakukan pencarian DNS pada nama domain {#how-do-you-perform-dns-lookups-on-domain-names}
+### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Kami membuat proyek perangkat lunak sumber terbuka :tangerine: [Jeruk keprok](https://github.com/forwardemail/tangerine) dan menggunakannya untuk pencarian DNS. Server DNS default yang digunakan adalah `1.1.1.1` dan `1.0.0.1`, dan kueri DNS dilakukan melalui [DNS melalui HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") di lapisan aplikasi.
+We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
 
-:tangerine: [Jeruk keprok](https://github.com/tangerine) menggunakan [layanan DNS konsumen CloudFlare yang mengutamakan privasi secara default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
 
-## Akun dan Penagihan {#account-and-billing}
+## Account and Billing {#account-and-billing}
 
-### Apakah Anda menawarkan jaminan uang kembali untuk paket berbayar {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-Ya! Pengembalian dana otomatis berlaku jika Anda meningkatkan, menurunkan, atau membatalkan akun dalam waktu 30 hari sejak paket pertama kali dimulai. Ini hanya berlaku untuk pelanggan baru.
+Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
-### Jika saya mengganti paket, apakah Anda akan memberikan prorata dan mengembalikan selisihnya {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-Kami tidak melakukan prorata atau pengembalian selisihnya saat Anda beralih paket. Sebagai gantinya, kami mengonversi sisa durasi dari tanggal kedaluwarsa paket Anda yang ada ke durasi relatif terdekat untuk paket baru Anda (dibulatkan ke bawah berdasarkan bulan).
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
-Perlu diingat bahwa jika Anda meningkatkan atau menurunkan versi antar paket berbayar dalam kurun waktu 30 hari sejak pertama kali memulai paket berbayar, maka kami akan secara otomatis mengembalikan jumlah penuh dari paket Anda saat ini.
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
-### Bisakah saya menggunakan layanan penerusan email ini sebagai server MX "fallback" atau "fallover" {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-Tidak, hal ini tidak disarankan, karena Anda hanya dapat menggunakan satu server pertukaran email dalam satu waktu. Fallback biasanya tidak pernah dicoba ulang karena kesalahan konfigurasi prioritas dan server email tidak mematuhi pemeriksaan prioritas pertukaran MX.
+No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
 
-### Bisakah saya menonaktifkan alias tertentu {#can-i-disable-specific-aliases}
+### Can I disable specific aliases {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan paket berbayar, Anda harus membuka <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Hapus centang pada kotak "Aktif" <i class="fa fa-angle-right"></i> Lanjutkan.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+  </span>
 </div>
 
-Ya, cukup edit rekaman DNS <strong class="notranslate">TXT</strong> Anda dan beri awalan alias dengan satu, dua, atau tiga tanda seru (lihat di bawah).
+Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
 
-Perlu diingat bahwa Anda *harus* mempertahankan pemetaan ":", karena ini diperlukan jika Anda memutuskan untuk menonaktifkannya (dan ini juga digunakan untuk mengimpor jika Anda meningkatkan ke salah satu paket berbayar kami).
+Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
 
-**Untuk penolakan diam-diam (pesan tampak berhasil terkirim bagi pengirim, tetapi sebenarnya tidak menghasilkan apa-apa) (kode status `250`):** Jika Anda menambahkan "!" (tanda seru tunggal) pada alias, maka kode status `250` yang berhasil akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, tetapi email itu sendiri tidak akan menghasilkan apa-apa (misalnya lubang hitam atau `/dev/null`).
+**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
 
-**Untuk penolakan lunak (kode status `421`):** Jika Anda menambahkan awalan "!!" (tanda seru ganda) pada alias, maka kode status kesalahan lunak `421` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, dan email akan sering dicoba ulang hingga 5 hari sebelum ditolak dan terpental.
+**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
 
-**Untuk penolakan keras (kode status `550`):** Jika Anda memberi awalan "!!!" (tanda seru tiga kali) pada alias, maka kode status kesalahan permanen `550` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, dan email akan ditolak dan terpental.
+**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
 
-Misalnya, jika saya ingin semua email yang masuk ke `alias@example.com` berhenti mengalir ke `user@gmail.com` dan ditolak serta terpental (misalnya gunakan tiga tanda seru):
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:user@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:user@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Anda juga dapat menulis ulang alamat penerima yang diteruskan menjadi "nobody@forwardemail.net", yang akan mengarahkannya ke nobody seperti pada contoh di bawah ini.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Jika Anda menginginkan keamanan yang lebih baik, Anda juga dapat menghapus bagian ":user@gmail.com" (atau ":nobody@forwardemail.net"), dan hanya menyisakan "!!!alias" seperti pada contoh di bawah ini.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### Bisakah saya meneruskan email ke beberapa penerima {#can-i-forward-emails-to-multiple-recipients}
+### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
 
-Ya, tentu saja. Cukup tentukan beberapa penerima dalam data <strong class="notranslate">TXT</strong> Anda.
+Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
 
-Misalnya, jika saya ingin email yang ditujukan ke `hello@example.com` diteruskan ke `user+a@gmail.com` dan `user+b@gmail.com`, maka rekaman <strong class="notranslate">TXT</strong> saya akan terlihat seperti ini:
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Atau, Anda dapat menentukannya dalam dua baris terpisah, seperti ini:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Terserah Anda!
+It's up to you!
 
-### Bisakah saya memiliki beberapa penerima global yang dapat menangkap semua {#can-i-have-multiple-global-catch-all-recipients}
+### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
 
-Ya, Anda bisa. Cukup tentukan beberapa penerima global yang dapat diakses semua orang dalam data <strong class="notranslate">TXT</strong> Anda.
+Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
 
-Misalnya, jika saya ingin setiap email yang masuk ke `*@example.com` (tanda bintang berarti karakter pengganti alias catch-all) diteruskan ke `user+a@gmail.com` dan `user+b@gmail.com`, maka rekaman <strong class="notranslate">TXT</strong> saya akan terlihat seperti ini:
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Atau, Anda dapat menentukannya dalam dua baris terpisah, seperti ini:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nama/Host/Alias</th>
-<th class="text-center">TTL</th>
-<th>Jenis</th>
-<th>Jawaban/Nilai</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>@, ".", atau kosong</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>@, ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Terserah Anda!
+It's up to you!
 
-### Apakah ada batasan maksimum jumlah alamat email yang dapat saya teruskan per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-Ya, batas defaultnya adalah 10. Ini BUKAN berarti Anda hanya dapat memiliki 10 alias pada nama domain Anda. Anda dapat memiliki alias sebanyak yang Anda inginkan (jumlahnya tidak terbatas). Artinya, Anda hanya dapat meneruskan satu alias ke 10 alamat email unik. Anda dapat memiliki `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (dari 1-10) – dan email apa pun ke `hello@example.com` akan diteruskan ke `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (dari 1-10).
+Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tips:
-</strong>
-<span>
-Butuh lebih dari 10 penerima per alias? Kirimkan email kepada kami dan kami akan dengan senang hati meningkatkan batas akun Anda.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+  </span>
 </div>
 
-### Bisakah saya meneruskan email secara rekursif {#can-i-recursively-forward-emails}
+### Can I recursively forward emails {#can-i-recursively-forward-emails}
 
-Ya, Anda bisa, tetapi Anda tetap harus mematuhi batas maksimum. Jika Anda memiliki `hello:linus@example.com` dan `linus:user@gmail.com`, maka email ke `hello@example.com` akan diteruskan ke `linus@example.com` dan `user@gmail.com`. Harap dicatat bahwa kesalahan akan muncul jika Anda mencoba meneruskan email secara rekursif melebihi batas maksimum.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
 
-### Bisakah orang lain membatalkan pendaftaran atau mendaftarkan penerusan email saya tanpa izin saya {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-Kami menggunakan verifikasi data MX dan <strong class="notranslate">TXT</strong>. Oleh karena itu, jika Anda menambahkan data MX dan <strong class="notranslate">TXT</strong> masing-masing layanan ini, Anda akan terdaftar. Jika Anda menghapusnya, Anda akan dibatalkan pendaftarannya. Anda memiliki kepemilikan atas domain dan manajemen DNS Anda, jadi jika seseorang memiliki akses ke sana, itu akan menjadi masalah.
+We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
-### Bagaimana ini gratis {#how-is-it-free}
+### How is it free {#how-is-it-free}
 
-Forward Email menawarkan tingkatan gratis melalui kombinasi pengembangan sumber terbuka, infrastruktur yang efisien, dan paket berbayar opsional yang mendukung layanan tersebut.
+Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
 
-Tingkat gratis kami didukung oleh:
+Our free tier is supported by:
 
-1. **Pengembangan Sumber Terbuka**: Basis kode kami bersifat sumber terbuka, yang memungkinkan kontribusi komunitas dan operasi yang transparan.
+1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
 
-2. **Infrastruktur yang Efisien**: Kami telah mengoptimalkan sistem kami untuk menangani penerusan email dengan sumber daya minimal.
+2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
 
-3. **Paket Premium Berbayar**: Pengguna yang memerlukan fitur tambahan seperti pengiriman SMTP, penerimaan IMAP, atau opsi privasi yang ditingkatkan berlangganan paket berbayar kami.
+3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
 
-4. **Batas Penggunaan Wajar**: Tingkat gratis memiliki kebijakan penggunaan wajar untuk mencegah penyalahgunaan.
+4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
 
 > \[!NOTE]
-> Kami berkomitmen untuk menjaga penerusan email dasar tetap gratis sekaligus menawarkan fitur premium bagi pengguna dengan kebutuhan yang lebih lanjut.
+> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
 
 > \[!TIP]
-> Jika Anda merasa layanan kami bermanfaat, pertimbangkan untuk meningkatkan ke paket berbayar untuk mendukung pengembangan dan pemeliharaan berkelanjutan.
+> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
 
-### Berapa batas ukuran email maksimum {#what-is-the-max-email-size-limit}
+### What is the max email size limit {#what-is-the-max-email-size-limit}
 
-Kami menetapkan batas ukuran standar 50 MB, yang mencakup konten, header, dan lampiran. Perlu diketahui bahwa layanan seperti Gmail dan Outlook hanya mengizinkan batas ukuran 25 MB, dan jika Anda melebihi batas tersebut saat mengirim ke alamat di penyedia tersebut, Anda akan menerima pesan kesalahan.
+We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
 
-Kesalahan dengan kode respons yang tepat dikembalikan jika batas ukuran file terlampaui.
+An error with the proper response code is returned if the file size limit is exceeded.
 
-### Apakah Anda menyimpan log email {#do-you-store-logs-of-emails}
+### Do you store logs of emails {#do-you-store-logs-of-emails}
 
-Tidak, kami tidak menulis ke disk atau menyimpan log – dengan [pengecualian kesalahan](#do-you-store-error-logs) dan [SMTP keluar](#do-you-support-sending-email-with-smtp) (lihat [Kebijakan Privasi](/privacy) kami).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### Apakah Anda menyimpan log kesalahan {#do-you-store-error-logs}
+### Do you store error logs {#do-you-store-error-logs}
 
-**Ya. Anda dapat mengakses log kesalahan di [Akun Saya → Log](/my-account/logs) atau [Akun Saya → Domain](/my-account/domains).**
+**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
 
-Per Februari 2023, kami menyimpan log kesalahan untuk kode respons SMTP `4xx` dan `5xx` selama 7 hari – yang berisi kesalahan SMTP, amplop, dan header email (kami **tidak** menyimpan isi email maupun lampirannya).
+As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
 
-Log kesalahan memungkinkan Anda memeriksa email penting yang hilang dan mengurangi positif palsu spam untuk [domain Anda](/my-account/domains). Log kesalahan juga merupakan sumber daya yang bagus untuk men-debug masalah dengan [webhook email](#do-you-support-webhooks) (karena log kesalahan berisi respons titik akhir webhook).
+Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
 
-Log kesalahan untuk [pembatasan laju](#do-you-have-rate-limiting) dan [daftar abu-abu](#do-you-have-a-greylist) tidak dapat diakses karena koneksi berakhir lebih awal (misalnya sebelum perintah `RCPT TO` dan `MAIL FROM` dapat dikirimkan).
+Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
 
-Lihat [Kebijakan Privasi](/privacy) kami untuk wawasan lebih lanjut.
+See our [Privacy Policy](/privacy) for more insight.
 
-### Apakah Anda membaca email saya {#do-you-read-my-emails}
+### Do you read my emails {#do-you-read-my-emails}
 
-Tidak, sama sekali tidak. Lihat [Kebijakan Privasi](/privacy) kami.
+No, absolutely not.  See our [Privacy Policy](/privacy).
 
-Banyak layanan penerusan email lainnya menyimpan dan berpotensi membaca email Anda. Tidak ada alasan mengapa email yang diteruskan perlu disimpan ke penyimpanan disk – dan oleh karena itu, kami merancang solusi sumber terbuka pertama yang melakukan semuanya di dalam memori.
+Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
 
-Kami percaya Anda berhak atas privasi dan kami sangat menghormatinya. Kode yang diterapkan ke server adalah [perangkat lunak sumber terbuka di GitHub](https://github.com/forwardemail) demi transparansi dan membangun kepercayaan.
+We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
 
-### Bisakah saya "mengirim email sebagai" di Gmail dengan {#can-i-send-mail-as-in-gmail-with-this} ini
+### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
 
-Ya! Kami telah menambahkan fitur ini mulai 2 Oktober 2018. Lihat [Cara Mengirim Email Menggunakan Gmail](#how-to-send-mail-as-using-gmail) di atas!
+Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
 
-Anda juga harus menetapkan catatan SPF untuk Gmail dalam catatan <strong class="notranslate">TXT</strong> konfigurasi DNS Anda.
+You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Gmail (misalnya, Kirim Email Sebagai) atau G Suite, Anda perlu menambahkan <code>include:_spf.google.com</code> ke data <strong class="notranslate">TXT</strong> SPF Anda, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
-### Bisakah saya "mengirim email sebagai" di Outlook dengan {#can-i-send-mail-as-in-outlook-with-this} ini
+### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
 
-Ya! Kami telah menambahkan fitur ini sejak 2 Oktober 2018. Silakan lihat dua tautan dari Microsoft di bawah ini:
+Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-Anda juga harus menetapkan catatan SPF untuk Outlook dalam catatan <strong class="notranslate">TXT</strong> konfigurasi DNS Anda.
+You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Penting:
-</strong>
-<span>
-Jika Anda menggunakan Microsoft Outlook atau Live.com, Anda perlu menambahkan <code>include:spf.protection.outlook.com</code> ke data <strong class="notranslate">TXT</strong> SPF Anda, misalnya:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
-### Bisakah saya "mengirim email sebagai" di Apple Mail dan iCloud Mail dengan {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} ini
+### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-Jika Anda pelanggan iCloud+, Anda dapat menggunakan domain khusus. [Layanan kami juga kompatibel dengan Apple Mail](#apple-mail).
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
 
-Silakan lihat <https://support.apple.com/en-us/102540> untuk informasi lebih lanjut.
+Please see <https://support.apple.com/en-us/102540> for more information.
 
-### Bisakah saya meneruskan email tanpa batas dengan {#can-i-forward-unlimited-emails-with-this} ini?
+### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
 
-Ya, namun pengirim yang "relatif tidak dikenal" dibatasi hingga 100 koneksi per jam per nama host atau IP. Lihat bagian [Pembatasan Kecepatan](#do-you-have-rate-limiting) dan [Daftar abu-abu](#do-you-have-a-greylist) di atas.
+Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
-Dengan "relatif tidak dikenal", yang kami maksud adalah pengirim yang tidak muncul dalam [daftar putih](#do-you-have-an-allowlist).
+By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
-Jika batas ini terlampaui, kami akan mengirimkan kode respons 421 yang memberi tahu server email pengirim untuk mencoba lagi nanti.
+If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
 
-### Apakah Anda menawarkan domain tak terbatas dengan satu harga {#do-you-offer-unlimited-domains-for-one-price}
+### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
 
-Ya. Apa pun paket yang Anda pilih, Anda hanya akan membayar satu tarif bulanan – yang mencakup semua domain Anda.
+Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
 
-### Metode pembayaran apa yang Anda terima {#which-payment-methods-do-you-accept}
+### Which payment methods do you accept {#which-payment-methods-do-you-accept}
 
-Forward Email menerima metode pembayaran satu kali atau bulanan/triwulanan/tahunan berikut:
+Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
 
-1. **Kartu Kredit/Debit/Transfer Bank**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, dll.
-2. **PayPal**: Hubungkan akun PayPal Anda untuk pembayaran mudah
-3. **Mata Uang Kripto**: Kami menerima pembayaran melalui pembayaran stablecoin Stripe di jaringan Ethereum, Polygon, dan Solana
+1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
+2. **PayPal**: Connect your PayPal account for easy payments
+3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
 
 > \[!NOTE]
-> Kami menyimpan informasi pembayaran terbatas di server kami, yang hanya mencakup pengenal pembayaran dan referensi ke ID transaksi, pelanggan, langganan, dan pembayaran [Garis](https://stripe.com/global) dan [PayPal](https://www.paypal.com).
+> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
 
 > \[!TIP]
-> Untuk privasi maksimal, pertimbangkan untuk menggunakan pembayaran mata uang kripto.
+> For maximum privacy, consider using cryptocurrency payments.
 
-Semua pembayaran diproses secara aman melalui Stripe atau PayPal. Detail pembayaran Anda tidak pernah disimpan di server kami.
+All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
 
-## Sumber Daya Tambahan {#additional-resources}
+## Additional Resources {#additional-resources}
 
 > \[!TIP]
-> Artikel kami di bawah ini diperbarui secara berkala dengan panduan, tips, dan informasi teknis baru. Kunjungi kembali secara berkala untuk mengetahui konten terbaru.
+> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
 
-* [Studi Kasus & Dokumentasi Pengembang](/blog/docs)
-* [Sumber daya](/resources)
-* [Panduan](/guides)
+* [Case Studies & Developer Documentation](/blog/docs)
+* [Resources](/resources)
+* [Guides](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

@@ -1,1740 +1,2450 @@
-# Ofte stillede spørgsmål {#frequently-asked-questions}
+# Frequently Asked Questions {#frequently-asked-questions}
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
-## Indholdsfortegnelse {#table-of-contents}
+## Table of Contents {#table-of-contents}
 
-* [Hurtig start](#quick-start)
-* [Indledning](#introduction)
-  * [Hvad er videresendt e-mail](#what-is-forward-email)
-  * [Hvem bruger videresendt e-mail](#who-uses-forward-email)
-  * [Hvad er historikken for videresendelse af e-mails](#what-is-forward-emails-history)
-  * [Hvor hurtig er denne service](#how-fast-is-this-service)
-* [E-mailklienter](#email-clients)
+* [Quick Start](#quick-start)
+* [Introduction](#introduction)
+  * [What is Forward Email](#what-is-forward-email)
+  * [Who uses Forward Email](#who-uses-forward-email)
+  * [What is Forward Email's history](#what-is-forward-emails-history)
+  * [How fast is this service](#how-fast-is-this-service)
+* [Email Clients](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
-  * [Mobile enheder](#mobile-devices)
-  * [Sådan sender du e-mail som ved hjælp af Gmail](#how-to-send-mail-as-using-gmail)
-  * [Hvad er den gratis, ældre guide til Send mail som ved hjælp af Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Avanceret Gmail-routingkonfiguration](#advanced-gmail-routing-configuration)
-  * [Avanceret Outlook-routingkonfiguration](#advanced-outlook-routing-configuration)
-* [Fejlfinding](#troubleshooting)
-  * [Hvorfor modtager jeg ikke mine testmails](#why-am-i-not-receiving-my-test-emails)
-  * [Hvordan konfigurerer jeg min e-mailklient til at fungere med videresendelse af e-mail](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Hvorfor lander mine e-mails i spam og junk, og hvordan kan jeg tjekke mit domæneomdømme?](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [Hvad skal jeg gøre, hvis jeg modtager spam-e-mails](#what-should-i-do-if-i-receive-spam-emails)
-  * [Hvorfor vises mine testmails, der er sendt til mig selv, som "mistænkelige" i Gmail?](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Kan jeg fjerne via forwardemail punktum .net i Gmail?](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Datahåndtering](#data-management)
-  * [Hvor er jeres servere placeret](#where-are-your-servers-located)
-  * [Hvordan eksporterer og sikkerhedskopierer jeg min postkasse](#how-do-i-export-and-backup-my-mailbox)
-  * [Hvordan importerer og migrerer jeg min eksisterende postkasse](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Støtter du selvhosting?](#do-you-support-self-hosting)
-* [E-mailkonfiguration](#email-configuration)
-  * [Hvordan kommer jeg i gang og konfigurerer videresendelse af e-mails](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Kan jeg bruge flere MX-udvekslinger og servere til avanceret videresendelse?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Hvordan opsætter jeg en feriesvar (autosvar ved fravær)?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [Hvordan konfigurerer jeg SPF til videresendelse af e-mails](#how-do-i-set-up-spf-for-forward-email)
-  * [Hvordan konfigurerer jeg DKIM til videresendelse af e-mails](#how-do-i-set-up-dkim-for-forward-email)
-  * [Hvordan konfigurerer jeg DMARC til videresendelse af e-mail](#how-do-i-set-up-dmarc-for-forward-email)
-  * [Hvordan forbinder og konfigurerer jeg mine kontakter](#how-do-i-connect-and-configure-my-contacts)
-  * [Hvordan forbinder og konfigurerer jeg mine kalendere](#how-do-i-connect-and-configure-my-calendars)
-  * [Hvordan tilføjer jeg flere kalendere og administrerer eksisterende kalendere?](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [Hvordan konfigurerer jeg SRS til videresendelse af e-mail](#how-do-i-set-up-srs-for-forward-email)
-  * [Hvordan konfigurerer jeg MTA-STS til videresendelse af e-mails](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [Hvordan tilføjer jeg et profilbillede til min e-mailadresse](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Avancerede funktioner](#advanced-features)
-  * [Understøtter I nyhedsbreve eller mailinglister til markedsføringsrelaterede e-mails?](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Understøtter I afsendelse af e-mails med API](#do-you-support-sending-email-with-api)
-  * [Understøtter I modtagelse af e-mails med IMAP](#do-you-support-receiving-email-with-imap)
-  * [Understøtter du POP3](#do-you-support-pop3)
-  * [Understøtter I kalendere (CalDAV)?](#do-you-support-calendars-caldav)
-  * [Understøtter du kontakter (CardDAV)](#do-you-support-contacts-carddav)
-  * [Understøtter I afsendelse af e-mail med SMTP](#do-you-support-sending-email-with-smtp)
-  * [Understøtter I OpenPGP/MIME, end-to-end-kryptering ("E2EE") og Web Key Directory ("WKD")?](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Støtter du MTA-STS](#do-you-support-mta-sts)
-  * [Understøtter I adgangsnøgler og WebAuthn?](#do-you-support-passkeys-and-webauthn)
-  * [Støtter du bedste praksis for e-mail](#do-you-support-email-best-practices)
-  * [Understøtter I bounce webhooks](#do-you-support-bounce-webhooks)
-  * [Understøtter I webhooks?](#do-you-support-webhooks)
-  * [Understøtter du regulære udtryk eller regex?](#do-you-support-regular-expressions-or-regex)
-  * [Hvad er jeres udgående SMTP-grænser](#what-are-your-outbound-smtp-limits)
-  * [Skal jeg have godkendelse for at aktivere SMTP](#do-i-need-approval-to-enable-smtp)
-  * [Hvad er dine SMTP-serverkonfigurationsindstillinger](#what-are-your-smtp-server-configuration-settings)
-  * [Hvad er dine IMAP-serverkonfigurationsindstillinger](#what-are-your-imap-server-configuration-settings)
-  * [Hvad er dine POP3-serverkonfigurationsindstillinger](#what-are-your-pop3-server-configuration-settings)
-  * [Postfix SMTP-relækonfiguration](#postfix-smtp-relay-configuration)
-* [Sikkerhed](#security)
-  * [Avancerede serverhærdningsteknikker](#advanced-server-hardening-techniques)
-  * [Har du SOC 2- eller ISO 27001-certificeringer?](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Bruger du TLS-kryptering til videresendelse af e-mails](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Bevarer du e-mail-godkendelsesheadere](#do-you-preserve-email-authentication-headers)
-  * [Bevarer I de originale e-mail-overskrifter og forhindrer I spoofing?](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [Hvordan beskytter du dig mod spam og misbrug](#how-do-you-protect-against-spam-and-abuse)
-  * [Gemmer du e-mailindhold på disk?](#do-you-store-email-content-on-disk)
-  * [Kan e-mailindhold blive eksponeret under systemnedbrud](#can-email-content-be-exposed-during-system-crashes)
-  * [Hvem har adgang til din e-mailinfrastruktur](#who-has-access-to-your-email-infrastructure)
-  * [Hvilke infrastrukturudbydere bruger I](#what-infrastructure-providers-do-you-use)
-  * [Tilbyder I en databehandleraftale (DPA)?](#do-you-offer-a-data-processing-agreement-dpa)
-  * [Hvordan håndterer I anmeldelser af databrud](#how-do-you-handle-data-breach-notifications)
-  * [Tilbyder I et testmiljø](#do-you-offer-a-test-environment)
-  * [Tilbyder I overvågnings- og alarmeringsværktøjer?](#do-you-provide-monitoring-and-alerting-tools)
-  * [Hvordan sikrer du høj tilgængelighed](#how-do-you-ensure-high-availability)
-  * [Overholder du paragraf 889 i National Defense Authorization Act (NDAA)?](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [System- og tekniske detaljer](#system-and-technical-details)
-  * [Gemmer du e-mails og deres indhold](#do-you-store-emails-and-their-contents)
-  * [Hvordan fungerer jeres system til videresendelse af e-mails](#how-does-your-email-forwarding-system-work)
-  * [Hvordan behandler du en e-mail til videresendelse](#how-do-you-process-an-email-for-forwarding)
-  * [Hvordan håndterer du problemer med e-maillevering](#how-do-you-handle-email-delivery-issues)
-  * [Hvordan håndterer du blokering af dine IP-adresser](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Hvad er postmasteradresser](#what-are-postmaster-addresses)
-  * [Hvad er adresser uden svar](#what-are-no-reply-addresses)
-  * [Hvad er din servers IP-adresser](#what-are-your-servers-ip-addresses)
-  * [Har du en tilladelsesliste](#do-you-have-an-allowlist)
-  * [Hvilke domænenavnsudvidelser er som standard tilladt på listen](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [Hvad er dine kriterier for tilladelsesliste](#what-is-your-allowlist-criteria)
-  * [Hvilke domænenavnsudvidelser kan bruges gratis](#what-domain-name-extensions-can-be-used-for-free)
-  * [Har du en gråliste](#do-you-have-a-greylist)
-  * [Har du en afvisningsliste](#do-you-have-a-denylist)
-  * [Har du en hastighedsbegrænsning](#do-you-have-rate-limiting)
-  * [Hvordan beskytter du dig mod tilbagespredning](#how-do-you-protect-against-backscatter)
-  * [Forhindr afvisninger fra kendte spammere af MAIL FRA](#prevent-bounces-from-known-mail-from-spammers)
-  * [Forhindr unødvendige bounces for at beskytte mod backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [Hvordan bestemmer man et e-mail-fingeraftryk](#how-do-you-determine-an-email-fingerprint)
-  * [Kan jeg videresende e-mails til andre porte end 25 (f.eks. hvis min internetudbyder har blokeret port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Understøtter det plus + symbolet for Gmail-aliasser](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Understøtter det underdomæner](#does-it-support-sub-domains)
-  * [Videresender dette mine e-mails headere?](#does-this-forward-my-emails-headers)
-  * [Er dette velafprøvet](#is-this-well-tested)
-  * [Videregiver du SMTP-svarmeddelelser og -koder](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [Hvordan forhindrer du spammere og sikrer et godt omdømme for videresendelse af e-mails](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [Hvordan udfører du DNS-opslag på domænenavne](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Konto og fakturering](#account-and-billing)
-  * [Tilbyder I en pengene-tilbage-garanti på betalte planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [Hvis jeg skifter abonnement, betaler I så forholdsmæssigt og refunderer differencen?](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Kan jeg bare bruge denne e-mail-videresendelsestjeneste som en "fallback" eller "fallover" MX-server?](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Kan jeg deaktivere specifikke aliasser](#can-i-disable-specific-aliases)
-  * [Kan jeg videresende e-mails til flere modtagere](#can-i-forward-emails-to-multiple-recipients)
-  * [Kan jeg have flere globale catch-all-modtagere](#can-i-have-multiple-global-catch-all-recipients)
-  * [Er der en maksimal grænse for antallet af e-mailadresser, jeg kan videresende til per alias?](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Kan jeg videresende e-mails rekursivt](#can-i-recursively-forward-emails)
-  * [Kan folk afregistrere eller registrere min videresendelse af e-mails uden min tilladelse](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [Hvordan er det gratis](#how-is-it-free)
-  * [Hvad er den maksimale størrelse på e-mails](#what-is-the-max-email-size-limit)
-  * [Gemmer du logfiler over e-mails](#do-you-store-logs-of-emails)
-  * [Gemmer du fejllogfiler](#do-you-store-error-logs)
-  * [Læser du mine e-mails](#do-you-read-my-emails)
-  * [Kan jeg "sende mail som" i Gmail med dette?](#can-i-send-mail-as-in-gmail-with-this)
-  * [Kan jeg "sende mail som" i Outlook med dette?](#can-i-send-mail-as-in-outlook-with-this)
-  * [Kan jeg "sende mail som" i Apple Mail og iCloud Mail med dette?](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Kan jeg videresende et ubegrænset antal e-mails med dette](#can-i-forward-unlimited-emails-with-this)
-  * [Tilbyder I et ubegrænset antal domæner til én pris](#do-you-offer-unlimited-domains-for-one-price)
-  * [Hvilke betalingsmetoder accepterer I](#which-payment-methods-do-you-accept)
-* [Yderligere ressourcer](#additional-resources)
+  * [eM Client](#em-client)
+  * [Mobile Devices](#mobile-devices)
+  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
+  * [Command-line Email Clients](#command-line-email-clients)
+  * [Windows Email Configuration](#windows-email-configuration)
+  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
+  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
+  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
+  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
+* [Troubleshooting](#troubleshooting)
+  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
+  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Data Management](#data-management)
+  * [Where are your servers located](#where-are-your-servers-located)
+  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
+  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Do you support self-hosting](#do-you-support-self-hosting)
+* [Email Configuration](#email-configuration)
+  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
+  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
+  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
+  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Advanced Features](#advanced-features)
+  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
+  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
+  * [Do you support POP3](#do-you-support-pop3)
+  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
+  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
+  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Do you support MTA-STS](#do-you-support-mta-sts)
+  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Do you support email best practices](#do-you-support-email-best-practices)
+  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Do you support webhooks](#do-you-support-webhooks)
+  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
+  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
+  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
+  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
+  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
+* [Security](#security)
+  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
+  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
+  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
+  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
+  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
+  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
+  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
+  * [Do you offer a test environment](#do-you-offer-a-test-environment)
+  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
+  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
+  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [System and Technical Details](#system-and-technical-details)
+  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
+  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
+  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
+  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
+  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [What are postmaster addresses](#what-are-postmaster-addresses)
+  * [What are no-reply addresses](#what-are-no-reply-addresses)
+  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
+  * [Do you have an allowlist](#do-you-have-an-allowlist)
+  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
+  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
+  * [Do you have a greylist](#do-you-have-a-greylist)
+  * [Do you have a denylist](#do-you-have-a-denylist)
+  * [Do you have rate limiting](#do-you-have-rate-limiting)
+  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
+  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
+  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
+  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Does it support sub-domains](#does-it-support-sub-domains)
+  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
+  * [Is this well-tested](#is-this-well-tested)
+  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Account and Billing](#account-and-billing)
+  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
+  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
+  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
+  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
+  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [How is it free](#how-is-it-free)
+  * [What is the max email size limit](#what-is-the-max-email-size-limit)
+  * [Do you store logs of emails](#do-you-store-logs-of-emails)
+  * [Do you store error logs](#do-you-store-error-logs)
+  * [Do you read my emails](#do-you-read-my-emails)
+  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
+  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
+  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
+  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
+* [Additional Resources](#additional-resources)
 
-## Hurtigstart {#quick-start}
+## Quick Start {#quick-start}
 
-Sådan kommer du i gang med at videresende e-mail:
+To get started with Forward Email:
 
-1. **Opret en konto** på [forwardemail.net/register](https://forwardemail.net/register)
+1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **Tilføj og bekræft dit domæne** under [Min konto → Domæner](/my-account/domains)
+2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
 
-3. **Tilføj og konfigurer e-mail-aliasser/postkasser** under [Min konto → Domæner](/my-account/domains) → Aliaser
+3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
 
-4. **Test din opsætning** ved at sende en e-mail til et af dine nye aliaser
+4. **Test your setup** by sending an email to one of your new aliases
 
 > \[!TIP]
-> Det kan tage op til 24-48 timer, før DNS-ændringer udbredes globalt, selvom de ofte træder i kraft meget hurtigere.
+> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
 
 > \[!IMPORTANT]
-> For forbedret levering anbefaler vi at oprette [SPF](#how-do-i-set-up-spf-for-forward-email)-, [DKIM](#how-do-i-set-up-dkim-for-forward-email)- og [DMARC](#how-do-i-set-up-dmarc-for-forward-email)-poster.
+> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-## Introduktion {#introduction}
+## Introduction {#introduction}
 
-### Hvad er videresendt e-mail {#what-is-forward-email}
+### What is Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Videresend e-mail er perfekt til enkeltpersoner, små virksomheder og udviklere, der ønsker professionelle e-mailadresser uden omkostningerne og vedligeholdelsen af en komplet e-mailhostingløsning.
+> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
 
-Forward Email er en **fuldt udstyret e-mailudbyder** og **e-mailhostingudbyder til brugerdefinerede domænenavne**.
+Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
-Det er den eneste gratis og open source-tjeneste, og den giver dig mulighed for at bruge brugerdefinerede domæne-e-mailadresser uden kompleksiteten ved at oprette og vedligeholde din egen e-mailserver.
+It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
 
-Vores tjeneste videresender e-mails sendt til dit brugerdefinerede domæne til din eksisterende e-mailkonto – og du kan endda bruge os som din dedikerede e-mailhostingudbyder.
+Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
 
-Nøglefunktioner i Videresend e-mail:
+Key features of Forward Email:
 
-* **Brugerdefineret domæne-e-mail**: Brug professionelle e-mailadresser med dit eget domænenavn
-* **Gratis niveau**: Grundlæggende videresendelse af e-mails uden omkostninger
-* **Udvidet privatliv**: Vi læser ikke dine e-mails eller sælger dine data
-* **Open Source**: Hele vores kodebase er tilgængelig på GitHub
-* **SMTP-, IMAP- og POP3-understøttelse**: Fuld mulighed for at sende og modtage e-mails
-* **End-to-End-kryptering**: Understøttelse af OpenPGP/MIME
-* **Brugerdefinerede Catch-All-aliasser**: Opret et ubegrænset antal e-mail-aliasser
+* **Custom Domain Email**: Use professional email addresses with your own domain name
+* **Free Tier**: Basic email forwarding at no cost
+* **Enhanced Privacy**: We don't read your emails or sell your data
+* **Open Source**: Our entire codebase is available on GitHub
+* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
+* **End-to-End Encryption**: Support for OpenPGP/MIME
+* **Custom Catch-All Aliases**: Create unlimited email aliases
 
-Du kan sammenligne os med mere end 56 andre e-mailudbydere på [vores side om e-mailsammenligning](/blog/best-email-service).
+You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
 > \[!TIP]
-> Lær mere om videresendelse af e-mails ved at læse vores gratis [Teknisk hvidbog](/technical-whitepaper.pdf)
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
 
-### Hvem bruger videresendelse af e-mail {#who-uses-forward-email}
+### Who uses Forward Email {#who-uses-forward-email}
 
-Vi tilbyder e-mailhosting og e-mailvideresendelse til over 500.000 domæner og disse bemærkelsesværdige brugere:
+We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-| Kunde | Casestudie |
+| Customer | Case Study |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Det amerikanske flådeakademi | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Kanonisk | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix-spil |  |
-| Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| PHP-fonden |  |
+| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
+| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Netflix Games |  |
+| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| The PHP Foundation |  |
 | Fox News Radio |  |
-| Disney-reklamesalg |  |
+| Disney Ad Sales |  |
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Gratis | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Universitetet i Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitetet i Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitetet i Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tufts Universitet | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Sydaustraliens regering |  |
-| Den Dominikanske Republiks regering |  |
-| Flyv<span>.</span>io |  |
-| RCD-hoteller |  |
+| Government of South Australia |  |
+| Government of Dominican Republic |  |
+| Fly<span>.</span>io |  |
+| RCD Hotels |  |
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Hvad er historikken for videresendte e-mails {#what-is-forward-emails-history}
+### What is Forward Email's history {#what-is-forward-emails-history}
 
-Du kan få mere at vide om videresendelse af e-mail på [vores Om-side](/about).
+You can learn more about Forward Email on [our About page](/about).
 
-### Hvor hurtig er denne tjeneste {#how-fast-is-this-service}
+### How fast is this service {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Vores system er designet til hastighed og pålidelighed med flere redundante servere for at sikre, at dine e-mails leveres hurtigt.
+> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
 
-Videresend e-mail leverer beskeder med minimal forsinkelse, typisk inden for få sekunder efter modtagelsen.
+Forward Email delivers messages with minimal delay, typically within seconds of receipt.
 
-Præstationsmålinger:
+Performance metrics:
 
-* **Gennemsnitlig leveringstid**: Mindre end 5-10 sekunder fra modtagelse til videresendelse ([se vores side med "TTI"-overvågning af tid til indbakke](/tti))
-* **Oppetid**: 99,9%+ servicetilgængelighed
-* **Global infrastruktur**: Servere strategisk placeret for optimal routing
-* **Automatisk skalering**: Vores system skalerer i perioder med spidsbelastning på e-mail
+* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
+* **Uptime**: 99.9%+ service availability
+* **Global Infrastructure**: Servers strategically located for optimal routing
+* **Automatic Scaling**: Our system scales during peak email periods
 
-Vi opererer i realtid, i modsætning til andre udbydere, der er afhængige af forsinkede køer.
+We operate in real-time, unlike other providers which rely upon delayed queues.
 
-Vi skriver ikke til disk eller gemmer logfiler – med [undtagelse af fejl](#do-you-store-error-logs) og [udgående SMTP](#do-you-support-sending-email-with-smtp) (se vores [Privatlivspolitik](/privacy)).
+We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Alt gøres i hukommelsen og [vores kildekode er på GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-## E-mailklienter {#email-clients}
+## Email Clients {#email-clients}
 
 ### Thunderbird {#thunderbird}
 
-1. Opret et nyt alias og generer en adgangskode i dit dashboard til videresendelse af e-mail.
-2. Åbn Thunderbird, og gå til **Rediger → Kontoindstillinger → Kontohandlinger → Tilføj e-mailkonto**.
-3. Indtast dit navn, din e-mailadresse og din adgangskode.
-4. Klik på **Konfigurer manuelt**, og indtast:
-* Indgående: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-* Udgående: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
-5. Klik på **Udført**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
+3. Enter your name, Forward Email address, and password
+4. Click **Configure manually** and enter:
+   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Outgoing: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+5. Click **Done**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Opret et nyt alias og generer en adgangskode i dit dashboard til videresendelse af e-mail.
-2. Gå til **Fil → Tilføj konto**
-3. Indtast din videresendelses-e-mailadresse, og klik på **Opret forbindelse**
-4. Vælg **Avancerede indstillinger**, og vælg **Lad mig oprette min konto manuelt**
-5. Vælg **IMAP**, og indtast:
-* Indgående: `imap.forwardemail.net`, port 993, SSL
-* Udgående: `smtp.forwardemail.net`, port 587, TLS
-* Brugernavn: Din fulde e-mailadresse
-* Adgangskode: Din genererede adgangskode
-6. Klik på **Opret forbindelse**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **File → Add Account**
+3. Enter your Forward Email address and click **Connect**
+4. Choose **Advanced options** and select **Let me set up my account manually**
+5. Select **IMAP** and enter:
+   * Incoming: `imap.forwardemail.net`, port 993, SSL
+   * Outgoing: `smtp.forwardemail.net`, port 587, TLS
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Connect**
 
 ### Apple Mail {#apple-mail}
 
-1. Opret et nyt alias og generer en adgangskode i dit dashboard til videresendelse af e-mail.
-2. Gå til **Mail → Indstillinger → Konti → +**
-3. Vælg **Anden mailkonto**
-4. Indtast dit navn, din adresse til videresendelse af e-mail og din adgangskode.
-5. For serverindstillinger skal du indtaste:
-* Indgående: `imap.forwardemail.net`
-* Udgående: `smtp.forwardemail.net`
-* Brugernavn: Din fulde e-mailadresse.
-* Adgangskode: Din genererede adgangskode.
-6. Klik på **Log ind**
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **Mail → Preferences → Accounts → +**
+3. Select **Other Mail Account**
+4. Enter your name, Forward Email address, and password
+5. For server settings, enter:
+   * Incoming: `imap.forwardemail.net`
+   * Outgoing: `smtp.forwardemail.net`
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Sign In**
 
-### Mobilenheder {#mobile-devices}
+### eM Client {#em-client}
 
-Til iOS:
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open eM Client and go to **Menu → Accounts → + Add Account**
+3. Click on **Mail** and then select **Other**
+4. Enter your Forward Email address and click **Next**
+5. Enter the following server settings:
+   * **Incoming server**: `imap.forwardemail.net`
+   * **Outgoing server**: `smtp.forwardemail.net`
+6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
+7. eM Client will test the connection. Once it passes, click **Next**.
+8. Enter your name and choose an account name.
+9. Click **Finish**.
 
-1. Gå til **Indstillinger → Mail → Konti → Tilføj konto → Andet**
-2. Tryk på **Tilføj mailkonto** og indtast dine oplysninger
-3. Brug de samme IMAP- og SMTP-indstillinger som ovenfor for serverindstillinger
+### Mobile Devices {#mobile-devices}
 
-Til Android:
+For iOS:
 
-1. Gå til **Indstillinger → Konti → Tilføj konto → Personlig (IMAP)**
-2. Indtast din videresendelses-e-mailadresse og adgangskode
-3. Brug de samme IMAP- og SMTP-indstillinger som ovenfor for serverindstillinger
+1. Go to **Settings → Mail → Accounts → Add Account → Other**
+2. Tap **Add Mail Account** and enter your details
+3. For server settings, use the same IMAP and SMTP settings as above
 
-### Sådan sender du e-mails som Gmail {#how-to-send-mail-as-using-gmail}
+For Android:
+
+1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
+2. Enter your Forward Email address and password
+3. For server settings, use the same IMAP and SMTP settings as above
+
+### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+
+You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>Mindre end 10 minutter</span>
-</div>
-
-<div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Kom godt i gang:
-</strong>
-<span>
-Hvis du har fulgt instruktionerne ovenfor under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hvordan kommer jeg i gang og konfigurerer videresendelse af e-mails</a>, kan du fortsætte med at læse nedenfor.
-</span>
-</div>
-
-<div id="send-mail-som-indhold">
-
-<div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Sørg for, at du har læst vores <a href="/terms" class="alert-link" target="_blank">Vilkår</a>, <a href="/privacy" class="alert-link" target="_blank">Privatlivspolitik</a> og <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Udgående SMTP-begrænsninger</a> – din brug betragtes som anerkendelse og samtykke.
-</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 20 minutes</span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du er udvikler, kan du læse vores <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API-dokumentation</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
 </div>
 
-1. Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsvejledningen.
+#### Configuration {#configuration}
 
-2. Opret et nyt alias til dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
 
-3. Klik på <strong class="text-success"><i class="fa fa-key"></i>Generer adgangskode</strong> ud for det nyoprettede alias. Kopier den genererede adgangskode, der vises på skærmen, til din udklipsholder, og gem den sikkert.
+   ```bash
+   sudo nano /etc/mail/sendmail.mc
+   ```
 
-4. Gå til [Gmail](https://gmail.com), og klik på "Tilføj en anden e-mailadresse" under [Indstillinger <i class="fa fa-angle-right"></i> Konti og import <i class="fa fa-angle-right"></i> Send mail som](https://mail.google.com/mail/u/0/#settings/accounts).
+2. Add the following lines to define the smart host and authentication:
 
-5. Når du bliver bedt om "Navn", skal du indtaste det navn, som din e-mail skal vises som "Fra" (f.eks. "Linus Torvalds").
+   ```
+   define(`SMART_HOST', `smtp.forwardemail.net')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+   FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+   ```
 
-6. Når du bliver bedt om "E-mailadresse", skal du indtaste den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+3. Create the authentication file `/etc/mail/authinfo`:
 
-7. Fjern markeringen i "Behandl som et alias"
+   ```bash
+   sudo nano /etc/mail/authinfo
+   ```
 
-8. Klik på "Næste trin" for at fortsætte
+4. Add your Forward Email credentials to the `authinfo` file:
 
-9. Når du bliver bedt om at angive "SMTP-server", skal du indtaste <code>smtp.forwardemail.net</code> og lade porten være <code>587</code>
+   ```
+   AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+   ```
 
-10. Når du bliver bedt om "Brugernavn", skal du indtaste den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+5. Generate the authentication database and secure the files:
 
-11. Når du bliver bedt om "Adgangskode", skal du indsætte adgangskoden fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> i trin 3 ovenfor.
+   ```bash
+   sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+   sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+   ```
 
-12. Lad alternativknappen være markeret ud for "Sikker forbindelse ved hjælp af TLS"
+6. Rebuild the Sendmail configuration and restart the service:
 
-13. Klik på "Tilføj konto" for at fortsætte
+   ```bash
+   sudo make -C /etc/mail
+   sudo systemctl restart sendmail
+   ```
 
-14. Åbn en ny fane i [Gmail](https://gmail.com), og vent på, at din bekræftelsesmail ankommer (du modtager en bekræftelseskode, der bekræfter, at du er ejeren af den e-mailadresse, du forsøger at "Sende mail som").
+#### Testing {#testing}
 
-15. Når den ankommer, skal du kopiere og indsætte bekræftelseskoden ved den prompt, du modtog i det forrige trin.
+Send a test email to verify the configuration:
 
-16. Når du har gjort det, skal du gå tilbage til e-mailen og klikke på linket for at "bekræfte anmodningen". Du skal højst sandsynligt udføre dette trin og det foregående trin for at e-mailen kan konfigureres korrekt.
+```bash
+echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+```
 
-<div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
+### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+
+Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
 </div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
 </div>
 
+#### Configuration {#configuration-1}
+
+1. Run the Exim4 configuration tool:
+
+   ```bash
+   sudo dpkg-reconfigure exim4-config
+   ```
+
+2. Select the following options:
+   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+   * **System mail name:** your.hostname
+   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+   * **Other destinations for which mail is accepted:** (leave blank)
+   * **Domains to relay mail for:** (leave blank)
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **Hide local mail name in outgoing mail?** No
+   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+   * **Delivery method for local mail:** Mbox format in /var/mail/
+   * **Split configuration into small files?** No
+
+3. Edit the `passwd.client` file to add your credentials:
+
+   ```bash
+   sudo nano /etc/exim4/passwd.client
+   ```
+
+4. Add the following line:
+
+   ```
+   smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+   ```
+
+5. Update the configuration and restart Exim4:
+
+   ```bash
+   sudo update-exim4.conf
+   sudo systemctl restart exim4
+   ```
+
+#### Testing {#testing-1}
+
+Send a test email:
+
+```bash
+echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+```
+
+### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+
+msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
-### Hvad er den gratis guide til Send mail som ved brug af Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}}?
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Vigtigt:</strong> Denne gratis guide er udfaset fra maj 2023, da <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we nu understøtter udgående SMTP</a>. Hvis du bruger guiden nedenfor, vil <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this få din udgående e-mail</a> til at vise "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" i Gmail.</a></div>
+#### Configuration {#configuration-2}
 
-<div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>Mindre end 10 minutter</span>
+1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+
+   ```bash
+   nano ~/.msmtprc
+   ```
+
+2. Add the following configuration:
+
+   ```
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
+
+   account        forwardemail
+   host           smtp.forwardemail.net
+   port           587
+   from           your-alias@yourdomain.com
+   user           your-alias@yourdomain.com
+   password       your-generated-password
+
+   account default : forwardemail
+   ```
+
+3. Set the correct permissions for the configuration file:
+
+   ```bash
+   chmod 600 ~/.msmtprc
+   ```
+
+#### Testing {#testing-2}
+
+Send a test email:
+
+```bash
+echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+```
+
+### Command-line Email Clients {#command-line-email-clients}
+
+Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+
+### Windows Email Configuration {#windows-email-configuration}
+
+For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+
+### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+
+You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Installation {#installation}
+
+1. Install Postfix on your server:
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install postfix
+
+# CentOS/RHEL
+sudo yum install postfix
+
+# macOS
+brew install postfix
+```
+
+2. During installation, select "Internet Site" when prompted for configuration type.
+
+#### Configuration {#configuration-3}
+
+1. Edit the main Postfix configuration file:
+
+```bash
+sudo nano /etc/postfix/main.cf
+```
+
+2. Add or modify these settings:
+
+```
+# SMTP relay configuration
+relayhost = [smtp.forwardemail.net]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
+3. Create the SASL password file:
+
+```bash
+sudo nano /etc/postfix/sasl_passwd
+```
+
+4. Add your Forward Email credentials:
+
+```
+[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+```
+
+5. Secure and hash the password file:
+
+```bash
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+```
+
+6. Restart Postfix:
+
+```bash
+sudo systemctl restart postfix
+```
+
+#### Testing {#testing-3}
+
+Test your configuration by sending a test email:
+
+```bash
+echo "Test email body" | mail -s "Test Subject" recipient@example.com
+```
+
+### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Kom godt i gang:
-</strong>
-<span>
-Hvis du har fulgt instruktionerne ovenfor under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Hvordan kommer jeg i gang og konfigurerer videresendelse af e-mails</a>, kan du fortsætte med at læse nedenfor.
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Sådan sender du mails som Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>"
+<div id="send-mail-as-content">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
+</div>
+
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+7. Uncheck "Treat as an alias"
+
+8. Click "Next Step" to proceed
+
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
+
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+12. Leave the radio button checked for "Secured connection using TLS"
+
+13. Click "Add Account" to proceed
+
+14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+</div>
+
+### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
+
+<div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert mb-3 alert-success">
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
+</div>
+
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
-1. Du skal have [Gmails tofaktorgodkendelse][gmail-2fa] aktiveret for at dette kan virke. Besøg <https://www.google.com/landing/2step/>, hvis du ikke har det aktiveret.
+1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
-2. Når tofaktorgodkendelse er aktiveret (eller hvis du allerede har aktiveret det), skal du besøge <https://myaccount.google.com/apppasswords>.
+2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
 
-3. Når du bliver bedt om at vælge "Vælg den app og enhed, du vil generere app-adgangskoden til":
-* Vælg "Mail" i rullemenuen for "Vælg app"
-* Vælg "Andet" i rullemenuen for "Vælg enhed"
-* Når du bliver bedt om at indtaste tekst, skal du indtaste den e-mailadresse på dit brugerdefinerede domæne, som du videresender fra (f.eks. <kode><hello@example.com></kode> - dette vil hjælpe dig med at holde styr på, hvis du bruger denne tjeneste til flere konti)
+3. When prompted for "Select the app and device you want to generate the app password for":
+   * Select "Mail" under the drop-down for "Select app"
+   * Select "Other" under the drop-down for "Select device"
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
 
-4. Kopier adgangskoden til dit udklipsholder, der genereres automatisk.
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger G Suite, skal du besøge dit administrationspanel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Indstillinger for Gmail <i class="fa fa-angle-right"></i> Indstillinger</a> og sørge for at markere "Tillad brugere at sende mail via en ekstern SMTP-server...". Der vil være en vis forsinkelse, før denne ændring aktiveres, så vent et par minutter.
-</span>
+4. Copy the password to your clipboard that is automatically generated
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Important:
+     </strong>
+     <span>
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+     </span>
+   </div>
+
+5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+
+8. Uncheck "Treat as an alias"
+
+9. Click "Next Step" to proceed
+
+10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
+
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+    <div class="alert my-3 alert-primary">
+      <i class="fa fa-info-circle font-weight-bold"></i>
+      <strong class="font-weight-bold">
+        Important:
+      </strong>
+      <span>
+        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+      </span>
+    </div>
+
+12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+
+13. Leave the radio button checked for "Secured connection using TLS"
+
+14. Click "Add Account" to proceed
+
+15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
 </div>
 
-5. Gå til [Gmail](https://gmail.com), og klik på "Tilføj en anden e-mailadresse" under [Indstillinger <i class="fa fa-angle-right"></i> Konti og import <i class="fa fa-angle-right"></i> Send mail som](https://mail.google.com/mail/u/0/#settings/accounts).
-
-6. Når du bliver bedt om "Navn", skal du indtaste det navn, som din e-mail skal vises som "Fra" (f.eks. "Linus Torvalds").
-
-7. Når du bliver bedt om "E-mailadresse", skal du indtaste e-mailadressen med det brugerdefinerede domæne, du brugte ovenfor (f.eks. <kode><hello@example.com></kode>)
-
-8. Fjern markeringen i "Behandl som et alias"
-
-9. Klik på "Næste trin" for at fortsætte
-
-10. Når du bliver bedt om at angive "SMTP-server", skal du indtaste <code>smtp.gmail.com</code> og lade porten være <code>587</code>
-
-11. Når du bliver bedt om "Brugernavn", skal du indtaste den del af din Gmail-adresse uden <span>gmail.com</span>-delen (f.eks. bare "bruger", hvis min e-mail er <span><user@gmail.com></span>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis "Brugernavn"-delen udfyldes automatisk, skal du <u><strong>ændre dette</strong></u> til brugernavnsdelen af din Gmail-adresse i stedet.
-</span>
-</div>
-
-12. Når du bliver bedt om "Adgangskode", skal du indsætte den adgangskode, du genererede i trin 2 ovenfor, fra din udklipsholder.
-
-13. Lad alternativknappen være markeret ud for "Sikker forbindelse ved hjælp af TLS"
-
-14. Klik på "Tilføj konto" for at fortsætte
-
-15. Åbn en ny fane i [Gmail](https://gmail.com), og vent på, at din bekræftelsesmail ankommer (du modtager en bekræftelseskode, der bekræfter, at du er ejeren af den e-mailadresse, du forsøger at "Sende mail som").
-
-16. Når den ankommer, skal du kopiere og indsætte bekræftelseskoden ved den prompt, du modtog i det forrige trin.
-
-17. Når du har gjort det, skal du gå tilbage til e-mailen og klikke på linket for at "bekræfte anmodningen". Du skal højst sandsynligt udføre dette trin og det foregående trin for at e-mailen kan konfigureres korrekt.
-
-</div>
-
-### Avanceret Gmail-routingkonfiguration {#advanced-gmail-routing-configuration}
+### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>15-30 minutter</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-Hvis du vil konfigurere avanceret routing i Gmail, så aliasser, der ikke matcher en postkasse, videresender til mailudvekslinger i Videresend e-mail, skal du følge disse trin:
+If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
 
-1. Log ind på din Google-administrationskonsol på [admin.google.com](https://admin.google.com)
-2. Gå til **Apps → Google Workspace → Gmail → Routing**
-3. Klik på **Tilføj rute** og konfigurer følgende indstillinger:
+1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
+2. Go to **Apps → Google Workspace → Gmail → Routing**
+3. Click on **Add Route** and configure the following settings:
 
-**Indstillinger for enkeltmodtager:**
+**Single Recipient Settings:**
 
-* Vælg "Skift kuvertmodtager" og indtast din primære Gmail-adresse
-* Markér "Tilføj X-Gm-Original-To-header med original modtager"
+* Select "Change envelope recipient" and enter your primary Gmail address
+* Check "Add X-Gm-Original-To header with original recipient"
 
-**Modtagermønstre for kuverter:**
+**Envelope Recipient Patterns:**
 
-* Tilføj et mønster, der matcher alle ikke-eksisterende postkasser (f.eks. `.*@yourdomain.com`)
+* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
 
-**Indstillinger for e-mailserver:**
+**Email Server Settings:**
 
-* Vælg "Route to host" og indtast `mx1.forwardemail.net` som primær server
-* Tilføj `mx2.forwardemail.net` som backupserver
-* Indstil port til 25
-* Vælg "Kræv TLS" af sikkerhedsmæssige årsager
+* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
+* Add `mx2.forwardemail.net` as the backup server
+* Set port to 25
+* Select "Require TLS" for security
 
-4. Klik på **Gem** for at oprette ruten
+4. Click **Save** to create the route
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Denne konfiguration fungerer kun for Google Workspace-konti med brugerdefinerede domæner, ikke for almindelige Gmail-konti.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+  </span>
 </div>
 
-### Avanceret Outlook-routingkonfiguration {#advanced-outlook-routing-configuration}
+### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>15-30 minutter</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-For Microsoft 365-brugere (tidligere Office 365), der ønsker at konfigurere avanceret routing, så aliasser, der ikke matcher en postkasse, videresender til mailudvekslinger i Videresend mail:
+For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
 
-1. Log ind på Microsoft 365 Administrationscenter på [admin.microsoft.com](https://admin.microsoft.com)
-2. Gå til **Exchange → Mailflow → Regler**
-3. Klik på **Tilføj en regel** og vælg **Opret en ny regel**
-4. Navngiv din regel (f.eks. "Videresend ikke-eksisterende postkasser til Videresend e-mail")
-5. Under **Anvend denne regel, hvis** skal du vælge:
-* "Modtageradressen matcher..."
-* Indtast et mønster, der matcher alle adresser på dit domæne (f.eks. `*@yourdomain.com`)
-6. Under **Gør følgende** skal du vælge:
-* "Omdiriger beskeden til..."
-* Vælg "Følgende mailserver"
-* Indtast `mx1.forwardemail.net` og port 25
-* Tilføj `mx2.forwardemail.net` som en backupserver
-7. Under **Medmindre hvis** skal du vælge:
-* "Modtageren er..."
-* Tilføj alle dine eksisterende postkasser, der ikke skal videresendes
-8. Indstil regelprioriteten for at sikre, at den kører efter andre mailflowregler
-9. Klik på **Gem** for at aktiver reglen
+1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
+2. Go to **Exchange → Mail flow → Rules**
+3. Click **Add a rule** and select **Create a new rule**
+4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
+5. Under **Apply this rule if**, select:
+   * "The recipient address matches..."
+   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
+6. Under **Do the following**, select:
+   * "Redirect the message to..."
+   * Choose "The following mail server"
+   * Enter `mx1.forwardemail.net` and port 25
+   * Add `mx2.forwardemail.net` as a backup server
+7. Under **Except if**, select:
+   * "The recipient is..."
+   * Add all your existing mailboxes that should not be forwarded
+8. Set the rule priority to ensure it runs after other mail flow rules
+9. Click **Save** to activate the rule
 
-## Fejlfinding {#troubleshooting}
+## Troubleshooting {#troubleshooting}
 
-### Hvorfor modtager jeg ikke mine test-e-mails {#why-am-i-not-receiving-my-test-emails}
+### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
 
-Hvis du sender en testmail til dig selv, vises den muligvis ikke i din indbakke, fordi den har den samme "Message-ID"-header.
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
 
-Dette er et alment kendt problem, og det påvirker også tjenester som Gmail. <a href="https://support.google.com/a/answer/1703601">Here" er det officielle svar fra Gmail vedrørende dette problem.
+This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 
-Hvis du fortsætter med at have problemer, er det højst sandsynligt et problem med DNS-udbredelsen. Du skal vente lidt længere og prøve igen (eller prøve at indstille en lavere TTL-værdi på dine <strong class="notranslate">TXT</strong>-poster).
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
-**Har du stadig problemer?** <a href="/help">kontakt os</a>, så vi kan hjælpe med at undersøge problemet og finde en hurtig løsning.
+**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
 
-### Hvordan konfigurerer jeg min e-mailklient til at fungere med videresendelse af e-mail {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-Vores tjeneste fungerer med populære e-mailklienter såsom:
-<ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
-<li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple®</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows®</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android™</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux™</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox®</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari®</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i>Google Chrome®</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i>Terminal</a></li>
-</ul>
+  Our service works with popular email clients such as:
+  <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
+    <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+  </ul>
 </div>
 
 <div class="alert alert-primary">
-Dit brugernavn er dit alias' e-mailadresse, og adgangskoden er fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> ("Normal adgangskode").
+  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Hvis du bruger Thunderbird, skal du sørge for, at "Forbindelsessikkerhed" er indstillet til "SSL/TLS", og at godkendelsesmetoden er indstillet til "Normal adgangskode".</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Type | Værtsnavn | Protokol | Havne |
+| Type | Hostname | Protocol | Ports |
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Foretrukket** | `993` og `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Foretrukket** eller TLS (STARTTLS) | `465` og `2465` for SSL/TLS (eller) `587`, `2587`, `2525` og `25` for TLS (STARTTLS) |
+| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
 
-### Hvorfor lander mine e-mails i spam og uønsket post, og hvordan kan jeg tjekke mit domæneomdømme {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-Dette afsnit viser dig, om din udgående mail bruger vores SMTP-servere (f.eks. `smtp.forwardemail.net`) (eller videresendes via `mx1.forwardemail.net` eller `mx2.forwardemail.net`), og den leveres i modtagernes spam- eller junk-mappe.
+This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
 
-Vi overvåger rutinemæssigt vores [IP-adresser](#what-are-your-servers-ip-addresses) i forhold til [alle velrenommerede DNS-afvisningslister](#how-do-you-handle-your-ip-addresses-becoming-blocked), **derfor er det højst sandsynligt et domæneomdømmespecifikt problem**.
+We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
 
-E-mails kan lande i spam-mapper af flere årsager:
+Emails can land in spam folders for several reasons:
 
-1. **Mangler godkendelse**: Opsæt [SPF](#how-do-i-set-up-spf-for-forward-email)-, [DKIM](#how-do-i-set-up-dkim-for-forward-email)- og [DMARC](#how-do-i-set-up-dmarc-for-forward-email)-posterne.
+1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-2. **Domæneomdømme**: Nye domæner har ofte et neutralt omdømme, indtil de etablerer en afsendelseshistorik.
+2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
 
-3. **Indholdsudløsere**: Visse ord eller sætninger kan udløse spamfiltre.
+3. **Content Triggers**: Certain words or phrases can trigger spam filters.
 
-4. **Sendemønstre**: Pludselige stigninger i e-mailmængden kan virke mistænkelige.
+4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
 
-Du kan prøve at bruge et eller flere af disse værktøjer til at tjekke dit domænes omdømme og kategorisering:
+You can try to use one or more of these tools to check your domain's reputation and categorization:
 
-| Værktøjsnavn | URL | Type |
+| Tool Name | URL | Type |
 | ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Feedback om Cloudflare-domænekategorisering | <https://radar.cloudflare.com/domains/feedback> | Kategorisering |
-| Spamhaus IP- og domæneomdømmetjekker | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP- og domæneomdømmecenter | <https://talosintelligence.com/reputation_center> | Omdømme |
-| Barracuda IP og domæneomdømmeopslag | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox sortlistekontrol | <https://mxtoolbox.com/blacklists.aspx> | Sortliste |
-| Google Postmaster-værktøjer | <https://www.gmail.com/postmaster/> | Omdømme |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Omdømme |
-| MultiRBL.valli.org Sortlistetjek | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Afsenderens score | <https://senderscore.org/act/blocklist-remover/> | Omdømme |
-| Værdiforringelse | <https://www.invaluement.com/lookup/> | DNSBL |
+| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
+| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
+| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
+| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
+| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
+| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
+| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
+| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
+| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Fjernelse af Apple/Proofpoint IP | <https://ipcheck.proofpoint.com/> | Fjernelse |
-| Fjernelse af Cloudmark IP | <https://csi.cloudmark.com/en/reset/> | Fjernelse |
+| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
+| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
 | SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Fjernelse af IP-adresser i Microsoft Outlook og Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Fjernelse |
-| UCEPROTECTs niveauer 1, 2 og 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECTs backscatterer.org | <https://www.backscatterer.org/> | Beskyttelse mod tilbagespredning |
-| UCEPROTECTs hvidlistede.org | <https://www.whitelisted.org/> (kræver et gebyr) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Fjernelse |
-| AOL/Verizon (f.eks. `[IPTS04]`) | <https://senders.yahooinc.com/> | Fjernelse |
-| Cox Communications | `unblock.request@cox.net` | Fjernelse |
-| t-online.de (tysk/T-Mobile) | `tobr@rx.t-online.de` | Fjernelse |
+| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
+| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
+| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
+| AT&T | `abuse_rbl@abuse-att.net` | Removal |
+| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
+| Cox Communications | `unblock.request@cox.net` | Removal |
+| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
 
 > \[!TIP]
-> Start med et lavt antal e-mails af høj kvalitet for at opbygge et positivt omdømme, før du sender større mængder.
+> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
 
 > \[!IMPORTANT]
-> Hvis dit domæne er på en sortliste, har hver sortliste sin egen fjernelsesprocessen. Tjek deres websteder for instruktioner.
+> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
 
 > \[!TIP]
-> Hvis du har brug for yderligere hjælp, eller hvis du opdager, at vi er falsk positivt angivet som spam af en bestemt e-mailudbyder, bedes du <a href="/help">kontakte os</a>.
+> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
-### Hvad skal jeg gøre, hvis jeg modtager spam-e-mails {#what-should-i-do-if-i-receive-spam-emails}
+### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
 
-Du bør afmelde dig fra e-maillisten (hvis muligt) og blokere afsenderen.
+You should unsubscribe from the emailing list (if possible) and block the sender.
 
-Rapportér venligst ikke beskeden som spam, men videresend den i stedet til vores manuelt kuraterede og privatlivsfokuserede system til forebyggelse af misbrug.
+Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
 
-**E-mailadressen, som spam skal videresendes til, er:** <abuse@forwardemail.net>
+**The email address to forward spam to is:** <abuse@forwardemail.net>
 
-### Hvorfor vises mine testmails, der sendes til mig selv i Gmail, som "mistænkelige" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-Hvis du ser denne fejlmeddelelse i Gmail, når du sender en test til dig selv, eller når en person, du sender en e-mail til med dit alias, ser en e-mail fra dig for første gang, så **bare rolig** – da dette er en indbygget sikkerhedsfunktion i Gmail.
+If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
 
-Du kan blot klikke på "Ser sikkert ud". Hvis du for eksempel sender en testbesked ved hjælp af funktionen "Send e-mail som" (til en anden), vil de ikke se denne besked.
+You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
-Men hvis de ser denne besked, skyldes det, at de normalt var vant til at se dine e-mails komme fra <john@gmail.com> i stedet for <john@customdomain.com> (bare et eksempel). Gmail vil advare brugerne for at sikre, at tingene er sikre, i tilfælde af at der ikke er nogen løsning.
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
 
-### Kan jeg fjerne via forwardemail punktum net i Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-Dette emne er relateret til en [et alment kendt problem i Gmail, hvor ekstra information vises ud for afsenderens navn](https://support.google.com/mail/answer/1311182).
+This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
 
-Fra maj 2023 understøtter vi afsendelse af e-mail med SMTP som et tilføjelsesprogram for alle betalende brugere – hvilket betyder, at du kan fjerne <span class="notranslate">via forwardemail dot net</span> i Gmail.
+As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
-Bemærk, at dette ofte stillede spørgsmål er specifikt for dem, der bruger [Sådan sender du e-mail som ved hjælp af Gmail](#how-to-send-mail-as-using-gmail)-funktionen.
+Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
-Se afsnittet om [Understøtter I afsendelse af e-mail med SMTP](#do-you-support-sending-email-with-smtp) for konfigurationsvejledning.
+Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
 
-## Datahåndtering {#data-management}
+## Data Management {#data-management}
 
-### Hvor er dine servere placeret {#where-are-your-servers-located}
+### Where are your servers located {#where-are-your-servers-located}
 
 > \[!TIP]
-> Vi annoncerer muligvis snart placeringen af vores EU-datacenter, som hostes under [forwardemail.eu](https://forwardemail.eu). Tilmeld dig diskussionen på <https://github.com/orgs/forwardemail/discussions/336> for at få opdateringer.
+> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
 
-Vores servere er primært placeret i Denver, Colorado – se <https://forwardemail.net/ips> for vores komplette liste over IP-adresser.
+Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
 
-Du kan få mere at vide om vores underdatabehandlere på vores sider [GDPR](/gdpr), [DPA](/dpa) og [Privatliv](/privacy).
+You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
 
-### Hvordan eksporterer og sikkerhedskopierer jeg min postkasse {#how-do-i-export-and-backup-my-mailbox}
+### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
 
-Du kan til enhver tid eksportere dine postkasser som [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)-, [Mbox](https://en.wikipedia.org/wiki/Mbox)- eller krypterede [SQLite](https://en.wikipedia.org/wiki/SQLite)-formater.
+At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser <i class="fa fa-angle-right"></i> Download sikkerhedskopi, og vælg din foretrukne eksportformattype.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
 
-Du vil modtage et link til download af eksporten via e-mail, når den er færdig.
+You will be emailed a link to download the export once it has finished.
 
-Bemærk, at dette eksportlink til download udløber efter 4 timer af sikkerhedsmæssige årsager.
+Note that this export download link expires after 4 hours for security concerns.
 
-Hvis du har brug for at inspicere dine eksporterede EML- eller Mbox-formater, kan disse open-source-værktøjer være nyttige:
+If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
 
-| Navn | Format | Platform | GitHub-URL |
+| Name | Format | Platform | GitHub URL |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox-fremviser | Mbox | Vinduer | <https://github.com/ename/mboxviewer> |
-| mbox-webfremviser | Mbox | Alle platforme | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Vinduer | <https://github.com/ayamadori/EmlReader> |
-| E-mail-fremviser | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-læser | EML | Alle platforme | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
+| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
+| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
+| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
 
-Hvis du desuden har brug for at konvertere en Mbox-fil til en EML-fil, kan du bruge <https://github.com/noelmartinon/mboxzilla>.
+Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### Hvordan importerer og migrerer jeg min eksisterende postkasse {#how-do-i-import-and-migrate-my-existing-mailbox}}
+### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Du kan nemt importere din e-mail til Videresend e-mail (f.eks. ved at bruge [Thunderbird](https://www.thunderbird.net)) med instruktionerne nedenfor:
+You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Du skal følge alle følgende trin for at importere din eksisterende e-mail.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to import your existing email.
+  </span>
 </div>
 
-1. Eksporter din e-mail fra din eksisterende e-mailudbyder:
+1. Export your email from your existing email provider:
 
-| E-mailudbyder | Eksportformat | Eksportinstruktioner |
+| Email Provider | Export Format | Export Instructions |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Udsigter | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>Hvis du bruger Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST-eksportformat</a>), kan du blot følge instruktionerne under "Andet" nedenfor. Vi har dog nedenfor angivet links til at konvertere PST til MBOX/EML-format baseret på dit operativsystem:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba til Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst til Windows cygwin</a> – (f.eks. <code>readpst -u -o $OUT_DIR $IN_DIR</code> erstatter <code>$OUT_DIR</code> og <code>$IN_DIR</code> med outputmappen og inputmappen) stier henholdsvis).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst til Ubuntu/Linux</a> – (f.eks. <code>sudo apt-get install readpst</code> og derefter <code>readpst -u -o $OUT_DIR $IN_DIR</code>, hvor <code>$OUT_DIR</code> og <code>$IN_DIR</code> erstattes med henholdsvis outputmappe- og inputmappestierne).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst til macOS (via brew)</a> – (f.eks. <code>brew install libpst</code> og derefter <code>readpst -u -o $OUT_DIR $IN_DIR</code>, hvor <code>$OUT_DIR</code> erstattes og <code>$IN_DIR</code> med henholdsvis outputmappe- og inputmappestierne).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST-konverter til Windows (GitHub)</a></li></ul><br /></span></div> |
+| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
 | Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
 | Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
-| Tutanota | EML | <https://github.com/crepererum-oss/tatutanata> |
-| Tænke | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#indhold> |
+| Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
+| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Andre | [Use Thunderbird](https://www.thunderbird.net) | Opsæt din eksisterende e-mailkonto i Thunderbird, og brug derefter [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/)-pluginnet til at eksportere og importere dine e-mails. **Du kan muligvis også blot kopiere/indsætte eller trække/slippe e-mails mellem én konto og en anden.** |
+| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
 
-2. Download, installer og åbn [Thunderbird](https://www.thunderbird.net).
+2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
 
-3. Opret en ny konto ved hjælp af dit alias' fulde e-mailadresse (f.eks. <kode><du@ditdomæne.com></kode>) og din genererede adgangskode. <strong>Hvis du endnu ikke har en genereret adgangskode, kan du <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">se vores opsætningsvejledning</a></strong>.
+3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
 
-4. Download og installer [ImportEksportVærktøjer OF](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird-pluginnet.
+4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
 
-5. Opret en ny lokal mappe i Thunderbird, og højreklik derefter på den → vælg indstillingen `ImportExportTools NG` → vælg `Import mbox file` (for MBOX-eksportformat) – eller – `Import messages` / `Import all messages from a directory` (for EML-eksportformat).
+5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
 
-6. Træk/slip fra den lokale mappe til en ny (eller eksisterende) IMAP-mappe i Thunderbird, som du ønsker at uploade beskeder til i IMAP-lageret med vores tjeneste. Dette sikrer, at de sikkerhedskopieres online med vores SQLite-krypterede lager.
+6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Hvis du er forvirret over, hvordan du importerer til Thunderbird, kan du se de officielle instruktioner på <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> og <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>
+       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+     </span>
+   </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Når du har gennemført eksport- og importprocessen, kan du også aktivere videresendelse på din eksisterende e-mailkonto og oprette en autoresponder for at give afsendere besked om, at du har en ny e-mailadresse (f.eks. hvis du tidligere brugte Gmail og nu bruger en e-mail med dit brugerdefinerede domænenavn).
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Understøtter du selvhosting? {#do-you-support-self-hosting}
+### Do you support self-hosting {#do-you-support-self-hosting}
 
-Ja, fra marts 2025 understøtter vi en selvhostet mulighed. Læs bloggen [her](https://forwardemail.net/blog/docs/self-hosted-solution). Tjek [selvbetjent guide](https://forwardemail.net/self-hosted) for at komme i gang. Og for dem, der er interesserede i en mere opdelt trin-for-trin version, kan du se vores [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-baserede vejledninger.
+Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
-## E-mailkonfiguration {#email-configuration}
+## Email Configuration {#email-configuration}
 
-### Hvordan kommer jeg i gang og konfigurerer videresendelse af e-mails {#how-do-i-get-started-and-set-up-email-forwarding}
+### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>Mindre end 10 minutter</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Kom godt i gang:
-</strong>
-<span>
-Læs og følg trin et til otte nedenfor omhyggeligt. Sørg for at erstatte e-mailadressen <code>bruger@gmail.com</code> med den e-mailadresse, du vil videresende e-mails til (hvis den ikke allerede er korrekt). Sørg ligeledes for at erstatte <code>eksempel.com</code> med dit brugerdefinerede domænenavn (hvis det ikke allerede er korrekt).
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+  </span>
 </div>
 
 <ol>
-<li class="mb-2 mb-md-3 mb-lg-5">Hvis du allerede har registreret dit domænenavn et sted, skal du springe dette trin helt over og gå til trin to! Ellers kan du <a href="/domain-registration" rel="noopener noreferrer">klikke her for at registrere dit domænenavn</a>.</li>
-<li class="mb-2 mb-md-3 mb-lg-5">
-Kan du huske, hvor du registrerede dit domæne? Når du husker dette, skal du følge instruktionerne nedenfor:
+  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">
+  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Du skal åbne en ny fane og logge ind på din domæneregistrator. Du kan nemt klikke på din "Registrator" nedenfor for at gøre dette automatisk. I denne nye fane skal du navigere til DNS-administrationssiden hos din registrator – og vi har angivet de trinvise navigationstrin nedenfor under kolonnen "Trin til konfiguration". Når du har navigeret til denne side i den nye fane, kan du vende tilbage til denne fane og fortsætte til trin tre nedenfor.
-<strong class="font-weight-bold">Luk ikke den åbne fane endnu; du skal bruge den til fremtidige trin!</strong>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
+    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+  </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr> <th>Registrator</th> <th>Trin til konfiguration</th>
-</tr> </thead> <tbody> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>">Log ind <i class="fa fa-angle-right"></i> Domænecenter <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Rediger DNS-indstillinger</td>
-</tr> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Rute 53</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> Hostede zoner <i class="fa fa-angle-right"></i> (Vælg dit domæne)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> Mine servere <i class="fa fa-angle-right"></i> Domæneadministration <i class="fa fa-angle-right"></i> DNS-administrator</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FOR ROCK: Log ind <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> (Klik på ikonet ▼ ud for at administrere) <i class="fa fa-angle-right"></i> DNS
-<br />
-TIL ÆLDRE: Log ind <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> Zone-editor <i class="fa fa-angle-right"></i> (Vælg dit domæne)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Gjort nemt</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Vælg dit domæne)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>"
-<td>Log ind <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Administrer</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> Netværk <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Mere <i class="fa fa-angle-right"></i> Administrer domæne</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>"
-<td>Log ind <i class="fa fa-angle-right"></i> I kortvisning skal du klikke på administrer på dit domæne <i class="fa fa-angle-right"></i> I listevisning skal du klikke på
-tandhjulsikonet <i class="fa fa-angle-right"></i> DNS og navneservere <i class="fa fa-angle-right"></i> DNS-poster</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>"
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Se</a>
-</td>
-<td>Log ind <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Administrer <i class="fa fa-angle-right"></i> (klik på tandhjulsikonet) <i class="fa fa-angle-right"></i> Klik på DNS og navneservere i menuen til venstre</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
-<td>Log ind <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> Administrer domæner <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
-<td>Log ind <i class="fa fa-angle-right"></i> Oversigt <i class="fa fa-angle-right"></i> Administrer <i class="fa fa-angle-right"></i> Simpel editor <i class="fa fa-angle-right"></i> Optegnelser</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
-<td>Log ind <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Administration <i class="fa fa-angle-right"></i> Rediger zonen</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Overvågning</a>
-</td> <td>Log ind <i class="fa fa-angle-right"></i> Administrer mine domæner <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Administrer DNS</td>
-</tr> <tr> <td> <a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Domæner</a>
-<br /> <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Overvågning</a>
-</td> <td>Log ind <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Konfigurer DNS</td>
-</tr> <tr> <td> <a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
-<br /> <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Overvåg</a>
-</td> <td>Log ind <i class="fa fa-angle-right"></i> Domæneliste <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Administrer <i class="fa fa-angle-right"></i> Avanceret DNS</td>
-</tr> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0"
-<td>Log ind <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Opsæt Netlify DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Løsninger</a></td>
-<td>Log ind <i class="fa fa-angle-right"></i> Kontoadministrator <i class="fa fa-angle-right"></i> Mine domænenavne <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> Administrer <i class="fa fa-angle-right"></i> Skift hvor domæner peger <i class="fa fa-angle-right"></i> Avanceret DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Overvåg</a>
-</td>
-<td>Log ind <i class="fa fa-angle-right"></i> Administrerede domæner <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> DNS-indstillinger</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
-<td>Log ind <i class="fa fa-angle-right"></i> Hjemmemenu <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i>
-Avancerede indstillinger <i class="fa fa-angle-right"></i> Brugerdefinerede poster</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Nu</a></td>
-<td>Brug af "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [prioritet]</code></td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
-<td>Log ind <i class="fa fa-angle-right"></i> Domæneside <i class="fa fa-angle-right"></i> (Vælg dit domæne) <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
-<td>Log ind <i class="fa fa-angle-right"></i> Domæneside <i class="fa fa-angle-right"></i> (Klik på ikonet <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Vælg Administrer DNS-poster</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
-<td>Log ind <i class="fa fa-angle-right"></i> Domæner <i class="fa fa-angle-right"></i> Mine domæner</td>
-</tr>
-<tr>
-<td>Andet</td>
-<td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Vigtigt:</strong> Kan du ikke se dit registrarnavn her? Søg blot på internettet efter "hvordan man ændrer DNS-poster på $REGISTRAR" (erstat $REGISTRAR med navnet på din registrar – f.eks. "hvordan man ændrer DNS-poster på GoDaddy", hvis du bruger GoDaddy).</div>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Registrar</th>
+      <th>Steps to Configure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
+      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <br />
+      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
+the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
+Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+      </td>
+    </tr>
+  </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Brug din registrars DNS-administrationsside (den anden fane, du har åbnet), og indstil følgende "MX"-poster:
+<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Bemærk, at der IKKE må være andre MX-poster angivet. Begge poster vist nedenfor SKAL eksistere. Sørg for, at der ikke er nogen stavefejl, og at du har stavet både mx1 og mx2 korrekt. Hvis der allerede var MX-poster, skal du slette dem helt.
-
-"TTL"-værdien behøver ikke at være 3600, den kan være en lavere eller højere værdi, hvis det er nødvendigt.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
+    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Prioritet</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td>MX</td> <td>0</td> <td><code>mx1.forwardemail.net</code></td> </tr> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td>
-<td>MX</td> <td>0</td> <td><code>mx2.forwardemail.net</code></td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Priority</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Brug din registrators DNS-administrationsside (den anden fane, du har åbnet), og angiv følgende <strong class="notranslate">TXT</strong>-post(er):
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du har et betalt abonnement, skal du springe dette trin helt over og gå til trin fem! Hvis du ikke har et betalt abonnement, vil dine videresendte adresser være offentligt søgbare – gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> og opgrader dit domæne til et betalt abonnement, hvis det ønskes. Hvis du vil vide mere om betalte abonnementer, kan du se vores <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pris</a>-side. Ellers kan du fortsætte med at vælge en eller flere kombinationer fra mulighed A til mulighed F nedenfor. </span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed A:
-</strong>
-<span>
-Hvis du videresender alle e-mails fra dit domæne (f.eks. "all@example.com", "hello@example.com" osv.) til en bestemt adresse "user@gmail.com":
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option A:
+  </strong>
+  <span>
+    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=bruger@gmail.com</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Sørg for at erstatte værdierne ovenfor i kolonnen "Værdi" med din egen e-mailadresse. "TTL"-værdien behøver ikke at være 3600, den kan være en lavere eller højere værdi, hvis det er nødvendigt. En lavere "time to live" ("TTL")-værdi vil sikre, at fremtidige ændringer, der foretages i dine DNS-poster, spredes hurtigere over hele internettet – tænk på dette som hvor længe det vil blive cachelagret i hukommelsen (i sekunder). Du kan lære mere om <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL på Wikipedia</a>.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed B:
-</strong>
-<span>
-Hvis du kun skal videresende en enkelt e-mailadresse (f.eks. <code>hello@example.com</code> til <code>user@gmail.com</code>; dette vil også automatisk videresende "hello+test@example.com" til "user+test@gmail.com"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option B:
+  </strong>
+  <span>
+    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=hello:user@gmail.com</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed C:
-</strong>
-<span>
-Hvis du videresender flere e-mails, skal du adskille dem med et komma:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option C:
+  </strong>
+  <span>
+    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed D:
-</strong>
-<span>
-Du kan have et uendeligt antal videresendelsesmails – sørg bare for ikke at ombryde mere end 255 tegn på en enkelt linje og start hver linje med "forward-email=". Et eksempel er givet nedenfor:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option D:
+  </strong>
+  <span>
+    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code> </td> </tr> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td>
-<td class="notranslate">TXT</td> <td> <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code> </td> </tr> <tr> <td><em>"@", ".", eller tom</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code> </td> </tr> <tr> <td><em>"@", ".", eller tom</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td>
-<code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
-</td>
-</tr> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed E:
-</strong>
-<span>
-Du kan også angive et domænenavn i din <strong class="notranslate">TXT</strong>-post for at få global alias-videresendelse (f.eks. vil "bruger@eksempel.com" blive videresendt til "bruger@eksempel.net"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option E:
+  </strong>
+  <span>
+    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=example.net</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=example.net</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed F:
-</strong>
-<span>
-Du kan endda bruge webhooks som et globalt eller individuelt alias at videresende e-mails til. Se eksemplet og det fulde afsnit om webhooks med titlen <a href="#do-you-support-webhooks" class="alert-link">Understøtter I webhooks</a> nedenfor?
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option F:
+  </strong>
+  <span>
+    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+  </span>
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
-</td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Mulighed G:
-</strong>
-<span>
-Du kan endda bruge regulære udtryk ("regex") til at matche aliasser og til at håndtere erstatninger, som e-mails skal videresendes til. Se eksemplerne og det fulde afsnit om regex med titlen <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Understøtter I regulære udtryk eller regex</a> nedenfor?
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option G:
+  </strong>
+  <span>
+    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Har du brug for avanceret regex med substitution?</strong> Se eksemplerne og det fulde afsnit om regex med titlen <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Understøtter I regulære udtryk eller regex</a> nedenfor.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Simpelt eksempel:</strong> Hvis jeg vil have alle e-mails, der går til `linus@example.com` eller `torvalds@example.com`, videresendt til `user@gmail.com`:
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td> <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code> </td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Opsamlingsregler for videresendelse kan også beskrives som "gennemløbsregler".
-Det betyder, at indgående e-mails, der matcher mindst én specifik videresendelsesregel, vil blive brugt i stedet for opsamlingsreglerne.
-Specifikke regler omfatter e-mailadresser og regulære udtryk.
-<br /><br />
-For eksempel:
-<br /> <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
-<br />
-E-mails sendt til <code>hello@example.com</code> vil **ikke** blive videresendt til <code>second@gmail.com</code> (opsamlingsregler) med denne konfiguration, og i stedet kun blive leveret til <code>first@gmail.com</code>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Catch-all forwarding rules could also be described as "fall-through".
+    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
+    Specific rules include email addresses and regular expressions.
+    <br /><br />
+    For example:
+    <br />
+    <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
+    <br />
+    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+  </span>
 </div>
 
 ---
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Brug din registrators DNS-administrationsside (den anden fane, du har åbnet), og angiv desuden følgende <strong class="notranslate">TXT</strong>-post:
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Gmail (f.eks. Send mail som) eller G Suite, skal du tilføje <code>include:_spf.google.com</code> til værdien ovenfor, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Hvis du allerede har en lignende linje med "v=spf1", skal du tilføje <code>include:spf.forwardemail.net</code> lige før eventuelle eksisterende "include:host.com"-poster og før "-all" i samme linje, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Bemærk, at der er forskel på "-all" og "~all". "-" angiver, at SPF-tjekket skal FEJLES, hvis det ikke matcher, og "~" angiver, at SPF-tjekket skal SOFTFAILES. Vi anbefaler at bruge "-all"-tilgangen for at forhindre domæneforfalskning.
-<br /><br />
-Du skal muligvis også inkludere SPF-posten for den vært, du sender mails fra (f.eks. Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Bekræft dine DNS-poster ved hjælp af vores værktøj "Bekræft poster", som er tilgængeligt under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Opsætning.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
 
-Send en test-e-mail for at bekræfte, at det virker. Bemærk, at det kan tage lidt tid, før dine DNS-poster udbredes.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-</span>
-Hvis du ikke modtager test-e-mails, eller modtager en test-e-mail, der siger "Vær forsigtig med denne besked", så se svarene på henholdsvis <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Hvorfor modtager jeg ikke mine test-e-mails</a> og <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Hvorfor vises mine test-e-mails, der sendes til mig selv i Gmail, som "mistænkelige"</a>.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+  </span>
+    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Hvis du ønsker at "Send mail som" fra Gmail, skal du <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">se denne video</a></strong> eller følge trinnene under <a href="#how-to-send-mail-as-using-gmail">How for at sende mail som ved hjælp af Gmail</a> nedenfor.
+</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
 
 </li></ol>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
-</div>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Valgfrie tilføjelser er anført nedenfor. Bemærk, at disse tilføjelser er helt valgfrie og muligvis ikke nødvendige. Vi ville i det mindste give dig yderligere oplysninger, hvis det er nødvendigt.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Valgfri tilføjelse:
-</strong>
-<span>
-Hvis du bruger funktionen <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How til at sende e-mails som ved hjælp af Gmail</a>, kan du tilføje dig selv til en tilladelsesliste. Se <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">disse instruktioner fra Gmail</a> om dette emne.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Optional Add-on:
+  </strong>
+  <span>
+    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+  </span>
 </div>
 
-### Kan jeg bruge flere MX-udvekslinger og -servere til avanceret videresendelse {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Ja, men **du bør kun have én MX-udveksling angivet i dine DNS-poster**.
+Yes, but **you should only have one MX exchange listed in your DNS records**.
 
-Forsøg ikke at bruge "Prioritet" som en måde at konfigurere flere MX-udvekslinger på.
+Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
 
-I stedet skal du konfigurere din eksisterende MX-udveksling til at videresende mail for alle ikke-matchende aliasser til vores tjenestes udvekslinger (`mx1.forwardemail.net` og/eller `mx2.forwardemail.net`).
+Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
 
-Hvis du bruger Google Workspace og vil videresende alle ikke-matchende aliasser til vores tjeneste, kan du se <https://support.google.com/a/answer/6297084>.
+If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
 
-Hvis du bruger Microsoft 365 (Outlook), og du vil videresende alle ikke-matchende aliasser til vores tjeneste, skal du se <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> og <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### Hvordan opsætter jeg en feriesvar (autosvar ved fravær) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser, og opret eller rediger enten det alias, du vil konfigurere en ferie-autoresponder for.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
 
-Du har mulighed for at konfigurere en startdato, slutdato, emne og besked, og du kan til enhver tid aktivere eller deaktivere det:
+You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
 
-* Emne og besked i almindelig tekst understøttes i øjeblikket (vi bruger `striptags`-pakken internt til at fjerne HTML).
+* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
+* Subject is limited to 100 characters.
+* Message is limited to 1000 characters.
+* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
+  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
+* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
 
-* Emnet er begrænset til 100 tegn.
-
-* Beskeden er begrænset til 1000 tegn.
-
-* Opsætning kræver udgående SMTP-konfiguration (f.eks. skal du konfigurere DKIM-, DMARC- og Return-Path DNS-poster).
-
-* Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration, og følg opsætningsvejledningen.
-
-* Feriesvar kan ikke aktiveres på globale vanity-domænenavne (f.eks. understøttes [engangsadresser](/disposable-addresses) ikke).
-* Feriesvar kan ikke aktiveres for aliasser med jokertegn/opsamlingstegn (`*`) eller regulære udtryk.
-
-I modsætning til mailsystemer som `postfix` (f.eks. der bruger feriefilterudvidelsen `sieve`) – tilføjer Videresend e-mail automatisk din DKIM-signatur, dummy-sikrer forbindelsesproblemer, når du sender feriesvar (f.eks. på grund af almindelige SSL/TLS-forbindelsesproblemer og ældre servere) og understøtter endda Open WKD- og PGP-kryptering til feriesvar.
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
 
 <!--
-* For at forhindre misbrug fratrækkes 1 udgående SMTP-kredit for hver sendt feriesvarbesked.
-* Alle betalte konti inkluderer som standard 300 kreditter pr. dag. Hvis du har brug for et større beløb, bedes du kontakte os.
+* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
+  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
 -->
 
-1. Vi sender kun én gang pr. [tilladt på listen](#do-you-have-an-allowlist) afsender hver 4. dag (hvilket svarer til Gmails funktionsmåde).
+1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
 
-* Vores Redis-cache bruger et fingeraftryk på `alias_id` og `sender`, hvor `alias_id` er alias MongoDB ID'et, og `sender` er enten Fra-adressen (hvis den er på tilladelseslisten) eller roddomænet i Fra-adressen (hvis den ikke er på tilladelseslisten). For enkelhedens skyld er udløbet af dette fingeraftryk i cachen sat til 4 dage.
+* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
 
-* Vores tilgang med at bruge roddomænet, der er parset i Fra-adressen, for afsendere, der ikke er på tilladelseslisten, forhindrer misbrug fra relativt ukendte afsendere (f.eks. ondsindede aktører) i at oversvømme feriesvarsmeddelelser.
+* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
 
-2. Vi sender kun, når MAIL FROM og/eller From ikke er blanke og ikke indeholder (uafhængig af store og små bogstaver) en [postmaster brugernavn](#what-are-postmaster-addresses) (delen før @ i en e-mail).
+2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-3. Vi sender ikke, hvis den oprindelige besked havde en af følgende overskrifter (ikke store og små bogstaver):
+3. We don't send if the original message had any of the following headers (case-insensitive):
 
-* Header for `auto-submitted` med en værdi, der ikke er lig med `no`.
-* Header for `x-auto-response-suppress` med en værdi på `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`.
-* Header for `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 eller `no`7 (uanset værdi).
-* Header af `no`8 med en værdi af `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 eller `x-auto-response-suppress`3.
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-4. Vi sender ikke, hvis MAIL FROM- eller From-e-mailadressen slutter med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
+4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
 
-5. Vi sender ikke, hvis brugernavnsdelen af e-mailadressen "Fra" var `mdaemon`, og den havde en header med titlen `X-MDDSN-Message`, der ikke skelner mellem store og små bogstaver.
+5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
 
-6. Vi sender ikke, hvis der var en `content-type`-header i `multipart/report`, der ikke skelner mellem store og små bogstaver.
+6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
-### Hvordan konfigurerer jeg SPF til videresendelse af e-mail {#how-do-i-set-up-spf-for-forward-email}
+### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-Brug din registrators DNS-administrationsside til at indstille følgende <strong class="notranslate">TXT</strong>-post:
+Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Gmail (f.eks. Send mail som) eller G Suite, skal du tilføje <code>include:_spf.google.com</code> til værdien ovenfor, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Microsoft Outlook eller Live.com, skal du tilføje <code>include:spf.protection.outlook.com</code> til din SPF <strong class="notranslate">TXT</strong>-post, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Hvis du allerede har en lignende linje med "v=spf1", skal du tilføje <code>include:spf.forwardemail.net</code> lige før eventuelle eksisterende "include:host.com"-poster og før "-all" i samme linje, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Bemærk, at der er forskel på "-all" og "~all". "-" angiver, at SPF-tjekket skal FEJLES, hvis det ikke matcher, og "~" angiver, at SPF-tjekket skal SOFTFAILES. Vi anbefaler at bruge "-all"-tilgangen for at forhindre domæneforfalskning.
-<br /><br />
-Du skal muligvis også inkludere SPF-posten for den vært, du sender mails fra (f.eks. Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-### Hvordan konfigurerer jeg DKIM til videresendelse af e-mail {#how-do-i-set-up-dkim-for-forward-email}
+### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsvejledningen.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Hvordan konfigurerer jeg DMARC til videresendelse af e-mail {#how-do-i-set-up-dmarc-for-forward-email}
+### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsvejledningen.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Hvordan forbinder og konfigurerer jeg mine kontakter {#how-do-i-connect-and-configure-my-contacts}
+### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
 
-**For at konfigurere dine kontakter skal du bruge CardDAV-URL'en:** `https://carddav.forwardemail.net` (eller blot `carddav.forwardemail.net`, hvis din klient tillader det)**
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
 
-### Hvordan forbinder og konfigurerer jeg mine kalendere {#how-do-i-connect-and-configure-my-calendars}
+### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
 
-**For at konfigurere din kalender skal du bruge CalDAV-URL'en:** `https://caldav.forwardemail.net` (eller blot `caldav.forwardemail.net`, hvis din klient tillader det)**
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Videresend e-mail-kalender CalDAV Thunderbird eksempelopsætning" />
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### Hvordan tilføjer jeg flere kalendere og administrerer eksisterende kalendere {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Hvis du vil tilføje yderligere kalendere, skal du blot tilføje en ny kalender-URL: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**sørg for at erstatte `calendar-name` med dit ønskede kalendernavn**)
+If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-Du kan ændre en kalenders navn og farve efter oprettelsen – brug blot din foretrukne kalenderapplikation (f.eks. Apple Mail eller [Thunderbird](https://thunderbird.net)).
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
-### Hvordan konfigurerer jeg SRS til videresendelse af e-mail {#how-do-i-set-up-srs-for-forward-email}
+### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-Vi konfigurerer automatisk [Afsenderomskrivningsordning](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – du behøver ikke at gøre dette selv.
+**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-### Hvordan konfigurerer jeg MTA-STS til videresendelse af e-mail {#how-do-i-set-up-mta-sts-for-forward-email}
+Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
 
-Se venligst [vores sektion om MTA-STS](#do-you-support-mta-sts) for yderligere information.
+**Setup instructions by platform:**
 
-### Hvordan tilføjer jeg et profilbillede til min e-mailadresse {#how-do-i-add-a-profile-picture-to-my-email-address}
+**macOS/iOS:**
 
-Hvis du bruger Gmail, skal du følge disse trin nedenfor:
+1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
+2. Use `caldav.forwardemail.net` as the server
+3. Enter your Forward Email alias and generated password
+4. After setup, you'll see both "Calendar" and "Reminders" collections
+5. Use the Reminders app to create and manage tasks
 
-1. Gå til <https://google.com> og log ud af alle e-mailkonti.
-2. Klik på "Log ind", og klik på "anden konto" i rullemenuen.
-3. Vælg "Brug en anden konto".
-4. Vælg "Opret konto".
-5. Vælg "Brug min nuværende e-mailadresse i stedet".
-6. Indtast din brugerdefinerede domænenavns e-mailadresse.
-7. Hent den bekræftelses-e-mail, der er sendt til din e-mailadresse.
-8. Indtast bekræftelseskoden fra denne e-mail.
-9. Udfyld profiloplysningerne for din nye Google-konto.
-10. Accepter alle politikker for beskyttelse af personlige oplysninger og brugsvilkår.
-11. Gå til <https://google.com>, og klik på dit profilikon i øverste højre hjørne, og klik på knappen "ændre".
-12. Upload et nyt billede eller en ny avatar til din konto.
-13. Ændringer tager cirka 1-2 timer at implementere, men nogle gange kan de være meget hurtige.
-14. Send en test-e-mail, og profilbilledet burde vises.
+**Android with Tasks.org:**
 
-## Avancerede funktioner {#advanced-features}
+1. Install Tasks.org from Google Play Store or F-Droid
+2. Go to Settings > Synchronization > Add Account > CalDAV
+3. Enter server: `https://caldav.forwardemail.net`
+4. Enter your Forward Email alias and generated password
+5. Tasks.org will automatically discover your task calendars
 
-### Understøtter I nyhedsbreve eller mailinglister til marketingrelateret e-mail? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+**Thunderbird:**
 
-Ja, du kan læse mere på <https://forwardemail.net/guides/newsletter-with-listmonk>.
+1. Install the Lightning add-on if not already installed
+2. Create a new calendar with type "CalDAV"
+3. Use URL: `https://caldav.forwardemail.net`
+4. Enter your Forward Email credentials
+5. Both events and tasks will be available in the calendar interface
 
-Bemærk venligst, at Forward Email har en manuel gennemgangsproces på domænebasis for **godkendelse af nyhedsbreve** for at opretholde IP-omdømme og sikre leveringsevne. Send en e-mail til <support@forwardemail.net> eller åbn en [anmodning om hjælp](https://forwardemail.net/help) til godkendelse. Dette tager typisk mindre end 24 timer, og de fleste anmodninger bliver imødekommet inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og advarsler. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke markeres som spam.
+### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
 
-### Understøtter I afsendelse af e-mail med API {#do-you-support-sending-email-with-api}?
+If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
 
-Ja, fra maj 2023 understøtter vi afsendelse af e-mail med API som et tilføjelsesprogram for alle betalende brugere.
+1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+
+2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+
+3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+
+4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+
+5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+
+6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+
+**Common issues:**
+
+* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
+* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
+* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+
+### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+
+Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+
+**Installation and Setup:**
+
+1. **Install Tasks.org**:
+   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+
+2. **Configure CalDAV sync**:
+   * Open Tasks.org
+   * Go to ☰ Menu > Settings > Synchronization
+   * Tap "Add Account"
+   * Select "CalDAV"
+
+3. **Enter Forward Email settings**:
+   * **Server URL**: `https://caldav.forwardemail.net`
+   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
+   * **Password**: Your alias-specific generated password
+   * Tap "Add Account"
+
+4. **Account discovery**:
+   * Tasks.org will automatically discover your task calendars
+   * You should see your "Reminders" collection appear
+   * Tap "Subscribe" to enable sync for the task calendar
+
+5. **Test sync**:
+   * Create a test task in Tasks.org
+   * Check that it appears in other CalDAV clients (like macOS Reminders)
+   * Verify changes sync both ways
+
+**Features available:**
+
+* ✅ Task creation and editing
+* ✅ Due dates and reminders
+* ✅ Task completion and status
+* ✅ Priority levels
+* ✅ Subtasks and task hierarchy
+* ✅ Tags and categories
+* ✅ Two-way sync with other CalDAV clients
+
+**Troubleshooting:**
+
+* If no task calendars appear, try manually refreshing in Tasks.org settings
+* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
+* Check network connectivity to `caldav.forwardemail.net`
+
+### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+
+We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+
+### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+
+Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+
+### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+
+If you're using Gmail, then follow these steps below:
+
+1. Go to <https://google.com> and sign out of all email accounts
+2. Click "Sign In" and on the drop-down click on "other account"
+3. Select "Use another account"
+4. Select "Create account"
+5. Select "Use my current email address instead"
+6. Enter your custom domain name email address
+7. Retrieve the verification email sent to your email address
+8. Enter the verification code from this email
+9. Complete profile information for your new Google account
+10. Agree to all Privacy and Terms of Use policies
+11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
+12. Upload a new photo or avatar for your account
+13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
+14. Send a test email and the profile photo should appear.
+
+## Advanced Features {#advanced-features}
+
+### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+
+Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+
+Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### Do you support sending email with API {#do-you-support-sending-email-with-api}
+
+Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Sørg for, at du har læst vores <a href="/terms" class="alert-link" target="_blank">Vilkår</a>, <a href="/privacy" class="alert-link" target="_blank">Privatlivspolitik</a> og <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Udgående SMTP-begrænsninger</a> – din brug betragtes som anerkendelse og samtykke.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-Se venligst vores afsnit om [E-mails](/email-api#outbound-emails) i vores API-dokumentation for at få flere muligheder, eksempler og mere indsigt.
+Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
 
-For at kunne sende udgående e-mails med vores API, skal du bruge din API-token, der er tilgængelig under [Min sikkerhed](/my-account/security).
+In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
 
-### Understøtter I modtagelse af e-mail med IMAP {#do-you-support-receiving-email-with-imap}
+### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
 
-Ja, fra 16. oktober 2023 understøtter vi modtagelse af e-mail via IMAP som et tilføjelsesprogram for alle betalende brugere. **Læs venligst vores dybdegående artikel** om [hvordan vores krypterede SQLite-postkasselagringsfunktion fungerer](/blog/docs/best-quantum-safe-encrypted-email-service).**
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
-<div id="imap-instruktioner">
+<div id="imap-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Sørg for, at du har læst vores <a href="/terms" class="alert-link" target="_blank">Vilkår</a> og <a href="/privacy" class="alert-link" target="_blank">Privatlivspolitik</a> – din brug betragtes som anerkendelse og samtykke.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Opret et nyt alias til dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Klik på <strong class="text-success"><i class="fa fa-key"></i>Generer adgangskode</strong> ud for det nyoprettede alias. Kopier den genererede adgangskode, der vises på skærmen, til din udklipsholder, og gem den sikkert.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Brug dit foretrukne e-mailprogram til at tilføje eller konfigurere en konto med dit nyoprettede alias (f.eks. <code><hello@example.com></code>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Vi anbefaler at bruge <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">et open source og privatlivsfokuseret alternativ</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Når du bliver bedt om at angive IMAP-servernavnet, skal du indtaste `imap.forwardemail.net`
+4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
-5. Når du bliver bedt om IMAP-serverporten, skal du indtaste `993` (SSL/TLS) – se [alternative IMAP-porte](/faq#what-are-your-imap-server-configuration-settings) om nødvendigt
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Hvis du bruger Thunderbird, skal du sørge for, at "Forbindelsessikkerhed" er indstillet til "SSL/TLS", og at godkendelsesmetoden er indstillet til "Normal adgangskode".</span>
-</div>
+5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Når du bliver bedt om at indtaste en IMAP-serveradgangskode, skal du indsætte adgangskoden fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> i trin 2 ovenfor.
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Gem dine indstillinger** – hvis du har problemer, bedes du <a href="/help">kontakte os</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Understøtter du POP3 {#do-you-support-pop3}
+</div>
 
-Ja, fra 4. december 2023 understøtter vi [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) som et tilføjelsesprogram for alle betalende brugere. **Læs venligst vores dybdegående artikel** om [hvordan vores krypterede SQLite-postkasselagringsfunktion fungerer](/blog/docs/best-quantum-safe-encrypted-email-service).**
+### Do you support POP3 {#do-you-support-pop3}
 
-<div id="pop3-instruktioner">
+Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+
+<div id="pop3-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Sørg for, at du har læst vores <a href="/terms" class="alert-link" target="_blank">Vilkår</a> og <a href="/privacy" class="alert-link" target="_blank">Privatlivspolitik</a> – din brug betragtes som anerkendelse og samtykke.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Opret et nyt alias til dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Klik på <strong class="text-success"><i class="fa fa-key"></i>Generer adgangskode</strong> ud for det nyoprettede alias. Kopier den genererede adgangskode, der vises på skærmen, til din udklipsholder, og gem den sikkert.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Brug dit foretrukne e-mailprogram til at tilføje eller konfigurere en konto med dit nyoprettede alias (f.eks. <code><hello@example.com></code>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Vi anbefaler at bruge <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">et open source og privatlivsfokuseret alternativ</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Når du bliver bedt om at angive POP3-servernavnet, skal du indtaste `pop3.forwardemail.net`
+4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
 
-5. Når du bliver bedt om POP3-serverporten, skal du indtaste `995` (SSL/TLS) – se [alternative POP3-porte](/faq#what-are-your-pop3-server-configuration-settings) om nødvendigt
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Hvis du bruger Thunderbird, skal du sørge for, at "Forbindelsessikkerhed" er indstillet til "SSL/TLS", og at godkendelsesmetoden er indstillet til "Normal adgangskode".</span>
-</div>
+5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Når du bliver bedt om POP3-serveradgangskoden, skal du indsætte adgangskoden fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> i trin 2 ovenfor.
+6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Gem dine indstillinger** – hvis du har problemer, bedes du <a href="/help">kontakte os</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Understøtter I kalendere (CalDAV) {#do-you-support-calendars-caldav}
+</div>
 
-Ja, fra den 5. februar 2024 har vi tilføjet denne funktion. Vores server er `caldav.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
+### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
 
-Den understøtter både IPv4 og IPv6 og er tilgængelig via port `443` (HTTPS).
+Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-| Log ind | Eksempel | Beskrivelse |
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Brugernavn | `user@example.com` | E-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a>. |
-| Adgangskode | `************************` | Aliasspecifik genereret adgangskode. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-For at bruge kalenderunderstøttelse skal **brugeren** være e-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> – og **adgangskoden** skal være en aliasspecifik genereret adgangskode.
+In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
 
-### Understøtter du kontakter (CardDAV) {#do-you-support-contacts-carddav}
+### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Ja, fra den 12. juni 2025 har vi tilføjet denne funktion. Vores server er `carddav.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
+Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-Den understøtter både IPv4 og IPv6 og er tilgængelig via port `443` (HTTPS).
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
 
-| Log ind | Eksempel | Beskrivelse |
+**How calendars and lists work:**
+
+* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
+* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
+* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
+* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+
+**Supported task clients:**
+
+* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
+* **iOS Reminders** - Full native support across all iOS devices
+* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
+* **Thunderbird** - Task and calendar support in desktop email client
+* **Any CalDAV-compatible task manager** - Standard VTODO component support
+
+**Task features supported:**
+
+* Task creation, editing, and deletion
+* Due dates and start dates
+* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Task priority levels
+* Recurring tasks
+* Task descriptions and notes
+* Multi-device synchronization
+* Subtasks with RELATED-TO property
+* Task reminders with VALARM
+
+The login credentials are the same as for calendar support:
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Brugernavn | `user@example.com` | E-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a>. |
-| Adgangskode | `************************` | Aliasspecifik genereret adgangskode. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-For at bruge kontaktsupport skal **brugeren** være e-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> – og **adgangskoden** skal være en aliasspecifik genereret adgangskode.
+**Important notes:**
 
-### Understøtter I afsendelse af e-mail med SMTP {#do-you-support-sending-email-with-smtp}
+* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
+* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
+* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
-Ja, fra maj 2023 understøtter vi afsendelse af e-mail med SMTP som et tilføjelsesprogram for alle betalende brugere.
+### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
 
-<div id="smtp-instruktioner">
+Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
+
+In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+
+<div id="smtp-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Sørg for, at du har læst vores <a href="/terms" class="alert-link" target="_blank">Vilkår</a>, <a href="/privacy" class="alert-link" target="_blank">Privatlivspolitik</a> og <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Udgående SMTP-begrænsninger</a> – din brug betragtes som anerkendelse og samtykke.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Gmail, kan du læse vores <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">vejledning til Send Mail Som med Gmail</a>. Hvis du er udvikler, kan du læse vores <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentation til e-mail-API'er</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
 </div>
 
-1. Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsvejledningen.
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Opret et nyt alias til dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Klik på <strong class="text-success"><i class="fa fa-key"></i>Generer adgangskode</strong> ud for det nyoprettede alias. Kopier den genererede adgangskode, der vises på skærmen, til din udklipsholder, og gem den sikkert.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-4. Brug dit foretrukne e-mailprogram til at tilføje eller konfigurere en konto med dit nyoprettede alias (f.eks. <code><hello@example.com></code>)
+4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
+
+5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
+
+6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
+
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Vi anbefaler at bruge <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">et open source og privatlivsfokuseret alternativ</a>.</span>
-</div>
-
-5. Når du bliver bedt om at angive SMTP-servernavnet, skal du indtaste `smtp.forwardemail.net`
-
-6. Når du bliver bedt om SMTP-serverporten, skal du indtaste `465` (SSL/TLS) – se [alternative SMTP-porte](/faq#what-are-your-smtp-server-configuration-settings) om nødvendigt
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Hvis du bruger Thunderbird, skal du sørge for, at "Forbindelsessikkerhed" er indstillet til "SSL/TLS", og at godkendelsesmetoden er indstillet til "Normal adgangskode".</span>
-</div>
-
-7. Når du bliver bedt om at indtaste en SMTP-serveradgangskode, skal du indsætte adgangskoden fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> i trin 3 ovenfor.
-
-8. **Gem dine indstillinger og send din første test-e-mail** – hvis du har problemer, bedes du <a href="/help">kontakte os</a>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Bemærk venligst, at vi for at opretholde IP-omdømme og sikre levering har en manuel gennemgangsproces på domænebasis for udgående SMTP-godkendelse. Dette tager typisk mindre end 24 timer, og de fleste anmodninger bliver imødekommet inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og advarsler. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke markeres som spam.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Understøtter du OpenPGP/MIME, end-to-end-kryptering ("E2EE") og Web Key Directory ("WKD")? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+</div>
 
-Ja, vi understøtter [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end-kryptering ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) og registrering af offentlige nøgler ved hjælp af [Webnøglekatalog ("WKD")](https://wiki.gnupg.org/WKD). Du kan konfigurere OpenPGP ved hjælp af [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) eller [selvhost dine egne nøgler](https://wiki.gnupg.org/WKDHosting) (se [denne vejledning til WKD-serveropsætning](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-* WKD-opslag caches i 1 time for at sikre rettidig e-maillevering → derfor, hvis du tilføjer, ændrer eller fjerner din WKD-nøgle, bedes du sende os en e-mail på `support@forwardemail.net` med din e-mailadresse, så vi manuelt kan tømme cachen.
+Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* Vi understøtter PGP-kryptering for meddelelser, der videresendes via WKD-opslag eller ved hjælp af en uploadet PGP-nøgle på vores brugerflade.
+* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
+* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
+* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
+* Messages sent to webhooks are not currently encrypted with PGP.
+* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
+* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
 
-* Uploadede nøgler har forrang, så længe PGP-afkrypteringsfeltet er aktiveret/markeret.
-
-* Meddelelser sendt til webhooks er i øjeblikket ikke krypteret med PGP.
-
-* Hvis du har flere aliasser, der matcher en given videresendelsesadresse (f.eks. regex/wildcard/exact combo), og hvis mere end et af disse indeholder en uploadet PGP-nøgle og har PGP markeret →, sender vi dig en fejlalarm-e-mail og krypterer ikke meddelelsen med din uploadede PGP-nøgle. Dette er meget sjældent og gælder normalt kun for avancerede brugere med komplekse aliasregler.
-* **PGP-kryptering vil ikke blive anvendt til videresendelse af e-mails via vores MX-servere, hvis afsenderen havde en DMARC-politik om afvisning. Hvis du har brug for PGP-kryptering på *al* mail, foreslår vi, at du bruger vores IMAP-tjeneste og konfigurerer din PGP-nøgle til dit alias for indgående mail.**
-
-**Du kan validere din opsætning af webnøglekataloget på <https://wkd.chimbosonic.com/> (open source) eller <https://www.webkeydirectory.com/> (proprietær).**
+**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Automatisk kryptering:
-</strong>
-<span>Hvis du bruger vores <a href="#do-you-support-sending-email-with-smtp" class="alert-link">udgående SMTP-tjeneste</a> og sender ukrypterede beskeder, vil vi automatisk forsøge at kryptere beskeder pr. modtager ved hjælp af <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Automatic Encryption:
+  </strong>
+  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Du skal følge alle følgende trin for at aktivere OpenPGP for dit brugerdefinerede domænenavn.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+  </span>
 </div>
 
-1. Download og installer din e-mailklients anbefalede plugin nedenfor:
+1. Download and install your email client's recommended plugin below:
 
-| E-mail-klient | Platform | Anbefalet plugin | Noter |
+| Email Client | Platform | Recommended Plugin | Notes |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Skrivebord | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird har indbygget understøttelse af OpenPGP. |
-| Gmail | Browser | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietær licens) | Gmail understøtter ikke OpenPGP, men du kan downloade open source-pluginnet [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail understøtter ikke OpenPGP, men du kan downloade open source-pluginnet [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) eller [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietær licens) | Apple Mail understøtter ikke OpenPGP, men du kan downloade open source-pluginnet [PGPro](https://github.com/opensourceios/PGPro/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Udsigter | Vinduer | [gpg4win](https://www.gpg4win.de/index.html) | Outlooks desktop-mailklient understøtter ikke OpenPGP, men du kan downloade open source-plugin'et [gpg4win](https://www.gpg4win.de/index.html). |
-| Udsigter | Browser | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietær licens) | Outlooks webbaserede mailklient understøtter ikke OpenPGP, men du kan downloade open source-plugin'et [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobil | [OpenKeychain](https://www.openkeychain.org/) eller [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) såsom [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) og [FairEmail](https://github.com/M66B/FairEmail) understøtter begge open source-pluginnet [OpenKeychain](https://www.openkeychain.org/). Du kan alternativt bruge open source-pluginnet (med proprietær licens) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietær licens) | Du kan downloade open source-browserudvidelsen [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietær licens) | Du kan downloade open source-browserudvidelsen [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | Du kan downloade open source-browserudvidelsen [Mailvelope](https://mailvelope.com/). |
-| Modig | Browser | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietær licens) | Du kan downloade open source-browserudvidelsen [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Skrivebord | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa har indbygget understøttelse af OpenPGP. |
-| KMail | Skrivebord | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail har indbygget understøttelse af OpenPGP. |
-| GNOME-udviklingen | Skrivebord | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution har indbygget understøttelse af OpenPGP. |
-| Terminal | Skrivebord | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | Du kan bruge open source-filen [gpg command line tool](https://www.gnupg.org/download/) til at generere en ny nøgle fra kommandolinjen. |
+| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
+| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
+| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
+| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
+| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
+| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
+| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
+| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
 
-2. Åbn plugin'et, opret din offentlige nøgle, og konfigurer din e-mailklient til at bruge den.
+2. Open the plugin, create your public key, and configure your email client to use it.
 
-3. Upload din offentlige nøgle til <https://keys.openpgp.org/upload>.
+3. Upload your public key at <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Du kan besøge <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> for at administrere din nøgle i fremtiden.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+   </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Valgfri tilføjelse:
-</strong>
-<span>
-Hvis du bruger vores <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">krypterede lagringstjenester (IMAP/POP3)</a> og ønsker, at <i>alle</i> e-mails, der er gemt i din (allerede krypterede) SQLite-database, skal krypteres med din offentlige nøgle, skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Rediger <i class="fa fa-angle-right"></i> OpenPGP og upload din offentlige nøgle.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Optional Add-on:
+     </strong>
+     <span>
+       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+     </span>
+   </div>
 
-4. Tilføj en ny `CNAME`-post til dit domænenavn (f.eks. `example.com`):
+4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><code>openpgpkey</code></td> <td class="text-center">3600</td> <td class="notranslate">CNAME</td> <td><code>wkd.keys.openpgp.org</code></td> </tr> </tbody> </table>
+<table class="table table-striped table-hover my-3">
+     <thead class="thead-dark">
+       <tr>
+         <th>Name/Host/Alias</th>
+         <th class="text-center">TTL</th>
+         <th>Type</th>
+         <th>Answer/Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td><code>openpgpkey</code></td>
+         <td class="text-center">3600</td>
+         <td class="notranslate">CNAME</td>
+         <td><code>wkd.keys.openpgp.org</code></td>
+       </tr>
+     </tbody>
+   </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>Hvis dit alias bruger vores <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domæner</a> (f.eks. <code>hideaddress.net</code>), kan du springe dette trin over.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+   </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tillykke!
-</strong>
-<span>
-Du har gennemført alle trin.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Støtter du MTA-STS {#do-you-support-mta-sts}
+### Do you support MTA-STS {#do-you-support-mta-sts}
 
-Ja, fra 2. marts 2023 understøtter vi [MTA-STS](https://www.hardenize.com/blog/mta-sts). Du kan bruge [denne skabelon](https://github.com/jpawlowski/mta-sts.template), hvis du ønsker at aktivere det på dit domæne.
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
 
-Vores konfiguration kan findes offentligt på GitHub på <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### Understøtter I adgangsnøgler og WebAuthn {#do-you-support-passkeys-and-webauthn}
+### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-Ja! Fra den 13. december 2023 har vi tilføjet understøttelse af adgangsnøglerne [på grund af stor efterspørgsel](https://github.com/orgs/forwardemail/discussions/182).
+Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
 
-Adgangsnøgler giver dig mulighed for sikkert at logge ind uden at kræve en adgangskode og tofaktorgodkendelse.
+Passkeys allow you to securely log in without requiring a password and two-factor authentication.
 
-Du kan bekræfte din identitet med berøring, ansigtsgenkendelse, enhedsbaseret adgangskode eller pinkode.
+You can validate your identity with touch, facial recognition, device-based password, or PIN.
 
-Vi giver dig mulighed for at administrere op til 30 adgangskoder på én gang, så du nemt kan logge ind med alle dine enheder.
+We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
 
-Få mere at vide om adgangsnøgler på følgende links:
+Learn more about passkeys at the following links:
 
-* [Log ind på dine applikationer og websteder med adgangsnøgler](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Brug adgangsnøgler til at logge ind på apps og websteder på iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedia-artikel om adgangsnøgler](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### Støtter I bedste praksis for e-mail? {#do-you-support-email-best-practices}
+### Do you support email best practices {#do-you-support-email-best-practices}
 
-Ja. Vi har indbygget understøttelse af SPF, DKIM, DMARC, ARC og SRS på tværs af alle abonnementer. Vi har også arbejdet grundigt sammen med de oprindelige forfattere af disse specifikationer og andre e-mail-eksperter for at sikre perfektion og høj leveringsevne.
+Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
 
-### Understøtter I bounce webhooks {#do-you-support-bounce-webhooks}
+### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-Leder du efter dokumentation om e-mail-webhooks? Se <a href="/faq#do-you-support-webhooks" class="alert-link">Understøtter I webhooks?</a> for mere indsigt.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Ja, fra og med den 14. august 2024 har vi tilføjet denne funktion. Du kan nu gå til Min konto → Domæner → Indstillinger → Bounce Webhook URL og konfigurere en `http://`- eller `https://`-URL, som vi sender en `POST`-anmodning til, når udgående SMTP-e-mails afvises.
+Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
-Dette er nyttigt for dig til at administrere og overvåge din udgående SMTP – og kan bruges til at vedligeholde abonnenter, framelde sig og registrere, når der opstår afvisninger.
+This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
 
-Bounce webhook-nyttelaster sendes som en JSON med disse egenskaber:
+Bounce webhook payloads are sent as a JSON with these properties:
 
-* `email_id` (Streng) - e-mail-ID, der svarer til en e-mail i Min konto → E-mails (udgående SMTP)
-* `list_id` (Streng) - `List-ID` headerværdien (uafhængig af store og små bogstaver), hvis nogen, fra den oprindelige udgående e-mail
-* `list_unsubscribe` (Streng) - `List-Unsubscribe` headerværdien (uafhængig af store og små bogstaver), hvis nogen, fra den oprindelige udgående e-mail
-* `feedback_id` (Streng) - `Feedback-ID` headerværdien (uafhængig af store og små bogstaver), hvis nogen, fra den oprindelige udgående e-mail
-* `recipient` (Streng) - e-mailadressen på den modtager, der blev afvist eller forårsagede en fejl
-* `message` (Streng) - en detaljeret fejlmeddelelse for afvisningen
-* `response` (Streng) - SMTP-svarmeddelelsen
-* `list_id`0 (Tal) - den parset SMTP-svarkode
-* `list_id`1 (Streng) - hvis svarkoden var fra en betroet kilde, vil denne værdi blive udfyldt med roddomænenavnet (f.eks. `list_id`2 eller `list_id`3)
-* `list_id`4 (Objekt) - et objekt, der indeholder følgende egenskaber, der beskriver afvisnings- og afvisningsstatus
-* `list_id`5 (Streng) - afvisningshandling (f.eks. `list_id`6)
-* `list_id`7 (Streng) - afvisningsårsag (f.eks. `list_id`8)
-* `list_id`9 (Streng) - afvisningskategori (f.eks. `List-ID`0)
-* `List-ID`1 (Tal) - afvisningsstatuskode (f.eks. `List-ID`2)
-* `List-ID`3 (Streng) - afvisningskode fra svarmeddelelse (f.eks. `List-ID`4)
-* `List-ID`5 (Nummer) - parset linjenummer, hvis relevant, `List-ID`6 (f.eks. `List-ID`7)
-* `List-ID`8 (Objekt) - nøgleværdipar af headere for den udgående e-mail
-* `List-ID`9 (Streng) - `list_unsubscribe`0 formateret dato for, hvornår afvisningsfejlen opstod
+* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
+* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
+* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
+* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
+* `recipient` (String) - the email address of the recipient that bounced or errored
+* `message` (String) - a detailed error message for the bounce
+* `response` (String) - the SMTP response message
+* `response_code` (Number) - the parsed SMTP response code
+* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
+* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
+  * `action` (String) - bounce action (e.g. `"reject"`)
+  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce category (e.g. `"block"`)
+  * `code` (Number) - bounce status code (e.g. `554`)
+  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
+  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
 
-For eksempel:
+For example:
 
 ```json
 {
@@ -1757,83 +2467,108 @@ For eksempel:
 }
 ```
 
-Her er et par yderligere bemærkninger vedrørende bounce webhooks:
+Here are a few additional notes regarding bounce webhooks:
 
-* Hvis webhook-nyttelasten indeholder en `list_id`-, `list_unsubscribe`- eller `feedback_id`-værdi, skal du om nødvendigt tage passende skridt til at fjerne `recipient` fra listen.
+* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
+  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
+* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
 
-* Hvis `bounce.category`-værdien var en af følgende: `"block"`, `"recipient"`, `"spam"` eller `"virus"`, skal du helt sikkert fjerne brugeren fra listen.
-
-* Hvis du har brug for at verificere webhook-nyttelaster (for at sikre, at de rent faktisk kommer fra vores server), kan du bruge [finde den eksterne klients IP-adresse, klientens værtsnavn, ved hjælp af et omvendt opslag](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det skal være `list_unsubscribe`0.
-
-* Du kan også kontrollere IP-adressen mod `list_unsubscribe`1.
-
-* Gå til Min konto → Domæner → Indstillinger → Webhook Signature Payload Verification Key for at få din webhook-nøgle.
-
-* Du kan rotere denne nøgle når som helst af sikkerhedsmæssige årsager.
-* Beregn og sammenlign `list_unsubscribe`2-værdien fra vores webhook-anmodning med den beregnede body-værdi ved hjælp af denne nøgle. Et eksempel på, hvordan du gør dette, er tilgængeligt på `list_unsubscribe`3.
-* Se diskussionen på <`list_unsubscribe`4 for mere indsigt.
-* Vi venter i op til `list_unsubscribe`5 sekunder på, at dit webhook-slutpunkt svarer med en `list_unsubscribe`6-statuskode, og vi prøver igen i op til `list_unsubscribe`7 sekunder.
-* Hvis vi registrerer, at din afviste webhook-URL har en fejl, mens vi forsøger at sende en anmodning til den, sender vi dig en høflighedsmail én gang om ugen.
-
-### Understøtter I webhooks? {#do-you-support-webhooks}
+### Do you support webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-Leder du efter dokumentation om bounce webhooks? Se <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Understøtter I bounce webhooks?</a> for mere indsigt.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Ja, fra den 15. maj 2020 har vi tilføjet denne funktion. Du kan blot tilføje webhook(s) præcis som du ville gøre med enhver anden modtager! Sørg for, at du har protokollen "http" eller "https" præfikset i webhookens URL.
+Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Forbedret privatlivsbeskyttelse:
-</strong>
-<span>
-Hvis du har et betalt abonnement (som inkluderer forbedret privatlivsbeskyttelse), skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> og klikke på "Aliasser" ud for dit domæne for at konfigurere dine webhooks. Hvis du vil vide mere om betalte abonnementer, kan du se vores <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pris</a>-side. Ellers kan du fortsætte med at følge instruktionerne nedenfor.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Hvis du har gratisabonnementet, skal du blot tilføje en ny DNS-<strong class="notranslate">TXT</strong>-post som vist nedenfor:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
-Hvis jeg for eksempel vil have, at alle e-mails, der går til `alias@example.com`, videresendes til et nyt [anmodningsbakke](https://requestbin.com/r/en8pfhdgcculn?inspect) testslutpunkt:
+For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Eller måske ønsker du, at alle e-mails, der går til `example.com`, skal videresendes til dette slutpunkt:
+Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr> </tbody>
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
 </table>
 
-**Her er yderligere bemærkninger vedrørende webhooks:**
+**Here are additional notes regarding webhooks:**
 
-* Hvis du har brug for at verificere webhook-nyttelast (for at sikre, at de rent faktisk kommer fra vores server), kan du bruge [finde den eksterne klients IP-adresse, klientens værtsnavn, ved hjælp af et omvendt opslag](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det skal enten være `mx1.forwardemail.net` eller `mx2.forwardemail.net`.
-* Du kan også tjekke IP-adressen mod [vores offentliggjorte IP-adresser](#what-are-your-servers-ip-addresses).
-* Hvis du har et betalt abonnement, skal du gå til Min konto → Domæner → Indstillinger → Webhook Signature Payload Verification Key for at få din webhook-nøgle.
-* Du kan rotere denne nøgle når som helst af sikkerhedsmæssige årsager.
-* Beregn og sammenlign `X-Webhook-Signature`-værdien fra vores webhook-anmodning med den beregnede body-værdi ved hjælp af denne nøgle. Et eksempel på, hvordan du gør dette, er tilgængeligt på [dette Stack Overflow-indlæg](https://stackoverflow.com/a/68885281).
-* Se diskussionen på <https://github.com/forwardemail/free-email-forwarding/issues/235> for mere indsigt.
-* Hvis en webhook ikke svarer med en `200` statuskode, gemmer vi dens svar i [fejllog oprettet](#do-you-store-error-logs) – hvilket er nyttigt til fejlfinding.
-* Webhook HTTP-anmodninger vil forsøge igen op til 3 gange for hvert SMTP-forbindelsesforsøg, med en maksimal timeout på 60 sekunder pr. endpoint POST-anmodning. **Bemærk, at dette ikke betyder, at den kun forsøger igen 3 gange**, den vil faktisk forsøge igen kontinuerligt over tid ved at sende en SMTP-kode på 421 (som indikerer til afsenderen, at det skal forsøges igen senere) efter det 3. mislykkede HTTP POST-anmodningsforsøg. Dette betyder, at e-mailen vil forsøge igen kontinuerligt i dagevis, indtil en statuskode på 200 opnås.
-* Vi forsøger igen automatisk baseret på standardstatus- og fejlkoderne, der bruges i [superagentens gentagelsesmetode](https://ladjs.github.io/superagent/#retrying-requests) (vi er vedligeholdere).
-* Vi grupperer webhook HTTP-anmodninger til det samme endpoint i én anmodning i stedet for flere) for at spare ressourcer og fremskynde svartid. Hvis du f.eks. sender en e-mail til <webhook1@example.com>, <webhook2@example.com> og <webhook3@example.com>, og alle disse er konfigureret til at ramme den samme *nøjagtige* endpoint-URL, vil der kun blive foretaget én anmodning. Vi grupperer sammen efter præcis slutpunktsmatchning med streng lighed.
-* Bemærk, at vi bruger `mx1.forwardemail.net`0-bibliotekets "simpleParser"-metode til at parse beskeden til et JSON-venligt objekt.
-* Rå e-mailværdi som en streng er angivet som egenskaben "raw".
-* Godkendelsesresultater er angivet som egenskaberne "dkim", "spf", "arc", "dmarc" og "bimi".
-* De parsede e-mail-headere er angivet som egenskaben "headers" – men bemærk også, at du kan bruge "headerLines" for nemmere iteration og parsing.
-* De grupperede modtagere for denne webhook er grupperet sammen og angivet som egenskaben "recipients".
-* SMTP-sessionsoplysningerne er angivet som egenskaben "session". Dette indeholder oplysninger om afsenderen af beskeden, beskedens ankomsttidspunkt, HELO og klientens værtsnavn. Klientens værtsnavnsværdi som `mx1.forwardemail.net`1 er enten FQDN (fra et omvendt PTR-opslag) eller `mx1.forwardemail.net`2 omsluttet af parenteser (f.eks. `mx1.forwardemail.net`3).
-* Hvis du har brug for en hurtig måde at få værdien af `mx1.forwardemail.net`4 på, kan du bruge værdien af `mx1.forwardemail.net`5 (se eksemplet nedenfor). Headeren `mx1.forwardemail.net`6 er en header, vi tilføjer til meddelelser for at debugge med den oprindelige modtager (før maskeret videresendelse) for meddelelsen.
-* Hvis du har brug for at fjerne egenskaberne `mx1.forwardemail.net`7 og/eller `mx1.forwardemail.net`8 fra nyttelastens indhold, skal du blot tilføje `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 eller `mx2.forwardemail.net`1 til dit webhook-slutpunkt som en forespørgselsstrengparameter (f.eks. `mx2.forwardemail.net`2).
-* Hvis der er vedhæftede filer, vil de blive tilføjet til `mx2.forwardemail.net`3-arrayet med bufferværdier. Du kan analysere dem tilbage i indholdet ved hjælp af en tilgang med JavaScript, f.eks.:
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
+* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
+* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
+* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
+* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+* Raw email value as a String is given as the property "raw".
+* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+* The grouped recipients for this webhook are grouped together and given as the property "recipients".
+* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
+* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
 
   ```js
   const data = [
@@ -1859,13 +2594,13 @@ Eller måske ønsker du, at alle e-mails, der går til `example.com`, skal vider
   ```
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-Nysgerrig efter, hvordan webhook-anmodningen ser ud fra videresendte e-mails? Vi har inkluderet et eksempel nedenfor til dig!
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+  <span>
+  </span>
 </div>
 
 ```json
@@ -2048,746 +2783,797 @@ Nysgerrig efter, hvordan webhook-anmodningen ser ud fra videresendte e-mails? Vi
 }
 ```
 
-### Understøtter du regulære udtryk eller regex {#do-you-support-regular-expressions-or-regex}
+### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
 
-Ja, fra den 27. september 2021 har vi tilføjet denne funktion. Du kan blot skrive regulære udtryk ("regex") til at matche aliasser og udføre substitutioner.
+Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
 
-Aliaser, der understøttes af regulære udtryk, er dem, der starter med `/` og slutter med `/`, og deres modtagere er e-mailadresser eller webhooks. Modtagerne kan også inkludere understøttelse af regex-substitution (f.eks. `$1`, `$2`).
+Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
 
-Vi understøtter to regulære udtryksflag, herunder `i` og `g`. Det store- og småbogstavsflag `i` er en permanent standard, og det håndhæves altid. Det globale flag `g` kan tilføjes af dig ved at tilføje `/g` til slutningen `/`.
+We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
 
-Bemærk, at vi også understøtter vores <a href="#can-i-disable-specific-aliases">disabled aliasfunktion</a> for modtagerdelen med vores regex-understøttelse.
+Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
 
-Regulære udtryk understøttes ikke på <a href="/disposable-addresses" target="_blank">globale vanity-domæner</a> (da dette kan være en sikkerhedssårbarhed).
+Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Forbedret privatlivsbeskyttelse:
-</strong>
-<span>
-Hvis du har et betalt abonnement (som har forbedret privatlivsbeskyttelse), skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> og klikke på "Aliasser" ud for dit domæne for at konfigurere regulære udtryk. Hvis du vil vide mere om betalte abonnementer, kan du se vores <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pris</a>-side. Ellers kan du fortsætte med at følge instruktionerne nedenfor.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+  </span>
 </div>
 
-Hvis du har gratisabonnementet, skal du blot tilføje en ny DNS-<strong class="notranslate">TXT</strong>-post ved hjælp af et eller flere af de angivne eksempler nedenfor:
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Simpelt eksempel:</strong> Hvis jeg vil have alle e-mails, der går til `linus@example.com` eller `torvalds@example.com`, videresendt til `user@gmail.com`:
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på erstatning af fornavn og efternavn:</strong> Forestil dig, at alle dine firmas e-mailadresser er af `firstname.lastname@example.com`-mønsteret. Hvis jeg ønsker, at alle e-mails, der går til mønsteret `firstname.lastname@example.com`, skal videresendes til `firstname.lastname@company.com` med understøttelse af erstatning (<a href="https://regexr.com/66hnu" class="alert-link">se test på RegExr</a>):
-</div>
+#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
-</tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på substitution af plussymbolfiltrering:</strong> Hvis jeg ønsker, at alle e-mails, der går til `info@example.com` eller `support@example.com`, skal videresendes til henholdsvis `user+info@gmail.com` eller `user+support@gmail.com` (med understøttelse af substitution) (<a href="https://regexr.com/66ho7" class="alert-link">se test på RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på webhook-forespørgselsstrengsubstitution:</strong> Måske ønsker du, at alle e-mails, der går til `example.com`, skal gå til en <a href="#do-you-support-webhooks" class="alert-link">webhook</a> og have en dynamisk forespørgselsstrengnøgle på "til" med en værdi af brugernavnsdelen af e-mailadressen (<a href="https://regexr.com/66ho4" class="alert-link">se test på RegExr</a>):
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
-</tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på lydløs afvisning:</strong> Hvis du ønsker, at alle e-mails, der matcher et bestemt mønster, skal deaktiveres og lydløst afvises (vises for afsenderen, som om beskeden blev sendt, men faktisk ikke fører nogen vegne) med statuskoden `250` (se <a href="#can-i-disable-specific-aliases" class="alert-link">Kan jeg deaktivere specifikke aliasser</a>), skal du blot bruge den samme fremgangsmåde med et enkelt udråbstegn "!". Dette indikerer for afsenderen, at beskeden blev leveret, men faktisk ikke førte nogen vegne (f.eks. sort hul eller `/dev/null`).
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på blød afvisning:</strong> Hvis du ønsker, at alle e-mails, der matcher et bestemt mønster, skal deaktiveres og afvises blødt med statuskoden `421` (se <a href="#can-i-disable-specific-aliases" class="alert-link">Kan jeg deaktivere bestemte aliasser</a>), skal du blot bruge den samme fremgangsmåde med et dobbelt udråbstegn "!!". Dette indikerer, at afsenderen skal prøve sin e-mail igen, og e-mails til dette alias vil blive forsøgt igen i cirka 5 dage og derefter afvist permanent.
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Eksempel på fuldstændig afvisning:</strong> Hvis du ønsker, at alle e-mails, der matcher et bestemt mønster, skal deaktiveres og fuldstændig afvises med statuskoden `550` (se <a href="#can-i-disable-specific-aliases" class="alert-link">Kan jeg deaktivere specifikke aliasser</a>), skal du blot bruge den samme fremgangsmåde med et tredobbelt udråbstegn "!!!". Dette indikerer en permanent fejl for afsenderen, og e-mails vil ikke blive forsøgt igen, de vil blive afvist for dette alias.
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td> </tr> </tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Alias Name</th>
+      <th>Effect</th>
+      <th>Test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/^(linus|torvalds)$/</code></td>
+      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+    <tr>
+      <td><code>/^24highst(reet)$/</code></td>
+      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-Er du nysgerrig efter, hvordan man skriver et regulært udtryk, eller har du brug for at teste din erstatning? Du kan gå til den gratis hjemmeside til test af regulære udtryk <a href="https://regexr.com" class="alert-link">RegExr</a> på <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.">
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+  <span>
+  </span>
 </div>
 
-### Hvad er dine udgående SMTP-grænser {#what-are-your-outbound-smtp-limits}
+#### Examples for the free plan {#examples-for-the-free-plan}
 
-Vi begrænser brugere og domæner til 300 udgående SMTP-beskeder pr. dag. Dette giver i gennemsnit 9000+ e-mails i en kalendermåned. Hvis du har brug for at overskride dette antal eller har konstant store e-mails, bedes du [kontakt os](https://forwardemail.net/help).
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
-### Skal jeg have godkendelse for at aktivere SMTP {#do-i-need-approval-to-enable-smtp}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+</div>
 
-Ja, bemærk venligst, at Forward Email har en manuel gennemgangsproces på domænebasis for udgående SMTP-godkendelse for at opretholde IP-omdømme og sikre leveringsevne. Send en e-mail til <support@forwardemail.net> eller åbn en [anmodning om hjælp](https://forwardemail.net/help) til godkendelse. Dette tager typisk mindre end 24 timer, og de fleste anmodninger bliver imødekommet inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og advarsler. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke markeres som spam.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-### Hvad er dine SMTP-serverkonfigurationsindstillinger {#what-are-your-smtp-server-configuration-settings}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+</div>
 
-Vores server er `smtp.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Den understøtter både IPv4 og IPv6 og er tilgængelig via portene `465` og `2465` for SSL/TLS og `587`, `2587`, `2525` og `25` for TLS (STARTTLS).
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+</div>
 
-| Protokol | Værtsnavn | Havne | IPv4 | IPv6 |
-| :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
-| `SSL/TLS` **Foretrukket** | `smtp.forwardemail.net` | `465`, `2465` | :hvidt_flueben: | :hvidt_flueben: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :hvidt_flueben: | :hvidt_flueben: |
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-| Log ind | Eksempel | Beskrivelse |
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+  <span>
+  </span>
+</div>
+
+### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+
+### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+
+Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+
+Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+
+**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+
+| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
+| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Brugernavn | `user@example.com` | E-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a>. |
-| Adgangskode | `************************` | Aliasspecifik genereret adgangskode. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias |
 
-For at kunne sende udgående e-mails med SMTP skal **SMTP-brugeren** være e-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> – og **SMTP-adgangskoden** skal være en aliasspecifik genereret adgangskode.
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
 
-Se venligst [Understøtter I afsendelse af e-mail med SMTP](#do-you-support-sending-email-with-smtp) for trinvise instruktioner.
+Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
-### Hvad er dine IMAP-serverkonfigurationsindstillinger {#what-are-your-imap-server-configuration-settings}
+### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
 
-Vores server er `imap.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
+Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Den understøtter både IPv4 og IPv6 og er tilgængelig via portene `993` og `2993` til SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-| Protokol | Værtsnavn | Havne | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Foretrukket** | `imap.forwardemail.net` | `993`, `2993` | :hvidt_flueben: | :hvidt_flueben: |
+| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Log ind | Eksempel | Beskrivelse |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Brugernavn | `user@example.com` | E-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a>. |
-| Adgangskode | `************************` | Aliasspecifik genereret adgangskode. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-For at oprette forbindelse med IMAP skal **IMAP-brugeren** være e-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> – og **IMAP-adgangskoden** skal være en aliasspecifik genereret adgangskode.
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Se venligst [Understøtter I modtagelse af e-mails med IMAP](#do-you-support-receiving-email-with-imap) for trinvise instruktioner.
+Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
-### Hvad er dine POP3-serverkonfigurationsindstillinger {#what-are-your-pop3-server-configuration-settings}
+### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
 
-Vores server er `pop3.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
+Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Den understøtter både IPv4 og IPv6 og er tilgængelig via portene `995` og `2995` til SSL/TLS.
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-| Protokol | Værtsnavn | Havne | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Foretrukket** | `pop3.forwardemail.net` | `995`, `2995` | :hvidt_flueben: | :hvidt_flueben: |
+| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
 
-| Log ind | Eksempel | Beskrivelse |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Brugernavn | `user@example.com` | E-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a>. |
-| Adgangskode | `************************` | Aliasspecifik genereret adgangskode. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-For at oprette forbindelse til POP3 skal **POP3-brugeren** være e-mailadressen på et alias, der findes for domænet på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> – og **IMAP-adgangskoden** skal være en aliasspecifik genereret adgangskode.
+In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Se venligst [Understøtter du POP3](#do-you-support-pop3) for trinvise instruktioner.
+Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
 
-### Postfix SMTP-relækonfiguration {#postfix-smtp-relay-configuration}
+## Security {#security}
 
-Du kan konfigurere Postfix til at videresende e-mails via Forward Emails SMTP-servere. Dette er nyttigt for serverapplikationer, der skal sende e-mails.
-
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Forventet opsætningstid:</strong>
-<span>Mindre end 15 minutter</span>
-</div>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Dette kræver en betalt plan med aktiveret SMTP-adgang.
-</span>
-</div>
-
-#### Installation {#installation}
-
-1. Installer Postfix på din server:
-
-```bash
-# Ubuntu/Debian
-sudo apt update && sudo apt install postfix
-
-# CentOS/RHEL
-sudo yum install postfix
-
-# macOS
-brew install postfix
-```
-
-2. Vælg "Internetside" under installationen, når du bliver bedt om at angive konfigurationstype.
-
-#### Konfiguration {#configuration}
-
-1. Rediger den primære Postfix-konfigurationsfil:
-
-```bash
-sudo nano /etc/postfix/main.cf
-```
-
-2. Tilføj eller rediger disse indstillinger:
-
-```
-# SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-```
-
-3. Opret SASL-adgangskodefilen:
-
-```bash
-sudo nano /etc/postfix/sasl_passwd
-```
-
-4. Tilføj dine loginoplysninger til videresendelse af e-mail:
-
-```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
-```
-
-5. Sikre og hash-kodekodefilen:
-
-```bash
-sudo chmod 600 /etc/postfix/sasl_passwd
-sudo postmap /etc/postfix/sasl_passwd
-```
-
-6. Genstart Postfix:
-
-```bash
-sudo systemctl restart postfix
-```
-
-#### Testning af {#testing}
-
-Test din konfiguration ved at sende en test-e-mail:
-
-```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
-```
-
-## Sikkerhed {#security}
-
-### Avancerede serverhærdningsteknikker {#advanced-server-hardening-techniques}
+### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Få mere at vide om vores sikkerhedsinfrastruktur på [vores sikkerhedsside](/security).
+> Learn more about our security infrastructure on [our Security page](/security).
 
-Videresend e-mail implementerer adskillige serverhærdningsteknikker for at sikre sikkerheden af vores infrastruktur og dine data:
+Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Netværkssikkerhed**:
-* IP-tabeller, firewall med strenge regler
-* Fail2ban for brute force-beskyttelse
-* Regelmæssige sikkerhedsrevisioner og penetrationstest
-* Kun VPN-administratoradgang
+1. **Network Security**:
+   * IP tables firewall with strict rules
+   * Fail2ban for brute force protection
+   * Regular security audits and penetration testing
+   * VPN-only administrative access
 
-2. **Systemhærdning**:** Minimal pakkeinstallation
-* Regelmæssige sikkerhedsopdateringer
-* SELinux i håndhævelsestilstand
-* Deaktiveret root SSH-adgang
-* Kun nøglebaseret godkendelse
+2. **System Hardening**:
+   * Minimal package installation
+   * Regular security updates
+   * SELinux in enforcing mode
+   * Disabled root SSH access
+   * Key-based authentication only
 
-3. **Applikationssikkerhed**:
-* CSP-headere (Content Security Policy)
-* HTTPS Strict Transport Security (HSTS)
-* XSS-beskyttelsesheadere
-* Frame-indstillinger og referrer-policy-headere
-* Regelmæssige afhængighedsrevisioner
+3. **Application Security**:
+   * Content Security Policy (CSP) headers
+   * HTTPS Strict Transport Security (HSTS)
+   * XSS protection headers
+   * Frame options and referrer policy headers
+   * Regular dependency audits
 
-4. **Databeskyttelse**:**
-* Fuld diskkryptering med LUKS
-* Sikker nøglehåndtering
-* Regelmæssige sikkerhedskopier med kryptering
-* Dataminimeringspraksis
+4. **Data Protection**:
+   * Full disk encryption with LUKS
+   * Secure key management
+   * Regular backups with encryption
+   * Data minimization practices
 
-5. **Overvågning og respons**:
-* Indtrængningsdetektion i realtid
-* Automatiseret sikkerhedsscanning
-* Centraliseret logføring og analyse
-* Procedurer for håndtering af hændelser
+5. **Monitoring and Response**:
+   * Real-time intrusion detection
+   * Automated security scanning
+   * Centralized logging and analysis
+   * Incident response procedures
 
 > \[!IMPORTANT]
-> Vores sikkerhedspraksis opdateres løbende for at imødegå nye trusler og sårbarheder.
+> Our security practices are continuously updated to address emerging threats and vulnerabilities.
 
 > \[!TIP]
-> For maksimal sikkerhed anbefaler vi at bruge vores tjeneste med end-to-end-kryptering via OpenPGP.
+> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
 
-### Har du SOC 2- eller ISO 27001-certificeringer? {#do-you-have-soc-2-or-iso-27001-certifications}
+### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Videresend e-mail fungerer på infrastruktur leveret af certificerede underdatabehandlere for at sikre overholdelse af branchestandarder.
+> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
 
-Videresendt e-mail har ikke direkte SOC 2 Type II- eller ISO 27001-certificeringer. Tjenesten fungerer dog på infrastruktur leveret af certificerede underdatabehandlere:
+Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
 
-* **DigitalOcean**: SOC 2 Type II og SOC 3 Type II certificeret (revideret af Schellman & Company LLC), ISO 27001 certificeret i flere datacentre. Detaljer: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
 
-* **Vultr**: SOC 2+ (HIPAA) certificeret, ISO/IEC-certificeringer: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Detaljer: <https://www.vultr.com/legal/compliance/>
+* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
 
-* **DataPacket**: SOC 2-kompatibel (kontakt DataPacket direkte for at få certificering), infrastrukturudbyder i virksomhedsklasse (Denver-lokation). Detaljer: <https://www.datapacket.com/datacenters/denver>
+* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
 
-Videresend e-mail følger branchens bedste praksis for sikkerhedsrevisioner og samarbejder regelmæssigt med uafhængige sikkerhedsforskere. Kilde: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### Bruger du TLS-kryptering til videresendelse af e-mails? {#do-you-use-tls-encryption-for-email-forwarding}
+### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
 
-Ja. Videresend e-mail håndhæver strengt TLS 1.2+ for alle forbindelser (HTTPS, SMTP, IMAP, POP3) og implementerer MTA-STS for forbedret TLS-understøttelse. Implementeringen inkluderer:
+Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
 
-* TLS 1.2+ håndhævelse for alle e-mailforbindelser
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) nøgleudveksling for perfekt fremadrettet hemmeligholdelse
-* Moderne krypteringspakker med regelmæssige sikkerhedsopdateringer
-* HTTP/2-understøttelse for forbedret ydeevne og sikkerhed
-* HSTS (HTTP Strict Transport Security) med forudindlæsning i større browsere
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for streng TLS-håndhævelse
+* TLS 1.2+ enforcement for all email connections
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
+* Modern cipher suites with regular security updates
+* HTTP/2 support for improved performance and security
+* HSTS (HTTP Strict Transport Security) with preloading in major browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
 
-Kilde: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-**MTA-STS-implementering**: Videresendt e-mail implementerer streng MTA-STS-håndhævelse i kodebasen. Når der opstår TLS-fejl, og MTA-STS håndhæves, returnerer systemet 421 SMTP-statuskoder for at sikre, at e-mails forsøges igen senere i stedet for at blive leveret usikkert. Implementeringsdetaljer:
+**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
 
-* TLS-fejldetektion: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS-håndhævelse i send-e-mail-hjælper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Tredjepartsvalidering: <https://www.hardenize.com/report/forwardemail.net/1750312779> viser "God" vurderinger for alle TLS- og transportsikkerhedsforanstaltninger.
+Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
 
-### Bevarer du e-mail-godkendelsesheadere {#do-you-preserve-email-authentication-headers}
+### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
 
-Ja. Videresend e-mail implementerer og bevarer omfattende e-mail-godkendelsesheadere:
+Yes. Forward Email comprehensively implements and preserves email authentication headers:
 
-* **SPF (Sender Policy Framework)**: Korrekt implementeret og bevaret
-* **DKIM (DomainKeys Identified Mail)**: Fuld understøttelse med korrekt nøglehåndtering
-* **DMARC**: Politikhåndhævelse for e-mails, der ikke opfylder SPF- eller DKIM-valideringen
-* **ARC**: Selvom det ikke er eksplicit beskrevet, tyder tjenestens perfekte compliance-scorer på omfattende håndtering af godkendelsesheadere
+* **SPF (Sender Policy Framework)**: Properly implemented and preserved
+* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
+* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
 
-Kilde: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Validering: Internet.nl Mail Test viser en score på 100/100 specifikt for implementeringen af "SPF, DKIM og DMARC". Hardenize-vurderingen bekræfter "God" vurdering for SPF og DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### Bevarer I de originale e-mail-overskrifter og forhindrer I spoofing? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Videresend e-mail implementerer sofistikeret anti-spoofing-beskyttelse for at forhindre misbrug af e-mail.
+> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
 
-Videresend e-mail bevarer originale e-mail-overskrifter, samtidig med at den implementerer omfattende anti-spoofing-beskyttelse gennem MX-kodebasen:
+Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
 
-* **Bevarelse af header**: Originale godkendelsesheadere bevares under videresendelse.** **Anti-spoofing**: Håndhævelse af DMARC-politik forhindrer header-spoofing ved at afvise e-mails, der ikke består SPF- eller DKIM-validering.** **Forebyggelse af header-injektion**: Inputvalidering og -rensning ved hjælp af striptags-bibliotek.** **Avanceret beskyttelse**: Sofistikeret phishing-detektion med spoofing-detektion, personefterligningsforebyggelse og brugermeddelelsessystemer.
+* **Header Preservation**: Original authentication headers are maintained during forwarding
+* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
+* **Header Injection Prevention**: Input validation and sanitization using striptags library
+* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
 
-**MX-implementeringsdetaljer**: Den centrale e-mailbehandlingslogik håndteres af MX-serverens kodebase, nærmere bestemt:
+**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
 
-* Primær MX-datahåndtering: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Vilkårlig e-mailfiltrering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-`isArbitrary`-hjælperen implementerer sofistikerede anti-spoofing-regler, herunder detektion af domæneefterligning, blokerede sætninger og forskellige phishing-mønstre.
+The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
 
-Kilde: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
-### Hvordan beskytter du dig mod spam og misbrug {#how-do-you-protect-against-spam-and-abuse}
+### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
 
-Videresend e-mail implementerer omfattende flerlagsbeskyttelse:
+Forward Email implements comprehensive multi-layer protection:
 
-* **Hastighedsbegrænsning**: Anvendes til godkendelsesforsøg, API-slutpunkter og SMTP-forbindelser
-* **Ressourceisolering**: Mellem brugere for at forhindre påvirkning fra brugere med stor volumen
-* **DDoS-beskyttelse**: Flerlagsbeskyttelse gennem DataPackets Shield-system og Cloudflare
-* **Automatisk skalering**: Dynamisk ressourcejustering baseret på efterspørgsel
-* **Misbrugsforebyggelse**: Brugerspecifikke misbrugsforebyggelseskontroller og hashbaseret blokering for skadeligt indhold
-* **E-mailgodkendelse**: SPF-, DKIM-, DMARC-protokoller med avanceret phishing-detektion
+* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
+* **Resource Isolation**: Between users to prevent impact from high-volume users
+* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
+* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
 
-Kilder:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS-beskyttelsesdetaljer)
+* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Gemmer du e-mailindhold på disken {#do-you-store-email-content-on-disk}
+### Do you store email content on disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Videresend e-mail bruger en nul-vidensarkitektur, der forhindrer, at e-mailindhold skrives til disken.
+> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
 
-* **Zero-Knowledge-arkitektur**: Individuelt krypterede SQLite-postkasser betyder, at videresendt e-mail ikke kan få adgang til e-mailindhold
-* **In-Memory-behandling**: E-mailbehandling foregår udelukkende i hukommelsen og undgår disklagring
-* **Ingen indholdslogning**: "Vi logger eller gemmer ikke e-mailindhold eller metadata på disk"
-* **Sandboxed Encryption**: Krypteringsnøgler gemmes aldrig på disk i klartekst
+* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
+* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
+* **No Content Logging**: "We do not log or store email content or metadata to disk"
+* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
 
-**MX-kodebasebevis**: MX-serveren behandler e-mails udelukkende i hukommelsen uden at skrive indhold til disken. Den primære e-mailbehandlingshåndterer demonstrerer denne in-memory-tilgang: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Kilder:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstrakt)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Detaljer uden viden)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandbox-kryptering)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
 
-### Kan e-mailindhold eksponeres under systemnedbrud {#can-email-content-be-exposed-during-system-crashes}
+### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
 
-Nej. Videresend e-mail implementerer omfattende sikkerhedsforanstaltninger mod dataeksponering relateret til nedbrud:
+No. Forward Email implements comprehensive safeguards against crash-related data exposure:
 
-* **Core Dumps Deaktiveret**: Forhindrer hukommelseseksponering under nedbrud
-* **Swap Memory Deaktiveret**: Helt deaktiveret for at forhindre udtrækning af følsomme data fra swap-filer
-* **In-Memory Architecture**: E-mail-indhold findes kun i flygtig hukommelse under behandling
-* **Beskyttelse af krypteringsnøgler**: Nøgler gemmes aldrig på disken i klartekst
-* **Fysisk sikkerhed**: LUKS v2-krypterede diske forhindrer fysisk adgang til data
-* **USB-lagring Deaktiveret**: Forhindrer uautoriseret dataudtrækning
+* **Core Dumps Disabled**: Prevents memory exposure during crashes
+* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
+* **In-Memory Architecture**: Email content exists only in volatile memory during processing
+* **Encryption Key Protection**: Keys are never stored on disk in plaintext
+* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
+* **USB Storage Disabled**: Prevents unauthorized data extraction
 
-**Fejlhåndtering af systemproblemer**: Videresend e-mail bruger hjælpefunktionerne `isCodeBug` og `isTimeoutError` til at sikre, at hvis der opstår problemer med databaseforbindelse, DNS-netværk/blokeringsliste eller upstream-forbindelse, returnerer systemet 421 SMTP-statuskoder for at sikre, at e-mails forsøges igen senere i stedet for at blive tabt eller eksponeret.
+**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
 
-Implementeringsdetaljer:
+Implementation details:
 
-* Fejlklassificering: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Håndtering af timeout-fejl i MX-behandling: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Kilde: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Hvem har adgang til din e-mailinfrastruktur {#who-has-access-to-your-email-infrastructure}
+### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
 
-Forward Email implementerer omfattende adgangskontroller for sit minimale 2-3-personers tekniske team med strenge 2FA-krav:
+Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
 
-* **Rollebaseret adgangskontrol**: For teamkonti med ressourcebaserede tilladelser
-* **Princippet om mindste rettigheder**: Anvendes på tværs af alle systemer
-* **Opdeling af opgaver**: Mellem operationelle roller
-* **Brugeradministration**: Separat implementering og devop af brugere med forskellige tilladelser
-* **Root Login deaktiveret**: Tvinger adgang gennem korrekt autentificerede konti
-* **Strict 2FA**: Ingen SMS-baseret 2FA på grund af risiko for MiTM-angreb - kun app-baserede eller hardware-tokens
-* **Omfattende revisionslogning**: Med redigering af følsomme data
-* **Automatiseret anomalidetektion**: For usædvanlige adgangsmønstre
-* **Regelmæssige sikkerhedsgennemgange**: Af adgangslogfiler
-* **Forebyggelse af Evil Maid-angreb**: USB-lager deaktiveret og andre fysiske sikkerhedsforanstaltninger
+* **Role-Based Access Control**: For team accounts with resource-based permissions
+* **Least Privilege Principle**: Applied throughout all systems
+* **Segregation of Duties**: Between operational roles
+* **User Management**: Separate deploy and devops users with distinct permissions
+* **Root Login Disabled**: Forces access through properly authenticated accounts
+* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
+* **Comprehensive Audit Logging**: With sensitive data redaction
+* **Automated Anomaly Detection**: For unusual access patterns
+* **Regular Security Reviews**: Of access logs
+* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
 
-Kilder:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Autorisationskontroller)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Netværkssikkerhed)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Forebyggelse af Evil Maid-angreb)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
 
-### Hvilke infrastrukturudbydere bruger du {#what-infrastructure-providers-do-you-use}
+### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Videresend e-mail bruger flere infrastrukturunderprocessorer med omfattende compliance-certificeringer.
+> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
 
-Du kan finde alle detaljer på vores side om GDPR-overholdelse: <https://forwardemail.net/gdpr>
+Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
 
-**Primære infrastrukturunderdatabehandlere:**
+**Primary Infrastructure Subprocessors:**
 
-| Udbyder | Certificeret ramme for databeskyttelse | GDPR-overholdelsesside |
+| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
 | ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare** | ✅ Ja | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **Datapakke** | ❌ Nej | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ Nej | <https://www.digitalocean.com/legal/gdpr> |
-| **Vultr** | ❌ Nej | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
+| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
+| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
+| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 
-**Detaljerede certificeringer:**
+**Detailed Certifications:**
 
 **DigitalOcean**
 
-* SOC 2 Type II & SOC 3 Type II (revideret af Schellman & Company LLC)
-* ISO 27001-certificeret i flere datacentre
-* PCI-DSS-kompatibel
-* CSA STAR Level 1-certificeret
-* APEC CBPR PRP-certificeret
-* Detaljer: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
+* ISO 27001 certified at multiple data centers
+* PCI-DSS compliant
+* CSA STAR Level 1 certified
+* APEC CBPR PRP certified
+* Details: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) certificeret
-* PCI Merchant-kompatibel
-* CSA STAR Level 1-certificeret
+* SOC 2+ (HIPAA) certified
+* PCI Merchant compliant
+* CSA STAR Level 1 certified
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Detaljer: <https://www.vultr.com/legal/compliance/>
+* Details: <https://www.vultr.com/legal/compliance/>
 
-**Datapakke**
+**DataPacket**
 
-* SOC 2-kompatibel (kontakt DataPacket direkte for at få certificering)
-* Virksomhedsbaseret infrastruktur (Denver-lokation)
-* DDoS-beskyttelse gennem Shield cybersikkerhedsstakken
-* Teknisk support døgnet rundt
-* Globalt netværk på tværs af 58 datacentre
-* Detaljer: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 compliant (contact DataPacket directly to obtain certification)
+* Enterprise-grade infrastructure (Denver location)
+* DDoS protection through Shield cybersecurity stack
+* 24/7 technical support
+* Global network across 58 data centers
+* Details: <https://www.datapacket.com/datacenters/denver>
 
-**Betalingsudbydere:**
+**Payment Processors:**
 
-* **Stripe**: Certificeret i henhold til Data Privacy Framework - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Ikke DPF-certificeret - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Tilbyder I en databehandleraftale (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
+### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Ja, Forward Email tilbyder en omfattende databehandleraftale (DPA), der kan underskrives sammen med vores virksomhedsaftale. En kopi af vores DPA er tilgængelig på: <https://forwardemail.net/dpa>
+Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
 
-**DPA-oplysninger:**
+**DPA Details:**
 
-* Dækker GDPR-overholdelse og EU-US/Schweiz-US Privacy Shield-rammer
-* Automatisk accept ved accept af vores servicevilkår
-* Ingen separat underskrift kræves for standard DPA
-* Tilpassede DPA-aftaler tilgængelige via Enterprise License
+* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
+* Automatically accepted when agreeing to our Terms of Service
+* No separate signature required for standard DPA
+* Custom DPA arrangements available through Enterprise License
 
-**GDPR-overholdelsesramme:**
-Vores databeskyttelsesaftale beskriver overholdelse af GDPR samt internationale krav til dataoverførsel. Fuldstændige oplysninger er tilgængelige på: <https://forwardemail.net/gdpr>
+**GDPR Compliance Framework:**
+Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
 
-For virksomhedskunder, der kræver brugerdefinerede DPA-vilkår eller specifikke kontraktlige aftaler, kan disse håndteres via vores **Enterprise License ($250/måned)**-program.
+For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
 
-### Hvordan håndterer I meddelelser om databrud {#how-do-you-handle-data-breach-notifications}
+### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Videresend e-mails nul-vidensarkitektur begrænser bruds påvirkning betydeligt.
+> Forward Email's zero-knowledge architecture significantly limits breach impact.
 
-* **Begrænset dataeksponering**: Kan ikke få adgang til krypteret e-mailindhold på grund af nul-viden-arkitektur
-* **Minimal dataindsamling**: Kun grundlæggende abonnentoplysninger og begrænsede IP-logfiler af sikkerhedsmæssige årsager
-* **Underprocessor-rammer**: DigitalOcean og Vultr opretholder GDPR-kompatible procedurer for hændelsesrespons
+* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
+* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
+* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
 
-**Oplysninger om GDPR-repræsentant:**
-Forward Email har udpeget GDPR-repræsentanter i overensstemmelse med artikel 27:
+**GDPR Representative Information:**
+Forward Email has appointed GDPR representatives in accordance with Article 27:
 
-**EU-repræsentant:**
+**EU Representative:**
 Osano International Compliance Services Limited
 ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**Repræsentant i Storbritannien:**
+**UK Representative:**
 Osano UK Compliance LTD
 ATTN: LFHC
 42-46 Fountain Street, Belfast
 Antrim, BT1 - 5EF
 
-For virksomhedskunder, der kræver specifikke SLA'er for notifikation om brud, bør disse drøftes som en del af en **Virksomhedslicens**-aftale.
+For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
 
-Kilder:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Tilbyder I et testmiljø {#do-you-offer-a-test-environment}
+### Do you offer a test environment {#do-you-offer-a-test-environment}
 
-Den tekniske dokumentation til Videresend e-mail beskriver ikke eksplicit en dedikeret sandkassetilstand. Potentielle testmetoder omfatter dog:
+Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
 
-* **Selvhostingmulighed**: Omfattende selvhostingfunktioner til oprettelse af testmiljøer
-* **API-grænseflade**: Potentiale for programmatisk test af konfigurationer
-* **Open Source**: 100 % open source-kode giver kunderne mulighed for at undersøge videresendelseslogik
-* **Flere domæner**: Understøttelse af flere domæner kan muliggøre oprettelse af testdomæner
+* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
+* **API Interface**: Potential for programmatic testing of configurations
+* **Open Source**: 100% open-source code allows customers to examine forwarding logic
+* **Multiple Domains**: Support for multiple domains could enable test domain creation
 
-For virksomhedskunder, der kræver formelle sandbox-funktioner, bør dette drøftes som en del af en **Virksomhedslicens**-aftale.
+For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
 
-Kilde: <https://github.com/forwardemail/forwardemail.net> (Detaljer om udviklingsmiljø)
+Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
 
-### Tilbyder I overvågnings- og alarmeringsværktøjer {#do-you-provide-monitoring-and-alerting-tools}
+### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
 
-Videresend e-mail giver overvågning i realtid med visse begrænsninger:
+Forward Email provides real-time monitoring with some limitations:
 
-**Tilgængelig:**
+**Available:**
 
-* **Overvågning af levering i realtid**: Offentligt synlige præstationsmålinger for større e-mailudbydere
-* **Automatisk alarmering**: Ingeniørteamet får besked, når leveringstiderne overstiger 10 sekunder
-* **Transparent overvågning**: 100 % open source-overvågningssystemer
-* **Infrastrukturovervågning**: Automatiseret anomalidetektion og omfattende revisionslogning
+* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
+* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
+* **Transparent Monitoring**: 100% open-source monitoring systems
+* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
 
-**Begrænsninger:**
+**Limitations:**
 
-* Kundevendte webhooks eller API-baserede leveringsstatusmeddelelser er ikke eksplicit dokumenteret.
+* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
 
-For virksomhedskunder, der kræver detaljerede webhooks med leveringsstatus eller brugerdefinerede overvågningsintegrationer, kan disse funktioner være tilgængelige via **Virksomhedslicens**-aftaler.
+For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
 
-Kilder:
+Sources:
 
-* <https://forwardemail.net> (Overvågningsvisning i realtid)
-* <https://github.com/forwardemail/forwardemail.net> (Implementering af overvågning)
+* <https://forwardemail.net> (Real-time monitoring display)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
 
-### Hvordan sikrer du høj tilgængelighed {#how-do-you-ensure-high-availability}
+### How do you ensure high availability {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Videresend e-mail implementerer omfattende redundans på tværs af flere infrastrukturudbydere.
+> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
 
-* **Distribueret infrastruktur**: Flere udbydere (DigitalOcean, Vultr, DataPacket) på tværs af geografiske områder
-* **Geografisk belastningsbalancering**: Cloudflare-baseret geolokaliseret belastningsbalancering med automatisk failover
-* **Automatisk skalering**: Dynamisk ressourcejustering baseret på efterspørgsel
-* **Multi-Layer DDoS-beskyttelse**: Gennem DataPackets Shield-system og Cloudflare
-* **Serverredundans**: Flere servere pr. region med automatisk failover
-* **Databasereplikering**: Datasynkronisering i realtid på tværs af flere lokationer
-* **Overvågning og alarmering**: 24/7 overvågning med automatisk hændelsesrespons
+* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
+* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
+* **Server Redundancy**: Multiple servers per region with automatic failover
+* **Database Replication**: Real-time data synchronization across multiple locations
+* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
 
-**Oppetidsforpligtelse**: 99,9%+ servicetilgængelighed med transparent overvågning tilgængelig på <https://forwardemail.net>
+**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
 
-Kilder:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Overholder du paragraf 889 i National Defense Authorization Act (NDAA)? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Videresend e-mail er fuldt ud i overensstemmelse med afsnit 889 gennem omhyggelig udvælgelse af infrastrukturpartnere.
+> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
 
-Ja, videresendelse af e-mail er **kompatibel med paragraf 889**. Paragraf 889 i National Defense Authorization Act (NDAA) forbyder offentlige myndigheder at bruge eller indgå kontrakter med enheder, der bruger telekommunikations- og videoovervågningsudstyr fra bestemte virksomheder (Huawei, ZTE, Hikvision, Dahua og Hytera).
+Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
 
-**Sådan opnår videresendt e-mail overholdelse af paragraf 889:**
+**How Forward Email Achieves Section 889 Compliance:**
 
-Videresend e-mail er udelukkende afhængig af to centrale infrastrukturudbydere, hvoraf ingen bruger udstyr, der er forbudt i henhold til paragraf 889:
+Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
 
-1. **Cloudflare**: Vores primære partner for netværkstjenester og e-mailsikkerhed
-2. **DataPacket**: Vores primære leverandør af serverinfrastruktur (uden brug af Arista Networks og Cisco-udstyr)
-3. **Backup-udbydere**: Vores backup-udbydere af Digital Ocean og Vultr er desuden skriftligt bekræftet som værende i overensstemmelse med Section 889.
+1. **Cloudflare**: Our primary partner for network services and email security
+2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
+3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
 
-**Cloudflares forpligtelse**: Cloudflare angiver eksplicit i deres tredjepartsadfærdskodeks, at de ikke bruger telekommunikationsudstyr, videoovervågningsprodukter eller tjenester fra enheder, der er forbudt i henhold til paragraf 889.
+**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
 
-**Offentligt brugsscenario**: Vores overholdelse af paragraf 889 blev valideret, da **US Naval Academy** valgte Videresend Email til deres behov for sikker videresendelse af e-mail, hvilket krævede dokumentation af vores føderale overholdelsesstandarder.
+**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-For at få fuldstændige oplysninger om vores ramme for overholdelse af regler, herunder bredere føderale bestemmelser, kan du læse vores omfattende casestudie: [Overholder paragraf 889 i den føderale regerings e-mailtjeneste](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System- og tekniske detaljer {#system-and-technical-details}
+## System and Technical Details {#system-and-technical-details}
 
-### Gemmer du e-mails og deres indhold? {#do-you-store-emails-and-their-contents}
+### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
 
-Nej, vi skriver ikke til disk eller gemmer logfiler – med [undtagelse af fejl](#do-you-store-error-logs) og [udgående SMTP](#do-you-support-sending-email-with-smtp) (se vores [Privatlivspolitik](/privacy)).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Alt gøres i hukommelsen og [vores kildekode er på GitHub](https://github.com/forwardemail).
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### Hvordan fungerer jeres system til videresendelse af e-mails? {#how-does-your-email-forwarding-system-work}
+### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
 
-E-mail er afhængig af [SMTP-protokol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Denne protokol består af kommandoer, der sendes til en server (som oftest kører på port 25). Der er en indledende forbindelse, derefter angiver afsenderen, hvem mailen er fra ("MAIL FROM"), efterfulgt af hvor den skal hen ("RCPT TO"), og endelig headerne og selve mailens brødtekst ("DATA"). Processen i vores system til videresendelse af e-mails er beskrevet i forhold til hver SMTP-protokolkommando nedenfor:
+Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Indledende forbindelse (intet kommandonavn, f.eks. `telnet example.com 25`) - Dette er den indledende forbindelse. Vi kontrollerer afsendere, der ikke er i vores [tilladelsesliste](#do-you-have-an-allowlist), mod vores [afviserliste](#do-you-have-a-denylist). Endelig, hvis en afsender ikke er på vores tilladelsesliste, kontrollerer vi, om de har været [grålistet](#do-you-have-a-greylist).
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
-* `HELO` - Dette angiver en hilsen, der identificerer afsenderens FQDN, IP-adresse eller navn på postbehandler. Denne værdi kan forfalskes, så vi er ikke afhængige af disse data og bruger i stedet omvendt opslag af værtsnavnet for forbindelsens IP-adresse.
+* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - Dette angiver e-mailens kuvertadresse. Hvis der indtastes en værdi, skal den være en gyldig RFC 5322-e-mailadresse. Tomme værdier er tilladt. Vi bruger [tjek for tilbagespredning](#how-do-you-protect-against-backscatter) her, og vi kontrollerer også MAIL FROM mod vores [afviserliste](#do-you-have-a-denylist). Vi kontrollerer endelig afsendere, der ikke er på tilladelseslisten, for hastighedsbegrænsning (se afsnittet om [Hastighedsbegrænsende](#do-you-have-rate-limiting) og [tilladelsesliste](#do-you-have-an-allowlist) for yderligere information).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - Dette angiver modtageren(e) af e-mailen. Disse skal være gyldige RFC 5322-e-mailadresser. Vi tillader kun op til 50 kuvertmodtagere pr. besked (dette er forskelligt fra "Til"-headeren i en e-mail). Vi kontrollerer også for en gyldig [Afsenderomskrivningsordning](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS")-adresse her for at beskytte mod forfalskning med vores SRS-domænenavn.
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
 
-* `DATA` - Dette er den centrale del af vores tjeneste, som behandler en e-mail. Se afsnittet [Hvordan behandler du en e-mail til videresendelse](#how-do-you-process-an-email-for-forwarding) nedenfor for mere indsigt.
+* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
-### Hvordan videresender man en e-mail? {#how-do-you-process-an-email-for-forwarding}
+### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
 
-Dette afsnit beskriver vores proces relateret til SMTP-protokolkommandoen `DATA` i afsnittet [Hvordan fungerer jeres system til videresendelse af e-mails](#how-does-your-email-forwarding-system-work) ovenfor – det handler om, hvordan vi behandler en e-mails headere, brødtekst, sikkerhed, bestemmer, hvor den skal leveres til, og hvordan vi håndterer forbindelser.
+This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
 
-1. Hvis beskeden overstiger den maksimale størrelse på 50 MB, afvises den med fejlkoden 552.
+1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
 
-2. Hvis beskeden ikke indeholdt en "Fra"-header, eller hvis nogen af værdierne i "Fra"-headeren ikke var gyldige RFC 5322-e-mailadresser, afvises den med en 550-fejlkode.
+2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
 
-3. Hvis beskeden havde mere end 25 "Modtaget"-headere, blev det konstateret, at den sad fast i en omdirigeringsløkke, og den blev afvist med en 550-fejlkode.
+3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-4. Ved hjælp af e-mailens fingeraftryk (se afsnittet om [Fingeraftryk](#how-do-you-determine-an-email-fingerprint)) kontrollerer vi, om beskeden har været forsøgt sendt igen i mere end 5 dage (hvilket matcher [standard postfix-adfærd](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), og hvis det er tilfældet, vil den blive afvist med en 550-fejlkode.
+4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
 
-5. Vi gemmer resultaterne fra scanningen af e-mailen i hukommelsen ved hjælp af [Spamscanner](https://spamscanner.net).
+5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
-6. Hvis der var vilkårlige resultater fra Spam Scanner, afvises den med en 554-fejlkode. Vilkårlige resultater inkluderer kun GTUBE-testen på tidspunktet for denne skrivning. Se <https://spamassassin.apache.org/gtube/> for mere indsigt.
+6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
 
-7. Vi tilføjer følgende overskrifter til beskeden med henblik på fejlfinding og forebyggelse af misbrug:
+7. We will add the following headers to the message for debugging and abuse prevention purposes:
 
-* `Received` - vi tilføjer denne standard Received-header med oprindelses-IP og vært, transmissionstype, TLS-forbindelsesoplysninger, dato/klokkeslæt og modtager.
+* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
+   * `X-Original-To` - the original recipient for the message:
+     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
+     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
+   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
+   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
+   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
+   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
 
-* `X-Original-To` - den oprindelige modtager af beskeden:
+8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Dette er nyttigt til at bestemme, hvor en e-mail oprindeligt blev leveret til (ud over headeren "Received").
+* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
-* Dette tilføjes pr. modtager på tidspunktet for IMAP og/eller maskeret videresendelse (for at beskytte privatlivets fred).
+9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
-* `X-Forward-Email-Website` - indeholder et link til vores hjemmeside <https://forwardemail.net>
+* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
+   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
+   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
+   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
+   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
+   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
+   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 
-* `X-Forward-Email-Version` - den aktuelle [SemVer](https://semver.org/)-version fra `package.json` i vores kodebase.
+10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-* `X-Forward-Email-Session-ID` - en sessions-ID-værdi, der bruges til fejlfindingsformål (gælder kun i ikke-produktionsmiljøer).
+* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
+    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
+    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
-* `X-Forward-Email-Sender` - en kommasepareret liste, der indeholder den originale konvolut MAIL FROM-adresse (hvis den ikke var tom), den omvendte PTR-klients FQDN (hvis den findes) og afsenderens IP-adresse.
-* `X-Forward-Email-ID` - dette gælder kun for udgående SMTP og korrelerer med det e-mail-ID, der er gemt i Min konto → E-mails.
-* `X-Original-To`0 - med en værdi på `X-Original-To`1.
-* `X-Original-To`2 - med en værdi på `X-Original-To`3.
-* `X-Original-To`4 - med en værdi på `X-Original-To`5.
+11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-8. Vi tjekker derefter meddelelsen for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) og [DMARC](https://en.wikipedia.org/wiki/DMARC).
+12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
-* Hvis meddelelsen ikke bestod DMARC, og domænet havde en afvisningspolitik (f.eks. `p=reject` [var i DMARC-politikken](https://wikipedia.org/wiki/DMARC)), afvises den med en 550-fejlkode. Typisk kan en DMARC-politik for et domæne findes i `_dmarc`-underdomæne-<strong class="notranslate">TXT</strong>-posten (f.eks. `dig _dmarc.example.com txt`).
+* If any errors occur while sending emails, then we will store them in-memory for later processing.
+    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * If no errors occurred, then we will send a 250 successful SMTP response status code.
+    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-* Hvis meddelelsen ikke bestod SPF, og domænet havde en hard fail-politik (f.eks. var `-all` i SPF-politikken i modsætning til `~all` eller slet ingen politik), afvises den med en 550-fejlkode. Typisk kan en SPF-politik for et domæne findes i <strong class="notranslate">TXT</strong>-posten for roddomænet (f.eks. `dig example.com txt`). Se dette afsnit for mere information om [afsendelse af mails som med Gmail](#can-i-send-mail-as-in-gmail-with-this) vedrørende SPF.
+13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
 
-9. Nu behandler vi modtagerne af beskeden, som de er indsamlet fra `RCPT TO`-kommandoen i afsnittet [Hvordan fungerer jeres system til videresendelse af e-mails](#how-does-your-email-forwarding-system-work) ovenfor. For hver modtager udfører vi følgende handlinger:
+14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
-* Vi slår <strong class="notranslate">TXT</strong>-posterne op for domænenavnet (delen efter `@`-symbolet, f.eks. `example.com`, hvis e-mailadressen var `test@example.com`). Hvis domænet f.eks. er `example.com`, foretager vi et DNS-opslag, f.eks. `dig example.com txt`.
+### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
 
-* Vi analyserer alle <strong class="notranslate">TXT</strong>-poster, der starter med enten `forward-email=` (gratis abonnementer) eller `forward-email-site-verification=` (betalte abonnementer). Bemærk, at vi analyserer begge for at behandle e-mails, mens en bruger opgraderer eller nedgraderer abonnementer.
+Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
 
-* Fra disse analyserede <strong class="notranslate">TXT</strong>-poster itererer vi over dem for at udtrække videresendelseskonfigurationen (som beskrevet i afsnittet [Hvordan kommer jeg i gang og konfigurerer videresendelse af e-mails](#how-do-i-get-started-and-set-up-email-forwarding) ovenfor). Bemærk, at vi kun understøtter én `forward-email-site-verification=`-værdi, og hvis mere end én angives, vil der opstå en 550-fejl, og afsenderen vil modtage en afvisning for denne modtager.
-* Rekursivt itererer vi over den udtrukne videresendelseskonfiguration for at bestemme global videresendelse, regex-baseret videresendelse og alle andre understøttede videresendelseskonfigurationer – som nu er kendt som vores "videresendelsesadresser".
-* For hver videresendelsesadresse understøtter vi ét rekursivt opslag (som starter denne serie af operationer forfra på den givne adresse). Hvis der findes et rekursivt match, fjernes det overordnede resultat fra videresendelsesadresserne, og de underordnede tilføjes.
-* Videresendelsesadresser analyseres for unikhed (da vi ikke ønsker at sende dubletter til én adresse eller oprette yderligere unødvendige SMTP-klientforbindelser).
-* For hver videresendelsesadresse slår vi domænenavnet op mod vores API-slutpunkt `/v1/max-forwarded-addresses` (for at bestemme, hvor mange adresser domænet har tilladelse til at videresende e-mail til pr. alias, f.eks. 10 som standard – se afsnittet om `example.com`0). Hvis denne grænse overskrides, vil der opstå en 550-fejl, og afsenderen vil modtage en afvisning for denne modtager.
+We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 
-* Vi slår indstillingerne for den oprindelige modtager op mod vores API-slutpunkt `example.com`1, som understøtter et opslag for betalende brugere (med et fallback for gratis brugere). Dette returnerer et konfigurationsobjekt for avancerede indstillinger for `example.com`2 (tal, f.eks. `example.com`3), `example.com`4 (boolsk), `example.com`5 (boolsk), `example.com`6 (boolsk) og `example.com`7 (boolsk).
+Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
-* Baseret på disse indstillinger kontrollerer vi derefter resultaterne fra Spam Scanner, og hvis der opstår fejl, afvises beskeden med fejlkoden 554 (f.eks. hvis `example.com`8 er aktiveret, kontrollerer vi Spam Scanner-resultaterne for virus). Bemærk, at alle brugere af det gratis abonnement vil blive tilmeldt kontroller mod voksenindhold, phishing, eksekverbare filer og virus. Som standard er alle brugere af det betalende abonnement også tilmeldt, men denne konfiguration kan ændres under siden Indstillinger for et domæne i dashboardet til videresendelse af e-mails).
+If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
-10. For hver behandlet modtagers videresendelsesadresser udfører vi derefter følgende handlinger:
+Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
-* Adressen kontrolleres mod vores [afviserliste](#do-you-have-a-denylist), og hvis den var angivet, vil der opstå en 421-fejlkode (indikerer for afsenderen, at den skal prøve igen senere).
+If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
-* Hvis adressen er en webhook, sætter vi en boolsk værdi for fremtidige operationer (se nedenfor – vi grupperer lignende webhooks for at lave én POST-anmodning i stedet for flere til levering).
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
 
-* Hvis adressen er en e-mailadresse, analyserer vi værten til fremtidige operationer (se nedenfor – vi grupperer lignende værter for at lave én forbindelse i stedet for flere individuelle forbindelser til levering).
+### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-11. Hvis der ikke er nogen modtagere, og der ikke er nogen afvisninger, svarer vi med en 550-fejlmeddelelse med teksten "Ugyldige modtagere".
+We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-12. Hvis der er modtagere, itererer vi over dem (grupperet sammen af den samme vært) og leverer e-mailsene. Se afsnittet [Hvordan håndterer du problemer med e-maillevering](#how-do-you-handle-email-delivery-issues) nedenfor for mere indsigt.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
-* Hvis der opstår fejl under afsendelse af e-mails, gemmer vi dem i hukommelsen til senere behandling.
-* Vi tager den laveste fejlkode (hvis nogen) fra afsendelse af e-mails – og bruger den som svarkode til `DATA`-kommandoen. Det betyder, at e-mails, der ikke er leveret, typisk vil blive forsøgt at sende igen af den oprindelige afsender, men e-mails, der allerede er leveret, vil ikke blive sendt igen næste gang beskeden sendes (da vi bruger [Fingeraftryk](#how-do-you-determine-an-email-fingerprint)).
-* Hvis der ikke opstod fejl, sender vi en 250 succesfuld SMTP-svarstatuskode.
-* En afvisning bestemmes som ethvert leveringsforsøg, der resulterer i en statuskode, der er >= 500 (permanente fejl).
+Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
 
-13. Hvis der ikke opstod nogen afvisninger (permanente fejl), returnerer vi en SMTP-svarstatuskode med den laveste fejlkode fra ikke-permanente fejl (eller en statuskode på 250 succesfulde fejl, hvis der ikke var nogen).
+### What are postmaster addresses {#what-are-postmaster-addresses}
 
-14. Hvis der opstår afvisninger, sender vi afvisningsmails i baggrunden efter at have returneret den laveste af alle fejlkoder til afsenderen. Hvis den laveste fejlkode er >= 500, sender vi dog ingen afvisningsmails. Dette skyldes, at hvis vi gjorde det, ville afsenderne modtage en dobbelt afvisningsmail (f.eks. en fra deres udgående MTA, f.eks. Gmail – og også en fra os). Se afsnittet om [Hvordan beskytter du dig mod tilbagespredning](#how-do-you-protect-against-backscatter) nedenfor for mere indsigt.
-
-### Hvordan håndterer I problemer med e-maillevering {#how-do-you-handle-email-delivery-issues}
-
-Bemærk, at vi vil omskrive e-mails til "Friendly-From", hvis og kun hvis afsenderens DMARC-politik ikke blev vedtaget OG ingen DKIM-signaturer var justeret med "Fra"-headeren. Det betyder, at vi vil ændre "Fra"-headeren på beskeden, indstille "X-Original-From" og også indstille en "Svar-Til", hvis den ikke allerede var indstillet. Vi vil også forsegle ARC-seglet på beskeden igen efter at have ændret disse headere.
-
-Vi bruger også smart-parsing af fejlmeddelelser på alle niveauer i vores stak – i vores kode, DNS-anmodninger, Node.js-internals, HTTP-anmodninger (f.eks. er 408, 413 og 429 knyttet til SMTP-svarkoden 421, hvis modtageren er en webhook) og mailserversvar (f.eks. ville svar med "defer" eller "slowdown" blive gentaget som 421-fejl).
-
-Vores logik er dummy-proof, og den vil også forsøge igen for SSL/TLS-fejl, forbindelsesproblemer og mere. Målet med dummy-proofing er at maksimere leveringsevnen til alle modtagere af en videresendelseskonfiguration.
-
-Hvis modtageren er en webhook, tillader vi en timeout på 60 sekunder for at anmodningen kan fuldføres med op til 3 genforsøg (så i alt 4 anmodninger før en fejl). Bemærk, at vi korrekt analyserer fejlkoderne 408, 413 og 429 og knytter dem til en SMTP-svarkode på 421.
-
-Hvis modtageren er en e-mailadresse, forsøger vi at sende e-mailen med opportunistisk TLS (vi forsøger at bruge STARTTLS, hvis det er tilgængeligt på modtagerens mailserver). Hvis der opstår en SSL/TLS-fejl under forsøget på at sende e-mailen, forsøger vi at sende e-mailen uden TLS (uden at bruge STARTTLS).
-
-Hvis der opstår DNS- eller forbindelsesfejl, returnerer vi en SMTP-svarkode på 421 til `DATA`-kommandoen. Ellers sendes der afvisninger, hvis der er fejl på niveauet >= 500.
-
-Hvis vi registrerer, at en e-mailserver, vi forsøger at levere til, har en eller flere af vores IP-adresser til mailudveksling blokeret (f.eks. af den teknologi, de bruger til at udsætte spammere), sender vi en SMTP-svarkode på 421, så afsenderen kan prøve at sende beskeden igen senere (og vi bliver advaret om problemet, så vi forhåbentlig kan løse det inden næste forsøg).
-
-### Hvordan håndterer du blokering af dine IP-adresser? {#how-do-you-handle-your-ip-addresses-becoming-blocked}
-
-Vi overvåger rutinemæssigt alle større DNS-afvisningslister, og hvis nogen af vores mail exchange ("MX") IP-adresser er angivet på en større afvisningsliste, fjerner vi den fra den relevante DNS A-post round robin, hvis det er muligt, indtil problemet er løst.
-
-I skrivende stund er vi også opført på flere DNS-tilladelseslister, og vi tager overvågning af afvisningslister alvorligt. Hvis du ser problemer, før vi har mulighed for at løse dem, bedes du underrette os skriftligt på <support@forwardemail.net>.
-
-Vores IP-adresser er offentligt tilgængelige, [se dette afsnit nedenfor for mere indsigt](#what-are-your-servers-ip-addresses).
-
-### Hvad er postmasteradresser {#what-are-postmaster-addresses}
-
-For at forhindre fejladresserede afvisninger og afsendelse af feriesvarbeskeder til uovervågede eller ikke-eksisterende postkasser, vedligeholder vi en liste over mailer-daemon-lignende brugernavne:
+In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
 
 * `automailer`
 * `autoresponder`
@@ -2806,13 +3592,13 @@ For at forhindre fejladresserede afvisninger og afsendelse af feriesvarbeskeder 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [og enhver adresse uden svar](#what-are-no-reply-addresses)
+* [and any no-reply address](#what-are-no-reply-addresses)
 
-Se [RFC 5320 Afsnit 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for mere indsigt i, hvordan lister som disse bruges til at oprette effektive e-mailsystemer.
+See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
 
-### Hvad er adresser uden svar {#what-are-no-reply-addresses}
+### What are no-reply addresses {#what-are-no-reply-addresses}
 
-E-mail-brugernavne svarende til et af følgende (uafhængig af store og små bogstaver) betragtes som adresser, der ikke må svare:
+Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -2833,618 +3619,1461 @@ E-mail-brugernavne svarende til et af følgende (uafhængig af store og små bog
 * `noreply`
 * `noreplys`
 
-Denne liste vedligeholdes [som et open source-projekt på GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### Hvad er din servers IP-adresser {#what-are-your-servers-ip-addresses}
+### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
 
-Vi offentliggør vores IP-adresser på <https://forwardemail.net/ips>.
+We publish our IP addresses at <https://forwardemail.net/ips>.
 
-### Har du en tilladelsesliste {#do-you-have-an-allowlist}
+### Do you have an allowlist {#do-you-have-an-allowlist}
 
-Ja, vi har en [liste over domænenavnsudvidelser](#what-domain-name-extensions-are-allowlisted-by-default), der som standard er på tilladelseslisten, og en dynamisk, cachelagret og rullende tilladelsesliste baseret på [strenge kriterier](#what-is-your-allowlist-criteria).
+Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-Alle e-mails, domæner og modtagere fra kunder med betalte abonnementer føjes automatisk til vores tilladelsesliste.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
 
-### Hvilke domænenavnsudvidelser er som standard tilladt på listen {#what-domain-name-extensions-are-allowlisted-by-default}
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
-Følgende domænenavnsudvidelser anses som standard for at være på tilladelseslisten (uanset om de er på Umbrella Popularity List eller ej):
+### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
 
-<ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">edu</code></li> <li class="list-inline-item"><code class="notranslate">gov</code></li> <li class="list-inline-item"><code class="notranslate">mil</code></li> <li class="list-inline-item"><code class="notranslate">int</code></li> <li class="list-inline-item"><code class="notranslate">arpa</code></li> <li class="list-inline-item"><code class="notranslate">dni.us</code></li> <li class="list-inline-item"><code class="notranslate">fed.us</code></li> <li class="list-inline-item"><code class="notranslate">isa.us</code></li> <li class="list-inline-item"><code class="notranslate">kids.us</code></li> <li class="list-inline-item"><code class="notranslate">nsn.us</code></li> <li class="list-inline-item"><code class="notranslate">ak.us</code></li> <li class="list-inline-item"><code class="notranslate">al.us</code></li> <li class="list-inline-item"><code class="notranslate">ar.us</code></li> <li class="list-inline-item"><code class="notranslate">as.us</code></li> <li class="list-inline-item"><code class="notranslate">az.us</code></li> <li class="list-inline-item"><code class="notranslate">ca.us</code></li> <li class="list-inline-item"><code class="notranslate">co.us</code></li> <li class="list-inline-item"><code class="notranslate">ct.us</code></li> <li class="list-inline-item"><code class="notranslate">dc.us</code></li> <li class="list-inline-item"><code class="notranslate">de.us</code></li> <li class="list-inline-item"><code class="notranslate">fl.us</code></li> <li class="list-inline-item"><code class="notranslate">ga.us</code></li> <li class="list-inline-item"><code class="notranslate">gu.us</code></li> <li class="list-inline-item"><code class="notranslate">hi.us</code></li> <li class="list-inline-item"><code class="notranslate">ia.us</code></li> <li class="list-inline-item"><code class="notranslate">id.us</code></li> <li class="list-inline-item"><code class="notranslate">il.us</code></li> <li class="list-inline-item"><code class="notranslate">in.us</code></li> <li class="list-inline-item"><code class="notranslate">ks.us</code></li> <li class="list-inline-item"><code class="notranslate">ky.us</code></li> <li class="list-inline-item"><code class="notranslate">la.us</code></li> <li class="list-inline-item"><code class="notranslate">ma.us</code></li> <li class="list-inline-item"><code class="notranslate">md.us</code></li> <li class="list-inline-item"><code class="notranslate">me.us</code></li> <li class="list-inline-item"><code class="notranslate">mi.us</code></li> <li class="list-inline-item"><code class="notranslate">mn.us</code></li> <li class="list-inline-item"><code class="notranslate">mo.us</code></li> <li class="list-inline-item"><code class="notranslate">ms.us</code></li> <li class="list-inline-item"><code class="notranslate">mt.us</code></li> <li class="list-inline-item"><code class="notranslate">nc.us</code></li> <li class="list-inline-item"><code class="notranslate">nd.us</code></li> <li class="list-inline-item"><code class="notranslate">ne.us</code></li> <li class="list-inline-item"><code class="notranslate">nh.us</code></li> <li class="list-inline-item"><code class="notranslate">nm.us</code></li> <li class="list-inline-item"><code class="notranslate">nv.us</code></li> <li class="list-inline-item"><code class="notranslate">ny.us</code></li> <li class="list-inline-item"><code class="notranslate">oh.us</code></li> <li class="list-inline-item"><code class="notranslate">ok.us</code></li> <li class="list-inline-item"><code class="notranslate">or.us</code></li> <li class="list-inline-item"><code class="notranslate">pa.us</code></li> <li class="list-inline-item"><code class="notranslate">pr.us</code></li> <li class="list-inline-item"><code class="notranslate">ri.us</code></li> <li class="list-inline-item"><code class="notranslate">sc.us</code></li> <li class="list-inline-item"><code class="notranslate">sd.us</code></li> <li class="list-inline-item"><code class="notranslate">tn.us</code></li> <li class="list-inline-item"><code class="notranslate">tx.us</code></li> <li class="list-inline-item"><code class="notranslate">ut.us</code></li> <li class="list-inline-item"><code class="notranslate">va.us</code></li> <li class="list-inline-item"><code class="notranslate">vi.us</code></li> <li class="list-inline-item"><code class="notranslate">vt.us</code></li> <li class="list-inline-item"><code class="notranslate">wa.us</code></li> <li class="list-inline-item"><code class="notranslate">wi.us</code></li> <li class="list-inline-item"><code class="notranslate">wv.us</code></li> <li class="list-inline-item"><code class="notranslate">wy.us</code></li> <li class="list-inline-item"><code class="notranslate">mil.tt</code></li> <li class="list-inline-item"><code class="notranslate">edu.tt</code></li> <li class="list-inline-item"><code class="notranslate">edu.tr</code></li> <li class="list-inline-item"><code class="notranslate">edu.ua</code></li> <li class="list-inline-item"><code class="notranslate">edu.au</code></li> <li class="list-inline-item"><code class="notranslate">ac.at</code></li> <li class="list-inline-item"><code class="notranslate">edu.br</code></li> <li class="list-inline-item"><code class="notranslate">ac.nz</code></li> <li class="list-inline-item"><code class="notranslate">school.nz</code></li> <li class="list-inline-item"><code class="notranslate">cri.nz</code></li> <li class="list-inline-item"><code class="notranslate">health.nz</code></li> <li class="list-inline-item"><code class="notranslate">mil.nz</code></li> <li class="list-inline-item"><code class="notranslate">parlament.nz</code></li> <li class="list-inline-item"><code class="notranslate">ac.in</code></li> <li class="list-inline-item"><code class="notranslate">edu.in</code></li> <li class="list-inline-item"><code class="notranslate">mil.in</code></li> <li class="list-inline-item"><code class="notranslate">ac.jp</code></li> <li class="list-inline-item"><code class="notranslate">ed.jp</code></li> <li class="list-inline-item"><code class="notranslate">lg.jp</code></li> <li class="list-inline-item"><code class="notranslate">ac.za</code></li> <li class="list-inline-item"><code class="notranslate">edu.za</code></li> <li class="list-inline-item"><code class="notranslate">mil.za</code></li> <li class="list-inline-item"><code class="notranslate">skole.za</code></li> <li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">es.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.es</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.lk</code></li> <li class="list-inline-item"><code class="notranslate">sch.lk</code></li> <li class="list-inline-item"><code class="notranslate">edu.lk</code></li> <li class="list-inline-item"><code class="notranslate">ac.th</code></li> <li class="list-inline-item"><code class="notranslate">mi.th</code></li> <li class="list-inline-item"><code class="notranslate">admin.ch</code></li> <li class="list-inline-item"><code class="notranslate">canada.ca</code></li> <li class="list-inline-item"><code class="notranslate">gc.ca</code></li> <li class="list-inline-item"><code class="notranslate">go.id</code></li>
-<li class="list-inline-item"><code class="notranslate">go.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">go.ke</code></li>
-<li class="list-inline-item"><code class="notranslate">go.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">go.th</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.es</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ad</code></li> <li class="list-inline-item"><code class="notranslate">gov.af</code></li> <li class="list-inline-item"><code class="notranslate">gov.ai</code></li> <li class="list-inline-item"><code class="notranslate">gov.al</code></li> <li class="list-inline-item"><code class="notranslate">gov.am</code></li> <li class="list-inline-item"><code class="notranslate">gov.ao</code></li> <li class="list-inline-item"><code class="notranslate">gov.au</code></li> <li class="list-inline-item"><code class="notranslate">gov.aw</code></li> <li class="list-inline-item"><code class="notranslate">gov.ax</code></li> <li class="list-inline-item"><code class="notranslate">gov.az</code></li> <li class="list-inline-item"><code class="notranslate">gov.bd</code></li> <li class="list-inline-item"><code class="notranslate">gov.be</code></li> <li class="list-inline-item"><code class="notranslate">gov.bg</code></li> <li class="list-inline-item"><code class="notranslate">gov.bm</code></li> <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>--> <li class="list-inline-item"><code class="notranslate">gov.by</code></li> <li class="list-inline-item"><code class="notranslate">gov.cl</code></li> <li class="list-inline-item"><code class="notranslate">gov.cn</code></li> <li class="list-inline-item"><code class="notranslate">gov.co</code></li> <li class="list-inline-item"><code class="notranslate">gov.cy</code></li> <li class="list-inline-item"><code class="notranslate">gov.cz</code></li> <li class="list-inline-item"><code class="notranslate">gov.dz</code></li> <li class="list-inline-item"><code class="notranslate">gov.eg</code></li> <li class="list-inline-item"><code class="notranslate">gov.fi</code></li> <li class="list-inline-item"><code class="notranslate">gov.fk</code></li> <li class="list-inline-item"><code class="notranslate">gov.gg</code></li> <li class="list-inline-item"><code class="notranslate">gov.gr</code></li> <li class="list-inline-item"><code class="notranslate">gov.hk</code></li> <li class="list-inline-item"><code class="notranslate">gov.hr</code></li> <li class="list-inline-item"><code class="notranslate">gov.hu</code></li> <li class="list-inline-item"><code class="notranslate">gov.ie</code></li> <li class="list-inline-item"><code class="notranslate">gov.il</code></li> <li class="list-inline-item"><code class="notranslate">gov.im</code></li> <li class="list-inline-item"><code class="notranslate">gov.in</code></li> <li class="list-inline-item"><code class="notranslate">gov.iq</code></li> <li class="list-inline-item"><code class="notranslate">gov.ir</code></li> <li class="list-inline-item"><code class="notranslate">gov.it</code></li> <li class="list-inline-item"><code class="notranslate">gov.je</code></li> <li class="list-inline-item"><code class="notranslate">gov.kp</code></li> <li class="list-inline-item"><code class="notranslate">gov.krd</code></li> <li class="list-inline-item"><code class="notranslate">gov.ky</code></li> <li class="list-inline-item"><code class="notranslate">gov.kz</code></li> <li class="list-inline-item"><code class="notranslate">gov.lb</code></li> <li class="list-inline-item"><code class="notranslate">gov.lk</code></li> <li class="list-inline-item"><code class="notranslate">gov.lt</code></li> <li class="list-inline-item"><code class="notranslate">gov.lv</code></li> <li class="list-inline-item"><code class="notranslate">gov.ma</code></li> <li class="list-inline-item"><code class="notranslate">gov.mm</code></li> <li class="list-inline-item"><code class="notranslate">gov.mo</code></li> <li class="list-inline-item"><code class="notranslate">gov.mt</code></li> <li class="list-inline-item"><code class="notranslate">gov.my</code></li> <li class="list-inline-item"><code class="notranslate">gov.ng</code></li> <li class="list-inline-item"><code class="notranslate">gov.np</code></li> <li class="list-inline-item"><code class="notranslate">gov.ph</code></li> <li class="list-inline-item"><code class="notranslate">gov.pk</code></li> <li class="list-inline-item"><code class="notranslate">gov.pl</code></li> <li class="list-inline-item"><code class="notranslate">gov.pt</code></li> <li class="list-inline-item"><code class="notranslate">gov.py</code></li> <li class="list-inline-item"><code class="notranslate">gov.ro</code></li> <li class="list-inline-item"><code class="notranslate">gov.ru</code></li> <li class="list-inline-item"><code class="notranslate">gov.scot</code></li> <li class="list-inline-item"><code class="notranslate">gov.se</code></li> <li class="list-inline-item"><code class="notranslate">gov.sg</code></li> <li class="list-inline-item"><code class="notranslate">gov.si</code></li> <li class="list-inline-item"><code class="notranslate">gov.sk</code></li> <li class="list-inline-item"><code class="notranslate">gov.tr</code></li> <li class="list-inline-item"><code class="notranslate">gov.tt</code></li> <li class="list-inline-item"><code class="notranslate">gov.tw</code></li> <li class="list-inline-item"><code class="notranslate">gov.ua</code></li> <li class="list-inline-item"><code class="notranslate">gov.uk</code></li> <li class="list-inline-item"><code class="notranslate">gov.vn</code></li> <li class="list-inline-item"><code class="notranslate">gov.wales</code></li> <li class="list-inline-item"><code class="notranslate">gov.za</code></li> <li class="list-inline-item"><code class="notranslate">government.pn</code></li> <li class="list-inline-item"><code class="notranslate">govt.nz</code></li> <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>--> <li class="list-inline-item"><code class="notranslate">gv.at</code></li> <li class="list-inline-item"><code class="notranslate">ac.uk</code></li> <li class="list-inline-item"><code class="notranslate">bl.uk</code></li> <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li> <li class="list-inline-item"><code class="notranslate">mod.uk</code></li> <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li> <li class="list-inline-item"><code class="notranslate">parlament.uk</code></li> <li class="list-inline-item"><code class="notranslate">police.uk</code></li> <li class="list-inline-item"><code class="notranslate">rct.uk</code></li> <li class="list-inline-item"><code class="notranslate">royal.uk</code></li> <li class="list-inline-item"><code class="notranslate">sch.uk</code></li> <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
+The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
+
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">edu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil</code></li>
+  <li class="list-inline-item"><code class="notranslate">int</code></li>
+  <li class="list-inline-item"><code class="notranslate">arpa</code></li>
+  <li class="list-inline-item"><code class="notranslate">dni.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fed.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">isa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">kids.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ak.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">al.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">as.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">az.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">co.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ct.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">dc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">de.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fl.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ga.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">gu.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">hi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ia.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">id.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">il.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">in.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ks.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ky.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">la.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ma.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">md.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">me.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mo.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ne.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nj.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nm.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ny.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">oh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ok.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">or.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ri.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tx.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ut.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">va.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.br</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">health.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">es.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.id</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.af</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.al</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.am</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.az</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.be</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gov.by</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.co</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.il</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.im</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.it</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.je</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.my</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.np</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.py</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.se</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.si</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">government.pn</code></li>
+  <li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gv.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">police.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-Derudover er disse [brand- og virksomhedsdomæner på topniveau](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) som standard på tilladelseslisten (f.eks. `apple` for `applecard.apple` for Apple Card-kontoudtog):
+Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
 
-<ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">aaa</code></li> <li class="list-inline-item"><code class="notranslate">aarp</code></li> <li class="list-inline-item"><code class="notranslate">abarth</code></li> <li class="list-inline-item"><code class="notranslate">abb</code></li> <li class="list-inline-item"><code class="notranslate">abbott</code></li> <li class="list-inline-item"><code class="notranslate">abbvie</code></li> <li class="list-inline-item"><code class="notranslate">abc</code></li> <li class="list-inline-item"><code class="notranslate">accenture</code></li>
-<li class="list-inline-item"><code class="notranslate">aco</code></li> <li class="list-inline-item"><code class="notranslate">aeg</code></li> <li class="list-inline-item"><code class="notranslate">aetna</code></li> <li class="list-inline-item"><code class="notranslate">afl</code></li> <li class="list-inline-item"><code class="notranslate">agakhan</code></li> <li class="list-inline-item"><code class="notranslate">aig</code></li> <li class="list-inline-item"><code class="notranslate">aigo</code></li> <li class="list-inline-item"><code class="notranslate">airbus</code></li> <li class="list-inline-item"><code class="notranslate">airtel</code></li> <li class="list-inline-item"><code class="notranslate">akdn</code></li> <li class="list-inline-item"><code class="notranslate">alfaromeo</code></li> <li class="list-inline-item"><code class="notranslate">alibaba</code></li> <li class="list-inline-item"><code class="notranslate">alipay</code></li> <li class="list-inline-item"><code class="notranslate">allfinanz</code></li> <li class="list-inline-item"><code class="notranslate">allstate</code></li> <li class="list-inline-item"><code class="notranslate">ally</code></li> <li class="list-inline-item"><code class="notranslate">alstom</code></li> <li class="list-inline-item"><code class="notranslate">amazon</code></li> <li class="list-inline-item"><code class="notranslate">americanexpress</code></li> <li class="list-inline-item"><code class="notranslate">amex</code></li> <li class="list-inline-item"><code class="notranslate">amica</code></li> <li class="list-inline-item"><code class="notranslate">android</code></li> <li class="list-inline-item"><code class="notranslate">anz</code></li> <li class="list-inline-item"><code class="notranslate">aol</code></li> <li class="list-inline-item"><code class="notranslate">æble</code></li> <li class="list-inline-item"><code class="notranslate">akvarel</code></li> <li class="list-inline-item"><code class="notranslate">aramco</code></li> <li class="list-inline-item"><code class="notranslate">audi</code></li> <li class="list-inline-item"><code class="notranslate">auspost</code></li> <li class="list-inline-item"><code class="notranslate">aws</code></li> <li class="list-inline-item"><code class="notranslate">axa</code></li> <li class="list-inline-item"><code class="notranslate">azurblå</code></li> <li class="list-inline-item"><code class="notranslate">baidu</code></li> <li class="list-inline-item"><code class="notranslate">bananarepublic</code></li> <li class="list-inline-item"><code class="notranslate">barclaycard</code></li> <li class="list-inline-item"><code class="notranslate">barclays</code></li> <li class="list-inline-item"><code class="notranslate">basketball</code></li> <li class="list-inline-item"><code class="notranslate">bauhaus</code></li> <li class="list-inline-item"><code class="notranslate">bbc</code></li> <li class="list-inline-item"><code class="notranslate">bbt</code></li> <li class="list-inline-item"><code class="notranslate">bbva</code></li> <li class="list-inline-item"><code class="notranslate">bcg</code></li> <li class="list-inline-item"><code class="notranslate">bentley</code></li> <li class="list-inline-item"><code class="notranslate">bharti</code></li> <li class="list-inline-item"><code class="notranslate">bing</code></li> <li class="list-inline-item"><code class="notranslate">blanco</code></li> <li class="list-inline-item"><code class="notranslate">bloomberg</code></li> <li class="list-inline-item"><code class="notranslate">bms</code></li> <li class="list-inline-item"><code class="notranslate">BMW</code></li> <li class="list-inline-item"><code class="notranslate">bnl</code></li> <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li> <li class="list-inline-item"><code class="notranslate">boehringer</code></li> <li class="list-inline-item"><code class="notranslate">bond</code></li> <li class="list-inline-item"><code class="notranslate">booking</code></li> <li class="list-inline-item"><code class="notranslate">bosch</code></li> <li class="list-inline-item"><code class="notranslate">bostik</code></li> <li class="list-inline-item"><code class="notranslate">bradesco</code></li> <li class="list-inline-item"><code class="notranslate">bridgestone</code></li> <li class="list-inline-item"><code class="notranslate">brother</code></li> <li class="list-inline-item"><code class="notranslate">bugatti</code></li> <li class="list-inline-item"><code class="notranslate">cal</code></li> <li class="list-inline-item"><code class="notranslate">calvinklein</code></li> <li class="list-inline-item"><code class="notranslate">canon</code></li> <li class="list-inline-item"><code class="notranslate">capitalone</code></li> <li class="list-inline-item"><code class="notranslate">campingvogn</code></li> <li class="list-inline-item"><code class="notranslate">cartier</code></li> <li class="list-inline-item"><code class="notranslate">cba</code></li> <li class="list-inline-item"><code class="notranslate">cbn</code></li> <li class="list-inline-item"><code class="notranslate">cbre</code></li> <li class="list-inline-item"><code class="notranslate">cbs</code></li> <li class="list-inline-item"><code class="notranslate">cern</code></li> <li class="list-inline-item"><code class="notranslate">cfa</code></li> <li class="list-inline-item"><code class="notranslate">Chanel</code></li> <li class="list-inline-item"><code class="notranslate">Chase</code></li> <li class="list-inline-item"><code class="notranslate">Chintai</code></li> <li class="list-inline-item"><code class="notranslate">Chrysler</code></li> <li class="list-inline-item"><code class="notranslate">Cipriani</code></li> <li class="list-inline-item"><code class="notranslate">Cisco</code></li> <li class="list-inline-item"><code class="notranslate">Citadel</code></li> <li class="list-inline-item"><code class="notranslate">citi</code></li> <li class="list-inline-item"><code class="notranslate">citic</code></li> <li class="list-inline-item"><code class="notranslate">clubmed</code></li> <li class="list-inline-item"><code class="notranslate">comcast</code></li> <li class="list-inline-item"><code class="notranslate">commbank</code></li> <li class="list-inline-item"><code class="notranslate">kreditforening</code></li> <li class="list-inline-item"><code class="notranslate">krone</code></li> <li class="list-inline-item"><code class="notranslate">crs</code></li> <li class="list-inline-item"><code class="notranslate">csc</code></li> <li class="list-inline-item"><code class="notranslate">cuisinella</code></li> <li class="list-inline-item"><code class="notranslate">dabur</code></li> <li class="list-inline-item"><code class="notranslate">datsun</code></li> <li class="list-inline-item"><code class="notranslate">forhandler</code></li> <li class="list-inline-item"><code class="notranslate">dell</code></li> <li class="list-inline-item"><code class="notranslate">deloitte</code></li> <li class="list-inline-item"><code class="notranslate">delaitte</code></li> <li class="list-inline-item"><code class="notranslate">delaitte</code></li> <li class="list-inline-item"><code class="notranslate">dhl</code></li> <li class="list-inline-item"><code class="notranslate">discover</code></li> <li class="list-inline-item"><code class="notranslate">dish</code></li> <li class="list-inline-item"><code class="notranslate">dnp</code></li> <li class="list-inline-item"><code class="notranslate">dodge</code></li> <li class="list-inline-item"><code class="notranslate">dunlop</code></li> <li class="list-inline-item"><code class="notranslate">dupont</code></li> <li class="list-inline-item"><code class="notranslate">dvag</code></li> <li class="list-inline-item"><code class="notranslate">edeka</code></li> <li class="list-inline-item"><code class="notranslate">emerck</code></li> <li class="list-inline-item"><code class="notranslate">epson</code></li> <li class="list-inline-item"><code class="notranslate">ericsson</code></li> <li class="list-inline-item"><code class="notranslate">erni</code></li> <li class="list-inline-item"><code class="notranslate">forsikring</code></li> <li class="list-inline-item"><code class="notranslate">etisalat</code></li> <li class="list-inline-item"><code class="notranslate">eurovision</code></li> <li class="list-inline-item"><code class="notranslate">everbank</code></li> <li class="list-inline-item"><code class="notranslate">extraspace</code></li> <li class="list-inline-item"><code class="notranslate">fage</code></li> <li class="list-inline-item"><code class="notranslate">fairwinds</code></li> <li class="list-inline-item"><code class="notranslate">farmers</code></li> <li class="list-inline-item"><code class="notranslate">fedex</code></li> <li class="list-inline-item"><code class="notranslate">ferrari</code></li> <li class="list-inline-item"><code class="notranslate">ferrero</code></li> <li class="list-inline-item"><code class="notranslate">fiat</code></li> <li class="list-inline-item"><code class="notranslate">fidelity</code></li> <li class="list-inline-item"><code class="notranslate">firestone</code></li> <li class="list-inline-item"><code class="notranslate">firmdale</code></li> <li class="list-inline-item"><code class="notranslate">flickr</code></li> <li class="list-inline-item"><code class="notranslate">flir</code></li> <li class="list-inline-item"><code class="notranslate">flsmidth</code></li> <li class="list-inline-item"><code class="notranslate">ford</code></li> <li class="list-inline-item"><code class="notranslate">fox</code></li> <li class="list-inline-item"><code class="notranslate">fresenius</code></li> <li class="list-inline-item"><code class="notranslate">forex</code></li> <li class="list-inline-item"><code class="notranslate">frogans</code></li> <li class="list-inline-item"><code class="notranslate">frontier</code></li> <li class="list-inline-item"><code class="notranslate">fujitsu</code></li> <li class="list-inline-item"><code class="notranslate">fujixerox</code></li> <li class="list-inline-item"><code class="notranslate">gallo</code></li> <li class="list-inline-item"><code class="notranslate">gallup</code></li> <li class="list-inline-item"><code class="notranslate">gab</code></li> <li class="list-inline-item"><code class="notranslate">gbiz</code></li> <li class="list-inline-item"><code class="notranslate">gea</code></li> <li class="list-inline-item"><code class="notranslate">genting</code></li> <li class="list-inline-item"><code class="notranslate">giving</code></li> <li class="list-inline-item"><code class="notranslate">gle</code></li> <li class="list-inline-item"><code class="notranslate">globo</code></li> <li class="list-inline-item"><code class="notranslate">gmail</code></li>
-<li class="list-inline-item"><code class="notranslate">gmo</code></li> <li class="list-inline-item"><code class="notranslate">gmx</code></li> <li class="list-inline-item"><code class="notranslate">godaddy</code></li> <li class="list-inline-item"><code class="notranslate">goldpoint</code></li> <li class="list-inline-item"><code class="notranslate">goodyear</code></li> <li class="list-inline-item"><code class="notranslate">goog</code></li> <li class="list-inline-item"><code class="notranslate">google</code></li> <li class="list-inline-item"><code class="notranslate">grainger</code></li> <li class="list-inline-item"><code class="notranslate">guardian</code></li> <li class="list-inline-item"><code class="notranslate">gucci</code></li> <li class="list-inline-item"><code class="notranslate">hbo</code></li> <li class="list-inline-item"><code class="notranslate">hdfc</code></li> <li class="list-inline-item"><code class="notranslate">hdfcbank</code></li> <li class="list-inline-item"><code class="notranslate">hermes</code></li> <li class="list-inline-item"><code class="notranslate">hisamitsu</code></li> <li class="list-inline-item"><code class="notranslate">hitachi</code></li> <li class="list-inline-item"><code class="notranslate">hkt</code></li> <li class="list-inline-item"><code class="notranslate">honda</code></li> <li class="list-inline-item"><code class="notranslate">honeywell</code></li> <li class="list-inline-item"><code class="notranslate">hotmail</code></li> <li class="list-inline-item"><code class="notranslate">hsbc</code></li> <li class="list-inline-item"><code class="notranslate">hughes</code></li> <li class="list-inline-item"><code class="notranslate">hyatt</code></li> <li class="list-inline-item"><code class="notranslate">hyundai</code></li> <li class="list-inline-item"><code class="notranslate">ibm</code></li> <li class="list-inline-item"><code class="notranslate">ieee</code></li> <li class="list-inline-item"><code class="notranslate">ifm</code></li> <li class="list-inline-item"><code class="notranslate">ikano</code></li> <li class="list-inline-item"><code class="notranslate">imdb</code></li> <li class="list-inline-item"><code class="notranslate">infiniti</code></li> <li class="list-inline-item"><code class="notranslate">intel</code></li> <li class="list-inline-item"><code class="notranslate">intuit</code></li> <li class="list-inline-item"><code class="notranslate">ipiranga</code></li> <li class="list-inline-item"><code class="notranslate">iselect</code></li> <li class="list-inline-item"><code class="notranslate">Italia</code></li> <li class="list-inline-item"><code class="notranslate">itv</code></li> <li class="list-inline-item"><code class="notranslate">iveco</code></li> <li class="list-inline-item"><code class="notranslate">jaguar</code></li> <li class="list-inline-item"><code class="notranslate">java</code></li> <li class="list-inline-item"><code class="notranslate">jcb</code></li> <li class="list-inline-item"><code class="notranslate">jcp</code></li> <li class="list-inline-item"><code class="notranslate">jeep</code></li> <li class="list-inline-item"><code class="notranslate">jpmorgan</code></li> <li class="list-inline-item"><code class="notranslate">juniper</code></li> <li class="list-inline-item"><code class="notranslate">kddi</code></li> <li class="list-inline-item"><code class="notranslate">kerryhotels</code></li> <li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li> <li class="list-inline-item"><code class="notranslate">kerryproperties</code></li> <li class="list-inline-item"><code class="notranslate">kfh</code></li> <li class="list-inline-item"><code class="notranslate">kia</code></li> <li class="list-inline-item"><code class="notranslate">kinder</code></li> <li class="list-inline-item"><code class="notranslate">kindle</code></li> <li class="list-inline-item"><code class="notranslate">komatsu</code></li> <li class="list-inline-item"><code class="notranslate">kpmg</code></li> <li class="list-inline-item"><code class="notranslate">kred</code></li> <li class="list-inline-item"><code class="notranslate">kuokgroup</code></li> <li class="list-inline-item"><code class="notranslate">lacaixa</code></li> <li class="list-inline-item"><code class="notranslate">ladbrokes</code></li> <li class="list-inline-item"><code class="notranslate">lamborghini</code></li> <li class="list-inline-item"><code class="notranslate">lancaster</code></li> <li class="list-inline-item"><code class="notranslate">lancia</code></li> <li class="list-inline-item"><code class="notranslate">lancome</code></li> <li class="list-inline-item"><code class="notranslate">landrover</code></li> <li class="list-inline-item"><code class="notranslate">lanxess</code></li> <li class="list-inline-item"><code class="notranslate">lasalle</code></li> <li class="list-inline-item"><code class="notranslate">latrobe</code></li> <li class="list-inline-item"><code class="notranslate">lds</code></li> <li class="list-inline-item"><code class="notranslate">leclerc</code></li> <li class="list-inline-item"><code class="notranslate">lego</code></li> <li class="list-inline-item"><code class="notranslate">liaison</code></li> <li class="list-inline-item"><code class="notranslate">lexus</code></li> <li class="list-inline-item"><code class="notranslate">lidl</code></li> <li class="list-inline-item"><code class="notranslate">livsstil</code></li> <li class="list-inline-item"><code class="notranslate">lilly</code></li> <li class="list-inline-item"><code class="notranslate">lincoln</code></li> <li class="list-inline-item"><code class="notranslate">linde</code></li> <li class="list-inline-item"><code class="notranslate">lipsy</code></li> <li class="list-inline-item"><code class="notranslate">lixil</code></li> <li class="list-inline-item"><code class="notranslate">locus</code></li> <li class="list-inline-item"><code class="notranslate">lotte</code></li> <li class="list-inline-item"><code class="notranslate">lpl</code></li> <li class="list-inline-item"><code class="notranslate">lplfinancial</code></li> <li class="list-inline-item"><code class="notranslate">lundbeck</code></li> <li class="list-inline-item"><code class="notranslate">lupin</code></li> <li class="list-inline-item"><code class="notranslate">macys</code></li> <li class="list-inline-item"><code class="notranslate">maif</code></li> <li class="list-inline-item"><code class="notranslate">mand</code></li> <li class="list-inline-item"><code class="notranslate">mango</code></li> <li class="list-inline-item"><code class="notranslate">Marriott</code></li> <li class="list-inline-item"><code class="notranslate">Maserati</code></li> <li class="list-inline-item"><code class="notranslate">Mattel</code></li> <li class="list-inline-item"><code class="notranslate">McKinsey</code></li> <li class="list-inline-item"><code class="notranslate">MetLife</code></li> <li class="list-inline-item"><code class="notranslate">Microsoft</code></li> <li class="list-inline-item"><code class="notranslate">Mini</code></li> <li class="list-inline-item"><code class="notranslate">Microsoft</code></li> <li class="list-inline-item"><code class="notranslate">Microsoft</code></li> class="notranslate">mitsubishi</code></li> <li class="list-inline-item"><code class="notranslate">mlb</code></li> <li class="list-inline-item"><code class="notranslate">mma</code></li> <li class="list-inline-item"><code class="notranslate">monash</code></li> <li class="list-inline-item"><code class="notranslate">mormon</code></li> <li class="list-inline-item"><code class="notranslate">moto</code></li> <li class="list-inline-item"><code class="notranslate">movistar</code></li> <li class="list-inline-item"><code class="notranslate">msd</code></li> <li class="list-inline-item"><code class="notranslate">mtn</code></li> <li class="list-inline-item"><code class="notranslate">mtr</code></li> <li class="list-inline-item"><code class="notranslate">gensidig</code></li> <li class="list-inline-item"><code class="notranslate">nadex</code></li> <li class="list-inline-item"><code class="notranslate">landsdækkende</code></li> <li class="list-inline-item"><code class="notranslate">natura</code></ li> <li class="list-inline-item"><code class="notranslate">nba</code></li> <li class="list-inline-item"><code class="notranslate">nec</code></li> <li class="list-inline-item"><code class="notranslate">netflix</code></li> <li class="list-inline-item"><code class="notranslate">neustar</code></li> <li class="list-inline-item"><code class="notranslate">newholland</code></li> <li class="list-inline-item"><code class="notranslate">nfl</code></li> <li class="list-inline-item"><code class="notranslate">nhk</code></li> <li class="list-inline-item"><code class="notranslate">nico</code></li> <li class="list-inline-item"><code class="notranslate">nike</code></li> <li class="list-inline-item"><code class="notranslate">nikon</code></li> <li class="list-inline-item"><code class="notranslate">nissan</code></li> <li class="list-inline-item"><code class="notranslate">nissay</code></li> <li class="list-inline-item"><code class="notranslate">nokia</code></li> <li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li> <li class="list-inline-item"><code class="notranslate">norton</code></li> <li class="list-inline-item"><code class="notranslate">nra</code></li> <li class="list-inline-item"><code class="notranslate">ntt</code></li> <li class="list-inline-item"><code class="notranslate">obi</code></li> <li class="list-inline-item"><code class="notranslate">office</code></li> <li class="list-inline-item"><code class="notranslate">omega</code></li> <li class="list-inline-item"><code class="notranslate">oracle</code></li> <li class="list-inline-item"><code class="notranslate">orange</code></li> <li class="list-inline-item"><code class="notranslate">otsuka</code></li> <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>--> <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
-<li class="list-inline-item"><code class="notranslate">pccw</code></li>
-<li class="list-inline-item"><code class="notranslate">pfizer</code></li>
-<li class="list-inline-item"><code class="notranslate">philips</code></li>
-<li class="list-inline-item"><code class="notranslate">piaget</code></li>
-<li class="list-inline-item"><code class="notranslate">pictet</code></li>
-<li class="list-inline-item"><code class="notranslate">ping</code></li>
-<li class="list-inline-item"><code class="notranslate">pioneer</code></li>
-<li class="list-inline-item"><code class="notranslate">spil</code></li>
-<li class="list-inline-item"><code class="notranslate">playstation</code></li>
-<li class="list-inline-item"><code class="notranslate">pohl</code></li>
-<li class="list-inline-item"><code class="notranslate">politik</code></li>
-<li class="list-inline-item"><code class="notranslate">praxi</code></li>
-<li class="list-inline-item"><code class="notranslate">produktion</code></li>
-<li class="list-inline-item"><code class="notranslate">progressiv</code></li>
-<li class="list-inline-item"><code class="notranslate">progressiv</code></li>
-<li class="list-inline-item"><code class="notranslate">pru</code></li>
-<li class="list-inline-item"><code class="notranslate">prudential</code></li> <li class="list-inline-item"><code class="notranslate">pwc</code></li> <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>--> <li class="list-inline-item"><code class="notranslate">qvc</code></li> <li class="list-inline-item"><code class="notranslate">redstone</code></li> <li class="list-inline-item"><code class="notranslate">reliance</code></li> <li class="list-inline-item"><code class="notranslate">rexroth</code></li> <li class="list-inline-item"><code class="notranslate">ricoh</code></li> <li class="list-inline-item"><code class="notranslate">garanti</code></li> <li class="list-inline-item"><code class="notranslate">rocher</code></li> <li class="list-inline-item"><code class="notranslate">rogers</code></li> <li class="list-inline-item"><code class="notranslate">rwe</code></li> <li class="list-inline-item"><code class="notranslate">sikkerhed</code></li> <li class="list-inline-item"><code class="notranslate">sakura</code></li> <li class="list-inline-item"><code class="notranslate">samsung</code></li> <li class="list-inline-item"><code class="notranslate">sandvik</code></li> <li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li> <li class="list-inline-item"><code class="notranslate">sanofi</code></li> <li class="list-inline-item"><code class="notranslate">sap</code></li> <li class="list-inline-item"><code class="notranslate">saxo</code></li> <li class="list-inline-item"><code class="notranslate">sbi</code></li> <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>--> <li class="list-inline-item"><code class="notranslate">sca</code></li> <li class="list-inline-item"><code class="notranslate">scb</code></li> <li class="list-inline-item"><code class="notranslate">Schaeffler</code></li> <li class="list-inline-item"><code class="notranslate">Schmidt</code></li> <li class="list-inline-item"><code class="notranslate">Schwarz</code></li> <li class="list-inline-item"><code class="notranslate">Schoolman</code></li> <li class="list-inline-item"><code class="notranslate">Scor</code></li> <li class="list-inline-item"><code class="notranslate">Sæde</code></li> <li class="list-inline-item"><code class="notranslate">Sener</code></li> <li class="list-inline-item"><code class="notranslate">Ses</code></li> <li class="list-inline-item"><code class="notranslate">sy</code></li> <li class="list-inline-item"><code class="notranslate">syv</code></li> <li class="list-inline-item"><code class="notranslate">sfr</code></li> <li class="list-inline-item"><code class="notranslate">søge</code></li> <li class="list-inline-item"><code class="notranslate">shangrila</code></li> <li class="list-inline-item"><code class="notranslate">skarp</code></li> <li class="list-inline-item"><code class="notranslate">shaw</code></li> <li class="list-inline-item"><code class="notranslate">skal</code></li> <li class="list-inline-item"><code class="notranslate">shriram</code></li>
-<li class="list-inline-item"><code class="notranslate">sina</code></li> <li class="list-inline-item"><code class="notranslate">sky</code></li> <li class="list-inline-item"><code class="notranslate">skype</code></li> <li class="list-inline-item"><code class="notranslate">smart</code></li> <li class="list-inline-item"><code class="notranslate">sncf</code></li> <li class="list-inline-item"><code class="notranslate">softbank</code></li> <li class="list-inline-item"><code class="notranslate">sohu</code></li> <li class="list-inline-item"><code class="notranslate">sony</code></li> <li class="list-inline-item"><code class="notranslate">Spejl</code></li> <li class="list-inline-item"><code class="notranslate">Stada</code></li> <li class="list-inline-item"><code class="notranslate">Hæfteklammer</code></li> <li class="list-inline-item"><code class="notranslate">Star</code></li> <li class="list-inline-item"><code class="notranslate">Starhub</code></li> <li class="list-inline-item"><code class="notranslate">Statebank</code></li> <li class="list-inline-item"><code class="notranslate">StateFarm</code></li> <li class="list-inline-item"><code class="notranslate">Statoil</code></li> <li class="list-inline-item"><code class="notranslate">stc</code></li> <li class="list-inline-item"><code class="notranslate">stcgroup</code></li> <li class="list-inline-item"><code class="notranslate">suzuki</code></li> <li class="list-inline-item"><code class="notranslate">swatch</code></li> <li class="list-inline-item"><code class="notranslate">swintcover</code></li> <li class="list-inline-item"><code class="notranslate">symantec</code></li> <li class="list-inline-item"><code class="notranslate">taobao</code></li> <li class="list-inline-item"><code class="notranslate">target</code></li> <li class="list-inline-item"><code class="notranslate">tatamotors</code></li> <li class="list-inline-item"><code class="notranslate">tdk</code></li> <li class="list-inline-item"><code class="notranslate">telecity</code></li> <li class="list-inline-item"><code class="notranslate">telefonica</code></li> <li class="list-inline-item"><code class="notranslate">temasek</code></li> <li class="list-inline-item"><code class="notranslate">teva</code></li> <li class="list-inline-item"><code class="notranslate">tiffany</code></li> <li class="list-inline-item"><code class="notranslate">tjx</code></li> <li class="list-inline-item"><code class="notranslate">Toray</code></li> <li class="list-inline-item"><code class="notranslate">Toshiba</code></li> <li class="list-inline-item"><code class="notranslate">total</code></li> <li class="list-inline-item"><code class="notranslate">Toyota</code></li> <li class="list-inline-item"><code class="notranslate">rejsende</code></li> <li class="list-inline-item"><code class="notranslate">tui</code></li> <li class="list-inline-item"><code class="notranslate">tv'er</code></li> <li class="list-inline-item"><code class="notranslate">tv'er</code></li> class="notranslate">ubs</code></li> <li class="list-inline-item"><code class="notranslate">unicom</code></li> <li class="list-inline-item"><code class="notranslate">uol</code></li> <li class="list-inline-item"><code class="notranslate">ups</code></li> <li class="list-inline-item"><code class="notranslate">vanguard</code></li> <li class="list-inline-item"><code class="notranslate">verisign</code></li> <li class="list-inline-item"><code class="notranslate">vig</code></li> <li class="list-inline-item"><code class="notranslate">viking</code></li> <li class="list-inline-item"><code class="notranslate">jomfru</code></li>
-<li class="list-inline-item"><code class="notranslate">visa</code></li> <li class="list-inline-item"><code class="notranslate">vista</code></li> <li class="list-inline-item"><code class="notranslate">vistaprint</code></li> <li class="list-inline-item"><code class="notranslate">vivo</code></li> <li class="list-inline-item"><code class="notranslate">volvo</code></li> <li class="list-inline-item"><code class="notranslate">walmart</code></li> <li class="list-inline-item"><code class="notranslate">walter</code></li> <li class="list-inline-item"><code class="notranslate">vejrkanal</code></li>
-<li class="list-inline-item"><code class="notranslate">weber</code></li>
-<li class="list-inline-item"><code class="notranslate">dæmningsværk</code></li>
-<li class="list-inline-item"><code class="notranslate">williamhill</code></li>
-<li class="list-inline-item"><code class="notranslate">windows</code></li>
-<li class="list-inline-item"><code class="notranslate">wme</code></li>
-<li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
-<li class="list-inline-item"><code class="notranslate">woodside</code></li>
-<li class="list-inline-item"><code class="notranslate">wtc</code></li> <li class="list-inline-item"><code class="notranslate">xbox</code></li> <li class="list-inline-item"><code class="notranslate">xerox</code></li> <li class="list-inline-item"><code class="notranslate">xfinity</code></li> <li class="list-inline-item"><code class="notranslate">yahoo</code></li> <li class="list-inline-item"><code class="notranslate">yamaxun</code></li> <li class="list-inline-item"><code class="notranslate">yandex</code></li> <li class="list-inline-item"><code class="notranslate">yodobashi</code></li> <li class="list-inline-item"><code class="notranslate">youtube</code></li>
-<li class="list-inline-item"><code class="notranslate">zappos</code></li>
-<li class="list-inline-item"><code class="notranslate">zara</code></li>
-<li class="list-inline-item"><code class="notranslate">zippo</code></li>
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">aaa</code></li>
+  <li class="list-inline-item"><code class="notranslate">aarp</code></li>
+  <li class="list-inline-item"><code class="notranslate">abarth</code></li>
+  <li class="list-inline-item"><code class="notranslate">abb</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbott</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbvie</code></li>
+  <li class="list-inline-item"><code class="notranslate">abc</code></li>
+  <li class="list-inline-item"><code class="notranslate">accenture</code></li>
+  <li class="list-inline-item"><code class="notranslate">aco</code></li>
+  <li class="list-inline-item"><code class="notranslate">aeg</code></li>
+  <li class="list-inline-item"><code class="notranslate">aetna</code></li>
+  <li class="list-inline-item"><code class="notranslate">afl</code></li>
+  <li class="list-inline-item"><code class="notranslate">agakhan</code></li>
+  <li class="list-inline-item"><code class="notranslate">aig</code></li>
+  <li class="list-inline-item"><code class="notranslate">aigo</code></li>
+  <li class="list-inline-item"><code class="notranslate">airbus</code></li>
+  <li class="list-inline-item"><code class="notranslate">airtel</code></li>
+  <li class="list-inline-item"><code class="notranslate">akdn</code></li>
+  <li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
+  <li class="list-inline-item"><code class="notranslate">alibaba</code></li>
+  <li class="list-inline-item"><code class="notranslate">alipay</code></li>
+  <li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
+  <li class="list-inline-item"><code class="notranslate">allstate</code></li>
+  <li class="list-inline-item"><code class="notranslate">ally</code></li>
+  <li class="list-inline-item"><code class="notranslate">alstom</code></li>
+  <li class="list-inline-item"><code class="notranslate">amazon</code></li>
+  <li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
+  <li class="list-inline-item"><code class="notranslate">amex</code></li>
+  <li class="list-inline-item"><code class="notranslate">amica</code></li>
+  <li class="list-inline-item"><code class="notranslate">android</code></li>
+  <li class="list-inline-item"><code class="notranslate">anz</code></li>
+  <li class="list-inline-item"><code class="notranslate">aol</code></li>
+  <li class="list-inline-item"><code class="notranslate">apple</code></li>
+  <li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
+  <li class="list-inline-item"><code class="notranslate">aramco</code></li>
+  <li class="list-inline-item"><code class="notranslate">audi</code></li>
+  <li class="list-inline-item"><code class="notranslate">auspost</code></li>
+  <li class="list-inline-item"><code class="notranslate">aws</code></li>
+  <li class="list-inline-item"><code class="notranslate">axa</code></li>
+  <li class="list-inline-item"><code class="notranslate">azure</code></li>
+  <li class="list-inline-item"><code class="notranslate">baidu</code></li>
+  <li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclays</code></li>
+  <li class="list-inline-item"><code class="notranslate">basketball</code></li>
+  <li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbt</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbva</code></li>
+  <li class="list-inline-item"><code class="notranslate">bcg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bentley</code></li>
+  <li class="list-inline-item"><code class="notranslate">bharti</code></li>
+  <li class="list-inline-item"><code class="notranslate">bing</code></li>
+  <li class="list-inline-item"><code class="notranslate">blanco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bms</code></li>
+  <li class="list-inline-item"><code class="notranslate">bmw</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnl</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
+  <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
+  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <li class="list-inline-item"><code class="notranslate">booking</code></li>
+  <li class="list-inline-item"><code class="notranslate">bosch</code></li>
+  <li class="list-inline-item"><code class="notranslate">bostik</code></li>
+  <li class="list-inline-item"><code class="notranslate">bradesco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">brother</code></li>
+  <li class="list-inline-item"><code class="notranslate">bugatti</code></li>
+  <li class="list-inline-item"><code class="notranslate">cal</code></li>
+  <li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
+  <li class="list-inline-item"><code class="notranslate">canon</code></li>
+  <li class="list-inline-item"><code class="notranslate">capitalone</code></li>
+  <li class="list-inline-item"><code class="notranslate">caravan</code></li>
+  <li class="list-inline-item"><code class="notranslate">cartier</code></li>
+  <li class="list-inline-item"><code class="notranslate">cba</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbn</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbre</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbs</code></li>
+  <li class="list-inline-item"><code class="notranslate">cern</code></li>
+  <li class="list-inline-item"><code class="notranslate">cfa</code></li>
+  <li class="list-inline-item"><code class="notranslate">chanel</code></li>
+  <li class="list-inline-item"><code class="notranslate">chase</code></li>
+  <li class="list-inline-item"><code class="notranslate">chintai</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrome</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrysler</code></li>
+  <li class="list-inline-item"><code class="notranslate">cipriani</code></li>
+  <li class="list-inline-item"><code class="notranslate">cisco</code></li>
+  <li class="list-inline-item"><code class="notranslate">citadel</code></li>
+  <li class="list-inline-item"><code class="notranslate">citi</code></li>
+  <li class="list-inline-item"><code class="notranslate">citic</code></li>
+  <li class="list-inline-item"><code class="notranslate">clubmed</code></li>
+  <li class="list-inline-item"><code class="notranslate">comcast</code></li>
+  <li class="list-inline-item"><code class="notranslate">commbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">creditunion</code></li>
+  <li class="list-inline-item"><code class="notranslate">crown</code></li>
+  <li class="list-inline-item"><code class="notranslate">crs</code></li>
+  <li class="list-inline-item"><code class="notranslate">csc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
+  <li class="list-inline-item"><code class="notranslate">dabur</code></li>
+  <li class="list-inline-item"><code class="notranslate">datsun</code></li>
+  <li class="list-inline-item"><code class="notranslate">dealer</code></li>
+  <li class="list-inline-item"><code class="notranslate">dell</code></li>
+  <li class="list-inline-item"><code class="notranslate">deloitte</code></li>
+  <li class="list-inline-item"><code class="notranslate">delta</code></li>
+  <li class="list-inline-item"><code class="notranslate">dhl</code></li>
+  <li class="list-inline-item"><code class="notranslate">discover</code></li>
+  <li class="list-inline-item"><code class="notranslate">dish</code></li>
+  <li class="list-inline-item"><code class="notranslate">dnp</code></li>
+  <li class="list-inline-item"><code class="notranslate">dodge</code></li>
+  <li class="list-inline-item"><code class="notranslate">dunlop</code></li>
+  <li class="list-inline-item"><code class="notranslate">dupont</code></li>
+  <li class="list-inline-item"><code class="notranslate">dvag</code></li>
+  <li class="list-inline-item"><code class="notranslate">edeka</code></li>
+  <li class="list-inline-item"><code class="notranslate">emerck</code></li>
+  <li class="list-inline-item"><code class="notranslate">epson</code></li>
+  <li class="list-inline-item"><code class="notranslate">ericsson</code></li>
+  <li class="list-inline-item"><code class="notranslate">erni</code></li>
+  <li class="list-inline-item"><code class="notranslate">esurance</code></li>
+  <li class="list-inline-item"><code class="notranslate">etisalat</code></li>
+  <li class="list-inline-item"><code class="notranslate">eurovision</code></li>
+  <li class="list-inline-item"><code class="notranslate">everbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">extraspace</code></li>
+  <li class="list-inline-item"><code class="notranslate">fage</code></li>
+  <li class="list-inline-item"><code class="notranslate">fairwinds</code></li>
+  <li class="list-inline-item"><code class="notranslate">farmers</code></li>
+  <li class="list-inline-item"><code class="notranslate">fedex</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrari</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrero</code></li>
+  <li class="list-inline-item"><code class="notranslate">fiat</code></li>
+  <li class="list-inline-item"><code class="notranslate">fidelity</code></li>
+  <li class="list-inline-item"><code class="notranslate">firestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">firmdale</code></li>
+  <li class="list-inline-item"><code class="notranslate">flickr</code></li>
+  <li class="list-inline-item"><code class="notranslate">flir</code></li>
+  <li class="list-inline-item"><code class="notranslate">flsmidth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ford</code></li>
+  <li class="list-inline-item"><code class="notranslate">fox</code></li>
+  <li class="list-inline-item"><code class="notranslate">fresenius</code></li>
+  <li class="list-inline-item"><code class="notranslate">forex</code></li>
+  <li class="list-inline-item"><code class="notranslate">frogans</code></li>
+  <li class="list-inline-item"><code class="notranslate">frontier</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallup</code></li>
+  <li class="list-inline-item"><code class="notranslate">gap</code></li>
+  <li class="list-inline-item"><code class="notranslate">gbiz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gea</code></li>
+  <li class="list-inline-item"><code class="notranslate">genting</code></li>
+  <li class="list-inline-item"><code class="notranslate">giving</code></li>
+  <li class="list-inline-item"><code class="notranslate">gle</code></li>
+  <li class="list-inline-item"><code class="notranslate">globo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmx</code></li>
+  <li class="list-inline-item"><code class="notranslate">godaddy</code></li>
+  <li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
+  <li class="list-inline-item"><code class="notranslate">goodyear</code></li>
+  <li class="list-inline-item"><code class="notranslate">goog</code></li>
+  <li class="list-inline-item"><code class="notranslate">google</code></li>
+  <li class="list-inline-item"><code class="notranslate">grainger</code></li>
+  <li class="list-inline-item"><code class="notranslate">guardian</code></li>
+  <li class="list-inline-item"><code class="notranslate">gucci</code></li>
+  <li class="list-inline-item"><code class="notranslate">hbo</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">hermes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hisamitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">hitachi</code></li>
+  <li class="list-inline-item"><code class="notranslate">hkt</code></li>
+  <li class="list-inline-item"><code class="notranslate">honda</code></li>
+  <li class="list-inline-item"><code class="notranslate">honeywell</code></li>
+  <li class="list-inline-item"><code class="notranslate">hotmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">hsbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hughes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyatt</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyundai</code></li>
+  <li class="list-inline-item"><code class="notranslate">ibm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ieee</code></li>
+  <li class="list-inline-item"><code class="notranslate">ifm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ikano</code></li>
+  <li class="list-inline-item"><code class="notranslate">imdb</code></li>
+  <li class="list-inline-item"><code class="notranslate">infiniti</code></li>
+  <li class="list-inline-item"><code class="notranslate">intel</code></li>
+  <li class="list-inline-item"><code class="notranslate">intuit</code></li>
+  <li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
+  <li class="list-inline-item"><code class="notranslate">iselect</code></li>
+  <li class="list-inline-item"><code class="notranslate">itau</code></li>
+  <li class="list-inline-item"><code class="notranslate">itv</code></li>
+  <li class="list-inline-item"><code class="notranslate">iveco</code></li>
+  <li class="list-inline-item"><code class="notranslate">jaguar</code></li>
+  <li class="list-inline-item"><code class="notranslate">java</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcb</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcp</code></li>
+  <li class="list-inline-item"><code class="notranslate">jeep</code></li>
+  <li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
+  <li class="list-inline-item"><code class="notranslate">juniper</code></li>
+  <li class="list-inline-item"><code class="notranslate">kddi</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
+  <li class="list-inline-item"><code class="notranslate">kfh</code></li>
+  <li class="list-inline-item"><code class="notranslate">kia</code></li>
+  <li class="list-inline-item"><code class="notranslate">kinder</code></li>
+  <li class="list-inline-item"><code class="notranslate">kindle</code></li>
+  <li class="list-inline-item"><code class="notranslate">komatsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">kpmg</code></li>
+  <li class="list-inline-item"><code class="notranslate">kred</code></li>
+  <li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
+  <li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
+  <li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancaster</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancia</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancome</code></li>
+  <li class="list-inline-item"><code class="notranslate">landrover</code></li>
+  <li class="list-inline-item"><code class="notranslate">lanxess</code></li>
+  <li class="list-inline-item"><code class="notranslate">lasalle</code></li>
+  <li class="list-inline-item"><code class="notranslate">latrobe</code></li>
+  <li class="list-inline-item"><code class="notranslate">lds</code></li>
+  <li class="list-inline-item"><code class="notranslate">leclerc</code></li>
+  <li class="list-inline-item"><code class="notranslate">lego</code></li>
+  <li class="list-inline-item"><code class="notranslate">liaison</code></li>
+  <li class="list-inline-item"><code class="notranslate">lexus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lidl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lifestyle</code></li>
+  <li class="list-inline-item"><code class="notranslate">lilly</code></li>
+  <li class="list-inline-item"><code class="notranslate">lincoln</code></li>
+  <li class="list-inline-item"><code class="notranslate">linde</code></li>
+  <li class="list-inline-item"><code class="notranslate">lipsy</code></li>
+  <li class="list-inline-item"><code class="notranslate">lixil</code></li>
+  <li class="list-inline-item"><code class="notranslate">locus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lotte</code></li>
+  <li class="list-inline-item"><code class="notranslate">lpl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
+  <li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
+  <li class="list-inline-item"><code class="notranslate">lupin</code></li>
+  <li class="list-inline-item"><code class="notranslate">macys</code></li>
+  <li class="list-inline-item"><code class="notranslate">maif</code></li>
+  <li class="list-inline-item"><code class="notranslate">man</code></li>
+  <li class="list-inline-item"><code class="notranslate">mango</code></li>
+  <li class="list-inline-item"><code class="notranslate">marriott</code></li>
+  <li class="list-inline-item"><code class="notranslate">maserati</code></li>
+  <li class="list-inline-item"><code class="notranslate">mattel</code></li>
+  <li class="list-inline-item"><code class="notranslate">mckinsey</code></li>
+  <li class="list-inline-item"><code class="notranslate">metlife</code></li>
+  <li class="list-inline-item"><code class="notranslate">microsoft</code></li>
+  <li class="list-inline-item"><code class="notranslate">mini</code></li>
+  <li class="list-inline-item"><code class="notranslate">mit</code></li>
+  <li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
+  <li class="list-inline-item"><code class="notranslate">mlb</code></li>
+  <li class="list-inline-item"><code class="notranslate">mma</code></li>
+  <li class="list-inline-item"><code class="notranslate">monash</code></li>
+  <li class="list-inline-item"><code class="notranslate">mormon</code></li>
+  <li class="list-inline-item"><code class="notranslate">moto</code></li>
+  <li class="list-inline-item"><code class="notranslate">movistar</code></li>
+  <li class="list-inline-item"><code class="notranslate">msd</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtr</code></li>
+  <li class="list-inline-item"><code class="notranslate">mutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">nadex</code></li>
+  <li class="list-inline-item"><code class="notranslate">nationwide</code></li>
+  <li class="list-inline-item"><code class="notranslate">natura</code></li>
+  <li class="list-inline-item"><code class="notranslate">nba</code></li>
+  <li class="list-inline-item"><code class="notranslate">nec</code></li>
+  <li class="list-inline-item"><code class="notranslate">netflix</code></li>
+  <li class="list-inline-item"><code class="notranslate">neustar</code></li>
+  <li class="list-inline-item"><code class="notranslate">newholland</code></li>
+  <li class="list-inline-item"><code class="notranslate">nfl</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nico</code></li>
+  <li class="list-inline-item"><code class="notranslate">nike</code></li>
+  <li class="list-inline-item"><code class="notranslate">nikon</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissan</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissay</code></li>
+  <li class="list-inline-item"><code class="notranslate">nokia</code></li>
+  <li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">norton</code></li>
+  <li class="list-inline-item"><code class="notranslate">nra</code></li>
+  <li class="list-inline-item"><code class="notranslate">ntt</code></li>
+  <li class="list-inline-item"><code class="notranslate">obi</code></li>
+  <li class="list-inline-item"><code class="notranslate">office</code></li>
+  <li class="list-inline-item"><code class="notranslate">omega</code></li>
+  <li class="list-inline-item"><code class="notranslate">oracle</code></li>
+  <li class="list-inline-item"><code class="notranslate">orange</code></li>
+  <li class="list-inline-item"><code class="notranslate">otsuka</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
+  <li class="list-inline-item"><code class="notranslate">pccw</code></li>
+  <li class="list-inline-item"><code class="notranslate">pfizer</code></li>
+  <li class="list-inline-item"><code class="notranslate">philips</code></li>
+  <li class="list-inline-item"><code class="notranslate">piaget</code></li>
+  <li class="list-inline-item"><code class="notranslate">pictet</code></li>
+  <li class="list-inline-item"><code class="notranslate">ping</code></li>
+  <li class="list-inline-item"><code class="notranslate">pioneer</code></li>
+  <li class="list-inline-item"><code class="notranslate">play</code></li>
+  <li class="list-inline-item"><code class="notranslate">playstation</code></li>
+  <li class="list-inline-item"><code class="notranslate">pohl</code></li>
+  <li class="list-inline-item"><code class="notranslate">politie</code></li>
+  <li class="list-inline-item"><code class="notranslate">praxi</code></li>
+  <li class="list-inline-item"><code class="notranslate">prod</code></li>
+  <li class="list-inline-item"><code class="notranslate">progressive</code></li>
+  <li class="list-inline-item"><code class="notranslate">pru</code></li>
+  <li class="list-inline-item"><code class="notranslate">prudential</code></li>
+  <li class="list-inline-item"><code class="notranslate">pwc</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">qvc</code></li>
+  <li class="list-inline-item"><code class="notranslate">redstone</code></li>
+  <li class="list-inline-item"><code class="notranslate">reliance</code></li>
+  <li class="list-inline-item"><code class="notranslate">rexroth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ricoh</code></li>
+  <li class="list-inline-item"><code class="notranslate">rmit</code></li>
+  <li class="list-inline-item"><code class="notranslate">rocher</code></li>
+  <li class="list-inline-item"><code class="notranslate">rogers</code></li>
+  <li class="list-inline-item"><code class="notranslate">rwe</code></li>
+  <li class="list-inline-item"><code class="notranslate">safety</code></li>
+  <li class="list-inline-item"><code class="notranslate">sakura</code></li>
+  <li class="list-inline-item"><code class="notranslate">samsung</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvik</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
+  <li class="list-inline-item"><code class="notranslate">sanofi</code></li>
+  <li class="list-inline-item"><code class="notranslate">sap</code></li>
+  <li class="list-inline-item"><code class="notranslate">saxo</code></li>
+  <li class="list-inline-item"><code class="notranslate">sbi</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">sca</code></li>
+  <li class="list-inline-item"><code class="notranslate">scb</code></li>
+  <li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
+  <li class="list-inline-item"><code class="notranslate">schmidt</code></li>
+  <li class="list-inline-item"><code class="notranslate">schwarz</code></li>
+  <li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
+  <li class="list-inline-item"><code class="notranslate">scor</code></li>
+  <li class="list-inline-item"><code class="notranslate">seat</code></li>
+  <li class="list-inline-item"><code class="notranslate">sener</code></li>
+  <li class="list-inline-item"><code class="notranslate">ses</code></li>
+  <li class="list-inline-item"><code class="notranslate">sew</code></li>
+  <li class="list-inline-item"><code class="notranslate">seven</code></li>
+  <li class="list-inline-item"><code class="notranslate">sfr</code></li>
+  <li class="list-inline-item"><code class="notranslate">seek</code></li>
+  <li class="list-inline-item"><code class="notranslate">shangrila</code></li>
+  <li class="list-inline-item"><code class="notranslate">sharp</code></li>
+  <li class="list-inline-item"><code class="notranslate">shaw</code></li>
+  <li class="list-inline-item"><code class="notranslate">shell</code></li>
+  <li class="list-inline-item"><code class="notranslate">shriram</code></li>
+  <li class="list-inline-item"><code class="notranslate">sina</code></li>
+  <li class="list-inline-item"><code class="notranslate">sky</code></li>
+  <li class="list-inline-item"><code class="notranslate">skype</code></li>
+  <li class="list-inline-item"><code class="notranslate">smart</code></li>
+  <li class="list-inline-item"><code class="notranslate">sncf</code></li>
+  <li class="list-inline-item"><code class="notranslate">softbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">sohu</code></li>
+  <li class="list-inline-item"><code class="notranslate">sony</code></li>
+  <li class="list-inline-item"><code class="notranslate">spiegel</code></li>
+  <li class="list-inline-item"><code class="notranslate">stada</code></li>
+  <li class="list-inline-item"><code class="notranslate">staples</code></li>
+  <li class="list-inline-item"><code class="notranslate">star</code></li>
+  <li class="list-inline-item"><code class="notranslate">starhub</code></li>
+  <li class="list-inline-item"><code class="notranslate">statebank</code></li>
+  <li class="list-inline-item"><code class="notranslate">statefarm</code></li>
+  <li class="list-inline-item"><code class="notranslate">statoil</code></li>
+  <li class="list-inline-item"><code class="notranslate">stc</code></li>
+  <li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">suzuki</code></li>
+  <li class="list-inline-item"><code class="notranslate">swatch</code></li>
+  <li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
+  <li class="list-inline-item"><code class="notranslate">symantec</code></li>
+  <li class="list-inline-item"><code class="notranslate">taobao</code></li>
+  <li class="list-inline-item"><code class="notranslate">target</code></li>
+  <li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
+  <li class="list-inline-item"><code class="notranslate">tdk</code></li>
+  <li class="list-inline-item"><code class="notranslate">telecity</code></li>
+  <li class="list-inline-item"><code class="notranslate">telefonica</code></li>
+  <li class="list-inline-item"><code class="notranslate">temasek</code></li>
+  <li class="list-inline-item"><code class="notranslate">teva</code></li>
+  <li class="list-inline-item"><code class="notranslate">tiffany</code></li>
+  <li class="list-inline-item"><code class="notranslate">tjx</code></li>
+  <li class="list-inline-item"><code class="notranslate">toray</code></li>
+  <li class="list-inline-item"><code class="notranslate">toshiba</code></li>
+  <li class="list-inline-item"><code class="notranslate">total</code></li>
+  <li class="list-inline-item"><code class="notranslate">toyota</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelers</code></li>
+  <li class="list-inline-item"><code class="notranslate">tui</code></li>
+  <li class="list-inline-item"><code class="notranslate">tvs</code></li>
+  <li class="list-inline-item"><code class="notranslate">ubs</code></li>
+  <li class="list-inline-item"><code class="notranslate">unicom</code></li>
+  <li class="list-inline-item"><code class="notranslate">uol</code></li>
+  <li class="list-inline-item"><code class="notranslate">ups</code></li>
+  <li class="list-inline-item"><code class="notranslate">vanguard</code></li>
+  <li class="list-inline-item"><code class="notranslate">verisign</code></li>
+  <li class="list-inline-item"><code class="notranslate">vig</code></li>
+  <li class="list-inline-item"><code class="notranslate">viking</code></li>
+  <li class="list-inline-item"><code class="notranslate">virgin</code></li>
+  <li class="list-inline-item"><code class="notranslate">visa</code></li>
+  <li class="list-inline-item"><code class="notranslate">vista</code></li>
+  <li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
+  <li class="list-inline-item"><code class="notranslate">vivo</code></li>
+  <li class="list-inline-item"><code class="notranslate">volkswagen</code></li>
+  <li class="list-inline-item"><code class="notranslate">volvo</code></li>
+  <li class="list-inline-item"><code class="notranslate">walmart</code></li>
+  <li class="list-inline-item"><code class="notranslate">walter</code></li>
+  <li class="list-inline-item"><code class="notranslate">weatherchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">weber</code></li>
+  <li class="list-inline-item"><code class="notranslate">weir</code></li>
+  <li class="list-inline-item"><code class="notranslate">williamhill</code></li>
+  <li class="list-inline-item"><code class="notranslate">windows</code></li>
+  <li class="list-inline-item"><code class="notranslate">wme</code></li>
+  <li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
+  <li class="list-inline-item"><code class="notranslate">woodside</code></li>
+  <li class="list-inline-item"><code class="notranslate">wtc</code></li>
+  <li class="list-inline-item"><code class="notranslate">xbox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xfinity</code></li>
+  <li class="list-inline-item"><code class="notranslate">yahoo</code></li>
+  <li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
+  <li class="list-inline-item"><code class="notranslate">yandex</code></li>
+  <li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
+  <li class="list-inline-item"><code class="notranslate">youtube</code></li>
+  <li class="list-inline-item"><code class="notranslate">zappos</code></li>
+  <li class="list-inline-item"><code class="notranslate">zara</code></li>
+  <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
 
-Fra den 18. marts 2025 har vi også tilføjet disse franske oversøiske territorier til denne liste ([i henhold til denne GitHub-anmodning](https://github.com/forwardemail/forwardemail.net/issues/327)):
+As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
-<ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">bzh</code></li> <li class="list-inline-item"><code class="notranslate">gf</code></li> <li class="list-inline-item"><code class="notranslate">gp</code></li> <li class="list-inline-item"><code class="notranslate">mq</code></li> <li class="list-inline-item"><code class="notranslate">nc</code></li> <li class="list-inline-item"><code class="notranslate">pf</code></li> <li class="list-inline-item"><code class="notranslate">pm</code></li> <li class="list-inline-item"><code class="notranslate">re</code></li> <li class="list-inline-item"><code class="notranslate">tf</code></li>
-<li class="list-inline-item"><code class="notranslate">wf</code></li>
-<li class="list-inline-item"><code class="notranslate">yt</code></li>
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-Fra den 8. juli 2025 har vi tilføjet disse Europa-specifikke lande:
+As of July 8, 2025 we have added these Europe-specific countries:
 
-<ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">ax</code></li> <li class="list-inline-item"><code class="notranslate">bg</code></li> <li class="list-inline-item"><code class="notranslate">fo</code></li> <li class="list-inline-item"><code class="notranslate">gi</code></li> <li class="list-inline-item"><code class="notranslate">gr</code></li> <li class="list-inline-item"><code class="notranslate">hr</code></li> <li class="list-inline-item"><code class="notranslate">hu</code></li> <li class="list-inline-item"><code class="notranslate">lt</code></li> <li class="list-inline-item"><code class="notranslate">lu</code></li>
-<li class="list-inline-item"><code class="notranslate">mc</code></li>
-<li class="list-inline-item"><code class="notranslate">mk</code></li>
-<li class="list-inline-item"><code class="notranslate">mt</code></li>
-<li class="list-inline-item"><code class="notranslate">ro</code></li>
-<li class="list-inline-item"><code class="notranslate">sk</code></li>
-<li class="list-inline-item"><code class="notranslate">va</code></li>
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-Vi har specifikt ikke inkluderet `cz`, `ru` og `ua` på grund af høj spamaktivitet.
+In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
 
-### Hvad er dine kriterier for tilladelseslisten {#what-is-your-allowlist-criteria}
+We specifically did not include `ru` and `ua` due to high spam activity.
 
-Vi har en statisk liste med [domænenavnsudvidelser er som standard tilladt på listen](#what-domain-name-extensions-are-allowlisted-by-default) – og vi vedligeholder også en dynamisk, cachelagret, rullende tilladelsesliste baseret på følgende strenge kriterier:
+### What is your allowlist criteria {#what-is-your-allowlist-criteria}
 
-* Afsenderens roddomæne skal være af typen [domænenavnsudvidelse, der matcher den liste, vi tilbyder på vores gratisplan](#what-domain-name-extensions-can-be-used-for-free) (med tilføjelse af `biz` og `info`). Vi inkluderer også delvise matches af `edu`, `gov` og `mil`, såsom `xyz.gov.au` og `xyz.edu.au`.
+We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
 
-* Afsenderens roddomæne skal være blandt de 100.000 unikke roddomæner, der er parset fra [Liste over paraplypopularitet](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
+* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
+* Sender root domain must have either A or MX records set.
+* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
 
-* Afsenderens roddomæne skal være blandt de 50.000 unikke roddomæner, der optræder i mindst 4 af de seneste 7 dages UPL'er (\~50%+).
+If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
 
-* Afsenderens roddomæne må ikke være [kategoriseret](https://radar.cloudflare.com/categorization-feedback/) som indhold for voksne eller malware fra Cloudflare.
+Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
 
-* Afsenderens roddomæne skal have enten A- eller MX-poster indstillet.
-* Afsenderens roddomæne skal enten have A-post(er), MX-post(er), DMARC-post med `biz`0 eller `biz`1 eller en SPF-post med kvalifikator `biz`2 eller `biz`3.
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
 
-Hvis dette kriterium er opfyldt, vil afsenderens roddomæne blive cachelagret i 7 dage. Bemærk, at vores automatiserede job kører dagligt – derfor er dette en rullende tilladelseslistecache, der opdateres dagligt.
+If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
 
-Vores automatiserede job vil downloade de foregående 7 dages UPL'er i hukommelsen, udpakke dem og derefter analysere hukommelsen i henhold til de strenge kriterier ovenfor.
+**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
 
-Populære domæner på tidspunktet for denne skrivning, såsom Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify og flere – er naturligvis inkluderet.
+### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
 
-Hvis du er en afsender, der ikke er på vores tilladelsesliste, vil du være [begrænset sats](#do-you-have-rate-limiting) og [grålistet](#do-you-have-a-greylist), første gang dit FQDN-roddomæne eller din IP-adresse sender en e-mail. Bemærk, at dette er standardpraksis, der er vedtaget som en e-mailstandard. De fleste e-mailserverklienter vil forsøge at prøve igen, hvis de modtager en hastighedsgrænse- eller grålistefejl (f.eks. en fejlstatuskode på niveau 421 eller 4xx).
+As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
 
-**Bemærk at specifikke afsendere som `a@gmail.com`, `b@xyz.edu` og `c@gov.au` stadig kan være [afvist](#do-you-have-a-denylist)** (f.eks. hvis vi automatisk registrerer spam, phishing eller malware fra disse afsendere).**
+This new rule allows only the following domain name extensions to be used on our free plan:
 
-### Hvilke domænenavnsudvidelser kan bruges gratis {#what-domain-name-extensions-can-be-used-for-free}
-
-Fra den 31. marts 2023 har vi håndhævet en ny generel spamregel for at beskytte vores brugere og tjeneste.
-
-Denne nye regel tillader kun brug af følgende domænenavnsudvidelser på vores gratis abonnement:
-
-<ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">ac</code></li> <li class="list-inline-item"><code class="notranslate">annonce</code></li> <li class="list-inline-item"><code class="notranslate">ag</code></li> <li class="list-inline-item"><code class="notranslate">ai</code></li> <li class="list-inline-item"><code class="notranslate">al</code></li> <li class="list-inline-item"><code class="notranslate">am</code></li> <li class="list-inline-item"><code class="notranslate">app</code></li> <li class="list-inline-item"><code class="notranslate">as</code></li> <li class="list-inline-item"><code class="notranslate">ved</code></li> <li class="list-inline-item"><code class="notranslate">au</code></li> <li class="list-inline-item"><code class="notranslate">ba</code></li> <li class="list-inline-item"><code class="notranslate">være</code></li> <li class="list-inline-item"><code class="notranslate">br</code></li> <li class="list-inline-item"><code class="notranslate">af</code></li> <li class="list-inline-item"><code class="notranslate">ca</code></li> <li class="list-inline-item"><code class="notranslate">cc</code></li> <li class="list-inline-item"><code class="notranslate">cd</code></li> <li class="list-inline-item"><code class="notranslate">ch</code></li> <li class="list-inline-item"><code class="notranslate">ck</code></li> <li class="list-inline-item"><code class="notranslate">co</code></li> <li class="list-inline-item"><code class="notranslate">com</code></li> <li class="list-inline-item"><code class="notranslate">de</code></li> <li class="list-inline-item"><code class="notranslate">dev</code></li> <li class="list-inline-item"><code class="notranslate">dj</code></li> <li class="list-inline-item"><code class="notranslate">dk</code></li> <li class="list-inline-item"><code class="notranslate">ee</code></li> <li class="list-inline-item"><code class="notranslate">es</code></li> <li class="list-inline-item"><code class="notranslate">eu</code></li> <li class="list-inline-item"><code class="notranslate">family</code></li> <li class="list-inline-item"><code class="notranslate">fi</code></li> <li class="list-inline-item"><code class="notranslate">fm</code></li> <li class="list-inline-item"><code class="notranslate">fr</code></li> <li class="list-inline-item"><code class="notranslate">gg</code></li> <li class="list-inline-item"><code class="notranslate">gl</code></li> <li class="list-inline-item"><code class="notranslate">id</code></li> <li class="list-inline-item"><code class="notranslate">ie</code></li> <li class="list-inline-item"><code class="notranslate">il</code></li> <li class="list-inline-item"><code class="notranslate">im</code></li> <li class="list-inline-item"><code class="notranslate">in</code></li> <li class="list-inline-item"><code class="notranslate">io</code></li> <li class="list-inline-item"><code class="notranslate">ir</code></li> <li class="list-inline-item"><code class="notranslate">er</code></li> <li class="list-inline-item"><code class="notranslate">det</code></li> <li class="list-inline-item"><code class="notranslate">je</code></li> <li class="list-inline-item"><code class="notranslate">jp</code></li> <li class="list-inline-item"><code class="notranslate">ke</code></li> <li class="list-inline-item"><code class="notranslate">kr</code></li> <li class="list-inline-item"><code class="notranslate">la</code></li> <li class="list-inline-item"><code class="notranslate">li</code></li> <li class="list-inline-item"><code class="notranslate">lv</code></li> <li class="list-inline-item"><code class="notranslate">ly</code></li> <li class="list-inline-item"><code class="notranslate">md</code></li> <li class="list-inline-item"><code class="notranslate">mig</code></li> <li class="list-inline-item"><code class="notranslate">mn</code></li> <li class="list-inline-item"><code class="notranslate">ms</code></li> <li class="list-inline-item"><code class="notranslate">mu</code></li> <li class="list-inline-item"><code class="notranslate">mx</code></li> <li class="list-inline-item"><code class="notranslate">net</code></li> <li class="list-inline-item"><code class="notranslate">ni</code></li> <li class="list-inline-item"><code class="notranslate">nl</code></li> <li class="list-inline-item"><code class="notranslate">nej</code></li> <li class="list-inline-item"><code class="notranslate">nu</code></li> <li class="list-inline-item"><code class="notranslate">nz</code></li> <li class="list-inline-item"><code class="notranslate">org</code></li> <li class="list-inline-item"><code class="notranslate">pl</code></li> <li class="list-inline-item"><code class="notranslate">pr</code></li> <li class="list-inline-item"><code class="notranslate">pt</code></li> <li class="list-inline-item"><code class="notranslate">pw</code></li> <li class="list-inline-item"><code class="notranslate">rs</code></li> <li class="list-inline-item"><code class="notranslate">sc</code></li> <li class="list-inline-item"><code class="notranslate">se</code></li> <li class="list-inline-item"><code class="notranslate">sh</code></li> <li class="list-inline-item"><code class="notranslate">si</code></li> <li class="list-inline-item"><code class="notranslate">sm</code></li> <li class="list-inline-item"><code class="notranslate">sr</code></li> <li class="list-inline-item"><code class="notranslate">st</code></li> <li class="list-inline-item"><code class="notranslate">tc</code></li> <li class="list-inline-item"><code class="notranslate">tm</code></li> <li class="list-inline-item"><code class="notranslate">til</code></li> <li class="list-inline-item"><code class="notranslate">tv</code></li> <li class="list-inline-item"><code class="notranslate">uk</code></li> <li class="list-inline-item"><code class="notranslate">us</code></li> <li class="list-inline-item"><code class="notranslate">uz</code></li> <li class="list-inline-item"><code class="notranslate">vc</code></li> <li class="list-inline-item"><code class="notranslate">vg</code></li>
-<li class="list-inline-item"><code class="notranslate">vu</code></li>
-<li class="list-inline-item"><code class="notranslate">ws</code></li>
-<li class="list-inline-item"><code class="notranslate">xyz</code></li>
-<li class="list-inline-item"><code class="notranslate">za</code></li>
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ac</code></li>
+  <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ag</code></li>
+  <li class="list-inline-item"><code class="notranslate">ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">al</code></li>
+  <li class="list-inline-item"><code class="notranslate">am</code></li>
+  <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">as</code></li>
+  <li class="list-inline-item"><code class="notranslate">at</code></li>
+  <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">ba</code></li>
+  <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">br</code></li>
+  <li class="list-inline-item"><code class="notranslate">by</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cat</code></li>
+  <li class="list-inline-item"><code class="notranslate">cc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cd</code></li>
+  <li class="list-inline-item"><code class="notranslate">ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">ck</code></li>
+  <li class="list-inline-item"><code class="notranslate">co</code></li>
+  <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">de</code></li>
+  <li class="list-inline-item"><code class="notranslate">dev</code></li>
+  <li class="list-inline-item"><code class="notranslate">dj</code></li>
+  <li class="list-inline-item"><code class="notranslate">dk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ee</code></li>
+  <li class="list-inline-item"><code class="notranslate">es</code></li>
+  <li class="list-inline-item"><code class="notranslate">eu</code></li>
+  <li class="list-inline-item"><code class="notranslate">family</code></li>
+  <li class="list-inline-item"><code class="notranslate">fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">fm</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">id</code></li>
+  <li class="list-inline-item"><code class="notranslate">ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">il</code></li>
+  <li class="list-inline-item"><code class="notranslate">im</code></li>
+  <li class="list-inline-item"><code class="notranslate">in</code></li>
+  <li class="list-inline-item"><code class="notranslate">io</code></li>
+  <li class="list-inline-item"><code class="notranslate">ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">is</code></li>
+  <li class="list-inline-item"><code class="notranslate">it</code></li>
+  <li class="list-inline-item"><code class="notranslate">je</code></li>
+  <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">la</code></li>
+  <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">md</code></li>
+  <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">mu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mx</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">net</code></li>
+  <li class="list-inline-item"><code class="notranslate">ni</code></li>
+  <li class="list-inline-item"><code class="notranslate">nl</code></li>
+  <li class="list-inline-item"><code class="notranslate">no</code></li>
+  <li class="list-inline-item"><code class="notranslate">nu</code></li>
+  <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">rs</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc</code></li>
+  <li class="list-inline-item"><code class="notranslate">se</code></li>
+  <li class="list-inline-item"><code class="notranslate">sh</code></li>
+  <li class="list-inline-item"><code class="notranslate">si</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sm</code></li>
+  <li class="list-inline-item"><code class="notranslate">sr</code></li>
+  <li class="list-inline-item"><code class="notranslate">st</code></li>
+  <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">tm</code></li>
+  <li class="list-inline-item"><code class="notranslate">to</code></li>
+  <li class="list-inline-item"><code class="notranslate">tv</code></li>
+  <li class="list-inline-item"><code class="notranslate">uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">us</code></li>
+  <li class="list-inline-item"><code class="notranslate">uz</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">vc</code></li>
+  <li class="list-inline-item"><code class="notranslate">vg</code></li>
+  <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">ws</code></li>
+  <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
 
-### Har du en gråliste {#do-you-have-a-greylist}
+### Do you have a greylist {#do-you-have-a-greylist}
 
-Ja, vi har en meget lempelig [e-mail gråliste](https://en.wikipedia.org/wiki/Greylisting_\(email\))-politik. Grålistning gælder kun for afsendere, der ikke er på vores tilladelsesliste, og gemmes i vores cache i 30 dage.
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
 
-For enhver ny afsender gemmer vi en nøgle i vores Redis-database i 30 dage med en værdi, der er indstillet til det oprindelige ankomsttidspunkt for deres første anmodning. Vi afviser derefter deres e-mail med en statuskode for gentagelse på 450 og tillader den først at passere, når der er gået 5 minutter.
+For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
-Hvis de har ventet i 5 minutter fra dette oprindelige ankomsttidspunkt, vil deres e-mails blive accepteret, og de vil ikke modtage denne 450-statuskode.
+If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
 
-Nøglen består enten af FQDN-roddomænet eller afsenderens IP-adresse. Det betyder, at ethvert underdomæne, der passerer grålisten, også vil passere for roddomænet, og omvendt (dette er, hvad vi mener med en "meget lempelig" politik).
+The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
 
-Hvis en e-mail for eksempel kommer fra `test.example.com`, før vi ser en e-mail komme fra `example.com`, skal enhver e-mail fra `test.example.com` og/eller `example.com` vente 5 minutter fra forbindelsens oprindelige ankomsttidspunkt. Vi lader ikke både `test.example.com` og `example.com` vente hver deres 5-minutters periode (vores grålistepolitik gælder på roddomæneniveau).
+For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
-Bemærk, at grålistning ikke gælder for nogen afsendere på vores [tilladelsesliste](#do-you-have-an-allowlist) (f.eks. Meta, Amazon, Netflix, Google, Microsoft på tidspunktet for denne skrivning).
+Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
-### Har du en afvisningsliste {#do-you-have-a-denylist}
+### Do you have a denylist {#do-you-have-a-denylist}
 
-Ja, vi driver vores egen afvisningsliste og opdaterer den automatisk i realtid og manuelt baseret på spam og ondsindet aktivitet, der opdages.
+Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
 
-Vi henter også alle IP-adresser fra UCEPROTECT Level 1-afvisningslisten på <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> hver time og indsætter dem i vores afvisningsliste med en udløbsdato på 7 dage.
+We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
 
-Afsendere, der findes på afvisningslisten, vil modtage en 421-fejlkode (indikerer, at afsenderen skal prøve igen senere), hvis de [er ikke på tilladelseslisten](#do-you-have-an-allowlist).
+Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
 
-Ved at bruge en 421-statuskode i stedet for en 554-statuskode kan potentielle falske positiver afhjælpes i realtid, og derefter kan beskeden leveres ved næste forsøg.
+By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
 
-**Dette er designet i modsætning til andre mailtjenester**, hvor der opstår en permanent fejl, hvis du bliver sat på en blokeringsliste. Det er ofte vanskeligt at bede afsendere om at forsøge at sende beskeder igen (især fra store organisationer), og derfor giver denne tilgang cirka 5 dage fra det første forsøg på at sende en e-mail, så enten afsenderen, modtageren eller vi kan gribe ind og afhjælpe problemet (ved at anmode om fjernelse af afvisningslisten).
+**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
 
-Alle anmodninger om fjernelse fra afvisningslister overvåges i realtid af administratorer (f.eks. så tilbagevendende falske positiver permanent kan sættes på godkendelseslisten af administratorer).
+All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
 
-Anmodninger om fjernelse af afvisningslister kan anmodes på <https://forwardemail.net/denylist>.. Betalende brugeres anmodninger om fjernelse af afvisningslister behandles øjeblikkeligt, mens ikke-betalende brugere skal vente på, at administratorer behandler deres anmodning.
+Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
 
-Afsendere, der registreres som værende i færd med at sende spam eller virusindhold, vil blive føjet til afvisningslisten på følgende måde:
+Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
 
-1. [fingeraftryk fra den første besked](#how-do-you-determine-an-email-fingerprint) grålistes ved registrering af spam eller blokeringsliste fra en "betroet" afsender (f.eks. `gmail.com`, `microsoft.com`, `apple.com`).
-* Hvis afsenderen var på tilladelseslisten, grålistes beskeden i 1 time.
-* Hvis afsenderen ikke er på tilladelseslisten, grålistes beskeden i 6 timer.
+1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
+   * If the sender was allowlisted, the message is greylisted for 1 hour.
+   * If the sender is not allowlisted, the message is greylisted for 6 hours.
+2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
+   * For allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+   * For non-allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+     * Add a key for the remote IP address of the sender.
+     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
+     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
+3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
 
-2. Vi analyserer afvisningslistenøgler fra information fra afsenderen og beskeden, og for hver af disse nøgler opretter vi (hvis en ikke allerede findes) en tæller, øger den med 1 og cacher den i 24 timer.
-* For afsendere på tilladelseslisten:
-* Tilføj en nøgle til konvolutten "MAIL FROM"-e-mailadresse, hvis den havde eller ingen SPF, og den ikke var [et postmaster-brugernavn](#what-are-postmaster-addresses) eller [et brugernavn uden svar](#what-are-no-reply-addresses).
+> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
 
-* Hvis "Fra"-headeren var på tilladelseslisten, skal du tilføje en nøgle til "Fra"-headerens e-mailadresse, hvis den havde videregivende SPF eller videregivende og justeret DKIM.
-* Hvis "Fra"-headeren ikke var på tilladelseslisten, skal du tilføje en nøgle til "Fra"-headerens e-mailadresse og dens rodparsede domænenavn.
-* For afsendere, der ikke er på tilladelseslisten:
-* Tilføj en nøgle til konvolut-e-mailadressen "MAIL FROM", hvis den havde videregivende SPF.
-* Hvis "Fra"-headeren var på tilladelseslisten, skal du tilføje en nøgle til "Fra"-headerens e-mailadresse, hvis den havde videregivende SPF eller videregivende og justeret DKIM.
-* Hvis "Fra"-headeren ikke var på tilladelseslisten, skal du tilføje en nøgle til "Fra"-headerens e-mailadresse og dens rodparsede domænenavn.
-* Tilføj en nøgle til afsenderens eksterne IP-adresse.
-* Tilføj en nøgle til klientens løste værtsnavn ved omvendt opslag fra afsenderens IP-adresse (hvis relevant).
-* Tilføj en nøgle til roddomænet for klientens løste værtsnavn (hvis relevant, og hvis det adskiller sig fra klientens løste værtsnavn).
-3. Hvis tælleren når 5 for en afsender og nøgle, der ikke er på tilladelseslisten, afviser vi nøglen i 30 dage, og der sendes en e-mail til vores misbrugsteam. Disse tal kan ændres, og opdateringer vil blive vist her, mens vi overvåger misbrug.
+### Do you have rate limiting {#do-you-have-rate-limiting}
 
-4. Hvis tælleren når 10 for en afsender og nøgle på tilladelseslisten, afviser vi nøglen i 7 dage, og der sendes en e-mail til vores misbrugsteam. Disse tal kan ændres, og opdateringer vil blive vist her, mens vi overvåger misbrug.
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-> **BEMÆRK:** I den nærmeste fremtid vil vi introducere omdømmeovervågning. Omdømmeovervågning vil i stedet beregne, hvornår en afsender skal afvises, baseret på en procenttærskel (i modsætning til en rudimentær tæller som nævnt ovenfor).
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-### Har du en hastighedsbegrænsning {#do-you-have-rate-limiting}
+* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
+* We have general limits that apply to all `Senders` across our service regardless of recipient:
+  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
+  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
+  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
+* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
-Begrænsning af afsenderhastighed sker enten via roddomænet, der er parset fra et omvendt PTR-opslag på afsenderens IP-adresse – eller hvis det ikke giver et resultat, bruger den blot afsenderens IP-adresse. Bemærk, at vi refererer til dette som `Sender` nedenfor.
+The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
-Vores MX-servere har daglige grænser for indgående mail modtaget for [krypteret IMAP-lagring](/blog/docs/best-quantum-safe-encrypted-email-service):
+* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
-* I stedet for at begrænse hastigheden for indgående mail modtaget på individuelt alias (f.eks. `you@yourdomain.com`) – begrænser vi hastigheden efter aliasets domænenavn (f.eks. `yourdomain.com`). Dette forhindrer `Senders` i at oversvømme indbakkerne for alle aliasser på tværs af dit domæne på én gang.
+* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
-* Vi har generelle grænser, der gælder for alle `Senders` på tværs af vores tjeneste, uanset modtager:
+* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
 
-* `Senders`, som vi anser for at være "betroede" som en kilde til sandhed (f.eks. `gmail.com`, `microsoft.com`, `apple.com`), er begrænset til at sende 100 GB pr. dag.
+* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
 
-* `Senders`, der er [tilladt på listen](#do-you-have-an-allowlist), er begrænset til at sende 10 GB pr. dag.
+* `Senders` that exceed the rate limit will be rejected with a 421 error.
 
-* Alle andre `yourdomain.com`0 er begrænset til at sende 1 GB og/eller 1000 beskeder pr. dag.
-* Vi har en specifik grænse på 1 GB og/eller 1000 beskeder dagligt pr. `yourdomain.com`1 og `yourdomain.com`2.
+Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
-MX-serverne begrænser også videresendelse af beskeder til en eller flere modtagere via hastighedsbegrænsning – men dette gælder kun for `Senders`, ikke på [tilladelsesliste](#do-you-have-an-allowlist):
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
 
-* Vi tillader kun op til 100 forbindelser i timen, pr. `Sender`-opløst FQDN-roddomæne (eller) `Sender` fjern-IP-adresse (hvis ingen omvendt PTR er tilgængelig) og pr. kuvertmodtager. Vi gemmer nøglen til hastighedsbegrænsning som en kryptografisk hash i vores Redis-database.
+### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
 
-* Hvis du sender e-mails via vores system, skal du sørge for at have en omvendt PTR konfigureret for alle dine IP-adresser (ellers vil hvert unikke FQDN-roddomæne eller IP-adresse, du sender fra, være hastighedsbegrænset).
+Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
 
-* Bemærk, at hvis du sender via et populært system som Amazon SES, vil du ikke være takstbegrænset, da Amazon SES (på tidspunktet for denne skrivning) er opført på vores tilladelsesliste.
+We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
 
-* Hvis du sender fra et domæne som `test.abc.123.example.com`, vil hastighedsgrænsen blive pålagt `example.com`. Mange spammere bruger hundredvis af underdomæner til at omgå almindelige spamfiltre, der kun hastighedsbegrænser unikke værtsnavne i modsætning til unikke FQDN-roddomæner.
+### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
 
-* `Senders`, der overskrider hastighedsgrænsen, vil blive afvist med en 421-fejl.
+We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-Vores IMAP- og SMTP-servere begrænser dine aliasser fra at have mere end `60` samtidige forbindelser ad gangen.
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-Vores MX-servere begrænser [ikke på tilladelseslisten](#do-you-have-an-allowlist)-afsendere fra at oprette mere end 10 samtidige forbindelser (med en cacheudløbstid på 3 minutter for tælleren, hvilket afspejler vores socket-timeout på 3 minutter).
+If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
-### Hvordan beskytter du mod tilbagespredning {#how-do-you-protect-against-backscatter}
+The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
 
-Fejladresserede afvisninger eller afvisningsspam (kendt som "[Tilbagespredning](https://en.wikipedia.org/wiki/Backscatter_\(email\))") kan forårsage et negativt omdømme for afsenderens IP-adresser.
+### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-Vi tager to trin for at beskytte mod tilbagespredning, hvilket er beskrevet i de følgende afsnit [Forhindr afvisninger fra kendte spammere af MAIL FRA](#prevent-bounces-from-known-mail-from-spammers) og [Forhindr unødvendige bounces for at beskytte mod backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) nedenfor.
+Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
 
-### Forhindr afvisninger fra kendte MAIL FROM-spammere {#prevent-bounces-from-known-mail-from-spammers}
+A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
 
-Vi henter listen fra [Backscatter.org](https://www.backscatterer.org/) (drevet af [UCEPROTECT](https://www.uceprotect.net/)) ved <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> hver time og indtaster den i vores Redis-database (vi sammenligner også forskellen på forhånd; i tilfælde af at der er fjernet IP-adresser, der skal respekteres).
+1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
 
-Hvis MAIL FROM er tom ELLER er lig med (uafhængig af store og små bogstaver) en af [postmesteradresser](#what-are-postmaster-addresses) (delen før @ i en e-mail), kontrollerer vi, om afsenderens IP-adresse matcher en fra denne liste.
+2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
 
-Hvis afsenderens IP-adresse er angivet (og ikke i vores [tilladelsesliste](#do-you-have-an-allowlist)), sender vi en 554-fejl med meddelelsen `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Vi får besked, hvis en afsender er på både Backscatterer-listen og på vores tilladelsesliste, så vi kan løse problemet, hvis det er nødvendigt.
+3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-Teknikkerne beskrevet i dette afsnit overholder anbefalingen "SIKKER TILSTAND" på <https://www.backscatterer.org/?target=usage> – hvor vi kun kontrollerer afsenderens IP-adresse, hvis visse betingelser allerede er opfyldt.
+4. We don't send if the original message had any of the following headers (case-insensitive):
 
-### Forhindr unødvendige bounces for at beskytte mod backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-Afviste e-mails er e-mails, der indikerer, at videresendelse af e-mails til modtageren mislykkedes fuldstændigt, og at e-mailen ikke vil blive forsøgt igen.
+5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
 
-En almindelig årsag til at blive opført på Backscatterer-listen er fejladresserede bounces eller bounce spam, så vi skal beskytte os mod dette på et par måder:
+6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
 
-1. Vi sender kun, når der opstår >= 500 statuskodefejl (når e-mails, der er forsøgt videresendt, mislykkedes, f.eks. hvis Gmail svarer med en fejl på niveau 500).
+7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
-2. Vi sender kun én gang (vi bruger en beregnet nøgle til afvisningsfingeraftryk og gemmer den i cachen for at forhindre afsendelse af dubletter). Afvisningsfingeraftrykket er en nøgle, der er beskedens fingeraftryk kombineret med en hash af afvisningsadressen og dens fejlkode). Se afsnittet om [Fingeraftryk](#how-do-you-determine-an-email-fingerprint) for mere indsigt i, hvordan beskedens fingeraftryk beregnes. Vellykket afsendte afvisningsfingeraftryk udløber efter 7 dage i vores Redis-cache.
+### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
 
-3. Vi sender kun, når MAIL FROM og/eller From ikke er blanke og ikke indeholder (uafhængig af store og små bogstaver) en [postmaster brugernavn](#what-are-postmaster-addresses) (delen før @ i en e-mail).
+An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
 
-4. Vi sender ikke, hvis den oprindelige besked havde en af følgende overskrifter (ikke store og små bogstaver):
+The fingerprint is calculated from the following list:
 
-* Header for `auto-submitted` med en værdi, der ikke er lig med `no`.
-* Header for `x-auto-response-suppress` med en værdi på `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`.
-* Header for `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 eller `no`7 (uanset værdi).
-* Header af `no`8 med en værdi af `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 eller `x-auto-response-suppress`3.
+* Client resolved FQDN hostname or IP address
+* `Message-ID` header value (if any)
+* `Date` header value (if any)
+* `From` header value (if any)
+* `To` header value (if any)
+* `Cc` header value (if any)
+* `Subject` header value (if any)
+* `Body` value (if any)
 
-5. Vi sender ikke, hvis MAIL FROM- eller From-e-mailadressen slutter med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
+### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
-6. Vi sender ikke, hvis brugernavnsdelen af e-mailadressen "Fra" var `mdaemon`, og den havde en header med titlen `X-MDDSN-Message`, der ikke skelner mellem store og små bogstaver.
-
-7. Vi sender ikke, hvis der var en `content-type`-header i `multipart/report`, der ikke skelner mellem store og små bogstaver.
-
-### Hvordan bestemmer man et e-mail-fingeraftryk {#how-do-you-determine-an-email-fingerprint}
-
-En e-mails fingeraftryk bruges til at bestemme en e-mails unikhed og til at forhindre, at dubletter leveres, og at [duplikerede afvisninger](#prevent-unnecessary-bounces-to-protect-against-backscatter) sendes.
-
-Fingeraftrykket beregnes ud fra følgende liste:
-
-* Klientens FQDN-værtsnavn eller IP-adresse er løst
-* `Message-ID` headerværdi (hvis relevant)
-* `Date` headerværdi (hvis relevant)
-* `From` headerværdi (hvis relevant)
-* `To` headerværdi (hvis relevant)
-* `Cc` headerværdi (hvis relevant)
-* `Subject` headerværdi (hvis relevant)
-* `Body` værdi (hvis relevant)
-
-### Kan jeg videresende e-mails til andre porte end 25 (f.eks. hvis min internetudbyder har blokeret port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
-
-Ja, fra den 5. maj 2020 har vi tilføjet denne funktion. Lige nu er funktionen domænespecifik i modsætning til aliasspecifik. Hvis du ønsker, at den skal være aliasspecifik, bedes du kontakte os for at fortælle os om dine behov.
+Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Forbedret privatlivsbeskyttelse:
-</strong>
-<span>
-Hvis du har et betalt abonnement (som inkluderer forbedret privatlivsbeskyttelse), skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a>, klikke på "Opsætning" ud for dit domæne og derefter klikke på "Indstillinger". Hvis du vil vide mere om betalte abonnementer, kan du se vores <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pris</a>-side. Ellers kan du fortsætte med at følge instruktionerne nedenfor.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Hvis du har gratisabonnementet, skal du blot tilføje en ny DNS-<strong class="notranslate">TXT</strong>-post som vist nedenfor, men ændre porten fra 25 til den port, du ønsker.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
-Hvis jeg for eksempel vil have, at alle e-mails, der går til `example.com`, videresendes til aliasmodtagernes SMTP-port 1337 i stedet for 25:
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email-port=1337</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-Det mest almindelige scenarie for opsætning af brugerdefineret portvideresendelse er, når du vil videresende alle e-mails, der går til example.com, til en anden port på example.com, end SMTP-standarden på port 25. For at konfigurere dette skal du blot tilføje følgende <strong class="notranslate">TXT</strong> catch-all-post.
-<span>
-</span>
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=example.com</code></td> </tr> </tbody>
-</table>
-
-### Understøtter det plustegnet + for Gmail-aliasser {#does-it-support-the-plus--symbol-for-gmail-aliases}}
-
-Ja, absolut.
-
-### Understøtter det underdomæner {#does-it-support-sub-domains}
-
-Ja, absolut. I stedet for at bruge "@", "." eller blank som navn/vært/alias, bruger du bare underdomænenavnet som værdi i stedet.
-
-Hvis du vil have `foo.example.com` til at videresende e-mails, skal du indtaste `foo` som navn/vært/alias-værdi i dine DNS-indstillinger (for både MX- og <strong class="notranslate">TXT</strong>-poster).
-
-### Videresender dette mine e-mails headere {#does-this-forward-my-emails-headers}
-
-Ja, absolut.
-
-### Er dette velafprøvet {#is-this-well-tested}
-
-Ja, den har tests skrevet med [ava](https://github.com/avajs/ava) og har også kodedækning.
-
-### Videregiver du SMTP-svarmeddelelser og -koder {#do-you-pass-along-smtp-response-messages-and-codes}
-
-Ja, absolut. Hvis du for eksempel sender en e-mail til `hello@example.com`, og den er registreret til at videresende til `user@gmail.com`, så returneres SMTP-svarmeddelelsen og koden fra SMTP-serveren "gmail.com" i stedet for proxyserveren på "mx1.forwardemail.net" eller "mx2.forwardemail.net".
-
-### Hvordan forhindrer du spammere og sikrer et godt omdømme for videresendelse af e-mails {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
-
-Se vores afsnit om [Hvordan fungerer jeres system til videresendelse af e-mails](#how-does-your-email-forwarding-system-work), [Hvordan håndterer du problemer med e-maillevering](#how-do-you-handle-email-delivery-issues) og [Hvordan håndterer du blokering af dine IP-adresser](#how-do-you-handle-your-ip-addresses-becoming-blocked) ovenfor.
-
-### Hvordan udfører du DNS-opslag på domænenavne {#how-do-you-perform-dns-lookups-on-domain-names}
-
-Vi har oprettet et open source-softwareprojekt :tangerine: [Mandarin](https://github.com/forwardemail/tangerine) og bruger det til DNS-opslag. Standard-DNS-serverne, der bruges, er `1.1.1.1` og `1.0.0.1`, og DNS-forespørgsler sker via [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") på applikationslaget.
-
-:tangerine: [Mandarin](https://github.com/tangerine) bruger [CloudFlares privatlivsfokuserede forbruger-DNS-tjeneste som standard][cloudflare-dns].
-
-## Konto og fakturering {#account-and-billing}
-
-### Tilbyder I en pengene-tilbage-garanti på betalte abonnementer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
-
-Ja! Automatiske refusioner sker, når du opgraderer, nedgraderer eller annullerer din konto inden for 30 dage fra, hvornår dit abonnement først startede. Dette gælder kun for førstegangskunder.
-
-### Hvis jeg skifter abonnement, betaler I så forholdsmæssigt og refunderer differencen {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
-
-Vi hverken forholdsmæssigt beregner eller refunderer differencen, når du skifter abonnement. I stedet konverterer vi den resterende varighed fra din eksisterende plans udløbsdato til den nærmeste relative varighed for din nye plan (rundet ned efter måned).
-
-Bemærk, at hvis du opgraderer eller nedgraderer mellem betalte abonnementer inden for et vindue på 30 dage siden du startede et betalt abonnement, refunderer vi automatisk det fulde beløb fra dit eksisterende abonnement.
-
-### Kan jeg bare bruge denne e-mail-videresendelsestjeneste som en "fallback" eller "fallover" MX-server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
-
-Nej, det anbefales ikke, da du kun kan bruge én mail exchange-server ad gangen. Fallbacks forsøges normalt aldrig igen på grund af fejlkonfigurationer i prioritet og mailservere, der ikke respekterer MX exchange-prioritetskontrol.
-
-### Kan jeg deaktivere specifikke aliasser {#can-i-disable-specific-aliases}
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du har et betalt abonnement, skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser <i class="fa fa-angle-right"></i> Rediger alias <i class="fa fa-angle-right"></i> Fjern markeringen i afkrydsningsfeltet "Aktiv" <i class="fa fa-angle-right"></i> Fortsæt.
-</span>
-</div>
-
-Ja, du skal blot redigere din DNS-<strong class="notranslate">TXT</strong>-post og sætte enten et, to eller tre udråbstegn foran aliaset (se nedenfor).
-
-Bemærk at du *bør* bevare ":"-tilknytningen, da dette er påkrævet, hvis du nogensinde beslutter dig for at slå det fra (og det bruges også til import, hvis du opgraderer til et af vores betalte abonnementer).
-
-**Ved stille afvisning (ser ud til afsenderen, som om beskeden blev sendt, men fører faktisk ingen vegne) (statuskode `250`):** Hvis du sætter "!" (et enkelt udråbstegn) foran et alias, returneres statuskoden `250` til afsendere, der forsøger at sende til denne adresse, men selve e-mailsene fører ingen vegne (f.eks. et sort hul eller `/dev/null`).
-
-**Ved blød afvisning (statuskode `421`):** Hvis du sætter "!!" (dobbelt udråbstegn) foran et alias, returneres en blød fejlstatuskode på `421` til afsendere, der forsøger at sende til denne adresse, og e-mails vil ofte blive forsøgt at sende igen i op til 5 dage, før de afvises og returneres.
-
-**Ved fuldstændig afvisning (statuskode `550`):** Hvis du sætter "!!!" (tredobbelt udråbstegn) foran et alias, returneres en permanent fejlstatuskode på `550` til afsendere, der forsøger at sende til denne adresse, og e-mails vil blive afvist og returneret.
-
-Hvis jeg for eksempel ønsker, at alle e-mails, der går til `alias@example.com`, skal stoppe med at flyde videre til `user@gmail.com` og blive afvist og returneret (f.eks. ved at bruge tre udråbstegn):
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=!!!alias:bruger@gmail.com</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Du kan også omskrive den videresendte modtagers adresse til blot "nobody@forwardemail.net", hvilket vil sende den til nobody som i eksemplet nedenfor.
-</span>
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td> </tr> </tbody>
-</table>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Hvis du ønsker øget sikkerhed, kan du også fjerne ":user@gmail.com" (eller ":nobody@forwardemail.net")-delen, så kun "!!!alias" står tilbage, som i eksemplet nedenfor.
-</span>
-</div>
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=!!!alias</code></td> </tr> </tbody>
-</table>
-
-### Kan jeg videresende e-mails til flere modtagere {#can-i-forward-emails-to-multiple-recipients}
-
-Ja, absolut. Angiv blot flere modtagere i dine <strong class="notranslate">TXT</strong>-poster.
-
-Hvis jeg for eksempel ønsker, at en e-mail, der går til `hello@example.com`, skal videresendes til `user+a@gmail.com` og `user+b@gmail.com`, så vil min <strong class="notranslate">TXT</strong>-post se sådan ud:
+For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:bruger+a@gmail.com,hello:bruger+b@gmail.com</code></td>
-</tr> </tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-port=1337</code></td>
+    </tr>
+  </tbody>
 </table>
-
-Eller du kan angive dem i to separate linjer, f.eks. denne:
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tom</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=hello:user+a@gmail.com</code></td> </tr> <tr> <td><em>"@", ".", eller tom</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>videresend-email=hello:bruger+b@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-Det er op til dig!
-
-### Kan jeg have flere globale catch-all-modtagere {#can-i-have-multiple-global-catch-all-recipients}
-
-Ja, det kan du. Angiv blot flere globale catch-all-modtagere i dine <strong class="notranslate">TXT</strong>-poster.
-
-Hvis jeg for eksempel ønsker, at alle e-mails, der går til `*@example.com` (stjernen betyder, at det er et jokertegn, også kendt som en catch-all), skal videresendes til `user+a@gmail.com` og `user+b@gmail.com`, så ville min <strong class="notranslate">TXT</strong>-post se sådan ud:
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=bruger+a@gmail.com,bruger+b@gmail.com</code></td> </tr> </tbody>
-</table>
-
-Eller du kan angive dem i to separate linjer, f.eks. denne:
-
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Navn/Vært/Alias</th> <th class="text-center">TTL</th> <th>Type</th> <th>Svar/Værdi</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=bruger+a@gmail.com</code></td> </tr> <tr> <td><em>@, ".", eller blank</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>videresend-email=bruger+b@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-Det er op til dig!
-
-### Er der en maksimal grænse for antallet af e-mailadresser, jeg kan videresende til pr. alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
-
-Ja, standardgrænsen er 10. Det betyder IKKE, at du kun kan have 10 aliasser på dit domænenavn. Du kan have så mange aliasser, som du vil (et ubegrænset antal). Det betyder, at du kun kan videresende ét alias til 10 unikke e-mailadresser. Du kan have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (fra 1-10) – og alle e-mails til `hello@example.com` vil blive videresendt til `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (fra 1-10).
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tip:
-</strong>
-<span>
-Har du brug for mere end 10 modtagere pr. alias? Send os en e-mail, så øger vi gerne din kontogrænse.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+  <span>
+  </span>
 </div>
 
-### Kan jeg videresende e-mails rekursivt {#can-i-recursively-forward-emails}
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=example.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Ja, det kan du, men du skal stadig overholde den maksimale grænse. Hvis du har `hello:linus@example.com` og `linus:user@gmail.com`, vil e-mails til `hello@example.com` blive videresendt til `linus@example.com` og `user@gmail.com`. Bemærk, at der vil blive udløst en fejl, hvis du forsøger at videresende e-mails rekursivt ud over den maksimale grænse.
+### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-### Kan folk afregistrere eller registrere min videresendelse af e-mails uden min tilladelse {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+Yes, absolutely.
 
-Vi bruger MX- og <strong class="notranslate">TXT</strong>-postverifikation, så hvis du tilføjer denne tjenestes respektive MX- og <strong class="notranslate">TXT</strong>-poster, så er du registreret. Hvis du fjerner dem, så er du afregistreret. Du ejer dit domæne og DNS-administration, så hvis nogen har adgang til det, er det et problem.
+### Does it support sub-domains {#does-it-support-sub-domains}
 
-### Hvordan er det gratis {#how-is-it-free}
+Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
-Forward Email tilbyder et gratis niveau gennem en kombination af open source-udvikling, effektiv infrastruktur og valgfrie betalte planer, der understøtter tjenesten.
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
-Vores gratis niveau understøttes af:
+### Does this forward my email's headers {#does-this-forward-my-emails-headers}
 
-1. **Open source-udvikling**: Vores kodebase er open source, hvilket muliggør bidrag fra fællesskabet og transparent drift.
+Yes, absolutely.
 
-2. **Effektiv infrastruktur**: Vi har optimeret vores systemer til at håndtere videresendelse af e-mails med minimale ressourcer.
+### Is this well-tested {#is-this-well-tested}
 
-3. **Betalte premium-abonnementer**: Brugere, der har brug for yderligere funktioner som SMTP-afsendelse, IMAP-modtagelse eller forbedrede privatlivsindstillinger, abonnerer på vores betalte abonnementer.
+Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
 
-4. **Rimelige forbrugsgrænser**: Gratisniveauet har politikker for rimelig brug for at forhindre misbrug.
+### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
 
-> \[!NOTE]
-> Vi er forpligtet til at holde grundlæggende videresendelse af e-mails gratis, samtidig med at vi tilbyder premium-funktioner til brugere med mere avancerede behov.
+Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
 
-> \[!TIP]
-> Hvis du finder vores service værdifuld, kan du overveje at opgradere til en betalt plan for at understøtte løbende udvikling og vedligeholdelse.
+### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-### Hvad er den maksimale størrelsesgrænse for e-mails {#what-is-the-max-email-size-limit}
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
 
-Vi har som standard en størrelsesgrænse på 50 MB, som inkluderer indhold, headere og vedhæftede filer. Bemærk, at tjenester som Gmail og Outlook kun tillader en størrelsesgrænse på 25 MB, og hvis du overskrider grænsen, når du sender til adresser hos disse udbydere, vil du modtage en fejlmeddelelse.
+### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Der returneres en fejl med den korrekte svarkode, hvis filstørrelsesgrænsen overskrides.
+We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
 
-### Gemmer du logfiler over e-mails? {#do-you-store-logs-of-emails}
+:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
 
-Nej, vi skriver ikke til disk eller gemmer logfiler – med [undtagelse af fejl](#do-you-store-error-logs) og [udgående SMTP](#do-you-support-sending-email-with-smtp) (se vores [Privatlivspolitik](/privacy)).
+## Account and Billing {#account-and-billing}
 
-Alt gøres i hukommelsen og [vores kildekode er på GitHub](https://github.com/forwardemail).
+### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-### Gemmer I fejllogfiler {#do-you-store-error-logs}
+Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
-**Ja. Du kan få adgang til fejllogfiler under [Min konto → Logfiler](/my-account/logs) eller [Min konto → Domæner](/my-account/domains).**
+### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-Fra februar 2023 gemmer vi fejllogfiler for SMTP-svarkoderne `4xx` og `5xx` i en periode på 7 dage – som indeholder SMTP-fejlen, kuverten og e-mail-headerne (vi **gemmer** ikke e-mailens brødtekst eller vedhæftede filer).
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
-Fejllogge giver dig mulighed for at kontrollere for manglende vigtige e-mails og afbøde falske positiver i forbindelse med spam for [dine domæner](/my-account/domains). De er også en god ressource til fejlfinding af problemer med [e-mail webhooks](#do-you-support-webhooks) (da fejlloggene indeholder webhook-slutpunktssvaret).
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
-Fejllogge for [hastighedsbegrænsende](#do-you-have-rate-limiting) og [gråliste](#do-you-have-a-greylist) er ikke tilgængelige, da forbindelsen afsluttes tidligt (f.eks. før kommandoerne `RCPT TO` og `MAIL FROM` kan overføres).
+### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-Se vores [Privatlivspolitik](/privacy) for mere indsigt.
+No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
 
-### Læser du mine e-mails {#do-you-read-my-emails}
-
-Nej, absolut ikke. Se vores [Privatlivspolitik](/privacy).
-
-Mange andre e-mail-videresendelsestjenester gemmer og kan potentielt læse dine e-mails. Der er ingen grund til, at videresendte e-mails skal gemmes på disken – og derfor har vi udviklet den første open source-løsning, der gør det hele i hukommelsen.
-
-Vi mener, at du har ret til privatliv, og vi respekterer det nøje. Koden, der er installeret på serveren, er [open source-software på GitHub](https://github.com/forwardemail) for at sikre gennemsigtighed og opbygge tillid.
-
-### Kan jeg "sende mail som" i Gmail med denne {#can-i-send-mail-as-in-gmail-with-this}
-
-Ja! Fra den 2. oktober 2018 har vi tilføjet denne funktion. Se [Sådan sender du e-mail som ved hjælp af Gmail](#how-to-send-mail-as-using-gmail) ovenfor!
-
-Du bør også indstille SPF-posten for Gmail i din DNS-konfigurations-<strong class="notranslate">TXT</strong>-post.
+### Can I disable specific aliases {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Gmail (f.eks. Send mail som) eller G Suite, skal du tilføje <code>include:_spf.google.com</code> til din SPF <strong class="notranslate">TXT</strong>-post, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+  </span>
 </div>
 
-### Kan jeg "sende mail som" i Outlook med denne {#can-i-send-mail-as-in-outlook-with-this}
+Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
 
-Ja! Fra den 2. oktober 2018 har vi tilføjet denne funktion. Se blot disse to links fra Microsoft nedenfor:
+Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
+
+**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+
+**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
+
+**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
+
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:user@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+  </span>
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+  </span>
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
+
+Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
+
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Or, you could specify them in two separate lines, such as this:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
+It's up to you!
+
+### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
+
+Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
+
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Or, you could specify them in two separate lines, such as this:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>@, ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
+
+It's up to you!
+
+### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+
+Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+  </span>
+</div>
+
+### Can I recursively forward emails {#can-i-recursively-forward-emails}
+
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
+
+### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+
+We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
+
+### How is it free {#how-is-it-free}
+
+Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
+
+Our free tier is supported by:
+
+1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
+
+2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
+
+3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
+
+4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
+
+> \[!NOTE]
+> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+
+> \[!TIP]
+> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+
+### What is the max email size limit {#what-is-the-max-email-size-limit}
+
+We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
+
+An error with the proper response code is returned if the file size limit is exceeded.
+
+### Do you store logs of emails {#do-you-store-logs-of-emails}
+
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
+
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
+
+### Do you store error logs {#do-you-store-error-logs}
+
+**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
+
+As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
+
+Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
+
+Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+
+See our [Privacy Policy](/privacy) for more insight.
+
+### Do you read my emails {#do-you-read-my-emails}
+
+No, absolutely not.  See our [Privacy Policy](/privacy).
+
+Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
+
+We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
+
+### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
+
+Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
+
+You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
+</div>
+
+### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
+
+Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-Du bør også indstille SPF-posten for Outlook i din DNS-konfigurations-<strong class="notranslate">TXT</strong>-post.
+You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vigtigt:
-</strong>
-<span>
-Hvis du bruger Microsoft Outlook eller Live.com, skal du tilføje <code>include:spf.protection.outlook.com</code> til din SPF <strong class="notranslate">TXT</strong>-post, for eksempel:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
-### Kan jeg "sende mail som" i Apple Mail og iCloud Mail med denne {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-Hvis du abonnerer på iCloud+, kan du bruge et brugerdefineret domæne. [Vores tjeneste er også kompatibel med Apple Mail](#apple-mail).
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
 
-Se venligst <https://support.apple.com/en-us/102540> for yderligere information.
+Please see <https://support.apple.com/en-us/102540> for more information.
 
-### Kan jeg videresende et ubegrænset antal e-mails med denne {#can-i-forward-unlimited-emails-with-this}
+### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
 
-Ja, men "relativt ukendte" afsendere er begrænset til 100 forbindelser i timen pr. værtsnavn eller IP-adresse. Se afsnittet om [Hastighedsbegrænsende](#do-you-have-rate-limiting) og [Gråliste](#do-you-have-a-greylist) ovenfor.
+Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
-Med "relativt ukendt" mener vi afsendere, der ikke vises i [tilladelsesliste](#do-you-have-an-allowlist).
+By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
-Hvis denne grænse overskrides, sender vi en 421-svarkode, der beder afsenderens mailserver om at forsøge igen senere.
+If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
 
-### Tilbyder I et ubegrænset antal domæner til én pris {#do-you-offer-unlimited-domains-for-one-price}
+### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
 
-Ja. Uanset hvilket abonnement du har, betaler du kun én månedlig pris – som dækker alle dine domæner.
+Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
 
-### Hvilke betalingsmetoder accepterer I? {#which-payment-methods-do-you-accept}
+### Which payment methods do you accept {#which-payment-methods-do-you-accept}
 
-Videresend e-mail accepterer følgende engangs- eller månedlige/kvartalsvise/årlige betalingsmetoder:
+Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
 
-1. **Kredit-/betalingskort/bankoverførsler**: Visa, Mastercard, American Express, Discover, JCB, Diners Club osv.
-
-2. **PayPal**: Forbind din PayPal-konto for nem betaling
-
-3. **Kryptovaluta**: Vi accepterer betalinger via Stripes stablecoin-betalinger på Ethereum-, Polygon- og Solana-netværk
+1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
+2. **PayPal**: Connect your PayPal account for easy payments
+3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
 
 > \[!NOTE]
-> Vi gemmer begrænsede betalingsoplysninger på vores servere, som kun omfatter betalingsidentifikatorer og referencer til [Stribe](https://stripe.com/global) og [PayPal](https://www.paypal.com) transaktions-, kunde-, abonnements- og betalings-ID'er.
+> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
 
 > \[!TIP]
-> For maksimal privatliv, overvej at bruge kryptovalutabetalinger.
+> For maximum privacy, consider using cryptocurrency payments.
 
-Alle betalinger behandles sikkert via Stripe eller PayPal. Dine betalingsoplysninger gemmes aldrig på vores servere.
+All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
 
-## Yderligere ressourcer {#additional-resources}
+## Additional Resources {#additional-resources}
 
 > \[!TIP]
-> Vores artikler nedenfor opdateres regelmæssigt med nye vejledninger, tips og tekniske oplysninger. Tjek ofte tilbage for det seneste indhold.
+> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
 
-* [Casestudier og udviklerdokumentation](/blog/docs)
-* [Ressourcer](/resources)
-* [Guider](/guides)
+* [Case Studies & Developer Documentation](/blog/docs)
+* [Resources](/resources)
+* [Guides](/guides)
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 

@@ -1,1977 +1,2450 @@
-# Usein kysytyt kysymykset {#frequently-asked-questions}
+# Frequently Asked Questions {#frequently-asked-questions}
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
-## Sisällysluettelo {#table-of-contents}
+## Table of Contents {#table-of-contents}
 
-* [Pika-aloitus](#quick-start)
-* [Johdanto](#introduction)
-  * [Mikä on sähköpostin edelleenlähetys](#what-is-forward-email)
-  * [Kuka käyttää sähköpostin edelleenlähetystä](#who-uses-forward-email)
-  * [Mikä on Forward Emailin historia?](#what-is-forward-emails-history)
-  * [Kuinka nopea tämä palvelu on](#how-fast-is-this-service)
-* [Sähköpostiohjelmat](#email-clients)
+* [Quick Start](#quick-start)
+* [Introduction](#introduction)
+  * [What is Forward Email](#what-is-forward-email)
+  * [Who uses Forward Email](#who-uses-forward-email)
+  * [What is Forward Email's history](#what-is-forward-emails-history)
+  * [How fast is this service](#how-fast-is-this-service)
+* [Email Clients](#email-clients)
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
-  * [Mobiililaitteet](#mobile-devices)
-  * [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail)
-  * [Mikä on vanha ilmainen opas Lähetä sähköpostia nimellä -toiminnolle Gmailissa?](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
-  * [Gmailin reitityksen lisäasetukset](#advanced-gmail-routing-configuration)
-  * [Outlookin reitityksen lisäasetukset](#advanced-outlook-routing-configuration)
-* [Vianmääritys](#troubleshooting)
-  * [Miksi en saa testisähköpostejani](#why-am-i-not-receiving-my-test-emails)
-  * [Miten sähköpostiohjelmani määritetään toimimaan sähköpostin edelleenlähetyksen kanssa?](#how-do-i-configure-my-email-client-to-work-with-forward-email)
-  * [Miksi sähköpostini päätyvät roskapostikansioon ja miten voin tarkistaa verkkotunnukseni maineen?](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
-  * [Mitä minun pitäisi tehdä, jos saan roskapostia](#what-should-i-do-if-i-receive-spam-emails)
-  * [Miksi Gmailissa minulle lähetetyt testisähköpostit näkyvät "epäilyttävinä"?](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
-  * [Voinko poistaa via forwardemail-pistemerkinnän Gmailista?](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
-* [Tiedonhallinta](#data-management)
-  * [Missä palvelimenne sijaitsevat](#where-are-your-servers-located)
-  * [Miten vien ja varmuuskopioin postilaatikon](#how-do-i-export-and-backup-my-mailbox)
-  * [Miten tuon ja siirrän olemassa olevan postilaatikon](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Tuetteko omaa hostingia?](#do-you-support-self-hosting)
-* [Sähköpostin määritys](#email-configuration)
-  * [Miten pääsen alkuun ja määritän sähköpostin edelleenlähetyksen](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [Voinko käyttää useita MX-keskusten ja palvelimien toimintoja edistyneeseen edelleenlähetykseen?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Miten määritän lomaviestin (poissaoloviestin automaattisen vastaajan)?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
-  * [Miten määritän SPF:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-spf-for-forward-email)
-  * [Miten otan DKIM:n käyttöön sähköpostin edelleenlähetystä varten](#how-do-i-set-up-dkim-for-forward-email)
-  * [Miten määritän DMARC:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-dmarc-for-forward-email)
-  * [Miten yhdistän ja määritän yhteystiedot](#how-do-i-connect-and-configure-my-contacts)
-  * [Miten yhdistän ja määritän kalenterini?](#how-do-i-connect-and-configure-my-calendars)
-  * [Miten lisään kalentereita ja hallitsen olemassa olevia kalentereita?](#how-do-i-add-more-calendars-and-manage-existing-calendars)
-  * [Miten määritän SRS:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-srs-for-forward-email)
-  * [Miten määritän MTA-STS:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-mta-sts-for-forward-email)
-  * [Miten lisään profiilikuvan sähköpostiosoitteeseeni](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [Lisäominaisuudet](#advanced-features)
-  * [Tuetteko uutiskirjeitä tai postituslistoja markkinointiin liittyville sähköposteille?](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
-  * [Tuetteko sähköpostin lähettämistä API:n kautta?](#do-you-support-sending-email-with-api)
-  * [Tuetko sähköpostin vastaanottamista IMAP-protokollan kautta?](#do-you-support-receiving-email-with-imap)
-  * [Tuetko POP3-palvelua?](#do-you-support-pop3)
-  * [Tuetteko kalentereita (CalDAV)?](#do-you-support-calendars-caldav)
-  * [Tuetteko yhteystietoja (CardDAV)](#do-you-support-contacts-carddav)
-  * [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp)
-  * [Tuetteko OpenPGP/MIME:tä, päästä päähän -salausta ("E2EE") ja Web Key Directorya ("WKD")?](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
-  * [Tuetko MTA-STS:ää?](#do-you-support-mta-sts)
-  * [Tuetteko todentamisavaimia ja WebAuthnia?](#do-you-support-passkeys-and-webauthn)
-  * [Tuetko sähköpostin parhaita käytäntöjä](#do-you-support-email-best-practices)
-  * [Tuetteko bounce-webhookeja?](#do-you-support-bounce-webhooks)
-  * [Tuetteko webhookeja?](#do-you-support-webhooks)
-  * [Tuetteko säännöllisiä lausekkeita tai regex-lausekkeita?](#do-you-support-regular-expressions-or-regex)
-  * [Mitkä ovat lähtevän SMTP-viestien rajoituksesi?](#what-are-your-outbound-smtp-limits)
-  * [Tarvitsenko hyväksynnän SMTP:n käyttöönottoon?](#do-i-need-approval-to-enable-smtp)
-  * [Mitkä ovat SMTP-palvelimesi asetukset](#what-are-your-smtp-server-configuration-settings)
-  * [Mitkä ovat IMAP-palvelimesi asetukset](#what-are-your-imap-server-configuration-settings)
-  * [Mitkä ovat POP3-palvelimesi asetukset](#what-are-your-pop3-server-configuration-settings)
-  * [Postfix SMTP -välityskonfiguraatio](#postfix-smtp-relay-configuration)
-* [Turvallisuus](#security)
-  * [Edistyneet palvelimen suojaustekniikat](#advanced-server-hardening-techniques)
-  * [Onko sinulla SOC 2- tai ISO 27001 -sertifikaatit?](#do-you-have-soc-2-or-iso-27001-certifications)
-  * [Käytätkö TLS-salausta sähköpostin edelleenlähetykseen](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Säilytätkö sähköpostin todennusotsikot?](#do-you-preserve-email-authentication-headers)
-  * [Säilytätkö alkuperäiset sähköpostiotsikot ja estätkö väärentämisen?](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [Miten suojaudut roskapostilta ja väärinkäytöksiltä](#how-do-you-protect-against-spam-and-abuse)
-  * [Tallennatteko sähköpostisisältöä levylle?](#do-you-store-email-content-on-disk)
-  * [Voiko sähköpostin sisältö paljastua järjestelmän kaatumisen aikana](#can-email-content-be-exposed-during-system-crashes)
-  * [Kenellä on pääsy sähköposti-infrastruktuuriisi](#who-has-access-to-your-email-infrastructure)
-  * [Mitä infrastruktuurin tarjoajia käytät](#what-infrastructure-providers-do-you-use)
-  * [Tarjoatteko tietojenkäsittelysopimusta (DPA)?](#do-you-offer-a-data-processing-agreement-dpa)
-  * [Miten käsittelette tietomurtoilmoituksia](#how-do-you-handle-data-breach-notifications)
-  * [Tarjoatteko testiympäristöä](#do-you-offer-a-test-environment)
-  * [Tarjoatteko valvonta- ja hälytystyökaluja?](#do-you-provide-monitoring-and-alerting-tools)
-  * [Miten varmistat korkean käytettävyyden](#how-do-you-ensure-high-availability)
-  * [Noudatatko kansallisen puolustusvaltuutuslain (NDAA) pykälän 889 määräyksiä?](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
-* [Järjestelmä ja tekniset tiedot](#system-and-technical-details)
-  * [Tallennatteko sähköposteja ja niiden sisältöä](#do-you-store-emails-and-their-contents)
-  * [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work)
-  * [Miten sähköpostia käsitellään edelleenlähetystä varten](#how-do-you-process-an-email-for-forwarding)
-  * [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues)
-  * [Miten käsittelet IP-osoitteiden estymisen](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Mitä ovat postinjakajien osoitteet](#what-are-postmaster-addresses)
-  * [Mitä ovat vastausta vaativat osoitteet?](#what-are-no-reply-addresses)
-  * [Mitkä ovat palvelimesi IP-osoitteet](#what-are-your-servers-ip-addresses)
-  * [Onko sinulla sallittujen lista](#do-you-have-an-allowlist)
-  * [Mitkä verkkotunnuspäätteet ovat oletuksena sallittujen listalla](#what-domain-name-extensions-are-allowlisted-by-default)
-  * [Mitkä ovat sallittujen listan kriteerisi?](#what-is-your-allowlist-criteria)
-  * [Mitä verkkotunnuspäätteitä voi käyttää ilmaiseksi](#what-domain-name-extensions-can-be-used-for-free)
-  * [Onko sinulla harmaa lista](#do-you-have-a-greylist)
-  * [Onko sinulla kieltolistaa](#do-you-have-a-denylist)
-  * [Onko teillä nopeusrajoitusta](#do-you-have-rate-limiting)
-  * [Miten suojaudut takaisinsironnalta](#how-do-you-protect-against-backscatter)
-  * [Estä tunnetuilta roskapostittajilta tulevan sähköpostin palautuminen](#prevent-bounces-from-known-mail-from-spammers)
-  * [Estää tarpeettomat pomppimiset suojautuakseen takaisinhajottamiselta](#prevent-unnecessary-bounces-to-protect-against-backscatter)
-  * [Miten sähköpostin sormenjälki tunnistetaan](#how-do-you-determine-an-email-fingerprint)
-  * [Voinko lähettää sähköposteja edelleen muihin portteihin kuin 25 (esim. jos internet-palveluntarjoajani on estänyt portin 25)?](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
-  * [Tukeeko se plus-merkkiä (+) Gmail-aliaksille?](#does-it-support-the-plus--symbol-for-gmail-aliases)
-  * [Tukeeko se aliverkkotunnuksia](#does-it-support-sub-domains)
-  * [Lähettääkö tämä sähköpostini otsikot edelleen?](#does-this-forward-my-emails-headers)
-  * [Onko tämä hyvin testattu](#is-this-well-tested)
-  * [Välitätkö SMTP-vastausviestejä ja -koodeja?](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [Kuinka estät roskapostittajat ja varmistat hyvän sähköpostin edelleenlähetysmaineen](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [Miten teet DNS-hakuja verkkotunnuksille?](#how-do-you-perform-dns-lookups-on-domain-names)
-* [Tili ja laskutus](#account-and-billing)
-  * [Tarjoatteko rahat takaisin -takuun maksullisille paketeille?](#do-you-offer-a-money-back-guarantee-on-paid-plans)
-  * [Jos vaihdan liittymää, hyvitättekö erotuksen?](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
-  * [Voinko käyttää tätä sähköpostin edelleenlähetyspalvelua vain "varapalvelimena" tai "varapalvelimena" MX-palvelimena?](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
-  * [Voinko poistaa käytöstä tiettyjä aliaksia](#can-i-disable-specific-aliases)
-  * [Voinko lähettää sähköposteja useille vastaanottajille](#can-i-forward-emails-to-multiple-recipients)
-  * [Voinko määrittää useita globaaleja keräilyvastaanottajia?](#can-i-have-multiple-global-catch-all-recipients)
-  * [Onko olemassa yläraja sille, kuinka monta sähköpostiosoitetta voin edelleenlähettää aliasta kohden?](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
-  * [Voinko lähettää sähköposteja rekursiivisesti edelleen](#can-i-recursively-forward-emails)
-  * [Voivatko ihmiset poistaa sähköpostin edelleenlähetykseni tai rekisteröidä sen ilman lupaani?](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [Miten se on ilmaista](#how-is-it-free)
-  * [Mikä on sähköpostin enimmäiskokorajoitus?](#what-is-the-max-email-size-limit)
-  * [Tallennatteko sähköpostilokeja](#do-you-store-logs-of-emails)
-  * [Tallennatteko virhelokeja](#do-you-store-error-logs)
-  * [Luetko sähköpostejani](#do-you-read-my-emails)
-  * [Voinko lähettää sähköpostia nimellä Gmailissa tällä?](#can-i-send-mail-as-in-gmail-with-this)
-  * [Voinko lähettää sähköpostia nimellä Outlookissa tällä?](#can-i-send-mail-as-in-outlook-with-this)
-  * [Voinko lähettää sähköpostia nimellä Apple Mailissa ja iCloud Mailissa tällä?](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
-  * [Voinko lähettää rajattomasti sähköposteja tällä](#can-i-forward-unlimited-emails-with-this)
-  * [Tarjoatteko rajattomasti verkkotunnuksia yhteen hintaan](#do-you-offer-unlimited-domains-for-one-price)
-  * [Mitä maksutapoja hyväksytte](#which-payment-methods-do-you-accept)
-* [Lisäresurssit](#additional-resources)
+  * [eM Client](#em-client)
+  * [Mobile Devices](#mobile-devices)
+  * [Sendmail SMTP Relay Configuration](#sendmail-smtp-relay-configuration)
+  * [Exim4 SMTP Relay Configuration](#exim4-smtp-relay-configuration)
+  * [msmtp SMTP Client Configuration](#msmtp-smtp-client-configuration)
+  * [Command-line Email Clients](#command-line-email-clients)
+  * [Windows Email Configuration](#windows-email-configuration)
+  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
+  * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
+  * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
+  * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
+  * [Advanced Outlook Routing Configuration](#advanced-outlook-routing-configuration)
+* [Troubleshooting](#troubleshooting)
+  * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
+  * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+  * [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
+  * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
+  * [Why are my test emails sent to myself in Gmail showing as "suspicious"](#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious)
+  * [Can I remove the via forwardemail dot net in Gmail](#can-i-remove-the-via-forwardemail-dot-net-in-gmail)
+* [Data Management](#data-management)
+  * [Where are your servers located](#where-are-your-servers-located)
+  * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
+  * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [Do you support self-hosting](#do-you-support-self-hosting)
+* [Email Configuration](#email-configuration)
+  * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+  * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
+  * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
+  * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
+  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
+  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
+  * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
+  * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
+  * [How do I set up SRS for Forward Email](#how-do-i-set-up-srs-for-forward-email)
+  * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
+  * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
+* [Advanced Features](#advanced-features)
+  * [Do you support newsletters or mailing lists for marketing related email](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
+  * [Do you support sending email with API](#do-you-support-sending-email-with-api)
+  * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
+  * [Do you support POP3](#do-you-support-pop3)
+  * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
+  * [Do you support tasks and reminders (CalDAV VTODO)](#do-you-support-tasks-and-reminders-caldav-vtodo)
+  * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
+  * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
+  * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Do you support MTA-STS](#do-you-support-mta-sts)
+  * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Do you support email best practices](#do-you-support-email-best-practices)
+  * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
+  * [Do you support webhooks](#do-you-support-webhooks)
+  * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
+  * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
+  * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
+  * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
+  * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+  * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
+* [Security](#security)
+  * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
+  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
+  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
+  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
+  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
+  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
+  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
+  * [Do you offer a test environment](#do-you-offer-a-test-environment)
+  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
+  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
+  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+* [System and Technical Details](#system-and-technical-details)
+  * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
+  * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
+  * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
+  * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
+  * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+  * [What are postmaster addresses](#what-are-postmaster-addresses)
+  * [What are no-reply addresses](#what-are-no-reply-addresses)
+  * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
+  * [Do you have an allowlist](#do-you-have-an-allowlist)
+  * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
+  * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
+  * [What domain name extensions can be used for free](#what-domain-name-extensions-can-be-used-for-free)
+  * [Do you have a greylist](#do-you-have-a-greylist)
+  * [Do you have a denylist](#do-you-have-a-denylist)
+  * [Do you have rate limiting](#do-you-have-rate-limiting)
+  * [How do you protect against backscatter](#how-do-you-protect-against-backscatter)
+  * [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers)
+  * [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter)
+  * [How do you determine an email fingerprint](#how-do-you-determine-an-email-fingerprint)
+  * [Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25)](#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25)
+  * [Does it support the plus + symbol for Gmail aliases](#does-it-support-the-plus--symbol-for-gmail-aliases)
+  * [Does it support sub-domains](#does-it-support-sub-domains)
+  * [Does this forward my email's headers](#does-this-forward-my-emails-headers)
+  * [Is this well-tested](#is-this-well-tested)
+  * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
+  * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Account and Billing](#account-and-billing)
+  * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
+  * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
+  * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
+  * [Can I disable specific aliases](#can-i-disable-specific-aliases)
+  * [Can I forward emails to multiple recipients](#can-i-forward-emails-to-multiple-recipients)
+  * [Can I have multiple global catch-all recipients](#can-i-have-multiple-global-catch-all-recipients)
+  * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
+  * [Can I recursively forward emails](#can-i-recursively-forward-emails)
+  * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
+  * [How is it free](#how-is-it-free)
+  * [What is the max email size limit](#what-is-the-max-email-size-limit)
+  * [Do you store logs of emails](#do-you-store-logs-of-emails)
+  * [Do you store error logs](#do-you-store-error-logs)
+  * [Do you read my emails](#do-you-read-my-emails)
+  * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
+  * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
+  * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
+  * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
+  * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
+  * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
+* [Additional Resources](#additional-resources)
 
-## Pika-aloitus {#quick-start}
+## Quick Start {#quick-start}
 
-Sähköpostin edelleenlähetyksen aloittaminen:
+To get started with Forward Email:
 
-1. **Luo tili** osoitteessa [forwardemail.net/register](https://forwardemail.net/register)
+1. **Create an account** at [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **Lisää ja vahvista verkkotunnuksesi** kohdassa [Oma tili → Verkkotunnukset](/my-account/domains)
+2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
 
-3. **Lisää ja määritä sähköpostialiaksia/postilaatikoita** kohdassa [Oma tili → Verkkotunnukset](/my-account/domains) → Aliakset
+3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
 
-4. **Testaa asetukset** lähettämällä sähköpostia yhdelle uusista aliaksistasi.
+4. **Test your setup** by sending an email to one of your new aliases
 
 > \[!TIP]
-> DNS-muutosten voimaantulo maailmanlaajuisesti voi kestää jopa 24–48 tuntia, vaikka ne tulevat usein voimaan paljon nopeammin.
+> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
 
 > \[!IMPORTANT]
-> Toimitettavuuden parantamiseksi suosittelemme [SPF](#how-do-i-set-up-spf-for-forward-email)-, [DKIM](#how-do-i-set-up-dkim-for-forward-email)- ja [DMARC](#how-do-i-set-up-dmarc-for-forward-email)-tietueiden määrittämistä.
+> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-## Johdanto {#introduction}
+## Introduction {#introduction}
 
-### Mikä on sähköpostin edelleenlähetys {#what-is-forward-email}
+### What is Forward Email {#what-is-forward-email}
 
 > \[!NOTE]
-> Sähköpostin edelleenlähetys on täydellinen valinta yksityishenkilöille, pienyrityksille ja kehittäjille, jotka haluavat ammattimaiset sähköpostiosoitteet ilman täyden sähköpostipalvelun ylläpitokustannuksia.
+> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
 
-Forward Email on **täysin varusteltu sähköpostipalveluntarjoaja** ja **sähköpostipalveluntarjoaja mukautetuille verkkotunnuksille**.
+Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
-Se on ainoa ilmainen ja avoimen lähdekoodin palvelu, jonka avulla voit käyttää mukautettuja verkkotunnussähköpostiosoitteita ilman oman sähköpostipalvelimen määrittämisen ja ylläpidon monimutkaisuutta.
+It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.
 
-Palvelumme välittää mukautettuun verkkotunnukseesi lähetetyt sähköpostit olemassa olevaan sähköpostitiliisi – ja voit jopa käyttää meitä erillisenä sähköpostipalveluntarjoajanasi.
+Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.
 
-Sähköpostin edelleenlähetyksen tärkeimmät ominaisuudet:
+Key features of Forward Email:
 
-* **Mukautettu verkkotunnussähköposti**: Käytä ammattimaisia sähköpostiosoitteita omalla verkkotunnuksellasi
-* **Ilmainen taso**: Perussähköpostin edelleenlähetys ilmaiseksi
-* **Parannettu yksityisyys**: Emme lue sähköpostejasi tai myy tietojasi
-* **Avoin lähdekoodi**: Koko koodikanta on saatavilla GitHubissa
-* **SMTP-, IMAP- ja POP3-tuki**: Täydelliset sähköpostin lähetys- ja vastaanotto-ominaisuudet
-* **Päästä päähän -salaus**: Tuki OpenPGP/MIME:lle
-* **Mukautetut Catch-All-aliakset**: Luo rajattomasti sähköpostialiaksia
+* **Custom Domain Email**: Use professional email addresses with your own domain name
+* **Free Tier**: Basic email forwarding at no cost
+* **Enhanced Privacy**: We don't read your emails or sell your data
+* **Open Source**: Our entire codebase is available on GitHub
+* **SMTP, IMAP, and POP3 Support**: Full email sending and receiving capabilities
+* **End-to-End Encryption**: Support for OpenPGP/MIME
+* **Custom Catch-All Aliases**: Create unlimited email aliases
 
-Voit verrata meitä yli 56 muuhun sähköpostipalveluntarjoajaan osoitteessa [sähköpostivertailusivumme](/blog/best-email-service).
+You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
 > \[!TIP]
-> Lue lisää sähköpostin edelleenlähetyksestä lukemalla ilmainen [Tekninen raportti](/technical-whitepaper.pdf)-oppaamme
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
 
-### Kuka käyttää sähköpostin edelleenlähetystä {#who-uses-forward-email}
+### Who uses Forward Email {#who-uses-forward-email}
 
-Tarjoamme sähköpostin ylläpito- ja edelleenlähetyspalveluita yli 500 000 verkkotunnukselle ja näille merkittäville käyttäjille:
+We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-| Asiakas | Tapaustutkimus |
+| Customer | Case Study |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Yhdysvaltain laivastoakatemia | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
-| Kanoninen | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Netflix-pelit |  |
-| Linux-säätiö | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| PHP-säätiö |  |
+| U.S. Naval Academy | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
+| Canonical | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Netflix Games |  |
+| The Linux Foundation | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| The PHP Foundation |  |
 | Fox News Radio |  |
-| Disney-mainosmyynti |  |
+| Disney Ad Sales |  |
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Ilmainen | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Kubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Cambridgen yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Marylandin yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Washingtonin yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Tuftsin yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| The University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Tufts University | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Etelä-Australian hallitus |  |
-| Dominikaanisen tasavallan hallitus |  |
-| Lennä<span>.</span>io |  |
-| RCD-hotellit |  |
+| Government of South Australia |  |
+| Government of Dominican Republic |  |
+| Fly<span>.</span>io |  |
+| RCD Hotels |  |
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Mikä on edelleenlähetetyn sähköpostin historia? {#what-is-forward-emails-history}
+### What is Forward Email's history {#what-is-forward-emails-history}
 
-Voit lukea lisää sähköpostin edelleenlähetyksestä osoitteesta [Tietoja-sivumme](/about).
+You can learn more about Forward Email on [our About page](/about).
 
-### Kuinka nopea tämä palvelu on {#how-fast-is-this-service}
+### How fast is this service {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Järjestelmämme on suunniteltu nopeaksi ja luotettavaksi, ja siinä on useita redundantteja palvelimia, jotka varmistavat sähköpostiesi nopean toimituksen.
+> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
 
-Sähköpostin välityspalvelu toimittaa viestit minimaalisella viiveellä, tyypillisesti muutamassa sekunnissa vastaanottamisesta.
+Forward Email delivers messages with minimal delay, typically within seconds of receipt.
 
-Suorituskykymittarit:
+Performance metrics:
 
-* **Keskimääräinen toimitusaika**: Alle 5–10 sekuntia vastaanotosta edelleenlähetykseen ([katso postilaatikkoon saapumisajan seurantasivumme (TTI)](/tti))
-* **Käyttöaika**: Palvelun saatavuus yli 99,9 %
-* **Globaali infrastruktuuri**: Palvelimet strategisesti sijoitettuina optimaalista reititystä varten
-* **Automaattinen skaalaus**: Järjestelmämme skaalautuu sähköpostin ruuhka-aikoina
+* **Average Delivery Time**: Less than 5-10 seconds from receipt to forwarding ([see our Time to Inbox "TTI" monitoring page](/tti))
+* **Uptime**: 99.9%+ service availability
+* **Global Infrastructure**: Servers strategically located for optimal routing
+* **Automatic Scaling**: Our system scales during peak email periods
 
-Toimimme reaaliajassa, toisin kuin muut palveluntarjoajat, jotka luottavat viivästyneisiin jonoihin.
+We operate in real-time, unlike other providers which rely upon delayed queues.
 
-Emme kirjoita levylle emmekä tallenna lokeja – käytämme [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-muuttujaa (katso [Tietosuojakäytäntö](/privacy)).
+We do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-## Sähköpostiohjelmat {#email-clients}
+## Email Clients {#email-clients}
 
-VÄLIAIKAINEN_PAIKKAPIDÄN_0 Thunderbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
+### Thunderbird {#thunderbird}
 
-1. Luo uusi alias ja luo salasana sähköpostin edelleenlähetyshallintapaneelissa.
-2. Avaa Thunderbird ja mene kohtaan **Muokkaa → Tilin asetukset → Tilin toiminnot → Lisää sähköpostitili**.
-3. Anna nimesi, sähköpostin edelleenlähetysosoitteesi ja salasanasi.
-4. Napsauta **Määritä manuaalisesti** ja anna:
-* Saapuva: IMAP, `imap.forwardemail.net`, portti 993, SSL/TLS
-* Lähtevä: SMTP, `smtp.forwardemail.net`, portti 587, STARTTLS
-5. Napsauta **Valmis**.
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
+3. Enter your name, Forward Email address, and password
+4. Click **Configure manually** and enter:
+   * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+   * Outgoing: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+5. Click **Done**
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Luo uusi alias ja luo salasana Sähköpostin välityshallintapaneelissa.
-2. Siirry kohtaan **Tiedosto → Lisää tili**.
-3. Anna sähköpostin välitysosoitteesi ja napsauta **Yhdistä**.
-4. Valitse **Lisäasetukset** ja valitse **Anna minun määrittää tilini manuaalisesti**.
-5. Valitse **IMAP** ja syötä:
-* Saapuva: `imap.forwardemail.net`, portti 993, SSL
-* Lähtevä: `smtp.forwardemail.net`, portti 587, TLS
-* Käyttäjätunnus: Koko sähköpostiosoitteesi
-* Salasana: Luomasi salasana
-6. Napsauta **Yhdistä**.
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **File → Add Account**
+3. Enter your Forward Email address and click **Connect**
+4. Choose **Advanced options** and select **Let me set up my account manually**
+5. Select **IMAP** and enter:
+   * Incoming: `imap.forwardemail.net`, port 993, SSL
+   * Outgoing: `smtp.forwardemail.net`, port 587, TLS
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Connect**
 
 ### Apple Mail {#apple-mail}
 
-1. Luo uusi alias ja luo salasana Sähköpostin edelleenlähetyshallintapaneelissa.
-2. Siirry kohtaan **Sähköposti → Asetukset → Tilit → +**.
-3. Valitse **Muu sähköpostitili**.
-4. Anna nimesi, Sähköpostin edelleenlähetysosoitteesi ja salasanasi.
-5. Palvelimen asetuksiin anna:
-* Saapuva: `imap.forwardemail.net`
-* Lähtevä: `smtp.forwardemail.net`
-* Käyttäjätunnus: Koko sähköpostiosoitteesi
-* Salasana: Luomasi salasana.
-6. Napsauta **Kirjaudu sisään**.
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Go to **Mail → Preferences → Accounts → +**
+3. Select **Other Mail Account**
+4. Enter your name, Forward Email address, and password
+5. For server settings, enter:
+   * Incoming: `imap.forwardemail.net`
+   * Outgoing: `smtp.forwardemail.net`
+   * Username: Your full email address
+   * Password: Your generated password
+6. Click **Sign In**
 
-### Mobiililaitteet {#mobile-devices}
+### eM Client {#em-client}
 
-iOS:lle:
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open eM Client and go to **Menu → Accounts → + Add Account**
+3. Click on **Mail** and then select **Other**
+4. Enter your Forward Email address and click **Next**
+5. Enter the following server settings:
+   * **Incoming server**: `imap.forwardemail.net`
+   * **Outgoing server**: `smtp.forwardemail.net`
+6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
+7. eM Client will test the connection. Once it passes, click **Next**.
+8. Enter your name and choose an account name.
+9. Click **Finish**.
 
-1. Siirry kohtaan **Asetukset → Sähköposti → Tilit → Lisää tili → Muu**
-2. Napauta **Lisää sähköpostitili** ja anna tietosi
-3. Käytä palvelinasetuksissa samoja IMAP- ja SMTP-asetuksia kuin yllä
+### Mobile Devices {#mobile-devices}
 
-Androidille:
+For iOS:
 
-1. Siirry kohtaan **Asetukset → Tilit → Lisää tili → Henkilökohtainen (IMAP)**
-2. Anna edelleenlähetyssähköpostiosoitteesi ja salasanasi
-3. Käytä palvelinasetuksissa samoja IMAP- ja SMTP-asetuksia kuin yllä
+1. Go to **Settings → Mail → Accounts → Add Account → Other**
+2. Tap **Add Mail Account** and enter your details
+3. For server settings, use the same IMAP and SMTP settings as above
 
-### Sähköpostin lähettäminen Gmailissa {#how-to-send-mail-as-using-gmail}
+For Android:
+
+1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
+2. Enter your Forward Email address and password
+3. For server settings, use the same IMAP and SMTP settings as above
+
+### Sendmail SMTP Relay Configuration {#sendmail-smtp-relay-configuration}
+
+You can configure Sendmail to relay emails through Forward Email's SMTP servers. This is a common setup for legacy systems or applications that rely on Sendmail.
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>Alle 10 minuuttia</span>
-</div>
-
-<div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Aloittaminen:
-</strong>
-<span>
-Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Aloitus ja sähköpostin edelleenlähetyksen määrittäminen</a>, voit jatkaa lukemista alta.
-</span>
-</div>
-
-<div id="lähetä sähköpostia sisällönä">
-
-<div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
-</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 20 minutes</span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos olet kehittäjä, tutustu <a class="alert-link" href="/email-api#outbound-emails" target="_blank">sähköpostirajapinnan dokumentaatioomme</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
 </div>
 
-1. Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP:n asetukset ja noudata asennusohjeita.
+#### Configuration {#configuration}
 
-2. Luo verkkotunnuksellesi uusi alias kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
 
-3. Napsauta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta juuri luodun aliaksen vieressä. Kopioi leikepöydälle ja tallenna näytöllä näkyvä luotu salasana turvallisesti.
+   ```bash
+   sudo nano /etc/mail/sendmail.mc
+   ```
 
-4. Siirry kohtaan [Gmail](https://gmail.com) ja napsauta kohdassa [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) kohtaa "Lisää toinen sähköpostiosoite".
+2. Add the following lines to define the smart host and authentication:
 
-5. Kun sinulta kysytään "Nimi", anna nimi, jolla haluat sähköpostisi näkyvän "Lähettäjä"-kentässä (esim. "Linus Torvalds").
+   ```
+   define(`SMART_HOST', `smtp.forwardemail.net')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+   FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+   ```
 
-6. Kun sinulta kysytään "Sähköpostiosoite", anna luomasi aliaksen koko sähköpostiosoite kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+3. Create the authentication file `/etc/mail/authinfo`:
 
-7. Poista valinta kohdasta "Käsittele aliaksena"
+   ```bash
+   sudo nano /etc/mail/authinfo
+   ```
 
-8. Jatka napsauttamalla "Seuraava vaihe"
+4. Add your Forward Email credentials to the `authinfo` file:
 
-9. Kun sinulta kysytään "SMTP-palvelin", kirjoita <code>smtp.forwardemail.net</code> ja jätä portiksi <code>587</code>.
+   ```
+   AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+   ```
 
-10. Kun sinulta kysytään "Käyttäjätunnusta", anna luomasi aliaksen koko sähköpostiosoite kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+5. Generate the authentication database and secure the files:
 
-11. Kun sinulta kysytään salasanaa, liitä salasana kohdasta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> yllä olevassa vaiheessa 3.
+   ```bash
+   sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+   sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+   ```
 
-12. Jätä valintanappi "Suojattu yhteys TLS:n avulla" valituksi.
+6. Rebuild the Sendmail configuration and restart the service:
 
-13. Jatka napsauttamalla "Lisää tili"
+   ```bash
+   sudo make -C /etc/mail
+   sudo systemctl restart sendmail
+   ```
 
-14. Avaa uusi välilehti [Gmail](https://gmail.com)-sivustolle ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostitse).
+#### Testing {#testing}
 
-15. Kun se saapuu, kopioi ja liitä vahvistuskoodi edellisessä vaiheessa saamaasi kehotteeseen.
+Send a test email to verify the configuration:
 
-16. Kun olet tehnyt sen, palaa sähköpostiin ja napsauta linkkiä "vahvista pyyntö". Sinun on todennäköisesti tehtävä tämä ja edellinen vaihe, jotta sähköposti määritetään oikein.
+```bash
+echo "Test email from Sendmail" | mail -s "Sendmail Test" recipient@example.com
+```
+
+### Exim4 SMTP Relay Configuration {#exim4-smtp-relay-configuration}
+
+Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forward Email as a smarthost.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration {#configuration-1}
+
+1. Run the Exim4 configuration tool:
+
+   ```bash
+   sudo dpkg-reconfigure exim4-config
+   ```
+
+2. Select the following options:
+   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+   * **System mail name:** your.hostname
+   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+   * **Other destinations for which mail is accepted:** (leave blank)
+   * **Domains to relay mail for:** (leave blank)
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **Hide local mail name in outgoing mail?** No
+   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+   * **Delivery method for local mail:** Mbox format in /var/mail/
+   * **Split configuration into small files?** No
+
+3. Edit the `passwd.client` file to add your credentials:
+
+   ```bash
+   sudo nano /etc/exim4/passwd.client
+   ```
+
+4. Add the following line:
+
+   ```
+   smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+   ```
+
+5. Update the configuration and restart Exim4:
+
+   ```bash
+   sudo update-exim4.conf
+   sudo systemctl restart exim4
+   ```
+
+#### Testing {#testing-1}
+
+Send a test email:
+
+```bash
+echo "Test from Exim4" | mail -s "Exim4 Test" recipient@example.com
+```
+
+### msmtp SMTP Client Configuration {#msmtp-smtp-client-configuration}
+
+msmtp is a lightweight SMTP client that's useful for sending emails from scripts or command-line applications.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Configuration {#configuration-2}
+
+1. Create or edit the msmtp configuration file at `~/.msmtprc`:
+
+   ```bash
+   nano ~/.msmtprc
+   ```
+
+2. Add the following configuration:
+
+   ```
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
+
+   account        forwardemail
+   host           smtp.forwardemail.net
+   port           587
+   from           your-alias@yourdomain.com
+   user           your-alias@yourdomain.com
+   password       your-generated-password
+
+   account default : forwardemail
+   ```
+
+3. Set the correct permissions for the configuration file:
+
+   ```bash
+   chmod 600 ~/.msmtprc
+   ```
+
+#### Testing {#testing-2}
+
+Send a test email:
+
+```bash
+echo "This is a test email from msmtp" | msmtp -a default recipient@example.com
+```
+
+### Command-line Email Clients {#command-line-email-clients}
+
+Popular command-line email clients like [Mutt](https://gitlab.com/muttmua/mutt), [NeoMutt](https://neomutt.org), and [Alpine](https://alpine.x10.mx/alpine/release/) can be configured to use Forward Email's SMTP servers for sending mail. The configuration will be similar to the `msmtp` setup, where you provide the SMTP server details and your credentials in the respective configuration files (`.muttrc`, `.neomuttrc`, or `.pinerc`).
+
+### Windows Email Configuration {#windows-email-configuration}
+
+For Windows users, you can configure popular email clients like **Microsoft Outlook** and **eM Client** using the IMAP and SMTP settings provided in your Forward Email account. For command-line or scripting use, you can use PowerShell's `Send-MailMessage` cmdlet (though it is considered obsolete) or a lightweight SMTP relay tool like [E-MailRelay](https://github.com/graeme-walker/emailrelay).
+
+### Postfix SMTP Relay Configuration {#postfix-smtp-relay-configuration}
+
+You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Installation {#installation}
+
+1. Install Postfix on your server:
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install postfix
+
+# CentOS/RHEL
+sudo yum install postfix
+
+# macOS
+brew install postfix
+```
+
+2. During installation, select "Internet Site" when prompted for configuration type.
+
+#### Configuration {#configuration-3}
+
+1. Edit the main Postfix configuration file:
+
+```bash
+sudo nano /etc/postfix/main.cf
+```
+
+2. Add or modify these settings:
+
+```
+# SMTP relay configuration
+relayhost = [smtp.forwardemail.net]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
+3. Create the SASL password file:
+
+```bash
+sudo nano /etc/postfix/sasl_passwd
+```
+
+4. Add your Forward Email credentials:
+
+```
+[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+```
+
+5. Secure and hash the password file:
+
+```bash
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+```
+
+6. Restart Postfix:
+
+```bash
+sudo systemctl restart postfix
+```
+
+#### Testing {#testing-3}
+
+Test your configuration by sending a test email:
+
+```bash
+echo "Test email body" | mail -s "Test Subject" recipient@example.com
+```
+
+### How to Send Mail As using Gmail {#how-to-send-mail-as-using-gmail}
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
+</div>
+
+<div class="alert mb-3 alert-success">
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
+</div>
+
+<div id="send-mail-as-content">
+
+<div class="alert alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
+</div>
+
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
+
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
+
+4. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
+
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+7. Uncheck "Treat as an alias"
+
+8. Click "Next Step" to proceed
+
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
+
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+
+11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+12. Leave the radio button checked for "Secured connection using TLS"
+
+13. Click "Add Account" to proceed
+
+14. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+15. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+16. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Mikä on vanha ilmainen opas Lähetä sähköpostia nimellä -toiminnolle Gmailissa? {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+</div>
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Tärkeää:</strong> Tämä vanha ilmainen opas on vanhentunut toukokuusta 2023 lähtien, koska <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we tukee nyt lähtevää SMTP:tä</a>. Jos käytät alla olevaa opasta, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this saa lähtevän sähköpostisi</a> näkyviin Gmailissa tekstin "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>".</a></div>
+### What is the legacy free guide for Send Mail As using Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> This legacy free guide is deprecated as of May 2023 since <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we now support outbound SMTP</a>. If you use the guide below, then <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this will cause your outbound email</a> to say "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" in Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>Alle 10 minuuttia</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert mb-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Aloittaminen:
-</strong>
-<span>
-Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Aloitus ja sähköpostin edelleenlähetyksen määrittäminen</a>, voit jatkaa lukemista alta.
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    If you've followed the instructions above under <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">How do I get started and set up email forwarding</a>, then you can continue reading below.
+  </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Kuinka lähettää sähköpostia nimellä Gmailissa" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
-<div id="legacy-free-opas">
+<div id="legacy-free-guide">
 
-1. Jotta tämä toimisi, sinulla on oltava käytössä [Gmailin kaksivaiheinen todennus][gmail-2fa]. Jos se ei ole käytössä, käy osoitteessa <https://www.google.com/landing/2step/>.
+1. You need to have [Gmail's Two-Factor Authentication][gmail-2fa] enabled for this to work.  Visit <https://www.google.com/landing/2step/> if you do not have it enabled.
 
-2. Kun kaksivaiheinen todennus on käytössä (tai jos se oli jo käytössä), siirry osoitteeseen <https://myaccount.google.com/apppasswords>.
+2. Once Two-Factor Authentication is enabled (or if you already had it enabled), then visit <https://myaccount.google.com/apppasswords>.
 
-3. Kun sinulta kysytään "Valitse sovellus ja laite, jolle haluat luoda sovelluksen salasanan":
-* Valitse "Sähköposti" "Valitse sovellus" -kohdan avattavasta valikosta.
-* Valitse "Muu" "Valitse laite" -kohdan avattavasta valikosta.
-* Kun sinulta pyydetään tekstisyötettä, anna mukautetun verkkotunnuksesi sähköpostiosoite, josta viestit lähetetään (esim. <koodi><hello@example.com></koodi> - tämä auttaa sinua seuraamaan tilannetta, jos käytät tätä palvelua useilla tileillä).
+3. When prompted for "Select the app and device you want to generate the app password for":
+   * Select "Mail" under the drop-down for "Select app"
+   * Select "Other" under the drop-down for "Select device"
+   * When prompted for text input, enter your custom domain's email address you're forwarding from (e.g. <code><hello@example.com></code> - this will help you keep track in case you use this service for multiple accounts)
 
-4. Kopioi automaattisesti luotu salasana leikepöydälle
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät G Suitea, siirry hallintapaneeliisi <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Sovellukset <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Gmailin asetukset <i class="fa fa-angle-right"></i> Asetukset</a> ja varmista, että valitset vaihtoehdon "Salli käyttäjien lähettää sähköpostia ulkoisen SMTP-palvelimen kautta...". Muutoksen voimaantulossa on jonkin verran viivettä, joten odota muutama minuutti.
-</span>
+4. Copy the password to your clipboard that is automatically generated
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Important:
+     </strong>
+     <span>
+       If you are using G Suite, visit your admin panel <a class="alert-link" href="https://admin.google.com/AdminHome#ServiceSettings/service=email&subtab=filters" rel="noopener noreferrer" target="_blank">Apps <i class="fa fa-angle-right"></i> G Suite <i class="fa fa-angle-right"></i> Settings for Gmail <i class="fa fa-angle-right"></i> Settings</a> and make sure to check "Allow users to send mail through an external SMTP server...". There will be some delay for this change to be activated, so please wait a few minutes.
+     </span>
+   </div>
+
+5. Go to [Gmail](https://gmail.com) and under [Settings <i class="fa fa-angle-right"></i> Accounts and Import <i class="fa fa-angle-right"></i> Send mail as](https://mail.google.com/mail/u/0/#settings/accounts), click "Add another email address"
+
+6. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds")
+
+7. When prompted for "Email address", enter the email address with the custom domain you used above (e.g. <code><hello@example.com></code>)
+
+8. Uncheck "Treat as an alias"
+
+9. Click "Next Step" to proceed
+
+10. When prompted for "SMTP Server", enter <code>smtp.gmail.com</code> and leave the port as <code>587</code>
+
+11. When prompted for "Username", enter the portion of your Gmail address without the <span>gmail.com</span> part (e.g. just "user" if my email is <span><user@gmail.com></span>)
+    <div class="alert my-3 alert-primary">
+      <i class="fa fa-info-circle font-weight-bold"></i>
+      <strong class="font-weight-bold">
+        Important:
+      </strong>
+      <span>
+        If the "Username" portion is autofilled, then <u><strong>you will need to change this</strong></u> to the username portion of your Gmail address instead.
+      </span>
+    </div>
+
+12. When prompted for "Password", paste from your clipboard the password you generated in step 2 above
+
+13. Leave the radio button checked for "Secured connection using TLS"
+
+14. Click "Add Account" to proceed
+
+15. Open a new tab to [Gmail](https://gmail.com) and wait for your verification email to arrive (you will receive a verification code that confirms you are the owner of the email address you are attempting to "Send Mail As")
+
+16. Once it arrives, copy and paste the verification code at the prompt you received in the previous step
+
+17. Once you've done that, go back to the email and click the link to "confirm the request". You will most likely need to do this step and the previous step for the email to be correctly configured.
+
 </div>
 
-5. Siirry kohtaan [Gmail](https://gmail.com) ja napsauta kohdassa [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) kohtaa "Lisää toinen sähköpostiosoite".
-
-6. Kun sinulta kysytään "Nimi", anna nimi, jolla haluat sähköpostisi näkyvän "Lähettäjä"-kentässä (esim. "Linus Torvalds")
-
-7. Kun sinulta kysytään "Sähköpostiosoite", anna sähköpostiosoite ja yllä käyttämäsi mukautettu verkkotunnus (esim. <koodi><hello@example.com></koodi>).
-
-8. Poista valinta kohdasta "Käsittele aliaksena"
-
-9. Jatka napsauttamalla "Seuraava vaihe"
-
-10. Kun sinulta kysytään "SMTP-palvelin", kirjoita <code>smtp.gmail.com</code> ja jätä portiksi <code>587</code>.
-
-11. Kun sinulta pyydetään käyttäjätunnusta, anna Gmail-osoitteesi osa ilman <span>gmail.com</span>-osaa (esim. vain "käyttäjä", jos sähköpostiosoitteeni on <span><user@gmail.com></span>)
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos "Käyttäjätunnus"-osio täytetään automaattisesti, <u><strong>sinun on muutettava se</strong></u> Gmail-osoitteesi käyttäjätunnusosaan.
-</span>
-</div>
-
-12. Kun sinulta kysytään salasanaa, liitä leikepöydältä yllä vaiheessa 2 luomasi salasana.
-
-13. Jätä valintanappi "Suojattu yhteys TLS:n avulla" valituksi.
-
-14. Jatka napsauttamalla "Lisää tili"
-
-15. Avaa uusi välilehti [Gmail](https://gmail.com)-sivustolle ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostitse).
-
-16. Kun se saapuu, kopioi ja liitä vahvistuskoodi edellisessä vaiheessa saamaasi kehotteeseen.
-
-17. Kun olet tehnyt sen, palaa sähköpostiin ja napsauta linkkiä "vahvista pyyntö". Sinun on todennäköisesti tehtävä tämä ja edellinen vaihe, jotta sähköposti määritetään oikein.
-
-</div>
-
-### Gmailin reitityksen lisäasetukset {#advanced-gmail-routing-configuration}
+### Advanced Gmail Routing Configuration {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>15–30 minuuttia</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-Jos haluat määrittää Gmailin reitityksen lisäasetukset siten, että sähköpostilaatikkoon vastaamattomat aliakset välittävät viestit Forward Email -palvelun sähköpostivaihtoon, toimi seuraavasti:
+If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:
 
-1. Kirjaudu Google-hallintakonsoliin osoitteessa [admin.google.com](https://admin.google.com)
-2. Siirry kohtaan **Sovellukset → Google Workspace → Gmail → Reititys**
-3. Napsauta **Lisää reitti** ja määritä seuraavat asetukset:
+1. Log in to your Google Admin console at [admin.google.com](https://admin.google.com)
+2. Go to **Apps → Google Workspace → Gmail → Routing**
+3. Click on **Add Route** and configure the following settings:
 
-**Yksittäisen vastaanottajan asetukset:**
+**Single Recipient Settings:**
 
-* Valitse "Vaihda kirjekuoren vastaanottaja" ja anna ensisijainen Gmail-osoitteesi
-* Valitse "Lisää X-Gm-Original-To-otsikko alkuperäisen vastaanottajan kanssa"
+* Select "Change envelope recipient" and enter your primary Gmail address
+* Check "Add X-Gm-Original-To header with original recipient"
 
-**Kirjekuoren vastaanottajan mallit:**
+**Envelope Recipient Patterns:**
 
-* Lisää malli, joka vastaa kaikkia olemattomia postilaatikoita (esim. `.*@yourdomain.com`)
+* Add a pattern that matches all non-existent mailboxes (e.g., `.*@yourdomain.com`)
 
-**Sähköpostipalvelimen asetukset:**
+**Email Server Settings:**
 
-* Valitse "Reitti isäntään" ja anna `mx1.forwardemail.net` ensisijaiseksi palvelimeksi
-* Lisää `mx2.forwardemail.net` varapalvelimeksi
-* Aseta portiksi 25
-* Valitse "Vaadi TLS suojauksen vuoksi"
+* Select "Route to host" and enter `mx1.forwardemail.net` as the primary server
+* Add `mx2.forwardemail.net` as the backup server
+* Set port to 25
+* Select "Require TLS" for security
 
-4. Luo reitti napsauttamalla **Tallenna**
+4. Click **Save** to create the route
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Tämä määritys toimii vain Google Workspace -tileillä, joilla on mukautetut verkkotunnukset, ei tavallisilla Gmail-tileillä.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.
+  </span>
 </div>
 
-### Outlookin reitityksen lisäasetukset {#advanced-outlook-routing-configuration}
+### Advanced Outlook Routing Configuration {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>15–30 minuuttia</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>15-30 minutes</span>
 </div>
 
-Microsoft 365:n (entinen Office 365) käyttäjille, jotka haluavat määrittää edistyneen reitityksen niin, että postilaatikkoon vastaamattomat aliakset välittävät viestit edelleen Lähetä sähköposti -palvelun sähköpostivaihtoon:
+For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:
 
-1. Kirjaudu Microsoft 365 -hallintakeskukseen osoitteessa [admin.microsoft.com](https://admin.microsoft.com)
-2. Siirry kohtaan **Exchange → Sähköpostin kulku → Säännöt**
-3. Napsauta **Lisää sääntö** ja valitse **Luo uusi sääntö**
-4. Nimeä sääntösi (esim. "Lähetä olemattomat postilaatikot edelleen Lähetä sähköpostia" -kohtaan)
-5. Valitse kohdassa **Käytä tätä sääntöä, jos**:
-* "Vastaanottajan osoite vastaa..."
-* Anna malli, joka vastaa kaikkia verkkotunnuksesi osoitteita (esim. `*@yourdomain.com`)
-6. Valitse kohdassa **Tee seuraavat**:
-* "Ohjaa viesti uudelleen..."
-* Valitse "Seuraava sähköpostipalvelin"
-* Kirjoita `mx1.forwardemail.net` ja portti 25
-* Lisää `mx2.forwardemail.net` varapalvelimeksi
-7. Valitse kohdassa **Paitsi jos**:
-* "Vastaanottaja on..."
-* Lisää kaikki olemassa olevat postilaatikot, joita ei pitäisi edelleenlähettää
-8. Aseta säännön prioriteetti varmistaaksesi, että se suoritetaan muiden sähköpostin kulkusääntöjen jälkeen
-9. Aktivoi napsauttamalla **Tallenna** sääntö
+1. Log in to the Microsoft 365 admin center at [admin.microsoft.com](https://admin.microsoft.com)
+2. Go to **Exchange → Mail flow → Rules**
+3. Click **Add a rule** and select **Create a new rule**
+4. Name your rule (e.g., "Forward non-existent mailboxes to Forward Email")
+5. Under **Apply this rule if**, select:
+   * "The recipient address matches..."
+   * Enter a pattern that matches all addresses at your domain (e.g., `*@yourdomain.com`)
+6. Under **Do the following**, select:
+   * "Redirect the message to..."
+   * Choose "The following mail server"
+   * Enter `mx1.forwardemail.net` and port 25
+   * Add `mx2.forwardemail.net` as a backup server
+7. Under **Except if**, select:
+   * "The recipient is..."
+   * Add all your existing mailboxes that should not be forwarded
+8. Set the rule priority to ensure it runs after other mail flow rules
+9. Click **Save** to activate the rule
 
-## Vianmääritys {#troubleshooting}
+## Troubleshooting {#troubleshooting}
 
-### Miksi en saa testisähköpostejani {#why-am-i-not-receiving-my-test-emails}
+### Why am I not receiving my test emails {#why-am-i-not-receiving-my-test-emails}
 
-Jos lähetät testisähköpostin itsellesi, se ei välttämättä näy postilaatikossasi, koska siinä on sama "Message-ID"-otsikko.
+If you're sending a test email to yourself, then it may not show up in your inbox because it has the same "Message-ID" header.
 
-Tämä on laajalti tunnettu ongelma, ja se vaikuttaa myös palveluihin, kuten Gmailiin. <a href="https://support.google.com/a/answer/1703601">Here on Gmailin virallinen vastaus tähän ongelmaan</a>.
+This is a widely known issue, and also affects services such as Gmail.  <a href="https://support.google.com/a/answer/1703601">Here is the official Gmail answer regarding this issue</a>.
 
-Jos ongelmat jatkuvat, kyseessä on todennäköisesti DNS-etenemisongelma. Sinun on odotettava hieman kauemmin ja yritettävä uudelleen (tai yritettävä asettaa alhaisempi TTL-arvo TXT-tietueillesi).
+If you continue to have issues, then it is most likely to be an issue with DNS propagation.  You will need to wait a bit longer and try again (or try setting a lower TTL value on your <strong class="notranslate">TXT</strong> records).
 
-**Onko ongelmia edelleen?** <a href="/help">ota meihin yhteyttä</a>, jotta voimme tutkia ongelmaa ja löytää nopean ratkaisun.
+**Still having issues?**  Please <a href="/help">contact us</a> so we can help investigate the issue and find a quick resolution.
 
-### Miten määritän sähköpostiohjelmani toimimaan sähköpostin edelleenlähetyksen kanssa? {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### How do I configure my email client to work with Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-Palvelumme toimii suosittujen sähköpostiohjelmien, kuten:
-<ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
-<li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Työpöytä</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Pääte</a></li>
-</ul>
+  Our service works with popular email clients such as:
+  <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
+    <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome&reg;</a></li>
+    <li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
+  </ul>
 </div>
 
 <div class="alert alert-primary">
-Käyttäjätunnuksesi on aliaksesi sähköpostiosoite ja salasana on kohdasta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> ("Normaali salasana").
+  Your username is your alias' email address and password is from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ("Normal Password").
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Jos käytät Thunderbirdiä, varmista, että "Yhteyden suojaus" -asetukseksi on asetettu "SSL/TLS" ja todennusmenetelmäksi on asetettu "Normaali salasana".</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Tyyppi | Isäntänimi | Protokolla | Portit |
+| Type | Hostname | Protocol | Ports |
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` | SSL/TLS **Suositeltu** | `993` ja `2993` |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Suositeltu** tai TLS (STARTTLS) | `465` ja `2465` SSL/TLS-salausta varten (tai) `587`, `2587`, `2525` ja `25` TLS-salausta varten (STARTTLS) |
+| IMAP | `imap.forwardemail.net` | SSL/TLS **Preferred** | `993` and `2993` |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
 
-### Miksi sähköpostini päätyvät roskapostikansioon ja miten voin tarkistaa verkkotunnukseni maineen {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### Why are my emails landing in Spam and Junk and how can I check my domain reputation {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-Tässä osiossa neuvotaan, jos lähtevä postisi käyttää SMTP-palvelimiamme (esim. `smtp.forwardemail.net`) (tai lähetetään edelleen `mx1.forwardemail.net`:n tai `mx2.forwardemail.net`:n kautta) ja se toimitetaan vastaanottajien roskapostikansioon.
+This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
 
-Seuraamme rutiininomaisesti [IP-osoitteet](#what-are-your-servers-ip-addresses)-ominaisuuttamme [kaikki hyvämaineiset DNS-estolistat](#how-do-you-handle-your-ip-addresses-becoming-blocked)-ominaisuutta vasten, **siksi kyseessä on todennäköisesti verkkotunnuksen maineeseen liittyvä ongelma**.
+We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
 
-Sähköpostit voivat päätyä roskapostikansioon useista syistä:
+Emails can land in spam folders for several reasons:
 
-1. **Puuttuva todennus**: Määritä tietueet [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ja [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+1. **Missing Authentication**: Set up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
 
-2. **Verkkotunnuksen maine**: Uusilla verkkotunnuksilla on usein neutraali maine, kunnes ne luovat lähetyshistorian.
+2. **Domain Reputation**: New domains often have neutral reputation until they establish a sending history.
 
-3. **Sisältöä laukaisevat tekijät**: Tietyt sanat tai lauseet voivat laukaista roskapostisuodattimet.
+3. **Content Triggers**: Certain words or phrases can trigger spam filters.
 
-4. **Lähetysmallit**: Sähköpostimäärän äkillinen kasvu voi näyttää epäilyttävältä.
+4. **Sending Patterns**: Sudden increases in email volume can look suspicious.
 
-Voit kokeilla yhtä tai useampaa näistä työkaluista tarkistaaksesi verkkotunnuksesi maineen ja luokittelun:
+You can try to use one or more of these tools to check your domain's reputation and categorization:
 
-| Työkalun nimi | URL | Tyyppi |
+| Tool Name | URL | Type |
 | ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare-verkkotunnusten luokittelun palaute | <https://radar.cloudflare.com/domains/feedback> | Luokittelu |
-| Spamhaus IP- ja verkkotunnusten maineentarkistin | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP- ja verkkotunnusten mainekeskus | <https://talosintelligence.com/reputation_center> | Maine |
-| Barracudan IP-osoitteen ja verkkotunnuksen maineen haku | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolboxin mustan listan tarkistus | <https://mxtoolbox.com/blacklists.aspx> | Musta lista |
-| Google Postmaster -työkalut | <https://www.gmail.com/postmaster/> | Maine |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Maine |
-| MultiRBL.valli.org Mustan listan tarkistus | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Lähettäjän pisteet | <https://senderscore.org/act/blocklist-remover/> | Maine |
-| Arvostus | <https://www.invaluement.com/lookup/> | DNSBL |
+| Cloudflare Domain Categorization Feedback | <https://radar.cloudflare.com/domains/feedback> | Categorization |
+| Spamhaus IP and Domain Reputation Checker | <https://check.spamhaus.org/> | DNSBL |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | Reputation |
+| Barracuda IP and Domain Reputation Lookup | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
+| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Blacklist |
+| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Reputation |
+| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Reputation |
+| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
+| Sender Score | <https://senderscore.org/act/blocklist-remover/> | Reputation |
+| Invaluement | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP-osoitteen poisto | <https://ipcheck.proofpoint.com/> | Poistaminen |
-| Cloudmark IP-osoitteen poisto | <https://csi.cloudmark.com/en/reset/> | Poistaminen |
+| Apple/Proofpoint IP removal | <https://ipcheck.proofpoint.com/> | Removal |
+| Cloudmark IP removal | <https://csi.cloudmark.com/en/reset/> | Removal |
 | SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlookin ja Office 365:n IP-osoitteiden poisto | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Poistaminen |
-| UCEPROTECTin tasot 1, 2 ja 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECTin backscatterer.org | <https://www.backscatterer.org/> | Takaisinhajontasuoja |
-| UCEPROTECTin whitelisted.org | <https://www.whitelisted.org/> (maksullinen) | DNSWL |
-| AT&T | `abuse_rbl@abuse-att.net` | Poistaminen |
-| AOL/Verizon (esim. `[IPTS04]`) | <https://senders.yahooinc.com/> | Poistaminen |
-| Cox Communications | `unblock.request@cox.net` | Poistaminen |
-| t-online.de (saksa/T-Mobile) | `tobr@rx.t-online.de` | Poistaminen |
+| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal |
+| UCEPROTECT's Levels 1, 2, and 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Backscatter Protection |
+| UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (requires a fee) | DNSWL |
+| AT&T | `abuse_rbl@abuse-att.net` | Removal |
+| AOL/Verizon (e.g. `[IPTS04]`) | <https://senders.yahooinc.com/> | Removal |
+| Cox Communications | `unblock.request@cox.net` | Removal |
+| t-online.de (German/T-Mobile) | `tobr@rx.t-online.de` | Removal |
 
 > \[!TIP]
-> Aloita lähettämällä pienemmän määrän, mutta laadukkaita sähköposteja rakentaaksesi positiivisen maineen ennen kuin lähetät suurempia määriä.
+> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
 
 > \[!IMPORTANT]
-> Jos verkkotunnuksesi on mustalla listalla, jokaisella mustalla listalla on oma poistoprosessinsa. Tarkista ohjeet heidän verkkosivuiltaan.
+> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
 
 > \[!TIP]
-> Jos tarvitset lisäapua tai huomaat, että jokin sähköpostipalveluntarjoaja on luokitellut meidät roskapostiksi, <a href="/help">ota meihin yhteyttä</a>.
+> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
-### Mitä minun pitäisi tehdä, jos saan roskapostia {#what-should-i-do-if-i-receive-spam-emails}
+### What should I do if I receive spam emails {#what-should-i-do-if-i-receive-spam-emails}
 
-Sinun kannattaa peruuttaa sähköpostilistan tilaus (jos mahdollista) ja estää lähettäjä.
+You should unsubscribe from the emailing list (if possible) and block the sender.
 
-Älä ilmoita viestiä roskapostiksi, vaan lähetä se edelleen manuaalisesti kuratoituun ja yksityisyyteen keskittyvään väärinkäytösten estämisjärjestelmällemme.
+Please do not report the message as spam, but instead forward it to our manually curated and privacy-focused abuse prevention system.
 
-**Roskapostin edelleenlähetyssähköpostiosoite on:** <abuse@forwardemail.net>
+**The email address to forward spam to is:** <abuse@forwardemail.net>
 
-### Miksi minulle lähetetyt testisähköpostit Gmailissa näkyvät "epäilyttävinä" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Why are my test emails sent to myself in Gmail showing as "suspicious" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
-Jos näet tämän virheilmoituksen Gmailissa, kun lähetät itsellesi testiviestin tai kun henkilö, jolle lähetät sähköpostia alias-tunnuksellasi, näkee sinulta sähköpostin ensimmäistä kertaa, **älä huoli** – tämä on Gmailin sisäänrakennettu turvaominaisuus.
+If you see this error message in Gmail when you send a test to yourself, or when a person you're emailing with your alias sees an email from you for the first time, then **please do not worry** – as this is a built-in safety feature of Gmail.
 
-Voit yksinkertaisesti napsauttaa "Näyttää turvalliselta". Jos esimerkiksi lähetät testiviestin Lähetä sähköpostia osoitteeseen -toiminnolla (jollekulle toiselle), hän ei näe tätä viestiä.
+You can simply click "Looks safe".  For example, if you were to send a test message using the send mail as feature (to someone else), then they will not see this message.
 
-Jos he kuitenkin näkevät tämän viestin, se johtuu siitä, että he ovat tottuneet näkemään sähköpostiesi tulevan osoitteesta <john@gmail.com> osoitteen <john@customdomain.com> sijaan (vain esimerkki). Gmail ilmoittaa käyttäjille varmistaakseen, että asiat ovat turvassa varmuuden vuoksi, eikä tähän ole kiertotietä.
+However if they do see this message, it's because they were normally used to seeing your emails come from <john@gmail.com> instead of <john@customdomain.com> (just an example).  Gmail will alert the users just to make sure things are safe just in case, there is no workaround.
 
-### Voinko poistaa via forwardemail-pistemerkinnän Gmailissa {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Can I remove the via forwardemail dot net in Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-Tämä aihe liittyy [Gmailissa yleisesti tunnettu ongelma, jossa lähettäjän nimen vieressä näkyy lisätietoja](https://support.google.com/mail/answer/1311182)-kohteeseen.
+This topic is related to a [widely known issue in Gmail where extra info appears next to a sender's name](https://support.google.com/mail/answer/1311182).
 
-Toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä SMTP:n avulla lisäosana kaikille maksaville käyttäjille – tämä tarkoittaa, että voit poistaa <span class="notranslate">via forwardemail dot net</span> -tunnisteen Gmailissa.
+As of May 2023 we support sending email with SMTP as an add-on for all paid users – which means that you can remove the <span class="notranslate">via forwardemail dot net</span> in Gmail.
 
-Huomaa, että tämä usein kysyttyjen kysymysten aihe on tarkoitettu erityisesti [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail)-ominaisuuden käyttäjille.
+Note that this FAQ topic is specific for those using the [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) feature.
 
-Katso määritysohjeet [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp)-osiosta.
+Please see the section on [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for configuration instructions.
 
-## Tiedonhallinta {#data-management}
+## Data Management {#data-management}
 
-### Missä palvelimesi sijaitsevat {#where-are-your-servers-located}
+### Where are your servers located {#where-are-your-servers-located}
 
 > \[!TIP]
-> Saatamme pian ilmoittaa EU:n datakeskuksemme sijainnin [forwardemail.eu](https://forwardemail.eu):n alaisuudessa. Tilaa keskustelu osoitteessa <https://github.com/orgs/forwardemail/discussions/336> saadaksesi päivityksiä.
+> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
 
-Palvelimemme sijaitsevat pääasiassa Denverissä, Coloradossa – katso täydellinen IP-osoitteiden luettelo osoitteesta <https://forwardemail.net/ips>.
+Our servers are located primarily in Denver, Colorado – see <https://forwardemail.net/ips> for our complete list of IP addresses.
 
-Voit lukea lisää alihankkijoistamme [GDPR](/gdpr)-, [DPA](/dpa)- ja [Tietosuoja](/privacy)-sivuiltamme.
+You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [Privacy](/privacy) pages.
 
-### Miten vien ja varmuuskopioin postilaatikoni {#how-do-i-export-and-backup-my-mailbox}
+### How do I export and backup my mailbox {#how-do-i-export-and-backup-my-mailbox}
 
-Voit milloin tahansa viedä postilaatikosi [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)-, [Mbox](https://en.wikipedia.org/wiki/Mbox)- tai salatuissa [SQLite](https://en.wikipedia.org/wiki/SQLite)-muodoissa.
+At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
 
-Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset <i class="fa fa-angle-right"></i> Lataa varmuuskopio ja valitse haluamasi vientimuoto.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
 
-Saat sähköpostitse linkin viennin lataamiseksi, kun se on valmis.
+You will be emailed a link to download the export once it has finished.
 
-Huomaa, että tämä vientilatauslinkki vanhenee neljän tunnin kuluttua turvallisuussyistä.
+Note that this export download link expires after 4 hours for security concerns.
 
-Jos sinun on tarkasteltava vietyjä EML- tai Mbox-muotojasi, näistä avoimen lähdekoodin työkaluista voi olla hyötyä:
+If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
 
-| Nimi | Muoto | Alusta | GitHub-URL-osoite |
+| Name | Format | Platform | GitHub URL |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox-katseluohjelma | Mbox | Ikkunat | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Mbox | Kaikki alustat | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Ikkunat | <https://github.com/ayamadori/EmlReader> |
-| Sähköpostin katseluohjelma | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-lukija | EML | Kaikki alustat | <https://github.com/s0ph1e/eml-reader> |
+| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
+| mbox-web-viewer | Mbox | All platforms | <https://github.com/PHMRanger/mbox-web-viewer> |
+| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
+| Email viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader | EML | All platforms | <https://github.com/s0ph1e/eml-reader> |
 
-Lisäksi, jos sinun on muunnettava Mbox-tiedosto EML-tiedostoksi, voit käyttää <https://github.com/noelmartinon/mboxzilla>.
+Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
-### Miten tuon ja siirrän olemassa olevan postilaatikon {#how-do-i-import-and-migrate-my-existing-mailbox}
+### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Voit helposti tuoda sähköpostisi Forward Email -toimintoon (esim. käyttämällä [Thunderbird](https://www.thunderbird.net)-ominaisuutta) alla olevien ohjeiden mukaisesti:
+You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Sinun on noudatettava kaikkia seuraavia vaiheita voidaksesi tuoda olemassa olevan sähköpostisi.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to import your existing email.
+  </span>
 </div>
 
-1. Vie sähköpostisi nykyisestä sähköpostipalveluntarjoajastasi:
+1. Export your email from your existing email provider:
 
-| Sähköpostipalveluntarjoaja | Vientimuoto | Vientiohjeet |
+| Email Provider | Export Format | Export Instructions |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
-| Näkymät | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Vinkki:</strong> <span>Jos käytät Outlookia (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST-vientimuoto</a>), voit yksinkertaisesti seurata alla olevia "Muu"-kohdan ohjeita. Olemme kuitenkin antaneet alla linkkejä PST-tiedostojen muuntamiseen MBOX/EML-muotoon käyttöjärjestelmäsi perusteella:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba Windowsille</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst Windowsille, cygwinille</a> – (esim. <code>readpst -u -o $OUT_DIR $IN_DIR</code> korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> tulostushakemistolla ja syötekansiopolkuja vastaavasti).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst Ubuntu/Linuxille</a> – (esim. <code>sudo apt-get install readpst</code> ja sitten <code>readpst -u -o $OUT_DIR $IN_DIR</code>, korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> vastaavasti tulostus- ja syöttökansiopoluilla).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst macOS:lle (brew'n kautta)</a> – (esim. <code>brew install libpst</code> ja sitten <code>readpst -u -o $OUT_DIR $IN_DIR</code>, korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> sekä vastaavat tulostus- ja syöttöhakemistopolut).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST-muunnin Windowsille (GitHub)</a></li></ul><br /></span></div> |
+| Outlook | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tip:</strong> <span>If you are using Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST export format</a>), then you could simply follow the instructions under "Other" below.  However we have provided links below to convert PST to MBOX/EML format based off your operating system:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba for Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst for Windows cygwin</a> – (e.g. <code>readpst -u -o $OUT_DIR $IN_DIR</code> replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst for Ubuntu/Linux</a> – (e.g. <code>sudo apt-get install readpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst for macOS (via brew)</a> – (e.g. <code>brew install libpst</code> and then <code>readpst -u -o $OUT_DIR $IN_DIR</code>, replacing <code>$OUT_DIR</code> and <code>$IN_DIR</code> with the output directory and input directory paths respectively).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST Converter for Windows (GitHub)</a></li></ul><br /></span></div> |
 | Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Pikaposti | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
-| Ajatella | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
+| Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Muut | [Use Thunderbird](https://www.thunderbird.net) | Määritä olemassa oleva sähköpostitilisi Thunderbirdissä ja käytä sitten [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) -laajennusta sähköpostiesi viemiseen ja tuomiseen. **Voit ehkä myös yksinkertaisesti kopioida/liittää tai vetää/pudottaa sähköposteja tilien välillä.** |
+| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
 
-2. Lataa, asenna ja avaa [Thunderbird](https://www.thunderbird.net).
+2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
 
-3. Luo uusi tili käyttämällä aliaksesi koko sähköpostiosoitetta (esim. <koodi><sinä@verkkotunnuksesi.com></koodi>) ja luomaasi salasanaa. <strong>Jos sinulla ei vielä ole luotua salasanaa, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">katso asennusohjeet</a></strong>.
+3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
 
-4. Lataa ja asenna [TuoVientiTyökalut OF](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird -laajennus.
+4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
 
-5. Luo uusi paikallinen kansio Thunderbirdissä ja napsauta sitä hiiren kakkospainikkeella → valitse `ImportExportTools NG`-vaihtoehto → valitse `Import mbox file` (MBOX-vientimuotoa varten) – tai – `Import messages` / `Import all messages from a directory` (EML-vientimuotoa varten).
+5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
 
-6. Vedä/pudota paikallisesta kansiosta uuteen (tai olemassa olevaan) IMAP-kansioon Thunderbirdissä, johon haluat ladata viestit IMAP-tallennustilassa palvelumme avulla. Tämä varmistaa, että ne varmuuskopioidaan verkossa SQLite-salatulla tallennustilallamme.
+6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Jos et tiedä, miten tuoda tiedostot Thunderbirdiin, voit katsoa virallisia ohjeita osoitteista <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a>" ja <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>."
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>
+       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+     </span>
+   </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Kun olet suorittanut vienti- ja tuontiprosessin, voit myös ottaa käyttöön edelleenlähetyksen olemassa olevalla sähköpostitililläsi ja määrittää automaattisen vastaajan ilmoittamaan lähettäjille uudesta sähköpostiosoitteestasi (esim. jos käytit aiemmin Gmailia ja käytät nyt sähköpostia mukautetulla verkkotunnuksellasi).
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Tuetteko omaa ylläpitoa? {#do-you-support-self-hosting}
+### Do you support self-hosting {#do-you-support-self-hosting}
 
-Kyllä, maaliskuusta 2025 lähtien tuemme itse isännöityä vaihtoehtoa. Lue blogi [tässä](https://forwardemail.net/blog/docs/self-hosted-solution). Tutustu [itse isännöity opas](https://forwardemail.net/self-hosted)-blogiin päästäksesi alkuun. Ja jos olet kiinnostunut yksityiskohtaisemmasta vaiheittaisesta versiosta, katso [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- tai [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-pohjaiset oppaamme.
+Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
-## Sähköpostin määritys {#email-configuration}
+## Email Configuration {#email-configuration}
 
-### Miten aloitan ja määritän sähköpostin edelleenlähetyksen {#how-do-i-get-started-and-set-up-email-forwarding}
+### How do I get started and set up email forwarding {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>Alle 10 minuuttia</span>
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 10 minutes</span>
 </div>
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-bullhorn font-weight-bold"></i>
-<strong class="font-weight-bold">
-Aloittaminen:
-</strong>
-<span>
-Lue huolellisesti alla olevat vaiheet 1–8 ja noudata niitä. Muista korvata sähköpostiosoite <code>user@gmail.com</code> sillä sähköpostiosoitteella, johon haluat lähettää sähköpostit edelleen (jos se ei ole jo oikein). Muista myös korvata <code>example.com</code> omalla verkkotunnuksellasi (jos se ei ole jo oikein).
-</span>
+  <i class="fa fa-bullhorn font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Getting Started:
+  </strong>
+  <span>
+    Carefully read and follow steps one through eight listed below.  Be sure to replace the email address of <code>user@gmail.com</code> with the email address you want to forward emails to (if it isn't already accurate).  Similarly be sure to replace <code>example.com</code> with your custom domain name (if it isn't already accurate).
+  </span>
 </div>
 
 <ol>
-<li class="mb-2 mb-md-3 mb-lg-5">Jos olet jo rekisteröinyt verkkotunnuksesi jonnekin, sinun on ohitettava tämä vaihe kokonaan ja siirryttävä vaiheeseen kaksi! Muussa tapauksessa voit <a href="/domain-registration" rel="noopener noreferrer">napsauttaa tästä rekisteröidäksesi verkkotunnuksesi</a>.</li>
-<li class="mb-2 mb-md-3 mb-lg-5">
-Muistatko, mihin rekisteröit verkkotunnuksesi? Kun muistat tämän, noudata alla olevia ohjeita:
+  <li class="mb-2 mb-md-3 mb-lg-5">If you have already registered your domain name somewhere, then you must completely skip this step and go to step two!  Otherwise you can <a href="/domain-registration" rel="noopener noreferrer">click here to register your domain name</a>.</li>
+  <li class="mb-2 mb-md-3 mb-lg-5">
+  Do you remember where you registered your domain?  Once you remember this, then follow the instructions below:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Sinun on avattava uusi välilehti ja kirjauduttava verkkotunnusrekisterinpitäjään. Voit helposti napsauttaa alla olevaa "Rekisteröijä"-kohtaa tehdäksesi tämän automaattisesti. Tällä uudella välilehdellä sinun on siirryttävä rekisterinpitäjäsi DNS-hallintasivulle – ja olemme antaneet vaiheittaiset navigointiohjeet alla "Määritysvaiheet"-sarakkeessa. Kun olet siirtynyt tälle sivulle uudella välilehdellä, voit palata tälle välilehdelle ja siirtyä alla olevaan vaiheeseen kolme.
-<strong class="font-weight-bold">Älä sulje avattua välilehteä vielä; tarvitset sitä tulevissa vaiheissa!</strong>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must open a new tab and sign in to your domain registrar.  You can easily click on your "Registrar" below to automatically do this.  In this new tab, you must navigate to the DNS management page at your registrar &ndash; and we have provided the step by step navigation steps below under the "Steps to Configure" column.  Once you've navigated to this page in the new tab, you can return to this tab and proceed to step three below.
+    <strong class="font-weight-bold">Do not close the opened tab yet; you will need it for future steps!</strong>
+  </span>
 </div>
 
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Rekisteröijä</th>
-<th>Määrittämisen vaiheet</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnuskeskus <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Muokkaa DNS-asetuksia</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Reitti 53</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Isännöidyt vyöhykkeet <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Palvelimeni <i class="fa fa-angle-right"></i> Verkkotunnusten hallinta <i class="fa fa-angle-right"></i> DNS-hallinta</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>ROCKILLE: Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Napsauta vieressä olevaa ▼-kuvaketta hallitaksesi) <i class="fa" fa-angle-right"></i> DNS
-<br /> VANHEMMAT VERKOT: Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Vyöhykeeditori <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>"
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Helppoa</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Hallinnoi</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkostoituminen <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Lisää <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnusta</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Korttinäkymässä napsauta verkkotunnuksesi hallinta -painiketta <i class="fa fa-angle-right"></i> Luettelonäkymässä napsauta
-rataskuvaketta <i class="fa fa-angle-right"></i> DNS- ja nimipalvelimet <i class="fa fa-angle-right"></i> DNS-tietueet</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Katso</a>
-</td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> (napsauta rataskuvaketta) <i class="fa fa-angle-right"></i> Napsauta DNS ja nimipalvelimet vasemmanpuoleisessa valikossa</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Paneeli <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnuksia <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Yleiskatsaus <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Yksinkertainen editori <i class="fa fa-angle-right"></i> Tietueet</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinta <i class="fa fa-angle-right"></i> Muokkaa vyöhykettä</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
-<br />
-<a class="btn" btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Seuraa</a>
-</td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnuksiani <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi DNS:ää</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Verkkotunnukset</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Seuraa</a>
-</td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Määritä DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Seuraa</a>
-</td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnusluettelo <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallitse <i class="fa fa-angle-right"></i> Lisäasetukset DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Netlify DNS:n määrittäminen</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Ratkaisut</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Asiakkuuspäällikkö <i class="fa fa-angle-right"></i> Omat verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Muuta verkkotunnuksen osoitetta <i class="fa fa-angle-right"></i> DNS:n lisäasetukset</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Katso</a>
-</td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Hallitut verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS-asetukset</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Etusivu-valikko <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i>
-Lisäasetukset <i class="fa fa-angle-right"></i> Mukautetut tietueet</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
-<td>Käyttäen "now"-komentoliittymää <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6"
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset-sivu <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7"
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset-sivu <i class="fa fa-angle-right"></i> (Napsauta <i class="fa fa-ellipsis-h"></i> -kuvaketta) <i class="fa fa-angle-right"></i> Valitse Hallitse DNS-tietueita</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8"
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Omat verkkotunnukset</td>
-</tr>
-<tr>
-<td>Muut</td>
-<td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Tärkeää:</strong> Eikö rekisterinpitäjäsi nimeä löydy täältä? Hae internetistä hakusanoilla "kuinka muuttaa DNS-tietueita $REGISTRAR-palvelussa" (korvaa $REGISTRAR rekisterinpitäjäsi nimellä – esim. "kuinka muuttaa DNS-tietueita GoDaddy-palvelussa", jos käytät GoDaddy-palvelua).</div>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Registrar</th>
+      <th>Steps to Configure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain Center <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Edit DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Hosted Zones <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> My Servers <i class="fa fa-angle-right"></i> Domain Management <i class="fa fa-angle-right"></i> DNS Manager</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
+      <td>FOR ROCK: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Click the ▼ icon next to manage) <i class="fa fa-angle-right"></i> DNS
+      <br />
+      FOR LEGACY: Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zone editor <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Select your domain)</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain)  <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Manage</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Networking <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> More <i class="fa fa-angle-right"></i> Manage Domain</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> In card view, click manage on your domain <i class="fa fa-angle-right"></i> In list view, click
+the gear icon <i class="fa fa-angle-right"></i> DNS & Nameservers <i class="fa fa-angle-right"></i> DNS Records</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> (click gear icon) <i class="fa fa-angle-right"></i> Click on DNS &amp; Nameservers in left-hand menu</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Manage Domains <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Overview <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Simple Editor <i class="fa fa-angle-right"></i> Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Management <i class="fa fa-angle-right"></i> Edit the zone</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Manage My Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Configure DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domain List <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Setup Netlify DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solutions</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> My Domain Names <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> Manage <i class="fa fa-angle-right"></i> Change Where Domain Points <i class="fa fa-angle-right"></i> Advanced DNS</td>
+    </tr>
+    <tr>
+      <td>
+        <a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+        <br />
+        <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Watch</a>
+      </td>
+      <td>Log in <i class="fa fa-angle-right"></i> Managed Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS Settings</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Home menu <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i>
+Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+      <td>Using "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Select your domain) <i class="fa fa-angle-right"></i> DNS</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains page <i class="fa fa-angle-right"></i> (Click <i class="fa fa-ellipsis-h"></i> icon) <i class="fa fa-angle-right"></i> Select Manage DNS Records</td>
+    </tr>
+    <tr>
+      <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+      <td>Log in <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> My Domains</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>
+        <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Important:</strong> Don't see your registrar name listed here?  Simply search on the Internet for "how to change DNS records on $REGISTRAR" (replacing $REGISTRAR with the name of your registrar &ndash; e.g. "how to change DNS records on GoDaddy" if you're using GoDaddy).</div>
+      </td>
+    </tr>
+  </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Aseta seuraavat "MX"-tietueet rekisterinpitäjäsi DNS-hallintasivulla (toinen avaamasi välilehti):
+<li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), set the following "MX" records:
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Huomaa, että muita MX-tietueita ei pitäisi olla asetettu. Molempien alla näkyvien tietueiden TÄYTYY olla olemassa. Varmista, ettei niissä ole kirjoitusvirheitä ja että sekä mx1 että mx2 ovat oikein kirjoitettu. Jos MX-tietueita on jo olemassa, poista ne kokonaan.
-
-"TTL"-arvon ei tarvitse olla 3600, se voi olla tarvittaessa pienempi tai suurempi arvo.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Note that there should be NO other MX records set.  Both records shown below MUST exist.  Be sure there are no typos; and you have both mx1 and mx2 spelled correctly. If there were already MX records that existed, please delete them completely.
+    The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Prioriteetti</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx1.forwardemail.net</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td>MX</td>
-<td>0</td>
-<td><code>mx2.forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Priority</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx1.forwardemail.net</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td>MX</td>
+      <td>0</td>
+      <td><code>mx2.forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Aseta rekisterinpitäjäsi DNS-hallintasivulla (toinen avaamasi välilehti) seuraavat <strong class="notranslate">TXT</strong>-tietueet:
+</li><li class="mb-2 mb-md-3 mb-lg-5" id="dns-configuration-options">Using your registrar's DNS management page (the other tab you have opened), set the following <strong class="notranslate">TXT</strong> record(s):
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät maksullista tilausta, sinun on ohitettava tämä vaihe kokonaan ja siirryttävä vaiheeseen viisi! Jos et käytä maksullista tilausta, uudelleenohjatut osoitteesi ovat julkisesti haettavissa – siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> ja päivitä verkkotunnuksesi maksulliseen tilaukseen halutessasi. Jos haluat lisätietoja maksullisista tilauksista, katso <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Hinnoittelu</a>-sivumme. Muussa tapauksessa voit jatkaa yhden tai useamman vaihtoehdon A ja F yhdistelmien valitsemista alla luetelluista vaihtoehdoista. </span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must completely skip this step and go to step five! If you are not on a paid plan, then your forwarded addresses will be publicly searchable – go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan if desired.  If you would like to learn more about paid plans see our <a rel="noopener noreferrer" href="/private-business-email" class="alert-link">Pricing</a> page.  Otherwise you can continue to choose one or more combinations from Option A to Option F listed below.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto A:
-</strong>
-<span>
-Jos uudelleenohjaat kaikki sähköpostit verkkotunnuksestasi (esim. "all@example.com", "hello@example.com" jne.) tiettyyn osoitteeseen "user@gmail.com":
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option A:
+  </strong>
+  <span>
+    If you are forwarding all emails from your domain, (e.g. "all@example.com", "hello@example.com", etc) to a specific address "user@gmail.com":
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Muista korvata yllä olevat arvot "Arvo"-sarakkeessa omalla sähköpostiosoitteellasi. "TTL"-arvon ei tarvitse olla 3600, se voi olla tarvittaessa pienempi tai suurempi. Pienempi "TTL"-arvo varmistaa, että kaikki tulevat DNS-tietueisiisi tehdyt muutokset leviävät nopeammin Internetiin – ajattele tätä siten, että se tarkoittaa sitä, kuinka kauan ne tallennetaan välimuistiin (sekunteina). Voit lukea lisää <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL:stä Wikipediassa</a>.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Make sure to replace the values above in the "Value" column with your own email address.  The "TTL" value does not need to be 3600, it could be a lower or higher value if necessary.  A lower time to live ("TTL") value will ensure any future changes made to your DNS records are propagated throughout the Internet quicker &ndash; think of this as how long it will be cached in-memory (in seconds).  You can learn more about <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL on Wikipedia</a>.
+  </span>
 </div>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto B:
-</strong>
-<span>
-Jos sinun tarvitsee vain lähettää edelleen yksi sähköpostiosoite (esim. <code>hello@example.com</code> osoitteeseen <code>user@gmail.com</code>; tämä lähettää myös osoitteen "hello+test@example.com" automaattisesti osoitteeseen "user+test@gmail.com"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option B:
+  </strong>
+  <span>
+    If you just need to forward a single email address (e.g. <code>hello@example.com</code> to <code>user@gmail.com</code>; this will also forward "hello+test@example.com" to "user+test@gmail.com" automatically):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto C:
-</strong>
-<span>
-Jos lähetät edelleen useita sähköposteja, erota ne pilkulla:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option C:
+  </strong>
+  <span>
+    If you are forwarding multiple emails, then you'll want to separate them with a comma:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto D:
-</strong>
-<span>
-Voit määrittää loputtoman määrän sähköpostien edelleenlähetysasetuksia – varmista vain, ettet rivitä yli 255 merkkiä yhdelle riville ja aloita jokainen rivi merkintänä "forward-email=". Esimerkki on alla:
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option D:
+  </strong>
+  <span>
+    You can have an infinite amount of forwarding emails setup – just make sure to not wrap over 255 characters in a single-line and start each line with "forward-email=".  An example is provided below:
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
-</td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
+      </td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto E:
-</strong>
-<span>
-Voit myös määrittää verkkotunnuksen <strong class="notranslate">TXT</strong>-tietueessasi, jos haluat käyttää globaalia alias-uudelleenohjausta (esim. "user@example.com" välitetään osoitteeseen "user@example.net"):
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option E:
+  </strong>
+  <span>
+    You can also specify a domain name in your <strong class="notranslate">TXT</strong> record to have global alias forwarding (e.g. "user@example.com" will get forwarded to "user@example.net"):
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=example.net</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=example.net</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto F:
-</strong>
-<span>
-Voit käyttää webhookeja jopa globaalina tai yksittäisenä aliaksena sähköpostien edelleenlähettämiseen. Katso esimerkki ja koko webhookeja käsittelevä osio <a href="#do-you-support-webhooks" class="alert-link">Tuetaanko webhookeja</a> alta.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option F:
+  </strong>
+  <span>
+    You can even use webhooks as a global or individual alias to forward emails to.  See the example and full section on webhooks titled <a href="#do-you-support-webhooks" class="alert-link">Do you support webhooks</a> below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
-</td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ---
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vaihtoehto G:
-</strong>
-<span>
-Voit käyttää jopa säännöllisiä lausekkeita ("regex") aliaksien yhteensovittamiseen ja korvausten käsittelyyn sähköpostien edelleenlähetystä varten. Katso esimerkit ja koko osio säännöllisistä lausekkeista otsikolla <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Tuetaanko säännöllisiä lausekkeita vai regexiä</a> alta.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Option G:
+  </strong>
+  <span>
+    You can even use regular expressions ("regex") for matching aliases and for handling substitutions to forward emails to.  See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Tarvitsetko edistynyttä säännöllistä lauseketta substituutiolla?</strong> Katso esimerkit ja koko säännöllisiä lausekkeita käsittelevä osio <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Tuetaanko säännöllisiä lausekkeita vai regexejä</a> alta.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Need advanced regex with substitution?</strong> See the examples and full section on regex titled <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Do you support regular expressions or regex</a> below.
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki `linus@example.com`- tai `torvalds@example.com`-postiin menevät sähköpostit välitetään edelleen `user@gmail.com`-postiin:
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td>
-<code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
-</td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Keräilysääntöjä voitaisiin kuvailla myös "laskeutumissäännöiksi".
-Tämä tarkoittaa, että saapuvat sähköpostit, jotka vastaavat vähintään yhtä tiettyä edelleenlähetyssääntöä, käytetään keräilysääntöjen sijaan.
-Erityisiä sääntöjä ovat sähköpostiosoitteet ja säännölliset lausekkeet.
-<br /><br />
-Esimerkiksi:
-<br />
-<code>forward-email=hello:first@gmail.com,second@gmail.com</code>
-<br />
-Osoitteeseen <code>hello@example.com</code> lähetettyjä sähköposteja **ei** välitetä osoitteeseen <code>second@gmail.com</code> (keräily) tällä määrityksellä, vaan ne toimitetaan vain osoitteeseen <code>first@gmail.com</code>.
-</span>
-</div>
-
----
-
-</li><li class="mb-2 mb-md-3 mb-lg-5">Aseta rekisterinpitäjäsi DNS-hallintasivulla (toinen avaamasi välilehti) lisäksi seuraava <strong class="notranslate">TXT</strong>-tietue:
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td>
+        <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Gmailia (esim. Lähetä sähköpostia nimellä) tai G Suitea, sinun on lisättävä yllä olevaan arvoon <code>include:_spf.google.com</code>, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Catch-all forwarding rules could also be described as "fall-through".
+    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
+    Specific rules include email addresses and regular expressions.
+    <br /><br />
+    For example:
+    <br />
+    <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
+    <br />
+    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+  </span>
+</div>
+
+---
+
+</li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Jos sinulla on jo samanlainen rivi, jossa on "v=spf1", sinun on lisättävä <code>include:spf.forwardemail.net</code> juuri ennen olemassa olevia "include:host.com"-tietueita ja ennen "-all"-merkkiä samalla rivillä, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Huomaa, että "-all" ja "~all" eroavat toisistaan. "-" osoittaa, että SPF-tarkistuksen pitäisi epäonnistua, jos se ei täsmää, ja "~" osoittaa, että SPF-tarkistuksen pitäisi epäonnistua. Suosittelemme "-all"-lähestymistavan käyttöä verkkotunnusten väärentämisen estämiseksi. <br /><br />
-Sinun on ehkä myös sisällytettävä SPF-tietue sille isännälle, josta lähetät sähköpostia (esim. Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Vahvista DNS-tietueesi "Vahvista tietueet" -työkalullamme, joka on saatavilla osoitteessa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Määritys.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Verify your DNS records using our "Verify Records" tool available at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Setup.
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Lähetä testisähköposti varmistaaksesi, että se toimii. Huomaa, että DNS-tietueidesi levittäminen voi kestää jonkin aikaa.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Send a test email to confirm it works.  Note that it might take some time for your DNS records to propagate.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-</span>
-Jos et saa testisähköposteja tai saat testisähköpostin, jossa lukee "Ole varovainen tämän viestin kanssa", katso vastaukset kysymyksille <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Miksi en saa testisähköpostejani</a> ja <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Miksi minulle lähetetyt testisähköpostini näkyvät Gmailissa "epäilyttävinä"</a>.
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+  </span>
+    If you are not receiving test emails, or receive a test email that says "Be careful with this message", then see the answers for <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Why am I not receiving my test emails</a> and <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Why are my test emails sent to myself in Gmail showing as "suspicious"</a> respectively.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Jos haluat käyttää Gmailissa "Lähetä sähköpostia nimellä", sinun on <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">katsottava tämä video</a></strong> tai noudatettava alla olevia ohjeita kohdassa <a href="#how-to-send-mail-as-using-gmail">How Lähetä sähköpostia nimellä Gmailin avulla</a>.
+</li><li class="mb-2 mb-md-3 mb-lg-5">If you wish to "Send Mail As" from Gmail, then you will need to <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">watch this video</a></strong>, or follow the steps under <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> below.
 
 </li></ol>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
-</div>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Valinnaiset lisäosat on lueteltu alla. Huomaa, että nämä lisäosat ovat täysin valinnaisia eivätkä välttämättä välttämättömiä. Halusimme ainakin antaa sinulle lisätietoja tarvittaessa.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Optional add-ons are listed below.  Note that these add-ons are completely optional and may not be necessary.  We wanted to at least provide you with additional information if necessary.
+  </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Valinnainen lisäosa:
-</strong>
-<span>
-Jos käytät <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How Lähetä sähköpostia Gmailissa nimellä</a> -ominaisuutta, voit lisätä itsesi sallittujen listalle. Katso <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">nämä Gmailin ohjeet</a> tästä aiheesta.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Optional Add-on:
+  </strong>
+  <span>
+    If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
+  </span>
 </div>
 
-### Voinko käyttää useita MX-vaihtoja ja -palvelimia edistyneeseen edelleenlähetykseen? {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Can I use multiple MX exchanges and servers for advanced forwarding {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
-Kyllä, mutta **DNS-tietueissasi tulisi olla vain yksi MX-vaihto**.
+Yes, but **you should only have one MX exchange listed in your DNS records**.
 
-Älä yritä käyttää "Prioriteetti"-asetusta useiden MX-keskusten määrittämiseen.
+Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
 
-Sen sijaan sinun on määritettävä olemassa oleva MX-sähköpostinvaihtosi välittämään kaikkien epäsopivien aliaksien posti palvelumme sähköpostinvaihtopisteisiin (`mx1.forwardemail.net` ja/tai `mx2.forwardemail.net`).
+Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
 
-Jos käytät Google Workspacea ja haluat välittää kaikki epätäsmäävät aliakset palveluumme, katso <https://support.google.com/a/answer/6297084>.
+If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
 
-Jos käytät Microsoft 365:tä (Outlook) ja haluat välittää kaikki epätäsmäävät aliakset palveluumme, katso <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> ja <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### Miten määritän lomaviestin (poissaoloviestin automaattisen vastaajan) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### How do I set up a vacation responder (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset ja luo tai muokkaa aliasta, jolle haluat määrittää loma-automaattivastaajan.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
 
-Voit määrittää aloituspäivämäärän, päättymispäivämäärän, aiheen ja viestin sekä ottaa ne käyttöön tai poistaa ne käytöstä milloin tahansa:
+You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
 
-* Selkotekstistä otsikkoa ja viestiä tuetaan tällä hetkellä (käytämme sisäisesti `striptags`-pakettia HTML-koodin poistamiseen).
-* Aihe on rajoitettu 100 merkkiin.
-* Viestin pituus on rajoitettu 1000 merkkiin.
-* Asennus vaatii lähtevän SMTP-viestin määrityksen (esim. sinun on määritettävä DKIM-, DMARC- ja Return-Path DNS-tietueet).
-* Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP-määritykset ja noudata asennusohjeita.
-* Lomavastaajaa ei voi ottaa käyttöön globaaleilla vanity-verkkotunnuksilla (esim. [kertakäyttöiset osoitteet](/disposable-addresses)-verkkotunnusta ei tueta).
-* Lomavastaajaa ei voi ottaa käyttöön jokerimerkkiä/kaikki-merkitsevää tunnistetta (`*`) käyttäville aliaksille eikä säännöllisille lausekkeille.
+* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
+* Subject is limited to 100 characters.
+* Message is limited to 1000 characters.
+* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
+  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
+* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
 
-Toisin kuin sähköpostijärjestelmät, kuten `postfix` (jotka esimerkiksi käyttävät `sieve`-lomasähköpostisuodatinlaajennusta), Forward Email lisää automaattisesti DKIM-allekirjoituksesi, estää yhteysongelmat lomasähköpostivastauksia lähetettäessä (esim. yleisten SSL/TLS-yhteysongelmien ja vanhojen palvelimien ylläpitämien ongelmien vuoksi) ja tukee jopa Open WKD- ja PGP-salausta lomasähköpostivastauksissa.
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
 
 <!--
-* Väärinkäytösten estämiseksi jokaisesta lähetetystä lomaviestistä vähennetään yksi lähtevä SMTP-krediitti.
-* Kaikkiin maksullisiin tileihin sisältyy oletuksena 300 krediittiä päivässä. Jos tarvitset suuremman summan, ota meihin yhteyttä.
+* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
+  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
 -->
 
-1. Lähetämme viestin vain kerran per [sallittujen listalla](#do-you-have-an-allowlist)-lähettäjä neljän päivän välein (mikä on samanlaista kuin Gmailissa).
+1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
 
-* Redis-välimuistissamme käytetään `alias_id`:n ja `sender`:n sormenjälkiä, kun taas `alias_id` on MongoDB-alias-ID ja `sender` on joko lähettäjän osoite (jos sallittujen listalla) tai lähettäjän osoitteen juuriverkkotunnus (jos ei sallittujen listalla). Yksinkertaisuuden vuoksi tämän sormenjäljen vanhenemispäivä välimuistissa on asetettu 4 päivään.
+* Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
 
-* Lähestymistapamme, jossa käytetään lähettäjän osoitteesta jäsennettyä juuriverkkotunnusta muiden kuin sallittujen lähettäjien kohdalla, estää suhteellisen tuntemattomien lähettäjien (esim. pahantahtoisten toimijoiden) aiheuttaman väärinkäytön tulvimasta lomaviestien piiriin.
+* Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
 
-2. Lähetämme viestin vain, kun MAIL FROM ja/tai From ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postin pääkäyttäjän käyttäjätunnus](#what-are-postmaster-addresses)-kohtaa (sähköpostin @-merkkiä edeltävä osa).
+2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-3. Emme lähetä viestiä, jos alkuperäisessä viestissä oli jokin seuraavista otsikoista (kirjainkokoa ei erotella):
+3. We don't send if the original message had any of the following headers (case-insensitive):
 
-* `auto-submitted`-otsikko, jonka arvo ei ole yhtä suuri kuin `no`.
-* `x-auto-response-suppress`-otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`.
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-* `list-id`-, `list-subscribe`-, `no`0-, `no`1-, `no`2-, `no`3-, `no`4-, `no`5-, `no`6- tai `no`7-otsikko (arvosta riippumatta).
-* `no`8-otsikko, jonka arvo on `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 tai `x-auto-response-suppress`3.
+4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
 
-4. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy `+donotreply`-, `-donotreply`-, `+noreply`- tai `-noreply`-osoitukseen.
+5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
 
-5. Emme lähetä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
-6. Emme lähetä, jos `multipart/report`-otsikko on kirjainkokoa ei-herkkä `content-type`.
+### How do I set up SPF for Forward Email {#how-do-i-set-up-spf-for-forward-email}
 
-### Miten määritän SPF:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-spf-for-forward-email}
-
-Aseta seuraava <strong class="notranslate">TXT</strong>-tietue rekisterinpitäjäsi DNS-hallintasivulla:
+Using your registrar's DNS management page, set the following <strong class="notranslate">TXT</strong> record:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Gmailia (esim. Lähetä sähköpostia nimellä) tai G Suitea, sinun on lisättävä yllä olevaan arvoon <code>include:_spf.google.com</code>, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Microsoft Outlookia tai Live.comia, sinun on lisättävä <code>include:spf.protection.outlook.com</code> SPF <strong class="notranslate">TXT</strong>-tietueeseesi, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Jos sinulla on jo samanlainen rivi, jossa on "v=spf1", sinun on lisättävä <code>include:spf.forwardemail.net</code> juuri ennen olemassa olevia "include:host.com"-tietueita ja ennen "-all"-merkkiä samalla rivillä, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
-<br /><br />
-Huomaa, että "-all" ja "~all" eroavat toisistaan. "-" osoittaa, että SPF-tarkistuksen pitäisi epäonnistua, jos se ei täsmää, ja "~" osoittaa, että SPF-tarkistuksen pitäisi epäonnistua. Suosittelemme "-all"-lähestymistavan käyttöä verkkotunnusten väärentämisen estämiseksi. <br /><br />
-Sinun on ehkä myös sisällytettävä SPF-tietue sille isännälle, josta lähetät sähköpostia (esim. Outlook).
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
+    <br /><br />
+    Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
+    <br /><br />
+    You may also need to include the SPF record for whichever host you are sending mail from (e.g. Outlook).
+  </span>
 </div>
 
-### Miten määritän DKIM:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-dkim-for-forward-email}
+### How do I set up DKIM for Forward Email {#how-do-i-set-up-dkim-for-forward-email}
 
-Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP:n määritys ja noudata asennusohjeita.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Miten määritän DMARC:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-dmarc-for-forward-email}
+### How do I set up DMARC for Forward Email {#how-do-i-set-up-dmarc-for-forward-email}
 
-Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP:n määritys ja noudata asennusohjeita.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
 
-### Miten yhdistän ja määritän yhteystietoni {#how-do-i-connect-and-configure-my-contacts}
+### How do I connect and configure my contacts {#how-do-i-connect-and-configure-my-contacts}
 
-**Yhteystietojen määrittämiseen käytä CardDAV URL-osoitetta:** `https://carddav.forwardemail.net` (tai yksinkertaisesti `carddav.forwardemail.net`, jos asiakkaasi sallii sen)
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
 
-### Miten yhdistän ja määritän kalenterini {#how-do-i-connect-and-configure-my-calendars}
+### How do I connect and configure my calendars {#how-do-i-connect-and-configure-my-calendars}
 
-**Määritä kalenterisi käyttämällä CalDAV-URL-osoitetta:** `https://caldav.forwardemail.net` (tai yksinkertaisesti `caldav.forwardemail.net`, jos asiakkaasi sallii sen)
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Sähköpostin edelleenlähetyskalenterin CalDAV Thunderbird -esimerkkiasetus" />
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
 
-### Miten lisään kalentereita ja hallitsen olemassa olevia kalentereita {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Jos haluat lisätä kalentereita, lisää vain uusi kalenterin URL-osoite: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**muista korvata `calendar-name` haluamallasi kalenterin nimellä**)
+If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-Voit muuttaa kalenterin nimeä ja väriä luomisen jälkeen – käytä vain haluamaasi kalenterisovellusta (esim. Apple Mail tai [Thunderbird](https://thunderbird.net)).
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
-### Miten määritän SRS:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-srs-for-forward-email}
+### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
 
-Määritämme [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme):n ("SRS") automaattisesti – sinun ei tarvitse tehdä tätä itse.
+**To configure tasks and reminders, use the same CalDAV URL as calendars:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-### Miten määritän MTA-STS:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-mta-sts-for-forward-email}
+Tasks and reminders will automatically be separated from calendar events into their own "Reminders" or "Tasks" calendar collection.
 
-Lisätietoja on kohdassa [MTA-STS-osiomme](#do-you-support-mta-sts).
+**Setup instructions by platform:**
 
-### Miten lisään profiilikuvan sähköpostiosoitteeseeni {#how-do-i-add-a-profile-picture-to-my-email-address}
+**macOS/iOS:**
 
-Jos käytät Gmailia, noudata seuraavia ohjeita:
+1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
+2. Use `caldav.forwardemail.net` as the server
+3. Enter your Forward Email alias and generated password
+4. After setup, you'll see both "Calendar" and "Reminders" collections
+5. Use the Reminders app to create and manage tasks
 
-1. Siirry kohtaan <https://google.com> ja kirjaudu ulos kaikista sähköpostitileistä.
-2. Napsauta "Kirjaudu sisään" ja napsauta avattavasta valikosta "toinen tili".
-3. Valitse "Käytä toista tiliä".
-4. Valitse "Luo tili".
-5. Valitse "Käytä nykyistä sähköpostiosoitettani".
-6. Anna mukautettu verkkotunnusnimesi sähköpostiosoite.
-7. Hae sähköpostiosoitteeseesi lähetetty vahvistussähköposti.
-8. Anna tästä sähköpostista saatu vahvistuskoodi.
-9. Täytä uuden Google-tilisi profiilitiedot.
-10. Hyväksy kaikki tietosuoja- ja käyttöehdot.
-11. Siirry kohtaan <https://google.com> ja napsauta profiilikuvakettasi oikeassa yläkulmassa ja napsauta sitten "muuta"-painiketta.
-12. Lataa uusi valokuva tai avatar tilillesi.
-13. Muutosten voimaantulo kestää noin 1–2 tuntia, mutta joskus se voi tapahtua hyvin nopeasti.
-14. Lähetä testisähköposti, niin profiilikuvan pitäisi tulla näkyviin.
+**Android with Tasks.org:**
 
-## Lisäominaisuudet {#advanced-features}
+1. Install Tasks.org from Google Play Store or F-Droid
+2. Go to Settings > Synchronization > Add Account > CalDAV
+3. Enter server: `https://caldav.forwardemail.net`
+4. Enter your Forward Email alias and generated password
+5. Tasks.org will automatically discover your task calendars
 
-### Tuetteko markkinointiin liittyvien sähköpostien uutiskirjeitä tai postituslistoja? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+**Thunderbird:**
 
-Kyllä, voit lukea lisää osoitteesta <https://forwardemail.net/guides/newsletter-with-listmonk>.
+1. Install the Lightning add-on if not already installed
+2. Create a new calendar with type "CalDAV"
+3. Use URL: `https://caldav.forwardemail.net`
+4. Enter your Forward Email credentials
+5. Both events and tasks will be available in the calendar interface
 
-Huomaa, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi verkkotunnuskohtaisesti **uutiskirjeen hyväksymistä** varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostinhallintaa ja -hälytyksiä. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
+### Why can't I create tasks in macOS Reminders {#why-cant-i-create-tasks-in-macos-reminders}
 
-### Tuetteko sähköpostin lähettämistä API:n kautta? {#do-you-support-sending-email-with-api}
+If you're having trouble creating tasks in macOS Reminders, try these troubleshooting steps:
 
-Kyllä, toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä API:n avulla lisäosana kaikille maksaville käyttäjille.
+1. **Check account setup**: Ensure your CalDAV account is properly configured with `caldav.forwardemail.net`
+
+2. **Verify separate calendars**: You should see both "Calendar" and "Reminders" in your account. If you only see "Calendar", the task support may not be fully activated yet.
+
+3. **Refresh account**: Try removing and re-adding your CalDAV account in System Preferences > Internet Accounts
+
+4. **Check server connectivity**: Test that you can access `https://caldav.forwardemail.net` in your browser
+
+5. **Verify credentials**: Ensure you're using the correct alias email and generated password (not your account password)
+
+6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
+
+**Common issues:**
+
+* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
+* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
+* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+
+### How do I set up Tasks.org on Android {#how-do-i-set-up-tasksorg-on-android}
+
+Tasks.org is a popular open-source task manager that works excellently with Forward Email's CalDAV task support.
+
+**Installation and Setup:**
+
+1. **Install Tasks.org**:
+   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+
+2. **Configure CalDAV sync**:
+   * Open Tasks.org
+   * Go to ☰ Menu > Settings > Synchronization
+   * Tap "Add Account"
+   * Select "CalDAV"
+
+3. **Enter Forward Email settings**:
+   * **Server URL**: `https://caldav.forwardemail.net`
+   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
+   * **Password**: Your alias-specific generated password
+   * Tap "Add Account"
+
+4. **Account discovery**:
+   * Tasks.org will automatically discover your task calendars
+   * You should see your "Reminders" collection appear
+   * Tap "Subscribe" to enable sync for the task calendar
+
+5. **Test sync**:
+   * Create a test task in Tasks.org
+   * Check that it appears in other CalDAV clients (like macOS Reminders)
+   * Verify changes sync both ways
+
+**Features available:**
+
+* ✅ Task creation and editing
+* ✅ Due dates and reminders
+* ✅ Task completion and status
+* ✅ Priority levels
+* ✅ Subtasks and task hierarchy
+* ✅ Tags and categories
+* ✅ Two-way sync with other CalDAV clients
+
+**Troubleshooting:**
+
+* If no task calendars appear, try manually refreshing in Tasks.org settings
+* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
+* Check network connectivity to `caldav.forwardemail.net`
+
+### How do I set up SRS for Forward Email {#how-do-i-set-up-srs-for-forward-email}
+
+We automatically configure [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – you do not need to do this yourself.
+
+### How do I set up MTA-STS for Forward Email {#how-do-i-set-up-mta-sts-for-forward-email}
+
+Please refer to [our section on MTA-STS](#do-you-support-mta-sts) for more insight.
+
+### How do I add a profile picture to my email address {#how-do-i-add-a-profile-picture-to-my-email-address}
+
+If you're using Gmail, then follow these steps below:
+
+1. Go to <https://google.com> and sign out of all email accounts
+2. Click "Sign In" and on the drop-down click on "other account"
+3. Select "Use another account"
+4. Select "Create account"
+5. Select "Use my current email address instead"
+6. Enter your custom domain name email address
+7. Retrieve the verification email sent to your email address
+8. Enter the verification code from this email
+9. Complete profile information for your new Google account
+10. Agree to all Privacy and Terms of Use policies
+11. Go to <https://google.com> and in the top right corner, click on your profile icon, and click on the "change" button
+12. Upload a new photo or avatar for your account
+13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
+14. Send a test email and the profile photo should appear.
+
+## Advanced Features {#advanced-features}
+
+### Do you support newsletters or mailing lists for marketing related email {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+
+Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+
+Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### Do you support sending email with API {#do-you-support-sending-email-with-api}
+
+Yes, as of May 2023 we support sending email with API as an add-on for all paid users.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-Katso vaihtoehtoja, esimerkkejä ja lisätietoja API-dokumentaatiomme osiosta [Sähköpostit](/email-api#outbound-emails).
+Please view our section on [Emails](/email-api#outbound-emails) in our API documentation for options, examples, and more insight.
 
-Jotta voit lähettää lähteviä sähköposteja API:n kautta, sinun on käytettävä API-tunnustasi, joka on saatavilla kohdassa [Oma turvallisuus](/my-account/security).
+In order to send outbound email with our API, you must use your API token available under [My Security](/my-account/security).
 
-### Tuetteko sähköpostin vastaanottamista IMAP-protokollan kautta? {#do-you-support-receiving-email-with-imap}
+### Do you support receiving email with IMAP {#do-you-support-receiving-email-with-imap}
 
-Kyllä, 16. lokakuuta 2023 alkaen tuemme sähköpostin vastaanottamista IMAP-protokollan kautta lisäosana kaikille maksaville käyttäjille. **Lue perusteellinen artikkelimme** osoitteessa [miten salattu SQLite-postilaatikon tallennustoiminto toimii](/blog/docs/best-quantum-safe-encrypted-email-service).
+Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
 
-<div id="imap-ohjeet">
+<div id="imap-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a> ja <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Luo verkkotunnuksellesi uusi alias kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Napsauta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta juuri luodun aliaksen vieressä. Kopioi leikepöydälle ja tallenna näytöllä näkyvä luotu salasana turvallisesti.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Lisää tai määritä tili haluamallasi sähköpostisovelluksella, jossa on juuri luomasi alias (esim. <code><hello@example.com></code>).
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Kun IMAP-palvelimen nimeä pyydetään antamaan, kirjoita `imap.forwardemail.net`
+4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
-5. Kun sinulta kysytään IMAP-palvelimen porttia, anna `993` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset IMAP-portit](/faq#what-are-your-imap-server-configuration-settings)
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Jos käytät Thunderbirdiä, varmista, että "Yhteyden suojaus" -asetukseksi on asetettu "SSL/TLS" ja todennusmenetelmäksi on asetettu "Normaali salasana".</span>
-</div>
+5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Kun sinulta kysytään IMAP-palvelimen salasanaa, liitä salasana kohdasta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> yllä olevassa vaiheessa 2.
+6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Tallenna asetuksesi** – jos sinulla on ongelmia, <a href="/help">ota meihin yhteyttä</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Tuetko POP3:a? {#do-you-support-pop3}
+</div>
 
-Kyllä, 4. joulukuuta 2023 alkaen tuemme [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol):aa lisäosana kaikille maksaville käyttäjille. **Lue perusteellinen artikkelimme** [miten salattu SQLite-postilaatikon tallennustoiminto toimii](/blog/docs/best-quantum-safe-encrypted-email-service):stä.**
+### Do you support POP3 {#do-you-support-pop3}
 
-<div id="pop3-ohjeet">
+Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) as an add-on for all paid users.  **Please read our deep-dive article** on [how our encrypted SQLite mailbox storage feature works](/blog/docs/best-quantum-safe-encrypted-email-service).
+
+<div id="pop3-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a> ja <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a> and <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
-1. Luo verkkotunnuksellesi uusi alias kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-2. Napsauta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta juuri luodun aliaksen vieressä. Kopioi leikepöydälle ja tallenna näytöllä näkyvä luotu salasana turvallisesti.
+2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-3. Lisää tai määritä tili haluamallasi sähköpostisovelluksella, jossa on juuri luomasi alias (esim. <code><hello@example.com></code>).
-<div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
-</div>
+3. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
 
-4. Kun POP3-palvelimen nimeä pyydetään antamaan, kirjoita `pop3.forwardemail.net`
+4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
 
-5. Kun sinulta kysytään POP3-palvelimen porttia, anna `995` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset POP3-portit](/faq#what-are-your-pop3-server-configuration-settings)
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Jos käytät Thunderbirdiä, varmista, että "Yhteyden suojaus" -asetukseksi on asetettu "SSL/TLS" ja todennusmenetelmäksi on asetettu "Normaali salasana".</span>
-</div>
+5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
 
-6. Kun sinulta kysytään POP3-palvelimen salasanaa, liitä salasana kohdasta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> yllä olevassa vaiheessa 2.
+6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
 
-7. **Tallenna asetuksesi** – jos sinulla on ongelmia, <a href="/help">ota meihin yhteyttä</a>
+7. **Save your settings** – if you are having issues, then please <a href="/help">contact us</a>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Tuetteko kalentereita (CalDAV)? {#do-you-support-calendars-caldav}
+</div>
 
-Kyllä, 5. helmikuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Palvelimemme on `caldav.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
+### Do you support calendars (CalDAV) {#do-you-support-calendars-caldav}
 
-Se tukee sekä IPv4- että IPv6-protokollia ja on käytettävissä portin `443` (HTTPS) kautta.
+Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-| Kirjaudu sisään | Esimerkki | Kuvaus |
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Käyttäjätunnus | `user@example.com` | Verkkotunnukselle olemassa olevan aliaksen sähköpostiosoite <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a>-osiossa. |
-| Salasana | `************************` | Alias-kohtainen luotu salasana. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Kalenterituen käyttämiseksi **käyttäjän** on oltava sellaisen aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **salasanan** on oltava aliakselle erikseen luotu salasana.
+In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
 
-### Tuetteko yhteystietoja (CardDAV)? {#do-you-support-contacts-carddav}
+### Do you support tasks and reminders (CalDAV VTODO) {#do-you-support-tasks-and-reminders-caldav-vtodo}
 
-Kyllä, 12. kesäkuuta 2025 alkaen olemme lisänneet tämän ominaisuuden. Palvelimemme on `carddav.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
+Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-Se tukee sekä IPv4- että IPv6-protokollia ja on käytettävissä portin `443` (HTTPS) kautta.
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
 
-| Kirjaudu sisään | Esimerkki | Kuvaus |
+**How calendars and lists work:**
+
+* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
+* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
+* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
+* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
+
+**Supported task clients:**
+
+* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
+* **iOS Reminders** - Full native support across all iOS devices
+* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
+* **Thunderbird** - Task and calendar support in desktop email client
+* **Any CalDAV-compatible task manager** - Standard VTODO component support
+
+**Task features supported:**
+
+* Task creation, editing, and deletion
+* Due dates and start dates
+* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Task priority levels
+* Recurring tasks
+* Task descriptions and notes
+* Multi-device synchronization
+* Subtasks with RELATED-TO property
+* Task reminders with VALARM
+
+The login credentials are the same as for calendar support:
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Käyttäjätunnus | `user@example.com` | Verkkotunnukselle olemassa olevan aliaksen sähköpostiosoite <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a>-osiossa. |
-| Salasana | `************************` | Alias-kohtainen luotu salasana. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Jotta voit käyttää yhteystietojen tukea, **käyttäjän** on oltava sellaisen aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **salasanan** on oltava aliakselle erikseen luotu salasana.
+**Important notes:**
 
-### Tuetteko sähköpostin lähettämistä SMTP:n avulla? {#do-you-support-sending-email-with-smtp}
+* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
+* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
+* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
-Kyllä, toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä SMTP:n avulla lisäosana kaikille maksaville käyttäjille.
+### Do you support contacts (CardDAV) {#do-you-support-contacts-carddav}
 
-<div id="smtp-ohjeet">
+Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login | Example | Description |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
+
+In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### Do you support sending email with SMTP {#do-you-support-sending-email-with-smtp}
+
+Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid users.
+
+<div id="smtp-instructions">
 
 <div class="alert alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please ensure you have read our <a href="/terms" class="alert-link" target="_blank">Terms</a>, <a href="/privacy" class="alert-link" target="_blank">Privacy Policy</a>, and <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Outbound SMTP Limits</a> &ndash; your use is considered acknowledgement and agreement.
+  </span>
 </div>
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Gmailia, katso <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Lähetä sähköpostia kuten Gmailissa -oppaamme</a>. Jos olet kehittäjä, katso <a class="alert-link" href="/email-api#outbound-emails" target="_blank">sähköposti-API-dokumentaatiomme</a>.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail, then refer to our <a class="alert-link" href="/guides/send-mail-as-gmail-custom-domain">Send Mail As with Gmail guide</a>. If you are a developer, then refer to our <a class="alert-link" href="/email-api#outbound-emails" target="_blank">email API docs</a>.
+  </span>
 </div>
 
-1. Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP:n asetukset ja noudata asennusohjeita.
+1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Luo verkkotunnuksellesi uusi alias kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
-3. Napsauta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta juuri luodun aliaksen vieressä. Kopioi leikepöydälle ja tallenna näytöllä näkyvä luotu salasana turvallisesti.
+3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
-4. Lisää tai määritä tili haluamallasi sähköpostisovelluksella, jossa on juuri luomasi alias (esim. <code><hello@example.com></code>).
+4. Using your preferred email application, add or configure an account with your newly created alias (e.g. <code><hello@example.com></code>)
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+   </div>
+
+5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
+
+6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+   </div>
+
+7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
+
+8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
+
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
-</div>
-
-5. Kun SMTP-palvelimen nimeä pyydetään antamaan, kirjoita `smtp.forwardemail.net`
-
-6. Kun sinulta kysytään SMTP-palvelimen porttia, anna `465` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset SMTP-portit](/faq#what-are-your-smtp-server-configuration-settings)
-<div class="alert my-3 alert-warning">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Jos käytät Thunderbirdiä, varmista, että "Yhteyden suojaus" -asetukseksi on asetettu "SSL/TLS" ja todennusmenetelmäksi on asetettu "Normaali salasana".</span>
-</div>
-
-7. Kun sinulta kysytään SMTP-palvelimen salasanaa, liitä salasana kohdasta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> yllä olevassa vaiheessa 3.
-
-8. **Tallenna asetuksesi ja lähetä ensimmäinen testisähköposti** – jos sinulla on ongelmia, <a href="/help">ota meihin yhteyttä</a>
-
-<div class="alert my-3 alert-primary">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Huomaa, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi meillä on manuaalinen tarkistusprosessi lähtevien SMTP-viestien hyväksynnälle verkkotunnuskohtaisesti. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostin hallintaa ja hälytyksiä. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+  </span>
 </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
-</div>
-</div>
-
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
 
-### Tuetteko OpenPGP/MIME:tä, päästä päähän -salausta ("E2EE") ja Web Key Directorya ("WKD")? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+</div>
 
-Kyllä, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP):aa ja [päästä päähän -salaus ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption):tä sekä julkisten avainten etsimistä [Verkkoavainten hakemisto ("WKD")](https://wiki.gnupg.org/WKD):n avulla. Voit määrittää OpenPGP:n [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service):n tai [isännöi omia avaimiasi](https://wiki.gnupg.org/WKDHosting):n avulla (katso [tämä WKD-palvelimen asennuksen ydin](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+### Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-* WKD-haut tallennetaan välimuistiin 1 tunniksi, jotta sähköpostit toimitetaan oikea-aikaisesti → jos siis lisäät, muutat tai poistat WKD-avaimesi, lähetä meille sähköpostia osoitteeseen `support@forwardemail.net` ja kerro sähköpostiosoitteesi, jotta voimme tyhjentää välimuistin manuaalisesti.
-* Tuemme PGP-salausta viesteille, jotka lähetetään edelleen WKD-haun kautta tai käyttämällä käyttöliittymässämme ladattua PGP-avainta.
-* Ladatut avaimet ovat voimassa niin kauan kuin PGP-valintaruutu on käytössä/valittu.
-* Webhookeihin lähetettyjä viestejä ei tällä hetkellä salata PGP:llä.
-* Jos sinulla on useita aliaksia, jotka vastaavat tiettyä edelleenlähetysosoitetta (esim. säännöllinen lauseke/jokerimerkki/tarkka yhdistelmä), ja jos useampi kuin yksi näistä sisältää ladatun PGP-avaimen ja PGP on tarkistettu → lähetämme sinulle virheilmoituksen sähköpostitse emmekä salaa viestiä ladatulla PGP-avaimellasi. Tämä on hyvin harvinaista ja koskee yleensä vain edistyneitä käyttäjiä, joilla on monimutkaisia alias-sääntöjä. * **PGP-salausta ei käytetä sähköpostin edelleenlähetykseen MX-palvelimiemme kautta, jos lähettäjällä on DMARC-hylkäyskäytäntö. Jos tarvitset PGP-salausta *kaikelle* sähköpostille, suosittelemme IMAP-palvelumme käyttöä ja PGP-avaimesi määrittämistä saapuvan postin aliakselle.**
+Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-**Voit vahvistaa Web Key Directory -asetuksesi osoitteessa <https://wkd.chimbosonic.com/> (avoimen lähdekoodin hakemisto) tai <https://www.webkeydirectory.com/> (omistusoikeudella suojattu hakemisto).**
+* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
+* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
+* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
+* Messages sent to webhooks are not currently encrypted with PGP.
+* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
+* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
+
+**You can validate your Web Key Directory setup at <https://wkd.chimbosonic.com/> (open-source) or <https://www.webkeydirectory.com/> (proprietary).**
 
 <div class="alert my-3 alert-success">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Automaattinen salaus:
-</strong>
-<span>Jos käytät <a href="#do-you-support-sending-email-with-smtp" class="alert-link">lähtevää SMTP-palveluamme</a> ja lähetät salaamattomia viestejä, yritämme automaattisesti salata viestit vastaanottajakohtaisesti käyttämällä <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web-avainhakemistoa ("WKD")</a>.</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Automatic Encryption:
+  </strong>
+  <span>If you are using our <a href="#do-you-support-sending-email-with-smtp" class="alert-link">outbound SMTP service</a> and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Sinun on noudatettava kaikkia seuraavia vaiheita ottaaksesi OpenPGP:n käyttöön mukautetussa verkkotunnuksessasi.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    You must follow all of the following steps in order to enable OpenPGP for your custom domain name.
+  </span>
 </div>
 
-1. Lataa ja asenna sähköpostiohjelmasi suosittelema lisäosa alta:
+1. Download and install your email client's recommended plugin below:
 
-| Sähköpostiohjelma | Alusta | Suositeltu laajennus | Muistiinpanoja |
+| Email Client | Platform | Recommended Plugin | Notes |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Työpöytä | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbirdissä on sisäänrakennettu OpenPGP-tuki. |
-| Gmail | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Gmail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) tai [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (omistusoikeudellinen lisenssi) | Apple Mail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [PGPro](https://github.com/opensourceios/PGPro/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Näkymät | Ikkunat | [gpg4win](https://www.gpg4win.de/index.html) | Outlookin työpöytäsähköpostiohjelma ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [gpg4win](https://www.gpg4win.de/index.html). |
-| Näkymät | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Outlookin verkkopohjainen sähköpostiohjelma ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Mobiili | [OpenKeychain](https://www.openkeychain.org/) tai [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients), kuten [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) ja [FairEmail](https://github.com/M66B/FairEmail), tukevat molemmat avoimen lähdekoodin laajennusta [OpenKeychain](https://www.openkeychain.org/). Voit vaihtoehtoisesti käyttää avoimen lähdekoodin (omistusoikeudella lisensoitua) laajennusta [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
-| Google Chrome | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Microsoft Edge | Selain | [Mailvelope](https://mailvelope.com/) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/). |
-| Rohkea | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Balsa | Työpöytä | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsalla on sisäänrakennettu tuki OpenPGP:lle. |
-| KMail | Työpöytä | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMailissa on sisäänrakennettu OpenPGP-tuki. |
-| GNOME-kehitys | Työpöytä | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolutionissa on sisäänrakennettu OpenPGP-tuki. |
-| Terminaali | Työpöytä | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | Voit käyttää avoimen lähdekoodin [gpg command line tool](https://www.gnupg.org/download/) -komentoa uuden avaimen luomiseen komentoriviltä. |
+| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
+| Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
+| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Outlook | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin [gpg4win](https://www.gpg4win.de/index.html). |
+| Outlook | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Android | Mobile | [OpenKeychain](https://www.openkeychain.org/) or [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) such as [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) and [FairEmail](https://github.com/M66B/FairEmail) both support the open-source plugin [OpenKeychain](https://www.openkeychain.org/). You could alternatively use the open-source (proprietary licensing) plugin [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Google Chrome | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Mozilla Firefox | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Microsoft Edge | Browser | [Mailvelope](https://mailvelope.com/) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/). |
+| Brave | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | You can download the open-source browser extension [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
+| Balsa | Desktop | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa has built-in support for OpenPGP. |
+| KMail | Desktop | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail has built-in support for OpenPGP. |
+| GNOME Evolution | Desktop | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution has built-in support for OpenPGP. |
+| Terminal | Desktop | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | You can use the open-source [gpg command line tool](https://www.gnupg.org/download/) to generate a new key from command line. |
 
-2. Avaa lisäosa, luo julkinen avaimesi ja määritä sähköpostiohjelmasi käyttämään sitä.
+2. Open the plugin, create your public key, and configure your email client to use it.
 
-3. Lataa julkinen avaimesi osoitteeseen <https://keys.openpgp.org/upload>.
+3. Upload your public key at <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Voit hallita avaintasi tulevaisuudessa osoitteessa <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>".</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>You can visit <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> to manage your key in the future.</span>
+   </div>
 
 <div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Valinnainen lisäosa:
-</strong>
-<span>
-Jos käytät <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">salattua tallennuspalveluamme (IMAP/POP3)</a> ja haluat, että <i>kaikki</i> (jo salattuun) SQLite-tietokantaan tallennetut sähköpostit salataan julkisella avaimellasi, siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Muokkaa <i class="fa fa-angle-right"></i> OpenPGP:tä ja lataa julkinen avaimesi.
-</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Optional Add-on:
+     </strong>
+     <span>
+       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+     </span>
+   </div>
 
-4. Lisää uusi `CNAME`-tietue verkkotunnukseesi (esim. `example.com`):
+4. Add a new `CNAME` record to your domain name (e.g. `example.com`):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openpgpkey</code></td>
-<td class="text-center">3600</td>
-<td class="notranslate">CNAME</td>
-<td><code>wkd.keys.openpgp.org</code></td>
-</tr>
-</tbody>
-</table>
+     <thead class="thead-dark">
+       <tr>
+         <th>Name/Host/Alias</th>
+         <th class="text-center">TTL</th>
+         <th>Type</th>
+         <th>Answer/Value</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td><code>openpgpkey</code></td>
+         <td class="text-center">3600</td>
+         <td class="notranslate">CNAME</td>
+         <td><code>wkd.keys.openpgp.org</code></td>
+       </tr>
+     </tbody>
+   </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>Jos aliaksesi käytetään <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable-domain-osoitteitamme</a> (esim. <code>hideaddress.net</code>), voit ohittaa tämän vaiheen.</span>
-</div>
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>If your alias is using our <a class="alert-link" href="/disposable-addresses" target="_blank">vanity/disposable domains</a> (e.g. <code>hideaddress.net</code>), then you can skip this step.</span>
+   </div>
 
 <div class="text-center my-3 my-md-5">
-<div class="alert my-3 alert-success d-inline-block">
-<i class="fa fa-check-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Onnittelut!
-</strong>
-<span>
-Olet suorittanut kaikki vaiheet onnistuneesti.
-</span>
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully completed all steps.
+    </span>
+  </div>
 </div>
-</div>
 
-### Tuetko MTA-STS:ää? {#do-you-support-mta-sts}
+### Do you support MTA-STS {#do-you-support-mta-sts}
 
-Kyllä, 2. maaliskuuta 2023 alkaen tuemme [MTA-STS](https://www.hardenize.com/blog/mta-sts):aa. Voit käyttää [tämä malli](https://github.com/jpawlowski/mta-sts.template):aa, jos haluat ottaa sen käyttöön verkkotunnuksessasi.
+Yes, as of March 2, 2023 we support [MTA-STS](https://www.hardenize.com/blog/mta-sts).  You can use [this template](https://github.com/jpawlowski/mta-sts.template) if you wish to enable it on your domain.
 
-Kokoonpanomme löytyy julkisesti GitHubista osoitteesta <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+Our configuration can be found publicly on GitHub at <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### Tuetteko todennuksia ja WebAuthnia? {#do-you-support-passkeys-and-webauthn}
+### Do you support passkeys and WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-Kyllä! 13. joulukuuta 2023 alkaen olemme lisänneet tuen salasanoille [suuren kysynnän vuoksi](https://github.com/orgs/forwardemail/discussions/182).
+Yes! As of December 13, 2023 we have added support for passkeys [due to high demand](https://github.com/orgs/forwardemail/discussions/182).
 
-Salasanat mahdollistavat turvallisen kirjautumisen ilman salasanaa ja kaksivaiheista todennusta.
+Passkeys allow you to securely log in without requiring a password and two-factor authentication.
 
-Voit vahvistaa henkilöllisyytesi kosketuksella, kasvojentunnistuksella, laitepohjaisella salasanalla tai PIN-koodilla.
+You can validate your identity with touch, facial recognition, device-based password, or PIN.
 
-Voit hallita jopa 30 salasanaa samanaikaisesti, joten voit kirjautua sisään kaikilla laitteillasi helposti.
+We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.
 
-Lisätietoja salasanoista löydät seuraavista linkeistä:
+Learn more about passkeys at the following links:
 
-* [Kirjaudu sovelluksiin ja verkkosivustoihin salasanoilla](https://support.google.com/android/answer/14124480?hl=en) (Google)
-* [Kirjautuminen sovelluksiin ja verkkosivustoille iPhonessa salasanojen avulla](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
-* [Wikipedian artikkeli salasanoista](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+* [Sign-in to your applications and websites with passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
+* [Use passkeys to sign in to apps and websites on iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
+* [Wikipedia article on Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### Tuetko sähköpostin parhaita käytäntöjä? {#do-you-support-email-best-practices}
+### Do you support email best practices {#do-you-support-email-best-practices}
 
-Kyllä. Kaikissa paketeissamme on sisäänrakennettu tuki SPF:lle, DKIM:lle, DMARC:lle, ARC:lle ja SRS:lle. Olemme myös tehneet laajasti yhteistyötä näiden spesifikaatioiden alkuperäisten tekijöiden ja muiden sähköpostiasiantuntijoiden kanssa varmistaaksemme täydellisyyden ja korkean toimitettavuuden.
+Yes. We have built-in support for SPF, DKIM, DMARC, ARC, and SRS across all plans. We have also worked extensively with the original authors of these specifications and other email experts to ensure perfection and high deliverability.
 
-### Tuetteko webhookien palautusta? {#do-you-support-bounce-webhooks}
+### Do you support bounce webhooks {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-Etsitkö dokumentaatiota sähköpostin webhookeista? Katso lisätietoja kohdasta <a href="/faq#do-you-support-webhooks" class="alert-link">Tuetaanko webhookeja?</a>.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Kyllä, 14. elokuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Voit nyt siirtyä kohtaan Oma tili → Verkkotunnukset → Asetukset → Palautuswebhookin URL-osoite ja määrittää `http://`- tai `https://`-URL-osoitteen, johon lähetämme `POST`-pyynnön aina, kun lähtevät SMTP-sähköpostit palautuvat.
+Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
-Tämä on hyödyllistä lähtevän SMTP-postin hallintaan ja valvontaan – ja sitä voidaan käyttää tilaajien ylläpitoon, tilausten peruuttamiseen ja palautusten havaitsemiseen.
+This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
 
-Bounce-webhook-hyötykuormat lähetetään JSON-muodossa, jolla on seuraavat ominaisuudet:
+Bounce webhook payloads are sent as a JSON with these properties:
 
-* `email_id` (Merkkijono) - sähköpostiosoite, joka vastaa Oma tili -osiossa olevaa sähköpostia → Sähköpostit (lähtevä SMTP)
-* `list_id` (Merkkijono) - `List-ID`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
-* `list_unsubscribe` (Merkkijono) - `List-Unsubscribe`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
-* `feedback_id` (Merkkijono) - `Feedback-ID`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
-* `recipient` (Merkkijono) - palautuneen tai virheellisen viestin vastaanottajan sähköpostiosoite
-* `message` (Merkkijono) - palautuksen yksityiskohtainen virheilmoitus
-* `response` (Merkkijono) - SMTP-vastausviesti
-* `list_id`0 (Numero) - jäsennetyn SMTP-vastauskoodi
-* `list_id`1 (Merkkijono) - jos vastauskoodi oli luotettavasta lähteestä, tähän arvoon lisätään pääverkkotunnuksen nimi (esim. `list_id`2 tai `list_id`3)
-* `list_id`4 (Objekti) - objekti, joka sisältää seuraavat ominaisuudet, jotka kuvaavat palautus- ja hylkäystilaa:
-* `list_id`5 (Merkkijono) - palautustoiminto (esim. `list_id`6)
-* `list_id`7 (Merkkijono) - palautuksen syy (esim. `list_id`8)
-* `list_id`9 (Merkkijono) - palautusluokka (esim. `List-ID`0)
-* `List-ID`1 (Numero) - palautuksen tilakoodi (esim. `List-ID`2)
-* `List-ID`3 (Merkkijono) - vastauksen palautuskoodi viesti (esim. `List-ID`4)
-* `List-ID`5 (Numero) - jäsennetyn rivin numero, jos sellainen on, `List-ID`6 (esim. `List-ID`7)
-* `List-ID`8 (Objekti) - lähtevän sähköpostin avain-arvo-otsikkopari
-* `List-ID`9 (Merkkijono) - `list_unsubscribe`0-muotoiltu päivämäärä, jolloin palautusvirhe tapahtui
+* `email_id` (String) - email ID that corresponds to an email in My Account → Emails (outbound SMTP)
+* `list_id` (String) - the `List-ID` header (case-insensitive) value, if any, from the original outbound email
+* `list_unsubscribe` (String) - the `List-Unsubscribe` header (case-insensitive) value, if any, from the original outbound email
+* `feedback_id` (String) - the `Feedback-ID` header (case-insensitive) value, if any, from the original outbound email
+* `recipient` (String) - the email address of the recipient that bounced or errored
+* `message` (String) - a detailed error message for the bounce
+* `response` (String) - the SMTP response message
+* `response_code` (Number) - the parsed SMTP response code
+* `truth_source` (String) - if the response code was from a trusted source, this value will be populated with the root domain name (e.g. `google.com` or `yahoo.com`)
+* `bounce` (Object) - an object containing the following properties that detail the bounce and rejection status
+  * `action` (String) - bounce action (e.g. `"reject"`)
+  * `message` (String) - bounce reason (e.g. `"Message Sender Blocked By Receiving Server"`)
+  * `category` (String) - bounce category (e.g. `"block"`)
+  * `code` (Number) - bounce status code (e.g. `554`)
+  * `status` (String) - bounce code from response message (e.g. `5.7.1`)
+  * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatted Date for when the bounce error occurred
 
-Esimerkiksi:
+For example:
 
 ```json
 {
@@ -1994,106 +2467,108 @@ Esimerkiksi:
 }
 ```
 
-Tässä on muutamia lisähuomautuksia bounce-webhookeista:
+Here are a few additional notes regarding bounce webhooks:
 
-* Jos webhook-hyötykuorma sisältää `list_id`-, `list_unsubscribe`- tai `feedback_id`-arvon, sinun tulee tarvittaessa poistaa `recipient` luettelosta.
-* Jos `bounce.category`-arvo oli `"block"`, `"recipient"`, `"spam"` tai `"virus"`, sinun tulee ehdottomasti poistaa käyttäjä luettelosta.
-* Jos sinun on tarkistettava webhook-hyötykuormat (varmistaaksesi, että ne todella tulevat palvelimeltamme), voit käyttää [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip)-arvoa – sen pitäisi olla `list_unsubscribe`0.
-* Voit myös tarkistaa IP-osoitteen `list_unsubscribe`1-arvoa vasten.
-* Siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook-allekirjoituksen hyötykuorman vahvistusavain saadaksesi webhook-avaimesi.
-* Voit vaihtaa tätä avainta milloin tahansa turvallisuussyistä. * Laske ja vertaa webhook-pyyntömme `list_unsubscribe`2-arvoa laskettuun rungon arvoon käyttämällä tätä avainta. Esimerkki tästä on saatavilla osoitteessa `list_unsubscribe`3.
-* Katso lisätietoja keskustelusta osoitteessa <`list_unsubscribe`4.
-* Odotamme enintään `list_unsubscribe`5 sekuntia, että webhook-päätepisteesi vastaa `list_unsubscribe`6-tilakoodilla, ja yritämme uudelleen enintään `list_unsubscribe`7 sekunnin kuluttua.
-* Jos havaitsemme, että webhook-päätepisteesi palautus-URL-osoitteessa on virhe, kun yritämme lähettää sille pyynnön, lähetämme sinulle kohteliaisuussähköpostin kerran viikossa.
+* If the webhook payload contains a `list_id`, `list_unsubscribe`, or `feedback_id` value, then you should take appropriate action to remove the `recipient` from the list if necessary.
+  * If the `bounce.category` value was one `"block"`, `"recipient"`, `"spam"`, or `"virus"`, then you should definitely remove the user from the list.
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be `smtp.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * Go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* We will wait for up to `5` seconds for your webhook endpoint to respond with a `200` status code, and we will retry up to `1` time.
+* If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.
 
-### Tuetteko webhookeja? {#do-you-support-webhooks}
+### Do you support webhooks {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-Etsitkö dokumentaatiota bounce-webhookeista? Katso lisätietoja kohdasta <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Tuetaanko bounce-webhookeja?</a>.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
 </div>
 
-Kyllä, 15. toukokuuta 2020 alkaen olemme lisänneet tämän ominaisuuden. Voit yksinkertaisesti lisätä webhookin/webhookkeja aivan kuten minkä tahansa vastaanottajan kanssa! Varmista, että webhookin URL-osoitteessa on etuliitteenä "http" tai "https".
+Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Parannettu yksityisyyden suoja:
-</strong>
-<span>
-Jos käytät maksullista tilausta (jossa on parannettu yksityisyyden suoja), siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> ja napsauta verkkotunnuksesi vieressä olevaa "Aliaset"-kohtaa määrittääksesi webhookkisi. Jos haluat lisätietoja maksullisista tilauksista, katso <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Hinnoittelusivumme</a>. Muussa tapauksessa voit jatkaa alla olevien ohjeiden noudattamista.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure your webhooks.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</strong>-tietue alla olevan kuvan mukaisesti:
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below:
 
-Jos esimerkiksi haluan kaikkien `alias@example.com`-osoitteeseen menevien sähköpostien välittävän uuteen [pyyntölokero](https://requestbin.com/r/en8pfhdgcculn?inspect)-testipäätepisteeseen:
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
-</table>
-
-Tai ehkä haluat, että kaikki `example.com`-osoitteeseen menevät sähköpostit välitetään edelleen tähän päätepisteeseen:
+For example, if I want all emails that go to `alias@example.com` to forward to a new [request bin](https://requestbin.com/r/en8pfhdgcculn?inspect) test endpoint:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
 </table>
 
-**Tässä on lisähuomautuksia webhookeista:**
+Or perhaps you want all emails that go to `example.com` to forward to this endpoint:
 
-* Jos sinun on tarkistettava webhook-hyötykuormat (jotta ne todella tulevat palvelimeltamme), voit käyttää [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip) – sen pitäisi olla joko `mx1.forwardemail.net` tai `mx2.forwardemail.net`.
-* Voit myös verrata IP-osoitetta [julkaistut IP-osoitteemme](#what-are-your-servers-ip-addresses):aan.
-* Jos käytät maksullista sopimusta, siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook Signature Payload Verification Key saadaksesi webhook-avaimesi.
-* Voit kierrättää tätä avainta milloin tahansa turvallisuussyistä.
-* Laske ja vertaa webhook-pyynnöstämme saamaamme `X-Webhook-Signature`-arvoa laskettuun rungon arvoon tällä avaimella. Esimerkki tästä on osoitteessa [tämä Stack Overflow -viesti](https://stackoverflow.com/a/68885281).
-* Lisätietoja on keskustelussa osoitteessa <https://github.com/forwardemail/free-email-forwarding/issues/235>.
-* Jos webhook ei vastaa `200`-tilakoodilla, tallennamme sen vastauksen [virheloki luotu](#do-you-store-error-logs)-muuttujaan – mikä on hyödyllistä virheenkorjauksessa. * Webhook HTTP -pyynnöt yrittävät uudelleen jopa 3 kertaa jokaista SMTP-yhteysyritystä kohden, ja päätepisteen POST-pyyntöjen enimmäisaikakatkaisuaika on 60 sekuntia. **Huomaa, että tämä ei tarkoita, että se yrittäisi uudelleen vain 3 kertaa**, vaan se yrittää itse asiassa jatkuvasti uudelleen lähettämällä SMTP-koodin 421 (joka ilmoittaa lähettäjälle, että hän yrittää uudelleen myöhemmin) kolmannen epäonnistuneen HTTP POST -pyyntöyrityksen jälkeen. Tämä tarkoittaa, että sähköposti yrittää uudelleen jatkuvasti päivien ajan, kunnes tilakoodi 200 saavutetaan.
-* Yritämme uudelleen automaattisesti [superagentin uudelleenyritysmenetelmä](https://ladjs.github.io/superagent/#retrying-requests):ssä käytettyjen oletustila- ja virhekoodien perusteella (olemme ylläpitäjiä).
-* Ryhmittelemme samaan päätepisteeseen lähetetyt webhook HTTP -pyynnöt yhdeksi pyynnöksi useiden sijaan resurssien säästämiseksi ja vastausajan nopeuttamiseksi. Jos esimerkiksi lähetät sähköpostia osoitteisiin <webhook1@example.com>, <webhook2@example.com> ja <webhook3@example.com>, ja kaikki nämä on määritetty osumaan *täsmälleen* samaan päätepisteen URL-osoitteeseen, tehdään vain yksi pyyntö. Ryhmittely perustuu täsmälliseen päätepisteiden yhteensovittamiseen ja ehdottomaan yhtäläisyyteen.
-* Huomaa, että käytämme `mx1.forwardemail.net`0-kirjaston "simpleParser"-metodia viestin jäsentämiseen JSON-ystävälliseksi objektiksi.
-* Raaka sähköpostiviestin arvo merkkijonona annetaan ominaisuutena "raw".
-* Todennustulokset annetaan ominaisuuksina "dkim", "spf", "arc", "dmarc" ja "bimi".
-* Jäsennetyt sähköpostiotsikot annetaan ominaisuutena "headers" – mutta huomaa myös, että voit käyttää "headerLines"-ominaisuutta helpottaaksesi iterointia ja jäsentämistä.
-* Tämän webhookin ryhmitellyt vastaanottajat ryhmitellään yhteen ja annetaan ominaisuutena "recipients".
-* SMTP-istunnon tiedot annetaan ominaisuutena "session". Tämä sisältää tietoja viestin lähettäjästä, viestin saapumisajasta, HELO:sta ja asiakkaan isäntänimestä. Asiakkaan isäntänimen arvo muodossa `mx1.forwardemail.net`1 on joko täydellinen toimialuenimi (käänteisestä PTR-hausta) tai se on `mx1.forwardemail.net`2 hakasulkeissa (esim. `mx1.forwardemail.net`3).
-* Jos tarvitset nopean tavan saada `mx1.forwardemail.net`4-arvon, voit käyttää `mx1.forwardemail.net`5-arvoa (katso esimerkki alla). Otsikko `mx1.forwardemail.net`6 on otsikko, jonka lisäämme viesteihin virheenkorjausta varten viestin alkuperäisen vastaanottajan kanssa (ennen peitettyä edelleenlähetystä).
-* Jos sinun on poistettava `mx1.forwardemail.net`7- ja/tai `mx1.forwardemail.net`8-ominaisuudet hyötykuorman rungosta, lisää `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 tai `mx2.forwardemail.net`1 webhook-päätepisteeseesi kyselymerkkijonoparametrina (esim. `mx2.forwardemail.net`2).
-* Jos liitteitä on, ne lisätään `mx2.forwardemail.net`3-taulukkoon puskuriarvoilla. Voit jäsentää ne takaisin sisällöksi käyttämällä JavaScript-lähestymistapaa, kuten:
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**Here are additional notes regarding webhooks:**
+
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
+    * You can rotate this key at anytime for security reasons.
+    * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
+  * See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
+* If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
+* Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
+* We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
+* We group together webhook HTTP requests to the same endpoint in one request instead of multiple) in order to save resources and speed up response time.  For example, if you send an email to <webhook1@example.com>, <webhook2@example.com>, and <webhook3@example.com>, and all of these are configured to hit the same *exact* endpoint URL, then only one request will be made.  We group together by exact endpoint matching with strict equality.
+* Note that we use the [mailparser](https://nodemailer.com/extras/mailparser/) library's "simpleParser" method to parse the message into a JSON friendly object.
+* Raw email value as a String is given as the property "raw".
+* Authentication results are given as properties "dkim", "spf", "arc", "dmarc", and "bimi".
+* The parsed email headers is given as the property "headers" – but also note you can use "headerLines" for easier iteration and parsing.
+* The grouped recipients for this webhook are grouped together and given as the property "recipients".
+* The SMTP session information is given as the property "session".  This contains information about the sender of the message, arrival time of the message, HELO, and client hostname.  The client hostname value as `session.clientHostname` is either the FQDN (from a reverse PTR lookup) or it is `session.remoteAddress` wrapped in brackets (e.g. `"[127.0.0.1]"`).
+* If you need a quick way to get the value of `X-Original-To`, then you can use the value of `session.recipient` (see example below).  The header `X-Original-To` is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.
+* If you need to remove `attachments` and/or `raw` properties from the payload body, simply add `?attachments=false`, `?raw=false`, or `?attachments=false&raw=false` to your webhook endpoint as a querystring parameter (e.g. `https://example.com/webhook?attachments=false&raw=false`).
+* If there are attachments, they will be appended to the `attachments` Array with Buffer values.  You can parse them back into content using an approach with JavaScript such as:
 
   ```js
   const data = [
@@ -2119,13 +2594,13 @@ Tai ehkä haluat, että kaikki `example.com`-osoitteeseen menevät sähköpostit
   ```
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-Oletko utelias, miltä webhook-pyyntö näyttää edelleenlähetetyistä sähköposteista? Olemme lisänneet esimerkin alle!
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious what the webhook request looks like from forwarded emails?  We've included an example below for you!
+  <span>
+  </span>
 </div>
 
 ```json
@@ -2308,841 +2783,797 @@ Oletko utelias, miltä webhook-pyyntö näyttää edelleenlähetetyistä sähkö
 }
 ```
 
-### Tuetaanko säännöllisiä lausekkeita tai regexiä? {#do-you-support-regular-expressions-or-regex}
+### Do you support regular expressions or regex {#do-you-support-regular-expressions-or-regex}
 
-Kyllä, olemme lisänneet tämän ominaisuuden 27. syyskuuta 2021 alkaen. Voit yksinkertaisesti kirjoittaa säännöllisiä lausekkeita ("regex") aliasten täsmäykseen ja korvausten suorittamiseen.
+Yes, as of September 27, 2021 we have added this feature.  You can simply write regular expressions ("regex") for matching aliases and performing substitions.
 
-Säännöllisten lausekkeiden tuetut aliakset alkavat merkeillä `/` ja päättyvät merkeihin `/`, ja niiden vastaanottajat ovat sähköpostiosoitteita tai webhookeja. Vastaanottajat voivat myös sisältää säännöllisten lausekkeiden korvaamisen tuen (esim. `$1`, `$2`).
+Regular expression supported aliases are ones that start with a `/` and end with `/` and their recipients are email addresses or webhooks.  The recipients can also include regex substitution support (e.g. `$1`, `$2`).
 
-Tuemme kahta säännöllisen lausekkeen lippua, mukaan lukien `i` ja `g`. Kirjainkokoa ei erotteleva `i`-lippu on pysyvä oletusarvo, ja sitä käytetään aina. Voit lisätä globaalin `g`-lipun liittämällä `/`:n loppuun `/g`.
+We support two regular expression flags including `i` and `g`.  The case-insensitive flag of `i` is a permanent default and it is always enforced.  The global flag of `g` can be added by you by affixing the ending `/` with `/g`.
 
-Huomaa, että tuemme myös <a href="#can-i-disable-specific-aliases">disabled-aliasominaisuuttamme</a> vastaanottajaosassa säännöllisten lausekkeiden tuella.
+Note that we also support our <a href="#can-i-disable-specific-aliases">disabled alias feature</a> for the recipient portion with our regex support.
 
-Säännöllisiä lausekkeita ei tueta <a href="/disposable-addresses" target="_blank">globaaleilla vanity-verkkotunnuksilla</a> (koska tämä voi olla tietoturvahaavoittuvuus).
+Regular expressions are not supported on <a href="/disposable-addresses" target="_blank">global vanity domains</a> (as this could be a security vulnerability).
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Parannettu yksityisyyden suoja:
-</strong>
-<span>
-Jos käytät maksullista tilausta (jossa on parannettu yksityisyyden suoja), siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> ja napsauta verkkotunnuksesi vieressä olevaa "Aliaset"-kohtaa määrittääksesi säännölliset lausekkeet. Jos haluat lisätietoja maksullisista tilauksista, katso <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Hinnoittelusivumme</a>. Muussa tapauksessa voit jatkaa alla olevien ohjeiden noudattamista.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> and click on "Aliases" next to your domain to configure aliases, including those with regular expressions.  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.
+  </span>
 </div>
 
-Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</strong>-tietue käyttämällä yhtä tai useampaa alla olevista esimerkeistä:
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki `linus@example.com`- tai `torvalds@example.com`-postiin menevät sähköpostit välitetään edelleen `user@gmail.com`-postiin:
-</div>
+#### Examples for Enhanced Privacy Protection {#examples-for-enhanced-privacy-protection}
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Etunimi Sukunimi Korvausesimerkki:</strong> Kuvittele, että kaikki yrityksesi sähköpostiosoitteet ovat `firstname.lastname@example.com`-mallia. Jos haluan, että kaikki `firstname.lastname@example.com`-malliin kuuluvat sähköpostit lähetetään edelleen `firstname.lastname@company.com`-malliin korvauksen tuella (<a href="https://regexr.com/66hnu" class="alert-link">katsele RegExr-lauseketta</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@yritys.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Plus-symbolin suodatuksen korvaamisen esimerkki:</strong> Jos haluan, että kaikki `info@example.com`- tai `support@example.com`-kansioon menevät sähköpostit välitetään vastaavasti `user+info@gmail.com`- tai `user+support@gmail.com`-kansioon (korvaustuella) (<a href="https://regexr.com/66ho7" class="alert-link">katsele RegExr-lauseketta</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(tuki|info)$/:käyttäjä+$1@gmail.com</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki webhookin kyselymerkkijonon korvaamisesta:</strong> Ehkä haluat, että kaikki `example.com`-kohteeseen menevät sähköpostit menevät <a href="#do-you-support-webhooks" class="alert-link">webhookiin</a> ja että niillä on dynaaminen kyselymerkkijonon avain "to" ja sähköpostiosoitteen käyttäjätunnusosan arvo (<a href="https://regexr.com/66ho4" class="alert-link">katsele RegExr-lauseketta</a>):
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki hiljaisesta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään hiljaisesti (lähettäjälle viesti näyttää siltä kuin se olisi lähetetty onnistuneesti, mutta todellisuudessa se ei etene mihinkään) tilakoodilla `250` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa yhdellä huutomerkillä "!". Tämä osoittaa lähettäjälle, että viesti toimitettiin onnistuneesti, mutta se ei todellisuudessa mennyt mihinkään (esim. mustaan reikään tai `/dev/null`).
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki pehmeästä hylkäyksestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään pehmeästi tilakoodilla `421` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa kaksoishuutomerkillä "!!". Tämä kehottaa lähettäjää yrittämään sähköpostin lähettämistä uudelleen, ja tähän aliakseen lähetettyjä sähköposteja yritetään uudelleen noin viiden päivän ajan, minkä jälkeen ne hylätään pysyvästi.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert my-3 alert-secondary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki tiukasta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään tiukasti tilakoodilla `550` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa kolminkertaisella huutomerkillä "!!!". Tämä ilmoittaa lähettäjälle pysyvästä virheestä, eivätkä sähköpostit yritä uudelleen, vaan ne hylätään tämän aliaksen vuoksi.
-</div>
-
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Alias Name</th>
+      <th>Effect</th>
+      <th>Test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/^(linus|torvalds)$/</code></td>
+      <td>Emails to `linus@example.com` or `torvalds@example.com`</td>
+      <td>(<a href="https://regexr.com/8gb8n" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+    <tr>
+      <td><code>/^24highst(reet)$/</code></td>
+      <td>Emails to `24highst@example.com` or `24highstreet@example.com`</td>
+      <td>(<a href="https://regexr.com/8g9rb" class="alert-link">view test on RegExr</a>)</td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-Oletko utelias kirjoittamaan säännöllisen lausekkeen tai testaamaan korvaavaa lausekettasi? Voit mennä ilmaiselle säännöllisten lausekkeiden testaussivustolle <a href="https://regexr.com" class="alert-link">RegExr</a> osoitteessa <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    To test these at <a href="https://regexr.com" class="alert-link">RegExr</a>, write the expression in the top box, and then type an example alias in the text box below. If it matches, it will turn blue.
+  <span>
+  </span>
 </div>
 
-### Mitkä ovat lähtevän SMTP-viestinnän rajoituksesi? {#what-are-your-outbound-smtp-limits}
+#### Examples for the free plan {#examples-for-the-free-plan}
 
-Rajoitamme käyttäjien ja verkkotunnusten lähtevien SMTP-viestien määrän 300:aan päivässä. Tämä tarkoittaa keskimäärin yli 9000 sähköpostia kalenterikuukaudessa. Jos sinun on ylitettävä tämä määrä tai sinulla on jatkuvasti suuria sähköposteja, käytä [ota meihin yhteyttä](https://forwardemail.net/help)-rajoitusta.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record using one or more of the provided examples below:
 
-### Tarvitsenko hyväksynnän SMTP:n käyttöönottoon? {#do-i-need-approval-to-enable-smtp}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Simple Example:</strong> If I want all emails that go to `linus@example.com` or `torvalds@example.com` to forward to `user@gmail.com`:
+</div>
 
-Kyllä, huomioithan, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi lähtevien SMTP-viestien hyväksyntää varten verkkotunnuskohtaisesti. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostin hallintaa ja ilmoituksia. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-### Mitkä ovat SMTP-palvelimesi määritysasetukset? {#what-are-your-smtp-server-configuration-settings}
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Firstname Lastname Substitution Example:</strong> Imagine all of your company email addresses are of the `firstname.lastname@example.com` pattern.  If I want all emails that go to the pattern of `firstname.lastname@example.com` to forward to `firstname.lastname@company.com` with substitution support (<a href="https://regexr.com/66hnu" class="alert-link">view test on RegExr</a>):
+</div>
 
-Palvelimemme on `smtp.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `465` ja `2465` kautta SSL/TLS:lle sekä porttien `587`, `2587`, `2525` ja `25` kautta TLS:lle (STARTTLS).
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Plus Symbol Filtering Substitution Example:</strong> If I want all emails that go to `info@example.com` or `support@example.com` to forward to `user+info@gmail.com` or `user+support@gmail.com` respectively (with substitution support) (<a href="https://regexr.com/66ho7" class="alert-link">view test on RegExr</a>):
+</div>
 
-| Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
-| :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
-| `SSL/TLS` **Suositeltu** | `smtp.forwardemail.net` | `465`, `2465` | :valkoinen_tarkistusmerkki: | :valkoinen_tarkistusmerkki: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :valkoinen_tarkistusmerkki: | :valkoinen_tarkistusmerkki: |
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(support|info)$/:user+$1@gmail.com</code></td>
+    </tr>
+  </tbody>
+</table>
 
-| Kirjaudu sisään | Esimerkki | Kuvaus |
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Webhook Querystring Substitution Example:</strong> Perhaps you want all emails that go to `example.com` to go to a <a href="#do-you-support-webhooks" class="alert-link">webhook</a> and have a dynamic querystring key of "to" with a value of the username portion of the email address (<a href="https://regexr.com/66ho4" class="alert-link">view test on RegExr</a>):
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Quiet reject example:</strong> If you want all emails that match a certain pattern to be disabled and quietly reject (appears to sender as if the message was sent successfully, but actually goes nowhere) with status code `250` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a single exclamation mark "!".  This indicates to the sender that the message was successfully delivered, but it actually went nowhere (e.g. blackhole or `/dev/null`).
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Soft reject example:</strong> If you want all emails that match a certain pattern to be disabled and soft reject with status code `421` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a double exclamation mark "!!".  This indicates to the sender to retry their email, and emails to this alias will be retried for approximately 5 days and then reject permanently.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-secondary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong>Hard reject example:</strong> If you want all emails that match a certain pattern to be disabled and hard reject with status code `550` (see <a href="#can-i-disable-specific-aliases" class="alert-link">Can I disable specific aliases</a>), then simply use the same approach with a triple exclamation mark "!!!".  This indicates to the sender of a permanent error and emails will not retry, they will be rejected for this alias.
+</div>
+
+<table class="table table-striped table-hover my-3">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Curious how to write a regular expression or need to test your replacement?  You can go to the free regular expression testing website <a href="https://regexr.com" class="alert-link">RegExr</a> at <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+  <span>
+  </span>
+</div>
+
+### What are your outbound SMTP limits {#what-are-your-outbound-smtp-limits}
+
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+
+### Do I need approval to enable SMTP {#do-i-need-approval-to-enable-smtp}
+
+Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+### What are your SMTP server configuration settings {#what-are-your-smtp-server-configuration-settings}
+
+Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+
+**As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
+
+> \[!CAUTION]
+> **Legacy TLS 1.0 Support (Ports 2455 and 2555)**: These ports use the deprecated TLS 1.0 protocol which has known security vulnerabilities (BEAST, POODLE). Only use these ports if your device absolutely cannot support TLS 1.2 or higher. We strongly recommend upgrading your device firmware or switching to modern email clients whenever possible. These ports are intended solely for legacy hardware compatibility (old printers, scanners, cameras, IoT devices).
+
+| Protocol | Hostname | Ports | IPv4 | IPv6 | Notes |
+| :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
+| `SSL/TLS` **Preferred** | `smtp.forwardemail.net` | `465`, `2465` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended) |
+| `SSL/TLS` **Legacy Only** | `smtp.forwardemail.net` | `2455` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` | `2555` | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
+
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Käyttäjätunnus | `user@example.com` | Verkkotunnukselle olemassa olevan aliaksen sähköpostiosoite <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a>-osiossa. |
-| Salasana | `************************` | Alias-kohtainen luotu salasana. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias |
 
-Jotta lähtevää sähköpostia voidaan lähettää SMTP:n kautta, **SMTP-käyttäjän** on oltava sellaisen aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **SMTP-salasanan** on oltava aliakselle erikseen luotu salasana.
+In order to send outbound email with SMTP, the **SMTP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **SMTP password** must be an alias-specific generated password.
 
-Katso vaiheittaiset ohjeet kohdasta [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp).
+Please refer to [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp) for step by step instructions.
 
-### Mitkä ovat IMAP-palvelimesi määritysasetukset? {#what-are-your-imap-server-configuration-settings}
+### What are your IMAP server configuration settings {#what-are-your-imap-server-configuration-settings}
 
-Palvelimemme on `imap.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
+Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `993` ja `2993` kautta SSL/TLS-salausta varten.
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-| Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Suositeltu** | `imap.forwardemail.net` | `993`, `2993` | :valkoinen_tarkistusmerkki: | :valkoinen_tarkistusmerkki: |
+| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
-| Kirjaudu sisään | Esimerkki | Kuvaus |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Käyttäjätunnus | `user@example.com` | Verkkotunnukselle olemassa olevan aliaksen sähköpostiosoite <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a>-osiossa. |
-| Salasana | `************************` | Alias-kohtainen luotu salasana. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-Jotta IMAP-yhteys voidaan muodostaa, **IMAP-käyttäjän** sähköpostiosoitteen on oltava verkkotunnukselle <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> -osiossa olevan aliaksen sähköpostiosoite – ja **IMAP-salasanan** on oltava aliakselle erikseen luotu salasana.
+In order to connect with IMAP, the **IMAP user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Katso vaiheittaiset ohjeet kohdasta [Tuetko sähköpostin vastaanottamista IMAP-protokollan kautta?](#do-you-support-receiving-email-with-imap).
+Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
-### Mitkä ovat POP3-palvelimesi määritysasetukset? {#what-are-your-pop3-server-configuration-settings}
+### What are your POP3 server configuration settings {#what-are-your-pop3-server-configuration-settings}
 
-Palvelimemme on `pop3.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
+Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `995` ja `2995` kautta SSL/TLS-salausta varten.
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-| Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
+| Protocol | Hostname | Ports | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `SSL/TLS` **Suositeltu** | `pop3.forwardemail.net` | `995`, `2995` | :valkoinen_tarkistusmerkki: | :valkoinen_tarkistusmerkki: |
+| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
 
-| Kirjaudu sisään | Esimerkki | Kuvaus |
+| Login | Example | Description |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Käyttäjätunnus | `user@example.com` | Verkkotunnukselle olemassa olevan aliaksen sähköpostiosoite <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a>-osiossa. |
-| Salasana | `************************` | Alias-kohtainen luotu salasana. |
+| Username | `user@example.com` | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password. |
 
-POP3-yhteyden muodostamiseksi **POP3-käyttäjän** sähköpostiosoitteen on oltava aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **IMAP-salasanan** on oltava aliakselle erikseen luotu salasana.
+In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
-Katso vaiheittaiset ohjeet kohdasta [Tuetko POP3-palvelua?](#do-you-support-pop3).
+Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
 
-### Postfix SMTP -välityspalvelimen määritys {#postfix-smtp-relay-configuration}
+## Security {#security}
 
-Voit määrittää Postfixin välittämään sähköposteja Forward Emailin SMTP-palvelimien kautta. Tämä on hyödyllistä palvelinsovelluksille, joiden on lähetettävä sähköposteja.
-
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-<i class="fa fa-stopwatch font-weight-bold"></i>
-<strong class="font-weight-bold">Arvioitu asennusaika:</strong>
-<span>Alle 15 minuuttia</span>
-</div>
-
-<div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Tämä edellyttää maksullista liittymää, jossa SMTP-käyttö on käytössä.
-</span>
-</div>
-
-#### Asennus {#installation}
-
-1. Asenna Postfix palvelimellesi:
-
-```bash
-# Ubuntu/Debian
-sudo apt update && sudo apt install postfix
-
-# CentOS/RHEL
-sudo yum install postfix
-
-# macOS
-brew install postfix
-```
-
-2. Valitse asennuksen aikana "Internet-sivusto", kun sinulta kysytään määritystyyppiä.
-
-####-määritys {#configuration}
-
-1. Muokkaa Postfixin pääasetustiedostoa:
-
-```bash
-sudo nano /etc/postfix/main.cf
-```
-
-2. Lisää tai muokkaa näitä asetuksia:
-
-```
-# SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-```
-
-3. Luo SASL-salasanatiedosto:
-
-```bash
-sudo nano /etc/postfix/sasl_passwd
-```
-
-4. Lisää sähköpostin edelleenlähetystunnuksesi:
-
-```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
-```
-
-5. Suojaa ja hajauta salasanatiedosto:
-
-```bash
-sudo chmod 600 /etc/postfix/sasl_passwd
-sudo postmap /etc/postfix/sasl_passwd
-```
-
-6. Käynnistä Postfix uudelleen:
-
-```bash
-sudo systemctl restart postfix
-```
-
-#### Testataan {#testing}
-
-Testaa kokoonpanoasi lähettämällä testisähköposti:
-
-```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
-```
-
-## Tietoturva {#security}
-
-### Palvelimen suojauksen edistyneet tekniikat {#advanced-server-hardening-techniques}
+### Advanced Server Hardening Techniques {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Lue lisää suojausinfrastruktuuristamme osoitteessa [Tietoturvasivumme](/security).
+> Learn more about our security infrastructure on [our Security page](/security).
 
-Forward Email käyttää useita palvelimen suojaustekniikoita varmistaakseen infrastruktuurimme ja tietojesi turvallisuuden:
+Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:
 
-1. **Verkon tietoturva**:
-* IP-taulukoiden palomuuri tiukoilla säännöillä
-* Fail2ban brute force -suojaukseen
-* Säännölliset tietoturvatarkastukset ja penetraatiotestaus
-* Vain VPN:llä toimiva järjestelmänvalvojan käyttöoikeus
+1. **Network Security**:
+   * IP tables firewall with strict rules
+   * Fail2ban for brute force protection
+   * Regular security audits and penetration testing
+   * VPN-only administrative access
 
-2. **Järjestelmän suojaus**:
-* Minimi pakettien asennus
-* Säännölliset tietoturvapäivitykset
-* SELinux pakotustilassa
-* Root SSH -käyttö estetty
-* Vain avaimeen perustuva todennus
+2. **System Hardening**:
+   * Minimal package installation
+   * Regular security updates
+   * SELinux in enforcing mode
+   * Disabled root SSH access
+   * Key-based authentication only
 
-3. **Sovellustietoturva**:
-* Sisällön tietoturvapolitiikan (CSP) otsikot
-* HTTPS:n tiukka tiedonsiirtoturvallisuus (HSTS)
-* XSS-suojausotsikot
-* Kehysasetukset ja viittaajapolitiikan otsikot
-* Säännölliset riippuvuustarkastukset
+3. **Application Security**:
+   * Content Security Policy (CSP) headers
+   * HTTPS Strict Transport Security (HSTS)
+   * XSS protection headers
+   * Frame options and referrer policy headers
+   * Regular dependency audits
 
-4. **Tietosuojaus**:
-* Täydellinen levyn salaus LUKS:lla
-* Turvallinen avaintenhallinta
-* Säännölliset varmuuskopiot salauksella
-* Tietojen minimointikäytännöt
+4. **Data Protection**:
+   * Full disk encryption with LUKS
+   * Secure key management
+   * Regular backups with encryption
+   * Data minimization practices
 
-5. **Seuranta ja reagointi**:
-* Reaaliaikainen tunkeutumisen havaitseminen
-* Automaattinen tietoturvaskannaus
-* Keskitetty lokinpito ja analysointi
-* Tapahtumiin reagointimenettelyt
+5. **Monitoring and Response**:
+   * Real-time intrusion detection
+   * Automated security scanning
+   * Centralized logging and analysis
+   * Incident response procedures
 
 > \[!IMPORTANT]
-> Tietoturvakäytäntöjämme päivitetään jatkuvasti uusien uhkien ja haavoittuvuuksien varalta.
+> Our security practices are continuously updated to address emerging threats and vulnerabilities.
 
 > \[!TIP]
-> Parhaan mahdollisen turvallisuuden takaamiseksi suosittelemme käyttämään palveluamme OpenPGP:n kautta tapahtuvalla päästä päähän -salauksella.
+> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
 
-### Onko sinulla SOC 2- tai ISO 27001 -sertifikaatit? {#do-you-have-soc-2-or-iso-27001-certifications}
+### Do you have SOC 2 or ISO 27001 certifications {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Sähköpostin edelleenlähetys toimii sertifioitujen alihankkijoiden tarjoaman infrastruktuurin avulla varmistaakseen alan standardien noudattamisen.
+> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
 
-Forward Emaililla ei ole suoraan SOC 2 Type II- tai ISO 27001 -sertifikaatteja. Palvelu toimii kuitenkin sertifioitujen alihankkijoiden tarjoaman infrastruktuurin avulla:
+Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
 
-* **DigitalOcean**: SOC 2 Type II- ja SOC 3 Type II -sertifioitu (Schellman & Company LLC:n tarkastama), ISO 27001 -sertifioitu useissa datakeskuksissa. Tiedot: <https://www.digitalocean.com/trust/certification-reports>
+* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
 
-* **Vultr**: SOC 2+ (HIPAA) -sertifioitu, ISO/IEC-sertifioinnit: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Tiedot: <https://www.vultr.com/legal/compliance/>
+* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
 
-* **DataPacket**: SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin sertifioinnin hankkimiseksi), yritystason infrastruktuurin tarjoaja (Denverin toimipiste). Tiedot: <https://www.datapacket.com/datacenters/denver>
+* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
 
-Forward Email noudattaa alan parhaita käytäntöjä tietoturvatarkastuksissa ja on säännöllisesti yhteydessä riippumattomiin tietoturvatutkijoihin. Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### Käytätkö TLS-salausta sähköpostin edelleenlähetykseen? {#do-you-use-tls-encryption-for-email-forwarding}
+### Do you use TLS encryption for email forwarding {#do-you-use-tls-encryption-for-email-forwarding}
 
-Kyllä. Sähköpostin edelleenlähetyspalvelu käyttää tiukasti TLS 1.2+ -salausta kaikissa yhteyksissä (HTTPS, SMTP, IMAP, POP3) ja käyttää MTA-STS:ää parannetun TLS-tuen takaamiseksi. Toteutus sisältää:
+Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
 
-* TLS 1.2+ -salauksen valvonta kaikissa sähköpostiyhteyksissä
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) -avaintenvaihto täydellisen edelleenlähetyssalaisuuden takaamiseksi
-* Nykyaikaiset salausohjelmistot säännöllisillä tietoturvapäivityksillä
-* HTTP/2-tuki parannetun suorituskyvyn ja tietoturvan takaamiseksi
-* HSTS (HTTP Strict Transport Security) esiasennuksella tärkeimmissä selaimissa
-* **MTA-STS (Mail Transfer Agent Strict Transport Security)** tiukan TLS-valvonnan takaamiseksi
+* TLS 1.2+ enforcement for all email connections
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
+* Modern cipher suites with regular security updates
+* HTTP/2 support for improved performance and security
+* HSTS (HTTP Strict Transport Security) with preloading in major browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
 
-Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
-**MTA-STS-toteutus**: Sähköpostin edelleenlähetys toteuttaa tiukan MTA-STS-valvonnan koodikannassa. Kun TLS-virheitä ilmenee ja MTA-STS-salausta valvotaan, järjestelmä palauttaa 421 SMTP-tilakoodia varmistaakseen, että sähköposteja yritetään uudelleen myöhemmin sen sijaan, että ne toimitettaisiin turvattomasti. Toteutuksen tiedot:
+**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
 
-* TLS-virheiden tunnistus: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* MTA-STS-valvonta sähköpostin lähetysapuohjelmassa: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Kolmannen osapuolen vahvistus: <https://www.hardenize.com/report/forwardemail.net/1750312779> näyttää "Hyvät"-arvosanat kaikille TLS- ja tiedonsiirron suojausmenetelmille.
+Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
 
-### Säilytätkö sähköpostin todennusotsikot {#do-you-preserve-email-authentication-headers}
+### Do you preserve email authentication headers {#do-you-preserve-email-authentication-headers}
 
-Kyllä. Sähköpostin edelleenlähetys toteuttaa ja säilyttää sähköpostin todennusotsikot kattavasti:
+Yes. Forward Email comprehensively implements and preserves email authentication headers:
 
-* **SPF (Sender Policy Framework)**: Oikein toteutettu ja säilytetty
-* **DKIM (DomainKeys Identified Mail)**: Täysi tuki asianmukaisella avaintenhallinnalla
-* **DMARC**: Käytännön valvonta sähköposteille, jotka eivät läpäise SPF- tai DKIM-vahvistusta
-* **ARC**: Vaikka sitä ei olekaan erikseen kuvattu, palvelun täydelliset yhteensopivuuspisteet viittaavat kattavaan todennusotsikoiden käsittelyyn
+* **SPF (Sender Policy Framework)**: Properly implemented and preserved
+* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
+* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
 
-Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Validointi: Internet.nl Mail Test antaa 100/100-pistemäärän erityisesti "SPF-, DKIM- ja DMARC-toteutuksille". Hardenize-arviointi vahvistaa SPF- ja DMARC-toteutuksille "hyvät"-arvosanat: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### Säilytätkö alkuperäiset sähköpostiotsikot ja estätkö väärentämisen? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Do you preserve original email headers and prevent spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Sähköpostin edelleenlähetystoiminto toteuttaa kehittyneen sähköpostihuijausten eston, joka estää sähköpostien väärinkäytön.
+> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
 
-Forward Email säilyttää alkuperäiset sähköpostiotsikot ja toteuttaa samalla kattavan huijaussuojauksen MX-koodikannan kautta:
+Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
 
-* **Ylätunnisteen säilytys**: Alkuperäiset todennusylätunnisteet säilytetään edelleenlähetyksen aikana.* **Huijaussuoja**: DMARC-käytännön valvonta estää ylätunnisteen väärentämisen hylkäämällä sähköpostit, jotka eivät läpäise SPF- tai DKIM-vahvistusta.
-* **Ylätunnisteen lisäyksen esto**: Syötetietojen validointi ja puhdistus striptags-kirjaston avulla.
-* **Lisäsuojaus**: Kehittynyt tietojenkalastelutunnistus väärennösten tunnistuksella, henkilöllisyyden estolla ja käyttäjäilmoitusjärjestelmillä.
+* **Header Preservation**: Original authentication headers are maintained during forwarding
+* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
+* **Header Injection Prevention**: Input validation and sanitization using striptags library
+* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
 
-**MX-toteutuksen tiedot**: Ydinsähköpostin käsittelylogiikkaa hoitaa MX-palvelimen koodikanta, erityisesti:
+**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
 
-* Pääasiallinen MX-tietojen käsittelijä: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
-* Sähköpostien mielivaltainen suodatus (huijausesto): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-`isArbitrary`-apuohjelma toteuttaa kehittyneitä huijausvastaisia sääntöjä, mukaan lukien verkkotunnusten henkilöllisyyden anastamisen, estettyjen lausekkeiden ja erilaisten tietojenkalastelumallien tunnistuksen.
+The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
 
-Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
-### Miten suojaudut roskapostilta ja väärinkäytöksiltä {#how-do-you-protect-against-spam-and-abuse}
+### How do you protect against spam and abuse {#how-do-you-protect-against-spam-and-abuse}
 
-Forward Email toteuttaa kattavan monikerroksisen suojauksen:
+Forward Email implements comprehensive multi-layer protection:
 
-* **Nopeuden rajoittaminen**: Sovelletaan todennusyrityksiin, API-päätepisteisiin ja SMTP-yhteyksiin
-* **Resurssien eristäminen**: Käyttäjien välillä suurten käyttäjämäärien vaikutusten estämiseksi
-* **DDoS-suojaus**: Monikerroksinen suojaus DataPacketin Shield-järjestelmän ja Cloudflaren avulla
-* **Automaattinen skaalaus**: Dynaaminen resurssien säätö kysynnän perusteella
-* **Väärinkäytösten estäminen**: Käyttäjäkohtaiset väärinkäytösten estämistarkastukset ja hajautuspohjainen esto haitalliselle sisällölle
-* **Sähköpostin todennus**: SPF-, DKIM- ja DMARC-protokollat edistyneellä tietojenkalastelutunnistuksella
+* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
+* **Resource Isolation**: Between users to prevent impact from high-volume users
+* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
+* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
 
-Lähteet:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (DDoS-suojauksen tiedot)
+* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Tallennatko sähköpostisisältöä levylle {#do-you-store-email-content-on-disk}
+### Do you store email content on disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Sähköpostin edelleenlähetys käyttää nollatietoarkkitehtuuria, joka estää sähköpostisisällön kirjoittamisen levylle.
+> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
 
-* **Zero-Knowledge Architecture**: Yksittäin salatut SQLite-postilaatikot tarkoittavat, että Forward Email ei voi käyttää sähköpostin sisältöä.
-* **Muistissa tapahtuva käsittely**: Sähköpostin käsittely tapahtuu kokonaan muistissa, joten levylle ei tarvitse tallentaa.
-* **Ei sisällön lokikirjausta**: "Emme kirjaa tai tallenna sähköpostin sisältöä tai metatietoja levylle."
-* **Hiekkalaatikkosalaus**: Salausavaimia ei koskaan tallenneta levylle selkotekstimuodossa.
+* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
+* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
+* **No Content Logging**: "We do not log or store email content or metadata to disk"
+* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
 
-**MX-koodikannan todiste**: MX-palvelin käsittelee sähköpostit kokonaan muistissa kirjoittamatta sisältöä levylle. Pääasiallinen sähköpostin käsittelyn käsittelijä havainnollistaa tätä muistissa tapahtuvaa lähestymistapaa: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Lähteet:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Tiivistelmä)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Tietoa ei ole)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Hiekkalaatikkosalaus)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
 
-### Voiko sähköpostin sisältö paljastua järjestelmän kaatumisten aikana {#can-email-content-be-exposed-during-system-crashes}
+### Can email content be exposed during system crashes {#can-email-content-be-exposed-during-system-crashes}
 
-Ei. Forward Email toteuttaa kattavia suojatoimia kaatumiseen liittyvää datan paljastumista vastaan:
+No. Forward Email implements comprehensive safeguards against crash-related data exposure:
 
-* **Ydinvedokset poistettu käytöstä**: Estää muistin paljastumisen kaatumisten aikana
-* **Vaihtomuisti poistettu käytöstä**: Täysin poistettu käytöstä, jotta arkaluonteisten tietojen poimiminen vaihtotiedostoista voidaan estää
-* **Muistin sisäinen arkkitehtuuri**: Sähköpostin sisältö on vain haihtuvassa muistissa käsittelyn aikana
-* **Salausavaimen suojaus**: Avaimia ei koskaan tallenneta levylle selkokielisenä
-* **Fyysinen suojaus**: LUKS v2 -salatut levyt estävät fyysisen pääsyn tietoihin
-* **USB-tallennustila poistettu käytöstä**: Estää luvattoman tietojen poiminnan
+* **Core Dumps Disabled**: Prevents memory exposure during crashes
+* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
+* **In-Memory Architecture**: Email content exists only in volatile memory during processing
+* **Encryption Key Protection**: Keys are never stored on disk in plaintext
+* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
+* **USB Storage Disabled**: Prevents unauthorized data extraction
 
-**Järjestelmäongelmien virheiden käsittely**: Sähköpostin edelleenlähetys käyttää apufunktioita `isCodeBug` ja `isTimeoutError` varmistaakseen, että jos tietokannan yhteysongelmia, DNS-verkon/estolistalla olevia ongelmia tai ylävirran yhteysongelmia ilmenee, järjestelmä palauttaa 421 SMTP-tilakoodin varmistaakseen, että sähköposteja yritetään uudelleen myöhemmin katoamisen tai paljastumisen sijaan.
+**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
 
-Toteutuksen yksityiskohdat:
+Implementation details:
 
-* Virheen luokittelu: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
-* Aikakatkaisuvirheiden käsittely MX-käsittelyssä: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### Kenellä on pääsy sähköposti-infrastruktuuriisi {#who-has-access-to-your-email-infrastructure}
+### Who has access to your email infrastructure {#who-has-access-to-your-email-infrastructure}
 
-Forward Email toteuttaa kattavat käyttöoikeuksien hallinnan 2–3 hengen suunnittelutiimilleen tiukoilla 2FA-vaatimuksilla:
+Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
 
-* **Roolipohjainen käyttöoikeuksien hallinta**: Tiimitileille, joilla on resurssipohjaiset käyttöoikeudet
-* **Pienimpien oikeuksien periaate**: Sovelletaan kaikissa järjestelmissä
-* **Tehtävien eriyttäminen**: Operatiivisten roolien välillä
-* **Käyttäjähallinta**: Erilliset käyttöönotto- ja devops-käyttäjät, joilla on erilliset käyttöoikeudet
-* **Pääkäyttäjän kirjautuminen poistettu käytöstä**: Pakottaa pääsyn oikein todennettujen tilien kautta
-* **Tiukka kaksivaiheinen tunnistautuminen**: Ei tekstiviestipohjaista kaksivaiheista tunnistautumista MiTM-hyökkäysten riskin vuoksi - vain sovelluspohjaiset tai laitteistotunnukset
-* **Kattava auditointiloki**: Arkaluonteisten tietojen poistaminen käytöstä
-* **Automaattinen poikkeamien tunnistus**: Epätavallisille käyttötapauksille
-* **Säännölliset tietoturvatarkastukset**: Käyttölokeille
-* **Pahan piian hyökkäysten estäminen**: USB-tallennustila poistettu käytöstä ja muut fyysiset turvatoimenpiteet
+* **Role-Based Access Control**: For team accounts with resource-based permissions
+* **Least Privilege Principle**: Applied throughout all systems
+* **Segregation of Duties**: Between operational roles
+* **User Management**: Separate deploy and devops users with distinct permissions
+* **Root Login Disabled**: Forces access through properly authenticated accounts
+* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
+* **Comprehensive Audit Logging**: With sensitive data redaction
+* **Automated Anomaly Detection**: For unusual access patterns
+* **Regular Security Reviews**: Of access logs
+* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
 
-Lähteet:
+Sources:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Valtuutusasetukset)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Verkon suojaus)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Paholaisen hyökkäyksen esto)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
 
-### Mitä infrastruktuurin tarjoajia käytät {#what-infrastructure-providers-do-you-use}
+### What infrastructure providers do you use {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Sähköpostin edelleenlähetys käyttää useita infrastruktuurin alikäsittelijöitä, joilla on kattavat vaatimustenmukaisuussertifikaatit.
+> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
 
-Täydelliset tiedot ovat saatavilla GDPR-vaatimustenmukaisuussivullamme: <https://forwardemail.net/gdpr>
+Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
 
-**Ensisijaisen infrastruktuurin alihankkijat:**
+**Primary Infrastructure Subprocessors:**
 
-| Palveluntarjoaja | Tietosuojakehyssertifioitu | GDPR-vaatimustenmukaisuussivu |
+| Provider | Data Privacy Framework Certified | GDPR Compliance Page |
 | ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Pilvimyrsky** | ✅ Kyllä | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **Datapaketti** | ❌ Ei | <https://www.datapacket.com/privacy-policy> |
-| **DigitalOcean** | ❌ Ei | <https://www.digitalocean.com/legal/gdpr> |
-| **Vultr** | ❌ Ei | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| **Cloudflare** | ✅ Yes | <https://www.cloudflare.com/trust-hub/gdpr/> |
+| **DataPacket** | ❌ No | <https://www.datapacket.com/privacy-policy> |
+| **DigitalOcean** | ❌ No | <https://www.digitalocean.com/legal/gdpr> |
+| **Vultr** | ❌ No | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 
-**Yksityiskohtaiset sertifikaatit:**
+**Detailed Certifications:**
 
 **DigitalOcean**
 
-* SOC 2 Type II ja SOC 3 Type II (Schellman & Company LLC:n tarkastama)
-* ISO 27001 -sertifioitu useissa datakeskuksissa
-* PCI-DSS-yhteensopiva
-* CSA STAR Level 1 -sertifioitu
-* APEC CBPR PRP -sertifioitu
-* Tiedot: <https://www.digitalocean.com/trust/certification-reports>
+* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
+* ISO 27001 certified at multiple data centers
+* PCI-DSS compliant
+* CSA STAR Level 1 certified
+* APEC CBPR PRP certified
+* Details: <https://www.digitalocean.com/trust/certification-reports>
 
 **Vultr**
 
-* SOC 2+ (HIPAA) -sertifioitu
-* PCI Merchant -yhteensopiva
-* CSA STAR Level 1 -sertifioitu
+* SOC 2+ (HIPAA) certified
+* PCI Merchant compliant
+* CSA STAR Level 1 certified
 * ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
-* Tiedot: <https://www.vultr.com/legal/compliance/>
+* Details: <https://www.vultr.com/legal/compliance/>
 
-**Datapaketti**
+**DataPacket**
 
-* SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin saadaksesi sertifioinnin)
-* Yritystason infrastruktuuri (Denverin toimipiste)
-* DDoS-suojaus Shield-kyberturvallisuuspinon kautta
-* 24/7 tekninen tuki
-* Maailmanlaajuinen verkosto 58 datakeskuksessa
-* Tiedot: <https://www.datapacket.com/datacenters/denver>
+* SOC 2 compliant (contact DataPacket directly to obtain certification)
+* Enterprise-grade infrastructure (Denver location)
+* DDoS protection through Shield cybersecurity stack
+* 24/7 technical support
+* Global network across 58 data centers
+* Details: <https://www.datapacket.com/datacenters/denver>
 
-**Maksujen käsittelijät:**
+**Payment Processors:**
 
-* **Stripe**: Tietosuojakäytäntöjen mukainen sertifioitu - <https://stripe.com/legal/privacy-center>
-* **PayPal**: Ei DPF-sertifioitu - <https://www.paypal.com/uk/legalhub/privacy-full>
+* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Tarjoatteko tietojenkäsittelysopimusta (DPA)? {#do-you-offer-a-data-processing-agreement-dpa}
+### Do you offer a Data Processing Agreement (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-Kyllä, Forward Email tarjoaa kattavan tietojenkäsittelysopimuksen (DPA), joka voidaan allekirjoittaa yrityssopimuksemme yhteydessä. Kopio DPA:stamme on saatavilla osoitteessa: <https://forwardemail.net/dpa>
+Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
 
-**DPA-tiedot:**
+**DPA Details:**
 
-* Kattaa GDPR-vaatimustenmukaisuuden ja EU:n ja Yhdysvaltojen/Sveitsin ja Yhdysvaltojen välisen Privacy Shield -kehyksen
-* Hyväksytään automaattisesti, kun hyväksyt palveluehtomme
-* Erillistä allekirjoitusta ei vaadita vakiomuotoiseen DPA:han
-* Mukautetut DPA-järjestelyt saatavilla yrityslisenssin kautta
+* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
+* Automatically accepted when agreeing to our Terms of Service
+* No separate signature required for standard DPA
+* Custom DPA arrangements available through Enterprise License
 
-**GDPR-vaatimustenmukaisuuskehys:** Tietosuojasopimuksessamme on yksityiskohtaisesti kuvattu GDPR:n sekä kansainvälisten tiedonsiirtovaatimusten noudattaminen. Täydelliset tiedot ovat saatavilla osoitteessa: <https://forwardemail.net/gdpr>
+**GDPR Compliance Framework:**
+Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
 
-Yritysasiakkaat, jotka tarvitsevat mukautettuja DPA-ehtoja tai erityisiä sopimusjärjestelyjä, voivat ratkaista nämä ongelmat **Yrityslisenssi (250 dollaria/kk)** -ohjelmamme kautta.
+For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
 
-### Miten käsittelette tietomurtoilmoituksia {#how-do-you-handle-data-breach-notifications}
+### How do you handle data breach notifications {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Emailin nollatietoarkkitehtuuri rajoittaa merkittävästi tietomurtojen vaikutusta.
+> Forward Email's zero-knowledge architecture significantly limits breach impact.
 
-* **Rajoitettu tietomäärä**: Salattua sähköpostisisältöä ei voi käyttää nollatietoarkkitehtuurin vuoksi.
-* **Minimaalinen tiedonkeruu**: Vain tilaajien perustiedot ja rajoitetut IP-lokit turvallisuussyistä.
-* **Alihankkijoiden viitekehykset**: DigitalOcean ja Vultr noudattavat GDPR-yhteensopivia tietoturvaloukkauksiin reagointimenettelyjä.
+* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
+* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
+* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
 
-**GDPR-edustajan tiedot:**
-Forward Email on nimittänyt GDPR-edustajia artiklan 27 mukaisesti:
+**GDPR Representative Information:**
+Forward Email has appointed GDPR representatives in accordance with Article 27:
 
-**EU-edustaja:**
+**EU Representative:**
 Osano International Compliance Services Limited
-HUOM: LFHC
+ATTN: LFHC
 3 Dublin Landings, North Wall Quay
 Dublin 1, D01C4E0
 
-**Edustaja Isossa-Britanniassa:**
+**UK Representative:**
 Osano UK Compliance LTD
-HUOM: LFHC
+ATTN: LFHC
 42-46 Fountain Street, Belfast
-Antrim, BT1-5EF
+Antrim, BT1 - 5EF
 
-Yritysasiakkaiden, jotka tarvitsevat erityisiä tietomurtoilmoituspalvelusopimuksia, tulisi käsitellä näistä osana **yrityslisenssi**sopimusta.
+For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
 
-Lähteet:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Tarjoatteko testiympäristöä? {#do-you-offer-a-test-environment}
+### Do you offer a test environment {#do-you-offer-a-test-environment}
 
-Forward Emailin tekninen dokumentaatio ei kuvaa nimenomaisesti erillistä hiekkalaatikkotilaa. Mahdollisia testausmenetelmiä ovat kuitenkin:
+Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
 
-* **Itseisännöintivaihtoehto**: Kattavat itseisännöintiominaisuudet testiympäristöjen luomiseen
-* **API-rajapinta**: Mahdollisuus konfiguraatioiden ohjelmalliseen testaukseen
-* **Avoin lähdekoodi**: 100 % avoimen lähdekoodin koodi antaa asiakkaille mahdollisuuden tutkia edelleenlähetyslogiikkaa
-* **Useita verkkotunnuksia**: Tuki useille verkkotunnuksille voi mahdollistaa testiverkkotunnusten luomisen
+* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
+* **API Interface**: Potential for programmatic testing of configurations
+* **Open Source**: 100% open-source code allows customers to examine forwarding logic
+* **Multiple Domains**: Support for multiple domains could enable test domain creation
 
-Yritysasiakkaiden, jotka tarvitsevat virallisia hiekkalaatikko-ominaisuuksia, tulisi keskustella tästä osana **yrityslisenssi**-sopimusta.
+For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
 
-Lähde: <https://github.com/forwardemail/forwardemail.net> (Kehitysympäristön tiedot)
+Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
 
-### Tarjoatteko valvonta- ja hälytystyökaluja? {#do-you-provide-monitoring-and-alerting-tools}
+### Do you provide monitoring and alerting tools {#do-you-provide-monitoring-and-alerting-tools}
 
-Sähköpostin edelleenlähetys tarjoaa reaaliaikaista seurantaa tietyin rajoituksin:
+Forward Email provides real-time monitoring with some limitations:
 
-**Saatavilla:**
+**Available:**
 
-* **Reaaliaikainen toimituksen seuranta**: Julkisesti näkyvät suorituskykymittarit tärkeimmille sähköpostipalveluntarjoajille
-* **Automaattinen hälytys**: Suunnittelutiimi saa ilmoituksen, kun toimitusaika ylittää 10 sekuntia
-* **Läpinäkyvä seuranta**: 100 % avoimen lähdekoodin valvontajärjestelmät
-* **Infrastruktuurin seuranta**: Automaattinen poikkeamien tunnistus ja kattava auditointiloki
+* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
+* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
+* **Transparent Monitoring**: 100% open-source monitoring systems
+* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
 
-Rajoitukset:
+**Limitations:**
 
-* Asiakkaille suunnattuja webhookkeja tai API-pohjaisia toimitustilailmoituksia ei ole dokumentoitu erikseen.
+* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
 
-Yritysasiakkaille, jotka tarvitsevat yksityiskohtaisia toimitustilan webhookeja tai mukautettuja valvontaintegraatioita, nämä ominaisuudet voivat olla saatavilla **yrityslisenssi**-sopimusten kautta.
+For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
 
-Lähteet:
+Sources:
 
-* <https://forwardemail.net> (Reaaliaikaisen valvonnan näyttö)
-* <https://github.com/forwardemail/forwardemail.net> (Valvonnan toteutus)
+* <https://forwardemail.net> (Real-time monitoring display)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
 
-### Miten varmistat korkean käytettävyyden {#how-do-you-ensure-high-availability}
+### How do you ensure high availability {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Sähköpostin edelleenlähetys toteuttaa kattavan redundanssin useiden infrastruktuuripalveluntarjoajien välillä.
+> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
 
-* **Hajautettu infrastruktuuri**: Useita palveluntarjoajia (DigitalOcean, Vultr, DataPacket) eri maantieteellisillä alueilla
-* **Maantieteellinen kuormituksen tasapainotus**: Cloudflare-pohjainen maantieteellisesti paikannettu kuormituksen tasapainotus automaattisella vikasietoisuudella
-* **Automaattinen skaalaus**: Dynaaminen resurssien säätö kysynnän perusteella
-* **Monikerroksinen DDoS-suojaus**: DataPacketin Shield-järjestelmän ja Cloudflaren kautta
-* **Palvelinten redundanssi**: Useita palvelimia aluetta kohden automaattisella vikasietoisuudella
-* **Tietokannan replikointi**: Reaaliaikainen tietojen synkronointi useiden sijaintien välillä
-* **Seuranta ja hälytykset**: 24/7-valvonta automaattisella tapahtumiin reagoinnilla
+* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
+* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
+* **Server Redundancy**: Multiple servers per region with automatic failover
+* **Database Replication**: Real-time data synchronization across multiple locations
+* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
 
-**Käyttöaikatakuu**: Palvelun saatavuus yli 99,9 % ja läpinäkyvä valvonta saatavilla osoitteessa <https://forwardemail.net>
+**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
 
-Lähteet:
+Sources:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Noudatatko National Defense Authorization Actin (NDAA) pykälän 889 määräyksiä? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Sähköpostin edelleenlähetys on täysin säännön 889 mukainen infrastruktuurikumppaneiden huolellisen valinnan ansiosta.
+> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
 
-Kyllä, sähköpostin edelleenlähetys on **pykälän 889 mukainen**. Yhdysvaltain puolustusministeriön lain (NDAA) pykälä 889 kieltää valtion virastoja käyttämästä tiettyjen yritysten (Huawei, ZTE, Hikvision, Dahua ja Hytera) televiestintä- ja videovalvontalaitteita käyttäviä tahoja tai tekemästä sopimuksia niiden kanssa.
+Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
 
-**Miten sähköpostin edelleenlähetys täyttää pykälän 889 vaatimukset:**
+**How Forward Email Achieves Section 889 Compliance:**
 
-Forward Email luottaa yksinomaan kahteen keskeiseen infrastruktuuritoimittajaan, joista kumpikaan ei käytä pykälän 889 mukaisesti kiellettyjä laitteita:
+Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
 
-1. **Cloudflare**: Ensisijainen kumppanimme verkkopalveluissa ja sähköpostin suojauksessa
-2. **DataPacket**: Ensisijainen palvelininfrastruktuurin tarjoajamme (käyttäen yksinomaan Arista Networksin ja Ciscon laitteita)
-3. **Varauskopiointipalvelut**: Digital Oceanin ja Vultrin varmuuskopiointipalvelujen tarjoajista on lisäksi kirjallisesti vahvistettu, että ne ovat Section 889 -yhteensopivia.
+1. **Cloudflare**: Our primary partner for network services and email security
+2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
+3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
 
-**Cloudflaren sitoumus**: Cloudflare toteaa nimenomaisesti kolmansien osapuolten käytännesäännöissään, ettei se käytä televiestintälaitteita, videovalvontatuotteita tai -palveluita miltään 889 §:n kieltämiltä tahoilta.
+**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
 
-**Viranomaisten käyttötapaus**: Yhteensopivuutemme pykälän 889 mukaisesti varmistettiin, kun **Yhdysvaltain laivastoakatemia** valitsi Forward Email -palvelun suojattuun sähköpostin edelleenlähetystarpeeseensa, mikä edellytti liittovaltion vaatimustenmukaisuusstandardiemme dokumentointia.
+**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
 
-Saat täydelliset tiedot viranomaisten vaatimustenmukaisuuskehyksestämme, mukaan lukien laajemmat liittovaltion määräykset, lukemalla kattavan tapaustutkimuksemme: [Liittovaltion hallituksen sähköpostipalvelu pykälän 889 mukainen](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## Järjestelmä ja tekniset tiedot {#system-and-technical-details}
+## System and Technical Details {#system-and-technical-details}
 
-### Säilytätkö sähköposteja ja niiden sisältöä {#do-you-store-emails-and-their-contents}
+### Do you store emails and their contents {#do-you-store-emails-and-their-contents}
 
-Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-elementtien avulla (katso [Tietosuojakäytäntö](/privacy)).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### Miten sähköpostin edelleenlähetysjärjestelmäsi toimii {#how-does-your-email-forwarding-system-work}
+### How does your email forwarding system work {#how-does-your-email-forwarding-system-work}
 
-Sähköposti perustuu [SMTP-protokolla](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-protokollaan. Tämä protokolla koostuu palvelimelle lähetettävistä komennoista (yleisimmin portissa 25). Aluksi muodostetaan yhteys, jonka jälkeen lähettäjä ilmoittaa sähköpostin lähettäjän ("MAIL FROM"), minkä jälkeen viestin vastaanottajan ("RCPT TO") ja lopuksi itse sähköpostin otsikot ja rungon ("DATA"). Sähköpostin edelleenlähetysjärjestelmämme kulku on kuvattu alla kunkin SMTP-protokollakomennon osalta:
+Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).  This protocol consists of commands sent to a server (running most commonly on port 25).  There is an initial connection, then the sender indicates who the mail is from ("MAIL FROM"), followed by where it's going to ("RCPT TO"), and finally the headers and the body of the email itself ("DATA").  The flow of our email forwarding system is described relative to each SMTP protocol command below:
 
-* Ensimmäinen yhteys (ei komennon nimeä, esim. `telnet example.com 25`) - Tämä on ensimmäinen yhteys. Tarkistamme lähettäjät, jotka eivät ole [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme, [kieltolista](#do-you-have-a-denylist)-luetteloamme vasten. Lopuksi, jos lähettäjää ei ole sallittujen luettelossamme, tarkistamme, onko se ollut [harmaalle listalle](#do-you-have-a-greylist)-luettelossa.
+* Initial Connection (no command name, e.g. `telnet example.com 25`) - This is the initial connection.  We check senders that aren't in our [allowlist](#do-you-have-an-allowlist) against our [denylist](#do-you-have-a-denylist).  Finally, if a sender is not in our allowlist, then we check to see if they have been [greylisted](#do-you-have-a-greylist).
 
-* `HELO` - Tämä osoittaa tervehdyksen, joka tunnistaa lähettäjän FQDN-nimen, IP-osoitteen tai sähköpostin käsittelijän nimen. Tämä arvo voidaan väärentää, joten emme luota tähän tietoon, vaan käytämme yhteyden IP-osoitteen käänteistä isäntänimen hakua.
+* `HELO` - This indicates a greeting to identify the sender's FQDN, IP address, or mail handler name.  This value can be spoofed, so we do not rely on this data and instead use the reverse hostname lookup of the connection's IP address.
 
-* `MAIL FROM` - Tämä osoittaa sähköpostin lähettäjän osoitteen kirjekuoressa. Jos arvo annetaan, sen on oltava kelvollinen RFC 5322 -sähköpostiosoite. Tyhjät arvot ovat sallittuja. Me käytämme [tarkista takaisinhajonta](#how-do-you-protect-against-backscatter)-arvoa tässä ja tarkistamme myös MAIL FROM -arvon [kieltolista](#do-you-have-a-denylist)-arvoa vasten. Lopuksi tarkistamme lähettäjät, jotka eivät ole sallittujen listalla, nopeusrajoitusten varalta (lisätietoja on [Nopeuden rajoittaminen](#do-you-have-rate-limiting)- ja [sallittujen lista](#do-you-have-an-allowlist)-osioissa).
+* `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - Tämä osoittaa sähköpostin vastaanottajan/vastaanottajat. Näiden on oltava kelvollisia RFC 5322 -sähköpostiosoitteita. Sallimme enintään 50 kirjekuorivastaanottajaa viestiä kohden (tämä eroaa sähköpostin "Vastaanottaja"-otsikosta). Tarkistamme myös, että [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") -osoite on kelvollinen suojataksemme sitä SRS-verkkotunnusnimemme väärentämiseltä.
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
 
-* `DATA` - Tämä on palvelumme ydinosa, joka käsittelee sähköpostin. Katso lisätietoja alla olevasta osiosta [Miten sähköpostia käsitellään edelleenlähetystä varten](#how-do-you-process-an-email-for-forwarding).
+* `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
-### Miten sähköpostia käsitellään edelleenlähetystä varten {#how-do-you-process-an-email-for-forwarding}
+### How do you process an email for forwarding {#how-do-you-process-an-email-for-forwarding}
 
-Tässä osiossa kuvataan yllä olevassa osiossa `DATA` käytettyyn SMTP-protokollakomentoon `DATA` liittyvä prosessimme – se kertoo, miten käsittelemme sähköpostin otsikot, leipätekstin ja suojauksen, määritämme, minne viesti on toimitettava, ja miten käsittelemme yhteyksiä.
+This section describes our process related to the SMTP protocol command `DATA` in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above – it is how we process an email's headers, body, security, determine where it needs to be delivered to, and how we handle connections.
 
-1. Jos viesti ylittää 50 Mt:n enimmäiskoon, se hylätään virhekoodilla 552.
+1. If the message exceeds the maximum size of 50mb, then it is rejected with a 552 error code.
 
-2. Jos viestissä ei ollut "Lähettäjä"-otsikkoa tai jos jokin "Lähettäjä"-otsikon arvoista ei ollut kelvollinen RFC 5322 -sähköpostiosoite, se hylätään virhekoodilla 550.
+2. If the message did not contain a "From" header, or if any of the values in the "From" header were not valid RFC 5322 email addresses, then it is rejected with a 550 error code.
 
-3. Jos viestissä oli yli 25 "Received"-otsikkoa, sen katsottiin juuttuneen uudelleenohjaussilmukkaan ja se hylättiin virhekoodilla 550.
+3. If the message had more than 25 "Received" headers, then it was determined to have been stuck in a redirect loop, and it is rejected with a 550 error code.
 
-4. Sähköpostin sormenjäljen avulla (katso osio [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint)) tarkistamme, onko viestiä yritetty lähettää uudelleen yli 5 päivää (mikä vastaa [oletusarvoinen postfix-toiminto](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime):tä). Jos näin on, viesti hylätään virhekoodilla 550.
+4. Using the email's fingerprint (see the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint)), we will check to see the message has been attempted to be retried for more than 5 days (which matches [default postfix behavior](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), and if so, then it will be rejected with a 550 error code.
 
-5. Tallennamme sähköpostin skannauksen tulokset muistiin käyttämällä [Roskapostiskanneri](https://spamscanner.net)-metodia.
+5. We store in-memory the results from scanning the email using [Spam Scanner](https://spamscanner.net).
 
-6. Jos roskapostiskanneri antoi mielivaltaisia tuloksia, ne hylättiin virhekoodilla 554. Kirjoitushetkellä mielivaltaisiin tuloksiin sisältyy vain GTUBE-testi. Lisätietoja on kohdassa <https://spamassassin.apache.org/gtube/>.
+6. If there were any arbitrary results from Spam Scanner, then it is rejected with a 554 error code.  Arbitrary results only include the GTUBE test at the time of this writing.  See <https://spamassassin.apache.org/gtube/> for more insight.
 
-7. Lisäämme viestiin seuraavat otsikot virheenkorjausta ja väärinkäytösten estämiseksi:
+7. We will add the following headers to the message for debugging and abuse prevention purposes:
 
-* `Received` - lisäämme tämän standardin mukaisen Received-otsikon, jossa on alkuperäisen IP-osoitteen ja isännän, lähetystyypin, TLS-yhteystiedot, päivämäärä/aika ja vastaanottaja.
-* `X-Original-To` - viestin alkuperäinen vastaanottaja:
-* Tämä on hyödyllinen sähköpostin alkuperäisen toimituksen vastaanottajan määrittämiseksi ("Received"-otsikon lisäksi).
-* Tämä lisätään vastaanottajakohtaisesti IMAP- ja/tai peitetyn edelleenlähetyksen yhteydessä (yksityisyyden suojaamiseksi).
-* `X-Forward-Email-Website` - sisältää linkin verkkosivustollemme <https://forwardemail.net>
-* `X-Forward-Email-Version` - koodikantaamme kuuluvan `package.json`:n nykyinen [SemVer](https://semver.org/)-versio.
-* `X-Forward-Email-Session-ID` - istuntotunnusarvo, jota käytetään virheenkorjaustarkoituksiin (koskee vain muita kuin tuotantoympäristöjä).
-* `X-Forward-Email-Sender` - pilkuilla erotettu luettelo, joka sisältää alkuperäisen kirjekuoren MAIL FROM -osoitteen (jos se ei ollut tyhjä), käänteisen PTR-asiakkaan FQDN-nimen (jos se on olemassa) ja lähettäjän IP-osoitteen.
-* `X-Forward-Email-ID` - tämä koskee vain lähtevää SMTP-postia ja korreloi Oma tili → Sähköpostit -osioon tallennetun sähköpostitunnuksen kanssa.
-* `X-Original-To`0 - arvolla `X-Original-To`1.
-* `X-Original-To`2 - arvolla `X-Original-To`3.
-* `X-Original-To`4 - arvolla `X-Original-To`5.
+* `Received` - we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.
+   * `X-Original-To` - the original recipient for the message:
+     * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
+     * This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).
+   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
+   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
+   * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
+   * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
+   * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
 
-8. Tarkistamme sitten viestin [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail):n, [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework):n, [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain):n ja [DMARC](https://en.wikipedia.org/wiki/DMARC):n osalta.
+8. We then check the message for [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), and [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Jos viesti epäonnistui DMARC-tarkastuksessa ja verkkotunnuksella oli hylkäyskäytäntö (esim. `p=reject` [oli DMARC-käytännössä](https://wikipedia.org/wiki/DMARC)), se hylätään virhekoodilla 550. Tyypillisesti verkkotunnuksen DMARC-käytäntö löytyy `_dmarc`-aliverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig _dmarc.example.com txt`).
-* Jos viesti epäonnistui SPF-tarkastuksessa ja verkkotunnuksella oli vaikeasti hylätty käytäntö (esim. `-all` oli SPF-käytännössä `~all`:n sijaan tai ei käytäntöä ollenkaan), se hylätään virhekoodilla 550. Tyypillisesti verkkotunnuksen SPF-käytäntö löytyy juuriverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig example.com txt`). Katso tästä osiosta lisätietoja [sähköpostin lähettäminen kuten Gmailissa](#can-i-send-mail-as-in-gmail-with-this):stä SPF:n osalta.
+* If the message failed DMARC and the domain had a rejection policy (e.g. `p=reject` [was in the DMARC policy](https://wikipedia.org/wiki/DMARC)), then it is rejected with a 550 error code.  Typically a DMARC policy for a domain can be found in the `_dmarc` sub-domain <strong class="notranslate">TXT</strong> record, (e.g. `dig _dmarc.example.com txt`).
+   * If the message failed SPF and the domain had a hard fail policy (e.g. `-all` was in the SPF policy as opposed to `~all` or no policy at all), then it is rejected with a 550 error code.  Typically an SPF policy for a domain can be found in the <strong class="notranslate">TXT</strong> record for the root domain (e.g. `dig example.com txt`).  See this section for more information on [sending mail as with Gmail](#can-i-send-mail-as-in-gmail-with-this) regarding SPF.
 
-9. Käsittelemme nyt viestin vastaanottajat, jotka on kerätty `RCPT TO`-komennolla yllä olevassa [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work)-osiossa. Suoritamme kullekin vastaanottajalle seuraavat toiminnot:
+9. Now we process the recipients of the message as collected from the `RCPT TO` command in the section [How does your email forwarding system work](#how-does-your-email-forwarding-system-work) above.  For each recipient, we perform the following operations:
 
-* Haemme verkkotunnuksen <strong class="notranslate">TXT</strong>-tietueita (`@`-symbolin jälkeinen osa, esim. `example.com`, jos sähköpostiosoite oli `test@example.com`). Jos verkkotunnus on esimerkiksi `example.com`, teemme DNS-haun, kuten `dig example.com txt`.
-* Jäsennämme kaikki <strong class="notranslate">TXT</strong>-tietueet, jotka alkavat joko `forward-email=`:llä (ilmaiset paketit) tai `forward-email-site-verification=`:lla (maksulliset paketit). Huomaa, että jäsennämme molemmat voidaksemme käsitellä sähköposteja käyttäjän päivittäessä tai alentaessa paketteja.
-* Käymme näistä jäsennetyistä <strong class="notranslate">TXT</strong>-tietueista läpi selvittääksemme edelleenlähetysmääritykset (kuten yllä olevassa [Miten pääsen alkuun ja määritän sähköpostin edelleenlähetyksen](#how-do-i-get-started-and-set-up-email-forwarding)-osiossa on kuvattu). Huomaa, että tuemme vain yhtä `forward-email-site-verification=`-arvoa, ja jos niitä annetaan useampi kuin yksi, tapahtuu 550-virhe ja lähettäjä saa palautuksen tälle vastaanottajalle.
-* Käymme rekursiivisesti läpi poimitun edelleenlähetyskokoonpanon määrittääksemme globaalin edelleenlähetyksen, säännölliseen lausekkeeseen perustuvan edelleenlähetyksen ja kaikki muut tuetut edelleenlähetyskokoonpanot – joita nyt kutsutaan "edelleenlähetysosoitteiksi".
-* Jokaiselle edelleenlähetysosoitteelle tuemme yhtä rekursiivista hakua (joka aloittaa tämän toimintosarjan uudelleen annetusta osoitteesta). Jos rekursiivinen osuma löytyy, päätulos poistetaan edelleenlähetysosoitteista ja aliosoitteet lisätään.
-* Edelleenlähetysosoitteet jäsennetään yksilöllisyyden varalta (koska emme halua lähettää kaksoiskappaleita yhteen osoitteeseen tai luoda lisäksi tarpeettomia SMTP-asiakasyhteyksiä).
-* Jokaiselle edelleenlähetysosoitteelle etsimme sen verkkotunnusta API-päätepisteestämme `/v1/max-forwarded-addresses` (jotta voimme määrittää, kuinka moneen osoitteeseen verkkotunnus saa lähettää sähköpostia edelleen aliasta kohden, esim. 10 oletusarvoisesti – katso osio `example.com`0). Jos tämä raja ylittyy, tapahtuu virhe 550 ja lähettäjä saa palautuksen tästä vastaanottajasta.
-* Etsimme alkuperäisen vastaanottajan asetuksia API-päätepisteestämme `example.com`1, joka tukee hakua maksaville käyttäjille (ja varatoimintoa ilmaisille käyttäjille). Tämä palauttaa määritysobjektin lisäasetuksista `example.com`2:lle (numero, esim. `example.com`3), `example.com`4:lle (totuusarvo), `example.com`5:lle (totuusarvo), `example.com`6:lle (totuusarvo) ja `example.com`7:lle (totuusarvo). * Näiden asetusten perusteella tarkistamme roskapostiskannerin tulokset, ja jos virheitä ilmenee, viesti hylätään virhekoodilla 554 (esim. jos `example.com`8 on käytössä, tarkistamme roskapostiskannerin tulokset virusten varalta). Huomaa, että kaikki ilmaisen paketin käyttäjät otetaan mukaan tarkistuksiin aikuisille suunnatun sisällön, tietojenkalastelun, suoritettavien tiedostojen ja virusten varalta. Oletusarvoisesti kaikki maksullisen paketin käyttäjät otetaan mukaan, mutta tätä määritystä voidaan muuttaa verkkotunnuksen Asetukset-sivulla Sähköpostin edelleenlähetys -hallintapaneelissa).
+* We lookup the <strong class="notranslate">TXT</strong> records of the domain name (the part after the `@` symbol, e.g. `example.com` if the email address was `test@example.com`).  For example, if the domain is `example.com` we do a DNS lookup such as `dig example.com txt`.
+   * We parse all <strong class="notranslate">TXT</strong> records that start with either `forward-email=` (free plans) or `forward-email-site-verification=` (paid plans).  Note that we parse both, in order to process emails while a user is upgrading or downgrading plans.
+   * From these parsed <strong class="notranslate">TXT</strong> records, we iterate over them to extract the forwarding configuration (as described in the section [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding) above).  Note that we only support one `forward-email-site-verification=` value, and if more than one is supplied, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
+   * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
+   * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
+   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
+   * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 
-10. Suoritamme sitten seuraavat toimenpiteet kullekin käsitellylle vastaanottajan edelleenlähetysosoitteelle:
+10. For each processed recipient's Forwarding Addresses, we then perform the following operations:
 
-* Osoitetta verrataan [kieltolista](#do-you-have-a-denylist)-osoitteeseemme, ja jos se oli listalla, ilmenee 421-virhekoodi (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin).
-* Jos osoite on webhook, asetamme totuusarvon tulevia toimintoja varten (katso alla – ryhmittelemme samankaltaiset webhookit yhden POST-pyynnön tekemiseksi useiden toimitusta varten).
-* Jos osoite on sähköpostiosoite, jäsennämme isännän tulevia toimintoja varten (katso alla – ryhmittelemme samankaltaiset isännät yhden yhteyden tekemiseksi useiden yksittäisten toimitusta varten).
+* The address is checked against our [denylist](#do-you-have-a-denylist), and if it was listed, then a 421 error code will occur (indicates to sender to retry again later).
+    * If the address is a webhook, then we set a Boolean for future operations (see below – we group together similar webhooks to make one POST request vs. multiple for delivery).
+    * If the address is an email address, then we parse the host for future operations (see below – we group together similar hosts to make one connection vs. multiple individual connections for delivery).
 
-11. Jos vastaanottajia ei ole eikä palautuksia ole, vastaamme virheellä 550 "Virheelliset vastaanottajat".
+11. If there are no recipients and there are no bounces, then we respond with a 550 error of "Invalid recipients".
 
-12. Jos vastaanottajia on, käymme heidät läpi (ryhmiteltyinä saman isännän mukaan) ja toimitamme sähköpostit. Katso lisätietoja alla olevasta osiosta [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues).
+12. If there are recipients, then we iterate over them (grouped together by the same host) and deliver the emails.  See the section [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues) below for more insight.
 
-* Jos sähköpostien lähettämisessä tapahtuu virheitä, tallennamme ne muistiin myöhempää käsittelyä varten.
-* Käytämme sähköpostien lähettämisestä pienintä virhekoodia (jos sellaista on) vastauskoodina `DATA`-komennolle. Tämä tarkoittaa, että alkuperäinen lähettäjä yrittää yleensä uudelleen lähettää toimittamatta jääneitä sähköposteja, mutta jo toimitettuja sähköposteja ei lähetetä uudelleen seuraavan kerran, kun viesti lähetetään (koska käytämme [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint)-komentoa).
-* Jos virheitä ei ilmennyt, lähetämme 250 onnistuneen SMTP-vastauksen tilakoodin.
-* Palautukseksi määritellään mikä tahansa toimitusyritys, jonka tuloksena on tilakoodi, joka on >= 500 (pysyvät virheet).
+* If any errors occur while sending emails, then we will store them in-memory for later processing.
+    * We will take the lowest error code (if any) from sending emails – and use that as the response code to the `DATA` command.  This means that emails not delivered will typically be retried by the original sender, yet emails that were already delivered will not be re-sent the next time the message is sent (as we use [Fingerprinting](#how-do-you-determine-an-email-fingerprint)).
+    * If no errors occurred, then we will send a 250 successful SMTP response status code.
+    * A bounce is determined to be any delivery attempted that results in a status code that is >= 500 (permanent failures).
 
-13. Jos palautuksia ei ole tapahtunut (pysyviä virheitä), palautamme SMTP-vastauksen tilakoodina pienimmän virhekoodin ei-pysyvien virheiden joukosta (tai 250 onnistunut-tilakoodin, jos virheitä ei ole ollut).
+13. If no bounces occurred (permanent failures), then we will return a SMTP response status code of the lowest error code from non-permanent failures (or a 250 successful status code if there were none).
 
-14. Jos viestit palautuvat, lähetämme palautussähköpostit taustalla palautettuamme lähettäjälle pienimmän kaikista virhekoodeista. Jos pienin virhekoodi on kuitenkin >= 500, emme lähetä palautussähköposteja. Tämä johtuu siitä, että jos lähettäisimme, lähettäjät saisivat kaksinkertaisen palautussähköpostin (esim. yhden lähtevältä MTA:lta, kuten Gmaililta, ja toisen meiltä). Lisätietoja on alla olevassa [Miten suojaudut takaisinsironnalta](#how-do-you-protect-against-backscatter)-osiossa.
+14. If bounces did occur then we will send bounce emails in the background after returning the lowest of all error codes to the sender.  However, if the lowest error code is >= 500, then we do not send any bounce emails.  This is because if we did, then senders would receive a double bounce email (e.g. one from their outbound MTA, such as Gmail – and also one from us).  See the section on [How do you protect against backscatter](#how-do-you-protect-against-backscatter) below for more insight.
 
-### Miten käsittelette sähköpostin toimitusongelmia {#how-do-you-handle-email-delivery-issues}
+### How do you handle email delivery issues {#how-do-you-handle-email-delivery-issues}
 
-Huomaa, että teemme sähköposteihin "Friendly-From"-uudelleenkirjoituksen vain jos ja vain jos lähettäjän DMARC-käytäntö ei läpäissyt lähetystä JA DKIM-allekirjoituksia ei ollut linjassa "From"-otsikon kanssa. Tämä tarkoittaa, että muutamme viestin "From"-otsikkoa, asetamme "X-Original-From":n ja asetamme myös "Reply-To":n, jos sitä ei ole jo asetettu. Sinetöimme myös viestin ARC-sinetin uudelleen näiden otsikoiden muuttamisen jälkeen.
+Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
 
-Käytämme myös virheilmoitusten älykästä jäsentämistä pinon jokaisella tasolla – koodissamme DNS-pyynnöissä, Node.js:n sisäisissä osioissa, HTTP-pyynnöissä (esim. 408, 413 ja 429 on yhdistetty SMTP-vastauskoodiin 421, jos vastaanottaja on webhook) ja sähköpostipalvelimen vastauksissa (esim. vastaukset, joissa on "defer" tai "slowdown", yritetään uudelleen 421-virheinä).
+We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 
-Logiikkamme on mallisuojattu ja se yrittää uudelleen myös SSL/TLS-virheiden, yhteysongelmien ja muiden ongelmien varalta. Mallisuojauksen tavoitteena on maksimoida toimitettavuus kaikille vastaanottajille edelleenlähetyskokoonpanossa.
+Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
-Jos vastaanottaja on webhook, sallimme pyynnön valmistumiselle 60 sekunnin aikakatkaisun, jonka aikana pyyntöä voidaan yrittää uudelleen enintään kolme kertaa (eli yhteensä neljä pyyntöä ennen epäonnistumista). Huomaa, että jäsennämme virhekoodit 408, 413 ja 429 oikein ja yhdistämme ne SMTP-vastauskoodiin 421.
+If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
-Muussa tapauksessa, jos vastaanottaja on sähköpostiosoite, yritämme lähettää sähköpostin käyttäen opportunistista TLS-salausta (yritämme käyttää STARTTLS:ää, jos se on käytettävissä vastaanottajan sähköpostipalvelimella). Jos sähköpostin lähettämisen aikana tapahtuu SSL/TLS-virhe, yritämme lähettää sähköpostin ilman TLS:ää (ilman STARTTLS:ää).
+Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
-Jos DNS- tai yhteysvirheitä ilmenee, palautamme `DATA`-komennolle SMTP-vastauskoodin 421. Muussa tapauksessa, jos virheitä on >= 500, lähetetään palautusviestit.
+If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 
-Jos havaitsemme, että sähköpostipalvelimella, jolle yritämme toimittaa viestiä, on yksi tai useampi sähköpostinvaihdon IP-osoitteistamme estetty (esim. millä tahansa roskapostittajien estämiseen käytetyllä tekniikalla), lähetämme lähettäjälle SMTP-vastauskoodin 421, jotta hän voi yrittää lähettää viestinsä uudelleen myöhemmin (ja meille ilmoitetaan ongelmasta, jotta voimme toivottavasti ratkaista sen ennen seuraavaa yritystä).
+If we detect that an email server we are attempting to deliver to has one or more of our mail exchange IP addresses blocked (e.g. by whatever technology they use for deferring spammers), then we will send a SMTP response code of 421 for the sender to retry their message later (and we are alerted to the issue so we can hopefully resolve it before the next attempt).
 
-### Miten käsittelet IP-osoitteiden estymisen? {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### How do you handle your IP addresses becoming blocked {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-Valvomme rutiininomaisesti kaikkia tärkeimpiä DNS-estolistoja, ja jos jokin sähköpostinvaihdon ("MX") IP-osoitteistamme on listattu tärkeällä estolistalla, poistamme sen asiaankuuluvasta DNS A -tietueen round robin -kyselystä, jos mahdollista, kunnes ongelma on ratkaistu.
+We routinely monitor all major DNS denylists and if any of our mail exchange ("MX") IP addresses are listed in a major denylist, we will pull it out of the relevant DNS A record round robin if possible until it the issue is resolved.
 
-Tämän kirjoitushetkellä meidät on myös listattu useilla DNS-sallittujen listoilla, ja otamme estolistojen valvonnan vakavasti. Jos huomaat ongelmia ennen kuin meillä on aikaa ratkaista ne, ilmoita niistä meille kirjallisesti osoitteeseen <support@forwardemail.net>.
+At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
-IP-osoitteemme ovat julkisesti saatavilla, [katso lisätietoja alla olevasta osiosta](#what-are-your-servers-ip-addresses).
+Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
 
-### Mitä ovat postin päällikön osoitteet {#what-are-postmaster-addresses}
+### What are postmaster addresses {#what-are-postmaster-addresses}
 
-Estääksemme harhaanjohtavat palautukset ja lomavastausviestien lähettämisen valvomattomiin tai olemattomiin postilaatikoihin, ylläpidämme luetteloa sähköpostipalvelua muistuttavista käyttäjätunnuksista:
+In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
 
 * `automailer`
 * `autoresponder`
@@ -3161,13 +3592,13 @@ Estääksemme harhaanjohtavat palautukset ja lomavastausviestien lähettämisen 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [ja kaikkiin osoitteisiin, joihin ei vastata](#what-are-no-reply-addresses)
+* [and any no-reply address](#what-are-no-reply-addresses)
 
-Katso lisätietoja siitä, miten tällaisia listoja käytetään tehokkaiden sähköpostijärjestelmien luomiseen kohdasta [RFC 5320, kohta 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6).
+See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
 
-### Mitä ovat vastausta vaatimattomat osoitteet {#what-are-no-reply-addresses}
+### What are no-reply addresses {#what-are-no-reply-addresses}
 
-Sähköpostiosoitteet, jotka ovat jonkin seuraavista (kirjainkokoa ei erotella), katsotaan vastausta pyytämättömiksi osoitteiksi:
+Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
 * `do-not-reply`
 * `do-not-respond`
@@ -3188,1427 +3619,1462 @@ Sähköpostiosoitteet, jotka ovat jonkin seuraavista (kirjainkokoa ei erotella),
 * `noreply`
 * `noreplys`
 
-Tätä listaa ylläpidetään [avoimen lähdekoodin projektina GitHubissa](https://github.com/forwardemail/reserved-email-addresses-list):na.
+This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### Mitkä ovat palvelimesi IP-osoitteet {#what-are-your-servers-ip-addresses}
+### What are your server's IP addresses {#what-are-your-servers-ip-addresses}
 
-Julkaisemme IP-osoitteemme osoitteessa <https://forwardemail.net/ips>.
+We publish our IP addresses at <https://forwardemail.net/ips>.
 
-### Onko sinulla sallittujen lista {#do-you-have-an-allowlist}
+### Do you have an allowlist {#do-you-have-an-allowlist}
 
-Kyllä, meillä on [verkkotunnuspäätteiden luettelo](#what-domain-name-extensions-are-allowlisted-by-default)-luettelo, joka on oletuksena sallittujen luettelossa, ja dynaaminen, välimuistissa oleva ja päivittyvä sallittujen luettelo, joka perustuu [tiukat kriteerit](#what-is-your-allowlist-criteria)-luetteloon.
+Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-Kaikki maksullisten sopimusten asiakkaiden sähköpostiosoitteet, verkkotunnukset ja vastaanottajat lisätään automaattisesti sallittujen listallemme.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
 
-### Mitkä verkkotunnuspäätteet on oletuksena sallittujen luettelossa {#what-domain-name-extensions-are-allowlisted-by-default}
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
-Seuraavia verkkotunnuspäätteitä pidetään oletuksena sallittuina (riippumatta siitä, ovatko ne sateenvarjo-suosioluettelossa vai eivät):
+### What domain name extensions are allowlisted by default {#what-domain-name-extensions-are-allowlisted-by-default}
 
-<ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">edu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov</code></li>
-<li class="list-inline-item"><code class="notranslate">mil</code></li>
-<li class="list-inline-item"><code class="notranslate">int</code></li>
-<li class="list-inline-item"><code class="notranslate">arpa</code></li>
-<li class="list-inline-item"><code class="notranslate">dni.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fed.us</code></li>
-<li class="list-inline-item"><code class="notranslate">isa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">kids.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ak.us</code></li>
-<li class="list-inline-item"><code class="notranslate">al.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ar.us</code></li>
-<li class="list-inline-item"><code class="notranslate">as.us</code></li>
-<li class="list-inline-item"><code class="notranslate">az.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ca.us</code></li>
-<li class="list-inline-item"><code class="notranslate">co.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ct.us</code></li>
-<li class="list-inline-item"><code class="notranslate">dc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">de.us</code></li>
-<li class="list-inline-item"><code class="notranslate">fl.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ga.us</code></li>
-<li class="list-inline-item"><code class="notranslate">gu.us</code></li>
-<li class="list-inline-item"><code class="notranslate">hi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ia.us</code></li>
-<li class="list-inline-item"><code class="notranslate">id.us</code></li>
-<li class="list-inline-item"><code class="notranslate">il.us</code></li>
-<li class="list-inline-item"><code class="notranslate">in.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ks.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ky.us</code></li>
-<li class="list-inline-item"><code class="notranslate">la.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ma.us</code></li>
-<li class="list-inline-item"><code class="notranslate">md.us</code></li>
-<li class="list-inline-item"><code class="notranslate">me.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mo.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ne.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nj.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nm.us</code></li>
-<li class="list-inline-item"><code class="notranslate">nv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ny.us</code></li>
-<li class="list-inline-item"><code class="notranslate">oh.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ok.us</code></li>
-<li class="list-inline-item"><code class="notranslate">or.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">pr.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ri.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.us</code></li>
-<li class="list-inline-item"><code class="notranslate">sd.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tn.us</code></li>
-<li class="list-inline-item"><code class="notranslate">tx.us</code></li>
-<li class="list-inline-item"><code class="notranslate">ut.us</code></li>
-<li class="list-inline-item"><code class="notranslate">va.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">vt.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wa.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wi.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wv.us</code></li>
-<li class="list-inline-item"><code class="notranslate">wy.us</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.au</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.at</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.br</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">school.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">health.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">parlamentti.nz</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.in</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.in</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.in</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.za</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.za</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.za</code></li>
-<li class="list-inline-item"><code class="notranslate">school.za</code></li>
-<li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">es.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.es</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.th</code></li>
-<li class="list-inline-item"><code class="notranslate">mi.th</code></li>
-<li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
-<li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">go.id</code></li>
-<li class="list-inline-item"><code class="notranslate">go.jp</code></li>
-<li class="list-inline-item"><code class="notranslate">go.ke</code></li>
-<li class="list-inline-item"><code class="notranslate">go.kr</code></li>
-<li class="list-inline-item"><code class="notranslate">go.th</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.es</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
-<li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
-<li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.af</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.al</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.am</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.au</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.az</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.be</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gov.by</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.co</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.il</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.im</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.in</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.it</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.je</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.my</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.np</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.py</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.se</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.si</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
-<li class="list-inline-item"><code class="notranslate">gov.za</code></li>
-<li class="list-inline-item"><code class="notranslate">government.pn</code></li>
-<li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
-<li class="list-inline-item"><code class="notranslate">gv.at</code></li>
-<li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">police.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
-<li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
-</ul>
-
-Lisäksi nämä [brändi- ja yritysverkkotunnukset](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)-kohteet ovat oletusarvoisesti sallittujen listalla (esim. `apple` Apple Card -pankkitilioteiden `applecard.apple`-kohteelle):
+The following domain name extensions are considered to be allowlisted by default (regardless if they are on the Umbrella Popularity List or not):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">aaa</code></li>
-<li class="list-inline-item"><code class="notranslate">aarp</code></li>
-<li class="list-inline-item"><code class="notranslate">abarth</code></li>
-<li class="list-inline-item"><code class="notranslate">abb</code></li>
-<li class="list-inline-item"><code class="notranslate">abbvie</code></li>
-<li class="list-inline-item"><code class="notranslate">abc</code></li>
-<li class="list-inline-item"><code class="notranslate">abc</code></li>
-<li class="list-inline-item"><code class="notranslate">accenture</code></li>
-<li class="list-inline-item"><code class="notranslate">aco</code></li>
-<li class="list-inline-item"><code class="notranslate">aeg</code></li>
-<li class="list-inline-item"><code class="notranslate">aetna</code></li>
-<li class="list-inline-item"><code class="notranslate">afl</code></li>
-<li class="list-inline-item"><code class="notranslate">agakhan</code></li>
-<li class="list-inline-item"><code class="notranslate">aig</code></li>
-<li class="list-inline-item"><code class="notranslate">aigo</code></li>
-<li class="list-inline-item"><code class="notranslate">airbus</code></li>
-<li class="list-inline-item"><code class="notranslate">airtel</code></li>
-<li class="list-inline-item"><code class="notranslate">akdn</code></li>
-<li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
-<li class="list-inline-item"><code class="notranslate">alibaba</code></li>
-<li class="list-inline-item"><code class="notranslate">alipay</code></li>
-<li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
-<li class="list-inline-item"><code class="notranslate">allstate</code></li>
-<li class="list-inline-item"><code class="notranslate">ally</code></li>
-<li class="list-inline-item"><code class="notranslate">alstom</code></li>
-<li class="list-inline-item"><code class="notranslate">amazon</code></li>
-<li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
-<li class="list-inline-item"><code class="notranslate">amex</code></li>
-<li class="list-inline-item"><code class="notranslate">amica</code></li>
-<li class="list-inline-item"><code class="notranslate">android</code></li>
-<li class="list-inline-item"><code class="notranslate">anz</code></li>
-<li class="list-inline-item"><code class="notranslate">aol</code></li>
-<li class="list-inline-item"><code class="notranslate">omena</code></li>
-<li class="list-inline-item"><code class="notranslate">akvarelli</code></li>
-<li class="list-inline-item"><code class="notranslate">aramco</code></li>
-<li class="list-inline-item"><code class="notranslate">audi</code></li>
-<li class="list-inline-item"><code class="notranslate">auspost</code></li>
-<li class="list-inline-item"><code class="notranslate">aws</code></li>
-<li class="list-inline-item"><code class="notranslate">axa</code></li>
-<li class="list-inline-item"><code class="notranslate">azure</code></li>
-<li class="list-inline-item"><code class="notranslate">baidu</code></li>
-<li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
-<li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
-<li class="list-inline-item"><code class="notranslate">barclays</code></li>
-<li class="list-inline-item"><code class="notranslate">koripallo</code></li>
-<li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
-<li class="list-inline-item"><code class="notranslate">bbc</code></li>
-<li class="list-inline-item"><code class="notranslate">bbt</code></li>
-<li class="list-inline-item"><code class="notranslate">bbva</code></li>
-<li class="list-inline-item"><code class="notranslate">bcg</code></li>
-<li class="list-inline-item"><code class="notranslate">bentley</code></li>
-<li class="list-inline-item"><code class="notranslate">bharti</code></li>
-<li class="list-inline-item"><code class="notranslate">bing</code></li>
-<li class="list-inline-item"><code class="notranslate">blanco</code></li>
-<li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
-<li class="list-inline-item"><code class="notranslate">bms</code></li>
-<li class="list-inline-item"><code class="notranslate">bmw</code></li>
-<li class="list-inline-item"><code class="notranslate">bnl</code></li>
-<li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
-<li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-<li class="list-inline-item"><code class="notranslate">bond</code></li>
-<li class="list-inline-item"><code class="notranslate">varaus</code></li>
-<li class="list-inline-item"><code class="notranslate">bosch</code></li>
-<li class="list-inline-item"><code class="notranslate">bostik</code></li>
-<li class="list-inline-item"><code class="notranslate">bradesco</code></li>
-<li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
-<li class="list-inline-item"><code class="notranslate">brother</code></li>
-<li class="list-inline-item"><code class="notranslate">bugatti</code></li>
-<li class="list-inline-item"><code class="notranslate">cal</code></li>
-<li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
-<li class="list-inline-item"><code class="notranslate">canon</code></li>
-<li class="list-inline-item"><code class="notranslate">capitalone</code></li>
-<li class="list-inline-item"><code class="notranslate">asuntovaunu</code></li>
-<li class="list-inline-item"><code class="notranslate">asuntovaunu</code></li>
-<li class="list-inline-item"><code class="notranslate">cba</code></li>
-<li class="list-inline-item"><code class="notranslate">cbn</code></li>
-<li class="list-inline-item"><code class="notranslate">cbre</code></li>
-<li class="list-inline-item"><code class="notranslate">cbs</code></li>
-<li class="list-inline-item"><code class="notranslate">cern</code></li>
-<li class="list-inline-item"><code class="notranslate">cfa</code></li>
-<li class="list-inline-item"><code class="notranslate">chanel</code></li>
-<li class="list-inline-item"><code class="notranslate">chase</code></li>
-<li class="list-inline-item"><code class="notranslate">chintai</code></li>
-<li class="list-inline-item"><code class="notranslate">chrome</code></li>
-<li class="list-inline-item"><code class="notranslate">chrysler</code></li>
-<li class="list-inline-item"><code class="notranslate">cipriani</code></li>
-<li class="list-inline-item"><code class="notranslate">cisco</code></li>
-<li class="list-inline-item"><code class="notranslate">linnoitus</code></li>
-<li class="list-inline-item"><code class="notranslate">citi</code></li>
-<li class="list-inline-item"><code class="notranslate">citic</code></li>
-<li class="list-inline-item"><code class="notranslate">clubmed</code></li>
-<li class="list-inline-item"><code class="notranslate">comcast</code></li>
-<li class="list-inline-item"><code class="notranslate">commbank</code></li>
-<li class="list-inline-item"><code class="notranslate">creditunion</code></li>
-<li class="list-inline-item"><code class="notranslate">kruunu</code></li>
-<li class="list-inline-item"><code class="notranslate">kruunu</code></li>
-<li class="list-inline-item"><code class="notranslate">crs</code></li>
-<li class="list-inline-item"><code class="notranslate">csc</code></li>
-<li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
-<li class="list-inline-item"><code class="notranslate">dabur</code></li>
-<li class="list-inline-item"><code class="notranslate">datsun</code></li>
-<li class="list-inline-item"><code class="notranslate">jälleenmyyjä</code></li>
-<li class="list-inline-item"><code class="notranslate">dell</code></li>
-<li class="list-inline-item"><code class="notranslate">deloitte</code></li>
-<li class="list-inline-item"><code class="notranslate">delta</code></li>
-<li class="list-inline-item"><code class="notranslate">dhl</code></li>
-<li class="list-inline-item"><code class="notranslate">discover</code></li>
-<li class="list-inline-item"><code class="notranslate">dish</code></li>
-<li class="list-inline-item"><code class="notranslate">dnp</code></li>
-<li class="list-inline-item"><code class="notranslate">dodge</code></li>
-<li class="list-inline-item"><code class="notranslate">dunlop</code></li>
-<li class="list-inline-item"><code class="notranslate">dupont</code></li>
-<li class="list-inline-item"><code class="notranslate">dvag</code></li>
-<li class="list-inline-item"><code class="notranslate">edeka</code></li>
-<li class="list-inline-item"><code class="notranslate">emerck</code></li>
-<li class="list-inline-item"><code class="notranslate">epson</code></li>
-<li class="list-inline-item"><code class="notranslate">ericsson</code></li>
-<li class="list-inline-item"><code class="notranslate">erni</code></li>
-<li class="list-inline-item"><code class="notranslate">esurance</code></li>
-<li class="list-inline-item"><code class="notranslate">etisalat</code></li>
-<li class="list-inline-item"><code class="notranslate">eurovision</code></li>
-<li class="list-inline-item"><code class="notranslate">everbank</code></li>
-<li class="list-inline-item"><code class="notranslate">extraspace</code></li>
-<li class="list-inline-item"><code class="notranslate">fage</code></li>
-<li class="list-inline-item"><code class="notranslate">fairwinds</code></li>
-<li class="list-inline-item"><code class="notranslate">farmers</code></li>
-<li class="list-inline-item"><code class="notranslate">fedex</code></li>
-<li class="list-inline-item"><code class="notranslate">ferrari</code></li>
-<li class="list-inline-item"><code class="notranslate">ferrero</code></li>
-<li class="list-inline-item"><code class="notranslate">fiat</code></li>
-<li class="list-inline-item"><code class="notranslate">fidelity</code></li>
-<li class="list-inline-item"><code class="notranslate">firmdale</code></li>
-<li class="list-inline-item"><code class="notranslate">flickr</code></li>
-<li class="list-inline-item"><code class="notranslate">flir</code></li>
-<li class="list-inline-item"><code class="notranslate">flsmidth</code></li>
-<li class="list-inline-item"><code class="notranslate">flsmidth class="notranslate">ford</code></li>
-<li class="list-inline-item"><code class="notranslate">fox</code></li>
-<li class="list-inline-item"><code class="notranslate">fresenius</code></li>
-<li class="list-inline-item"><code class="notranslate">forex</code></li>
-<li class="list-inline-item"><code class="notranslate">frogans</code></li>
-<li class="list-inline-item"><code class="notranslate">frontier</code></li>
-<li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
-<li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
-<li class="list-inline-item"><code class="notranslate">gallo</code></li>
-<li class="list-inline-item"><code class="notranslate">gallup</code></li>
-<li class="list-inline-item"><code class="notranslate">gap</code></li>
-<li class="list-inline-item"><code class="notranslate">gbiz</code></li>
-<li class="list-inline-item"><code class="notranslate">gea</code></li>
-<li class="list-inline-item"><code class="notranslate">gentting</code></li>
-<li class="list-inline-item"><code class="notranslate">gilfing</code></li>
-<li class="list-inline-item"><code class="notranslate">gle</code></li>
-<li class="list-inline-item"><code class="notranslate">globo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmail</code></li>
-<li class="list-inline-item"><code class="notranslate">gmo</code></li>
-<li class="list-inline-item"><code class="notranslate">gmx</code></li>
-<li class="list-inline-item"><code class="notranslate">godaddy</code></li>
-<li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
-<li class="list-inline-item"><code class="notranslate">goodyear</code></li>
-<li class="list-inline-item"><code class="notranslate">goog</code></li>
-<li class="list-inline-item"><code class="notranslate">google</code></li>
-<li class="list-inline-item"><code class="notranslate">grainger</code></li>
-<li class="list-inline-item"><code class="notranslate">guardian</code></li>
-<li class="list-inline-item"><code class="notranslate">gucci</code></li>
-<li class="list-inline-item"><code class="notranslate">hbo</code></li>
-<li class="list-inline-item"><code class="notranslate">hdfc</code></li>
-<li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
-<li class="list-inline-item"><code class="notranslate">hermes</code></li>
-<li class="list-inline-item"><code class="notranslate">hisamitsu</code></li>
-<li class="list-inline-item"><code class="notranslate">hitachi</code></li>
-<li class="list-inline-item"><code class="notranslate">hkt</code></li>
-<li class="list-inline-item"><code class="notranslate">honda</code></li>
-<li class="list-inline-item"><code class="notranslate">honeywell</code></li>
-<li class="list-inline-item"><code class="notranslate">hotmail</code></li>
-<li class="list-inline-item"><code class="notranslate">hsbc</code></li>
-<li class="list-inline-item"><code class="notranslate">hughes</code></li>
-<li class="list-inline-item"><code class="notranslate">hyatt</code></li>
-<li class="list-inline-item"><code class="notranslate">hyundai</code></li>
-<li class="list-inline-item"><code class="notranslate">ibm</code></li>
-<li class="list-inline-item"><code class="notranslate">ieee</code></li>
-<li class="list-inline-item"><code class="notranslate">ifm</code></li>
-<li class="list-inline-item"><code class="notranslate">ikano</code></li>
-<li class="list-inline-item"><code class="notranslate">imdb</code></li>
-<li class="list-inline-item"><code class="notranslate">infiniti</code></li>
-<li class="list-inline-item"><code class="notranslate">intel</code></li>
-<li class="list-inline-item"><code class="notranslate">intuit</code></li>
-<li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
-<li class="list-inline-item"><code class="notranslate">iselect</code></li>
-<li class="list-inline-item"><code class="notranslate">itau</code></li>
-<li class="list-inline-item"><code class="notranslate">itv</code></li>
-<li class="list-inline-item"><code class="notranslate">iveco</code></li>
-<li class="list-inline-item"><code class="notranslate">jaguar</code></li>
-<li class="list-inline-item"><code class="notranslate">java</code></li>
-<li class="list-inline-item"><code class="notranslate">jcb</code></li>
-<li class="list-inline-item"><code class="notranslate">jcp</code></li>
-<li class="list-inline-item"><code class="notranslate">jeep</code></li>
-<li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
-<li class="list-inline-item"><code class="notranslate">juniper</code></li>
-<li class="list-inline-item"><code class="notranslate">kddi</code></li>
-<li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
-<li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
-<li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
-<li class="list-inline-item"><code class="notranslate">kfh</code></li>
-<li class="list-inline-item"><code class="notranslate">kia</code></li>
-<li class="list-inline-item"><code class="notranslate">kinder</code></li>
-<li class="list-inline-item"><code class="notranslate">kindle</code></li>
-<li class="list-inline-item"><code class="notranslate">komatsu</code></li>
-<li class="list-inline-item"><code class="notranslate">kpmg</code></li>
-<li class="list-inline-item"><code class="notranslate">kred</code></li>
-<li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
-<li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
-<li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
-<li class="list-inline-item"><code class="notranslate">lancaster</code></li>
-<li class="list-inline-item"><code class="notranslate">lancia</code></li>
-<li class="list-inline-item"><code class="notranslate">lancome</code></li>
-<li class="list-inline-item"><code class="notranslate">landrover</code></li>
-<li class="list-inline-item"><code class="notranslate">lanxess</code></li>
-<li class="list-inline-item"><code class="notranslate">lasalle</code></li>
-<li class="list-inline-item"><code class="notranslate">latrobe</code></li>
-<li class="list-inline-item"><code class="notranslate">lds</code></li>
-<li class="list-inline-item"><code class="notranslate">leclerc</code></li>
-<li class="list-inline-item"><code class="notranslate">lego</code></li>
-<li class="list-inline-item"><code class="notranslate">laison</code></li>
-<li class="list-inline-item"><code class="notranslate">lexus</code></li>
-<li class="list-inline-item"><code class="notranslate">lidl</code></li>
-<li class="list-inline-item"><code class="notranslate">elämäntapa</code></li>
-<li class="list-inline-item"><code class="notranslate">lilly</code></li>
-<li class="list-inline-item"><code class="notranslate">lincoln</code></li>
-<li class="list-inline-item"><code class="notranslate">linde</code></li>
-<li class="list-inline-item"><code class="notranslate">lipsy</code></li>
-<li class="list-inline-item"><code class="notranslate">lixil</code></li>
-<li class="list-inline-item"><code class="notranslate">paikka</code></li>
-<li class="list-inline-item"><code class="notranslate">lotte</code></li>
-<li class="list-inline-item"><code class="notranslate">lpl</code></li>
-<li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
-<li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
-<li class="list-inline-item"><code class="notranslate">lupin</code></li>
-<li class="list-inline-item"><code class="notranslate">macys</code></li>
-<li class="list-inline-item"><code class="notranslate">maif</code></li>
-<li class="list-inline-item"><code class="notranslate">mies</code></li>
-<li class="list-inline-item"><code class="notranslate">mango</code></li>
-<li class="list-inline-item"><code class="notranslate">marriott</code></li>
-<li class="list-inline-item"><code class="notranslate">maserati</code></li>
-<li class="list-inline-item"><code class="notranslate">mattel</code></li>
-<li class="list-inline-item"><code class="notranslate">mckinsey</code></li>
-<li class="list-inline-item"><code class="notranslate">metlife</code></li>
-<li class="list-inline-item"><code class="notranslate">microsoft</code></li>
-<li class="list-inline-item"><code class="notranslate">mini</code></li>
-<li class="list-inline-item"><code class="notranslate">mit</code></li>
-<li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
-<li class="list-inline-item"><code class="notranslate">mlb</code></li>
-<li class="list-inline-item"><code class="notranslate">mma</code></li>
-<li class="list-inline-item"><code class="notranslate">monash</code></li>
-<li class="list-inline-item"><code class="notranslate">mormon</code></li>
-<li class="list-inline-item"><code class="notranslate">moto</code></li>
-<li class="list-inline-item"><code class="notranslate">movistar</code></li>
-<li class="list-inline-item"><code class="notranslate">msd</code></li>
-<li class="list-inline-item"><code class="notranslate">mtn</code></li>
-<li class="list-inline-item"><code class="notranslate">mtr</code></li>
-<li class="list-inline-item"><code class="notranslate">keskinäinen</code></li>
-<li class="list-inline-item"><code class="notranslate">nadex</code></li>
-<li class="list-inline-item"><code class="notranslate">kokonaisvaltainen</code></li>
-<li class="list-inline-item"><code class="notranslate">natura</code></ li>
-<li class="list-inline-item"><code class="notranslate">nba</code></li>
-<li class="list-inline-item"><code class="notranslate">nec</code></li>
-<li class="list-inline-item"><code class="notranslate">netflix</code></li>
-<li class="list-inline-item"><code class="notranslate">neustar</code></li>
-<li class="list-inline-item"><code class="notranslate">newholland</code></li>
-<li class="list-inline-item"><code class="notranslate">nfl</code></li>
-<li class="list-inline-item"><code class="notranslate">nhk</code></li>
-<li class="list-inline-item"><code class="notranslate">nico</code></li>
-<li class="list-inline-item"><code class="notranslate">nike</code></li>
-<li class="list-inline-item"><code class="notranslate">nikon</code></li>
-<li class="list-inline-item"><code class="notranslate">nissan</code></li>
-<li class="list-inline-item"><code class="notranslate">nissay</code></li>
-<li class="list-inline-item"><code class="notranslate">nokia</code></li>
-<li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
-<li class="list-inline-item"><code class="notranslate">norton</code></li>
-<li class="list-inline-item"><code class="notranslate">nra</code></li>
-<li class="list-inline-item"><code class="notranslate">ntt</code></li>
-<li class="list-inline-item"><code class="notranslate">obi</code></li>
-<li class="list-inline-item"><code class="notranslate">toimisto</code></li>
-<li class="list-inline-item"><code class="notranslate">omega</code></li>
-<li class="list-inline-item"><code class="notranslate">oraakkeli</code></li>
-<li class="list-inline-item"><code class="notranslate">oranssi</code></li>
-<li class="list-inline-item"><code class="notranslate">otsuka</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
-<li class="list-inline-item"><code class="notranslate">panasonic</code></li>
-<li class="list-inline-item"><code class="notranslate">pccw</code></li>
-<li class="list-inline-item"><code class="notranslate">pfizer</code></li>
-<li class="list-inline-item"><code class="notranslate">philips</code></li>
-<li class="list-inline-item"><code class="notranslate">piaget</code></li>
-<li class="list-inline-item"><code class="notranslate">pictet</code></li>
-<li class="list-inline-item"><code class="notranslate">ping</code></li>
-<li class="list-inline-item"><code class="notranslate">pioneer</code></li>
-<li class="list-inline-item"><code class="notranslate">pelaaminen</code></li>
-<li class="list-inline-item"><code class="notranslate">playstation</code></li>
-<li class="list-inline-item"><code class="notranslate">pelaaminen</code></li>
-<li class="list-inline-item"><code class="notranslate">politiikka</code></li>
-<li class="list-inline-item"><code class="notranslate">käytäntö</code></li>
-<li class="list-inline-item"><code class="notranslate">tuote</code></li>
-<li class="list-inline-item"><code class="notranslate">progressiivinen</code></li>
-<li class="list-inline-item"><code class="notranslate">pelaaminen</code></li>
-<li class="list-inline-item"><code class="notranslate">pelaaminen</code></li> class="notranslate">vakavaraisuus</code></li>
-<li class="list-inline-item"><code class="notranslate">pwc</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">tehtävä</code></li>-->
-<li class="list-inline-item"><code class="notranslate">qvc</code></li>
-<li class="list-inline-item"><code class="notranslate">punakivi</code></li>
-<li class="list-inline-item"><code class="notranslate">luottamus</code></li>
-<li class="list-inline-item"><code class="notranslate">rexroth</code></li>
-<li class="list-inline-item"><code class="notranslate">ricoh</code></li>
-<li class="list-inline-item"><code class="notranslate">rmit</code></li>
-<li class="list-inline-item"><code class="notranslate">rocher</code></li>
-<li class="list-inline-item"><code class="notranslate">rogers</code></li>
-<li class="list-inline-item"><code class="notranslate">rwe</code></li>
-<li class="list-inline-item"><code class="notranslate">turvallisuus</code></li>
-<li class="list-inline-item"><code class="notranslate">sakura</code></li>
-<li class="list-inline-item"><code class="notranslate">samsung</code></li>
-<li class="list-inline-item"><code class="notranslate">sandvik</code></li>
-<li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
-<li class="list-inline-item"><code class="notranslate">sanofi</code></li>
-<li class="list-inline-item"><code class="notranslate">sap</code></li>
-<li class="list-inline-item"><code class="notranslate">saxo</code></li>
-<li class="list-inline-item"><code class="notranslate">sbi</code></li>
-<!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
-<li class="list-inline-item"><code class="notranslate">sca</code></li>
-<li class="list-inline-item"><code class="notranslate">scb</code></li>
-<li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
-<li class="list-inline-item"><code class="notranslate">schmidt</code></li>
-<li class="list-inline-item"><code class="notranslate">musta</code></li>
-<li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
-<li class="list-inline-item"><code class="notranslate">skor</code></li>
-<li class="list-inline-item"><code class="notranslate">paikka</code></li>
-<li class="list-inline-item"><code class="notranslate">ses</code></li>
-<li class="list-inline-item"><code class="notranslate">ses</code></li>
-<li class="list-inline-item"><code class="notranslate">ompelu</code></li>
-<li class="list-inline-item"><code class="notranslate">seitsemän</code></li>
-<li class="list-inline-item"><code class="notranslate">sfr</code></li>
-<li class="list-inline-item"><code class="notranslate">etsiminen</code></li>
-<li class="list-inline-item"><code class="notranslate">shangrila</code></li>
-<li class="list-inline-item"><code class="notranslate">terävä</code></li>
-<li class="list-inline-item"><code class="notranslate">haha</code></li>
-<li class="list-inline-item"><code class="notranslate">kuori</code></li>
-<li class="list-inline-item"><code class="notranslate">shriram</code></li>
-<li class="list-inline-item"><code class="notranslate">sina</code></li>
-<li class="list-inline-item"><code class="notranslate">sky</code></li>
-<li class="list-inline-item"><code class="notranslate">skype</code></li>
-<li class="list-inline-item"><code class="notranslate">smart</code></li>
-<li class="list-inline-item"><code class="notranslate">sncf</code></li>
-<li class="list-inline-item"><code class="notranslate">softbank</code></li>
-<li class="list-inline-item"><code class="notranslate">sohu</code></li>
-<li class="list-inline-item"><code class="notranslate">sony</code></li>
-<li class="list-inline-item"><code class="notranslate">peilaus</code></li>
-<li class="list-inline-item"><code class="notranslate">stada</code></li>
-<li class="list-inline-item"><code class="notranslate">staples</code></li>
-<li class="list-inline-item"><code class="notranslate">star</code></li>
-<li class="list-inline-item"><code class="notranslate">starhub</code></li>
-<li class="list-inline-item"><code class="notranslate">statebank</code></li>
-<li class="list-inline-item"><code class="notranslate">statefarm</code></li>
-<li class="list-inline-item"><code class="notranslate">statoil</code></li>
-<li class="list-inline-item"><code class="notranslate">stc</code></li>
-<li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
-<li class="list-inline-item"><code class="notranslate">suzuki</code></li>
-<li class="list-inline-item"><code class="notranslate">swatch</code></li>
-<li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
-<li class="list-inline-item"><code class="notranslate">symantec</code></li>
-<li class="list-inline-item"><code class="notranslate">taobao</code></li>
-<li class="list-inline-item"><code class="notranslate">target</code></li>
-<li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
-<li class="list-inline-item"><code class="notranslate">tdk</code></li>
-<li class="list-inline-item"><code class="notranslate">telecity</code></li>
-<li class="list-inline-item"><code class="notranslate">telefonica</code></li>
-<li class="list-inline-item"><code class="notranslate">temasek</code></li>
-<li class="list-inline-item"><code class="notranslate">teva</code></li>
-<li class="list-inline-item"><code class="notranslate">tiffany</code></li>
-<li class="list-inline-item"><code class="notranslate">tjx</code></li>
-<li class="list-inline-item"><code class="notranslate">toray</code></li>
-<li class="list-inline-item"><code class="notranslate">toshiba</code></li>
-<li class="list-inline-item"><code class="notranslate">yhteensä</code></li>
-<li class="list-inline-item"><code class="notranslate">toyota</code></li>
-<li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
-<li class="list-inline-item"><code class="notranslate">matkustajat</code></li>
-<li class="list-inline-item"><code class="notranslate">tui</code></li>
-<li class="list-inline-item"><code class="notranslate">televisiot</code></li>
-<li class="list-inline-item"><code class="notranslate">ubs</code></li>
-<li class="list-inline-item"><code class="notranslate">unicom</code></li>
-<li class="list-inline-item"><code class="notranslate">uol</code></li>
-<li class="list-inline-item"><code class="notranslate">ups</code></li>
-<li class="list-inline-item"><code class="notranslate">avanguard</code></li>
-<li class="list-inline-item"><code class="notranslate">verisign</code></li>
-<li class="list-inline-item"><code class="notranslate">vig</code></li>
-<li class="list-inline-item"><code class="notranslate">viking</code></li>
-<li class="list-inline-item"><code class="notranslate">neitsyt</code></li>
-<li class="list-inline-item"><code class="notranslate">visa</code></li>
-<li class="list-inline-item"><code class="notranslate">vista</code></li>
-<li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
-<li class="list-inline-item"><code class="notranslate">vivo</code></li>
-<li class="list-inline-item"><code class="notranslate">volvo</code></li>
-<li class="list-inline-item"><code class="notranslate">walmart</code></li>
-<li class="list-inline-item"><code class="notranslate">walter</code></li>
-<li class="list-inline-item"><code class="notranslate">sääkanava</code></li>
-<li class="list-inline-item"><code class="notranslate">weber</code></li>
-<li class="list-inline-item"><code class="notranslate">pato</code></li>
-<li class="list-inline-item"><code class="notranslate">williamhill</code></li>
-<li class="list-inline-item"><code class="notranslate">ikkunat</code></li>
-<li class="list-inline-item"><code class="notranslate">wme</code></li>
-<li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
-<li class="list-inline-item"><code class="notranslate">metsänpuoli</code></li>
-<li class="list-inline-item"><code class="notranslate">wtc</code></li>
-<li class="list-inline-item"><code class="notranslate">xbox</code></li>
-<li class="list-inline-item"><code class="notranslate">xerox</code></li>
-<li class="list-inline-item"><code class="notranslate">xfinity</code></li>
-<li class="list-inline-item"><code class="notranslate">yahoo</code></li>
-<li class="list-inline-item"><code class="notranslate">yamamaxun</code></li>
-<li class="list-inline-item"><code class="notranslate">yandex</code></li>
-<li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
-<li class="list-inline-item"><code class="notranslate">youtube</code></li>
-<li class="list-inline-item"><code class="notranslate">zappos</code></li>
-<li class="list-inline-item"><code class="notranslate">zara</code></li>
-<li class="list-inline-item"><code class="notranslate">zippo</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil</code></li>
+  <li class="list-inline-item"><code class="notranslate">int</code></li>
+  <li class="list-inline-item"><code class="notranslate">arpa</code></li>
+  <li class="list-inline-item"><code class="notranslate">dni.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fed.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">isa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">kids.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nsn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ak.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">al.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ar.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">as.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">az.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">co.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ct.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">dc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">de.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">fl.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ga.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">gu.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">hi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ia.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">id.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">il.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">in.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ks.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ky.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">la.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ma.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">md.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">me.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mo.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ne.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nj.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nm.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">nv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ny.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">oh.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ok.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">or.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ri.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">sd.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tn.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">tx.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">ut.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">va.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">vt.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wa.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wi.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wv.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">wy.us</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.br</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">cri.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">health.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ed.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">lg.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">school.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">mil.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hs.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">es.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">kg.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">edu.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">mi.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">admin.ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">canada.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.id</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">go.th</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
+  <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">gouv.qc.ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.af</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.al</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.am</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ao</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.au</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.aw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.az</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.be</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.bm</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gov.by</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.co</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cy</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.cz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.dz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.eg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.fk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.il</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.im</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.in</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.iq</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.it</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.je</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.krd</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ky</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.kz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lb</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ma</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mm</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.my</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ng</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.np</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ph</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.py</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ru</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.scot</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.se</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.si</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tt</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.tw</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.ua</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.vn</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.wales</code></li>
+  <li class="list-inline-item"><code class="notranslate">gov.za</code></li>
+  <li class="list-inline-item"><code class="notranslate">government.pn</code></li>
+  <li class="list-inline-item"><code class="notranslate">govt.nz</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">gv.at</code></li>
+  <li class="list-inline-item"><code class="notranslate">ac.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">bl.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mod.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">parliament.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">police.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">rct.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">royal.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-18. maaliskuuta 2025 lähtien olemme lisänneet tähän luetteloon myös nämä Ranskan merentakaiset alueet ([tämän GitHub-pyynnön mukaisesti](https://github.com/forwardemail/forwardemail.net/issues/327)):
+Additionally these [brand and corporate top-level domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) are allowlisted by default (e.g. `apple` for `applecard.apple` for Apple Card bank statements):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">bzh</code></li>
-<li class="list-inline-item"><code class="notranslate">gf</code></li>
-<li class="list-inline-item"><code class="notranslate">gp</code></li>
-<li class="list-inline-item"><code class="notranslate">mq</code></li>
-<li class="list-inline-item"><code class="notranslate">nc</code></li>
-<li class="list-inline-item"><code class="notranslate">pf</code></li>
-<li class="list-inline-item"><code class="notranslate">pm</code></li>
-<li class="list-inline-item"><code class="notranslate">re</code></li>
-<li class="list-inline-item"><code class="notranslate">tf</code></li>
-<li class="list-inline-item"><code class="notranslate">wf</code></li>
-<li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">aaa</code></li>
+  <li class="list-inline-item"><code class="notranslate">aarp</code></li>
+  <li class="list-inline-item"><code class="notranslate">abarth</code></li>
+  <li class="list-inline-item"><code class="notranslate">abb</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbott</code></li>
+  <li class="list-inline-item"><code class="notranslate">abbvie</code></li>
+  <li class="list-inline-item"><code class="notranslate">abc</code></li>
+  <li class="list-inline-item"><code class="notranslate">accenture</code></li>
+  <li class="list-inline-item"><code class="notranslate">aco</code></li>
+  <li class="list-inline-item"><code class="notranslate">aeg</code></li>
+  <li class="list-inline-item"><code class="notranslate">aetna</code></li>
+  <li class="list-inline-item"><code class="notranslate">afl</code></li>
+  <li class="list-inline-item"><code class="notranslate">agakhan</code></li>
+  <li class="list-inline-item"><code class="notranslate">aig</code></li>
+  <li class="list-inline-item"><code class="notranslate">aigo</code></li>
+  <li class="list-inline-item"><code class="notranslate">airbus</code></li>
+  <li class="list-inline-item"><code class="notranslate">airtel</code></li>
+  <li class="list-inline-item"><code class="notranslate">akdn</code></li>
+  <li class="list-inline-item"><code class="notranslate">alfaromeo</code></li>
+  <li class="list-inline-item"><code class="notranslate">alibaba</code></li>
+  <li class="list-inline-item"><code class="notranslate">alipay</code></li>
+  <li class="list-inline-item"><code class="notranslate">allfinanz</code></li>
+  <li class="list-inline-item"><code class="notranslate">allstate</code></li>
+  <li class="list-inline-item"><code class="notranslate">ally</code></li>
+  <li class="list-inline-item"><code class="notranslate">alstom</code></li>
+  <li class="list-inline-item"><code class="notranslate">amazon</code></li>
+  <li class="list-inline-item"><code class="notranslate">americanexpress</code></li>
+  <li class="list-inline-item"><code class="notranslate">amex</code></li>
+  <li class="list-inline-item"><code class="notranslate">amica</code></li>
+  <li class="list-inline-item"><code class="notranslate">android</code></li>
+  <li class="list-inline-item"><code class="notranslate">anz</code></li>
+  <li class="list-inline-item"><code class="notranslate">aol</code></li>
+  <li class="list-inline-item"><code class="notranslate">apple</code></li>
+  <li class="list-inline-item"><code class="notranslate">aquarelle</code></li>
+  <li class="list-inline-item"><code class="notranslate">aramco</code></li>
+  <li class="list-inline-item"><code class="notranslate">audi</code></li>
+  <li class="list-inline-item"><code class="notranslate">auspost</code></li>
+  <li class="list-inline-item"><code class="notranslate">aws</code></li>
+  <li class="list-inline-item"><code class="notranslate">axa</code></li>
+  <li class="list-inline-item"><code class="notranslate">azure</code></li>
+  <li class="list-inline-item"><code class="notranslate">baidu</code></li>
+  <li class="list-inline-item"><code class="notranslate">bananarepublic</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclaycard</code></li>
+  <li class="list-inline-item"><code class="notranslate">barclays</code></li>
+  <li class="list-inline-item"><code class="notranslate">basketball</code></li>
+  <li class="list-inline-item"><code class="notranslate">bauhaus</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbt</code></li>
+  <li class="list-inline-item"><code class="notranslate">bbva</code></li>
+  <li class="list-inline-item"><code class="notranslate">bcg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bentley</code></li>
+  <li class="list-inline-item"><code class="notranslate">bharti</code></li>
+  <li class="list-inline-item"><code class="notranslate">bing</code></li>
+  <li class="list-inline-item"><code class="notranslate">blanco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bloomberg</code></li>
+  <li class="list-inline-item"><code class="notranslate">bms</code></li>
+  <li class="list-inline-item"><code class="notranslate">bmw</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnl</code></li>
+  <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
+  <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
+  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <li class="list-inline-item"><code class="notranslate">booking</code></li>
+  <li class="list-inline-item"><code class="notranslate">bosch</code></li>
+  <li class="list-inline-item"><code class="notranslate">bostik</code></li>
+  <li class="list-inline-item"><code class="notranslate">bradesco</code></li>
+  <li class="list-inline-item"><code class="notranslate">bridgestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">brother</code></li>
+  <li class="list-inline-item"><code class="notranslate">bugatti</code></li>
+  <li class="list-inline-item"><code class="notranslate">cal</code></li>
+  <li class="list-inline-item"><code class="notranslate">calvinklein</code></li>
+  <li class="list-inline-item"><code class="notranslate">canon</code></li>
+  <li class="list-inline-item"><code class="notranslate">capitalone</code></li>
+  <li class="list-inline-item"><code class="notranslate">caravan</code></li>
+  <li class="list-inline-item"><code class="notranslate">cartier</code></li>
+  <li class="list-inline-item"><code class="notranslate">cba</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbn</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbre</code></li>
+  <li class="list-inline-item"><code class="notranslate">cbs</code></li>
+  <li class="list-inline-item"><code class="notranslate">cern</code></li>
+  <li class="list-inline-item"><code class="notranslate">cfa</code></li>
+  <li class="list-inline-item"><code class="notranslate">chanel</code></li>
+  <li class="list-inline-item"><code class="notranslate">chase</code></li>
+  <li class="list-inline-item"><code class="notranslate">chintai</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrome</code></li>
+  <li class="list-inline-item"><code class="notranslate">chrysler</code></li>
+  <li class="list-inline-item"><code class="notranslate">cipriani</code></li>
+  <li class="list-inline-item"><code class="notranslate">cisco</code></li>
+  <li class="list-inline-item"><code class="notranslate">citadel</code></li>
+  <li class="list-inline-item"><code class="notranslate">citi</code></li>
+  <li class="list-inline-item"><code class="notranslate">citic</code></li>
+  <li class="list-inline-item"><code class="notranslate">clubmed</code></li>
+  <li class="list-inline-item"><code class="notranslate">comcast</code></li>
+  <li class="list-inline-item"><code class="notranslate">commbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">creditunion</code></li>
+  <li class="list-inline-item"><code class="notranslate">crown</code></li>
+  <li class="list-inline-item"><code class="notranslate">crs</code></li>
+  <li class="list-inline-item"><code class="notranslate">csc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cuisinella</code></li>
+  <li class="list-inline-item"><code class="notranslate">dabur</code></li>
+  <li class="list-inline-item"><code class="notranslate">datsun</code></li>
+  <li class="list-inline-item"><code class="notranslate">dealer</code></li>
+  <li class="list-inline-item"><code class="notranslate">dell</code></li>
+  <li class="list-inline-item"><code class="notranslate">deloitte</code></li>
+  <li class="list-inline-item"><code class="notranslate">delta</code></li>
+  <li class="list-inline-item"><code class="notranslate">dhl</code></li>
+  <li class="list-inline-item"><code class="notranslate">discover</code></li>
+  <li class="list-inline-item"><code class="notranslate">dish</code></li>
+  <li class="list-inline-item"><code class="notranslate">dnp</code></li>
+  <li class="list-inline-item"><code class="notranslate">dodge</code></li>
+  <li class="list-inline-item"><code class="notranslate">dunlop</code></li>
+  <li class="list-inline-item"><code class="notranslate">dupont</code></li>
+  <li class="list-inline-item"><code class="notranslate">dvag</code></li>
+  <li class="list-inline-item"><code class="notranslate">edeka</code></li>
+  <li class="list-inline-item"><code class="notranslate">emerck</code></li>
+  <li class="list-inline-item"><code class="notranslate">epson</code></li>
+  <li class="list-inline-item"><code class="notranslate">ericsson</code></li>
+  <li class="list-inline-item"><code class="notranslate">erni</code></li>
+  <li class="list-inline-item"><code class="notranslate">esurance</code></li>
+  <li class="list-inline-item"><code class="notranslate">etisalat</code></li>
+  <li class="list-inline-item"><code class="notranslate">eurovision</code></li>
+  <li class="list-inline-item"><code class="notranslate">everbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">extraspace</code></li>
+  <li class="list-inline-item"><code class="notranslate">fage</code></li>
+  <li class="list-inline-item"><code class="notranslate">fairwinds</code></li>
+  <li class="list-inline-item"><code class="notranslate">farmers</code></li>
+  <li class="list-inline-item"><code class="notranslate">fedex</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrari</code></li>
+  <li class="list-inline-item"><code class="notranslate">ferrero</code></li>
+  <li class="list-inline-item"><code class="notranslate">fiat</code></li>
+  <li class="list-inline-item"><code class="notranslate">fidelity</code></li>
+  <li class="list-inline-item"><code class="notranslate">firestone</code></li>
+  <li class="list-inline-item"><code class="notranslate">firmdale</code></li>
+  <li class="list-inline-item"><code class="notranslate">flickr</code></li>
+  <li class="list-inline-item"><code class="notranslate">flir</code></li>
+  <li class="list-inline-item"><code class="notranslate">flsmidth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ford</code></li>
+  <li class="list-inline-item"><code class="notranslate">fox</code></li>
+  <li class="list-inline-item"><code class="notranslate">fresenius</code></li>
+  <li class="list-inline-item"><code class="notranslate">forex</code></li>
+  <li class="list-inline-item"><code class="notranslate">frogans</code></li>
+  <li class="list-inline-item"><code class="notranslate">frontier</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">fujixerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gallup</code></li>
+  <li class="list-inline-item"><code class="notranslate">gap</code></li>
+  <li class="list-inline-item"><code class="notranslate">gbiz</code></li>
+  <li class="list-inline-item"><code class="notranslate">gea</code></li>
+  <li class="list-inline-item"><code class="notranslate">genting</code></li>
+  <li class="list-inline-item"><code class="notranslate">giving</code></li>
+  <li class="list-inline-item"><code class="notranslate">gle</code></li>
+  <li class="list-inline-item"><code class="notranslate">globo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gmx</code></li>
+  <li class="list-inline-item"><code class="notranslate">godaddy</code></li>
+  <li class="list-inline-item"><code class="notranslate">goldpoint</code></li>
+  <li class="list-inline-item"><code class="notranslate">goodyear</code></li>
+  <li class="list-inline-item"><code class="notranslate">goog</code></li>
+  <li class="list-inline-item"><code class="notranslate">google</code></li>
+  <li class="list-inline-item"><code class="notranslate">grainger</code></li>
+  <li class="list-inline-item"><code class="notranslate">guardian</code></li>
+  <li class="list-inline-item"><code class="notranslate">gucci</code></li>
+  <li class="list-inline-item"><code class="notranslate">hbo</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hdfcbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">hermes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hisamitsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">hitachi</code></li>
+  <li class="list-inline-item"><code class="notranslate">hkt</code></li>
+  <li class="list-inline-item"><code class="notranslate">honda</code></li>
+  <li class="list-inline-item"><code class="notranslate">honeywell</code></li>
+  <li class="list-inline-item"><code class="notranslate">hotmail</code></li>
+  <li class="list-inline-item"><code class="notranslate">hsbc</code></li>
+  <li class="list-inline-item"><code class="notranslate">hughes</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyatt</code></li>
+  <li class="list-inline-item"><code class="notranslate">hyundai</code></li>
+  <li class="list-inline-item"><code class="notranslate">ibm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ieee</code></li>
+  <li class="list-inline-item"><code class="notranslate">ifm</code></li>
+  <li class="list-inline-item"><code class="notranslate">ikano</code></li>
+  <li class="list-inline-item"><code class="notranslate">imdb</code></li>
+  <li class="list-inline-item"><code class="notranslate">infiniti</code></li>
+  <li class="list-inline-item"><code class="notranslate">intel</code></li>
+  <li class="list-inline-item"><code class="notranslate">intuit</code></li>
+  <li class="list-inline-item"><code class="notranslate">ipiranga</code></li>
+  <li class="list-inline-item"><code class="notranslate">iselect</code></li>
+  <li class="list-inline-item"><code class="notranslate">itau</code></li>
+  <li class="list-inline-item"><code class="notranslate">itv</code></li>
+  <li class="list-inline-item"><code class="notranslate">iveco</code></li>
+  <li class="list-inline-item"><code class="notranslate">jaguar</code></li>
+  <li class="list-inline-item"><code class="notranslate">java</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcb</code></li>
+  <li class="list-inline-item"><code class="notranslate">jcp</code></li>
+  <li class="list-inline-item"><code class="notranslate">jeep</code></li>
+  <li class="list-inline-item"><code class="notranslate">jpmorgan</code></li>
+  <li class="list-inline-item"><code class="notranslate">juniper</code></li>
+  <li class="list-inline-item"><code class="notranslate">kddi</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryhotels</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerrylogistics</code></li>
+  <li class="list-inline-item"><code class="notranslate">kerryproperties</code></li>
+  <li class="list-inline-item"><code class="notranslate">kfh</code></li>
+  <li class="list-inline-item"><code class="notranslate">kia</code></li>
+  <li class="list-inline-item"><code class="notranslate">kinder</code></li>
+  <li class="list-inline-item"><code class="notranslate">kindle</code></li>
+  <li class="list-inline-item"><code class="notranslate">komatsu</code></li>
+  <li class="list-inline-item"><code class="notranslate">kpmg</code></li>
+  <li class="list-inline-item"><code class="notranslate">kred</code></li>
+  <li class="list-inline-item"><code class="notranslate">kuokgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">lacaixa</code></li>
+  <li class="list-inline-item"><code class="notranslate">ladbrokes</code></li>
+  <li class="list-inline-item"><code class="notranslate">lamborghini</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancaster</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancia</code></li>
+  <li class="list-inline-item"><code class="notranslate">lancome</code></li>
+  <li class="list-inline-item"><code class="notranslate">landrover</code></li>
+  <li class="list-inline-item"><code class="notranslate">lanxess</code></li>
+  <li class="list-inline-item"><code class="notranslate">lasalle</code></li>
+  <li class="list-inline-item"><code class="notranslate">latrobe</code></li>
+  <li class="list-inline-item"><code class="notranslate">lds</code></li>
+  <li class="list-inline-item"><code class="notranslate">leclerc</code></li>
+  <li class="list-inline-item"><code class="notranslate">lego</code></li>
+  <li class="list-inline-item"><code class="notranslate">liaison</code></li>
+  <li class="list-inline-item"><code class="notranslate">lexus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lidl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lifestyle</code></li>
+  <li class="list-inline-item"><code class="notranslate">lilly</code></li>
+  <li class="list-inline-item"><code class="notranslate">lincoln</code></li>
+  <li class="list-inline-item"><code class="notranslate">linde</code></li>
+  <li class="list-inline-item"><code class="notranslate">lipsy</code></li>
+  <li class="list-inline-item"><code class="notranslate">lixil</code></li>
+  <li class="list-inline-item"><code class="notranslate">locus</code></li>
+  <li class="list-inline-item"><code class="notranslate">lotte</code></li>
+  <li class="list-inline-item"><code class="notranslate">lpl</code></li>
+  <li class="list-inline-item"><code class="notranslate">lplfinancial</code></li>
+  <li class="list-inline-item"><code class="notranslate">lundbeck</code></li>
+  <li class="list-inline-item"><code class="notranslate">lupin</code></li>
+  <li class="list-inline-item"><code class="notranslate">macys</code></li>
+  <li class="list-inline-item"><code class="notranslate">maif</code></li>
+  <li class="list-inline-item"><code class="notranslate">man</code></li>
+  <li class="list-inline-item"><code class="notranslate">mango</code></li>
+  <li class="list-inline-item"><code class="notranslate">marriott</code></li>
+  <li class="list-inline-item"><code class="notranslate">maserati</code></li>
+  <li class="list-inline-item"><code class="notranslate">mattel</code></li>
+  <li class="list-inline-item"><code class="notranslate">mckinsey</code></li>
+  <li class="list-inline-item"><code class="notranslate">metlife</code></li>
+  <li class="list-inline-item"><code class="notranslate">microsoft</code></li>
+  <li class="list-inline-item"><code class="notranslate">mini</code></li>
+  <li class="list-inline-item"><code class="notranslate">mit</code></li>
+  <li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
+  <li class="list-inline-item"><code class="notranslate">mlb</code></li>
+  <li class="list-inline-item"><code class="notranslate">mma</code></li>
+  <li class="list-inline-item"><code class="notranslate">monash</code></li>
+  <li class="list-inline-item"><code class="notranslate">mormon</code></li>
+  <li class="list-inline-item"><code class="notranslate">moto</code></li>
+  <li class="list-inline-item"><code class="notranslate">movistar</code></li>
+  <li class="list-inline-item"><code class="notranslate">msd</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mtr</code></li>
+  <li class="list-inline-item"><code class="notranslate">mutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">nadex</code></li>
+  <li class="list-inline-item"><code class="notranslate">nationwide</code></li>
+  <li class="list-inline-item"><code class="notranslate">natura</code></li>
+  <li class="list-inline-item"><code class="notranslate">nba</code></li>
+  <li class="list-inline-item"><code class="notranslate">nec</code></li>
+  <li class="list-inline-item"><code class="notranslate">netflix</code></li>
+  <li class="list-inline-item"><code class="notranslate">neustar</code></li>
+  <li class="list-inline-item"><code class="notranslate">newholland</code></li>
+  <li class="list-inline-item"><code class="notranslate">nfl</code></li>
+  <li class="list-inline-item"><code class="notranslate">nhk</code></li>
+  <li class="list-inline-item"><code class="notranslate">nico</code></li>
+  <li class="list-inline-item"><code class="notranslate">nike</code></li>
+  <li class="list-inline-item"><code class="notranslate">nikon</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissan</code></li>
+  <li class="list-inline-item"><code class="notranslate">nissay</code></li>
+  <li class="list-inline-item"><code class="notranslate">nokia</code></li>
+  <li class="list-inline-item"><code class="notranslate">northwesternmutual</code></li>
+  <li class="list-inline-item"><code class="notranslate">norton</code></li>
+  <li class="list-inline-item"><code class="notranslate">nra</code></li>
+  <li class="list-inline-item"><code class="notranslate">ntt</code></li>
+  <li class="list-inline-item"><code class="notranslate">obi</code></li>
+  <li class="list-inline-item"><code class="notranslate">office</code></li>
+  <li class="list-inline-item"><code class="notranslate">omega</code></li>
+  <li class="list-inline-item"><code class="notranslate">oracle</code></li>
+  <li class="list-inline-item"><code class="notranslate">orange</code></li>
+  <li class="list-inline-item"><code class="notranslate">otsuka</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
+  <li class="list-inline-item"><code class="notranslate">pccw</code></li>
+  <li class="list-inline-item"><code class="notranslate">pfizer</code></li>
+  <li class="list-inline-item"><code class="notranslate">philips</code></li>
+  <li class="list-inline-item"><code class="notranslate">piaget</code></li>
+  <li class="list-inline-item"><code class="notranslate">pictet</code></li>
+  <li class="list-inline-item"><code class="notranslate">ping</code></li>
+  <li class="list-inline-item"><code class="notranslate">pioneer</code></li>
+  <li class="list-inline-item"><code class="notranslate">play</code></li>
+  <li class="list-inline-item"><code class="notranslate">playstation</code></li>
+  <li class="list-inline-item"><code class="notranslate">pohl</code></li>
+  <li class="list-inline-item"><code class="notranslate">politie</code></li>
+  <li class="list-inline-item"><code class="notranslate">praxi</code></li>
+  <li class="list-inline-item"><code class="notranslate">prod</code></li>
+  <li class="list-inline-item"><code class="notranslate">progressive</code></li>
+  <li class="list-inline-item"><code class="notranslate">pru</code></li>
+  <li class="list-inline-item"><code class="notranslate">prudential</code></li>
+  <li class="list-inline-item"><code class="notranslate">pwc</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">qvc</code></li>
+  <li class="list-inline-item"><code class="notranslate">redstone</code></li>
+  <li class="list-inline-item"><code class="notranslate">reliance</code></li>
+  <li class="list-inline-item"><code class="notranslate">rexroth</code></li>
+  <li class="list-inline-item"><code class="notranslate">ricoh</code></li>
+  <li class="list-inline-item"><code class="notranslate">rmit</code></li>
+  <li class="list-inline-item"><code class="notranslate">rocher</code></li>
+  <li class="list-inline-item"><code class="notranslate">rogers</code></li>
+  <li class="list-inline-item"><code class="notranslate">rwe</code></li>
+  <li class="list-inline-item"><code class="notranslate">safety</code></li>
+  <li class="list-inline-item"><code class="notranslate">sakura</code></li>
+  <li class="list-inline-item"><code class="notranslate">samsung</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvik</code></li>
+  <li class="list-inline-item"><code class="notranslate">sandvikcoromant</code></li>
+  <li class="list-inline-item"><code class="notranslate">sanofi</code></li>
+  <li class="list-inline-item"><code class="notranslate">sap</code></li>
+  <li class="list-inline-item"><code class="notranslate">saxo</code></li>
+  <li class="list-inline-item"><code class="notranslate">sbi</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
+  <li class="list-inline-item"><code class="notranslate">sca</code></li>
+  <li class="list-inline-item"><code class="notranslate">scb</code></li>
+  <li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
+  <li class="list-inline-item"><code class="notranslate">schmidt</code></li>
+  <li class="list-inline-item"><code class="notranslate">schwarz</code></li>
+  <li class="list-inline-item"><code class="notranslate">scjohnson</code></li>
+  <li class="list-inline-item"><code class="notranslate">scor</code></li>
+  <li class="list-inline-item"><code class="notranslate">seat</code></li>
+  <li class="list-inline-item"><code class="notranslate">sener</code></li>
+  <li class="list-inline-item"><code class="notranslate">ses</code></li>
+  <li class="list-inline-item"><code class="notranslate">sew</code></li>
+  <li class="list-inline-item"><code class="notranslate">seven</code></li>
+  <li class="list-inline-item"><code class="notranslate">sfr</code></li>
+  <li class="list-inline-item"><code class="notranslate">seek</code></li>
+  <li class="list-inline-item"><code class="notranslate">shangrila</code></li>
+  <li class="list-inline-item"><code class="notranslate">sharp</code></li>
+  <li class="list-inline-item"><code class="notranslate">shaw</code></li>
+  <li class="list-inline-item"><code class="notranslate">shell</code></li>
+  <li class="list-inline-item"><code class="notranslate">shriram</code></li>
+  <li class="list-inline-item"><code class="notranslate">sina</code></li>
+  <li class="list-inline-item"><code class="notranslate">sky</code></li>
+  <li class="list-inline-item"><code class="notranslate">skype</code></li>
+  <li class="list-inline-item"><code class="notranslate">smart</code></li>
+  <li class="list-inline-item"><code class="notranslate">sncf</code></li>
+  <li class="list-inline-item"><code class="notranslate">softbank</code></li>
+  <li class="list-inline-item"><code class="notranslate">sohu</code></li>
+  <li class="list-inline-item"><code class="notranslate">sony</code></li>
+  <li class="list-inline-item"><code class="notranslate">spiegel</code></li>
+  <li class="list-inline-item"><code class="notranslate">stada</code></li>
+  <li class="list-inline-item"><code class="notranslate">staples</code></li>
+  <li class="list-inline-item"><code class="notranslate">star</code></li>
+  <li class="list-inline-item"><code class="notranslate">starhub</code></li>
+  <li class="list-inline-item"><code class="notranslate">statebank</code></li>
+  <li class="list-inline-item"><code class="notranslate">statefarm</code></li>
+  <li class="list-inline-item"><code class="notranslate">statoil</code></li>
+  <li class="list-inline-item"><code class="notranslate">stc</code></li>
+  <li class="list-inline-item"><code class="notranslate">stcgroup</code></li>
+  <li class="list-inline-item"><code class="notranslate">suzuki</code></li>
+  <li class="list-inline-item"><code class="notranslate">swatch</code></li>
+  <li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
+  <li class="list-inline-item"><code class="notranslate">symantec</code></li>
+  <li class="list-inline-item"><code class="notranslate">taobao</code></li>
+  <li class="list-inline-item"><code class="notranslate">target</code></li>
+  <li class="list-inline-item"><code class="notranslate">tatamotors</code></li>
+  <li class="list-inline-item"><code class="notranslate">tdk</code></li>
+  <li class="list-inline-item"><code class="notranslate">telecity</code></li>
+  <li class="list-inline-item"><code class="notranslate">telefonica</code></li>
+  <li class="list-inline-item"><code class="notranslate">temasek</code></li>
+  <li class="list-inline-item"><code class="notranslate">teva</code></li>
+  <li class="list-inline-item"><code class="notranslate">tiffany</code></li>
+  <li class="list-inline-item"><code class="notranslate">tjx</code></li>
+  <li class="list-inline-item"><code class="notranslate">toray</code></li>
+  <li class="list-inline-item"><code class="notranslate">toshiba</code></li>
+  <li class="list-inline-item"><code class="notranslate">total</code></li>
+  <li class="list-inline-item"><code class="notranslate">toyota</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">travelers</code></li>
+  <li class="list-inline-item"><code class="notranslate">tui</code></li>
+  <li class="list-inline-item"><code class="notranslate">tvs</code></li>
+  <li class="list-inline-item"><code class="notranslate">ubs</code></li>
+  <li class="list-inline-item"><code class="notranslate">unicom</code></li>
+  <li class="list-inline-item"><code class="notranslate">uol</code></li>
+  <li class="list-inline-item"><code class="notranslate">ups</code></li>
+  <li class="list-inline-item"><code class="notranslate">vanguard</code></li>
+  <li class="list-inline-item"><code class="notranslate">verisign</code></li>
+  <li class="list-inline-item"><code class="notranslate">vig</code></li>
+  <li class="list-inline-item"><code class="notranslate">viking</code></li>
+  <li class="list-inline-item"><code class="notranslate">virgin</code></li>
+  <li class="list-inline-item"><code class="notranslate">visa</code></li>
+  <li class="list-inline-item"><code class="notranslate">vista</code></li>
+  <li class="list-inline-item"><code class="notranslate">vistaprint</code></li>
+  <li class="list-inline-item"><code class="notranslate">vivo</code></li>
+  <li class="list-inline-item"><code class="notranslate">volkswagen</code></li>
+  <li class="list-inline-item"><code class="notranslate">volvo</code></li>
+  <li class="list-inline-item"><code class="notranslate">walmart</code></li>
+  <li class="list-inline-item"><code class="notranslate">walter</code></li>
+  <li class="list-inline-item"><code class="notranslate">weatherchannel</code></li>
+  <li class="list-inline-item"><code class="notranslate">weber</code></li>
+  <li class="list-inline-item"><code class="notranslate">weir</code></li>
+  <li class="list-inline-item"><code class="notranslate">williamhill</code></li>
+  <li class="list-inline-item"><code class="notranslate">windows</code></li>
+  <li class="list-inline-item"><code class="notranslate">wme</code></li>
+  <li class="list-inline-item"><code class="notranslate">wolterskluwer</code></li>
+  <li class="list-inline-item"><code class="notranslate">woodside</code></li>
+  <li class="list-inline-item"><code class="notranslate">wtc</code></li>
+  <li class="list-inline-item"><code class="notranslate">xbox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xerox</code></li>
+  <li class="list-inline-item"><code class="notranslate">xfinity</code></li>
+  <li class="list-inline-item"><code class="notranslate">yahoo</code></li>
+  <li class="list-inline-item"><code class="notranslate">yamaxun</code></li>
+  <li class="list-inline-item"><code class="notranslate">yandex</code></li>
+  <li class="list-inline-item"><code class="notranslate">yodobashi</code></li>
+  <li class="list-inline-item"><code class="notranslate">youtube</code></li>
+  <li class="list-inline-item"><code class="notranslate">zappos</code></li>
+  <li class="list-inline-item"><code class="notranslate">zara</code></li>
+  <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
 
-8. heinäkuuta 2025 alkaen olemme lisänneet nämä Eurooppaan liittyvät maat:
+As of March 18, 2025 we have also added these French overseas territories to this list ([per this GitHub request](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ax</code></li>
-<li class="list-inline-item"><code class="notranslate">bg</code></li>
-<li class="list-inline-item"><code class="notranslate">fo</code></li>
-<li class="list-inline-item"><code class="notranslate">gi</code></li>
-<li class="list-inline-item"><code class="notranslate">gr</code></li>
-<li class="list-inline-item"><code class="notranslate">hr</code></li>
-<li class="list-inline-item"><code class="notranslate">hu</code></li>
-<li class="list-inline-item"><code class="notranslate">lt</code></li>
-<li class="list-inline-item"><code class="notranslate">lu</code></li>
-<li class="list-inline-item"><code class="notranslate">mc</code></li>
-<li class="list-inline-item"><code class="notranslate">mk</code></li>
-<li class="list-inline-item"><code class="notranslate">mt</code></li>
-<li class="list-inline-item"><code class="notranslate">ro</code></li>
-<li class="list-inline-item"><code class="notranslate">sk</code></li>
-<li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
-Emme nimenomaisesti sisällyttäneet `cz`:aa, `ru`:tä ja `ua`:ta niiden suuren roskapostiaktiivisuuden vuoksi.
-
-### Mitkä ovat sallittujen listan kriteerisi? {#what-is-your-allowlist-criteria}
-
-Meillä on staattinen lista [verkkotunnuspäätteet sallittujen listalla oletuksena](#what-domain-name-extensions-are-allowlisted-by-default) – ja ylläpidämme myös dynaamista, välimuistissa olevaa, jatkuvasti päivittyvää sallittujen luetteloa, joka perustuu seuraaviin tiukkoihin kriteereihin:
-
-* Lähettäjän juuriverkkotunnuksen on oltava [verkkotunnuspääte, joka vastaa ilmaisessa paketissamme tarjoamaamme luetteloa](#what-domain-name-extensions-can-be-used-for-free)-luokassa (lisättynä `biz` ja `info`). Sisällytämme myös osittaiset osumat `edu`, `gov` ja `mil`, kuten `xyz.gov.au` ja `xyz.edu.au`.
-* Lähettäjän juuriverkkotunnuksen on oltava 100 000 parhaan yksilöllisen juuriverkkotunnuksen joukossa [Sateenvarjojen suosioluettelo](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")-luokituksesta ("UPL").
-* Lähettäjän juuriverkkotunnuksen on oltava 50 000 parhaan yksilöllisen juuriverkkotunnuksen joukossa, jotka ovat esiintyneet vähintään 4 päivänä viimeisten 7 päivän aikana UPL-luokituksissa (\~50%+).
-* Lähettäjän juuriverkkotunnus ei saa olla [luokiteltu](https://radar.cloudflare.com/categorization-feedback/)-luokituksessa aikuisille suunnattu sisältö tai Cloudflaren haittaohjelma.
-* Lähettäjän juuriverkkotunnuksella on oltava joko A- tai MX-tietueet asetettuna. * Lähettäjän juuriverkkotunnuksella on oltava joko A-tietue(ita), MX-tietue(ita), DMARC-tietue, jossa on `biz`0 tai `biz`1, tai SPF-tietue, jossa on `biz`2 tai `biz`3.
-
-Jos tämä kriteeri täyttyy, lähettäjän juuriverkkotunnus tallennetaan välimuistiin 7 päiväksi. Huomaa, että automaattinen työmme suoritetaan päivittäin – siksi tämä on päivittäin päivittyvä sallittujen luettelon välimuisti.
-
-Automaattinen työmme lataa UPL:n muistissa olevat edelliset 7 päivää, purkaa ne ja jäsentää sitten muistissa olevat tiedot yllä olevien tiukkojen kriteerien mukaisesti.
-
-Tämän kirjoitushetkellä suositut verkkotunnukset, kuten Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify ja muut – ovat tietenkin mukana.
-
-Jos lähettäjäsi ei ole sallittujen listallamme, ensimmäisen kerran, kun FQDN-juuriverkkotunnuksesi tai IP-osoitteesi lähettää sähköpostia, sinut asetetaan [rajoitettu nopeus](#do-you-have-rate-limiting)- ja [harmaalle listalle](#do-you-have-a-greylist)-arvoiksi. Huomaa, että tämä on sähköpostin standardikäytäntö. Useimmat sähköpostipalvelinohjelmat yrittävät yrittää uudelleen, jos ne saavat nopeusrajoitus- tai harmaan listan virheen (esim. 421- tai 4xx-tason virhekoodin).
-
-**Huomaa, että tietyt lähettäjät, kuten `a@gmail.com`, `b@xyz.edu` ja `c@gov.au`, voivat silti olla [kiellettyjen listalla](#do-you-have-a-denylist)** (esim. jos havaitsemme automaattisesti roskapostia, tietojenkalastelua tai haittaohjelmia kyseisiltä lähettäjiltä).**
-
-### Mitä verkkotunnuspäätteitä voi käyttää ilmaiseksi {#what-domain-name-extensions-can-be-used-for-free}
-
-Otimme 31. maaliskuuta 2023 alkaen käyttöön uuden yleisen roskapostisäännön käyttäjiemme ja palvelumme suojelemiseksi.
-
-Tämä uusi sääntö sallii vain seuraavien verkkotunnuspäätteiden käytön ilmaispaketissamme:
+As of July 8, 2025 we have added these Europe-specific countries:
 
 <ul class="list-inline">
-<li class="list-inline-item"><code class="notranslate">ac</code></li>
-<li class="list-inline-item"><code class="notranslate">ad</code></li>
-<li class="list-inline-item"><code class="notranslate">ag</code></li>
-<li class="list-inline-item"><code class="notranslate">ai</code></li>
-<li class="list-inline-item"><code class="notranslate">al</code></li>
-<li class="list-inline-item"><code class="notranslate">am</code></li>
-<li class="list-inline-item"><code class="notranslate">app</code></li>
-<li class="list-inline-item"><code class="notranslate">as</code></li>
-<li class="list-inline-item"><code class="notranslate">at</code></li>
-<li class="list-inline-item"><code class="notranslate">au</code></li>
-<li class="list-inline-item"><code class="notranslate">ba</code></li>
-<li class="list-inline-item"><code class="notranslate">be</code></li>
-<li class="list-inline-item"><code class="notranslate">br</code></li>
-<li class="list-inline-item"><code class="notranslate">by</code></li>
-<li class="list-inline-item"><code class="notranslate">ca</code></li>
-<li class="list-inline-item"><code class="notranslate">cc</code></li>
-<li class="list-inline-item"><code class="notranslate">cd</code></li>
-<li class="list-inline-item"><code class="notranslate">ch</code></li>
-<li class="list-inline-item"><code class="notranslate">ck</code></li>
-<li class="list-inline-item"><code class="notranslate">co</code></li>
-<li class="list-inline-item"><code class="notranslate">com</code></li>
-<li class="list-inline-item"><code class="notranslate">de</code></li>
-<li class="list-inline-item"><code class="notranslate">dev</code></li>
-<li class="list-inline-item"><code class="notranslate">dj</code></li>
-<li class="list-inline-item"><code class="notranslate">ee</code></li>
-<li class="list-inline-item"><code class="notranslate">es</code></li>
-<li class="list-inline-item"><code class="notranslate">eu</code></li>
-<li class="list-inline-item"><code class="notranslate">perhe</code></li>
-<li class="list-inline-item"><code class="notranslate">fi</code></li>
-<li class="list-inline-item"><code class="notranslate">fm</code></li>
-<li class="list-inline-item"><code class="notranslate">fr</code></li>
-<li class="list-inline-item"><code class="notranslate">gg</code></li>
-<li class="list-inline-item"><code class="notranslate">gl</code></li>
-<li class="list-inline-item"><code class="notranslate">id</code></li>
-<li class="list-inline-item"><code class="notranslate">ie</code></li>
-<li class="list-inline-item"><code class="notranslate">il</code></li>
-<li class="list-inline-item"><code class="notranslate">im</code></li>
-<li class="list-inline-item"><code class="notranslate">sisään</code></li>
-<li class="list-inline-item"><code class="notranslate">io</code></li>
-<li class="list-inline-item"><code class="notranslate">ir</code></li>
-<li class="list-inline-item"><code class="notranslate">on</code></li>
-<li class="list-inline-item"><code class="notranslate">se</code></li>
-<li class="list-inline-item"><code class="notranslate">je</code></li>
-<li class="list-inline-item"><code class="notranslate">jp</code></li>
-<li class="list-inline-item"><code class="notranslate">ke</code></li>
-<li class="list-inline-item"><code class="notranslate">kr</code></li>
-<li class="list-inline-item"><code class="notranslate">la</code></li>
-<li class="list-inline-item"><code class="notranslate">li</code></li>
-<li class="list-inline-item"><code class="notranslate">lv</code></li>
-<li class="list-inline-item"><code class="notranslate">ly</code></li>
-<li class="list-inline-item"><code class="notranslate">md</code></li>
-<li class="list-inline-item"><code class="notranslate">me</code></li>
-<li class="list-inline-item"><code class="notranslate">mn</code></li>
-<li class="list-inline-item"><code class="notranslate">ms</code></li>
-<li class="list-inline-item"><code class="notranslate">mu</code></li>
-<li class="list-inline-item"><code class="notranslate">mx</code></li>
-<li class="list-inline-item"><code class="notranslate">net</code></li>
-<li class="list-inline-item"><code class="notranslate">ni</code></li>
-<li class="list-inline-item"><code class="notranslate">nl</code></li>
-<li class="list-inline-item"><code class="notranslate">no</code></li>
-<li class="list-inline-item"><code class="notranslate">nu</code></li>
-<li class="list-inline-item"><code class="notranslate">nz</code></li>
-<li class="list-inline-item"><code class="notranslate">org</code></li>
-<li class="list-inline-item"><code class="notranslate">pl</code></li>
-<li class="list-inline-item"><code class="notranslate">pr</code></li>
-<li class="list-inline-item"><code class="notranslate">pt</code></li>
-<li class="list-inline-item"><code class="notranslate">pw</code></li>
-<li class="list-inline-item"><code class="notranslate">rs</code></li>
-<li class="list-inline-item"><code class="notranslate">sc</code></li>
-<li class="list-inline-item"><code class="notranslate">se</code></li>
-<li class="list-inline-item"><code class="notranslate">sh</code></li>
-<li class="list-inline-item"><code class="notranslate">si</code></li>
-<li class="list-inline-item"><code class="notranslate">sm</code></li>
-<li class="list-inline-item"><code class="notranslate">sr</code></li>
-<li class="list-inline-item"><code class="notranslate">st</code></li>
-<li class="list-inline-item"><code class="notranslate">tc</code></li>
-<li class="list-inline-item"><code class="notranslate">tm</code></li>
-<li class="list-inline-item"><code class="notranslate">to</code></li>
-<li class="list-inline-item"><code class="notranslate">tv</code></li>
-<li class="list-inline-item"><code class="notranslate">uk</code></li>
-<li class="list-inline-item"><code class="notranslate">us</code></li>
-<li class="list-inline-item"><code class="notranslate">uz</code></li>
-<li class="list-inline-item"><code class="notranslate">vc</code></li>
-<li class="list-inline-item"><code class="notranslate">vg</code></li>
-<li class="list-inline-item"><code class="notranslate">vu</code></li>
-<li class="list-inline-item"><code class="notranslate">ws</code></li>
-<li class="list-inline-item"><code class="notranslate">xyz</code></li>
-<li class="list-inline-item"><code class="notranslate">za</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-### Onko sinulla harmaa lista {#do-you-have-a-greylist}
+In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
 
-Kyllä, meillä on käytössä hyvin löyhä [sähköpostin harmaalistaus](https://en.wikipedia.org/wiki/Greylisting_\(email\)) -käytäntö. Harmaalistaus koskee vain lähettäjiä, jotka eivät ole sallittujen listallamme, ja se säilyy välimuistissamme 30 päivää.
+We specifically did not include `ru` and `ua` due to high spam activity.
 
-Jokaiselle uudelle lähettäjälle tallennamme avaimen Redis-tietokantaamme 30 päiväksi. Avaimen arvoksi on asetettu heidän ensimmäisen pyyntönsä alkuperäinen saapumisaika. Tämän jälkeen hylkäämme heidän sähköpostinsa uudelleenyrityskoodilla 450 ja annamme sen läpäistä vasta viiden minuutin kuluttua.
+### What is your allowlist criteria {#what-is-your-allowlist-criteria}
 
-Jos he ovat odottaneet onnistuneesti viisi minuuttia tästä alkuperäisestä saapumisajasta, heidän sähköpostinsa hyväksytään eivätkä he saa tätä 450-tilakoodia.
+We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
 
-Avain koostuu joko FQDN-juuriverkkotunnuksesta tai lähettäjän IP-osoitteesta. Tämä tarkoittaa, että kaikki harmaalle listalle päässeet aliverkkotunnukset läpäisevät myös juuriverkkotunnuksen ja päinvastoin (tätä tarkoitamme "erittäin löyhällä" käytännöllä).
+* Sender root domain must be of a [domain name extension that matches the list we offer on our free plan](#what-domain-name-extensions-can-be-used-for-free) (with the addition of `biz` and `info`).  We also include `edu`, `gov`, and `mil` partial matches, such as `xyz.gov.au` and `xyz.edu.au`.
+* Sender root domain must be within top 100,000 unique root domain parsed results from [Umbrella Popularity List](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Sender root domain must be within top 50,000 results from unique root domains appearing in at least 4 of past 7 days of UPL's (\~50%+).
+* Sender root domain must not be [categorized](https://radar.cloudflare.com/categorization-feedback/) as adult-content or malware by Cloudflare.
+* Sender root domain must have either A or MX records set.
+* Sender root domain must have either A record(s), MX record(s), DMARC record with `p=reject` or `p=quarantine`, or an SPF record with `-all` or `~all` qualifier.
 
-Jos esimerkiksi sähköposti tulee `test.example.com`:lta ennen kuin näemme sähköpostin tulevan `example.com`:ltä, kaikkien `test.example.com`:lta ja/tai `example.com`:lta tulevien sähköpostien on odotettava 5 minuuttia yhteyden alkuperäisestä saapumisajasta. Emme aseta sekä `test.example.com`:lle että `example.com`:lle omia 5 minuutin odotusaikojaan (harmaalistauskäytäntömme koskee juuriverkkotunnustasolla).
+If this criteria is satisfied, then the sender root domain will be cached for 7 days.  Note that our automated job runs daily – therefore this is a rolling allowlist cache that updates daily.
 
-Huomaa, että harmaalistaus ei koske [sallittujen lista](#do-you-have-an-allowlist)-tietokannan lähettäjiä (esim. Meta, Amazon, Netflix, Google, Microsoft tämän kirjoitushetkellä).
+Our automated job will download the previous 7 days of UPL's in-memory, unzip them, and then parse in-memory according to the strict criteria above.
 
-### Onko sinulla estolista {#do-you-have-a-denylist}
+Popular domains at the time of this writing such as Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, and more – are of course included.
 
-Kyllä, meillä on oma estolista ja päivitämme sitä automaattisesti reaaliajassa ja manuaalisesti havaitun roskapostin ja haitallisen toiminnan perusteella.
+If you are a sender not in our allowlist, then the first time your FQDN root domain or IP address sends an email, you will be [rate limited](#do-you-have-rate-limiting) and [greylisted](#do-you-have-a-greylist).  Note that this is standard practice adopted as an email standard.  Most email server clients will attempt to retry if they receive a rate limit or greylist error (e.g. a 421 or 4xx level error status code).
 
-Haemme myös kaikki IP-osoitteet UCEPROTECTin tason 1 kieltolistalta kohdasta <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> tunnin välein ja syötämme ne kieltolistallemme 7 päivän voimassaoloajalla.
+**Note that specific senders such as `a@gmail.com`, `b@xyz.edu`, and `c@gov.au` can still be [denylisted](#do-you-have-a-denylist)** (e.g. if we automatically detect spam, phishing, or malware from those senders).
 
-Estoluettelosta löytyvät lähettäjät saavat virhekoodin 421 (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin), jos niiden [eivät ole sallittujen listalla](#do-you-have-an-allowlist).
+### What domain name extensions can be used for free {#what-domain-name-extensions-can-be-used-for-free}
 
-Käyttämällä 421-tilakoodia 554-tilakoodin sijaan voidaan vähentää mahdollisia vääriä positiivisia tuloksia reaaliajassa ja viesti voidaan toimittaa onnistuneesti seuraavalla yrityksellä.
+As of March 31, 2023 we enforced a new blanket spam rule to protect our users and service.
 
-**Tämä on suunniteltu toisin kuin muissa sähköpostipalveluissa**, joissa estolistalle lisätty viesti aiheuttaa pysyvän virheen. Lähettäjien pyytäminen lähettämään viestit uudelleen on usein vaikeaa (etenkin suurista organisaatioista), joten tämä lähestymistapa antaa lähettäjälle, vastaanottajalle tai meille noin viisi päivää ensimmäisestä sähköpostiyrityksestä puuttua asiaan ja korjata ongelman (pyytämällä estolistalta poistamista).
+This new rule allows only the following domain name extensions to be used on our free plan:
 
-Ylläpitäjät seuraavat kaikkia kieltolistalta poistopyyntöjä reaaliajassa (esim. jotta toistuvat väärät positiiviset tulokset voidaan pysyvästi lisätä sallittujen listalle).
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ac</code></li>
+  <li class="list-inline-item"><code class="notranslate">ad</code></li>
+  <li class="list-inline-item"><code class="notranslate">ag</code></li>
+  <li class="list-inline-item"><code class="notranslate">ai</code></li>
+  <li class="list-inline-item"><code class="notranslate">al</code></li>
+  <li class="list-inline-item"><code class="notranslate">am</code></li>
+  <li class="list-inline-item"><code class="notranslate">app</code></li>
+  <li class="list-inline-item"><code class="notranslate">as</code></li>
+  <li class="list-inline-item"><code class="notranslate">at</code></li>
+  <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">ba</code></li>
+  <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">br</code></li>
+  <li class="list-inline-item"><code class="notranslate">by</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
+  <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cat</code></li>
+  <li class="list-inline-item"><code class="notranslate">cc</code></li>
+  <li class="list-inline-item"><code class="notranslate">cd</code></li>
+  <li class="list-inline-item"><code class="notranslate">ch</code></li>
+  <li class="list-inline-item"><code class="notranslate">ck</code></li>
+  <li class="list-inline-item"><code class="notranslate">co</code></li>
+  <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">de</code></li>
+  <li class="list-inline-item"><code class="notranslate">dev</code></li>
+  <li class="list-inline-item"><code class="notranslate">dj</code></li>
+  <li class="list-inline-item"><code class="notranslate">dk</code></li>
+  <li class="list-inline-item"><code class="notranslate">ee</code></li>
+  <li class="list-inline-item"><code class="notranslate">es</code></li>
+  <li class="list-inline-item"><code class="notranslate">eu</code></li>
+  <li class="list-inline-item"><code class="notranslate">family</code></li>
+  <li class="list-inline-item"><code class="notranslate">fi</code></li>
+  <li class="list-inline-item"><code class="notranslate">fm</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
+  <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">id</code></li>
+  <li class="list-inline-item"><code class="notranslate">ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">il</code></li>
+  <li class="list-inline-item"><code class="notranslate">im</code></li>
+  <li class="list-inline-item"><code class="notranslate">in</code></li>
+  <li class="list-inline-item"><code class="notranslate">io</code></li>
+  <li class="list-inline-item"><code class="notranslate">ir</code></li>
+  <li class="list-inline-item"><code class="notranslate">is</code></li>
+  <li class="list-inline-item"><code class="notranslate">it</code></li>
+  <li class="list-inline-item"><code class="notranslate">je</code></li>
+  <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ke</code></li>
+  <li class="list-inline-item"><code class="notranslate">kr</code></li>
+  <li class="list-inline-item"><code class="notranslate">la</code></li>
+  <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lv</code></li>
+  <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">md</code></li>
+  <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
+  <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">mu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mx</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
+  <li class="list-inline-item"><code class="notranslate">net</code></li>
+  <li class="list-inline-item"><code class="notranslate">ni</code></li>
+  <li class="list-inline-item"><code class="notranslate">nl</code></li>
+  <li class="list-inline-item"><code class="notranslate">no</code></li>
+  <li class="list-inline-item"><code class="notranslate">nu</code></li>
+  <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
+  <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
+  <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
+  <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">rs</code></li>
+  <li class="list-inline-item"><code class="notranslate">sc</code></li>
+  <li class="list-inline-item"><code class="notranslate">se</code></li>
+  <li class="list-inline-item"><code class="notranslate">sh</code></li>
+  <li class="list-inline-item"><code class="notranslate">si</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">sm</code></li>
+  <li class="list-inline-item"><code class="notranslate">sr</code></li>
+  <li class="list-inline-item"><code class="notranslate">st</code></li>
+  <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
+  <li class="list-inline-item"><code class="notranslate">tm</code></li>
+  <li class="list-inline-item"><code class="notranslate">to</code></li>
+  <li class="list-inline-item"><code class="notranslate">tv</code></li>
+  <li class="list-inline-item"><code class="notranslate">uk</code></li>
+  <li class="list-inline-item"><code class="notranslate">us</code></li>
+  <li class="list-inline-item"><code class="notranslate">uz</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
+  <li class="list-inline-item"><code class="notranslate">vc</code></li>
+  <li class="list-inline-item"><code class="notranslate">vg</code></li>
+  <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
+  <li class="list-inline-item"><code class="notranslate">ws</code></li>
+  <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
+  <li class="list-inline-item"><code class="notranslate">za</code></li>
+</ul>
 
-Estolistan poistopyyntöjä voi pyytää osoitteessa <https://forwardemail.net/denylist>.. Maksavien käyttäjien estolistan poistopyyntöjä käsitellään välittömästi, kun taas maksamattomien käyttäjien on odotettava, että ylläpitäjät käsittelevät pyyntönsä.
+### Do you have a greylist {#do-you-have-a-greylist}
 
-Roskapostia tai virussisältöä lähettäviksi havaittujen lähettäjien luetteloon lisätään seuraavalla tavalla:
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
 
-1. [alkuperäisen viestin sormenjälki](#how-do-you-determine-an-email-fingerprint) lisätään harmaalle listalle, kun se havaitsee roskapostia tai estolistalla olevaa viestiä "luotettavalta" lähettäjältä (esim. `gmail.com`, `microsoft.com`, `apple.com`).
-* Jos lähettäjä oli sallittujen listalla, viesti on harmaalla listalla 1 tunnin ajan.
-* Jos lähettäjää ei ole sallittujen listalla, viesti on harmaalla listalla 6 tuntia.
-2. Jäsennämme estolista-avaimet lähettäjän ja viestin tiedoista, ja jokaiselle näistä avaimista luomme (jos sellaista ei vielä ole) laskurin, kasvatamme sitä yhdellä ja tallennamme sen välimuistiin 24 tunniksi.
-* Sallittujen lähettäjien osalta:
-* Lisää avain kirjekuoren "MAIL FROM" -sähköpostiosoitteelle, jos sillä oli SPF-tarkistus tai ei SPF-tarkistusta, ja se ei ollut [postmaster-käyttäjätunnus](#what-are-postmaster-addresses) tai [käyttäjätunnus, johon ei vastata](#what-are-no-reply-addresses). * Jos "Lähettäjä"-otsikko oli sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle, jos sillä oli SPF-varmenne tai DKIM-varmenne ja kohdistettu.
-* Jos "Lähettäjä"-otsikko ei ollut sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle.
-* Ei-sallittujen lähettäjien osalta:
-* Lisää avain "SÄHKÖPOSTIA"-kirjekuoren sähköpostiosoitteelle, jos sillä oli SPF-varmenne.
-* Jos "Lähettäjä"-otsikko oli sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle, jos sillä oli SPF-varmenne tai DKIM-varmenne ja kohdistettu.
-* Jos "Lähettäjä"-otsikko ei ollut sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle.
-* Lisää avain lähettäjän etä-IP-osoitteelle.
-* Lisää avain asiakkaan selvittämälle isäntänimelle käänteisen haun avulla lähettäjän IP-osoitteesta (jos sellainen on).
-* Lisää avain asiakkaan selvitetyn isäntänimen juuriverkkotunnukselle (jos sellainen on ja jos se eroaa asiakkaan selvitetystä isäntänimestä). 3. Jos laskuri saavuttaa luvun 5 lähettäjälle ja avaimelle, joka ei ole sallittujen listalla, estämme avaimen 30 päiväksi ja lähetämme sähköpostin väärinkäyttötiimillemme. Nämä luvut voivat muuttua, ja päivitykset näkyvät tässä väärinkäytösten seurannan myötä.
+For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
-4. Jos laskuri saavuttaa luvun 10 lähettäjälle ja avaimelle, estämme avaimen 7 päiväksi ja lähetämme sähköpostin väärinkäyttötiimillemme. Nämä luvut voivat muuttua, ja päivitykset näkyvät tässä väärinkäytösten seurannan myötä.
+If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
 
-> **HUOM:** Lähitulevaisuudessa otamme käyttöön maineen seurannan. Maineen seuranta laskee sen sijaan lähettäjän hylkäyslistan saamisen prosenttikynnyksen perusteella (toisin kuin yllä mainittu alkeellinen laskuri).
+The key consists of either the FQDN root domain or the sender's IP address.  This means that any sub-domain that passes the greylist also will pass for the root domain, and vice-versa (this is what we mean by a "very lax" policy).
 
-### Onko sinulla nopeusrajoitus {#do-you-have-rate-limiting}
+For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
-Lähettäjän lähetysnopeuden rajoitus perustuu joko lähettäjän IP-osoitteen käänteisestä PTR-hausta jäsennettyyn juuriverkkotunnukseen – tai jos se ei tuota tulosta, käytetään yksinkertaisesti lähettäjän IP-osoitetta. Huomaa, että viittaamme tähän jäljempänä nimellä `Sender`.
+Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
 
-MX-palvelimillamme on päivittäiset rajoitukset saapuvalle postille, jota vastaanotetaan [salattu IMAP-tallennustila](/blog/docs/best-quantum-safe-encrypted-email-service):lle:
+### Do you have a denylist {#do-you-have-a-denylist}
 
-* Sen sijaan, että saapuvan postin määrää rajoitettaisiin yksittäisten aliasten perusteella (esim. `you@yourdomain.com`), rajoitamme saapuvan postin määrää itse aliaksen verkkotunnuksen mukaan (esim. `yourdomain.com`). Tämä estää `Senders`-aliasta tulvimasta kaikkien verkkotunnuksesi aliasten postilaatikoita samanaikaisesti.
-* Meillä on yleisiä rajoituksia, jotka koskevat kaikkia `Senders`-aliaksia koko palvelussamme vastaanottajasta riippumatta:
-* `Senders`-aliaksien, joita pidämme "luotettavina" totuuden lähteinä (esim. `gmail.com`, `microsoft.com`, `apple.com`), lähetysrajoitus on 100 Gt päivässä.
-* `Senders`-aliaksien, jotka ovat [sallittujen listalla](#do-you-have-an-allowlist)-aliaksia, lähetysrajoitus on 10 Gt päivässä.
-* Kaikkien muiden `yourdomain.com`0-aliaksien lähetysrajoitus on 1 Gt ja/tai 1000 viestiä päivässä. * Meillä on `yourdomain.com`1- ja `yourdomain.com`2-kohtainen tietty rajoitus, joka on 1 Gt ja/tai 1000 viestiä päivässä.
+Yes, we operate our own denylist and update it automatically in real-time and manually based off spam and malicious activity detected.
 
-MX-palvelimet rajoittavat myös viestien edelleenlähettämistä yhdelle tai useammalle vastaanottajalle nopeusrajoituksen avulla – mutta tämä koskee vain `Senders`-objektia, ei [sallittujen lista](#do-you-have-an-allowlist)-objektia:
+We also pull all IP addresses from the UCEPROTECT Level 1 denylist at <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> every hour and feed it into our denylist with a 7 day expiry.
 
-* Sallimme enintään 100 yhteyttä tunnissa per `Sender`-selvitetty FQDN-juuriverkkotunnus (tai `Sender`-etä-IP-osoite (jos käänteistä PTR-ominaisuutta ei ole saatavilla) ja per kirjekuoren vastaanottaja. Tallennamme nopeusrajoituksen avaimen kryptografisena tiivisteenä Redis-tietokantaamme.
+Senders found in the denylist will receive a 421 error code (indicates to sender to retry again later) if they [are not allowlisted](#do-you-have-an-allowlist).
 
-* Jos lähetät sähköpostia järjestelmämme kautta, varmista, että sinulla on käänteinen PTR-asetus käytössä kaikille IP-osoitteillesi (muuten jokaista yksilöllistä FQDN-juuriverkkotunnusta tai IP-osoitetta, josta lähetät, rajoitetaan nopeudella).
+By using a 421 status code instead of a 554 status code, potential false positives can be alleviated in real-time and then the message can be successfully delivered on the next attempt.
 
-* Huomaa, että jos lähetät suositun järjestelmän, kuten Amazon SES:n, kautta, hintarajoituksia ei ole, koska (tämän kirjoitushetkellä) Amazon SES on sallittujen listallamme.
+**This is designed unlike other mail services**, where if you are put on a blocklist, a hard and permanent failure occurs.  It is often difficult to ask senders to retry messages (especially from large organizations), and therefore this approach gives roughly 5 days from the initial email attempt for either the sender, recipient, or us to step in and alleviate the issue (by requesting denylist removal).
 
-* Jos lähetät viestiä verkkotunnuksesta, kuten `test.abc.123.example.com`, nopeusrajoitus asetetaan verkkotunnukselle `example.com`. Monet roskapostittajat käyttävät satoja aliverkkotunnuksia kiertääkseen yleisiä roskapostisuodattimia, jotka rajoittavat nopeusrajoituksia vain yksilöllisille isäntänimille yksilöllisten FQDN-juuriverkkotunnusten sijaan.
+All denylist removal requests are monitored in real-time by admins (e.g. so that recurring false positives can be permanently allowlisted by admins).
 
-* Nopeusrajan ylittävät `Senders`-arvot hylätään virheellä 421.
+Denylist removal requests can be requested at <https://forwardemail.net/denylist>.  Paid users have their denylist removal requests instantly processed, while non-paid users must wait for admins to process their request.
 
-IMAP- ja SMTP-palvelimemme rajoittavat aliaksiesi samanaikaisen yhteydenpidon `60` yhteyteen.
+Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
 
-MX-palvelimemme rajoittavat [ei sallittujen listalla](#do-you-have-an-allowlist)-lähettäjien muodostamia yhteyksiä yli 10 samanaikaisesti (laskurin välimuistin vanhenemisaika on 3 minuuttia, mikä vastaa soketin aikakatkaisuaikaamme, joka on 3 minuuttia).
+1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
+   * If the sender was allowlisted, the message is greylisted for 1 hour.
+   * If the sender is not allowlisted, the message is greylisted for 6 hours.
+2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
+   * For allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+   * For non-allowlisted senders:
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF.
+     * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
+     * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
+     * Add a key for the remote IP address of the sender.
+     * Add a key for the client resolved hostname by reverse lookup from the IP address of the sender (if any).
+     * Add a key for the root domain of the client resolved hostname (if any, and if it differs than the client resolved hostname).
+3. If the counter reaches 5 for a non-allowlisted sender and key, then we denylist the key for 30 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
+4. If the counter reaches 10 for an allowlisted sender and key, then we denylist the key for 7 days and an email is sent to our abuse team.  These numbers may change and updates will be reflected here as we monitor abuse.
 
-### Miten suojaudut takaisinsironnalta {#how-do-you-protect-against-backscatter}
+> **NOTE:** In the near future we will introduce reputation monitoring. Reputation monitoring will instead calculate when to denylist a sender based off a percentage threshold (as opposed to a rudimentary counter as noted above).
 
-Väärin ohjatut palautuvat viestit tai roskapostin palautus (tunnetaan nimellä "[Takaisinhajonta](https://en.wikipedia.org/wiki/Backscatter_\(email\)") voi aiheuttaa lähettäjän IP-osoitteille negatiivisen maineen.
+### Do you have rate limiting {#do-you-have-rate-limiting}
 
-Suojaudumme takaisinhajottamiselta kahdella tavalla, jotka on kuvattu yksityiskohtaisesti seuraavissa osioissa [Estä tunnetuilta roskapostittajilta tulevan sähköpostin palautuminen](#prevent-bounces-from-known-mail-from-spammers) ja [Estää tarpeettomat pomppimiset suojautuakseen takaisinhajottamiselta](#prevent-unnecessary-bounces-to-protect-against-backscatter).
+Sender rate limiting is either by the root domain parsed from a reverse PTR lookup on the sender's IP address – or if that does not yield a result, then it simply uses the sender's IP address.  Note that we refer to this as `Sender` below.
 
-### Estä tunnettujen roskapostittajien lähettämien sähköpostien palautuminen {#prevent-bounces-from-known-mail-from-spammers}
+Our MX servers have daily limits for inbound mail received for [encrypted IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-Noudamme listan [Backscatter.org](https://www.backscatterer.org/):sta ([UCEPROTECT](https://www.uceprotect.net/):n avulla) kohdasta <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> joka tunti ja syötämme sen Redis-tietokantaamme (vertaamme eroja myös etukäteen siltä varalta, että IP-osoitteita on poistettu ja ne on otettava huomioon).
+* Instead of rate limiting inbound mail received on an individual alias basis (e.g. `you@yourdomain.com`) – we rate limit by the alias's domain name itself (e.g. `yourdomain.com`). This prevents `Senders` from flooding the inboxes of all aliases across your domain at once.
+* We have general limits that apply to all `Senders` across our service regardless of recipient:
+  * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
+  * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
+  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
+* We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
-Jos MAIL FROM on tyhjä TAI on yhtä suuri kuin (kirjainkokoa ei erotella) jokin [postinjakajien osoitteet](#what-are-postmaster-addresses)-arvoista (osa ennen @-merkkiä sähköpostissa), tarkistamme, vastaako lähettäjän IP-osoite jotakin tästä luettelosta.
+The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):
 
-Jos lähettäjän IP-osoite on luettelossa (eikä [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme), lähetämme 554-virheen viestillä `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Saamme ilmoituksen, jos lähettäjä on sekä takaisinsirottavien luettelossa että sallittujen luettelossamme, jotta voimme tarvittaessa ratkaista ongelman.
+* We only permit up to 100 connections per hour, per `Sender` resolved FQDN root domain (or) `Sender` remote IP address (if no reverse PTR is available), and per envelope recipient to.  We store the key for rate limiting as a cryptographic hash in our Redis database.
 
-Tässä osiossa kuvatut tekniikat noudattavat kohdassa <https://www.backscatterer.org/?target=usage> annettua "SAFE MODE" -suositusta, jossa tarkistamme lähettäjän IP-osoitteen vain, jos tietyt ehdot ovat jo täyttyneet.
+* If you are sending email through our system, please ensure you have a reverse PTR set up for all your IP addresses (otherwise each unique FQDN root domain or IP address you send from will be rate limited).
 
-### Estä tarpeettomat heijastukset suojataksesi takaisinsironnalta {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+* Note that if you send through a popular system such as Amazon SES, then you will not be rate limited since (at the time of this writing) Amazon SES is listed in our allowlist.
 
-Pomppuviestit ovat sähköposteja, jotka osoittavat, että sähköpostin edelleenlähetys vastaanottajalle epäonnistui kokonaan eikä sähköpostia yritetä uudelleen.
+* If you are sending from a domain such as `test.abc.123.example.com`, then the rate limit will be imposed on `example.com`.  Many spammers use hundreds of sub-domains to work around common spam filters that only rate limit unique hostnames as opposed to unique FQDN root domains.
 
-Yleinen syy takaisinsirontalistalle joutumiseen on väärin ohjatut palautukset tai palautusroskaposti, joten meidän on suojauduttava tältä muutamalla tavalla:
+* `Senders` that exceed the rate limit will be rejected with a 421 error.
 
-1. Lähetämme viestin vain, kun esiintyy yli 500 tilakoodivirhettä (kun edelleenlähetysyritykset epäonnistuivat, esim. Gmail vastaa 500-tason virheellä).
+Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
-2. Lähetämme viestin vain kerran ja ainoastaan kerran (käytämme laskettua palautussormenjälkiavainta ja tallennamme sen välimuistiin kaksoiskappaleiden lähettämisen estämiseksi). Palautussormenjälki on avain, joka on viestin sormenjälki yhdistettynä palautusosoitteen tiivisteeseen ja sen virhekoodiin). Katso lisätietoja viestin sormenjäljen laskemisesta osiosta [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint). Onnistuneesti lähetetyt palautussormenjäljet vanhenevat 7 päivän kuluttua Redis-välimuistissamme.
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
 
-3. Lähetämme viestin vain, kun MAIL FROM ja/tai From ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postin pääkäyttäjän käyttäjätunnus](#what-are-postmaster-addresses)-kohtaa (sähköpostin @-merkkiä edeltävä osa).
+### How do you protect against backscatter {#how-do-you-protect-against-backscatter}
 
-4. Emme lähetä viestiä, jos alkuperäisessä viestissä oli jokin seuraavista otsikoista (kirjainkokoa ei erotella):
+Misdirected bounces or bounce spam (known as "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") can cause negative reputation to sender IP addreses.
 
-* `auto-submitted`-otsikko, jonka arvo ei ole yhtä suuri kuin `no`.
-* `x-auto-response-suppress`-otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`.
+We take two steps to protect against backscatter, which is detailed in the following sections [Prevent bounces from known MAIL FROM spammers](#prevent-bounces-from-known-mail-from-spammers) and [Prevent unnecessary bounces to protect against backscatter](#prevent-unnecessary-bounces-to-protect-against-backscatter) below.
 
-* `list-id`-, `list-subscribe`-, `no`0-, `no`1-, `no`2-, `no`3-, `no`4-, `no`5-, `no`6- tai `no`7-otsikko (arvosta riippumatta).
-* `no`8-otsikko, jonka arvo on `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 tai `x-auto-response-suppress`3.
+### Prevent bounces from known MAIL FROM spammers {#prevent-bounces-from-known-mail-from-spammers}
 
-5. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy `+donotreply`-, `-donotreply`-, `+noreply`- tai `-noreply`-osoitukseen.
+We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-6. Emme lähetä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
-7. Emme lähetä, jos `multipart/report`-otsikko on kirjainkokoa ei-herkkä `content-type`.
+If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
-### Miten sähköpostin sormenjälki määritetään {#how-do-you-determine-an-email-fingerprint}
+The techniques described in this section adhere to the "SAFE MODE" recommendation at <https://www.backscatterer.org/?target=usage> – where we only check the sender IP if certain conditions have already been met.
 
-Sähköpostin sormenjälkeä käytetään sähköpostin yksilöllisyyden määrittämiseen ja kaksoisviestien toimittamisen sekä [kaksoispalautukset](#prevent-unnecessary-bounces-to-protect-against-backscatter):n lähettämisen estämiseen.
+### Prevent unnecessary bounces to protect against backscatter {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
-Sormenjälki lasketaan seuraavasta luettelosta:
+Bounces are emails that indicate email forwarding completely failed to the recipient and the email will not be retried.
 
-* Asiakkaan selvittämä FQDN-isäntänimi tai IP-osoite
-* `Message-ID`-otsikkoarvo (jos on)
-* `Date`-otsikkoarvo (jos on)
-* `From`-otsikkoarvo (jos on)
-* `To`-otsikkoarvo (jos on)
-* `Cc`-otsikkoarvo (jos on)
-* `Subject`-otsikkoarvo (jos on)
-* `Body`-arvo (jos on)
+A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
 
-### Voinko lähettää sähköposteja edelleen muihin portteihin kuin 25 (esim. jos internet-palveluntarjoajani on estänyt portin 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
 
-Kyllä, olemme lisänneet tämän ominaisuuden 5. toukokuuta 2020 alkaen. Tällä hetkellä ominaisuus on verkkotunnuskohtainen, ei aliaskohtainen. Jos tarvitset sen olevan aliaskohtainen, ota meihin yhteyttä ja kerro tarpeistasi.
+2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+
+3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+
+4. We don't send if the original message had any of the following headers (case-insensitive):
+
+* Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+
+5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+
+6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+
+7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
+
+### How do you determine an email fingerprint {#how-do-you-determine-an-email-fingerprint}
+
+An email's fingerprint is used for determining uniqueness of an email and to prevent duplicate messages from being delivered and [duplicate bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) from being sent.
+
+The fingerprint is calculated from the following list:
+
+* Client resolved FQDN hostname or IP address
+* `Message-ID` header value (if any)
+* `Date` header value (if any)
+* `From` header value (if any)
+* `To` header value (if any)
+* `Cc` header value (if any)
+* `Subject` header value (if any)
+* `Body` value (if any)
+
+### Can I forward emails to ports other than 25 (e.g. if my ISP has blocked port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+
+Yes, as of May 5, 2020 we have added this feature.  Right now the feature is domain-specific, as opposed to alias-specific.  If you require it to be alias-specific, please contact us to let us know of your needs.
 
 <div class="alert my-3 alert-danger">
-<i class="fa fa-stop-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Parannettu yksityisyyden suoja:
-</strong>
-<span>
-Jos käytät maksullista tilausta (jossa on parannettu yksityisyyden suoja), siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a>, napsauta verkkotunnuksesi vieressä olevaa "Määritä"-painiketta ja napsauta sitten "Asetukset". Jos haluat lisätietoja maksullisista tilauksista, katso <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Hinnoittelu</a>-sivumme. Muussa tapauksessa voit jatkaa alla olevien ohjeiden noudattamista.
-</span>
+  <i class="fa fa-stop-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Enhanced Privacy Protection:
+  </strong>
+  <span>
+    If you are on a paid plan (which features enhanced privacy protection), then please go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a>, click on "Setup" next to your domain, and then click on "Settings".  If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page.  Otherwise you can continue to follow the instructions below.
+  </span>
 </div>
 
-Jos käytät ilmaisversiota, lisää uusi DNS <strong class="notranslate">TXT</strong>-tietue alla olevan kuvan mukaisesti, mutta muuta portti 25:stä valitsemaasi porttiin.
+If you are on the free plan, then simply add a new DNS <strong class="notranslate">TXT</strong> record as shown below, but change the port from 25 to the port of your choosing.
 
-Jos esimerkiksi haluan, että kaikki `example.com`-osoitteeseen menevät sähköpostit lähetetään edelleen aliasvastaanottajien SMTP-porttiin 1337 25:n sijaan:
+For example, if I want all emails that go to `example.com` to forward to alias recipients' SMTP port of 1337 instead of 25:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email-port=1337</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email-port=1337</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-Yleisin mukautetun porttiohjauksen määritystapa on silloin, kun haluat ohjata kaikki example.com-sivustolle menevät sähköpostit eri porttiin example.com-sivustolla kuin SMTP-standardin mukaiseen porttiin 25. Voit määrittää tämän lisäämällä seuraavan <strong class="notranslate">TXT</strong>-keräilytietueen.
-<span>
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    The most common scenario for custom port forwarding setup is when you want to forward all emails that go to example.com to a different port at example.com, other than the SMTP standard of port 25.  To set this up, simply add the following <strong class="notranslate">TXT</strong> catch-all record.
+  <span>
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=example.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=example.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### Tukeeko se plus-merkkiä (+) Gmail-aliaksille? {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Does it support the plus + symbol for Gmail aliases {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
-Kyllä, ehdottomasti.
+Yes, absolutely.
 
-### Tukeeko se aliverkkotunnuksia {#does-it-support-sub-domains}
+### Does it support sub-domains {#does-it-support-sub-domains}
 
-Kyllä, ehdottomasti. Sen sijaan, että nimenä/isännänä/aliaksena käytettäisiin @-merkkiä, "."-merkkiä tai tyhjää kohtaa, käytetään arvona aliverkkotunnuksen nimeä.
+Yes, absolutely.  Instead of using "@", ".", or blank as the name/host/alias, you just use the sub-domain name as the value instead.
 
-Jos haluat `foo.example.com`:n lähettävän sähköpostit edelleen, anna `foo` DNS-asetuksissasi nimeksi/isäntäksi/alias-arvoksi (sekä MX- että TXT-tietueille).
+If you want `foo.example.com` to forward emails, then enter `foo` as the name/host/alias value in your DNS settings (for both MX and <strong class="notranslate">TXT</strong> records).
 
-### Lähettääkö tämä sähköpostini otsikot edelleen? {#does-this-forward-my-emails-headers}
+### Does this forward my email's headers {#does-this-forward-my-emails-headers}
 
-Kyllä, ehdottomasti.
+Yes, absolutely.
 
-### Onko tämä hyvin testattu {#is-this-well-tested}
+### Is this well-tested {#is-this-well-tested}
 
-Kyllä, siinä on [ava](https://github.com/avajs/ava):lla kirjoitettuja testejä ja se sisältää myös koodikattavuutta.
+Yes, it has tests written with [ava](https://github.com/avajs/ava) and also has code coverage.
 
-### Välitätkö SMTP-vastausviestejä ja -koodeja? {#do-you-pass-along-smtp-response-messages-and-codes}
+### Do you pass along SMTP response messages and codes {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Kyllä, ehdottomasti. Jos esimerkiksi lähetät sähköpostia osoitteeseen `hello@example.com` ja se on rekisteröity edelleenlähetettäväksi osoitteeseen `user@gmail.com`, palautetaan SMTP-vastausviesti ja -koodi SMTP-palvelimelta "gmail.com" välityspalvelimen "mx1.forwardemail.net" tai "mx2.forwardemail.net" sijaan.
+Yes, absolutely.  For example if you're sending an email to `hello@example.com` and it's registered to forward to `user@gmail.com`, then the SMTP response message and code from the "gmail.com" SMTP server will be returned instead of the proxy server at "mx1.forwardemail.net" or "mx2.forwardemail.net".
 
-### Miten estät roskapostittajat ja varmistat hyvän sähköpostin edelleenlähetysmaineen {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### How do you prevent spammers and ensure good email forwarding reputation {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-Katso yllä olevat osiot [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work), [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues) ja [Miten käsittelet IP-osoitteiden estymisen](#how-do-you-handle-your-ip-addresses-becoming-blocked).
+See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
 
-### Miten suoritat DNS-hakuja verkkotunnuksille {#how-do-you-perform-dns-lookups-on-domain-names}
+### How do you perform DNS lookups on domain names {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Mandariini](https://github.com/forwardemail/tangerine) ja käytämme sitä DNS-hakuihin. Oletusarvoisesti käytetyt DNS-palvelimet ovat `1.1.1.1` ja `1.0.0.1`, ja DNS-kyselyt tehdään [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS):n ("DoH") kautta sovellustasolla.
+We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
 
-:tangerine: [Mandariini](https://github.com/tangerine) käyttää [oletuksena CloudFlaren yksityisyyttä ensisijaisesti huomioivaa kuluttajille suunnattua DNS-palvelua][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
 
-## Tili ja laskutus {#account-and-billing}
+## Account and Billing {#account-and-billing}
 
-### Tarjoatteko rahat takaisin -takuun maksullisille paketeille? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+### Do you offer a money back guarantee on paid plans {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
-Kyllä! Automaattiset hyvitykset tapahtuvat, kun päivität, alennat tai peruutat tilisi 30 päivän kuluessa tilauksen alkamisesta. Tämä koskee vain ensikertalaisia asiakkaita.
+Yes! Automatic refunds occur when you upgrade, downgrade, or cancel your account within 30-days from when your plan first started.  This only applies for first-time customers.
 
-### Jos vaihdan liittymää, hyvitättekö erotuksen? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### If I switch plans do you pro-rate and refund the difference {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-Emme hyvitä emmekä jaa erotusta, kun vaihdat sopimusta. Sen sijaan muunnamme jäljellä olevan keston nykyisen sopimustesi päättymispäivästä uuden sopimustesi lähimpään suhteelliseen kestoon (pyöristettynä alaspäin kuukausittain).
+We do not pro-rate nor refund the difference when you switch plans. Instead we convert the remaining duration from your existing plan's expiration date into the closest relative duration for your new plan (rounded down by month).
 
-Huomaa, että jos päivität tai alennat maksullista tilausta 30 päivän sisällä maksullisen tilauksen aloittamisesta, hyvitämme automaattisesti koko summan olemassa olevasta tilauksestasi.
+Note that if you upgrade or downgrade between paid plans within a 30-day window since first starting a paid plan, then we will automatically refund the full amount from your existing plan.
 
-### Voinko käyttää tätä sähköpostin edelleenlähetyspalvelua vain "varapalvelimena" tai "varapalvelimena" MX-palvelimena {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Can I just use this email forwarding service as a "fallback" or "fallover" MX server {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
-Ei, sitä ei suositella, koska voit käyttää vain yhtä sähköpostinvaihtopalvelinta kerrallaan. Varajärjestelmiä ei yleensä koskaan yritetä uudelleen prioriteettivirheiden ja MX-vaihdon prioriteettitarkistusta noudattamattomien sähköpostipalvelinten vuoksi.
+No, it is not recommended, as you can only use one mail exchange server at a time.  Fallbacks are usually never retried due to priority misconfigurations and mail servers not respecting MX exchange priority checking.
 
-### Voinko poistaa käytöstä tiettyjä aliaksia {#can-i-disable-specific-aliases}
+### Can I disable specific aliases {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät maksullista tilausta, sinun on mentävä kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset <i class="fa fa-angle-right"></i> Muokkaa aliasta <i class="fa fa-angle-right"></i> Poista valinta ruudusta "Aktiivinen" <i class="fa fa-angle-right"></i> Jatka.
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+  </span>
 </div>
 
-Kyllä, muokkaa vain DNS-<strong class="notranslate">TXT</strong>-tietuettasi ja lisää aliaksen etuliitteeksi joko yksi, kaksi tai kolme huutomerkkiä (katso alla).
+Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and prefix the alias with either one, two, or three exclamation marks (see below).
 
-Huomaa, että sinun *tulisi* säilyttää ":"-määritykset, sillä niitä tarvitaan, jos päätät joskus poistaa tämän käytöstä (ja niitä käytetään myös tuontiin, jos päivität johonkin maksullisiin paketteihimme).
+Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
 
-**Hiljaista hylkäämistä varten (lähettäjälle viesti näyttää siltä kuin se olisi lähetetty onnistuneesti, mutta ei todellisuudessa mene minnekään) (tilakoodi `250`):** Jos lisäät aliaksen etuliitteeksi "!" (yksi huutomerkki), se palauttaa onnistumistilakoodin `250` lähettäjille, jotka yrittävät lähettää viestin tähän osoitteeseen, mutta itse sähköpostit eivät mene minnekään (esim. mustaan aukkoon tai `/dev/null`).
+**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
 
-**Pehmeää hylkäämistä varten (tilakoodi `421`):** Jos lisäät aliaksen etuliitteeksi "!!" (kaksoishuutomerkki), se palauttaa pehmeän virhekoodin `421` lähettäjille, jotka yrittävät lähettää sähköpostia tähän osoitteeseen. Sähköpostien lähetystä yritetään usein uudelleen jopa viiden päivän ajan ennen hylkäämistä ja palautumista.
+**For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
 
-**Järjestelmän hylkääminen (tilakoodi `550`):** Jos lisäät aliaksen etuliitteeksi kolmoishuutomerkin (!!!), se palauttaa pysyvän virhekoodin `550` lähettäjille, jotka yrittävät lähettää viestiä tähän osoitteeseen, ja sähköpostit hylätään ja palautetaan.
+**For hard reject (status code `550`):** If you prefix an alias with "!!!" (triple exclamation mark) then it will return a permanent error status code of `550` to senders attempting to send to this address and the emails will be rejected and bounce.
 
-Jos esimerkiksi haluan, että kaikki `alias@example.com`-kansioon menevät sähköpostit eivät enää kulje `user@gmail.com`-kansioon, vaan ne hylätään ja palautetaan (esim. käytä kolmea huutomerkkiä):
+For example, if I want all emails that go to `alias@example.com` to stop flowing through to `user@gmail.com` and get rejected and bounce (e.g. use three exclamation marks):
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:user@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:user@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Voit myös kirjoittaa edelleenlähetetyn vastaanottajan osoitteen muotoon "nobody@forwardemail.net", jolloin viesti reititetään osoitteeseen nobody, kuten alla olevassa esimerkissä.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    You can also rewrite the forwarded recipient's address to simply "nobody@forwardemail.net", which will route it to nobody as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
+    </tr>
+  </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Jos haluat parantaa tietoturvaa, voit myös poistaa osan ":user@gmail.com" (tai ":nobody@forwardemail.net") ja jättää jäljelle vain "!!!alias" kuten alla olevassa esimerkissä.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
+  </span>
 </div>
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=!!!alias</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=!!!alias</code></td>
+    </tr>
+  </tbody>
 </table>
 
-### Voinko lähettää sähköposteja edelleen useille vastaanottajille {#can-i-forward-emails-to-multiple-recipients}
+### Can I forward emails to multiple recipients {#can-i-forward-emails-to-multiple-recipients}
 
-Kyllä, ehdottomasti. Määritä vain useita vastaanottajia TXT-tietueissasi.
+Yes, absolutely.  Just specify multiple recipients in your <strong class="notranslate">TXT</strong> records.
 
-Jos esimerkiksi haluan sähköpostin, joka menee osoitteeseen `hello@example.com`, välitettävän osoitteeseen `user+a@gmail.com` ja `user+b@gmail.com`, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
+For example, if I want an email that goes to `hello@example.com` to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Tai voit määrittää ne kahdella eri rivillä, kuten tässä:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=hello:user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=hello:user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Se on sinusta kiinni!
+It's up to you!
 
-### Voinko määrittää useita yleisiä keräilyvastaanottajia? {#can-i-have-multiple-global-catch-all-recipients}
+### Can I have multiple global catch-all recipients {#can-i-have-multiple-global-catch-all-recipients}
 
-Kyllä voit. Määritä vain useita globaaleja keräilyvastaanottajia <strong class="notranslate">TXT</strong>-tietueissasi.
+Yes, you can. Just specify multiple global catch-all recipients in your <strong class="notranslate">TXT</strong> records.
 
-Jos esimerkiksi haluan, että jokainen sähköposti, joka menee `*@example.com`:aan (tähti tarkoittaa, että kyseessä on jokerimerkki eli keräilyviesti), lähetetään edelleen `user+a@gmail.com`:een ja `user+b@gmail.com`:een, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
+For example, if I want every email that goes to `*@example.com` (the asterisk meaning its a wildcard aka catch-all) to get forwarded to `user+a@gmail.com` and `user+b@gmail.com`, then my <strong class="notranslate">TXT</strong> record would look like this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Tai voit määrittää ne kahdella eri rivillä, kuten tässä:
+Or, you could specify them in two separate lines, such as this:
 
 <table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr>
-<th>Nimi/Isäntä/Alias</th>
-<th class="text-center">TTL</th>
-<th>Tyyppi</th>
-<th>Vastaus/Arvo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>"@", ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+a@gmail.com</code></td>
-</tr>
-<tr>
-<td><em>@, ".", tai tyhjä</em></td>
-<td class="text-center">3600</td>
-<td class="notranslate">TXT</td>
-<td><code>forward-email=user+b@gmail.com</code></td>
-</tr>
-</tbody>
+  <thead class="thead-dark">
+    <tr>
+      <th>Name/Host/Alias</th>
+      <th class="text-center">TTL</th>
+      <th>Type</th>
+      <th>Answer/Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"@", ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+a@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td><em>@, ".", or blank</em></td>
+      <td class="text-center">3600</td>
+      <td class="notranslate">TXT</td>
+      <td><code>forward-email=user+b@gmail.com</code></td>
+    </tr>
+  </tbody>
 </table>
 
-Se on sinusta kiinni!
+It's up to you!
 
-### Onko olemassa enimmäismäärää sähköpostiosoitteita, joihin voin edelleenlähettää viestit per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}}
+### Is there a maximum limit on the number of email addresses I can forward to per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-Kyllä, oletusraja on 10. Tämä EI tarkoita, että verkkotunnuksellasi voi olla vain 10 aliasta. Voit käyttää niin montaa aliasta kuin haluat (rajattomasti). Se tarkoittaa, että voit edelleenlähettää vain yhden aliaksen 10 yksilölliseen sähköpostiosoitteeseen. Sinulla voi olla `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1–10) – ja kaikki osoitteeseen `hello@example.com` lähetetyt sähköpostit välitetään osoitteeseen `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1–10).
+Yes, the default limit is 10.  This does NOT mean that you can only have 10 aliases on your domain name.  You can have as many aliases as you want (an unlimited amount).  It means that you can only forward one alias to 10 unique email addresses.  You could have `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (from 1-10) – and any emails to `hello@example.com` would get forwarded to `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (from 1-10).
 
 <div class="alert my-3 alert-primary">
-<i class="fa fa-info-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Vinkki:
-</strong>
-<span>
-Tarvitsetko yli 10 vastaanottajaa aliasta kohden? Lähetä meille sähköpostia, niin nostamme mielellämme tilien enimmäismäärää.
-</span>
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Need more than 10 recipients per alias?  Send us an email and we would be happy to increase your accounts limit.
+  </span>
 </div>
 
-### Voinko lähettää sähköposteja rekursiivisesti edelleen {#can-i-recursively-forward-emails}
+### Can I recursively forward emails {#can-i-recursively-forward-emails}
 
-Kyllä, voit, mutta sinun on silti noudatettava enimmäisrajaa. Jos sinulla on `hello:linus@example.com` ja `linus:user@gmail.com`, osoitteeseen `hello@example.com` olevat sähköpostit välitetään osoitteeseen `linus@example.com` ja `user@gmail.com`. Huomaa, että jos yrität lähettää sähköposteja rekursiivisesti edelleen enimmäisrajan ylittävän määrän, saat virheen.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
 
-### Voivatko ihmiset rekisteröidä sähköpostin edelleenlähetykseni tai poistaa sen rekisteröinnin ilman lupaani? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Can people unregister or register my email forwarding without my permission {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-Käytämme MX- ja <strong class="notranslate">TXT</strong>-tietueiden vahvistusta, joten jos lisäät tämän palvelun vastaavat MX- ja <strong class="notranslate">TXT</strong>-tietueet, olet rekisteröitynyt. Jos poistat ne, rekisteröintisi peruuntuu. Sinulla on verkkotunnuksesi ja DNS-hallintasi omistusoikeus, joten jos jollakulla on pääsy niihin, se on ongelma.
+We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
-### Miten se on ilmainen {#how-is-it-free}
+### How is it free {#how-is-it-free}
 
-Forward Email tarjoaa ilmaisen tason yhdistämällä avoimen lähdekoodin kehitystyön, tehokkaan infrastruktuurin ja valinnaiset maksulliset liittymät, jotka tukevat palvelua.
+Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.
 
-Ilmaista tasoamme tukevat:
+Our free tier is supported by:
 
-1. **Avoimen lähdekoodin kehitys**: Koodikanta on avoimen lähdekoodin, mikä mahdollistaa yhteisön osallistumisen ja läpinäkyvän toiminnan.
+1. **Open Source Development**: Our codebase is open source, allowing community contributions and transparent operation.
 
-2. **Tehokas infrastruktuuri**: Olemme optimoineet järjestelmämme sähköpostin edelleenlähetyksen käsittelemiseksi minimaalisilla resursseilla.
+2. **Efficient Infrastructure**: We've optimized our systems to handle email forwarding with minimal resources.
 
-3. **Maksulliset premium-paketit**: Käyttäjät, jotka tarvitsevat lisäominaisuuksia, kuten SMTP-lähetyksen, IMAP-vastaanoton tai parannetut yksityisyysasetukset, tilaavat maksulliset paketit.
+3. **Paid Premium Plans**: Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.
 
-4. **Kohtuulliset käyttörajoitukset**: Ilmaisella tasolla on kohtuullisen käytön käytännöt väärinkäytösten estämiseksi.
+4. **Reasonable Usage Limits**: The free tier has fair usage policies to prevent abuse.
 
 > \[!NOTE]
-> Olemme sitoutuneet pitämään sähköpostin perus-edelleenohjauksen ilmaisina ja tarjoamaan samalla premium-ominaisuuksia käyttäjille, joilla on edistyneempiä tarpeita.
+> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
 
 > \[!TIP]
-> Jos palvelumme on mielestäsi arvokas, harkitse maksulliseen tilaukseen päivittämistä jatkuvan kehityksen ja ylläpidon tukemiseksi.
+> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
 
-### Mikä on sähköpostin enimmäiskokoraja {#what-is-the-max-email-size-limit}
+### What is the max email size limit {#what-is-the-max-email-size-limit}
 
-Oletusarvoinen kokorajoitus on 50 Mt, joka sisältää sisällön, otsikot ja liitteet. Huomaa, että palvelut, kuten Gmail ja Outlook, sallivat vain 25 Mt:n kokorajoituksen, ja jos ylität rajan lähettäessäsi viestejä näiden palveluntarjoajien osoitteisiin, saat virheilmoituksen.
+We default to a 50MB size limit, which includes content, headers, and attachments.  Note that services such as Gmail and Outlook allow only 25MB size limit, and if you exceed the limit when sending to addresses at those providers you will receive an error message.
 
-Jos tiedostokokoraja ylitetään, palautetaan virhe oikealla vastauskoodilla.
+An error with the proper response code is returned if the file size limit is exceeded.
 
-### Tallennatteko sähköpostilokeja {#do-you-store-logs-of-emails}
+### Do you store logs of emails {#do-you-store-logs-of-emails}
 
-Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-elementtien avulla (katso [Tietosuojakäytäntö](/privacy)).
+No, we do not write to disk or store logs – with the [exception of errors](#do-you-store-error-logs) and [outbound SMTP](#do-you-support-sending-email-with-smtp) (see our [Privacy Policy](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
+Everything is done in-memory and [our source code is on GitHub](https://github.com/forwardemail).
 
-### Tallennatko virhelokeja {#do-you-store-error-logs}
+### Do you store error logs {#do-you-store-error-logs}
 
-**Kyllä. Voit tarkastella virhelokeja kohdassa [Oma tili → Lokit](/my-account/logs) tai [Oma tili → Verkkotunnukset](/my-account/domains).**
+**Yes. You can access error logs under [My Account → Logs](/my-account/logs) or [My Account → Domains](/my-account/domains).**
 
-Helmikuusta 2023 lähtien olemme säilyttäneet `4xx`- ja `5xx`-SMTP-vastauskoodien virhelokeja 7 päivän ajan – nämä lokit sisältävät SMTP-virheen, kirjekuoren ja sähköpostin otsikot (emme tallenna sähköpostin runkoa emmekä liitteitä).
+As of February 2023, we store error logs for `4xx` and `5xx` SMTP response codes for a period of 7 days – which contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
 
-Virhelokien avulla voit tarkistaa puuttuvat tärkeät sähköpostit ja vähentää roskapostin vääriä positiivisia tuloksia [verkkotunnuksesi](/my-account/domains):lle. Ne ovat myös erinomainen resurssi [sähköpostin webhookit](#do-you-support-webhooks)-ongelmien virheenkorjaukseen (koska virhelokit sisältävät webhook-päätepisteen vastauksen).
+Error logs allow you to check for missing important emails and mitigate spam false positives for [your domains](/my-account/domains). They are also a great resource for debugging issues with [email webhooks](#do-you-support-webhooks) (since the error logs contain the webhook endpoint response).
 
-[nopeuden rajoittaminen](#do-you-have-rate-limiting):n ja [harmaalistaus](#do-you-have-a-greylist):n virhelokit eivät ole käytettävissä, koska yhteys päättyy ennenaikaisesti (esim. ennen kuin `RCPT TO`- ja `MAIL FROM`-komennot voidaan lähettää).
+Error logs for [rate limiting](#do-you-have-rate-limiting) and [greylisting](#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
 
-Katso lisätietoja [Tietosuojakäytäntö](/privacy)-kohdasta.
+See our [Privacy Policy](/privacy) for more insight.
 
-### Luetko sähköpostejani? {#do-you-read-my-emails}
+### Do you read my emails {#do-you-read-my-emails}
 
-Ei, ehdottomasti ei. Katso [Tietosuojakäytäntö](/privacy).
+No, absolutely not.  See our [Privacy Policy](/privacy).
 
-Monet muut sähköpostin edelleenlähetyspalvelut tallentavat ja voivat mahdollisesti lukea sähköpostisi. Ei ole mitään syytä, miksi edelleenlähetetyt sähköpostit pitäisi tallentaa levylle – ja siksi olemme suunnitelleet ensimmäisen avoimen lähdekoodin ratkaisun, joka tekee kaiken muistissa.
+Many other email forwarding services store and could potentially read your email.  There is no reason why forwarded emails need to be stored to disk storage – and therefore we architected the first open-source solution that does it all in-memory.
 
-Uskomme, että sinulla tulisi olla oikeus yksityisyyteen ja kunnioitamme sitä ehdottomasti. Palvelimelle asennettu koodi on [avoimen lähdekoodin ohjelmisto GitHubissa](https://github.com/forwardemail) läpinäkyvyyden ja luottamuksen rakentamisen takaamiseksi.
+We believe you should have a right to privacy and we strictly respect it.  The code that is deployed to the server is [open-source software on GitHub](https://github.com/forwardemail) for transparency and to build trust.
 
-### Voinko lähettää sähköpostia Gmailissa tällä osoitteella: {#can-i-send-mail-as-in-gmail-with-this}
+### Can I "send mail as" in Gmail with this {#can-i-send-mail-as-in-gmail-with-this}
 
-Kyllä! Olemme lisänneet tämän ominaisuuden 2. lokakuuta 2018 alkaen. Katso yllä oleva [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail)!
+Yes! As of October 2, 2018 we have added this feature.  See [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail) above!
 
-Sinun tulisi myös asettaa Gmailin SPF-tietue DNS-määritystesi <strong class="notranslate">TXT</strong>-tietueeseen.
+You should also set the SPF record for Gmail in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Gmailia (esim. Lähetä sähköpostia nimellä) tai G Suitea, sinun on lisättävä <code>include:_spf.google.com</code> SPF <strong class="notranslate">TXT</strong>-tietueeseesi, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
+  </span>
 </div>
 
-### Voinko lähettää sähköpostia nimellä Outlookissa tällä {#can-i-send-mail-as-in-outlook-with-this}}-asetuksella?
+### Can I "send mail as" in Outlook with this {#can-i-send-mail-as-in-outlook-with-this}
 
-Kyllä! Olemme lisänneet tämän ominaisuuden 2. lokakuuta 2018 alkaen. Katso vain nämä kaksi Microsoftin linkkiä alta:
+Yes! As of October 2, 2018 we have added this feature.  Simply view these two links from Microsoft below:
 
 * <https://support.office.com/en-us/article/add-or-remove-an-email-alias-in-outlook-com-459b1989-356d-40fa-a689-8f285b13f1f2>
 * <https://support.office.com/en-us/article/send-email-from-a-different-address-in-outlook-com-ccba89cb-141c-4a36-8c56-6d16a8556d2e>
 
-Sinun tulisi myös asettaa Outlookin SPF-tietue DNS-määritystesi <strong class="notranslate">TXT</strong>-tietueeseen.
+You should also set the SPF record for Outlook in your DNS configuration <strong class="notranslate">TXT</strong> record.
 
 <div class="alert my-3 alert-warning">
-<i class="fa fa-exclamation-circle font-weight-bold"></i>
-<strong class="font-weight-bold">
-Tärkeää:
-</strong>
-<span>
-Jos käytät Microsoft Outlookia tai Live.comia, sinun on lisättävä <code>include:spf.protection.outlook.com</code> SPF <strong class="notranslate">TXT</strong>-tietueeseesi, esimerkiksi:
-<br /><br />
-<code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
-</span>
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
+    <br /><br />
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+  </span>
 </div>
 
-### Voinko lähettää sähköpostia nimellä Apple Mailissa ja iCloud Mailissa tällä {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}}-osoitteella?
+### Can I "send mail as" in Apple Mail and iCloud Mail with this {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
-Jos olet iCloud+:n tilaaja, voit käyttää mukautettua verkkotunnusta. [Palvelumme on yhteensopiva myös Apple Mailin kanssa.](#apple-mail).
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
 
-Lisätietoja on kohdassa <https://support.apple.com/en-us/102540>.
+Please see <https://support.apple.com/en-us/102540> for more information.
 
-### Voinko lähettää edelleen rajattomasti sähköposteja tällä {#can-i-forward-unlimited-emails-with-this}}
+### Can I forward unlimited emails with this {#can-i-forward-unlimited-emails-with-this}
 
-Kyllä, "suhteellisen tuntemattomien" lähettäjien yhteysnopeus on kuitenkin rajoitettu 100 yhteyteen tunnissa isäntänimeä tai IP-osoitetta kohden. Katso yllä oleva osio [Nopeuden rajoittaminen](#do-you-have-rate-limiting) ja [Harmaalistaus](#do-you-have-a-greylist).
+Yes, however "relatively unknown" senders are rate limited to 100 connections per hour per hostname or IP.  See the section on [Rate Limiting](#do-you-have-rate-limiting) and [Greylisting](#do-you-have-a-greylist) above.
 
-"Suhteellisen tuntemattomalla" tarkoitamme lähettäjiä, jotka eivät näy [sallittujen lista](#do-you-have-an-allowlist)-kohteessa.
+By "relatively unknown", we mean senders that do not appear in the [allowlist](#do-you-have-an-allowlist).
 
-Jos tämä raja ylittyy, lähetämme 421-vastauskoodin, joka käskee lähettäjän sähköpostipalvelinta yrittämään uudelleen myöhemmin.
+If this limit is exceeded we send a 421 response code which tells the senders mail server to retry again later.
 
-### Tarjoatteko rajattomasti verkkotunnuksia yhteen hintaan? {#do-you-offer-unlimited-domains-for-one-price}
+### Do you offer unlimited domains for one price {#do-you-offer-unlimited-domains-for-one-price}
 
-Kyllä. Maksat kuukausittain vain yhden hinnan riippumatta siitä, mikä paketti on käytössäsi – ja se kattaa kaikki verkkotunnuksesi.
+Yes. Regardless of which plan you are on, you will pay only one monthly rate – which covers all of your domains.
 
-### Mitä maksutapoja hyväksytte {#which-payment-methods-do-you-accept}
+### Which payment methods do you accept {#which-payment-methods-do-you-accept}
 
-Sähköpostin edelleenlähetys hyväksyy seuraavat kertaluonteiset tai kuukausittaiset/neljännesvuosittaiset/vuosittaiset maksutavat:
+Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:
 
-1. **Luotto-/pankkikortit/tilisiirrot**: Visa, Mastercard, American Express, Discover, JCB, Diners Club jne.
-2. **PayPal**: Yhdistä PayPal-tilisi helppoja maksuja varten.
-3. **Kryptovaluutta**: Hyväksymme maksut Stripen stablecoin-maksuina Ethereum-, Polygon- ja Solana-verkoissa.
+1. **Credit/Debit Cards/Bank Transfers**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.
+2. **PayPal**: Connect your PayPal account for easy payments
+3. **Cryptocurrency**: We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks
 
 > \[!NOTE]
-> Tallennamme palvelimillemme rajoitetusti maksutietoja, jotka sisältävät vain maksutunnisteet ja viittaukset [Raita](https://stripe.com/global)- ja [PayPal](https://www.paypal.com)-tapahtuma-, asiakas-, tilaus- ja maksutunnuksiin.
+> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
 
 > \[!TIP]
-> Parhaan yksityisyyden takaamiseksi harkitse kryptovaluuttojen käyttöä maksuvälineenä.
+> For maximum privacy, consider using cryptocurrency payments.
 
-Kaikki maksut käsitellään turvallisesti Stripen tai PayPalin kautta. Maksutietojasi ei koskaan tallenneta palvelimillemme.
+All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.
 
-## Lisäresurssit {#additional-resources}
+## Additional Resources {#additional-resources}
 
 > \[!TIP]
-> Alla olevia artikkeleitamme päivitetään säännöllisesti uusilla oppailla, vinkeillä ja teknisillä tiedoilla. Tarkista usein uusin sisältö.
+> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
 
-* [Case-tutkimukset ja kehittäjädokumentaatio](/blog/docs)
-* [Resurssit](/resources)
-* [Oppaat](/guides)
+* [Case Studies & Developer Documentation](/blog/docs)
+* [Resources](/resources)
+* [Guides](/guides)
 
-[gmail-2fa]: VÄLIAIKAINEN_PAIKKAPIDÄN_0
+[gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

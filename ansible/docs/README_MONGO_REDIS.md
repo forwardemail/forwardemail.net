@@ -73,7 +73,6 @@ ansible-galaxy install -r ansible/requirements.yml
 
 This installs:
 - `trfore.mongodb_install` v3.0.5 - MongoDB installation
-- `geerlingguy.redis` v1.9.0 - Redis installation
 
 ### Environment Variables
 
