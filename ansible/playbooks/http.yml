@@ -51,6 +51,35 @@
       ufw:
         state: reloaded
   tasks:
+    #
+    # Override congestion control for HTTP servers with BBR + fq
+    # BBR is optimal for HTTP/2 workloads (Cloudflare's production config)
+    # https://blog.cloudflare.com/http-2-prioritization-with-nginx/
+    # "The combination of TCP_NOTSENT_LOWAT and BBR reduces the amount of buffering
+    # on the network to the absolute minimum and is CRITICAL for good end-user
+    # performance with HTTP/2."
+    #
+    # fq (Fair Queue) is specifically recommended by Google's BBR team
+    # https://fasterdata.es.net/host-tuning/linux/
+    #
+    # This overrides security.yml's CUBIC + fq_codel (used for email/database servers)
+    #
+    - name: Override qdisc to fq for BBR (HTTP servers)
+      ansible.posix.sysctl:
+        name: net.core.default_qdisc
+        value: fq
+        sysctl_set: true
+        state: present
+        reload: true
+
+    - name: Override congestion control to BBR (HTTP servers)
+      ansible.posix.sysctl:
+        name: net.ipv4.tcp_congestion_control
+        value: bbr
+        sysctl_set: true
+        state: present
+        reload: true
+
     # ufw
     - name: Enable ufw
       ufw:

@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-# Commented out until we're sure Unbound works properly
-#- name: Import Unbound DNS caching playbook
-#  import_playbook: unbound.yml
+- name: Import Unbound DNS caching playbook
+  import_playbook: unbound.yml
 
 - hosts: all
   name: Security
@@ -406,9 +405,22 @@
       - name: net.ipv4.ip_local_port_range
         value: 1024 65535
 
+      #
       # increase amount of option memory buffers
+      # Dynamic scaling based on RAM (used for ancillary data, MSG_ZEROCOPY, etc.)
+      # Scales conservatively with available memory
+      #
       - name: net.core.optmem_max
-        value: 25165824
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          134217728
+          {% elif ansible_memtotal_mb >= 32768 %}
+          67108864
+          {% elif ansible_memtotal_mb >= 16384 %}
+          33554432
+          {% else %}
+          25165824
+          {% endif %}
 
       # max number of concurrently open files
       - name: fs.file-max
@@ -416,12 +428,14 @@
 
       # increase the max number of "backlogged sockets" (default: 128)
       # (max number of connections that can be queued for acceptance)
+      # Increased to 16384 for high-traffic email server (IMAP, SMTP, POP3, WebSocket)
       - name: net.core.somaxconn
-        value: 1024
+        value: 16384
 
       # length of time orphaned (unreferenced) connection will wait (default: 60)
+      # Lowered to 20s for faster resource reclamation on high-traffic servers
       - name: net.ipv4.tcp_fin_timeout
-        value: 30
+        value: 20
 
       #
       # allow more aggressive network throughput
@@ -447,25 +461,31 @@
 
       # max remembered connection requests which did not yet receive ACK (default: 1024)
       # (how many half-open connections can be kept in the queue)
+      # Should match or exceed net.core.somaxconn
       - name: net.ipv4.tcp_max_syn_backlog
-        value: 4096
+        value: 16384
 
       # increase system ip port limts to allow for more connections
       - name: net.ipv4.ip_local_port_range
         value: 1024 65535
 
       # number of packets queued on INPUT (default: 1000)
+      # Increased to handle high packet rates on email servers
       - name: net.core.netdev_max_backlog
-        value: 4096
+        value: 16384
 
       #
-      # enable BBR congestion control and make HTTP/2 work reliably
-      # https://blog.cloudflare.com/http-2-prioritization-with-nginx/#comment-4147796381
+      # Network congestion control and queue discipline
+      # fq_codel is the Linux kernel default since 4.12 (2017) and optimal for CUBIC
+      # Provides fair queueing + Active Queue Management (AQM) with CoDel
+      # Best for mixed workloads, bufferbloat prevention, and reliability
+      # https://fasterdata.es.net/host-tuning/linux/
+      # Note: http.yml overrides this with BBR + fq for HTTP servers
       #
       - name: net.core.default_qdisc
-        value: fq
+        value: fq_codel
       - name: net.ipv4.tcp_congestion_control
-        value: bbr
+        value: cubic
       - name: net.ipv4.tcp_notsent_lowat
         value: 16384
 
@@ -496,21 +516,73 @@
       - name: net.ipv4.tcp_tw_reuse
         value: 1
 
-      # increasing tcp receiving buffer memory size will help large file uploads
+      #
+      # TCP receive buffer (min default max)
+      # Dynamic scaling based on RAM for large email attachments and bulk operations
+      # Conservative scaling to prevent excessive memory usage with many connections
+      # https://fasterdata.es.net/host-tuning/linux/
+      #
       - name: net.ipv4.tcp_rmem
-        value: 4096 12582912 16777216
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          4096 131072 134217728
+          {% elif ansible_memtotal_mb >= 32768 %}
+          4096 87380 67108864
+          {% elif ansible_memtotal_mb >= 16384 %}
+          4096 87380 33554432
+          {% else %}
+          4096 87380 16777216
+          {% endif %}
 
-      # increase tcp receiving memory to 16MB per socket
+      #
+      # Max TCP receive buffer per socket (must match or exceed tcp_rmem max)
+      # Dynamic scaling based on RAM
+      #
       - name: net.core.rmem_max
-        value: 16777216
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          134217728
+          {% elif ansible_memtotal_mb >= 32768 %}
+          67108864
+          {% elif ansible_memtotal_mb >= 16384 %}
+          33554432
+          {% else %}
+          16777216
+          {% endif %}
 
-      # increasing tcp send buffers will increase performance (if and only if) sending large files
+      #
+      # TCP send buffer (min default max)
+      # Dynamic scaling based on RAM for large email attachments and bulk operations
+      # Conservative scaling to prevent excessive memory usage with many connections
+      # https://fasterdata.es.net/host-tuning/linux/
+      #
       - name: net.ipv4.tcp_wmem
-        value: 4096 12582912 16777216
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          4096 16384 134217728
+          {% elif ansible_memtotal_mb >= 32768 %}
+          4096 65536 67108864
+          {% elif ansible_memtotal_mb >= 16384 %}
+          4096 65536 33554432
+          {% else %}
+          4096 65536 16777216
+          {% endif %}
 
-      # increase tcp receiving memory to 16MB per socket
+      #
+      # Max TCP send buffer per socket (must match or exceed tcp_wmem max)
+      # Dynamic scaling based on RAM
+      #
       - name: net.core.wmem_max
-        value: 16777216
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          134217728
+          {% elif ansible_memtotal_mb >= 32768 %}
+          67108864
+          {% elif ansible_memtotal_mb >= 16384 %}
+          33554432
+          {% else %}
+          16777216
+          {% endif %}
 
       # provide RFC 2861 behavior and time out congestion window after an idle period
       # many suggest to disable it to improve performance in some cases
@@ -534,10 +606,12 @@
         value: 2
 
       #
-      # TODO: node.js does not yet support tcp fastopen
-      #
-      # https://www.keycdn.com/support/tcp-fast-open
+      # TCP Fast Open (TFO) - DISABLED
+      # While TFO can reduce latency by 15-41%, it is NOT yet supported in Node.js
+      # libuv PR #1136 (2016) is still open and not merged as of 2025
+      # Node.js issue #8066 (2016) is still open with no implementation
       # https://github.com/nodejs/node/issues/8066
+      # https://github.com/libuv/libuv/pull/1136
       #
       # - name: net.ipv4.tcp_fastopen
       #   value: 3
@@ -554,12 +628,32 @@
       #
       # make the system resistant to out of memory scenarios
       # https://www.linbit.com/kernel-min_free_kbytes/
+      # https://dom.as/2016/05/13/linux-memory-management-for-servers/
       #
-      # (e.g. 8GB ram = 128MB = 131072)
-      # (e.g. 4GB ram = 64MB = 65536)
+      # Dynamic calculation based on total RAM (1.56% of RAM):
+      # - 64+ GB RAM: 1 GB (1048576 KB) - Facebook's recommendation for >100GB
+      # - 32-63 GB RAM: 512 MB (524288 KB) - recommended for high-traffic servers
+      # - 16-31 GB RAM: 256 MB (262144 KB) - recommended for email/database servers
+      # - 8-15 GB RAM: 128 MB (131072 KB) - previous default
+      # - <8 GB RAM: 64 MB (65536 KB) - legacy default
+      #
+      # Why this matters: kernel triggers background reclamation at 25% of this value.
+      # With 64 MB, background reclaim starts at only 16 MB, causing direct reclaim
+      # stalls (multi-second freezes) on 16-32 GB servers under memory pressure.
       #
       - name: vm.min_free_kbytes
-        value: 65536
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          1048576
+          {% elif ansible_memtotal_mb >= 32768 %}
+          524288
+          {% elif ansible_memtotal_mb >= 16384 %}
+          262144
+          {% elif ansible_memtotal_mb >= 8192 %}
+          131072
+          {% else %}
+          65536
+          {% endif %}
 
       # control syncookies
       - name: net.ipv4.tcp_syncookies
@@ -569,10 +663,23 @@
       - name: net.ipv4.tcp_timestamps
         value: 1
 
-      # tells the kernal how many TCP sockets not attached to any user file handle
-      # to maintain. if the number is exceeded, orphaned connections are reset and warning printed
+      #
+      # Max orphaned TCP sockets (not attached to any user file handle)
+      # Orphaned connections consume memory, so scale with available RAM
+      # Formula: RAM_MB / 16 (conservative scaling)
+      # If exceeded, orphaned connections are reset and warning printed
+      #
       - name: net.ipv4.tcp_max_orphans
-        value: 262144
+        value: >-
+          {% if ansible_memtotal_mb >= 65536 %}
+          4096000
+          {% elif ansible_memtotal_mb >= 32768 %}
+          2048000
+          {% elif ansible_memtotal_mb >= 16384 %}
+          1024000
+          {% else %}
+          262144
+          {% endif %}
 
   roles:
     # https://github.com/Oefenweb/ansible-sysctl
