@@ -8,10 +8,52 @@
   import_playbook: ssh-keys.yml
 
 - hosts: mongo
+  name: Prepare for certificates
+  become: true
+  become_user: root
+  tasks:
+    - name: Ensure /var/www/production directory exists for certificates
+      file:
+        path: /var/www/production
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: "0755"
+
+- name: Import certificates playbook
+  import_playbook: certificates.yml
+
+- hosts: mongo
   name: Hostname
   become: true
   become_user: root
   tasks:
+    - name: Validate required environment variables
+      assert:
+        that:
+          - lookup('env', 'MONGO_HOST') != ''
+          - lookup('env', 'MONGO_PORT') != ''
+          - lookup('env', 'SSL_CERT_PATH') != ''
+          - lookup('env', 'SSL_KEY_PATH') != ''
+          - lookup('env', 'SSL_CA_PATH') != ''
+          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
+          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
+          - lookup('env', 'AWS_ENDPOINT_URL') != ''
+          - lookup('env', 'BACKUP_SECRET') != ''
+        fail_msg: |
+          Required environment variables are missing for MongoDB playbook.
+          Please ensure the following variables are set in your .env file:
+          - MONGO_HOST
+          - MONGO_PORT
+          - SSL_CERT_PATH
+          - SSL_KEY_PATH
+          - SSL_CA_PATH
+          - AWS_ACCESS_KEY_ID
+          - AWS_SECRET_ACCESS_KEY
+          - AWS_ENDPOINT_URL
+          - BACKUP_SECRET
+        quiet: false
+
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'MONGO_HOST') }}"
@@ -142,21 +184,56 @@
         group: mongodb
         mode: "0750"
 
-    - name: Create MongoDB TLS/SSL certificate PEM file
-      shell: |
-        cat "{{ lookup('env', 'SSL_CERT_PATH') }}" "{{ lookup('env', 'SSL_KEY_PATH') }}" > /etc/mongodb/ssl/mongodb.pem
-        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
-        chmod 0400 /etc/mongodb/ssl/mongodb.pem
-      args:
-        creates: /etc/mongodb/ssl/mongodb.pem
+    - name: Copy SSL certificate from /var/www/production to MongoDB directory
+      copy:
+        src: "{{ lookup('env', 'SSL_CERT_PATH') }}"
+        dest: /etc/mongodb/ssl/mongodb.crt
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+        remote_src: yes
 
-    - name: Copy CA certificate for MongoDB
+    - name: Copy SSL private key from /var/www/production to MongoDB directory
+      copy:
+        src: "{{ lookup('env', 'SSL_KEY_PATH') }}"
+        dest: /etc/mongodb/ssl/mongodb.key
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+        remote_src: yes
+
+    - name: Copy CA certificate from /var/www/production to MongoDB directory
       copy:
         src: "{{ lookup('env', 'SSL_CA_PATH') }}"
         dest: /etc/mongodb/ssl/ca.pem
         owner: mongodb
         group: mongodb
         mode: "0400"
+        remote_src: yes
+
+    - name: Create MongoDB TLS/SSL certificate PEM file (cert + key)
+      shell: |
+        cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key > /etc/mongodb/ssl/mongodb.pem
+        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
+        chmod 0400 /etc/mongodb/ssl/mongodb.pem
+      args:
+        creates: /etc/mongodb/ssl/mongodb.pem
+
+    # Clean up certificates from /var/www/production for security
+    - name: Remove SSL certificate from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_CERT_PATH') }}"
+        state: absent
+
+    - name: Remove SSL private key from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_KEY_PATH') }}"
+        state: absent
+
+    - name: Remove CA certificate from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_CA_PATH') }}"
+        state: absent
 
     - name: Configure MongoDB TLS/SSL in mongod.conf
       blockinfile:
@@ -204,7 +281,7 @@
       ufw:
         rule: allow
         from_ip: "{{ item }}"
-        to_port: 27017
+        to_port: "{{ lookup('env', 'MONGO_PORT') }}"
         proto: tcp
         comment: "Auto-whitelist MongoDB"
       loop: "{{ allowed_ips }}"
@@ -223,7 +300,8 @@
           NEW_IPS=$(curl -s https://forwardemail.net/ips/v4.txt?comments=false | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
 
           # Get current UFW rules for MongoDB port
-          CURRENT_IPS=$(ufw status | grep "27017/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
+          MONGO_PORT="${MONGO_PORT:-27017}"
+          CURRENT_IPS=$(ufw status | grep "${MONGO_PORT}/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
 
           # Track if changes were made
           CHANGED=0
@@ -231,7 +309,7 @@
           # Add new IPs
           for ip in $NEW_IPS; do
             if ! echo "$CURRENT_IPS" | grep -q "^${ip}$"; then
-              ufw allow from "$ip" to any port 27017 proto tcp comment "Auto-whitelist MongoDB"
+              ufw allow from "$ip" to any port "$MONGO_PORT" proto tcp comment "Auto-whitelist MongoDB"
               CHANGED=1
             fi
           done
@@ -240,7 +318,7 @@
           for ip in $CURRENT_IPS; do
             if ! echo "$NEW_IPS" | grep -q "^${ip}$"; then
               # Find and delete the rule
-              RULE_NUM=$(ufw status numbered | grep "27017/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
+              RULE_NUM=$(ufw status numbered | grep "${MONGO_PORT}/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
               if [ -n "$RULE_NUM" ]; then
                 echo "y" | ufw delete "$RULE_NUM"
                 CHANGED=1
@@ -334,7 +412,7 @@
           S3_PATH="s3://${BACKUP_BUCKET}/mongodb/${TIMESTAMP}/${BACKUP_NAME}"
 
           # Perform backup, encrypt with GPG, and stream directly to S3
-          mongodump --host=localhost --port=27017 --oplog --archive --gzip | \
+          mongodump --host=localhost --port="${MONGO_PORT:-27017}" --oplog --archive --gzip | \
             gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}"
 

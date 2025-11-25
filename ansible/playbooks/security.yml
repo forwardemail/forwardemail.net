@@ -18,6 +18,27 @@
         name: ssh
         state: restarted
   tasks:
+    # Patch DNS role for Ansible compatibility
+    # The DNS role from Ansible Galaxy has a broken conditional that fails with newer Ansible versions
+    # The issue is that 'when: item.value' treats string values as conditionals, which Ansible 2.15+ doesn't allow
+    # Solution: Simply remove the 'when' clause - the lineinfile module handles empty values gracefully
+    - name: Check if DNS role exists
+      stat:
+        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+      register: dns_role_file
+      delegate_to: localhost
+      become: false
+
+    - name: Remove broken conditional from DNS role
+      lineinfile:
+        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+        regexp: '^  when: item\.value.*$'
+        state: absent
+        backup: yes
+      delegate_to: localhost
+      become: false
+      when: dns_role_file.stat.exists
+
     - name: Delete Digital Ocean Networking Configuration
       ansible.builtin.file:
         state: absent
@@ -73,28 +94,33 @@
         block: |
           ulimit -S -c 0 > /dev/null 2>&1
 
-    # Disable swap entirely (we also set swappiness to 0 below)
+    # Disable swap entirely on non-database servers
+    # MongoDB and Redis need swap as a last resort (with vm.swappiness=1)
     # https://unix.stackexchange.com/a/636526
     - name: Disable swap for current session
       command: swapoff -a
+      when: "'mongo' not in group_names and 'redis' not in group_names"
     - name: Disable swap permanently, persist reboots
       replace:
         path: /etc/fstab
         regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
         replace: '#\1\2\3swap\4'
         backup: yes
+      when: "'mongo' not in group_names and 'redis' not in group_names"
     - name: Disable swap on boot via systemd
       template:
         src: "{{ playbook_dir }}/templates/noswap.j2"
         dest: /etc/systemd/system/noswap.service
         owner: root
         mode: "0644"
+      when: "'mongo' not in group_names and 'redis' not in group_names"
     - name: Enable noswap service via systemd
       systemd:
         daemon_reload: yes
         name: noswap
         enabled: true
         state: started
+      when: "'mongo' not in group_names and 'redis' not in group_names"
 
     # Disable Modprobe Loading of USB Storage Driver
     # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-kernel-module-usb-storage-disabled/
@@ -206,11 +232,22 @@
     # https://github.com/forwardemail/portscan-protection
     # (we maintain our own fork since it has an auto-update in place)
     # https://unix.stackexchange.com/a/580520
-    - name: Prevent port scanning
-      shell: |
-        curl -s https://raw.githubusercontent.com/forwardemail/portscan-protection/master/portscan-protection.sh | sudo bash /dev/stdin -i
+    # Deploy from local file to avoid GitHub rate limiting
+    - name: Copy portscan protection script to server
+      copy:
+        src: "{{ playbook_dir }}/files/portscan-protection.sh"
+        dest: /tmp/portscan-protection.sh
+        mode: '0755'
+
+    - name: Run portscan protection script
+      shell: /tmp/portscan-protection.sh -i
       register: port_scan
       failed_when: port_scan.rc != 1
+
+    - name: Remove temporary portscan script
+      file:
+        path: /tmp/portscan-protection.sh
+        state: absent
 
     # create devops group
     - name: Create devops group
@@ -255,7 +292,6 @@
         name: deploy
         password: "!"
         state: present
-        append: true
         create_home: true
         shell: /bin/bash
         generate_ssh_key: true

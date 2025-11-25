@@ -89,6 +89,10 @@
               serve-expired: yes
               serve-expired-ttl: 60
 
+              # TLS certificate bundle for DNS-over-TLS validation
+              # Required for forward-tls-upstream to work
+              tls-cert-bundle: "/etc/ssl/certs/ca-certificates.crt"
+
               # DNSSEC validation (required for DANE)
               # Note: auto-trust-anchor-file is already configured by the system in
               # /etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf

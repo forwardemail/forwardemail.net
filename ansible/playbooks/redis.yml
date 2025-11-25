@@ -8,10 +8,54 @@
   import_playbook: ssh-keys.yml
 
 - hosts: redis
+  name: Prepare for certificates
+  become: true
+  become_user: root
+  tasks:
+    - name: Ensure /var/www/production directory exists for certificates
+      file:
+        path: /var/www/production
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: "0755"
+
+- name: Import certificates playbook
+  import_playbook: certificates.yml
+
+- hosts: redis
   name: Hostname
   become: true
   become_user: root
   tasks:
+    - name: Validate required environment variables
+      assert:
+        that:
+          - lookup('env', 'REDIS_HOST') != ''
+          - lookup('env', 'REDIS_PASSWORD') != ''
+          - lookup('env', 'REDIS_TLS_PORT') != ''
+          - lookup('env', 'SSL_CERT_PATH') != ''
+          - lookup('env', 'SSL_KEY_PATH') != ''
+          - lookup('env', 'SSL_CA_PATH') != ''
+          - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
+          - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
+          - lookup('env', 'AWS_ENDPOINT_URL') != ''
+          - lookup('env', 'BACKUP_SECRET') != ''
+        fail_msg: |
+          Required environment variables are missing for Redis playbook.
+          Please ensure the following variables are set in your .env file:
+          - REDIS_HOST
+          - REDIS_PASSWORD
+          - REDIS_TLS_PORT
+          - SSL_CERT_PATH
+          - SSL_KEY_PATH
+          - SSL_CA_PATH
+          - AWS_ACCESS_KEY_ID
+          - AWS_SECRET_ACCESS_KEY
+          - AWS_ENDPOINT_URL
+          - BACKUP_SECRET
+        quiet: false
+
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'REDIS_HOST') }}"
@@ -121,6 +165,59 @@
         reload: true
         sysctl_file: /etc/sysctl.d/99-redis.conf
 
+    # Ensure Redis SSL directory exists
+    - name: Ensure Redis TLS/SSL configuration directory exists
+      file:
+        path: /etc/redis/ssl
+        state: directory
+        owner: redis
+        group: redis
+        mode: "0750"
+
+    # Copy certificates from /var/www/production to Redis directory
+    - name: Copy SSL certificate from /var/www/production to Redis directory
+      copy:
+        src: "{{ lookup('env', 'SSL_CERT_PATH') }}"
+        dest: /etc/redis/ssl/redis.crt
+        owner: redis
+        group: redis
+        mode: "0400"
+        remote_src: yes
+
+    - name: Copy SSL private key from /var/www/production to Redis directory
+      copy:
+        src: "{{ lookup('env', 'SSL_KEY_PATH') }}"
+        dest: /etc/redis/ssl/redis.key
+        owner: redis
+        group: redis
+        mode: "0400"
+        remote_src: yes
+
+    - name: Copy CA certificate from /var/www/production to Redis directory
+      copy:
+        src: "{{ lookup('env', 'SSL_CA_PATH') }}"
+        dest: /etc/redis/ssl/ca.pem
+        owner: redis
+        group: redis
+        mode: "0400"
+        remote_src: yes
+
+    # Clean up certificates from /var/www/production for security
+    - name: Remove SSL certificate from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_CERT_PATH') }}"
+        state: absent
+
+    - name: Remove SSL private key from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_KEY_PATH') }}"
+        state: absent
+
+    - name: Remove CA certificate from /var/www/production (security cleanup)
+      file:
+        path: "{{ lookup('env', 'SSL_CA_PATH') }}"
+        state: absent
+
     # Install Redis using geerlingguy.redis role
     - name: Install Redis
       include_role:
@@ -128,7 +225,7 @@
       vars:
         redis_bind_interface: "0.0.0.0"
         redis_requirepass: "{{ lookup('env', 'REDIS_PASSWORD') }}"
-        redis_port: 6379
+        redis_port: "{{ lookup('env', 'REDIS_PORT') }}"
         redis_appendonly: "yes"
         redis_appendfsync: "everysec"
         redis_save:
@@ -137,11 +234,11 @@
           - 60 10000
         redis_extra_config: |
           # TLS/SSL Configuration
-          tls-port 6380
+          tls-port {{ lookup('env', 'REDIS_TLS_PORT') }}
           port 0
-          tls-cert-file {{ lookup('env', 'SSL_CERT_PATH') }}
-          tls-key-file {{ lookup('env', 'SSL_KEY_PATH') }}
-          tls-ca-cert-file {{ lookup('env', 'SSL_CA_PATH') }}
+          tls-cert-file /etc/redis/ssl/redis.crt
+          tls-key-file /etc/redis/ssl/redis.key
+          tls-ca-cert-file /etc/redis/ssl/ca.pem
           tls-auth-clients no
 
           # Performance Optimizations
@@ -183,7 +280,7 @@
       ufw:
         rule: allow
         from_ip: "{{ item }}"
-        to_port: 6380
+        to_port: "{{ lookup('env', 'REDIS_TLS_PORT') }}"
         proto: tcp
         comment: "Auto-whitelist Redis TLS"
       loop: "{{ allowed_ips }}"
@@ -202,7 +299,8 @@
           NEW_IPS=$(curl -s https://forwardemail.net/ips/v4.txt?comments=false | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
 
           # Get current UFW rules for Redis TLS port
-          CURRENT_IPS=$(ufw status | grep "6380/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
+          REDIS_TLS_PORT="${REDIS_TLS_PORT:-6380}"
+          CURRENT_IPS=$(ufw status | grep "${REDIS_TLS_PORT}/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
 
           # Track if changes were made
           CHANGED=0
@@ -210,7 +308,7 @@
           # Add new IPs
           for ip in $NEW_IPS; do
             if ! echo "$CURRENT_IPS" | grep -q "^${ip}$"; then
-              ufw allow from "$ip" to any port 6380 proto tcp comment "Auto-whitelist Redis TLS"
+              ufw allow from "$ip" to any port "$REDIS_TLS_PORT" proto tcp comment "Auto-whitelist Redis TLS"
               CHANGED=1
             fi
           done
@@ -219,7 +317,7 @@
           for ip in $CURRENT_IPS; do
             if ! echo "$NEW_IPS" | grep -q "^${ip}$"; then
               # Find and delete the rule
-              RULE_NUM=$(ufw status numbered | grep "6380/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
+              RULE_NUM=$(ufw status numbered | grep "${REDIS_TLS_PORT}/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
               if [ -n "$RULE_NUM" ]; then
                 echo "y" | ufw delete "$RULE_NUM"
                 CHANGED=1
