@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('/fonts/NunitoSans-Regular.woff2') format('woff2'),
+    url('/fonts/NunitoSans-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('/fonts/NunitoSans-Bold.woff2') format('woff2'),
+    url('/fonts/NunitoSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'VC Honey';
+  src: url('/fonts/VCHoney-Regular.woff2') format('woff2'),
+    url('/fonts/VCHoney-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fe-stars canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-stars canvas {
+    display: none;
+  }
+}

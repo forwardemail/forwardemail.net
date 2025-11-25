@@ -474,6 +474,9 @@
     "pretest": "nps pretest",
     "start": "nps",
     "test": "nps test",
-    "watch": "nps watch"
+    "watch": "nps watch",
+    "webmail:build": "nps webmail-build",
+    "webmail:dev": "nps webmail-dev",
+    "webmail:preview": "nps webmail-preview"
   }
 }

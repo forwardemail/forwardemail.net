@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: BUSL-1.1
@@ -75,12 +76,12 @@ const createFakeInquiry = async () => {
 };
 
 const createFakePayment = async (user) => {
-  const amount = falso.randElement([999, 1999, 2999, 4999, 9999, 19999, 29999]);
-  const currency = falso.randElement(CURRENCIES);
-  const plan = falso.randElement(PLANS);
-  const kind = falso.randElement(PAYMENT_KINDS);
-  const duration = falso.randElement(VALID_DURATIONS);
-  const method = falso.randElement(PAYMENT_METHODS);
+  const amount = falso.rand([999, 1999, 2999, 4999, 9999, 19999, 29999]);
+  const currency = falso.rand(CURRENCIES);
+  const plan = falso.rand(PLANS);
+  const kind = falso.rand(PAYMENT_KINDS);
+  const duration = falso.rand(VALID_DURATIONS);
+  const method = falso.rand(PAYMENT_METHODS);
 
   const invoiceAt = falso.randPastDate({ years: 1 });
   const createdAt = dayjs(invoiceAt)
@@ -109,7 +110,9 @@ const createFakePayment = async (user) => {
   let expYear = null;
 
   if (['card', 'visa', 'mastercard', 'amex', 'discover'].includes(method)) {
-    last4 = falso.randCreditCard().slice(-4);
+    const card = falso.randCreditCard();
+    const cardNumber = typeof card === 'string' ? card : card.number;
+    last4 = (cardNumber || '').replace(/\s+/g, '').slice(-4);
     expMonth = falso.randNumber({ min: 1, max: 12 });
     expYear = falso.randNumber({ min: 2024, max: 2030 });
   }
@@ -164,12 +167,17 @@ const createFakePayment = async (user) => {
   const users = [];
 
   for (let count = 0; count <= INQUIRY_COUNT; count++) {
-    await createFakeInquiry();
+    const inquiry = await createFakeInquiry();
+    if (inquiry && inquiry.user) users.push(inquiry.user);
   }
 
   // Create payments for some of the users
   for (let count = 0; count < PAYMENT_COUNT; count++) {
-    const user = falso.randElement(users);
+    const user = users.length > 0 ? falso.rand(users) : null;
+    if (!user) {
+      console.warn('No users available for payment creation, skipping...');
+      break;
+    }
 
     await createFakePayment(user);
   }

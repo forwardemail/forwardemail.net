@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#667eea" />
+    <title>ForwardEmail Webmail</title>
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="preconnect" href="https://api.forwardemail.net" />
+    <link rel="dns-prefetch" href="https://api.forwardemail.net" />
+
+    <style>
+      :root {
+        --brand-primary: #00aff8;
+        --brand-secondary: #002a90;
+        --brand-text: #e5e7eb;
+        --brand-surface: #0f172a;
+        --brand-surface-strong: #ffffff;
+        --brand-font: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+        --brand-heading-font: 'VC Honey', 'Georgia', serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--brand-font);
+        background: radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.1) 0, transparent 25%),
+          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.18) 0, transparent 30%),
+          #02060f;
+        color: var(--brand-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      body.mailbox-mode {
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      #rl-app {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 0;
+      }
+
+      .fe-stars {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .fe-login-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 92%;
+        max-width: 420px;
+        background: #0b1220;
+        border-radius: 16px;
+        box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+        padding: 36px;
+        backdrop-filter: blur(6px);
+      }
+
+      .fe-login-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+
+      .fe-logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0 1px rgba(0, 175, 248, 0.35), 0 12px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .fe-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .fe-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .fe-title h1 {
+        margin: 0;
+        font-family: var(--brand-heading-font);
+        font-size: 28px;
+        letter-spacing: 0.5px;
+        color: var(--brand-surface-strong);
+      }
+
+      .fe-title span {
+        font-size: 14px;
+        color: #9ca3af;
+      }
+
+      .LoginView form {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .LoginView label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+
+      .LoginView input[type='email'],
+      .LoginView input[type='password'] {
+        width: 100%;
+        padding: 14px 12px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-size: 16px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .LoginView input[type='email']:focus,
+      .LoginView input[type='password']:focus {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.25);
+        outline: none;
+      }
+
+      .LoginView button[type='submit'] {
+        width: 100%;
+        padding: 14px 12px;
+        border: none;
+        border-radius: 12px;
+        background: var(--brand-primary);
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        box-shadow: 0 12px 30px rgba(0, 175, 248, 0.35);
+      }
+
+      .LoginView button[type='submit']:hover {
+        filter: brightness(1.05);
+      }
+
+      .LoginView button[type='submit']:active {
+        transform: translateY(1px);
+      }
+
+      .alert {
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .alert.alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fecdd3;
+        color: #b91c1c;
+      }
+
+      .fe-footer {
+        margin-top: 16px;
+        font-size: 12px;
+        color: #9ca3af;
+        text-align: center;
+      }
+
+      .fe-alert {
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 14px;
+        border: 1px solid #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+        color: #fcd34d;
+      }
+
+      .fe-mailbox-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 92%;
+        max-width: 1400px;
+        background: #0b1220;
+        border-radius: 16px;
+        box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+        padding: 22px;
+        backdrop-filter: blur(6px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .fe-mailbox-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .fe-mailbox-header .fe-title {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .fe-title-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .fe-mailbox-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .fe-button {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--brand-primary);
+        font-weight: 700;
+        color: #0b1220;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.2s ease;
+      }
+
+      .fe-button:hover:not(:disabled) {
+        box-shadow: 0 8px 20px rgba(0, 175, 248, 0.35);
+        transform: translateY(-1px);
+      }
+
+      .fe-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .fe-button.ghost {
+        background: #0f172a;
+        color: #e5e7eb;
+        border-color: #1f2937;
+      }
+
+      .fe-button.ghost.active {
+        border-color: rgba(0, 175, 248, 0.4);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      .fe-mailbox-shell {
+        display: grid;
+        grid-template-columns: 210px 1fr 1.2fr;
+        gap: 14px;
+        min-height: 70vh;
+      }
+
+      .fe-folders,
+      .fe-messages,
+      .fe-reader {
+        background: #0f172a;
+        border: 1px solid #1f2937;
+        border-radius: 12px;
+        padding: 14px;
+        min-height: 320px;
+      }
+
+      .fe-messages,
+      .fe-reader {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fe-folders-title,
+      .fe-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #e5e7eb;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .fe-list-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .fe-pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .fe-pagination-bottom {
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .fe-page-label {
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      .fe-badge {
+        background: rgba(0, 175, 248, 0.15);
+        color: #c7eafe;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid rgba(0, 175, 248, 0.3);
+      }
+
+      .fe-chip {
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: rgba(0, 175, 248, 0.12);
+        color: #c7eafe;
+        border: 1px solid rgba(0, 175, 248, 0.28);
+      }
+
+      .fe-chip.ghost {
+        background: rgba(255, 255, 255, 0.06);
+        color: #e5e7eb;
+        border-color: #1f2937;
+      }
+
+      .fe-search {
+        background: #0c1424;
+        border: 1px solid #1f2937;
+        color: #e5e7eb;
+        border-radius: 10px;
+        padding: 8px 10px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .fe-search-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 320px;
+        justify-content: flex-end;
+      }
+
+      .fe-folders ul,
+      .fe-message-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .fe-message-list {
+        overflow: auto;
+        flex: 1;
+      }
+
+      .fe-folder-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+
+      .fe-compose {
+        width: 100%;
+        justify-content: center;
+        background: var(--brand-primary);
+        color: #0b1220;
+        border-color: rgba(0, 175, 248, 0.4);
+        box-shadow: 0 8px 20px rgba(0, 175, 248, 0.35);
+      }
+
+      .fe-folder {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-radius: 10px;
+        background: #0c1424;
+        color: #e5e7eb;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .fe-folder.active {
+        border-color: rgba(0, 175, 248, 0.4);
+        background: rgba(0, 175, 248, 0.08);
+      }
+
+      .fe-message {
+        padding: 10px;
+        border-radius: 10px;
+        background: #0c1424;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .fe-message.active {
+        border-color: rgba(0, 175, 248, 0.4);
+        background: rgba(0, 175, 248, 0.08);
+      }
+
+      .fe-message-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #cbd5e1;
+        font-size: 13px;
+      }
+
+      .fe-message-from {
+        font-weight: 700;
+      }
+
+      .fe-message-subject {
+        color: #e5e7eb;
+        margin: 6px 0 2px;
+        font-weight: 700;
+      }
+
+      .fe-message-snippet {
+        color: #9ca3af;
+        font-size: 13px;
+      }
+
+      .fe-empty {
+        border: 1px dashed #1f2937;
+        border-radius: 10px;
+        padding: 12px;
+        color: #9ca3af;
+        text-align: center;
+        background: #0c1424;
+      }
+
+      .fe-reader-from {
+        color: #e5e7eb;
+        font-weight: 700;
+      }
+
+      .fe-reader-date {
+        color: #9ca3af;
+        font-size: 13px;
+      }
+
+      .fe-reader-subject {
+        margin: 10px 0 8px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #e5e7eb;
+      }
+
+      .fe-reader-body {
+        color: #cbd5e1;
+        line-height: 1.5;
+        background: #0c1424;
+        border: 1px solid #1f2937;
+        border-radius: 10px;
+        padding: 12px;
+        min-height: 240px;
+        flex: 1;
+        overflow: auto;
+        word-break: break-word;
+      }
+
+      .fe-reader-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .fe-signout {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+        background: #111827;
+        font-weight: 600;
+        color: #e5e7eb;
+        cursor: pointer;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .fe-signout:hover {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      @media (max-width: 960px) {
+        .fe-mailbox-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .fe-mailbox-actions {
+          flex-direction: column;
+          align-items: flex-end;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .fe-login-wrapper {
+          padding: 28px 22px;
+        }
+
+        .fe-title h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body id="rl-app">
+    <div class="fe-stars">
+      <canvas id="stars"></canvas>
+      <canvas id="stars2"></canvas>
+      <canvas id="stars3"></canvas>
+    </div>
+
+    <div class="fe-login-wrapper" data-bind="visible: route() === 'login'">
+      <div class="LoginView" data-bind="with: loginUserView">
+        <div class="fe-login-header">
+          <div class="fe-logo" aria-hidden="true">
+            <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
+          </div>
+          <div class="fe-title">
+            <h1>Webmail</h1>
+            <span>ForwardEmail</span>
+          </div>
+        </div>
+
+        <form data-bind="submit: submitForm" novalidate>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="username"
+            data-bind="textInput: email"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            data-bind="textInput: password"
+            required
+          />
+
+          <label>
+            <input type="checkbox" data-bind="checked: signMe" />
+            Stay signed in
+          </label>
+
+          <button type="submit" data-bind="enable: !submitRequest(), text: submitButtonText">
+            Sign In
+          </button>
+
+          <div class="alert alert-danger" data-bind="visible: submitError, text: submitError"></div>
+        </form>
+
+        <div class="fe-footer">Mailbox UI coming soon</div>
+      </div>
+    </div>
+
+    <div class="fe-mailbox-wrapper" data-bind="visible: route() === 'mailbox', with: mailboxView">
+      <div class="fe-mailbox-header">
+        <div class="fe-logo" aria-hidden="true">
+          <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
+        </div>
+        <div class="fe-title">
+          <div class="fe-title-left">
+            <h1>Mailbox</h1>
+            <span data-bind="text: email"></span>
+          </div>
+          <div class="fe-search-group">
+            <input
+              type="search"
+              class="fe-search"
+              placeholder="Search mail"
+              data-bind="value: query, valueUpdate: 'afterkeydown', event: { input: function(_, e){ onSearch(e.target.value); } }"
+            />
+          </div>
+        </div>
+        <div class="fe-mailbox-actions">
+          <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
+        </div>
+      </div>
+
+      <!-- ko if: error -->
+      <div class="fe-alert" data-bind="text: error"></div>
+      <!-- /ko -->
+
+      <div class="fe-mailbox-shell">
+        <aside class="fe-folders">
+          <div class="fe-folder-actions">
+            <button class="fe-button fe-compose" type="button" disabled>Compose</button>
+          </div>
+          <ul data-bind="foreach: folders">
+            <li
+              class="fe-folder"
+              data-bind="click: $parent.selectFolder.bind(null, path), css: { active: $parent.selectedFolder() === path }"
+            >
+              <span data-bind="text: name || path"></span>
+              <span class="fe-badge" data-bind="text: count"></span>
+            </li>
+          </ul>
+        </aside>
+
+        <section class="fe-messages">
+          <div class="fe-section-header">
+            <span data-bind="text: selectedFolder"></span>
+            <div class="fe-list-actions">
+              <button
+                type="button"
+                class="fe-button ghost"
+                data-bind="click: toggleUnreadFilter, css: { active: unreadOnly }"
+              >
+                <span data-bind="text: unreadOnly() ? 'All' : 'Unread'"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ko if: loading -->
+          <div class="fe-empty">Loading messages…</div>
+          <!-- /ko -->
+
+          <!-- ko if: !loading() && filteredMessages().length -->
+          <ul class="fe-message-list" data-bind="foreach: filteredMessages">
+            <li
+              class="fe-message"
+              data-bind="click: $parent.selectMessage, css: { active: $parent.selectedMessage() && $parent.selectedMessage().id === id }"
+            >
+              <div class="fe-message-top">
+                <span class="fe-message-from" data-bind="text: from"></span>
+                <span class="fe-message-date" data-bind="text: date"></span>
+              </div>
+              <div class="fe-message-subject" data-bind="text: subject"></div>
+              <div class="fe-message-snippet" data-bind="text: snippet"></div>
+            </li>
+          </ul>
+          <!-- /ko -->
+
+          <!-- ko if: !loading() && !filteredMessages().length -->
+          <div class="fe-empty">No messages in this folder yet.</div>
+          <!-- /ko -->
+
+          <div class="fe-pagination fe-pagination-bottom">
+            <button type="button" class="fe-button ghost" data-bind="click: prevPage, enable: page() > 1">
+              Prev
+            </button>
+            <span class="fe-page-label" data-bind="text: 'Page ' + page()"></span>
+            <button type="button" class="fe-button ghost" data-bind="click: nextPage, enable: hasNextPage">
+              Next
+            </button>
+          </div>
+        </section>
+
+        <section class="fe-reader">
+          <!-- ko if: messageLoading -->
+          <div class="fe-empty">Loading message…</div>
+          <!-- /ko -->
+
+          <!-- ko if: !messageLoading() && selectedMessage() -->
+          <div data-bind="with: selectedMessage">
+            <div class="fe-section-header">
+              <div>
+                <div class="fe-reader-from" data-bind="text: from"></div>
+                <div class="fe-reader-date" data-bind="text: date"></div>
+              </div>
+                <div class="fe-reader-actions">
+                  <div class="fe-chip ghost" data-bind="text: folder"></div>
+                <button
+                    type="button"
+                    class="fe-button ghost"
+                    data-bind="click: $parent.toggleRead.bind($parent, $data)"
+                  >
+                    <span
+                      data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"
+                    ></span>
+                  </button>
+                </div>
+              </div>
+            <div class="fe-reader-subject" data-bind="text: subject"></div>
+            <div class="fe-reader-body" data-bind="html: $parent.messageBody"></div>
+          </div>
+          <!-- /ko -->
+
+          <!-- ko if: !messageLoading() && !selectedMessage() -->
+          <div class="fe-empty">Select a message to preview.</div>
+          <!-- /ko -->
+        </section>
+      </div>
+    </div>
+
+    <noscript>
+      <div style="padding: 24px; text-align: center; color: white">
+        JavaScript is required to use ForwardEmail Webmail.
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

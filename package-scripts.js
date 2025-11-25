@@ -27,8 +27,13 @@ module.exports = {
 
     watch: 'gulp watch',
     clean: 'gulp clean',
+    // Main build now includes SnappyMail webmail build automatically
     build: 'gulp build',
     buildTest: 'NODE_ENV=test gulp build',
+    // Webmail client (Vite) tasks
+    webmailBuild: 'pnpm --dir webmail-client build',
+    webmailDev: 'pnpm --dir webmail-client dev',
+    webmailPreview: 'pnpm --dir webmail-client preview',
 
     //
     // TODO: once remark-preset-github is upgraded to ESM and all deps upgraded
