@@ -17,7 +17,7 @@
     # Short TTLs allow fast failover during outages
     unbound_cache_min_ttl: 60      # 1 minute minimum
     unbound_cache_max_ttl: 300     # 5 minutes maximum
-    unbound_neg_cache_ttl: 60      # 1 minute for negative responses
+    unbound_cache_max_negative_ttl: 60      # 1 minute for negative responses
 
     # Performance tuning
     unbound_num_threads: 2
@@ -70,13 +70,14 @@
               cache-max-ttl: {{ unbound_cache_max_ttl }}
 
               # Negative cache TTL (for NXDOMAIN responses)
-              cache-neg-ttl: {{ unbound_neg_cache_ttl }}
+              cache-max-negative-ttl: {{ unbound_cache_max_negative_ttl }}
 
               # Performance tuning
               num-threads: {{ unbound_num_threads }}
               msg-cache-size: {{ unbound_msg_cache_size }}
               rrset-cache-size: {{ unbound_rrset_cache_size }}
-              cache-slabs: {{ unbound_cache_slabs }}
+              msg-cache-slabs: {{ unbound_cache_slabs }}
+              rrset-cache-slabs: {{ unbound_cache_slabs }}
               infra-cache-slabs: {{ unbound_infra_cache_slabs }}
               key-cache-slabs: {{ unbound_key_cache_slabs }}
 
@@ -89,7 +90,9 @@
               serve-expired-ttl: 60
 
               # DNSSEC validation (required for DANE)
-              auto-trust-anchor-file: "/var/lib/unbound/root.key"
+              # Note: auto-trust-anchor-file is already configured by the system in
+              # /etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf
+              # Do not duplicate it here or Unbound will fail to start
               val-permissive-mode: no
               val-clean-additional: yes
               val-log-level: 1
