@@ -843,6 +843,25 @@
         gap: 6px;
       }
 
+      .fe-emoji-picker {
+        margin-top: 8px;
+        max-height: 260px;
+        overflow: auto;
+        border: 1px solid #1f2937;
+        border-radius: 8px;
+        background: #0f172a;
+        padding: 6px;
+      }
+
+      emoji-picker {
+        width: 100%;
+      }
+
+      body.light-mode .fe-emoji-picker {
+        border-color: #e2e8f0;
+        background: #ffffff;
+      }
+
       .fe-icon-btn {
         padding: 6px 8px;
         min-width: 36px;
@@ -1472,8 +1491,12 @@
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Link" title="Link" data-bind="click: setLink">🔗</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Clear formatting" title="Clear formatting" data-bind="click: clearFormatting">✕</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Plain text" title="Plain text toggle" data-bind="click: togglePlainText, css: { active: isPlainText }">TXT</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Emoji" title="Emoji" data-bind="click: toggleEmoji">😊</button>
             </div>
             <div class="fe-rich" data-placeholder="Message"></div>
+            <div class="fe-emoji-picker" data-bind="visible: showEmoji">
+              <emoji-picker></emoji-picker>
+            </div>
           </div>
 
           <div class="fe-attachments-compose">

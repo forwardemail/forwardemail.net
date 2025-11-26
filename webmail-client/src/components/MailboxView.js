@@ -6,6 +6,7 @@ import { sanitizeHtml } from '../utils/sanitize';
 import * as openpgp from 'openpgp';
 import PostalMime from 'postal-mime';
 import FlexSearch from 'flexsearch';
+import { db } from '../utils/db';
 
 function bufferToDataUrl(attachment) {
   try {
@@ -200,6 +201,16 @@ export class MailboxView {
     }
 
     try {
+      // Try cached folders first
+      const cachedFolders = await db.folders.toArray();
+      if (cachedFolders?.length) {
+        this.folders(cachedFolders);
+        if (!this.selectedFolder()) {
+          const inbox = cachedFolders.find((f) => f.path?.toUpperCase?.() === 'INBOX');
+          this.selectedFolder(inbox?.path || cachedFolders[0].path);
+        }
+      }
+
       const foldersRes = await Remote.request('Folders', {});
       const foldersRaw = foldersRes?.Result || foldersRes || [];
       const folders = Array.isArray(foldersRaw)
@@ -230,6 +241,11 @@ export class MailboxView {
       });
 
       this.folders(mappedFolders);
+      await db.folders.clear();
+      await db.folders.bulkAdd(
+        mappedFolders.map((f) => ({ ...f, updatedAt: Date.now() }))
+      );
+
       if (!this.selectedFolder() && mappedFolders.length > 0) {
         const inbox = mappedFolders.find((f) => f.path?.toUpperCase?.() === 'INBOX');
         this.selectedFolder(inbox?.path || mappedFolders[0].path);
@@ -260,7 +276,16 @@ export class MailboxView {
     this.messages([]);
     this.searchIndex = null;
 
+    let cached = [];
     try {
+      // seed from cache for instant UI
+      cached = await db.messages.where('folder').equals(this.selectedFolder()).toArray();
+      if (cached?.length) {
+        this.messages(cached);
+        this.rebuildSearchIndex(cached);
+        this.selectedMessage(cached[0] || null);
+      }
+
       const messagesRes = await Remote.request('MessageList', {
         folder: this.selectedFolder(),
         page: this.page(),
@@ -302,6 +327,14 @@ export class MailboxView {
             has_attachment: m.has_attachment || m.hasAttachments || false
           }))
         );
+        // persist to cache (list only)
+        await db.messages
+          .where('folder')
+          .equals(this.selectedFolder())
+          .delete();
+        await db.messages.bulkAdd(
+          this.messages().map((msg) => ({ ...msg, updatedAt: Date.now() }))
+        );
         this.rebuildSearchIndex(this.messages());
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
@@ -321,7 +354,12 @@ export class MailboxView {
         window.location.href = '/';
         return;
       }
-      this.error(error?.message || 'Unable to load messages.');
+      if (cached?.length) {
+        // Offline or fetch error but we have cache; stay quiet
+        this.error('');
+      } else {
+        this.error(error?.message || 'Unable to load messages.');
+      }
     } finally {
       this.loading(false);
       this.actionMenuOpen(false);
@@ -342,6 +380,13 @@ export class MailboxView {
       this.pgpStatus('');
 
     try {
+      // try cached body first
+      const cached = await db.messages.get(message.id);
+      if (cached?.body) {
+        this.messageBody(sanitizeHtml(cached.body));
+        this.attachments(cached.attachments || []);
+      }
+
       const detailRes = await Remote.request(
         'Message',
         {
@@ -392,6 +437,14 @@ export class MailboxView {
           if (parsed) {
             this.messageBody(sanitizeHtml(parsed.body));
             this.attachments(parsed.attachments);
+            await db.messages.put({
+              ...(cached || message),
+              id: message.id,
+              folder: message.folder,
+              body: parsed.body,
+              attachments: parsed.attachments,
+              updatedAt: Date.now()
+            });
           } else {
             this.messageBody(sanitizeHtml(this.normalizeDecrypted(decrypted)));
           }
@@ -407,6 +460,14 @@ export class MailboxView {
         if (parsed) {
           this.messageBody(sanitizeHtml(parsed.body));
           this.attachments(parsed.attachments);
+          await db.messages.put({
+            ...(cached || message),
+            id: message.id,
+            folder: message.folder,
+            body: parsed.body,
+            attachments: parsed.attachments,
+            updatedAt: Date.now()
+          });
         } else {
           const inlinedBody = applyInlineAttachments(rawBody, attachments);
           this.messageBody(sanitizeHtml(inlinedBody));
@@ -420,7 +481,15 @@ export class MailboxView {
         return;
       }
       this.error(error?.message || 'Unable to load message.');
-      this.messageBody(sanitizeHtml(message.snippet || ''));
+      if (!this.messageBody()) {
+        const cachedBody = await db.messages.get(message?.id);
+        if (cachedBody?.body) {
+          this.messageBody(sanitizeHtml(cachedBody.body));
+          this.attachments(cachedBody.attachments || []);
+        } else {
+          this.messageBody(sanitizeHtml(message.snippet || ''));
+        }
+      }
       this.pgpStatus('');
     } finally {
       this.messageLoading(false);
@@ -550,7 +619,9 @@ export class MailboxView {
           }),
           contentType: att.mimeType || att.contentType || 'application/octet-stream'
         })) || [];
-      const merged = [...existingAttachments, ...attachments];
+      const merged = [...existingAttachments, ...attachments].filter(
+        (att) => !/\.asc$/i.test(att.filename || att.name || '')
+      );
       const body =
         email.html ||
         (email.text ? `<pre style="white-space:pre-wrap">${email.text}</pre>` : raw);

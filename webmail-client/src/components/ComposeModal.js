@@ -8,6 +8,7 @@ import Underline from '@tiptap/extension-underline';
 import { Remote } from '../utils/remote';
 import { Local } from '../utils/storage';
 import { sanitizeHtml } from '../utils/sanitize';
+import 'emoji-picker-element';
 
 export class ComposeModal {
   constructor() {
@@ -31,11 +32,15 @@ export class ComposeModal {
     this.bccList = ko.observableArray([]);
     this.recipientError = ko.observable('');
     this.contactOptions = ko.observableArray([]);
+    this.showEmoji = ko.observable(false);
+    this.emojiPickerEl = null;
+    this.emojiHandler = null;
   }
 
   open = () => {
     this.reset();
     this.initEditor();
+    this.showEmoji(false);
     this.visible(true);
   };
 
@@ -83,6 +88,21 @@ export class ComposeModal {
         this.body(editor.getHTML());
       }
     });
+
+    // wire emoji picker event
+    if (this.emojiPickerEl && this.emojiHandler) {
+      this.emojiPickerEl.removeEventListener('emoji-click', this.emojiHandler);
+    }
+    const picker = document.querySelector('emoji-picker');
+    if (picker) {
+      this.emojiPickerEl = picker;
+      this.emojiHandler = (event) => {
+        const emoji = event?.detail?.unicode;
+        if (!emoji) return;
+        this.insertEmoji(emoji);
+      };
+      picker.addEventListener('emoji-click', this.emojiHandler);
+    }
   }
 
   command(fn) {
@@ -265,6 +285,21 @@ export class ComposeModal {
 
   setContacts = (list) => {
     if (Array.isArray(list)) this.contactOptions(list);
+  };
+
+  toggleEmoji = () => {
+    this.showEmoji(!this.showEmoji());
+    return false;
+  };
+
+  insertEmoji = (emoji) => {
+    if (!emoji) return;
+    if (this.editorView) {
+      this.editorView.chain().focus().insertContent(emoji).run();
+    } else {
+      this.body(`${this.body() || ''}${emoji}`);
+    }
+    this.showEmoji(false);
   };
 
   handleKeydown = (data, event) => {

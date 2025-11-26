@@ -5,15 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && workbox generateSW workbox.config.js",
     "preview": "vite preview"
   },
   "dependencies": {
+    "dexie": "^4.2.1",
     "flexsearch": "^0.7.43",
     "knockout": "^3.5.1",
     "mailparser": "^3.9.0",
     "openpgp": "^6.2.2",
-    "postal-mime": "^2.6.0"
+    "postal-mime": "^2.6.0",
+    "emoji-picker-element": "^1.21.5"
   },
   "devDependencies": {
     "@tiptap/core": "^2.6.6",
@@ -25,6 +27,7 @@
     "@tiptap/starter-kit": "^2.6.6",
     "dompurify": "^3.1.6",
     "vite": "^5.0.0",
-    "vite-plugin-pwa": "^0.17.0"
+    "vite-plugin-pwa": "^0.17.0",
+    "workbox-cli": "^7.0.0"
   }
 }
