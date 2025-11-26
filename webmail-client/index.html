@@ -122,6 +122,14 @@
         color: #9ca3af;
       }
 
+      body.light-mode .fe-title h1 {
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-title span {
+        color: #1f2937;
+      }
+
       .LoginView form {
         display: flex;
         flex-direction: column;
@@ -211,6 +219,7 @@
         width: 100%;
         max-width: none;
         min-height: 100vh;
+        height: 100vh;
         background: #0b1220;
         border-radius: 16px;
         box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
@@ -274,12 +283,12 @@
 
       .fe-settings-meta {
         font-size: 13px;
-        color: #94a3b8;
+        color: #cbd5e1;
       }
 
       .fe-settings-note {
         font-size: 13px;
-        color: #94a3b8;
+        color: #cbd5e1;
       }
 
       .fe-settings-note a {
@@ -289,6 +298,21 @@
 
       body.light-mode .fe-settings-note a {
         color: #2563eb;
+      }
+
+      body.light-mode .fe-settings-row label,
+      body.light-mode .fe-settings-meta,
+      body.light-mode .fe-settings-note {
+        color: #111827;
+      }
+
+      body.light-mode .fe-settings-card,
+      body.light-mode .fe-settings-card h3,
+      body.light-mode .fe-settings-row label,
+      body.light-mode .fe-settings-meta,
+      body.light-mode .fe-settings-note,
+      body.light-mode .fe-key-name {
+        color: #0f172a;
       }
 
       .fe-key-list {
@@ -347,7 +371,8 @@
       body.light-mode .fe-folders,
       body.light-mode .fe-messages,
       body.light-mode .fe-reader,
-      body.light-mode .fe-modal {
+      body.light-mode .fe-modal,
+      body.light-mode .fe-message-canvas {
         background: #ffffff;
         border-color: #e5e7eb;
         color: #0f172a;
@@ -374,6 +399,14 @@
         background: #ffffff;
         color: #0f172a;
         border-color: #e5e7eb;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      body.light-mode .fe-button.fe-compose {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #1d4ed8;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
       }
 
       body.light-mode .fe-signout {
@@ -433,6 +466,25 @@
         min-width: 0;
       }
 
+      .fe-title-left h1 {
+        margin: 0;
+        font-size: 22px;
+        color: #e5e7eb;
+      }
+
+      .fe-title-left span {
+        color: #9ca3af;
+        font-size: 14px;
+      }
+
+      body.light-mode .fe-title-left h1 {
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-title-left span {
+        color: #1f2937;
+      }
+
       .fe-mailbox-actions {
         display: flex;
         align-items: center;
@@ -466,11 +518,16 @@
         background: #0f172a;
         color: #e5e7eb;
         border-color: #1f2937;
+        transition: filter 0.15s ease, transform 0.1s ease;
       }
 
       .fe-button.ghost.active {
         border-color: rgba(0, 175, 248, 0.4);
         box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      .fe-button.ghost:hover:not(:disabled) {
+        filter: brightness(1.05);
       }
 
       .fe-mailbox-shell {
@@ -506,6 +563,37 @@
         overflow-y: auto;
       }
 
+      @media (max-width: 820px) {
+        .fe-mailbox-wrapper {
+          height: auto;
+          min-height: 100vh;
+          padding: 16px;
+        }
+        .fe-mailbox-shell {
+          grid-template-columns: 1fr;
+          height: auto;
+          max-height: none;
+        }
+        .fe-folders,
+        .fe-messages,
+        .fe-reader {
+          min-height: 200px;
+          max-height: none;
+        }
+        .fe-mailbox-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .fe-search-group {
+          width: 100%;
+          justify-content: flex-start;
+        }
+        .fe-mailbox-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
+
       .fe-folders-title,
       .fe-section-header {
         display: flex;
@@ -514,6 +602,11 @@
         color: #e5e7eb;
         font-weight: 700;
         margin-bottom: 10px;
+      }
+
+      body.light-mode .fe-folders-title,
+      body.light-mode .fe-section-header {
+        color: #0f172a;
       }
 
       .fe-list-actions {
@@ -560,6 +653,19 @@
         background: rgba(255, 255, 255, 0.06);
         color: #e5e7eb;
         border-color: #1f2937;
+      }
+
+      body.light-mode .fe-badge,
+      body.light-mode .fe-chip {
+        background: #e5e7eb;
+        color: #111827;
+        border-color: #d1d5db;
+      }
+
+      body.light-mode .fe-chip.ghost {
+        background: #f1f5f9;
+        color: #111827;
+        border-color: #d1d5db;
       }
 
       .fe-search {
@@ -695,14 +801,33 @@
       .fe-reader-body {
         color: #cbd5e1;
         line-height: 1.5;
-        background: #0c1424;
-        border: 1px solid #1f2937;
+        background: transparent;
+        border: 1px solid transparent;
         border-radius: 10px;
         padding: 12px;
         min-height: 240px;
         flex: 1;
         overflow: auto;
         word-break: break-word;
+      }
+
+      .fe-message-canvas {
+        background: #0c1424;
+        color: #e5e7eb;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+      }
+
+      .fe-message-canvas * {
+        color: inherit !important;
+        background: transparent !important;
+      }
+
+      body.light-mode .fe-message-canvas {
+        background: #ffffff;
+        color: #0f172a;
+        border-color: #e5e7eb;
       }
 
       .fe-reader-actions {
@@ -1281,7 +1406,7 @@
             </div>
             <div class="fe-reader-subject" data-bind="text: subject"></div>
             <div class="fe-reader-body" data-bind="html: $parent.messageBody"></div>
-            <div class="fe-attachments" data-bind="visible: $parent.attachments().length">
+            <div class="fe-attachments" data-bind="visible: $parent.attachments().length > 0">
               <div class="fe-section-header">
                 <span>Attachments</span>
               </div>

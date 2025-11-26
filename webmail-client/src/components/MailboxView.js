@@ -6,6 +6,7 @@ import { sanitizeHtml } from '../utils/sanitize';
 import * as openpgp from 'openpgp';
 import PostalMime from 'postal-mime';
 import FlexSearch from 'flexsearch';
+import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { db } from '../utils/db';
 
 function bufferToDataUrl(attachment) {
@@ -69,6 +70,23 @@ function applyInlineAttachments(html, attachments) {
   });
 
   return updated;
+}
+
+function sanitizeAttachments(list) {
+  return (list || []).filter((att) => {
+    if (!att) return false;
+    const name = att.filename || att.name || '';
+    const mime = att.contentType || '';
+    // strip PGP armor/control parts
+    if (/\.asc$/i.test(name)) return false;
+    if (/application\/pgp-encrypted/i.test(mime)) return false;
+    const size = att.size ?? (att.content ? att.content.length : 0);
+    // Skip tiny placeholder attachments (e.g., "Version: 1" blocks)
+    if (!att.href && size <= 24) return false;
+    // Skip nameless tiny attachments
+    if (!att.href && size <= 64 && (!name || name.toLowerCase() === 'attachment')) return false;
+    return att.href || size > 0;
+  });
 }
 
 const normalizeFlags = (flags) => {
@@ -167,15 +185,22 @@ export class MailboxView {
 
   formatDate(value) {
     if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    let date;
+    if (typeof value === 'number') {
+      date = new Date(value < 1e12 ? value * 1000 : value);
+    } else if (typeof value === 'string' && /^\d+$/.test(value)) {
+      const num = Number(value);
+      date = new Date(num < 1e12 ? num * 1000 : num);
+    } else if (typeof value === 'string') {
+      date = parseISO(value);
+    } else {
+      date = new Date(value);
+    }
+    if (Number.isNaN(date?.getTime?.())) return '';
+
+    if (isToday(date)) return format(date, 'p');
+    if (isYesterday(date)) return `Yesterday ${format(date, 'p')}`;
+    return format(date, 'MMM d, yyyy p');
   }
 
   signOut = () => {
@@ -335,7 +360,13 @@ export class MailboxView {
         await db.messages.bulkAdd(
           this.messages().map((msg) => ({ ...msg, updatedAt: Date.now() }))
         );
-        this.rebuildSearchIndex(this.messages());
+        const sorted = this.messages().slice().sort((a, b) => {
+          const da = new Date(a.date || 0).getTime();
+          const db = new Date(b.date || 0).getTime();
+          return db - da;
+        });
+        this.messages(sorted);
+        this.rebuildSearchIndex(sorted);
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
           messagesRes?.Unread ||
@@ -384,7 +415,7 @@ export class MailboxView {
       const cached = await db.messages.get(message.id);
       if (cached?.body) {
         this.messageBody(sanitizeHtml(cached.body));
-        this.attachments(cached.attachments || []);
+        this.attachments(sanitizeAttachments(cached.attachments));
       }
 
       const detailRes = await Remote.request(
@@ -412,7 +443,7 @@ export class MailboxView {
         contentType: att.contentType || att.mimeType || att.type,
         content: att.content
       }));
-      this.attachments(attachments);
+      this.attachments(sanitizeAttachments(attachments));
 
       const rawBody =
         result?.html ||
@@ -435,14 +466,14 @@ export class MailboxView {
           this.pgpStatus('Decrypted with saved key');
           const parsed = await this.parseWithPostalMime(decrypted, attachments);
           if (parsed) {
-            this.messageBody(sanitizeHtml(parsed.body));
-            this.attachments(parsed.attachments);
+            this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(parsed.body)}</div>`);
+            this.attachments(sanitizeAttachments(parsed.attachments));
             await db.messages.put({
               ...(cached || message),
               id: message.id,
               folder: message.folder,
               body: parsed.body,
-              attachments: parsed.attachments,
+              attachments: sanitizeAttachments(parsed.attachments),
               updatedAt: Date.now()
             });
           } else {
@@ -458,19 +489,19 @@ export class MailboxView {
         this.pgpStatus('');
         const parsed = await this.parseWithPostalMime(rawBody, attachments);
         if (parsed) {
-          this.messageBody(sanitizeHtml(parsed.body));
-          this.attachments(parsed.attachments);
+          this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(parsed.body)}</div>`);
+          this.attachments(sanitizeAttachments(parsed.attachments));
           await db.messages.put({
             ...(cached || message),
             id: message.id,
             folder: message.folder,
             body: parsed.body,
-            attachments: parsed.attachments,
+            attachments: sanitizeAttachments(parsed.attachments),
             updatedAt: Date.now()
           });
         } else {
           const inlinedBody = applyInlineAttachments(rawBody, attachments);
-          this.messageBody(sanitizeHtml(inlinedBody));
+          this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(inlinedBody)}</div>`);
         }
       }
       // sync the selected message observable with updated flags/unread state
@@ -485,7 +516,7 @@ export class MailboxView {
         const cachedBody = await db.messages.get(message?.id);
         if (cachedBody?.body) {
           this.messageBody(sanitizeHtml(cachedBody.body));
-          this.attachments(cachedBody.attachments || []);
+          this.attachments(sanitizeAttachments(cachedBody.attachments));
         } else {
           this.messageBody(sanitizeHtml(message.snippet || ''));
         }

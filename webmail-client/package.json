@@ -11,6 +11,7 @@
   "dependencies": {
     "dexie": "^4.2.1",
     "flexsearch": "^0.7.43",
+    "date-fns": "^3.6.0",
     "knockout": "^3.5.1",
     "mailparser": "^3.9.0",
     "openpgp": "^6.2.2",

@@ -744,6 +744,11 @@ export default defineConfig({
 - Recipient UX polish: chip autocomplete (contacts/CardDAV) when available.
 - Message actions: delete/move, unread indicators in list, retries on errors.
 - Settings page (or modal) expansion: PGP support, contacts sync, additional preferences.
+- Styling/mobile polish: light-mode contrast fixes (message canvas, headers/buttons, emoji picker), responsive stacking for folders/messages/reader on small screens, consistent padding/spacing.
+- Send robustness: offline/outbox queue via IDB + replay, error toasts/retry.
+- Crypto: signature verification indicator, clearer decrypt error states.
+- Search/filter: filters (has attachment/date range) using cached data; optional body indexing.
+- PWA polish: clear caches on sign-out, offline fallback page, install prompt/icons.
 
 ---
 
