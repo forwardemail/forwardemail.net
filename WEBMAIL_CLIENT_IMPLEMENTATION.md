@@ -7,6 +7,15 @@
 
 ## Current State
 
+### ✅ Implementation Snapshot (2025-02)
+
+- Login validates alias credentials via `GET /v1/folders` (Basic email:password); stores `alias_auth`/email.
+- Mailbox: INBOX-first sorting, debounced search, pagination, unread filter and badge updates, mark read/unread, message reader with sanitized HTML, attachment list (no inline cid mapping yet).
+- Compose: TipTap rich editor (bold/italic/underline/strike/lists/quote/code/link, plain-text toggle), To/CC/BCC chips with validation, attachments as base64, uses alias email for envelope and `/v1/emails` with stored API key (`webmail_api_key` or `api_token`) when present.
+- Settings: API key storage, theme toggle (system/light/dark) with light-mode overrides; compose/settings modals styled.
+- Theming: dark by default; light mode with improved contrast; responsive tweaks for smaller screens.
+- Known gap: inline attachments require API `cid`/URL mapping; current fallback shows attachments in a list and attempts data URLs when available.
+
 ### ✅ New Client Scaffold
 
 - ✅ Added `webmail-client/` Vite + Knockout app with PWA (VitePWA) config
@@ -728,6 +737,14 @@ export default defineConfig({
    - Deploy to mail.forwardemail.net
    - Test from production
 
+**Updated next steps (post-implementation):**
+- Finish assets (fonts/icons) and run production build.
+- Inline attachments support once API exposes `cid`/download URLs; consider attachment upload flow instead of base64.
+- Compose enhancements: From selector (aliases), drafts, error toasts, keyboard shortcuts, reply/reply-all/forward stubs.
+- Recipient UX polish: chip autocomplete (contacts/CardDAV) when available.
+- Message actions: delete/move, unread indicators in list, retries on errors.
+- Settings page (or modal) expansion: PGP support, contacts sync, additional preferences.
+
 ---
 
 ## Deferred: Mailbox UI
@@ -753,8 +770,17 @@ For now, after successful login, redirect to a placeholder `/mailbox` route that
 - ⚠️ Attachments: current API returns Buffers without `cid`/URL mapping; inline images (e.g., `<img alt>` with no `src`) cannot be resolved. TODO: API should return `cid` and/or download URLs per attachment so inline images and downloads map cleanly. Attachment list currently uses data URLs when available and shows name/size.
 - ⏳ Assets: final fonts (Nunito Sans, VC Honey) and maskable icons still needed.
 - 🚧 Compose roadmap: add full-featured compose (Gmail-like) in phases:
-  - Recipients: To/CC/BCC chips, validation, multiple recipients, optional From selector (when aliases are available).
+  - Recipients: To/CC/BCC chips with add/remove, validation; CC/BCC toggles added. Optional From selector (when aliases are available) is still pending.
   - Rich editor: TipTap editor in place (bold/italic/links/lists/quotes, underline/highlight); add plain-text toggle, auto-generate text for payloads.
   - Attachments: file picker/drag-drop, show chips with name/size/progress, remove; support inline images with `cid` mapping; enforce size/type limits.
   - Send flow: loading/disable, errors with retry, success toast/clear; optional drafts (localStorage + `Drafts` folder).
   - Extras: reply/reply-all/forward entry points, keyboard shortcuts, recipient autocomplete (contacts), inline error handling.
+- ✅ Settings page + modal upgraded (accessible at `/mailbox/settings`): theme toggle (system/light/dark), sending API key storage for `/v1/emails`, default “plain text compose” preference, clear saved data, sign out/back-to-mailbox controls; light-mode overrides applied.
+- ✅ Message actions: reader supports mark read/unread and delete (hard delete via `/v1/messages/:id`); move APIs wired but UI deferred.
+- ✅ Actions dropdown (⋯) in reader: reply/forward (prefills compose), mark read/unread, delete, download original (.eml) using alias auth fetch. (Move will return later on the list view.)
+- ✅ Settings adds PGP private key storage list (local-only) with add/edit/remove (decrypt flow to follow).
+- ✅ PGP detection/decrypt wiring: detect armored blocks, load saved keys, prompt for passphrase (tab-only cache or sessionStorage if user opts), decrypt with `openpgp`, and render decrypted body or an inline notice.
+- ✅ Login now probes `/v1/folders` with alias Basic auth (email:password) since `/v1/webmail/auth/login` is unavailable; stores alias auth/email (no API token).
+- ✅ Compose send uses alias email for MAIL FROM/envelope and `/v1/emails` with API key (`webmail_api_key` or `api_token`); attachments include `encoding: base64`.
+- ✅ Recipient validation shows specific invalid email errors; requires at least one valid “To”.
+- ✅ Folder list sorts INBOX first; unread badges update using API unread counts or local message counts.

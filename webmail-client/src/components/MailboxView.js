@@ -3,18 +3,26 @@ import { Local } from '../utils/storage';
 import { Remote } from '../utils/remote';
 import { config } from '../config';
 import { sanitizeHtml } from '../utils/sanitize';
+import * as openpgp from 'openpgp';
+import PostalMime from 'postal-mime';
 
 function bufferToDataUrl(attachment) {
   try {
     const { content, contentType, mimeType, type } = attachment || {};
     if (!content) return '';
     const mime = contentType || mimeType || type || 'application/octet-stream';
-    // content can be Buffer-like (Uint8Array) or string
+    // content can be Buffer-like (Uint8Array/ArrayBuffer) or string
     let base64;
     if (typeof content === 'string') {
-      base64 = btoa(content);
+      const isB64 = /^[A-Za-z0-9/+]+={0,2}$/.test(content.replace(/\s+/g, ''));
+      base64 = isB64 ? content.replace(/\s+/g, '') : btoa(unescape(encodeURIComponent(content)));
+    } else if (content instanceof ArrayBuffer) {
+      const view = new Uint8Array(content);
+      base64 = btoa(String.fromCharCode(...view));
+    } else if (ArrayBuffer.isView(content)) {
+      const view = new Uint8Array(content.buffer);
+      base64 = btoa(String.fromCharCode(...view));
     } else if (content?.data) {
-      // Buffer serialized as { type: 'Buffer', data: [...] }
       base64 = btoa(String.fromCharCode(...content.data));
     } else if (Array.isArray(content)) {
       base64 = btoa(String.fromCharCode(...content));
@@ -95,13 +103,56 @@ export class MailboxView {
     this.hasNextPage = ko.observable(false);
     this.query = ko.observable('');
     this.unreadOnly = ko.observable(false);
+    this.moveTarget = ko.observable('');
+    this.actionMenuOpen = ko.observable(false);
+    this.pgpStatus = ko.observable('');
+    this.pgpKeys = [];
+    this.passphraseCache = {};
     this.searchTimer = null;
 
     this.filteredMessages = ko.pureComputed(() =>
       this.messages().filter((msg) => msg.folder === this.selectedFolder())
     );
+    this.availableMoveTargets = ko.pureComputed(() =>
+      this.folders().filter((f) => f.path !== this.selectedFolder())
+    );
+    this.unreadCounts = {};
 
-    this.setMockData();
+    this.selectedFolder.subscribe(() => {
+      const firstOther = this.availableMoveTargets()[0];
+      if (firstOther) this.moveTarget(firstOther.path);
+      this.actionMenuOpen(false);
+    });
+  }
+
+  updateFolderUnread(folderPath, count) {
+    if (!folderPath) return;
+    this.unreadCounts[folderPath] = typeof count === 'number' ? count : 0;
+    this.folders(
+      this.folders().map((f) =>
+        f.path === folderPath ? { ...f, count: this.unreadCounts[folderPath] } : f
+      )
+    );
+  }
+
+  updateUnreadCountFromList() {
+    const folderPath = this.selectedFolder();
+    if (!folderPath) return;
+    const count = this.messages().filter((m) => m.is_unread).length;
+    this.updateFolderUnread(folderPath, count);
+  }
+
+  formatDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   signOut = () => {
@@ -137,9 +188,24 @@ export class MailboxView {
         id: f.id || f.Id,
         path: f.path || f.Path || f.fullName || f.FullName || f.name || 'INBOX',
         name: f.name || f.Name || f.path || f.Path || 'Folder',
-        count: f.Unread || f.unread || f.Count || 0,
+        count:
+          f.Unread ||
+          f.unread ||
+          f.unseen ||
+          f.Unseen ||
+          f.unreadCount ||
+          f.total_unread ||
+          f.Count ||
+          0,
         specialUse: f.special_use || f.SpecialUse
       }));
+
+      mappedFolders.sort((a, b) => {
+        const aInbox = a.path?.toUpperCase?.() === 'INBOX' ? 0 : 1;
+        const bInbox = b.path?.toUpperCase?.() === 'INBOX' ? 0 : 1;
+        if (aInbox !== bInbox) return aInbox - bInbox;
+        return a.path.localeCompare(b.path);
+      });
 
       this.folders(mappedFolders);
       if (!this.selectedFolder() && mappedFolders.length > 0) {
@@ -204,12 +270,24 @@ export class MailboxView {
               m.text ||
               (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
               '',
-            date: m.Date || m.date || m.header_date || m.internal_date || '',
+            date: this.formatDate(
+              m.Date || m.date || m.header_date || m.internal_date || ''
+            ),
             flags: normalizeFlags(m.flags),
             is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
             has_attachment: m.has_attachment || m.hasAttachments || false
           }))
         );
+        const unreadFromResponse =
+          messagesRes?.Result?.Unread ||
+          messagesRes?.Unread ||
+          messagesRes?.Result?.unread ||
+          messagesRes?.unread;
+        if (typeof unreadFromResponse === 'number') {
+          this.updateFolderUnread(this.selectedFolder(), unreadFromResponse);
+        } else {
+          this.updateUnreadCountFromList();
+        }
         this.selectedMessage(this.messages()[0] || null);
         if (this.selectedMessage()) await this.loadMessage(this.selectedMessage());
       }
@@ -221,6 +299,7 @@ export class MailboxView {
       this.error(error?.message || 'Unable to load messages.');
     } finally {
       this.loading(false);
+      this.actionMenuOpen(false);
     }
   }
 
@@ -235,6 +314,7 @@ export class MailboxView {
     this.messageLoading(true);
       this.messageBody('');
       this.attachments([]);
+      this.pgpStatus('');
 
     try {
       const detailRes = await Remote.request(
@@ -259,7 +339,8 @@ export class MailboxView {
         contentId: att.cid || att.contentId,
         // TODO: prefer API-provided download URL or cid mapping when available.
         href: bufferToDataUrl(att),
-        contentType: att.contentType || att.mimeType || att.type
+        contentType: att.contentType || att.mimeType || att.type,
+        content: att.content
       }));
       this.attachments(attachments);
 
@@ -276,8 +357,30 @@ export class MailboxView {
         result?.nodemailer?.text ||
         message.snippet ||
         '';
-      const inlinedBody = applyInlineAttachments(rawBody, attachments);
-      this.messageBody(sanitizeHtml(inlinedBody));
+      const pgpPayload = this.detectPgpPayload(result, attachments);
+      if (pgpPayload) {
+        this.pgpStatus('Encrypted – attempting decrypt…');
+        const decrypted = await this.decryptPgp(pgpPayload);
+        if (decrypted) {
+          this.pgpStatus('Decrypted with saved key');
+          const parsed = await this.parseWithPostalMime(decrypted, attachments);
+          if (parsed) {
+            this.messageBody(sanitizeHtml(parsed.body));
+            this.attachments(parsed.attachments);
+          } else {
+            this.messageBody(sanitizeHtml(this.normalizeDecrypted(decrypted)));
+          }
+        } else {
+          this.pgpStatus('PGP encrypted – unable to decrypt with current keys');
+          this.messageBody(
+            `<pre style="white-space:pre-wrap">${sanitizeHtml(pgpPayload)}</pre>`
+          );
+        }
+      } else {
+        this.pgpStatus('');
+        const inlinedBody = applyInlineAttachments(rawBody, attachments);
+        this.messageBody(sanitizeHtml(inlinedBody));
+      }
       // sync the selected message observable with updated flags/unread state
       this.selectedMessage(Object.assign({}, message));
     } catch (error) {
@@ -287,8 +390,10 @@ export class MailboxView {
       }
       this.error(error?.message || 'Unable to load message.');
       this.messageBody(sanitizeHtml(message.snippet || ''));
+      this.pgpStatus('');
     } finally {
       this.messageLoading(false);
+      this.actionMenuOpen(false);
     }
   }
 
@@ -334,6 +439,203 @@ export class MailboxView {
       }
       this.error(error?.message || 'Unable to update message flags.');
     }
+    this.actionMenuOpen(false);
+  }
+
+  detectPgpPayload(result, attachments) {
+    const strings = [];
+    const maybePush = (val) => {
+      if (typeof val === 'string') strings.push(val);
+    };
+
+    maybePush(result?.raw);
+    maybePush(result?.Raw);
+    maybePush(result?.text);
+    maybePush(result?.Plain);
+    maybePush(result?.html);
+    maybePush(result?.body);
+    maybePush(result?.nodemailer?.text);
+    maybePush(result?.nodemailer?.html);
+
+    (attachments || []).forEach((att) => {
+      if (typeof att.content === 'string') strings.push(att.content);
+    });
+
+    const marker = '-----BEGIN PGP MESSAGE-----';
+    for (const candidate of strings) {
+      if (candidate && candidate.includes(marker)) {
+        const start = candidate.indexOf(marker);
+        return candidate.slice(start);
+      }
+    }
+    return null;
+  }
+
+  normalizeDecrypted(decrypted) {
+    if (!decrypted) return '';
+    const looksHtml = /<\/?[a-z][\s\S]*>/i.test(decrypted);
+    if (looksHtml) return decrypted;
+    return `<pre style="white-space:pre-wrap">${decrypted}</pre>`;
+  }
+
+  async parseWithPostalMime(raw, existingAttachments = []) {
+    if (!raw) return null;
+    try {
+      const parser = new PostalMime();
+      const email = await parser.parse(raw);
+      const attachments =
+        (email.attachments || []).map((att) => ({
+          name: att.filename || 'attachment',
+          filename: att.filename || 'attachment',
+          size: att.size || att.content?.length || 0,
+          contentId: att.contentId || undefined,
+          href: bufferToDataUrl({
+            content: att.content,
+            contentType: att.mimeType || att.contentType || 'application/octet-stream'
+          }),
+          contentType: att.mimeType || att.contentType || 'application/octet-stream'
+        })) || [];
+      const merged = [...existingAttachments, ...attachments];
+      const body =
+        email.html ||
+        (email.text ? `<pre style="white-space:pre-wrap">${email.text}</pre>` : raw);
+      const inlined = applyInlineAttachments(body, merged);
+      return { body: inlined, attachments: merged };
+    } catch (error) {
+      console.warn('postal-mime parse failed', error);
+      return null;
+    }
+  }
+
+  loadPgpKeys() {
+    if (!this.pgpKeys || !Array.isArray(this.pgpKeys) || !this.pgpKeys.length) {
+      try {
+        const stored = Local.get('pgp_keys');
+        this.pgpKeys = stored ? JSON.parse(stored) : [];
+      } catch {
+        this.pgpKeys = [];
+      }
+    }
+    return this.pgpKeys;
+  }
+
+  getPassphrase(name) {
+    if (!name) return null;
+    if (this.passphraseCache[name]) return this.passphraseCache[name];
+    try {
+      const fromSession = sessionStorage.getItem(`webmail_pgp_pass_${name}`);
+      if (fromSession) {
+        this.passphraseCache[name] = fromSession;
+        return fromSession;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  }
+
+  cachePassphrase(name, passphrase, persistSession) {
+    if (!name || !passphrase) return;
+    this.passphraseCache[name] = passphrase;
+    if (persistSession) {
+      try {
+        sessionStorage.setItem(`webmail_pgp_pass_${name}`, passphrase);
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  async decryptPgp(armored) {
+    const keys = this.loadPgpKeys();
+    if (!keys.length) return null;
+    for (const key of keys) {
+      try {
+        const privateKey = await openpgp.readPrivateKey({ armoredKey: key.value });
+        let unlocked = privateKey;
+        if (privateKey.isDecrypted() === false) {
+          let passphrase = this.getPassphrase(key.name);
+          if (!passphrase && this.passphraseModal) {
+            try {
+              const prompt = await this.passphraseModal.open(key.name);
+              if (!prompt?.passphrase) continue;
+              passphrase = prompt.passphrase;
+              if (prompt.remember) this.cachePassphrase(key.name, passphrase, true);
+            } catch {
+              continue;
+            }
+          }
+          if (!passphrase) continue;
+          unlocked = await openpgp.decryptKey({
+            privateKey,
+            passphrase
+          });
+          this.cachePassphrase(key.name, passphrase, false);
+        }
+        const message = await openpgp.readMessage({ armoredMessage: armored });
+        const { data, signatures } = await openpgp.decrypt({
+          message,
+          decryptionKeys: unlocked
+        });
+        // future: verify signatures if needed (signatures array)
+        return data;
+      } catch (error) {
+        console.warn('PGP decrypt failed for key', key.name, error);
+        continue;
+      }
+    }
+    return null;
+  }
+
+  async parseWithMailparser(rawString) {
+    return null;
+  }
+
+  async deleteMessage(message) {
+    if (!message?.id) return;
+    try {
+      await Remote.request(
+        'MessageDelete',
+        {},
+        { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+      );
+      this.messages.remove((m) => m.id === message.id);
+      this.selectedMessage(null);
+      this.messageBody('');
+      this.attachments([]);
+      this.updateUnreadCountFromList();
+    } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
+      this.error(error?.message || 'Unable to delete message.');
+    }
+    this.actionMenuOpen(false);
+  }
+
+  async moveMessage(message, targetOverride) {
+    if (!message?.id) return;
+    const target = targetOverride || this.moveTarget();
+    if (!target || target === message.folder) return;
+    try {
+      await Remote.request(
+        'MessageUpdate',
+        { folder: target },
+        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+      );
+      // Navigate to the target folder and refresh to stay in sync
+      this.selectedFolder(target);
+      this.page(1);
+      await this.loadMessages();
+    } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
+      this.error(error?.message || 'Unable to move message.');
+    }
+    this.actionMenuOpen(false);
   }
 
   nextPage = () => {
@@ -347,6 +649,66 @@ export class MailboxView {
     this.page(this.page() - 1);
     this.loadMessages();
   };
+
+  toggleActionMenu = () => {
+    this.actionMenuOpen(!this.actionMenuOpen());
+  };
+
+  replyTo(message) {
+    if (!this.composeModal || !message) return;
+    this.composeModal.open();
+    const from = message.from || '';
+    const emailMatch = from.match(/<([^>]+)>/);
+    const addr = emailMatch ? emailMatch[1] : from;
+    if (addr) this.composeModal.toList([addr]);
+    this.composeModal.subject(`Re: ${message.subject || ''}`);
+    if (this.composeModal.editorView) {
+      this.composeModal.editorView.commands.setContent(
+        `<p></p><blockquote>${this.messageBody()}</blockquote>`
+      );
+    }
+    this.actionMenuOpen(false);
+  }
+
+  forwardMessage(message) {
+    if (!this.composeModal || !message) return;
+    this.composeModal.open();
+    this.composeModal.subject(`Fwd: ${message.subject || ''}`);
+    if (this.composeModal.editorView) {
+      this.composeModal.editorView.commands.setContent(
+        `<p></p><hr>${this.messageBody()}`
+      );
+    }
+    this.actionMenuOpen(false);
+  }
+
+  async downloadOriginal(message) {
+    if (!message?.id) return;
+    try {
+      const aliasAuth = Local.get('alias_auth');
+      if (!aliasAuth) throw new Error('Missing auth');
+      const url = `${config.apiBase}/v1/messages/${encodeURIComponent(
+        message.id
+      )}?eml=true`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Basic ${btoa(aliasAuth)}` }
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const text = await res.text();
+      const blob = new Blob([text], { type: 'message/rfc822' });
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = `${message.subject || 'message'}.eml`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(href);
+    } catch (error) {
+      this.error(error?.message || 'Unable to download original.');
+    }
+    this.actionMenuOpen(false);
+  }
 
   onSearch = (text) => {
     this.query(text);

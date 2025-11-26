@@ -18,7 +18,11 @@ export const Remote = {
     };
 
     if (!options.skipAuth && this.shouldAuthorize(action)) {
-      headers.Authorization = getAliasAuthHeader();
+      if (options.apiKey) {
+        headers.Authorization = `Basic ${btoa(`${options.apiKey}:`)}`;
+      } else {
+        headers.Authorization = getAliasAuthHeader();
+      }
     }
 
     const url = new URL(`${config.apiBase}${options.pathOverride || path}`);
@@ -63,10 +67,13 @@ export const Remote = {
 
   getEndpoint(action) {
     const endpoints = {
-      Login: { path: '/v1/webmail/auth/login', method: 'POST' },
       Folders: { path: '/v1/folders', method: 'GET' },
       MessageList: { path: '/v1/messages', method: 'GET' },
-      Message: { path: '/v1/messages', method: 'GET' }
+      Message: { path: '/v1/messages', method: 'GET' },
+      MessageUpdate: { path: '/v1/messages', method: 'PUT' },
+      MessageDelete: { path: '/v1/messages', method: 'DELETE' },
+      Emails: { path: '/v1/emails', method: 'POST' },
+      Account: { path: '/v1/account', method: 'GET' }
     };
 
     const entry = endpoints[action];

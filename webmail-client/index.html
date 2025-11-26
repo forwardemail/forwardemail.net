@@ -39,12 +39,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
       }
 
       body.mailbox-mode {
         align-items: flex-start;
         justify-content: center;
+        overflow: hidden;
       }
 
       #rl-app {
@@ -206,8 +208,9 @@
       .fe-mailbox-wrapper {
         position: relative;
         z-index: 1;
-        width: 92%;
-        max-width: 1400px;
+        width: 100%;
+        max-width: none;
+        min-height: 100vh;
         background: #0b1220;
         border-radius: 16px;
         box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
@@ -216,6 +219,195 @@
         display: flex;
         flex-direction: column;
         gap: 18px;
+        overflow: hidden;
+      }
+
+      .fe-settings-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .fe-settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+
+      .fe-settings-card {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0e1627;
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .fe-settings-card h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #e5e7eb;
+      }
+
+      .fe-settings-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .fe-settings-row label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+
+      .fe-settings-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .fe-settings-meta {
+        font-size: 13px;
+        color: #94a3b8;
+      }
+
+      .fe-settings-note {
+        font-size: 13px;
+        color: #94a3b8;
+      }
+
+      .fe-settings-note a {
+        color: #7dd3fc;
+        text-decoration: underline;
+      }
+
+      body.light-mode .fe-settings-note a {
+        color: #2563eb;
+      }
+
+      .fe-key-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .fe-key-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .fe-key-name {
+        font-size: 14px;
+        color: #e5e7eb;
+      }
+
+      .fe-key-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .fe-key-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border: 1px dashed rgba(255, 255, 255, 0.12);
+        padding: 12px;
+        border-radius: 10px;
+      }
+
+      body.light-mode .fe-key-row {
+        border-color: #e2e8f0;
+        background: #f8fafc;
+      }
+
+      body.light-mode .fe-key-name {
+        color: #0f172a;
+      }
+
+      body.light-mode {
+        background: radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.08) 0, transparent 25%),
+          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.12) 0, transparent 30%),
+          #f5f7fb;
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-login-wrapper,
+      body.light-mode .fe-mailbox-wrapper,
+      body.light-mode .fe-folders,
+      body.light-mode .fe-messages,
+      body.light-mode .fe-reader,
+      body.light-mode .fe-modal {
+        background: #ffffff;
+        border-color: #e5e7eb;
+        color: #0f172a;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      body.light-mode .fe-folder,
+      body.light-mode .fe-message,
+      body.light-mode .fe-empty,
+      body.light-mode .fe-reader-body,
+      body.light-mode .fe-attachment,
+      body.light-mode .fe-chip.ghost {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-settings-card {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+      }
+
+      body.light-mode .fe-button.ghost {
+        background: #ffffff;
+        color: #0f172a;
+        border-color: #e5e7eb;
+      }
+
+      body.light-mode .fe-signout {
+        background: #eef2ff;
+        color: #111827;
+        border-color: #cbd5f5;
+      }
+
+      body.light-mode .fe-search,
+      body.light-mode .fe-input,
+      body.light-mode .fe-textarea,
+      body.light-mode .tiptap.ProseMirror {
+        background: #ffffff;
+        border-color: #e2e8f0;
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-attachment-chip-size,
+      body.light-mode .fe-message-date,
+      body.light-mode .fe-reader-date {
+        color: #6b7280;
+      }
+
+      body.light-mode .fe-message-subject,
+      body.light-mode .fe-reader-subject,
+      body.light-mode .fe-message-from,
+      body.light-mode .fe-reader-from {
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-message.active,
+      body.light-mode .fe-folder.active {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
       }
 
       .fe-mailbox-header {
@@ -285,7 +477,10 @@
         display: grid;
         grid-template-columns: 210px 1fr 1.2fr;
         gap: 14px;
-        min-height: 70vh;
+        min-height: 0;
+        height: calc(100vh - 180px);
+        max-height: calc(100vh - 180px);
+        overflow: hidden;
       }
 
       .fe-folders,
@@ -303,6 +498,12 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        overflow-y: auto;
+        min-height: 0;
+      }
+
+      .fe-folders {
+        overflow-y: auto;
       }
 
       .fe-folders-title,
@@ -510,6 +711,59 @@
         gap: 10px;
       }
 
+      .fe-action-menu {
+        position: relative;
+      }
+
+      .fe-action-menu button.fe-icon-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .fe-action-menu-panel {
+        position: absolute;
+        top: 42px;
+        right: 0;
+        background: #0f172a;
+        border: 1px solid #1f2937;
+        border-radius: 10px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 200px;
+        z-index: 10;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .fe-action-menu-panel button,
+      .fe-action-menu-panel select {
+        width: 100%;
+      }
+
+      body.light-mode .fe-action-menu-panel {
+        background: #ffffff;
+        border-color: #e2e8f0;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .fe-select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+        color: #e5e7eb;
+      }
+
+      body.light-mode .fe-select {
+        border-color: #e2e8f0;
+        background: #ffffff;
+        color: #0f172a;
+      }
+
       .fe-attachments {
         margin-top: 12px;
         border-top: 1px solid #1f2937;
@@ -605,6 +859,18 @@
         gap: 6px;
       }
 
+      .fe-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .fe-recipient-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
       .fe-attachments-compose {
         display: flex;
         align-items: center;
@@ -645,6 +911,11 @@
 
       .tiptap.ProseMirror:focus {
         border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      .fe-button.ghost.active {
+        border-color: rgba(0, 175, 248, 0.4);
         box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
       }
 
@@ -705,6 +976,24 @@
         gap: 10px;
       }
 
+      .fe-field-group label {
+        color: #e5e7eb;
+        font-weight: 600;
+      }
+
+      .fe-theme-options {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .fe-theme-options label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #cbd5e1;
+      }
+
       .fe-modal-actions {
         display: flex;
         align-items: center;
@@ -739,6 +1028,43 @@
         }
       }
 
+      @media (max-width: 720px) {
+        .fe-mailbox-wrapper {
+          padding: 16px;
+        }
+
+        .fe-mailbox-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .fe-mailbox-header .fe-title {
+          grid-template-columns: 1fr;
+          width: 100%;
+        }
+
+        .fe-search-group {
+          width: 100%;
+          min-width: 0;
+          justify-content: flex-start;
+        }
+
+        .fe-mailbox-actions {
+          width: 100%;
+          justify-content: flex-start;
+          gap: 8px;
+        }
+
+        .fe-editor-toolbar {
+          gap: 4px;
+        }
+
+        .fe-mailbox-shell {
+          gap: 10px;
+        }
+      }
+
       @media (max-width: 480px) {
         .fe-login-wrapper {
           padding: 28px 22px;
@@ -757,7 +1083,7 @@
       <canvas id="stars3"></canvas>
     </div>
 
-    <div class="fe-login-wrapper" data-bind="visible: route() === 'login'">
+    <div class="fe-login-wrapper" style="display: none;" data-bind="visible: route() === 'login'">
       <div class="LoginView" data-bind="with: loginUserView">
         <div class="fe-login-header">
           <div class="fe-logo" aria-hidden="true">
@@ -802,7 +1128,7 @@
       </div>
     </div>
 
-    <div class="fe-mailbox-wrapper" data-bind="visible: route() === 'mailbox', with: mailboxView">
+    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'mailbox', with: mailboxView">
       <div class="fe-mailbox-header">
         <div class="fe-logo" aria-hidden="true">
           <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
@@ -821,7 +1147,8 @@
             />
           </div>
         </div>
-        <div class="fe-mailbox-actions">
+       <div class="fe-mailbox-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: function(){ window.location.href = '/mailbox/settings'; }">Settings</button>
           <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
         </div>
       </div>
@@ -909,17 +1236,28 @@
                 <div class="fe-reader-from" data-bind="text: from"></div>
                 <div class="fe-reader-date" data-bind="text: date"></div>
               </div>
-                <div class="fe-reader-actions">
+              <div class="fe-reader-actions">
                   <div class="fe-chip ghost" data-bind="text: folder"></div>
-                <button
+                  <div class="fe-chip ghost" data-bind="visible: $parent.pgpStatus, text: $parent.pgpStatus" style="display:none;"></div>
+                <div class="fe-action-menu" data-bind="css: { open: $parent.actionMenuOpen }">
+                  <button
                     type="button"
-                    class="fe-button ghost"
-                    data-bind="click: $parent.toggleRead.bind($parent, $data)"
+                    class="fe-button ghost fe-icon-btn"
+                    aria-label="Message actions"
+                    data-bind="click: $parent.toggleActionMenu"
                   >
-                  <span
-                    data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"
-                  ></span>
-                </button>
+                    ⋯
+                  </button>
+                  <div class="fe-action-menu-panel" data-bind="visible: $parent.actionMenuOpen">
+                    <button type="button" class="fe-button ghost" data-bind="click: function(){ $parent.replyTo($data); }">Reply</button>
+                    <button type="button" class="fe-button ghost" data-bind="click: function(){ $parent.forwardMessage($data); }">Forward</button>
+                    <button type="button" class="fe-button ghost" data-bind="click: function(){ $parent.toggleRead($data); }">
+                      <span data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"></span>
+                    </button>
+                    <button type="button" class="fe-button ghost" data-bind="click: function(){ $parent.deleteMessage($data); }">Delete</button>
+                    <button type="button" class="fe-button ghost" data-bind="click: function(){ $parent.downloadOriginal($data); }">Download original</button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="fe-reader-subject" data-bind="text: subject"></div>
@@ -954,13 +1292,134 @@
       </div>
     </div>
 
+    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'settings', with: settingsModal">
+      <div class="fe-mailbox-header">
+        <div class="fe-logo" aria-hidden="true">
+          <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
+        </div>
+        <div class="fe-title">
+          <div class="fe-title-left">
+            <h1>Settings</h1>
+            <span data-bind="text: aliasEmail"></span>
+          </div>
+        </div>
+        <div class="fe-mailbox-actions">
+          <button
+            class="fe-button ghost"
+            type="button"
+            data-bind="click: function(){ window.location.href = '/mailbox'; }"
+          >
+            Back to mailbox
+          </button>
+          <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
+        </div>
+      </div>
+
+      <div class="fe-settings-shell">
+        <div class="fe-settings-grid">
+          <div class="fe-settings-card">
+            <h3>Appearance</h3>
+            <div class="fe-settings-row">
+              <label><input type="radio" name="theme" value="system" data-bind="checked: theme" /> System</label>
+              <label><input type="radio" name="theme" value="light" data-bind="checked: theme" /> Light</label>
+              <label><input type="radio" name="theme" value="dark" data-bind="checked: theme" /> Dark</label>
+            </div>
+            <div class="fe-settings-note">Choose how the app respects your system preference.</div>
+          </div>
+
+          <div class="fe-settings-card">
+            <h3>Sending</h3>
+            <div class="fe-settings-note">
+              Use your API token from
+              <strong><a href="https://forwardemail.net/my-account/security" target="_blank" rel="noreferrer">forwardemail.net/my-account/security</a></strong>
+              (Developer access). Paste it below as the Basic auth username for sending.
+            </div>
+            <input
+              class="fe-input"
+              type="text"
+              placeholder="API Key (Basic auth username for sends)"
+              data-bind="textInput: apiKey"
+            />
+            <label class="fe-settings-row">
+              <input type="checkbox" data-bind="checked: composePlainDefault" />
+              Start new messages in plain text mode
+            </label>
+          </div>
+
+          <div class="fe-settings-card">
+            <h3>Data & security</h3>
+            <div class="fe-settings-meta">
+              Signed in as <strong data-bind="text: aliasEmail"></strong>
+            </div>
+            <div class="fe-settings-row" style="justify-content: space-between;">
+              <div class="fe-settings-note" style="margin:0;">PGP encryption keys</div>
+              <button class="fe-button ghost" type="button" data-bind="click: openNewKey">Add key</button>
+            </div>
+            <div class="fe-key-list" data-bind="foreach: pgpKeys">
+              <div class="fe-key-row">
+                <span class="fe-key-name" data-bind="text: name || 'Key'"></span>
+                <div class="fe-key-actions">
+                  <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Edit" title="Edit" data-bind="click: $parent.editKey">✎</button>
+                  <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeKey">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="fe-key-form" data-bind="visible: keyFormVisible">
+              <input
+                class="fe-input"
+                type="text"
+                placeholder="Key name (e.g., Personal)"
+                data-bind="textInput: editingKeyName"
+              />
+              <textarea
+                class="fe-textarea"
+                rows="6"
+                placeholder="PGP private key (ASCII armor)"
+                data-bind="textInput: editingKeyValue"
+              ></textarea>
+              <div class="fe-settings-actions">
+                <button class="fe-button ghost" type="button" data-bind="click: cancelKeyForm">Cancel</button>
+                <button class="fe-button" type="button" data-bind="click: saveKey">Save key</button>
+              </div>
+              <div class="fe-settings-note">
+                Stored locally only. Used to decrypt PGP-encrypted messages (decrypt flow to be added).
+              </div>
+            </div>
+            <div class="fe-settings-actions">
+              <button class="fe-button ghost" type="button" data-bind="click: clearData">
+                Clear saved data
+              </button>
+              <button class="fe-button ghost" type="button" data-bind="click: open">
+                Reload settings
+              </button>
+            </div>
+            <div class="fe-settings-note">
+              Clearing data removes cached login and preferences from this browser.
+            </div>
+          </div>
+        </div>
+
+        <div class="fe-settings-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: open">Reset changes</button>
+          <button class="fe-button" type="button" data-bind="click: save">Save settings</button>
+        </div>
+
+        <div class="fe-alert" data-bind="visible: error, text: error"></div>
+        <div
+          class="fe-alert"
+          style="border-color:#22c55e;color:#bbf7d0;background:rgba(34,197,94,0.1);"
+          data-bind="visible: success, text: success"
+        ></div>
+      </div>
+    </div>
+
     <noscript>
       <div style="padding: 24px; text-align: center; color: white">
         JavaScript is required to use ForwardEmail Webmail.
       </div>
     </noscript>
 
-    <div class="fe-modal-backdrop" data-bind="visible: composeModal.visible">
+    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'mailbox' && composeModal.visible()">
       <div class="fe-modal" data-bind="with: composeModal">
         <div class="fe-modal-header">
           <h2>Compose</h2>
@@ -968,17 +1427,35 @@
         </div>
         <div class="fe-modal-body">
           <div class="fe-recipient-row">
-            <input class="fe-input" type="email" placeholder="To" data-bind="textInput: to" />
+            <div class="fe-chip-row" data-bind="foreach: toList">
+              <div class="fe-chip ghost fe-recipient-chip">
+                <span data-bind="text: $data"></span>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'to', $data)">✕</button>
+              </div>
+            </div>
+            <input class="fe-input" type="email" placeholder="To" data-bind="textInput: to, event: { blur: function(_,e){ addRecipient('to'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('to'); return false; } return true; } }" />
             <div class="fe-recipient-chips">
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add CC" title="Add CC" data-bind="click: showCc, visible: !ccVisible()">CC</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add BCC" title="Add BCC" data-bind="click: showBcc, visible: !bccVisible()">BCC</button>
             </div>
           </div>
           <div class="fe-recipient-row" data-bind="visible: ccVisible">
-            <input class="fe-input" type="email" placeholder="CC" data-bind="textInput: cc" />
+            <div class="fe-chip-row" data-bind="foreach: ccList">
+              <div class="fe-chip ghost fe-recipient-chip">
+                <span data-bind="text: $data"></span>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'cc', $data)">✕</button>
+              </div>
+            </div>
+            <input class="fe-input" type="email" placeholder="CC" data-bind="textInput: cc, event: { blur: function(_,e){ addRecipient('cc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('cc'); return false; } return true; } }" />
           </div>
           <div class="fe-recipient-row" data-bind="visible: bccVisible">
-            <input class="fe-input" type="email" placeholder="BCC" data-bind="textInput: bcc" />
+            <div class="fe-chip-row" data-bind="foreach: bccList">
+              <div class="fe-chip ghost fe-recipient-chip">
+                <span data-bind="text: $data"></span>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'bcc', $data)">✕</button>
+              </div>
+            </div>
+            <input class="fe-input" type="email" placeholder="BCC" data-bind="textInput: bcc, event: { blur: function(_,e){ addRecipient('bcc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('bcc'); return false; } return true; } }" />
           </div>
           <input class="fe-input" type="text" placeholder="Subject" data-bind="textInput: subject" />
 
@@ -994,9 +1471,10 @@
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Code block" title="Code block" data-bind="click: toggleCode">&lt;/&gt;</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Link" title="Link" data-bind="click: setLink">🔗</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Clear formatting" title="Clear formatting" data-bind="click: clearFormatting">✕</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Plain text" title="Plain text toggle" data-bind="click: togglePlainText, css: { active: isPlainText }">TXT</button>
             </div>
-              <div class="fe-rich" data-placeholder="Message"></div>
-            </div>
+            <div class="fe-rich" data-placeholder="Message"></div>
+          </div>
 
           <div class="fe-attachments-compose">
             <input
@@ -1017,12 +1495,39 @@
           </div>
 
           <div class="fe-alert" data-bind="visible: error, text: error"></div>
+          <div class="fe-alert" data-bind="visible: recipientError, text: recipientError"></div>
           <div class="fe-alert" style="border-color:#22c55e;color:#bbf7d0;background:rgba(34,197,94,0.1);" data-bind="visible: success, text: success"></div>
 
           <div class="fe-modal-actions">
             <button class="fe-button ghost" type="button" data-bind="click: close">Cancel</button>
-            <button class="fe-button" type="button" data-bind="click: send, disable: sending">Send</button>
+            <button class="fe-button" type="button" data-bind="click: send, disable: sending, text: sending() ? 'Sending…' : 'Send'"></button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: pgpPassphraseModal.visible">
+      <div class="fe-modal" data-bind="with: pgpPassphraseModal">
+        <div class="fe-modal-header">
+          <h2>Enter passphrase</h2>
+          <button class="fe-button ghost" type="button" data-bind="click: cancel">Close</button>
+        </div>
+        <div class="fe-modal-body">
+          <div class="fe-settings-note">Needed to unlock key: <strong data-bind="text: keyName"></strong></div>
+          <input
+            class="fe-input"
+            type="password"
+            placeholder="Passphrase"
+            data-bind="textInput: passphrase"
+          />
+          <label class="fe-settings-row">
+            <input type="checkbox" data-bind="checked: remember" />
+            Remember for this tab
+          </label>
+        </div>
+        <div class="fe-modal-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: cancel">Cancel</button>
+          <button class="fe-button" type="button" data-bind="click: submit">Unlock</button>
         </div>
       </div>
     </div>

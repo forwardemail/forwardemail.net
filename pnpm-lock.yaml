@@ -501,9 +501,6 @@ importers:
       mailauth:
         specifier: 4.8.6
         version: 4.8.6
-      mailparser:
-        specifier: 3.7.4
-        version: 3.7.4
       mailsplit:
         specifier: 5.4.5
         version: 5.4.5
@@ -606,9 +603,6 @@ importers:
       numeral:
         specifier: 2.0.6
         version: 2.0.6
-      openpgp:
-        specifier: 5.11.3
-        version: 5.11.3
       otplib:
         specifier: 12.0.1
         version: 12.0.1
@@ -13596,11 +13590,6 @@ packages:
 
   openpgp@5.11.2:
     resolution: {integrity: sha512-f8dJFVLwdkvPvW3VPFs6q9Vs2+HNhdvwls7a/MIFcQUB+XiQzRe7alfa3RtwfGJU7oUDDMAWPZ0nYsHa23Az+A==}
-    engines: {node: '>= 8.0.0'}
-    deprecated: This version is deprecated and will no longer receive security patches. Please refer to https://github.com/openpgpjs/openpgpjs/wiki/Updating-from-previous-versions for details on how to upgrade to a newer supported version.
-
-  openpgp@5.11.3:
-    resolution: {integrity: sha512-jXOPfIteBUQ2zSmRG4+Y6PNntIIDEAvoM/lOYCnvpXAByJEruzrHQZWE/0CGOKHbubwUuty2HoPHsqBzyKHOpA==}
     engines: {node: '>= 8.0.0'}
     deprecated: This version is deprecated and will no longer receive security patches. Please refer to https://github.com/openpgpjs/openpgpjs/wiki/Updating-from-previous-versions for details on how to upgrade to a newer supported version.
 
@@ -35179,10 +35168,6 @@ snapshots:
       - debug
 
   openpgp@5.11.2:
-    dependencies:
-      asn1.js: 5.4.1
-
-  openpgp@5.11.3:
     dependencies:
       asn1.js: 5.4.1
 

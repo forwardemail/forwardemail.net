@@ -31,30 +31,26 @@ export class LoginUserView {
     this.submitError('');
     this.submitErrorAdditional('');
 
-    Remote.request('Login', {
-      Email: email,
-      Password: password,
-      SignMe: this.signMe() ? '1' : '0'
-    })
+    const authHeader = `Basic ${btoa(`${email}:${password}`)}`;
+
+    Remote.request(
+      'Folders',
+      {},
+      { method: 'GET', skipAuth: true, headers: { Authorization: authHeader } }
+    )
       .then((result) => {
-        if (result && result.Result) {
-          Local.set('signMe', this.signMe() ? '1' : '0');
-          Local.set('email', email);
-
-          if (result.Result.Token) {
-            Local.set('authToken', result.Result.Token);
-          } else {
-            Local.remove('authToken');
-          }
-
-          // Always store Basic Auth for mailbox decryption
-          Local.set('alias_auth', `${email}:${password}`);
-
-          window.location.href = '/mailbox';
+        if (!result) {
+          this.submitError('Login failed. Please try again.');
           return;
         }
 
-        this.submitError('Login failed. Please try again.');
+        Local.set('signMe', this.signMe() ? '1' : '0');
+        Local.set('email', email);
+        Local.set('alias_auth', `${email}:${password}`);
+        Local.remove('api_token');
+        Local.remove('locale');
+
+        window.location.href = '/mailbox';
       })
       .catch((error) => {
         const message = error?.message || 'Login failed. Please try again.';

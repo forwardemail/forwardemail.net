@@ -25,6 +25,11 @@ export class ComposeModal {
     this.editorView = null;
     this.linkTarget = ko.observable('');
     this.attachments = ko.observableArray([]);
+    this.isPlainText = ko.observable(false);
+    this.toList = ko.observableArray([]);
+    this.ccList = ko.observableArray([]);
+    this.bccList = ko.observableArray([]);
+    this.recipientError = ko.observable('');
   }
 
   open = () => {
@@ -49,7 +54,12 @@ export class ComposeModal {
     this.success('');
     this.sending(false);
     this.attachments([]);
+    this.isPlainText(Local.get('compose_plain_default') === '1');
+    this.recipientError('');
     if (this.editorView) this.editorView.commands.setContent('');
+    this.toList([]);
+    this.ccList([]);
+    this.bccList([]);
   }
 
   initEditor() {
@@ -88,7 +98,7 @@ export class ComposeModal {
   toggleOrdered = () => this.command((c) => c.toggleOrderedList());
   toggleQuote = () => this.command((c) => c.toggleBlockquote());
   toggleCode = () => this.command((c) => c.toggleCodeBlock());
-  clearFormatting = () => this.command((c) => c.clearNodes().unsetAllMarks());
+ clearFormatting = () => this.command((c) => c.clearNodes().unsetAllMarks());
 
   setLink = () => {
     const url = window.prompt('Enter URL');
@@ -103,22 +113,39 @@ export class ComposeModal {
     this.success('');
     this.sending(true);
 
-    const from = Local.get('email') || '';
+    const aliasAuth = Local.get('alias_auth') || '';
+    const aliasEmail = aliasAuth.includes(':') ? aliasAuth.split(':')[0] : aliasAuth;
+    const from = aliasEmail || Local.get('email') || '';
     const to = (this.to() || '').trim();
     const cc = (this.cc() || '').trim();
     const bcc = (this.bcc() || '').trim();
     const subject = (this.subject() || '').trim();
     const body = this.editorView ? this.editorView.getHTML() : this.body() || '';
+    const plainText = this.editorView ? this.editorView.getText() : this.body() || '';
 
-    if (!to) {
+    // Use chip lists first; fall back to text fields
+    const parsedTo = this.toList().length ? this.toList() : this.parseRecipients(to);
+    const parsedCc = this.ccList().length ? this.ccList() : this.parseRecipients(cc);
+    const parsedBcc = this.bccList().length ? this.bccList() : this.parseRecipients(bcc);
+
+    if (!parsedTo.length) {
       this.error('Please enter a recipient.');
       this.sending(false);
       return false;
     }
 
-    const parsedTo = this.parseRecipients(to);
-    const parsedCc = this.parseRecipients(cc);
-    const parsedBcc = this.parseRecipients(bcc);
+    if (!this.validateRecipients(parsedTo, 'To')) {
+      this.sending(false);
+      return false;
+    }
+    if (!this.validateRecipients(parsedCc, 'CC')) {
+      this.sending(false);
+      return false;
+    }
+    if (!this.validateRecipients(parsedBcc, 'BCC')) {
+      this.sending(false);
+      return false;
+    }
 
     // Build nodemailer-like payload per API spec (createMessage)
     const payload = {
@@ -127,25 +154,28 @@ export class ComposeModal {
       ...(parsedCc.length ? { cc: parsedCc } : {}),
       ...(parsedBcc.length ? { bcc: parsedBcc } : {}),
       subject,
-      text: body,
-      html: sanitizeHtml(body),
+      text: this.isPlainText() ? plainText : body,
+      html: this.isPlainText() ? undefined : sanitizeHtml(body),
+      envelope: {
+        from: from || parsedTo[0],
+        to: parsedTo
+      },
       folder: 'Sent Mail',
       ...(this.attachments().length
         ? {
             attachments: this.attachments().map((att) => ({
               filename: att.name,
               content: att.content,
-              contentType: att.contentType
+              contentType: att.contentType,
+              encoding: 'base64'
             }))
           }
         : {})
     };
 
-    Remote.request(
-      'Message',
-      payload,
-      { method: 'POST' }
-    )
+    const apiKey = Local.get('api_key') || Local.get('api_token');
+
+    Remote.request('Emails', payload, { method: 'POST', apiKey })
       .then(() => {
         this.success('Message queued.');
         this.sending(false);
@@ -167,13 +197,39 @@ export class ComposeModal {
       .filter(Boolean);
   }
 
+  validateRecipients(list, label) {
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const invalid = (list || []).find((addr) => !emailRe.test(addr));
+    if (invalid) {
+      this.recipientError(`${label}: "${invalid}" is not a valid email address.`);
+      return false;
+    }
+    this.recipientError('');
+    return true;
+  }
+
+  addRecipient(field, value) {
+    const list = this[`${field}List`];
+    const textField = this[field];
+    const val = (value || textField()).trim();
+    if (!val) return;
+    const parts = this.parseRecipients(val);
+    list(list().concat(parts));
+    textField('');
+  }
+
+  removeRecipient(field, recipient) {
+    const list = this[`${field}List`];
+    list.remove(recipient);
+  }
+
   triggerFilePicker = () => {
     const input = document.querySelector('.fe-attach-input');
     if (input) input.click();
   };
 
-  onFilesSelected = (event) => {
-    const files = Array.from(event.target.files || []);
+  onFilesSelected = (_, event) => {
+    const files = Array.from(event?.target?.files || []);
     if (!files.length) return;
     files.forEach((file) => {
       const reader = new FileReader();
@@ -201,4 +257,16 @@ export class ComposeModal {
 
   showCc = () => this.ccVisible(true);
   showBcc = () => this.bccVisible(true);
+
+  togglePlainText = () => {
+    this.isPlainText(!this.isPlainText());
+  };
+
+  handleKeydown = (data, event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      this.send();
+      return false;
+    }
+    return true;
+  };
 }
