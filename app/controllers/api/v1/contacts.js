@@ -94,7 +94,7 @@ async function list(ctx) {
     {
       limit: ctx.query.limit,
       offset: ctx.paginate.skip,
-      sort: { created_at: -1 }
+      sort: { created_at: 'desc' }
     }
   );
 

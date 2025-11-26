@@ -296,6 +296,9 @@ async function json(ctx, message) {
     // hdate -> header_date
     header_date: message.hdate,
 
+    // created_at (when the database record was created)
+    created_at: message.created_at,
+
     // subject
     subject: message.subject,
 
@@ -611,7 +614,7 @@ async function list(ctx) {
     ],
     limit: ctx.query.limit,
     offset: ctx.paginate.skip,
-    sort: { created_at: -1 }
+    sort: { created_at: 'desc' }
   };
 
   const sql = builder.build(opts);
