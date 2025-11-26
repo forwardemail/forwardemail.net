@@ -790,6 +790,6 @@ For now, after successful login, redirect to a placeholder `/mailbox` route that
 - ✅ IndexedDB (Dexie) caching: folders, message lists per folder, and message bodies/attachments are cached for instant loads; cache is refreshed on fetch and used to seed search.
 - ✅ Workbox config added for PWA shell: precaches built assets and cache-first for icons/images; SW registered in prod build.
 - ✅ Login now probes `/v1/folders` with alias Basic auth (email:password) since `/v1/webmail/auth/login` is unavailable; stores alias auth/email (no API token).
-- ✅ Compose send uses alias email for MAIL FROM/envelope and `/v1/emails` with API key (`webmail_api_key` or `api_token`); attachments include `encoding: base64`.
+- ✅ Compose send now uses alias basic auth (same as mailbox read) for `/v1/emails`; envelope uses alias email, attachments include `encoding: base64`.
 - ✅ Recipient validation shows specific invalid email errors; requires at least one valid “To”.
 - ✅ Folder list sorts INBOX first; unread badges update using API unread counts or local message counts.

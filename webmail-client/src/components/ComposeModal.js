@@ -194,9 +194,8 @@ export class ComposeModal {
         : {})
     };
 
-    const apiKey = Local.get('api_key') || Local.get('api_token');
-
-    Remote.request('Emails', payload, { method: 'POST', apiKey })
+    // Use alias basic auth (same as reading) for outbound send
+    Remote.request('Emails', payload, { method: 'POST' })
       .then(() => {
         this.success('Message queued.');
         this.sending(false);

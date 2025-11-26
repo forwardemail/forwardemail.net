@@ -360,13 +360,7 @@ export class MailboxView {
         await db.messages.bulkAdd(
           this.messages().map((msg) => ({ ...msg, updatedAt: Date.now() }))
         );
-        const sorted = this.messages().slice().sort((a, b) => {
-          const da = new Date(a.date || 0).getTime();
-          const db = new Date(b.date || 0).getTime();
-          return db - da;
-        });
-        this.messages(sorted);
-        this.rebuildSearchIndex(sorted);
+        this.rebuildSearchIndex(this.messages());
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
           messagesRes?.Unread ||
