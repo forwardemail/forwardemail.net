@@ -5,6 +5,7 @@ import { config } from '../config';
 import { sanitizeHtml } from '../utils/sanitize';
 import * as openpgp from 'openpgp';
 import PostalMime from 'postal-mime';
+import FlexSearch from 'flexsearch';
 
 function bufferToDataUrl(attachment) {
   try {
@@ -108,11 +109,32 @@ export class MailboxView {
     this.pgpStatus = ko.observable('');
     this.pgpKeys = [];
     this.passphraseCache = {};
+    this.contacts = ko.observableArray([]);
+    this.searchIndex = null;
     this.searchTimer = null;
 
-    this.filteredMessages = ko.pureComputed(() =>
-      this.messages().filter((msg) => msg.folder === this.selectedFolder())
-    );
+    this.filteredMessages = ko.pureComputed(() => {
+      const folder = this.selectedFolder();
+      const q = (this.query() || '').trim();
+      let list = this.messages().filter((msg) => msg.folder === folder);
+      if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
+      if (!q || !this.searchIndex) return list;
+      const results = this.searchIndex.search(q, { enrich: true });
+      const ids = new Set();
+      const hits = [];
+      results.forEach((res) => {
+        const arr = res?.result || res || [];
+        arr.forEach((id) => {
+          if (ids.has(id)) return;
+          const msg = list.find((m) => m.id === id);
+          if (msg) {
+            ids.add(id);
+            hits.push(msg);
+          }
+        });
+      });
+      return hits;
+    });
     this.availableMoveTargets = ko.pureComputed(() =>
       this.folders().filter((f) => f.path !== this.selectedFolder())
     );
@@ -214,6 +236,7 @@ export class MailboxView {
       }
 
       await this.loadMessages();
+      this.loadContacts();
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
@@ -235,6 +258,7 @@ export class MailboxView {
     this.messageBody('');
     this.selectedMessage(null);
     this.messages([]);
+    this.searchIndex = null;
 
     try {
       const messagesRes = await Remote.request('MessageList', {
@@ -278,6 +302,7 @@ export class MailboxView {
             has_attachment: m.has_attachment || m.hasAttachments || false
           }))
         );
+        this.rebuildSearchIndex(this.messages());
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
           messagesRes?.Unread ||
@@ -378,8 +403,14 @@ export class MailboxView {
         }
       } else {
         this.pgpStatus('');
-        const inlinedBody = applyInlineAttachments(rawBody, attachments);
-        this.messageBody(sanitizeHtml(inlinedBody));
+        const parsed = await this.parseWithPostalMime(rawBody, attachments);
+        if (parsed) {
+          this.messageBody(sanitizeHtml(parsed.body));
+          this.attachments(parsed.attachments);
+        } else {
+          const inlinedBody = applyInlineAttachments(rawBody, attachments);
+          this.messageBody(sanitizeHtml(inlinedBody));
+        }
       }
       // sync the selected message observable with updated flags/unread state
       this.selectedMessage(Object.assign({}, message));
@@ -476,6 +507,30 @@ export class MailboxView {
     const looksHtml = /<\/?[a-z][\s\S]*>/i.test(decrypted);
     if (looksHtml) return decrypted;
     return `<pre style="white-space:pre-wrap">${decrypted}</pre>`;
+  }
+
+  rebuildSearchIndex(list = []) {
+    try {
+      this.searchIndex = new FlexSearch.Document({
+        document: {
+          id: 'id',
+          index: ['subject', 'from', 'snippet']
+        },
+        tokenize: 'forward',
+        context: true
+      });
+      (list || []).forEach((m) => {
+        this.searchIndex.add({
+          id: m.id,
+          subject: m.subject || '',
+          from: m.from || '',
+          snippet: m.snippet || ''
+        });
+      });
+    } catch (error) {
+      console.warn('search index build failed', error);
+      this.searchIndex = null;
+    }
   }
 
   async parseWithPostalMime(raw, existingAttachments = []) {
@@ -712,12 +767,6 @@ export class MailboxView {
 
   onSearch = (text) => {
     this.query(text);
-    this.page(1);
-
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => {
-      this.loadMessages();
-    }, 300);
   };
 
   toggleUnreadFilter = () => {
@@ -725,6 +774,31 @@ export class MailboxView {
     this.page(1);
     this.loadMessages();
   };
+
+  async loadContacts() {
+    try {
+      const res = await Remote.request('Contacts', { limit: 500 });
+      const list = Array.isArray(res) ? res : res?.Result || res?.contacts || [];
+      const mapped = (list || [])
+        .map((c) => {
+          const email =
+            (c.emails && c.emails[0]?.value) ||
+            (c.Emails && c.Emails[0]?.value) ||
+            c.email ||
+            '';
+          if (!email) return null;
+          const name = c.full_name || c.FullName || c.name || '';
+          return name ? `${name} <${email}>` : email;
+        })
+        .filter(Boolean);
+      this.contacts(mapped);
+      if (this.composeModal && this.composeModal.setContacts) {
+        this.composeModal.setContacts(mapped);
+      }
+    } catch (error) {
+      console.warn('Contacts load failed', error);
+    }
+  }
 
   setMockData() {
     const mockFolders = [

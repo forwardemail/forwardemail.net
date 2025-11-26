@@ -72,6 +72,7 @@ export const Remote = {
       Message: { path: '/v1/messages', method: 'GET' },
       MessageUpdate: { path: '/v1/messages', method: 'PUT' },
       MessageDelete: { path: '/v1/messages', method: 'DELETE' },
+      Contacts: { path: '/v1/contacts', method: 'GET' },
       Emails: { path: '/v1/emails', method: 'POST' },
       Account: { path: '/v1/account', method: 'GET' }
     };

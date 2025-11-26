@@ -1426,14 +1426,14 @@
           <button class="fe-button ghost" type="button" data-bind="click: close">Close</button>
         </div>
         <div class="fe-modal-body">
-          <div class="fe-recipient-row">
-            <div class="fe-chip-row" data-bind="foreach: toList">
-              <div class="fe-chip ghost fe-recipient-chip">
-                <span data-bind="text: $data"></span>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'to', $data)">✕</button>
+            <div class="fe-recipient-row">
+              <div class="fe-chip-row" data-bind="foreach: toList">
+                <div class="fe-chip ghost fe-recipient-chip">
+                  <span data-bind="text: $data"></span>
+                  <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'to', $data)">✕</button>
+                </div>
               </div>
-            </div>
-            <input class="fe-input" type="email" placeholder="To" data-bind="textInput: to, event: { blur: function(_,e){ addRecipient('to'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('to'); return false; } return true; } }" />
+            <input class="fe-input" type="email" placeholder="To" list="fe-contacts" data-bind="textInput: to, event: { blur: function(_,e){ addRecipient('to'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('to'); return false; } return true; } }" />
             <div class="fe-recipient-chips">
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add CC" title="Add CC" data-bind="click: showCc, visible: !ccVisible()">CC</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add BCC" title="Add BCC" data-bind="click: showBcc, visible: !bccVisible()">BCC</button>
@@ -1446,7 +1446,7 @@
                 <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'cc', $data)">✕</button>
               </div>
             </div>
-            <input class="fe-input" type="email" placeholder="CC" data-bind="textInput: cc, event: { blur: function(_,e){ addRecipient('cc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('cc'); return false; } return true; } }" />
+            <input class="fe-input" type="email" placeholder="CC" list="fe-contacts" data-bind="textInput: cc, event: { blur: function(_,e){ addRecipient('cc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('cc'); return false; } return true; } }" />
           </div>
           <div class="fe-recipient-row" data-bind="visible: bccVisible">
             <div class="fe-chip-row" data-bind="foreach: bccList">
@@ -1455,7 +1455,7 @@
                 <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'bcc', $data)">✕</button>
               </div>
             </div>
-            <input class="fe-input" type="email" placeholder="BCC" data-bind="textInput: bcc, event: { blur: function(_,e){ addRecipient('bcc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('bcc'); return false; } return true; } }" />
+            <input class="fe-input" type="email" placeholder="BCC" list="fe-contacts" data-bind="textInput: bcc, event: { blur: function(_,e){ addRecipient('bcc'); }, keydown: function(_,e){ if(e.key==='Enter'){ addRecipient('bcc'); return false; } return true; } }" />
           </div>
           <input class="fe-input" type="text" placeholder="Subject" data-bind="textInput: subject" />
 
@@ -1504,6 +1504,10 @@
           </div>
         </div>
       </div>
+
+      <datalist id="fe-contacts" data-bind="foreach: composeModal.contactOptions">
+        <option data-bind="attr: { value: $data }"></option>
+      </datalist>
     </div>
 
     <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: pgpPassphraseModal.visible">

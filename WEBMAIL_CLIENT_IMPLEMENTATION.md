@@ -780,6 +780,8 @@ For now, after successful login, redirect to a placeholder `/mailbox` route that
 - ✅ Actions dropdown (⋯) in reader: reply/forward (prefills compose), mark read/unread, delete, download original (.eml) using alias auth fetch. (Move will return later on the list view.)
 - ✅ Settings adds PGP private key storage list (local-only) with add/edit/remove (decrypt flow to follow).
 - ✅ PGP detection/decrypt wiring: detect armored blocks, load saved keys, prompt for passphrase (tab-only cache or sessionStorage if user opts), decrypt with `openpgp`, and render decrypted body or an inline notice.
+- ✅ Contacts autocomplete: fetches `/v1/contacts` (alias auth) and wires suggestions to To/CC/BCC via datalist; non-blocking if the API call fails.
+- ✅ Search now uses a local FlexSearch index on loaded messages (subject/from/snippet) for instant filtering; falls back to list when empty.
 - ✅ Login now probes `/v1/folders` with alias Basic auth (email:password) since `/v1/webmail/auth/login` is unavailable; stores alias auth/email (no API token).
 - ✅ Compose send uses alias email for MAIL FROM/envelope and `/v1/emails` with API key (`webmail_api_key` or `api_token`); attachments include `encoding: base64`.
 - ✅ Recipient validation shows specific invalid email errors; requires at least one valid “To”.

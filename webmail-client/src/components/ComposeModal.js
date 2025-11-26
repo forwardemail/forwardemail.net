@@ -30,6 +30,7 @@ export class ComposeModal {
     this.ccList = ko.observableArray([]);
     this.bccList = ko.observableArray([]);
     this.recipientError = ko.observable('');
+    this.contactOptions = ko.observableArray([]);
   }
 
   open = () => {
@@ -260,6 +261,10 @@ export class ComposeModal {
 
   togglePlainText = () => {
     this.isPlainText(!this.isPlainText());
+  };
+
+  setContacts = (list) => {
+    if (Array.isArray(list)) this.contactOptions(list);
   };
 
   handleKeydown = (data, event) => {

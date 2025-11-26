@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "flexsearch": "^0.7.43",
     "knockout": "^3.5.1",
     "mailparser": "^3.9.0",
     "openpgp": "^6.2.2",
