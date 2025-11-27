@@ -14,6 +14,8 @@ const test = require('ava');
 const utils = require('../utils');
 const config = require('#config');
 
+const { emoji } = config.views.locals;
+
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
@@ -748,6 +750,44 @@ END:VCALENDAR`
   t.truthy(withinRangeEvent);
   const earlyEvent = res.body.find((event) => event.summary === 'Early Event');
   t.falsy(earlyEvent);
+});
+
+//
+// Sends email test
+// (typically a webmail/desktop/app client would hit this endpoint first, then save a copy to Sent Mail folder)
+// POST /v1/emails (to put in queue)
+// POST /v1/messages (to put in Sent Mail folder in IMAP storage)
+//
+test('queues email', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const res = await api
+    .post('/v1/emails')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .send({
+      raw: `
+Sender: baz@beep.com
+Cc: beep@boop.com,beep@boop.com
+Bcc: foo@bar.com,a@xyz.com,b@xyz.com
+Reply-To: boop@beep.com
+Message-ID: beep-boop
+Date: ${new Date().toISOString()}
+To: test@foo.com
+From: ${emoji('blush')} Test <${alias.name}@${domain.name}>
+Subject: ${emoji('blush')} testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+    });
+
+  // Should return 200 with empty array initially
+  t.is(res.status, 200);
+  t.log(res.headers['x-response-time']);
+  t.is(res.body.subject, `${emoji('blush')} testing this`);
 });
 
 //

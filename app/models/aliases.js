@@ -1103,14 +1103,15 @@ Aliases.methods.createToken = async function (
     throw Boom.badRequest(
       i18n.translateError('CANNOT_CREATE_TOKEN_FOR_REGEX', this.locale)
     );
-  const { password, salt, hash } = await createPassword(
+  const { password, salt, hash, has_pbkdf2_migration } = await createPassword(
     existingPassword,
     userInputs
   );
   this.tokens.push({
     description,
     salt,
-    hash
+    hash,
+    has_pbkdf2_migration
   });
   return password;
 };

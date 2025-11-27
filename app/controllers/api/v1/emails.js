@@ -146,11 +146,24 @@ async function create(ctx) {
 
     // queue the email
     let email;
+
     try {
-      email = await Emails.queue(
-        { message, user: ctx.state.user, dsn: message?.dsn },
-        ctx.locale
-      );
+      if (ctx.state?.session?.db) {
+        email = await Emails.queue(
+          {
+            message,
+            alias: ctx.state.user.alias_id,
+            domain: ctx.state.user.domain_id,
+            user: ctx.state.user.alias_user_id
+          },
+          ctx.state.user.locale
+        );
+      } else {
+        email = await Emails.queue(
+          { message, user: ctx.state.user, dsn: message?.dsn },
+          ctx.locale
+        );
+      }
     } catch (err) {
       if (err.code === 'ERR_UNKNOWN_ENCODING')
         throw Boom.badRequest(err.message);

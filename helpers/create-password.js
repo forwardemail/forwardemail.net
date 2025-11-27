@@ -74,7 +74,7 @@ async function createPassword(existingPassword, userInputs = []) {
   const buffer = await randomBytes(config.passportLocalMongoose.saltlen);
   const salt = buffer.toString(config.passportLocalMongoose.encoding);
 
-  return { password, salt, hash };
+  return { password, salt, hash, has_pbkdf2_migration: true };
 }
 
 module.exports = createPassword;

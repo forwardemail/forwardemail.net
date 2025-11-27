@@ -55,7 +55,7 @@ async function createCatchAllPassword(ctx) {
       if (isSANB(ctx.state.user[prop])) userInputs.push(ctx.state.user[prop]);
     }
 
-    const { password, salt, hash } = await createPassword(
+    const { password, salt, hash, has_pbkdf2_migration } = await createPassword(
       ctx.request.body.new_password || null,
       _.uniq(_.compact(userInputs))
     );
@@ -63,7 +63,8 @@ async function createCatchAllPassword(ctx) {
       description,
       salt,
       hash,
-      user: ctx.state.user._id
+      user: ctx.state.user._id,
+      has_pbkdf2_migration
     });
     domain.tokens.push(token);
     domain.locale = ctx.locale;

@@ -779,7 +779,8 @@ async function onAuth(auth, session, fn) {
         ? {
             alias_id: alias.id,
             alias_name: alias.name,
-            storage_location: alias.storage_location
+            storage_location: alias.storage_location,
+            alias_user_id: alias.user.id
           }
         : {}),
       [config.lastLocaleField]:

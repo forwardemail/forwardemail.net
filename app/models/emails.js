@@ -1356,6 +1356,8 @@ Emails.statics.queue = async function (
   else if (typeof options?.user?._id === 'object')
     userId = options.user._id.toString();
   else if (typeof options?.user === 'object') userId = options.user.toString();
+  else if (mongoose.isObjectIdOrHexString(options?.user))
+    userId = options?.user.toString();
 
   let domain;
 
@@ -1377,6 +1379,13 @@ Emails.statics.queue = async function (
         `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
       );
     }
+  } else if (mongoose.isObjectIdOrHexString(options.domain)) {
+    domain = await Domains.findOne({
+      _id: options.domain
+    }).populate(
+      'members.user',
+      `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+    );
   } else if (userId) {
     domain = await Domains.findOne({
       name: domainName,
