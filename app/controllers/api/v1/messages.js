@@ -306,7 +306,13 @@ async function json(ctx, message) {
     transaction: message.transaction,
 
     // remoteAddress -> remote_address
-    remote_address: message.remoteAddress
+    remote_address: message.remoteAddress,
+
+    // created_at
+    created_at: message.created_at,
+
+    // updated_at
+    updated_at: message.updated_at
   };
 
   if (ctx.query.nodemailer !== 'false')

@@ -831,6 +831,8 @@
           "modseq",
           "transaction",
           "remote_address",
+          "created_at",
+          "updated_at",
           "object"
         ],
         "properties": {
@@ -941,6 +943,16 @@
             "type": "string",
             "description": "Remote IP address"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Message creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Message last update timestamp"
+          },
           "nodemailer": {
             "type": "object",
             "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
@@ -980,6 +992,8 @@
           "modseq": 1,
           "transaction": "API",
           "remote_address": "127.0.0.1",
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "message"
         }
       },
@@ -4307,13 +4321,16 @@
       },
       "post": {
         "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "Emails"
         ],
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
