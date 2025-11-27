@@ -16,6 +16,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 const api = require('#controllers/api');
 const config = require('#config');
+const ensureApiTokenOrAliasAuth = require('#helpers/ensure-api-token-or-alias-auth');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
@@ -59,7 +60,7 @@ const router = new Router({
 
 router.post(
   '/emails',
-  policies.ensureApiToken,
+  ensureApiTokenOrAliasAuth,
   policies.checkVerifiedEmail,
   web.myAccount.ensureNotBanned,
   api.v1.enforcePaidPlan,

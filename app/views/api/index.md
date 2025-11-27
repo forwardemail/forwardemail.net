@@ -98,7 +98,36 @@ The current HTTP base URI path is: `BASE_URI`.
 
 ## Authentication
 
-All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header (with the exception of [Alias Contacts](#alias-contacts), [Alias Calendars](#alias-calendars), and [Alias Mailboxes](#alias-mailboxes) which use a [generated alias username and password](/faq#do-you-support-receiving-email-with-imap))..
+All endpoints require authentication using [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication). We support two authentication methods:
+
+### API Token Authentication (Recommended for most endpoints)
+
+Set your [API key](https://forwardemail.net/my-account/security) as the "username" value with an empty password:
+
+```sh
+curl BASE_URI/v1/account \
+  -u API_TOKEN:
+```
+
+Note the colon (`:`) after the API token – this indicates an empty password in Basic Auth format.
+
+### Alias Credentials Authentication (For outbound email)
+
+The [Create outbound SMTP email](#create-outbound-smtp-email) endpoint also supports authentication using your alias email address and a [generated alias password](/faq#do-you-support-receiving-email-with-imap):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@yourdomain.com:your_generated_password" \
+  -d "to=recipient@example.com" \
+  -d "subject=Hello" \
+  -d "text=Test email"
+```
+
+This method is useful when sending emails from applications that already use SMTP credentials and makes migration from SMTP to our API seamless.
+
+### Alias-Only Endpoints
+
+[Alias Contacts](#alias-contacts-carddav), [Alias Calendars](#alias-calendars-caldav), [Alias Messages](#alias-messages-imappop3), and [Alias Folders](#alias-folders-imappop3) endpoints require alias credentials and do not support API token authentication.
 
 Don't worry – examples are provided below for you if you're not sure what this is.
 
@@ -484,6 +513,8 @@ You should either pass the single option of `raw` with your raw full email inclu
 
 This API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically).  Our goal was to make an extremely developer-friendly and dummy-proof email API.
 
+**Authentication:** This endpoint supports both [API token authentication](#api-token-authentication-recommended-for-most-endpoints) and [alias credentials authentication](#alias-credentials-authentication-for-outbound-email). See the [Authentication](#authentication) section above for details.
+
 > `POST /v1/emails`
 
 | Body Parameter   | Required | Type             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -514,7 +545,7 @@ This API endpoint will automatically encode emojis for you if they are found in 
 | `date`           | No       | String or Date   | An optional Date value that will be used if the Date header is missing after parsing, otherwise the current UTC string will be used if not set.  The date header cannot be more than 30 days in advance of the current time.                                                                                                                                                                                                                                     |
 | `list`           | No       | Object           | An optional Object of `List-*` headers (see [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)).                                                                                                                                                                                                                                                                                                                                          |
 
-> Example Request:
+> Example Request (API Token):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -525,7 +556,18 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=test"
 ```
 
-> Example Request:
+> Example Request (Alias Credentials):
+
+```sh
+curl -X POST BASE_URI/v1/emails \
+  -u "alias@DOMAIN_NAME:GENERATED_PASSWORD" \
+  -d "from=alias@DOMAIN_NAME" \
+  -d "to=EMAIL" \
+  -d "subject=test" \
+  -d "text=test"
+```
+
+> Example Request (Raw Email):
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
