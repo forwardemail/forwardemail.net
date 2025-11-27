@@ -4,11 +4,13 @@ import { MailboxView } from './components/MailboxView';
 import { ComposeModal } from './components/ComposeModal';
 import { SettingsModal } from './components/SettingsModal';
 import { PassphraseModal } from './components/PassphraseModal';
+import { CalendarView } from './components/CalendarView';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
 import './styles/main.css';
 
 function detectRoute() {
+  if (window.location.pathname.startsWith('/calendar')) return 'calendar';
   if (window.location.pathname.startsWith('/mailbox/settings')) return 'settings';
   if (window.location.pathname.startsWith('/mailbox')) return 'mailbox';
   return 'login';
@@ -20,17 +22,20 @@ const viewModel = {
   mailboxView: new MailboxView(),
   composeModal: new ComposeModal(),
   settingsModal: new SettingsModal(),
-  pgpPassphraseModal: new PassphraseModal()
+  pgpPassphraseModal: new PassphraseModal(),
+  calendarView: new CalendarView()
 };
 
 viewModel.mailboxView.composeModal = viewModel.composeModal;
 viewModel.mailboxView.passphraseModal = viewModel.pgpPassphraseModal;
+viewModel.calendarView.mailboxView = viewModel.mailboxView;
 
 viewModel.route.subscribe((route) => {
-  const mailboxMode = route === 'mailbox' || route === 'settings';
+  const mailboxMode = route === 'mailbox' || route === 'settings' || route === 'calendar';
   document.body.classList.toggle('mailbox-mode', mailboxMode);
   if (route !== 'mailbox') viewModel.composeModal.close();
   if (route === 'settings') viewModel.settingsModal.open();
+  if (route === 'calendar') viewModel.calendarView.load();
 });
 
 function applyTheme(pref) {
@@ -80,6 +85,7 @@ function bootstrap() {
   viewModel.composeModal.initEditor();
   if (route === 'mailbox') viewModel.mailboxView.load();
   if (route === 'settings') viewModel.settingsModal.open();
+  if (route === 'calendar') viewModel.calendarView.load();
   initStarfield();
   root.style.visibility = 'visible';
 

@@ -493,6 +493,20 @@
         justify-content: flex-end;
       }
 
+      .fe-calendar-shell {
+        background: #0d1525;
+        border: none;
+        border-radius: 14px;
+        padding: 12px;
+        min-height: calc(100vh - 140px);
+        overflow: auto;
+      }
+
+      body.light-mode .fe-calendar-shell {
+        background: #ffffff;
+        border-color: transparent;
+      }
+
       .fe-button {
         padding: 10px 14px;
         border-radius: 10px;
@@ -1291,7 +1305,8 @@
             />
           </div>
         </div>
-       <div class="fe-mailbox-actions">
+          <div class="fe-mailbox-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: function(){ window.location.href = '/calendar'; }">Calendar</button>
           <button class="fe-button ghost" type="button" data-bind="click: function(){ window.location.href = '/mailbox/settings'; }">Settings</button>
           <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
         </div>
@@ -1557,6 +1572,29 @@
       </div>
     </div>
 
+    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'calendar', with: calendarView">
+      <div class="fe-mailbox-header">
+        <div class="fe-logo" aria-hidden="true">
+          <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
+        </div>
+        <div class="fe-title-left">
+          <h1>Calendar</h1>
+          <span data-bind="text: email"></span>
+        </div>
+        <div class="fe-mailbox-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: function(){ window.location.href = '/mailbox'; }">Mailbox</button>
+          <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
+        </div>
+      </div>
+
+      <div class="fe-calendar-shell">
+        <div class="fe-section-header">
+          <span>Schedule</span>
+        </div>
+        <div id="sx-calendar" style="min-height: calc(100vh - 140px);"></div>
+      </div>
+    </div>
+
     <noscript>
       <div style="padding: 24px; text-align: center; color: white">
         JavaScript is required to use ForwardEmail Webmail.
@@ -1680,6 +1718,29 @@
         <div class="fe-modal-actions">
           <button class="fe-button ghost" type="button" data-bind="click: cancel">Cancel</button>
           <button class="fe-button" type="button" data-bind="click: submit">Unlock</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'calendar' && calendarView.newEventModal()">
+      <div class="fe-modal" data-bind="with: calendarView">
+        <div class="fe-modal-header">
+          <h2>New Event</h2>
+          <button class="fe-button ghost" type="button" data-bind="click: function(){ newEventModal(false); }">Close</button>
+        </div>
+        <div class="fe-modal-body">
+          <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: newEventTitle" />
+          <input class="fe-input" type="datetime-local" placeholder="Start" data-bind="value: newEventStart" />
+          <div class="fe-recipient-row">
+            <input class="fe-input" type="number" min="5" step="5" placeholder="Duration (minutes)" data-bind="value: newEventDuration" />
+            <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: newEventNotify" />
+          </div>
+          <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: newEventDescription"></textarea>
+          <div class="fe-alert" data-bind="visible: error, text: error" style="display:none;"></div>
+        </div>
+        <div class="fe-modal-actions">
+          <button class="fe-button ghost" type="button" data-bind="click: function(){ newEventModal(false); }">Cancel</button>
+          <button class="fe-button" type="button" data-bind="click: saveNewEvent">Save</button>
         </div>
       </div>
     </div>

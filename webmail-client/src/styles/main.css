@@ -43,3 +43,58 @@ body {
     display: none;
   }
 }
+
+:root {
+  --sx-color-surface: #0b1220;
+  --sx-color-background: #0b1220;
+  --sx-color-on-surface: #e5e7eb;
+  --sx-color-primary: #e5e7eb;
+  --sx-color-primary-container: #1f2937;
+  --sx-color-on-primary: #0b1220;
+}
+
+body.light-mode {
+  --sx-color-surface: #ffffff;
+  --sx-color-background: #ffffff;
+  --sx-color-on-surface: #0f172a;
+  --sx-color-primary: #0f172a;
+}
+
+/* Schedule-X dark override */
+.sx__calendar-wrapper {
+  min-height: 80vh;
+  height: 80vh !important;
+}
+
+.sx__calendar-wrapper.is-dark,
+.sx__calendar.is-dark {
+  background: #0b1220 !important;
+  color: #e5e7eb !important;
+  border: none !important;
+}
+
+.sx__calendar-wrapper.is-dark .sx__calendar-header,
+.sx__calendar-wrapper.is-dark .sx__week-grid__time-axis,
+.sx__calendar-wrapper.is-dark .sx__week-grid__date-axis,
+.sx__calendar-wrapper.is-dark .sx__view-container {
+  background: #0b1220 !important;
+}
+
+.sx__calendar-wrapper.is-dark .sx__calendar-header-border,
+.sx__calendar-wrapper.is-dark .sx__week-header-border {
+  border-color: #1f2937 !important;
+}
+
+.sx__calendar-wrapper.is-dark .sx__date-input-wrapper,
+.sx__calendar-wrapper.is-dark .sx__date-input,
+.sx__calendar-wrapper.is-dark .sx__date-input-chevron-wrapper {
+  background: #0b1220 !important;
+  color: #e5e7eb !important;
+  border-color: #1f2937 !important;
+}
+
+.sx__calendar-wrapper.is-dark {
+  --sx-color-primary: #ffffff;
+  --sx-color-on-primary: #0b1220;
+  --sx-color-primary-container: #1f2937;
+}

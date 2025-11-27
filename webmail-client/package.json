@@ -9,14 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dexie": "^4.2.1",
-    "flexsearch": "^0.7.43",
+    "@schedule-x/calendar": "^1.63.1",
+    "@schedule-x/theme-default": "^1.13.4",
     "date-fns": "^3.6.0",
+    "dexie": "^4.2.1",
+    "emoji-picker-element": "^1.21.5",
+    "flexsearch": "^0.7.43",
     "knockout": "^3.5.1",
     "mailparser": "^3.9.0",
     "openpgp": "^6.2.2",
-    "postal-mime": "^2.6.0",
-    "emoji-picker-element": "^1.21.5"
+    "postal-mime": "^2.6.0"
   },
   "devDependencies": {
     "@tiptap/core": "^2.6.6",
