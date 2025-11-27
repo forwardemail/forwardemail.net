@@ -457,8 +457,8 @@ importers:
         specifier: 16.7.0
         version: 16.7.0(bufferutil@4.0.9)(utf-8-validate@6.0.5)
       json-sql-enhanced:
-        specifier: 2.0.5
-        version: 2.0.5
+        specifier: 2.0.6
+        version: 2.0.6
       jwk-to-pem:
         specifier: 2.0.7
         version: 2.0.7
@@ -11300,8 +11300,8 @@ packages:
   json-schema@0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
 
-  json-sql-enhanced@2.0.5:
-    resolution: {integrity: sha512-iBF8iZmy4PVIMop1tGVrexvQqiSxnFaOte0JrE8/CnC9faeyXJv6nQd5N5vOQiIGXHVYTtglb9T1zzgMmOchsw==}
+  json-sql-enhanced@2.0.6:
+    resolution: {integrity: sha512-TOq9/GxvrPCO8Meh4wLQTqxRhlZUQcDyAYYBvnkysTnm0W+J4yKddqNL4JeA2Rqje/Wdp87EmaI+IAKcbrcWSA==}
     engines: {node: '>=18.0.0'}
 
   json-stable-stringify-without-jsonify@1.0.1:
@@ -32044,7 +32044,7 @@ snapshots:
 
   json-schema@0.4.0: {}
 
-  json-sql-enhanced@2.0.5: {}
+  json-sql-enhanced@2.0.6: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 

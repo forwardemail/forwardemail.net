@@ -13,7 +13,11 @@
         "NODE_ENV": "production",
         "HTTP_PORT": 443,
         "HTTP_PROTOCOL": "https"
-      }
+      },
+      "error_file": "/var/log/pm2/caldav-error.log",
+      "out_file": "/var/log/pm2/caldav-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     },
     {
       "name": "proxy",
@@ -26,13 +30,19 @@
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 80
-      }
+      },
+      "error_file": "/var/log/pm2/proxy-error.log",
+      "out_file": "/var/log/pm2/proxy-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["121.127.44.72"],
+      "host": [
+        "121.127.44.72"
+      ],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",

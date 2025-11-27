@@ -269,6 +269,488 @@ test('creates calendar with alias auth', async (t) => {
 });
 
 //
+// Calendar Events Tests
+//
+
+test('fails calendar events list without auth', async (t) => {
+  const { api } = t.context;
+  const res = await api.get('/v1/calendar-events');
+  t.is(res.status, 401);
+});
+
+test('lists calendar events with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const res = await api
+    .get('/v1/calendar-events')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  // Should return 200 with empty array initially
+  t.is(res.status, 200);
+  t.true(Array.isArray(res.body));
+});
+
+test('creates calendar event with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  t.is(calendarRes.status, 200);
+  const calendarId = calendarRes.body.id;
+
+  // Create calendar event with iCal data
+  const eventData = {
+    calendar_id: calendarId,
+    ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-${Date.now()}@example.com
+DTSTART:20250101T120000Z
+DTEND:20250101T130000Z
+SUMMARY:Test Event
+DESCRIPTION:This is a test event
+LOCATION:Conference Room A
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`
+  };
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(eventData);
+
+  // Should create calendar event successfully
+  t.is(res.status, 200);
+  t.is(res.body.object, 'calendar_event');
+  t.is(res.body.calendar_id, calendarId);
+  t.is(res.body.summary, 'Test Event');
+  t.is(res.body.description, 'This is a test event');
+  t.is(res.body.location, 'Conference Room A');
+  t.truthy(res.body.ical);
+});
+
+test('retrieves calendar event with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  // Create calendar event
+  const eventData = {
+    calendar_id: calendarId,
+    ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-retrieve-${Date.now()}@example.com
+DTSTART:20250101T140000Z
+DTEND:20250101T150000Z
+SUMMARY:Retrieve Test Event
+DESCRIPTION:Event for retrieval testing
+END:VEVENT
+END:VCALENDAR`
+  };
+
+  const createRes = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(eventData);
+
+  t.is(createRes.status, 200);
+
+  // Retrieve the calendar event
+  const res = await api
+    .get(`/v1/calendar-events/${createRes.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(res.status, 200);
+  t.is(res.body.id, createRes.body.id);
+  t.is(res.body.summary, 'Retrieve Test Event');
+});
+
+test('updates calendar event with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  // Create calendar event
+  const eventData = {
+    calendar_id: calendarId,
+    ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-update-${Date.now()}@example.com
+DTSTART:20250101T160000Z
+DTEND:20250101T170000Z
+SUMMARY:Update Test Event
+DESCRIPTION:Event for update testing
+END:VEVENT
+END:VCALENDAR`
+  };
+
+  const createRes = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(eventData);
+
+  t.is(createRes.status, 200);
+
+  // Update the calendar event
+  const updateData = {
+    ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-update-${Date.now()}@example.com
+DTSTART:20250101T160000Z
+DTEND:20250101T170000Z
+SUMMARY:Updated Test Event
+DESCRIPTION:Updated event description
+LOCATION:Updated Location
+END:VEVENT
+END:VCALENDAR`
+  };
+
+  const res = await api
+    .put(`/v1/calendar-events/${createRes.body.id}`)
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(updateData);
+
+  t.is(res.status, 200);
+  t.is(res.body.id, createRes.body.id);
+  t.is(res.body.summary, 'Updated Test Event');
+  t.is(res.body.description, 'Updated event description');
+  t.is(res.body.location, 'Updated Location');
+});
+
+test('deletes calendar event with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  // Create calendar event
+  const eventData = {
+    calendar_id: calendarId,
+    ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-delete-${Date.now()}@example.com
+DTSTART:20250101T180000Z
+DTEND:20250101T190000Z
+SUMMARY:Delete Test Event
+DESCRIPTION:Event for deletion testing
+END:VEVENT
+END:VCALENDAR`
+  };
+
+  const createRes = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(eventData);
+
+  t.is(createRes.status, 200);
+
+  // Delete the calendar event
+  const res = await api
+    .delete(`/v1/calendar-events/${createRes.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(res.status, 200);
+  t.is(res.body.id, createRes.body.id);
+  t.truthy(res.body.deleted_at); // Should have deletion timestamp
+});
+
+test('calendar events list supports filtering by calendar_id', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create two calendars
+  const calendar1Res = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Calendar 1',
+      description: 'First calendar'
+    });
+
+  const calendar2Res = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Calendar 2',
+      description: 'Second calendar'
+    });
+
+  const calendar1Id = calendar1Res.body.id;
+  const calendar2Id = calendar2Res.body.id;
+
+  // Create events in both calendars
+  await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      calendar_id: calendar1Id,
+      ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:event1-${Date.now()}@example.com
+DTSTART:20250101T100000Z
+DTEND:20250101T110000Z
+SUMMARY:Event in Calendar 1
+END:VEVENT
+END:VCALENDAR`
+    });
+
+  await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      calendar_id: calendar2Id,
+      ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:event2-${Date.now()}@example.com
+DTSTART:20250101T120000Z
+DTEND:20250101T130000Z
+SUMMARY:Event in Calendar 2
+END:VEVENT
+END:VCALENDAR`
+    });
+
+  // Filter events by calendar_id
+  const res = await api
+    .get(`/v1/calendar-events?calendar_id=${calendar1Id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(res.status, 200);
+  t.true(Array.isArray(res.body));
+  t.is(res.body.length, 1);
+  t.is(res.body[0].calendar_id, calendar1Id);
+  t.is(res.body[0].summary, 'Event in Calendar 1');
+});
+
+test('calendar events list supports pagination', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  // Create multiple calendar events for pagination testing
+  for (let i = 0; i < 8; i++) {
+    await api
+      .post('/v1/calendar-events')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      )
+      .send({
+        calendar_id: calendarId,
+        ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:pagination-event-${i}-${Date.now()}@example.com
+DTSTART:2025010${i + 1}T100000Z
+DTEND:2025010${i + 1}T110000Z
+SUMMARY:Pagination Test Event ${i}
+DESCRIPTION:Event ${i} for pagination testing
+END:VEVENT
+END:VCALENDAR`
+      });
+  }
+
+  // Test pagination
+  const res = await api
+    .get('/v1/calendar-events?page=1&limit=5')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(res.status, 200);
+  t.true(Array.isArray(res.body));
+  t.is(res.body.length, 5);
+  t.truthy(res.headers['x-page-count']);
+  t.truthy(res.headers['x-page-current']);
+});
+
+test('calendar events create validates required fields', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({}); // Empty body
+
+  t.is(res.status, 400);
+  t.truthy(res.body.message);
+});
+
+test('calendar events create validates iCal format', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      calendar_id: calendarId,
+      ical: 'invalid ical data'
+    });
+
+  t.is(res.status, 400);
+  t.truthy(res.body.message);
+});
+
+test('calendar events supports date range filtering', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // First create a calendar
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      name: 'Test Calendar',
+      description: 'A test calendar'
+    });
+
+  const calendarId = calendarRes.body.id;
+
+  // Create events with different dates
+  await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      calendar_id: calendarId,
+      ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:early-event-${Date.now()}@example.com
+DTSTART:20241201T100000Z
+DTEND:20241201T110000Z
+SUMMARY:Early Event
+END:VEVENT
+END:VCALENDAR`
+    });
+
+  await api
+    .post('/v1/calendar-events')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      calendar_id: calendarId,
+      ical: `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Test Calendar//EN
+BEGIN:VEVENT
+UID:within-range-event-${Date.now()}@example.com
+DTSTART:20250115T100000Z
+DTEND:20250115T110000Z
+SUMMARY:Within Range Event
+END:VEVENT
+END:VCALENDAR`
+    });
+
+  // Filter events by date range
+  const res = await api
+    .get(
+      '/v1/calendar-events?start_date=2025-01-01T00:00:00Z&end_date=2025-01-31T23:59:59Z'
+    )
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(res.status, 200);
+  t.true(Array.isArray(res.body));
+  // Should only return the event that falls within the date range
+  const withinRangeEvent = res.body.find(
+    (event) => event.summary === 'Within Range Event'
+  );
+  t.truthy(withinRangeEvent);
+  const earlyEvent = res.body.find((event) => event.summary === 'Early Event');
+  t.falsy(earlyEvent);
+});
+
+//
 // Messages Tests
 //
 

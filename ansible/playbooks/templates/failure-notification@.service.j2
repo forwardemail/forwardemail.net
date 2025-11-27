@@ -1,0 +1,12 @@
+[Unit]
+Description=Send email notification for %i failure
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/send-failure-notification.sh %i
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

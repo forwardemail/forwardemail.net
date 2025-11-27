@@ -9,6 +9,10 @@
       "wait_ready": true,
       "instances": "max",
       "pmx": false,
+      "error_file": "/var/log/pm2/imap-993-error.log",
+      "out_file": "/var/log/pm2/imap-993-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_development": {
         "IMAP_PORT": 2113
       },
@@ -26,6 +30,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/imap-2993-error.log",
+      "out_file": "/var/log/pm2/imap-2993-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "IMAP_PORT": 2993
@@ -39,6 +47,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/proxy-http-error.log",
+      "out_file": "/var/log/pm2/proxy-http-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 80,
@@ -53,6 +65,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/proxy-https-error.log",
+      "out_file": "/var/log/pm2/proxy-https-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 443,

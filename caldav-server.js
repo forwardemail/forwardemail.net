@@ -1781,6 +1781,9 @@ class CalDAV extends API {
 
     //
     // NOTE: an event can have multiple RRULE, RDATE, EXDATE values
+    // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
+    // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
+    // NOTE: if you update this, also update the logic in /v1/calendar-events for list querying
     //
     for (const event of events) {
       const comp = new ICAL.Component(ICAL.parse(event.ical));

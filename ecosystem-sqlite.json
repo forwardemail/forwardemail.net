@@ -11,7 +11,11 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
-      }
+      },
+      "error_file": "/var/log/pm2/sqlite-error.log",
+      "out_file": "/var/log/pm2/sqlite-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     },
     {
       "name": "sqlite-bree",
@@ -24,13 +28,19 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
-      }
+      },
+      "error_file": "/var/log/pm2/sqlite-bree-error.log",
+      "out_file": "/var/log/pm2/sqlite-bree-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["121.127.44.61"],
+      "host": [
+        "121.127.44.61"
+      ],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",

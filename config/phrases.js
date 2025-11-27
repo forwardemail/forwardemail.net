@@ -165,6 +165,10 @@ module.exports = {
   UBUNTU_INVALID_GROUP:
     'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.',
 
+  START_DATE_INVALID: 'Start date must be a valid ISO-8601 date.',
+  END_DATE_INVALID: 'End date must be an valid ISO-8601 date.',
+  END_BEFORE_START: 'End date must be after start date.',
+
   ADDRESS_BOOK_DOES_NOT_EXIST: 'Address book does not exist.',
   ADDRESS_BOOK_ALREADY_EXISTS: 'Address book already exists.',
   ADDRESS_BOOK_READONLY: 'Address book is read-only.',
@@ -177,9 +181,13 @@ module.exports = {
   CONTACT_DOES_NOT_EXIST: 'Contact does not exist.',
   CONTACT_ALREADY_EXISTS: 'Contact already exists.',
 
+  ICAL_DATA_REQUIRED: 'iCal data is required.',
+  CALENDAR_EVENT_ID_REQUIRED: 'Calendar event ID is required.',
+
   CALENDAR: 'Calendar',
   CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
+  CALENDAR_ID_REQUIRED: 'Calendar ID is required.',
   CALENDAR_DELETED_BACKUP:
     'Calendar named <span class="notranslate">%s</span> was successfully deleted with <span class="notranslate">%d</span> events (attached is a backup in case this was an accident)',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',

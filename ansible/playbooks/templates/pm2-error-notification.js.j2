@@ -1,0 +1,160 @@
+#!/usr/bin/env node
+
+/**
+ * PM2 Error Notification Script
+ * Sends email alerts when PM2 processes encounter errors
+ * 
+ * Usage: Add to PM2 ecosystem config:
+ * "error_file": "/var/log/pm2/app-error.log",
+ * "combine_logs": true,
+ * "merge_logs": true
+ */
+
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
+
+// Configuration from environment variables
+const POSTFIX_USERNAME = process.env.POSTFIX_USERNAME || 'mailerdaemon@forwardemail.net';
+const POSTFIX_PASSWORD = process.env.POSTFIX_PASSWORD;
+const POSTFIX_RCPTS = (process.env.POSTFIX_RCPTS || 'security@forwardemail.net').split(',').map(e => e.trim());
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.forwardemail.net';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+
+// Rate limiting configuration
+const RATE_LIMIT_FILE = '/tmp/pm2-error-notifications.json';
+const RATE_LIMIT_WINDOW = 3600000; // 1 hour in milliseconds
+const MAX_EMAILS_PER_WINDOW = 10; // Max 10 emails per hour per app
+
+// Create transporter
+const transporter = nodemailer.createTransporter({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: true,
+  auth: {
+    user: POSTFIX_USERNAME,
+    pass: POSTFIX_PASSWORD
+  }
+});
+
+// Rate limiting functions
+function getRateLimitData() {
+  try {
+    if (fs.existsSync(RATE_LIMIT_FILE)) {
+      const data = fs.readFileSync(RATE_LIMIT_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Error reading rate limit file:', err);
+  }
+  return {};
+}
+
+function saveRateLimitData(data) {
+  try {
+    fs.writeFileSync(RATE_LIMIT_FILE, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error('Error writing rate limit file:', err);
+  }
+}
+
+function checkRateLimit(appName) {
+  const now = Date.now();
+  const data = getRateLimitData();
+  
+  if (!data[appName]) {
+    data[appName] = { count: 0, windowStart: now };
+  }
+  
+  const appData = data[appName];
+  
+  // Reset window if expired
+  if (now - appData.windowStart > RATE_LIMIT_WINDOW) {
+    appData.count = 0;
+    appData.windowStart = now;
+  }
+  
+  // Check if rate limit exceeded
+  if (appData.count >= MAX_EMAILS_PER_WINDOW) {
+    return false; // Rate limit exceeded
+  }
+  
+  // Increment count
+  appData.count++;
+  saveRateLimitData(data);
+  
+  return true; // OK to send
+}
+
+// Send error notification
+async function sendErrorNotification(appName, errorMessage, errorStack, logFile) {
+  // Check rate limit
+  if (!checkRateLimit(appName)) {
+    console.log(`Rate limit exceeded for ${appName}, skipping email notification`);
+    return;
+  }
+  
+  const hostname = require('os').hostname();
+  const timestamp = new Date().toISOString();
+  
+  // Read recent log lines if log file exists
+  let recentLogs = 'Log file not available';
+  if (logFile && fs.existsSync(logFile)) {
+    try {
+      const logContent = fs.readFileSync(logFile, 'utf8');
+      const lines = logContent.split('\n');
+      recentLogs = lines.slice(-50).join('\n');
+    } catch (err) {
+      recentLogs = `Error reading log file: ${err.message}`;
+    }
+  }
+  
+  const subject = `[PM2 ERROR] ${appName} on ${hostname}`;
+  const text = `PM2 Process Error Alert
+
+Application: ${appName}
+Hostname: ${hostname}
+Timestamp: ${timestamp}
+
+=== ERROR MESSAGE ===
+${errorMessage}
+
+=== STACK TRACE ===
+${errorStack || 'No stack trace available'}
+
+=== RECENT LOGS (Last 50 lines) ===
+${recentLogs}
+
+This is an automated alert from PM2 error monitoring.
+`;
+
+  try {
+    await transporter.sendMail({
+      from: POSTFIX_USERNAME,
+      to: POSTFIX_RCPTS,
+      subject,
+      text
+    });
+    console.log(`Error notification sent for ${appName}`);
+  } catch (err) {
+    console.error(`Failed to send error notification for ${appName}:`, err);
+  }
+}
+
+// Export for use as a module
+module.exports = { sendErrorNotification };
+
+// CLI usage
+if (require.main === module) {
+  const appName = process.argv[2] || 'unknown';
+  const errorMessage = process.argv[3] || 'Unknown error';
+  const errorStack = process.argv[4] || '';
+  const logFile = process.argv[5] || '';
+  
+  sendErrorNotification(appName, errorMessage, errorStack, logFile)
+    .then(() => process.exit(0))
+    .catch(err => {
+      console.error('Failed to send notification:', err);
+      process.exit(1);
+    });
+}

@@ -1,0 +1,30 @@
+#!/bin/bash
+# Send email notification when a systemd service fails
+# Usage: send-failure-notification.sh <service-name>
+
+SERVICE_NAME="$1"
+HOSTNAME="$(hostname)"
+TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
+
+# Get service status
+STATUS=$(systemctl status "$SERVICE_NAME" 2>&1 || true)
+
+# Get recent journal logs (last 50 lines)
+LOGS=$(journalctl -u "$SERVICE_NAME" -n 50 --no-pager 2>&1 || true)
+
+# Compose email
+SUBJECT="[ALERT] Service Failure: $SERVICE_NAME on $HOSTNAME"
+
+BODY="Service $SERVICE_NAME has failed on $HOSTNAME at $TIMESTAMP
+
+=== SERVICE STATUS ===
+$STATUS
+
+=== RECENT LOGS ===
+$LOGS
+
+This is an automated alert from the system monitoring service.
+"
+
+# Use rate-limited email sending
+/usr/local/bin/send-rate-limited-email.sh "systemd-$SERVICE_NAME" "$SUBJECT" "$BODY"

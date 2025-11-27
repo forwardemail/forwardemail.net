@@ -1,6 +1,7 @@
 # MongoDB Operations Guide
 
-This guide covers advanced MongoDB operations including version upgrades, migrations, performance analysis, troubleshooting, and index optimization.
+> [!NOTE]
+> This guide covers advanced MongoDB operations including version upgrades, migrations, performance analysis, troubleshooting, and index optimization.
 
 ## Table of Contents
 

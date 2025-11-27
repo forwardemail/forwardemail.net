@@ -11,7 +11,11 @@
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
-      }
+      },
+      "error_file": "/var/log/pm2/mx-error.log",
+      "out_file": "/var/log/pm2/mx-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     },
     {
       "name": "proxy-http",
@@ -25,7 +29,11 @@
         "NODE_ENV": "production",
         "PROXY_PORT": 80,
         "PROXY_REDIRECT": "https://forwardemail.net"
-      }
+      },
+      "error_file": "/var/log/pm2/proxy-http-error.log",
+      "out_file": "/var/log/pm2/proxy-http-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     },
     {
       "name": "proxy-https",
@@ -40,13 +48,22 @@
         "PROXY_PORT": 443,
         "PROXY_PROTOCOL": "https",
         "PROXY_REDIRECT": "https://forwardemail.net"
-      }
+      },
+      "error_file": "/var/log/pm2/proxy-https-error.log",
+      "out_file": "/var/log/pm2/proxy-https-out.log",
+      "combine_logs": true,
+      "merge_logs": true
     }
   ],
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["121.127.44.56","121.127.44.59","138.197.213.185","104.248.224.170"],
+      "host": [
+        "121.127.44.56",
+        "121.127.44.59",
+        "138.197.213.185",
+        "104.248.224.170"
+      ],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",

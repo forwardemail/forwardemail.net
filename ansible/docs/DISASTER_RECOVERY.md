@@ -1,7 +1,10 @@
-# Disaster Recovery and Failover Guide
+# Disaster Recovery Guide
 
-This guide provides comprehensive procedures for recovering MongoDB and Redis databases from catastrophic failures and migrating to new servers with minimal downtime.
+> [!CAUTION]
+> This guide provides comprehensive procedures for recovering MongoDB and Redis databases from catastrophic failures and migrating to new servers with minimal downtime.
 
+> [!IMPORTANT]
+> Review and test these procedures regularly. Don't wait for an actual disaster!
 ## Table of Contents
 
 1. [DNS TTL Configuration](#dns-ttl-configuration)
@@ -53,13 +56,17 @@ redis.example.com    A      1.2.3.5      TTL: 300
 redis.example.com    AAAA   2001:db8::2  TTL: 300
 ```
 
-**Important:** Set these TTL values **before** an outage occurs. Changing TTL during an outage will not take effect until the old TTL expires.
+> [!WARNING]
+> **Important:** Set these TTL values **before** an outage occurs. Changing TTL during an outage will not take effect until the old TTL expires.
 
 ---
 
 ## MongoDB Disaster Recovery
 
 ### Scenario 1: Complete Server Failure
+
+> [!CAUTION]
+> **Critical scenario requiring immediate action**
 
 **Symptoms:**
 - MongoDB server is completely unreachable
@@ -203,6 +210,9 @@ db.adminCommand({ fsyncUnlock: 1 })
 
 ### Scenario 1: Complete Server Failure
 
+> [!CAUTION]
+> **Critical scenario requiring immediate action**
+
 **Symptoms:**
 - Redis server is completely unreachable
 - Hardware failure or data center outage
@@ -230,11 +240,11 @@ sudo systemctl stop redis-server
 
 # Restore encrypted backup
 aws s3 cp "s3://forwardemail-backups/${BACKUP_PATH}" - --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/redis/dump.rdb
+  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
 
 # Set correct permissions
-sudo chown redis:redis /var/lib/redis/dump.rdb
-sudo chmod 640 /var/lib/redis/dump.rdb
+sudo chown redis:redis /var/lib/valkey/dump.rdb
+sudo chmod 640 /var/lib/valkey/dump.rdb
 
 # Start Redis
 sudo systemctl start redis-server
@@ -290,9 +300,9 @@ sudo systemctl stop redis-server
 
 aws s3 cp "s3://forwardemail-backups/redis/LATEST_BACKUP.rdb.gpg" - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/redis/dump.rdb
+  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
 
-sudo chown redis:redis /var/lib/redis/dump.rdb
+sudo chown redis:redis /var/lib/valkey/dump.rdb
 sudo systemctl start redis-server
 ```
 

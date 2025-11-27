@@ -1,13 +1,20 @@
-# MongoDB and Redis Ansible Playbooks
+# MongoDB and Valkey Deployment Guide
 
-This document describes the MongoDB (`mongo.yml`) and Redis (`redis.yml`) Ansible playbooks for the Forward Email infrastructure.
+> [!NOTE]
+> This document describes the MongoDB (`mongo.yml`) and Valkey (`redis.yml`) Ansible playbooks for the Forward Email infrastructure.
+
+> [!NOTE]
+> We use Valkey, a Redis fork, installed directly via APT packages for maximum compatibility and control.
+
+> [!IMPORTANT]
+> These playbooks deploy production-grade database infrastructure with automated backups, security hardening, and email alerting..
 
 ## Overview
 
 These playbooks provide complete automation for:
 
 - **MongoDB v6** installation and configuration
-- **Redis** installation and configuration
+- **Valkey** (Redis fork) installation and configuration
 - **Dynamic swap configuration** (swap file size = system RAM)
 - **TLS/SSL encryption** for both databases
 - **UFW firewall** with dynamic IP whitelist management
@@ -39,11 +46,13 @@ mongo.yml / redis.yml
 └── Database installation and configuration
 ```
 
-**Key point:** THP, ulimits, and base sysctl settings are configured once in `security.yml` and inherited by all hosts including `mongo` and `redis`. This avoids duplication and ensures consistency.
+> [!TIP]
+> **Key point:** THP, ulimits, and base sysctl settings are configured once in `security.yml` and inherited by all hosts including `mongo` and `redis`. This avoids duplication and ensures consistency.
 
 ### User Model
 
-**Security best practice:** Database services run as dedicated unprivileged users:
+> [!IMPORTANT]
+> **Security best practice:** Database services run as dedicated unprivileged users:
 
 - **MongoDB** runs as `mongod` user (created by MongoDB package)
 - **Redis** runs as `redis` user (created by Redis package)
@@ -108,7 +117,7 @@ export MONGO_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forw
 export REDIS_HOST="redis.example.com"
 export REDIS_PASSWORD="your-strong-redis-password"
 export REDIS_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forwardemail-backups"
-export REDIS_DATA_DIR="/var/lib/redis"  # Optional, defaults to "/var/lib/redis"
+export REDIS_DATA_DIR="/var/lib/valkey"  # Optional, defaults to "/var/lib/valkey"
 ```
 
 ## Features
@@ -117,7 +126,8 @@ export REDIS_DATA_DIR="/var/lib/redis"  # Optional, defaults to "/var/lib/redis"
 
 #### Dynamic IP Whitelist
 
-Both playbooks automatically fetch and maintain an IP whitelist from:
+> [!NOTE]
+> Both playbooks automatically fetch and maintain an IP whitelist from:
 ```
 https://forwardemail.net/ips/v4.txt?comments=false
 ```
@@ -128,6 +138,9 @@ https://forwardemail.net/ips/v4.txt?comments=false
 - Changes are applied without manual intervention
 
 #### TLS/SSL Encryption
+
+> [!IMPORTANT]
+> All database connections are encrypted with TLS/SSL.
 
 **MongoDB:**
 - Configured with `requireTLS` mode
@@ -151,7 +164,8 @@ https://forwardemail.net/ips/v4.txt?comments=false
 
 #### Encryption
 
-All backups are encrypted using **GPG symmetric encryption** with AES256 cipher before uploading to R2:
+> [!IMPORTANT]
+> All backups are encrypted using **GPG symmetric encryption** with AES256 cipher before uploading to R2:
 
 ```bash
 # MongoDB backup encryption
@@ -338,10 +352,10 @@ sudo systemctl stop redis-server
 # Download, decrypt, and restore
 aws s3 cp s3://bucket/redis/2025/11/18/00/backup.rdb.gpg - \
   --endpoint-url="$AWS_ENDPOINT_URL" | \
-  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/redis/dump.rdb
+  gpg --decrypt --batch --yes --passphrase "$BACKUP_SECRET" > /var/lib/valkey/dump.rdb
 
 # Set ownership
-sudo chown redis:redis /var/lib/redis/dump.rdb
+sudo chown redis:redis /var/lib/valkey/dump.rdb
 
 # Start Redis
 sudo systemctl start redis-server

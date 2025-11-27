@@ -1,0 +1,49 @@
+---
+# Patch DNS role for Ansible 2.15+ compatibility
+# This fixes the "object of type 'NoneType' has no len()" error
+# Related: https://github.com/Oefenweb/ansible-dns/issues/13
+
+- name: Patch DNS role for Ansible 2.15+ compatibility
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Check if DNS role exists
+      ansible.builtin.stat:
+        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+      register: dns_role_file
+
+    - name: Display DNS role status
+      ansible.builtin.debug:
+        msg: "DNS role found at {{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+      when: dns_role_file.stat.exists
+
+    - name: Display warning if DNS role not found
+      ansible.builtin.debug:
+        msg: "WARNING: DNS role not found. Run 'ansible-galaxy install -r requirements.yml' first."
+      when: not dns_role_file.stat.exists
+
+    - name: Fix DNS role conditional for None values
+      ansible.builtin.lineinfile:
+        path: "{{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+        regexp: '^  when: item\.value \| length > 0$'
+        line: '  when: item.value is not none and item.value | length > 0'
+        backup: true
+      when: dns_role_file.stat.exists
+      register: dns_patch_result
+
+    - name: Display patch result
+      ansible.builtin.debug:
+        msg: "{{ 'DNS role patched successfully' if dns_patch_result.changed else 'DNS role already patched (no changes needed)' }}"
+      when: dns_role_file.stat.exists
+
+    - name: Verify the patch
+      ansible.builtin.shell:
+        cmd: "grep -n 'when: item.value' {{ lookup('env', 'HOME') }}/.ansible/roles/dns/tasks/main.yml"
+      register: verify_result
+      changed_when: false
+      when: dns_role_file.stat.exists
+
+    - name: Display verification
+      ansible.builtin.debug:
+        msg: '{{ verify_result.stdout_lines }}'
+      when: dns_role_file.stat.exists

@@ -9,6 +9,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/bree-error.log",
+      "out_file": "/var/log/pm2/bree-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production"
       }

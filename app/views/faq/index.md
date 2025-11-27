@@ -335,46 +335,46 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
 
 #### Configuration
 
-1.  Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
+1. Edit your `sendmail.mc` file, typically located at `/etc/mail/sendmail.mc`:
 
-    ```bash
-    sudo nano /etc/mail/sendmail.mc
-    ```
+   ```bash
+   sudo nano /etc/mail/sendmail.mc
+   ```
 
-2.  Add the following lines to define the smart host and authentication:
+2. Add the following lines to define the smart host and authentication:
 
-    ```
-    define(`SMART_HOST', `smtp.forwardemail.net')dnl
-    define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
-    define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
-    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
-    ```
+   ```
+   define(`SMART_HOST', `smtp.forwardemail.net')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+   FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
+   ```
 
-3.  Create the authentication file `/etc/mail/authinfo`:
+3. Create the authentication file `/etc/mail/authinfo`:
 
-    ```bash
-    sudo nano /etc/mail/authinfo
-    ```
+   ```bash
+   sudo nano /etc/mail/authinfo
+   ```
 
-4.  Add your Forward Email credentials to the `authinfo` file:
+4. Add your Forward Email credentials to the `authinfo` file:
 
-    ```
-    AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
-    ```
+   ```
+   AuthInfo:smtp.forwardemail.net "U:your-alias@yourdomain.com" "P:your-generated-password" "M:PLAIN"
+   ```
 
-5.  Generate the authentication database and secure the files:
+5. Generate the authentication database and secure the files:
 
-    ```bash
-    sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
-    sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
-    ```
+   ```bash
+   sudo makemap hash /etc/mail/authinfo < /etc/mail/authinfo
+   sudo chmod 600 /etc/mail/authinfo /etc/mail/authinfo.db
+   ```
 
-6.  Rebuild the Sendmail configuration and restart the service:
+6. Rebuild the Sendmail configuration and restart the service:
 
-    ```bash
-    sudo make -C /etc/mail
-    sudo systemctl restart sendmail
-    ```
+   ```bash
+   sudo make -C /etc/mail
+   sudo systemctl restart sendmail
+   ```
 
 #### Testing
 
@@ -406,42 +406,42 @@ Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forw
 
 #### Configuration
 
-1.  Run the Exim4 configuration tool:
+1. Run the Exim4 configuration tool:
 
-    ```bash
-    sudo dpkg-reconfigure exim4-config
-    ```
+   ```bash
+   sudo dpkg-reconfigure exim4-config
+   ```
 
-2.  Select the following options:
-    *   **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
-    *   **System mail name:** your.hostname
-    *   **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
-    *   **Other destinations for which mail is accepted:** (leave blank)
-    *   **Domains to relay mail for:** (leave blank)
-    *   **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
-    *   **Hide local mail name in outgoing mail?** No
-    *   **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
-    *   **Delivery method for local mail:** Mbox format in /var/mail/
-    *   **Split configuration into small files?** No
+2. Select the following options:
+   * **General type of mail configuration:** mail sent by smarthost; received via SMTP or fetchmail
+   * **System mail name:** your.hostname
+   * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
+   * **Other destinations for which mail is accepted:** (leave blank)
+   * **Domains to relay mail for:** (leave blank)
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **Hide local mail name in outgoing mail?** No
+   * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
+   * **Delivery method for local mail:** Mbox format in /var/mail/
+   * **Split configuration into small files?** No
 
-3.  Edit the `passwd.client` file to add your credentials:
+3. Edit the `passwd.client` file to add your credentials:
 
-    ```bash
-    sudo nano /etc/exim4/passwd.client
-    ```
+   ```bash
+   sudo nano /etc/exim4/passwd.client
+   ```
 
-4.  Add the following line:
+4. Add the following line:
 
-    ```
-    smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
-    ```
+   ```
+   smtp.forwardemail.net:your-alias@yourdomain.com:your-generated-password
+   ```
 
-5.  Update the configuration and restart Exim4:
+5. Update the configuration and restart Exim4:
 
-    ```bash
-    sudo update-exim4.conf
-    sudo systemctl restart exim4
-    ```
+   ```bash
+   sudo update-exim4.conf
+   sudo systemctl restart exim4
+   ```
 
 #### Testing
 
@@ -473,36 +473,36 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
 
 #### Configuration
 
-1.  Create or edit the msmtp configuration file at `~/.msmtprc`:
+1. Create or edit the msmtp configuration file at `~/.msmtprc`:
 
-    ```bash
-    nano ~/.msmtprc
-    ```
+   ```bash
+   nano ~/.msmtprc
+   ```
 
-2.  Add the following configuration:
+2. Add the following configuration:
 
-    ```
-    defaults
-    auth           on
-    tls            on
-    tls_trust_file /etc/ssl/certs/ca-certificates.crt
-    logfile        ~/.msmtp.log
+   ```
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
 
-    account        forwardemail
-    host           smtp.forwardemail.net
-    port           587
-    from           your-alias@yourdomain.com
-    user           your-alias@yourdomain.com
-    password       your-generated-password
+   account        forwardemail
+   host           smtp.forwardemail.net
+   port           587
+   from           your-alias@yourdomain.com
+   user           your-alias@yourdomain.com
+   password       your-generated-password
 
-    account default : forwardemail
-    ```
+   account default : forwardemail
+   ```
 
-3.  Set the correct permissions for the configuration file:
+3. Set the correct permissions for the configuration file:
 
-    ```bash
-    chmod 600 ~/.msmtprc
-    ```
+   ```bash
+   chmod 600 ~/.msmtprc
+   ```
 
 #### Testing
 

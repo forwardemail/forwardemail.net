@@ -555,6 +555,135 @@
           }
         }
       },
+      "CalendarEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "calendar_id",
+          "ical",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Calendar event ID (eventId from CalDAV)"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "ID of the calendar this event belongs to"
+          },
+          "ical": {
+            "type": "string",
+            "description": "iCalendar (RFC 5545) data for the event"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Event title/summary (extracted from iCal data)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Event description (extracted from iCal data)"
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location (extracted from iCal data)"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event start date/time (extracted from iCal data)"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event end date/time (extracted from iCal data)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Unique identifier from iCal data"
+          },
+          "status": {
+            "type": "string",
+            "description": "Event status (extracted from iCal data)"
+          },
+          "organizer": {
+            "type": "string",
+            "description": "Event organizer (extracted from iCal data)"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Soft deletion timestamp"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["calendar_event"]
+          }
+        },
+        "example": {
+          "id": "event123",
+          "calendar_id": "calendar123",
+          "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Example Corp//Example Calendar//EN\nBEGIN:VEVENT\nUID:event123@example.com\nDTSTART:20250101T120000Z\nDTEND:20250101T130000Z\nSUMMARY:Example Event\nDESCRIPTION:This is an example event\nLOCATION:Conference Room A\nSTATUS:CONFIRMED\nEND:VEVENT\nEND:VCALENDAR",
+          "summary": "Example Event",
+          "description": "This is an example event",
+          "location": "Conference Room A",
+          "start_date": "2025-01-01T12:00:00.000Z",
+          "end_date": "2025-01-01T13:00:00.000Z",
+          "uid": "event123@example.com",
+          "status": "CONFIRMED",
+          "organizer": null,
+          "deleted_at": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar_event"
+        }
+      },
+      "CalendarEventInput": {
+        "type": "object",
+        "required": ["calendar_id", "ical"],
+        "properties": {
+          "calendar_id": {
+            "type": "string",
+            "description": "ID of the calendar to add the event to"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Custom event ID (if not provided, will be auto-generated)"
+          },
+          "ical": {
+            "type": "string",
+            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+          }
+        },
+        "example": {
+          "calendar_id": "calendar123",
+          "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Example Corp//Example Calendar//EN\nBEGIN:VEVENT\nUID:event123@example.com\nDTSTART:20250101T120000Z\nDTEND:20250101T130000Z\nSUMMARY:Example Event\nDESCRIPTION:This is an example event\nLOCATION:Conference Room A\nSTATUS:CONFIRMED\nEND:VEVENT\nEND:VCALENDAR"
+        }
+      },
+      "CalendarEventUpdateInput": {
+        "type": "object",
+        "properties": {
+          "calendar_id": {
+            "type": "string",
+            "description": "Move event to a different calendar"
+          },
+          "ical": {
+            "type": "string",
+            "description": "Updated iCalendar (RFC 5545) data for the event"
+          }
+        }
+      },
       "Folder": {
         "type": "object",
         "required": [
@@ -2912,6 +3041,273 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendar-events": {
+      "get": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "List calendar events",
+        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "operationId": "listCalendarEvents",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "query",
+            "description": "Filter events by calendar ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter events starting from this date (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter events ending before this date (ISO 8601 format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "include_deleted",
+            "in": "query",
+            "description": "Include soft-deleted events in results",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of calendar events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CalendarEvent"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Create calendar event",
+        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "operationId": "createCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar event created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendar-events/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Calendar event ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Retrieve calendar event",
+        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "operationId": "retrieveCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar event retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Update calendar event",
+        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "operationId": "updateCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Delete calendar event",
+        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "operationId": "deleteCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar event deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
                 }
               }
             }
@@ -5332,6 +5728,10 @@
     {
       "name": "Calendars",
       "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+    },
+    {
+      "name": "Calendar Events",
+      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
     },
     {
       "name": "Messages",

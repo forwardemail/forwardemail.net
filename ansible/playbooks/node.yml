@@ -219,12 +219,73 @@
         # https://chmodcommand.com/chmod-770/
         mode: '0770'
         recurse: true
+    
+    - name: Create PM2 log directory
+      file:
+        path: /var/log/pm2
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0755'
+    
     - name: Install pm2-logrotate
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 install pm2-logrotate
       args:
         executable: /bin/bash
+    
+    - name: Configure pm2-logrotate max size
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:max_size 100M
+      args:
+        executable: /bin/bash
+    
+    - name: Configure pm2-logrotate retain
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:retain 30
+      args:
+        executable: /bin/bash
+    
+    - name: Configure pm2-logrotate compress
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:compress true
+      args:
+        executable: /bin/bash
+    
+    - name: Configure pm2-logrotate date format
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:dateFormat YYYY-MM-DD_HH-mm-ss
+      args:
+        executable: /bin/bash
+    
+    - name: Configure pm2-logrotate rotation interval
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:rotateInterval '0 0 * * *'
+      args:
+        executable: /bin/bash
+    
+    # Deploy PM2 error notification script
+    - name: Deploy PM2 error notification script
+      template:
+        src: "{{ playbook_dir }}/templates/pm2-error-notification.js.j2"
+        dest: /usr/local/bin/pm2-error-notification.js
+        owner: deploy
+        group: deploy
+        mode: '0755'
+    
+    - name: Install nodemailer for PM2 error notifications
+      become: true
+      become_user: deploy
+      shell: source /home/deploy/.bashrc && cd /usr/local/bin && npm install nodemailer
+      args:
+        executable: /bin/bash
+    
     - name: Check that pm2 startup script exists
       stat:
         path: /etc/systemd/system/pm2-deploy.service

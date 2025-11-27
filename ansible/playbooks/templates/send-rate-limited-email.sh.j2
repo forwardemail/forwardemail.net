@@ -1,0 +1,69 @@
+#!/bin/bash
+# Rate-limited email sending wrapper
+# Usage: send-rate-limited-email.sh <service-name> <subject> <body>
+
+SERVICE_NAME="$1"
+SUBJECT="$2"
+BODY="$3"
+RECIPIENTS="{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
+
+# Rate limiting configuration
+RATE_LIMIT_DIR="/var/lib/email-rate-limits"
+RATE_LIMIT_WINDOW=3600  # 1 hour in seconds
+MAX_EMAILS_PER_WINDOW=10  # Max 10 emails per hour per service
+
+# Create rate limit directory if it doesn't exist
+mkdir -p "$RATE_LIMIT_DIR"
+
+# Rate limit file for this service
+RATE_LIMIT_FILE="$RATE_LIMIT_DIR/${SERVICE_NAME}.json"
+
+# Function to check and update rate limit
+check_rate_limit() {
+  local now=$(date +%s)
+  local count=0
+  local window_start=$now
+  
+  # Read existing rate limit data
+  if [ -f "$RATE_LIMIT_FILE" ]; then
+    local data=$(cat "$RATE_LIMIT_FILE")
+    count=$(echo "$data" | jq -r '.count // 0')
+    window_start=$(echo "$data" | jq -r '.window_start // 0')
+  fi
+  
+  # Check if window has expired
+  local window_age=$((now - window_start))
+  if [ $window_age -gt $RATE_LIMIT_WINDOW ]; then
+    # Reset window
+    count=0
+    window_start=$now
+  fi
+  
+  # Check if rate limit exceeded
+  if [ $count -ge $MAX_EMAILS_PER_WINDOW ]; then
+    echo "Rate limit exceeded for $SERVICE_NAME ($count emails in last hour)"
+    return 1
+  fi
+  
+  # Increment count and save
+  count=$((count + 1))
+  echo "{\"count\": $count, \"window_start\": $window_start}" > "$RATE_LIMIT_FILE"
+  
+  return 0
+}
+
+# Check rate limit
+if ! check_rate_limit; then
+  # Rate limit exceeded, log but don't send
+  logger -t rate-limited-email "Rate limit exceeded for $SERVICE_NAME, email not sent: $SUBJECT"
+  exit 0
+fi
+
+# Send email to each recipient
+IFS=',' read -ra ADDR <<< "$RECIPIENTS"
+for email in "${ADDR[@]}"; do
+  email=$(echo "$email" | xargs)  # trim whitespace
+  echo "$BODY" | mail -s "$SUBJECT" "$email"
+done
+
+logger -t rate-limited-email "Email sent for $SERVICE_NAME: $SUBJECT"

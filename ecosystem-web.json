@@ -9,6 +9,10 @@
       "wait_ready": true,
       "instances": "max",
       "pmx": false,
+      "error_file": "/var/log/pm2/web-error.log",
+      "out_file": "/var/log/pm2/web-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "HTTP_PORT": 443,
@@ -23,6 +27,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/proxy-error.log",
+      "out_file": "/var/log/pm2/proxy-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 80

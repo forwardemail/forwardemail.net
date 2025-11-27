@@ -9,6 +9,10 @@
       "wait_ready": true,
       "instances": "3",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-tls-587-error.log",
+      "out_file": "/var/log/pm2/smtp-tls-587-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 587
@@ -23,6 +27,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-tls-2587-error.log",
+      "out_file": "/var/log/pm2/smtp-tls-2587-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2587
@@ -37,6 +45,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-tls-25-error.log",
+      "out_file": "/var/log/pm2/smtp-tls-25-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 25
@@ -51,6 +63,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-tls-2525-error.log",
+      "out_file": "/var/log/pm2/smtp-tls-2525-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2525
@@ -65,6 +81,10 @@
       "wait_ready": true,
       "instances": "3",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-ssl-465-error.log",
+      "out_file": "/var/log/pm2/smtp-ssl-465-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 465
@@ -79,6 +99,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-ssl-2465-error.log",
+      "out_file": "/var/log/pm2/smtp-ssl-2465-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2465
@@ -94,6 +118,10 @@
       "instances": "1",
       "pmx": false,
       "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "error_file": "/var/log/pm2/smtp-ssl-2455-error.log",
+      "out_file": "/var/log/pm2/smtp-ssl-2455-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2455,
@@ -110,6 +138,10 @@
       "instances": "1",
       "pmx": false,
       "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
+      "error_file": "/var/log/pm2/smtp-tls-2555-error.log",
+      "out_file": "/var/log/pm2/smtp-tls-2555-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2555,
@@ -125,6 +157,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/smtp-bree-error.log",
+      "out_file": "/var/log/pm2/smtp-bree-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production"
       }
@@ -137,6 +173,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/proxy-http-error.log",
+      "out_file": "/var/log/pm2/proxy-http-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 80,
@@ -151,6 +191,10 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "error_file": "/var/log/pm2/proxy-https-error.log",
+      "out_file": "/var/log/pm2/proxy-https-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
       "env_production": {
         "NODE_ENV": "production",
         "PROXY_PORT": 443,

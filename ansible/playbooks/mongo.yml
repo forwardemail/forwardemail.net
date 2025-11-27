@@ -419,31 +419,86 @@
         content: |
           #!/bin/bash
           set -e
+          exec 2>&1  # Redirect stderr to stdout for journal logging
+
+          echo "Starting MongoDB backup at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
           # Environment variables (set via systemd service or environment)
           AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
           AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
           AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
+          AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-auto}"
           BACKUP_BUCKET="${MONGO_BACKUP_BUCKET:-forwardemail-backups}"
           BACKUP_SECRET="${BACKUP_SECRET}"
+          MONGO_PORT="${MONGO_PORT:-27017}"
 
           # Check if BACKUP_SECRET is set
           if [ -z "$BACKUP_SECRET" ]; then
-            echo "Error: BACKUP_SECRET environment variable is not set"
+            ERROR_MSG="BACKUP_SECRET environment variable is not set"
+            echo "ERROR: $ERROR_MSG"
+            /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
             exit 1
           fi
 
-          # Timestamp and path
-          TIMESTAMP=$(date +%Y/%m/%d/%H)
-          BACKUP_NAME="mongodb-backup-$(date +%Y%m%d-%H%M%S).archive.gz.gpg"
-          S3_PATH="s3://${BACKUP_BUCKET}/mongodb/${TIMESTAMP}/${BACKUP_NAME}"
+          # Timestamp and path (flat structure - no folder nesting)
+          BACKUP_NAME="mongo-backup-$(date -u +%Y-%m-%dT%H:%M:%SZ).gz.gpg"
+          S3_PATH="s3://${BACKUP_BUCKET}/mongo/${BACKUP_NAME}"
+
+          echo "Backup destination: ${S3_PATH}"
+
+          # Check if bucket exists, create if not
+          echo "Checking if S3 bucket exists: ${BACKUP_BUCKET}"
+          if ! aws s3 ls "s3://${BACKUP_BUCKET}" --endpoint-url="${AWS_ENDPOINT_URL}" >/dev/null 2>&1; then
+            echo "Bucket does not exist, creating: ${BACKUP_BUCKET}"
+            if ! aws s3 mb "s3://${BACKUP_BUCKET}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
+              ERROR_MSG="Failed to create S3 bucket ${BACKUP_BUCKET} at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              echo "ERROR: $ERROR_MSG"
+              /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
+              exit 1
+            fi
+            echo "Bucket created successfully: ${BACKUP_BUCKET}"
+            
+            # Harden bucket security
+            echo "Applying security hardening to bucket..."
+            
+            # Block public access (R2 specific)
+            if aws s3api put-public-access-block \
+              --bucket "${BACKUP_BUCKET}" \
+              --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true" \
+              --endpoint-url="${AWS_ENDPOINT_URL}" 2>/dev/null; then
+              echo "✓ Public access blocked"
+            else
+              echo "⚠ Could not set public access block (may not be supported by R2)"
+            fi
+            
+            # Set private ACL
+            if aws s3api put-bucket-acl \
+              --bucket "${BACKUP_BUCKET}" \
+              --acl private \
+              --endpoint-url="${AWS_ENDPOINT_URL}" 2>/dev/null; then
+              echo "✓ Bucket ACL set to private"
+            else
+              echo "⚠ Could not set bucket ACL (may not be supported by R2)"
+            fi
+            
+            echo "Bucket security hardening completed"
+          else
+            echo "Bucket exists: ${BACKUP_BUCKET}"
+          fi
 
           # Perform backup, encrypt with GPG, and stream directly to S3
-          mongodump --host=localhost --port="${MONGO_PORT:-27017}" --oplog --archive --gzip | \
+          echo "Starting mongodump on localhost:${MONGO_PORT}..."
+          if ! mongodump --host=localhost --port="${MONGO_PORT}" --oplog --archive --gzip 2>&1 | \
             gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
-            aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}"
-
+            aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
+            ERROR_MSG="Failed to backup/encrypt/upload MongoDB at $(date -u +%Y-%m-%dT%H:%M:%SZ). Check MongoDB connection and AWS credentials."
+            echo "ERROR: $ERROR_MSG"
+            /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
+            exit 1
+          fi
+          
           echo "MongoDB encrypted backup completed: ${S3_PATH}"
+          echo "Backup finished at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
     # Create MongoDB backup cleanup script
     - name: Create MongoDB backup cleanup script
@@ -453,49 +508,136 @@
         content: |
           #!/bin/bash
           set -e
+          exec 2>&1  # Redirect stderr to stdout for journal logging
+
+          echo "Starting MongoDB backup cleanup at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
           # Environment variables
           AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
           AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
           AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
+          AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-auto}"
           BACKUP_BUCKET="${MONGO_BACKUP_BUCKET:-forwardemail-backups}"
+
+          # Counters for reporting
+          DELETED_OLD=0
+          DELETED_DAILY=0
+          KEPT_RECENT=0
+          ERRORS=0
 
           # Calculate dates
           THIRTY_DAYS_AGO=$(date -d "30 days ago" +%s)
           SEVEN_DAYS_AGO=$(date -d "7 days ago" +%s)
 
-          # List all backups
-          aws s3 ls "s3://${BACKUP_BUCKET}/mongodb/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | while read -r line; do
-            FILE_DATE=$(echo "$line" | awk '{print $1}')
+          echo "Retention policy: Keep all backups < 7 days, one per day for 8-30 days, delete > 30 days"
+          echo "Checking bucket: s3://${BACKUP_BUCKET}/mongo/"
+
+          # List all backups and process
+          if ! BACKUP_LIST=$(aws s3 ls s3://${BACKUP_BUCKET}/mongo/ --recursive --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1); then
+            ERROR_MSG="Failed to list backups in s3://${BACKUP_BUCKET}/mongo/ at $(date -u +%Y-%m-%dT%H:%M:%SZ). Error: ${BACKUP_LIST}"
+            echo "ERROR: $ERROR_MSG"
+            /usr/local/bin/send-rate-limited-email.sh "mongo-cleanup" "[ERROR] MongoDB Backup Cleanup Failed on $(hostname)" "$ERROR_MSG"
+            exit 1
+          fi
+
+          # Process each backup
+          echo "$BACKUP_LIST" | while read -r line; do
+            # Skip empty lines
+            [ -z "$line" ] && continue
+
+            FILE_DATE=$(echo "$line" | awk '{print $1" "$2}')
             FILE_PATH=$(echo "$line" | awk '{print $4}')
-            FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s)
+            
+            # Extract timestamp from filename (ISO 8601 format: mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
+            # Filename format: mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
+            FILENAME=$(basename "$FILE_PATH")
+            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
+            
+            # Try to parse timestamp from filename first (more reliable), fallback to S3 metadata date
+            if [ -n "$ISO_TIMESTAMP" ]; then
+              # Parse ISO 8601 timestamp from filename
+              if ! FILE_TIMESTAMP=$(date -d "$ISO_TIMESTAMP" +%s 2>/dev/null); then
+                echo "Warning: Could not parse ISO timestamp from filename ${FILENAME}, trying S3 date"
+                if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
+                  echo "Warning: Could not parse date for ${FILE_PATH}, skipping"
+                  ERRORS=$((ERRORS + 1))
+                  continue
+                fi
+              fi
+            else
+              # Fallback to S3 metadata date
+              if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
+                echo "Warning: Could not parse date for ${FILE_PATH}, skipping"
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
+            fi
 
             # Delete backups older than 30 days
             if [ "$FILE_TIMESTAMP" -lt "$THIRTY_DAYS_AGO" ]; then
-              aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}"
-              echo "Deleted old backup: ${FILE_PATH}"
-            # For backups 8-30 days old, keep only one per day (delete others)
+              echo "Deleting backup older than 30 days: ${FILE_PATH}"
+              if aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
+                DELETED_OLD=$((DELETED_OLD + 1))
+              else
+                echo "ERROR: Failed to delete ${FILE_PATH}"
+                ERRORS=$((ERRORS + 1))
+              fi
+            
+            # For backups 8-30 days old, keep only one per day
             elif [ "$FILE_TIMESTAMP" -lt "$SEVEN_DAYS_AGO" ]; then
-              # Extract date from path (YYYY/MM/DD)
-              BACKUP_DATE=$(echo "$FILE_PATH" | grep -oP 'mongodb/\K[0-9]{4}/[0-9]{2}/[0-9]{2}')
+              # Extract date from ISO 8601 timestamp in filename (YYYY-MM-DD)
+              BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
+              
+              if [ -z "$BACKUP_DATE" ]; then
+                echo "Warning: Could not extract date from timestamp ${ISO_TIMESTAMP}, keeping file"
+                KEPT_RECENT=$((KEPT_RECENT + 1))
+                continue
+              fi
 
-              # Get all backups for this date
-              DAILY_BACKUPS=$(aws s3 ls "s3://${BACKUP_BUCKET}/mongodb/${BACKUP_DATE}/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | awk '{print $4}' | sort)
-
-              # Keep only the latest backup for the day
-              LATEST_BACKUP=$(echo "$DAILY_BACKUPS" | tail -1)
-
-              # Delete all except the latest
-              for backup in $DAILY_BACKUPS; do
-                if [ "$backup" != "$LATEST_BACKUP" ]; then
-                  aws s3 rm "s3://${BACKUP_BUCKET}/${backup}" --endpoint-url="${AWS_ENDPOINT_URL}"
-                  echo "Deleted non-latest daily backup: ${backup}"
+              # Track if we've already kept one backup for this date
+              STATE_FILE="/tmp/mongo-cleanup-${BACKUP_DATE}.keep"
+              
+              if [ -f "$STATE_FILE" ]; then
+                # Already kept one backup for this date, delete this one
+                echo "Deleting non-latest daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
+                if aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
+                  DELETED_DAILY=$((DELETED_DAILY + 1))
+                else
+                  echo "ERROR: Failed to delete ${FILE_PATH}"
+                  ERRORS=$((ERRORS + 1))
                 fi
-              done
+              else
+                # First backup for this date, keep it and mark as kept
+                echo "Keeping daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
+                touch "$STATE_FILE"
+                KEPT_RECENT=$((KEPT_RECENT + 1))
+              fi
+            else
+              # Recent backup (< 7 days), keep it
+              KEPT_RECENT=$((KEPT_RECENT + 1))
             fi
           done
 
-          echo "MongoDB backup cleanup completed"
+          # Summary report
+          # Clean up state files
+          rm -f /tmp/mongo-cleanup-*.keep
+          
+          echo ""
+          echo "=== MongoDB Backup Cleanup Summary ==="
+          echo "Deleted (>30 days): ${DELETED_OLD}"
+          echo "Deleted (daily consolidation): ${DELETED_DAILY}"
+          echo "Kept (recent <7 days): ${KEPT_RECENT}"
+          echo "Errors: ${ERRORS}"
+          echo "Completed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # Send email alert if there were errors
+          if [ "$ERRORS" -gt 0 ]; then
+            ERROR_MSG="MongoDB backup cleanup completed with ${ERRORS} errors. Check logs: sudo journalctl -u mongodb-backup.service -n 200"
+            echo "WARNING: $ERROR_MSG"
+            /usr/local/bin/send-rate-limited-email.sh "mongo-cleanup" "[WARNING] MongoDB Backup Cleanup Had Errors on $(hostname)" "$ERROR_MSG"
+          fi
+
+          echo "MongoDB backup cleanup completed successfully"
 
     # Create systemd service for MongoDB backup
     - name: Create MongoDB backup systemd service
@@ -504,14 +646,20 @@
         content: |
           [Unit]
           Description=MongoDB Backup to Cloudflare R2
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot
+          TimeoutStartSec=600
+          TimeoutStopSec=30
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
           Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
           Environment="AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}"
+          Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
           Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
+          Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
+          Environment="POSTFIX_RCPTS={{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 

@@ -7,6 +7,7 @@ const aliases = require('./aliases');
 const aliasAuth = require('./alias-auth');
 const apple = require('./apple');
 const calendars = require('./calendars');
+const calendarEvents = require('./calendar-events');
 const contacts = require('./contacts');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');
@@ -32,6 +33,7 @@ module.exports = {
   aliasAuth,
   apple,
   calendars,
+  calendarEvents,
   contacts,
   domains,
   enforcePaidPlan,
