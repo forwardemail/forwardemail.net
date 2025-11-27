@@ -27,6 +27,12 @@
   * [Retrieve calendar](#retrieve-calendar)
   * [Update calendar](#update-calendar)
   * [Delete calendar](#delete-calendar)
+* [Calendar Events and Tasks (CalDAV)](#calendar-events-and-tasks-caldav)
+  * [List calendar events](#list-calendar-events)
+  * [Create calendar event](#create-calendar-event)
+  * [Retrieve calendar event](#retrieve-calendar-event)
+  * [Update calendar event](#update-calendar-event)
+  * [Delete calendar event](#delete-calendar-event)
 * [Alias Messages (IMAP/POP3)](#alias-messages-imappop3)
   * [List and search for messages](#list-and-search-for-messages)
   * [Create message](#create-message)
@@ -339,6 +345,200 @@ curl -X PUT BASE_URI/v1/account \
 > `DELETE /v1/calendars/:id`
 
 **Coming soon**
+
+
+## Calendar Events and Tasks (CalDAV)
+
+> \[!NOTE]
+> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+
+> \[!TIP]
+> Calendar events (VEVENT) and tasks (VTODO) are both managed through these endpoints. Use the `component_type` parameter to filter by event type, or include the appropriate iCalendar component in the `ical` field when creating or updating.
+
+### List calendar events
+
+> `GET /v1/calendars/:calendar_id/events`
+
+| Querystring Parameter | Required | Type   | Description                                                                                                                                               |
+| --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `component_type`      | No       | String | Filter by component type. Must be either `VEVENT` (calendar events) or `VTODO` (tasks). If not specified, returns both events and tasks.                  |
+| `page`                | No       | Number | Page of results to return.  If not specified, the `page` value will be `1`.  Must be a number greater than or equal to `1`.                               |
+| `limit`               | No       | Number | Number of results to return per page.  Defaults to `10` if not specified.  Must be a number greater than or equal to `1`, and less than or equal to `50`. |
+
+> Example Request:
+
+```sh
+# List all events and tasks
+curl BASE_URI/v1/calendars/CALENDAR_ID/events \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD
+
+# List only calendar events (VEVENT)
+curl BASE_URI/v1/calendars/CALENDAR_ID/events?component_type=VEVENT \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD
+
+# List only tasks (VTODO)
+curl BASE_URI/v1/calendars/CALENDAR_ID/events?component_type=VTODO \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD
+```
+
+> Example Response:
+
+```json
+[
+  {
+    "id": "event-123",
+    "calendar_id": "calendar-456",
+    "component_type": "VEVENT",
+    "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250101T100000Z\nDTEND:20250101T110000Z\nSUMMARY:Team Meeting\nEND:VEVENT\nEND:VCALENDAR",
+    "deleted_at": null,
+    "created_at": "2025-01-01T00:00:00.000Z",
+    "updated_at": "2025-01-01T00:00:00.000Z",
+    "object": "calendar_event"
+  },
+  {
+    "id": "task-789",
+    "calendar_id": "calendar-456",
+    "component_type": "VTODO",
+    "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VTODO\nUID:task-789\nSUMMARY:Complete project proposal\nSTATUS:NEEDS-ACTION\nEND:VTODO\nEND:VCALENDAR",
+    "deleted_at": null,
+    "created_at": "2025-01-01T00:00:00.000Z",
+    "updated_at": "2025-01-01T00:00:00.000Z",
+    "object": "calendar_task"
+  }
+]
+```
+
+### Create calendar event
+
+> `POST /v1/calendars/:calendar_id/events`
+
+| Body Parameter | Required | Type   | Description                                                                                                                                                                                                                                                   |
+| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ical`         | Yes      | String | Complete iCalendar (ICS) format string containing either a VEVENT (event) or VTODO (task) component. The component type is automatically detected. Must be valid iCalendar format according to RFC 5545.                                                       |
+| `event_id`     | No       | String | Custom event ID. If not provided, a unique ID will be automatically generated. This ID can be used later to retrieve, update, or delete the event.                                                                                                            |
+
+> Example Request (Create Event):
+
+```sh
+curl -X POST BASE_URI/v1/calendars/CALENDAR_ID/events \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T140000Z\nDTEND:20250115T150000Z\nSUMMARY:Project Review\nDESCRIPTION:Quarterly project review meeting\nLOCATION:Conference Room A\nEND:VEVENT\nEND:VCALENDAR"
+  }'
+```
+
+> Example Request (Create Task):
+
+```sh
+curl -X POST BASE_URI/v1/calendars/CALENDAR_ID/events \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VTODO\nUID:task-456\nSUMMARY:Review pull requests\nSTATUS:NEEDS-ACTION\nPRIORITY:1\nDUE:20250120T170000Z\nEND:VTODO\nEND:VCALENDAR"
+  }'
+```
+
+> Example Response:
+
+```json
+{
+  "id": "event-123",
+  "calendar_id": "calendar-456",
+  "component_type": "VEVENT",
+  "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T140000Z\nDTEND:20250115T150000Z\nSUMMARY:Project Review\nDESCRIPTION:Quarterly project review meeting\nLOCATION:Conference Room A\nEND:VEVENT\nEND:VCALENDAR",
+  "deleted_at": null,
+  "created_at": "2025-01-15T12:00:00.000Z",
+  "updated_at": "2025-01-15T12:00:00.000Z",
+  "object": "calendar_event"
+}
+```
+
+### Retrieve calendar event
+
+> `GET /v1/calendars/:calendar_id/events/:id`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/calendars/CALENDAR_ID/events/EVENT_ID \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD
+```
+
+> Example Response:
+
+```json
+{
+  "id": "event-123",
+  "calendar_id": "calendar-456",
+  "component_type": "VEVENT",
+  "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T140000Z\nDTEND:20250115T150000Z\nSUMMARY:Project Review\nDESCRIPTION:Quarterly project review meeting\nLOCATION:Conference Room A\nEND:VEVENT\nEND:VCALENDAR",
+  "deleted_at": null,
+  "created_at": "2025-01-15T12:00:00.000Z",
+  "updated_at": "2025-01-15T12:00:00.000Z",
+  "object": "calendar_event"
+}
+```
+
+### Update calendar event
+
+> `PUT /v1/calendars/:calendar_id/events/:id`
+
+| Body Parameter | Required | Type   | Description                                                                                                                                                       |
+| -------------- | -------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ical`         | Yes      | String | Updated complete iCalendar (ICS) format string. Must contain the same component type (VEVENT or VTODO) as the original event. Must be valid iCalendar format.     |
+
+> Example Request:
+
+```sh
+curl -X PUT BASE_URI/v1/calendars/CALENDAR_ID/events/EVENT_ID \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T150000Z\nDTEND:20250115T160000Z\nSUMMARY:Project Review (Rescheduled)\nDESCRIPTION:Quarterly project review meeting - time changed\nLOCATION:Conference Room B\nEND:VEVENT\nEND:VCALENDAR"
+  }'
+```
+
+> Example Response:
+
+```json
+{
+  "id": "event-123",
+  "calendar_id": "calendar-456",
+  "component_type": "VEVENT",
+  "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T150000Z\nDTEND:20250115T160000Z\nSUMMARY:Project Review (Rescheduled)\nDESCRIPTION:Quarterly project review meeting - time changed\nLOCATION:Conference Room B\nEND:VEVENT\nEND:VCALENDAR",
+  "deleted_at": null,
+  "created_at": "2025-01-15T12:00:00.000Z",
+  "updated_at": "2025-01-15T14:30:00.000Z",
+  "object": "calendar_event"
+}
+```
+
+### Delete calendar event
+
+> `DELETE /v1/calendars/:calendar_id/events/:id`
+
+> Example Request:
+
+```sh
+curl -X DELETE BASE_URI/v1/calendars/CALENDAR_ID/events/EVENT_ID \
+  -u ALIAS_USERNAME:ALIAS_PASSWORD
+```
+
+> Example Response:
+
+```json
+{
+  "id": "event-123",
+  "calendar_id": "calendar-456",
+  "component_type": "VEVENT",
+  "ical": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//forwardemail.net//caldav//EN\nBEGIN:VEVENT\nUID:event-123\nDTSTART:20250115T150000Z\nDTEND:20250115T160000Z\nSUMMARY:Project Review (Rescheduled)\nDESCRIPTION:Quarterly project review meeting - time changed\nLOCATION:Conference Room B\nEND:VEVENT\nEND:VCALENDAR",
+  "deleted_at": null,
+  "created_at": "2025-01-15T12:00:00.000Z",
+  "updated_at": "2025-01-15T14:30:00.000Z",
+  "object": "calendar_event"
+}
+```
 
 
 ## Alias Messages (IMAP/POP3)

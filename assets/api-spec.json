@@ -555,6 +555,90 @@
           }
         }
       },
+      "CalendarEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "calendar_id",
+          "component_type",
+          "ical",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Event ID (eventId from CalDAV)"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Calendar ID this event belongs to"
+          },
+          "component_type": {
+            "type": "string",
+            "enum": ["VEVENT", "VTODO"],
+            "description": "Component type: VEVENT for calendar events, VTODO for tasks"
+          },
+          "ical": {
+            "type": "string",
+            "description": "Complete iCalendar (ICS) format string containing the event or task data"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Deletion timestamp (null if not deleted)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["calendar_event", "calendar_task"],
+            "description": "Object type: calendar_event for VEVENT, calendar_task for VTODO"
+          }
+        },
+        "example": {
+          "id": "event-123",
+          "calendar_id": "calendar-456",
+          "component_type": "VEVENT",
+          "ical": "BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//forwardemail.net//caldav//EN\\nBEGIN:VEVENT\\nUID:event-123\\nDTSTART:20250115T140000Z\\nDTEND:20250115T150000Z\\nSUMMARY:Team Meeting\\nEND:VEVENT\\nEND:VCALENDAR",
+          "deleted_at": null,
+          "created_at": "2025-01-15T12:00:00.000Z",
+          "updated_at": "2025-01-15T12:00:00.000Z",
+          "object": "calendar_event"
+        }
+      },
+      "CalendarEventInput": {
+        "type": "object",
+        "required": ["ical"],
+        "properties": {
+          "ical": {
+            "type": "string",
+            "description": "Complete iCalendar (ICS) format string containing either a VEVENT (event) or VTODO (task) component. Must be valid according to RFC 5545."
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Custom event ID (if not provided, will be auto-generated)"
+          }
+        }
+      },
+      "CalendarEventUpdateInput": {
+        "type": "object",
+        "required": ["ical"],
+        "properties": {
+          "ical": {
+            "type": "string",
+            "description": "Updated complete iCalendar (ICS) format string. Must contain the same component type (VEVENT or VTODO) as the original event."
+          }
+        }
+      },
       "Folder": {
         "type": "object",
         "required": [
@@ -2163,6 +2247,34 @@
         "schema": {
           "type": "string"
         }
+      },
+      "calendarEventCalendarId": {
+        "name": "calendar_id",
+        "in": "path",
+        "required": true,
+        "description": "Calendar ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarEventId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Calendar Event or Task ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "componentType": {
+        "name": "component_type",
+        "in": "query",
+        "required": false,
+        "description": "Filter by component type: VEVENT for calendar events, VTODO for tasks",
+        "schema": {
+          "type": "string",
+          "enum": ["VEVENT", "VTODO"]
+        }
       }
     },
     "responses": {
@@ -2912,6 +3024,299 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{calendar_id}/events": {
+      "get": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "List calendar events and tasks",
+        "description": "Retrieve a list of all calendar events (VEVENT) and tasks (VTODO) for a specific calendar. This endpoint supports pagination and filtering by component type.",
+        "operationId": "listCalendarEvents",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarEventCalendarId"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/componentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar events retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CalendarEvent"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Create calendar event or task",
+        "description": "Create a new calendar event (VEVENT) or task (VTODO) in the specified calendar. The component type is automatically detected from the iCalendar data provided.",
+        "operationId": "createCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarEventCalendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar event created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{calendar_id}/events/{id}": {
+      "get": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Retrieve calendar event or task",
+        "description": "Retrieve a specific calendar event or task by its ID. Returns the complete event data including the iCalendar format string.",
+        "operationId": "retrieveCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarEventCalendarId"
+          },
+          {
+            "$ref": "#/components/parameters/calendarEventId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar event retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Update calendar event or task",
+        "description": "Update an existing calendar event or task. You must provide the complete updated iCalendar data. The component type (VEVENT or VTODO) must remain the same as the original.",
+        "operationId": "updateCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarEventCalendarId"
+          },
+          {
+            "$ref": "#/components/parameters/calendarEventId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarEventUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Calendar Events"
+        ],
+        "summary": "Delete calendar event or task",
+        "description": "Delete a specific calendar event or task permanently. This action cannot be undone.",
+        "operationId": "deleteCalendarEvent",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarEventCalendarId"
+          },
+          {
+            "$ref": "#/components/parameters/calendarEventId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar event deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEvent"
                 }
               }
             }

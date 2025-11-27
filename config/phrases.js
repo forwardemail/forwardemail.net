@@ -821,6 +821,13 @@ module.exports = {
   CALENDAR_NAME_REQUIRED: 'Calendar name is required.',
   CALENDAR_INVALID_ID: 'Invalid calendar ID.',
 
+  CALENDAR_EVENT_ICAL_REQUIRED: 'Calendar event iCal data is required.',
+  CALENDAR_EVENT_ALREADY_EXISTS: 'Calendar event already exists with this ID.',
+  CALENDAR_EVENT_INVALID_ID: 'Invalid calendar event ID.',
+  CALENDAR_EVENT_DOES_NOT_EXIST: 'Calendar event does not exist.',
+  CALENDAR_EVENT_INVALID_COMPONENT_TYPE:
+    'Invalid component type. Must be either VEVENT or VTODO.',
+
   FOLDER_NAME_OR_PATH_REQUIRED: 'Folder must have either name or path.',
   FOLDER_INVALID_ID: 'Invalid folder ID.',
   FOLDER_DOES_NOT_EXIST: 'Folder does not exist.',

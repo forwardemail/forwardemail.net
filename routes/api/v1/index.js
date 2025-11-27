@@ -521,6 +521,19 @@ router
   .put('/calendars/:id', api.v1.calendars.update)
   .delete('/calendars/:id', api.v1.calendars.remove);
 
+// calendar events and tasks (CalDAV)
+router
+  .use('/calendars/:calendar_id/events', api.v1.aliasAuth)
+  .get(
+    '/calendars/:calendar_id/events',
+    paginate.middleware(25, 100),
+    api.v1.calendarEvents.list
+  )
+  .post('/calendars/:calendar_id/events', api.v1.calendarEvents.create)
+  .get('/calendars/:calendar_id/events/:id', api.v1.calendarEvents.retrieve)
+  .put('/calendars/:calendar_id/events/:id', api.v1.calendarEvents.update)
+  .delete('/calendars/:calendar_id/events/:id', api.v1.calendarEvents.remove);
+
 // messages (IMAP/POP3)
 router
   .use('/messages', api.v1.aliasAuth)
