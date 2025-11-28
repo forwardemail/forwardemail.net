@@ -65,8 +65,12 @@
         width: 100%;
         min-height: 100vh;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
+      }
+
+      body.mailbox-mode #rl-app {
+        align-items: flex-start;
       }
 
       .fe-stars {
@@ -171,6 +175,47 @@
         border-color: var(--brand-primary);
         box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.25);
         outline: none;
+      }
+
+      body.light-mode .LoginView input[type='email'],
+      body.light-mode .LoginView input[type='password'] {
+        background: #ffffff;
+        color: #0f172a;
+        border-color: #cbd5e1;
+        box-shadow: none;
+      }
+
+      body.light-mode .LoginView input[type='email']:focus,
+      body.light-mode .LoginView input[type='password']:focus {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.18);
+      }
+
+      body.light-mode .LoginView label {
+        color: #0f172a;
+      }
+
+      body.light-mode .fe-footer a {
+        color: #2563eb;
+      }
+
+      .fe-signup-link {
+        color: #63b3ff;
+      }
+
+      body.light-mode .fe-signup-link {
+        color: #2563eb;
+      }
+
+      .fe-login-hint {
+        font-size: 13px;
+        color: #9ca3af;
+        margin-top: -6px;
+        margin-bottom: 4px;
+      }
+
+      body.light-mode .fe-login-hint {
+        color: #374151;
       }
 
       .LoginView button[type='submit'] {
@@ -1828,8 +1873,7 @@
       <canvas id="stars2"></canvas>
       <canvas id="stars3"></canvas>
     </div>
-
-    <div class="fe-login-wrapper" style="display: none;" data-bind="visible: route() === 'login'">
+    <div class="fe-login-wrapper" data-bind="visible: route() === 'login'">
       <div class="LoginView" data-bind="with: loginUserView">
         <div class="fe-login-header">
           <div class="fe-logo" aria-hidden="true">
@@ -1837,7 +1881,6 @@
           </div>
           <div class="fe-title">
             <h1>Webmail</h1>
-            <span>ForwardEmail</span>
           </div>
         </div>
 
@@ -1858,6 +1901,8 @@
             required
           />
 
+          <div class="fe-login-hint">Use your alias email and generated password to sign in.</div>
+
           <label>
             <input type="checkbox" data-bind="checked: signMe" />
             Stay signed in
@@ -1870,7 +1915,11 @@
           <div class="alert alert-danger" data-bind="visible: submitError, text: submitError"></div>
         </form>
 
-        <div class="fe-footer">Mailbox UI coming soon</div>
+        <div class="fe-footer" style="display:flex; flex-direction:column; gap:4px; align-items:center; text-align:center;">
+          <span>Don't have an account?
+            <a class="fe-signup-link" href="https://forwardemail.net" target="_blank" rel="noopener noreferrer">Sign up</a>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -2111,9 +2160,11 @@
     </div>
 
     <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'settings', with: settingsModal">
-      <div class="fe-mailbox-header" style="justify-content: flex-end;">
-        <div class="fe-mailbox-actions">
-          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ window.location.href = '/mailbox'; }">←</button>
+      <div class="fe-mailbox-header">
+        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ window.location.href = '/mailbox'; }">←</button>
+        <div class="fe-title-left">
+          <h1>Settings</h1>
+          <span data-bind="text: aliasEmail"></span>
         </div>
       </div>
 
@@ -2343,16 +2394,10 @@
 
     <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'calendar', with: calendarView">
       <div class="fe-mailbox-header">
-        <div class="fe-logo" aria-hidden="true">
-          <img src="/icons/logo-square.svg" alt="ForwardEmail logo" />
-        </div>
+        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ window.location.href = '/mailbox'; }">←</button>
         <div class="fe-title-left">
           <h1>Calendar</h1>
           <span data-bind="text: email"></span>
-        </div>
-        <div class="fe-mailbox-actions">
-          <button class="fe-button ghost" type="button" data-bind="click: function(){ window.location.href = '/mailbox'; }">Mailbox</button>
-          <button class="fe-signout" type="button" data-bind="click: signOut">Sign out</button>
         </div>
       </div>
 

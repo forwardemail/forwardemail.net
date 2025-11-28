@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && workbox generateSW workbox.config.js",
+    "build": "vite build && workbox generateSW workbox.config.cjs",
     "preview": "vite preview"
   },
   "dependencies": {
