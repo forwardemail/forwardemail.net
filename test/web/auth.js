@@ -19,6 +19,7 @@ test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupWebServer);
 test.beforeEach(utils.setupFactories);
+test.afterEach.always(utils.teardownWebServer);
 
 test('creates new user', async (t) => {
   const { web } = t.context;

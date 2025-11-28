@@ -52,7 +52,6 @@ test.before(utils.setupMongoose);
 test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupFactories);
-
 // setup API server so we can configure MX with it
 // (similar to `utils.setupApiServer`)
 test.beforeEach(async (t) => {
@@ -69,6 +68,26 @@ test.beforeEach(async (t) => {
   });
   await wsp.open();
   t.context.wsp = wsp;
+});
+
+test.afterEach.always(async (t) => {
+  // close websocket connection
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch {
+      // ignore
+    }
+  }
+
+  // close sqlite server
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
+    } catch {
+      // ignore
+    }
+  }
 });
 
 test('imap/forward/webhook', async (t) => {

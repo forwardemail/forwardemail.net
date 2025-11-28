@@ -208,3 +208,56 @@ exports.setupFactories = (t) => {
   t.context.paymentFactory = new PaymentFactory();
   t.context.aliasFactory = new AliasFactory();
 };
+
+exports.teardownApiServer = async (t) => {
+  // close websocket connection
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+
+  // close sqlite server
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+
+  // disconnect redis clients
+  if (t.context.client) {
+    try {
+      t.context.client.disconnect();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+
+  if (t.context.subscriber) {
+    try {
+      t.context.subscriber.disconnect();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+};
+
+exports.teardownWebServer = async (t) => {
+  // close web server
+  if (t.context._web && t.context._web.server) {
+    try {
+      await new Promise((resolve, reject) => {
+        t.context._web.server.close((err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+};

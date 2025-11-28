@@ -20,6 +20,7 @@ test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
 test.beforeEach(utils.setupFactories);
+test.afterEach.always(utils.teardownApiServer);
 
 // Helper function to create alias auth header
 function createAliasAuth(aliasEmail, pass) {

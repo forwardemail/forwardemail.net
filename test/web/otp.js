@@ -26,7 +26,6 @@ authenticator.options = {
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupFactories);
-
 test.beforeEach(async (t) => {
   // set password
   t.context.password = falso.randPassword();
@@ -48,6 +47,8 @@ test.beforeEach(async (t) => {
   await utils.setupWebServer(t);
   await utils.loginUser(t);
 });
+
+test.afterEach.always(utils.teardownWebServer);
 
 test('GET otp/login > successful', async (t) => {
   // get test server

@@ -112,6 +112,7 @@ test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
 test.beforeEach(utils.setupFactories);
+test.afterEach.always(utils.teardownApiServer);
 
 test('fails when no creds are presented', async (t) => {
   const { api } = t.context;

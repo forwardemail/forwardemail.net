@@ -113,10 +113,8 @@
     - name: Reload UFW
       ufw:
         state: reloaded
-    - name: Restart Valkey
-      service:
-        name: valkey-server
-        state: restarted
+    # NOTE: Valkey restart removed - must be done manually
+    # See post-deployment instructions for manual restart procedure
   tasks:
     # Redis-specific sysctl optimizations
     # Note: THP, ulimits, and base sysctl settings are inherited from security.yml
@@ -292,7 +290,7 @@
           ExecStop=/bin/kill -s TERM $MAINPID
           PIDFile=/var/run/valkey/valkey-server.pid
           TimeoutStartSec=90
-          TimeoutStopSec=90
+          TimeoutStopSec=300
           Restart=always
           RestartSec=5s
           RuntimeDirectory=valkey
@@ -573,7 +571,6 @@
           tcp-backlog 65536
           tcp-keepalive 0
           maxclients 10000
-      notify: Restart Valkey
 
     - name: Ensure Valkey is enabled and started
       service:
@@ -600,28 +597,8 @@
         port: 22
         proto: tcp
 
-    # Fetch IP whitelist and configure UFW
-    - name: Fetch IP whitelist from forwardemail.net
-      uri:
-        url: https://forwardemail.net/ips/v4.txt?comments=false
-        return_content: true
-      register: ip_whitelist_response
-
-    - name: Parse IP whitelist
-      set_fact:
-        allowed_ips: "{{ ip_whitelist_response.content.split('\n') | select('match', '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$') | list }}"
-
-    - name: Allow Redis TLS port from whitelisted IPs
-      ufw:
-        rule: allow
-        from_ip: "{{ item }}"
-        to_port: "{{ lookup('env', 'REDIS_PORT') }}"
-        proto: tcp
-        comment: "Auto-whitelist Redis TLS"
-      loop: "{{ allowed_ips }}"
-      notify: Reload UFW
-
     # Install UFW whitelist update script
+    # Note: Initial IP whitelist will be populated when the script runs for the first time
     - name: Create UFW whitelist update script
       copy:
         dest: /usr/local/bin/update-redis-ufw-whitelist.sh
@@ -638,11 +615,24 @@
           POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
 
           echo "[$(date -Iseconds)] Fetching IP whitelist..."
-          NEW_IPS=$(curl -s "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+          
+          # Fetch with retries (3 attempts, 10 second timeout each)
+          for attempt in {1..3}; do
+            NEW_IPS=$(curl -s --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+            
+            if [ -n "$NEW_IPS" ]; then
+              echo "[$(date -Iseconds)] Successfully fetched $(echo "$NEW_IPS" | wc -l) IPs"
+              break
+            fi
+            
+            echo "[$(date -Iseconds)] Fetch attempt $attempt failed, retrying..."
+            sleep 5
+          done
 
           if [ -z "$NEW_IPS" ]; then
-            echo "[$(date -Iseconds)] ERROR: Failed to fetch IP list or list is empty"
-            exit 1
+            echo "[$(date -Iseconds)] ERROR: Failed to fetch IP list after 3 attempts"
+            echo "[$(date -Iseconds)] Keeping existing UFW rules unchanged"
+            exit 0  # Exit gracefully - don't break existing rules
           fi
 
           # Get current IPs from UFW
@@ -1261,3 +1251,37 @@
         name: redis-command-monitor.timer
         enabled: true
         state: started
+
+    # ============================================================================
+    # POST-DEPLOYMENT INSTRUCTIONS
+    # ============================================================================
+    - name: Display manual restart instructions
+      debug:
+        msg: |
+          
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+          ║                                                                        ║
+          ║  Valkey configuration has been updated but the service was NOT        ║
+          ║  automatically restarted to prevent disruption.                       ║
+          ║                                                                        ║
+          ║  To apply the new configuration, you must MANUALLY restart Valkey:    ║
+          ║                                                                        ║
+          ║    sudo systemctl restart valkey-server                               ║
+          ║                                                                        ║
+          ║  ⚠️  WARNING: This will:                                              ║
+          ║    • Disconnect all active Redis connections                          ║
+          ║    • Trigger BGSAVE if data has changed (may take 2-3 minutes)        ║
+          ║    • Cause brief service interruption                                 ║
+          ║                                                                        ║
+          ║  💡 RECOMMENDATION:                                                   ║
+          ║    • Schedule restart during low-traffic period                       ║
+          ║    • Notify team before restarting                                    ║
+          ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
+          ║                                                                        ║
+          ║  To verify Valkey is running after restart:                           ║
+          ║    redis-cli -p 6380 --tls -a "$REDIS_PASSWORD" PING                 ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝
+          

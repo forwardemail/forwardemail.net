@@ -11,6 +11,7 @@ const utils = require('../utils');
 test.before(utils.setupMongoose);
 test.before(utils.setupWebServer);
 test.after.always(utils.teardownMongoose);
+test.after.always(utils.teardownWebServer);
 
 test('redirects to correct locale', async (t) => {
   const { web } = t.context;

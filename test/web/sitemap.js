@@ -27,6 +27,7 @@ test.before(async (t) => {
   t.context._web.config.rateLimit.allowlist.push(IP_ADDRESS, '127.0.0.1');
 });
 test.after.always(utils.teardownMongoose);
+test.after.always(utils.teardownWebServer);
 
 // <https://github.com/avajs/ava/discussions/3177#discussioncomment-6633346>
 // <https://github.com/avajs/cooperate#semaphores> // <--- across worker threads
