@@ -1936,13 +1936,13 @@
               />
             </div>
             <div class="fe-toolbar-actions">
-              <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ window.location.href='/contacts'; }">
+              <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ navigate('/contacts'); }">
                 <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
               </button>
-              <button class="fe-button ghost fe-icon-btn" type="button" title="Calendar" aria-label="Calendar" data-bind="click: function(){ window.location.href='/calendar'; }">
+              <button class="fe-button ghost fe-icon-btn" type="button" title="Calendar" aria-label="Calendar" data-bind="click: function(){ navigate('/calendar'); }">
                 <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
               </button>
-              <button class="fe-button ghost fe-icon-btn fe-settings-btn" type="button" title="Settings" aria-label="Settings" data-bind="click: function(){ window.location.href='/mailbox/settings'; }">
+              <button class="fe-button ghost fe-icon-btn fe-settings-btn" type="button" title="Settings" aria-label="Settings" data-bind="click: function(){ navigate('/mailbox/settings'); }">
                 <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.91 3V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26.97 1.54h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /></svg>
               </button>
             </div>
@@ -2161,7 +2161,7 @@
 
     <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'settings', with: settingsModal">
       <div class="fe-mailbox-header">
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ window.location.href = '/mailbox'; }">←</button>
+        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
         <div class="fe-title-left">
           <h1>Settings</h1>
           <span data-bind="text: aliasEmail"></span>
@@ -2394,7 +2394,7 @@
 
     <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'calendar', with: calendarView">
       <div class="fe-mailbox-header">
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ window.location.href = '/mailbox'; }">←</button>
+        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
         <div class="fe-title-left">
           <h1>Calendar</h1>
           <span data-bind="text: email"></span>

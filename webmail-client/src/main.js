@@ -8,7 +8,6 @@ import { CalendarView } from './components/CalendarView';
 import { Toasts } from './components/Toast';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
-import { navigate } from './utils/navigation';
 import './styles/main.css';
 
 function detectRoute() {
@@ -25,9 +24,25 @@ const viewModel = {
   composeModal: new ComposeModal(),
   settingsModal: new SettingsModal(),
   pgpPassphraseModal: new PassphraseModal(),
-  calendarView: new CalendarView(),
-  navigate
+  calendarView: new CalendarView()
 };
+
+// SPA-style navigation to avoid reload flicker
+viewModel.navigate = (path) => {
+  if (!path || typeof path !== 'string') return;
+  const sameOrigin = path.startsWith('/');
+  if (!sameOrigin) {
+    window.location.href = path;
+    return;
+  }
+  history.pushState({}, '', path);
+  viewModel.route(detectRoute());
+};
+
+// expose navigation to child contexts
+viewModel.mailboxView.navigate = viewModel.navigate;
+viewModel.settingsModal.navigate = viewModel.navigate;
+viewModel.calendarView.navigate = viewModel.navigate;
 
 viewModel.toasts = new Toasts();
 viewModel.mailboxView.composeModal = viewModel.composeModal;
@@ -108,3 +123,7 @@ if (document.readyState === 'loading') {
 } else {
   bootstrap();
 }
+
+window.addEventListener('popstate', () => {
+  viewModel.route(detectRoute());
+});
