@@ -635,44 +635,63 @@
             exit 0  # Exit gracefully - don't break existing rules
           fi
 
-          # Get current IPs from UFW
+          # Get current IPs from UFW for the CORRECT port
           CURRENT_IPS=$(ufw status | grep "${REDIS_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
 
-          # Calculate diff
+          # Find orphaned rules with the comment but WRONG port (from old deploys)
+          ORPHANED_RULES=$(ufw status numbered | grep "$COMMENT" | grep -v "${REDIS_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+
+          # Remove orphaned rules first (delete from highest to lowest)
+          ORPHANED_COUNT=0
+          if [ -n "$ORPHANED_RULES" ]; then
+            echo "[$(date -Iseconds)] Found orphaned rules with wrong port - cleaning up..."
+            for rule_num in $ORPHANED_RULES; do
+              echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+              ORPHANED_COUNT=$((ORPHANED_COUNT + 1))
+            done
+            echo "[$(date -Iseconds)] Removed $ORPHANED_COUNT orphaned rules"
+          fi
+
+          # Calculate diff (only for correct port)
           TO_ADD=$(comm -13 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
           TO_REMOVE=$(comm -23 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
 
           # Check if changes needed
-          if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ]; then
-            echo "[$(date -Iseconds)] No changes needed"
-            exit 0
+          if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ] && [ $ORPHANED_COUNT -eq 0 ]; then
+            echo "[$(date -Iseconds)] No changes needed - sending summary email"
+            CHANGES_MADE=false
+          else
+            echo "[$(date -Iseconds)] Changes detected - updating UFW rules..."
+            CHANGES_MADE=true
           fi
 
-          echo "[$(date -Iseconds)] Changes detected - updating UFW rules..."
-
-          # Remove old IPs (delete from highest rule number to lowest)
+          # Apply changes if needed
           REMOVED_COUNT=0
-          if [ -n "$TO_REMOVE" ]; then
-            for ip in $TO_REMOVE; do
-              RULE_NUMS=$(ufw status numbered | grep "${REDIS_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
-              for rule_num in $RULE_NUMS; do
-                echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
-                REMOVED_COUNT=$((REMOVED_COUNT + 1))
-              done
-            done
-          fi
-
-          # Add new IPs
           ADDED_COUNT=0
-          if [ -n "$TO_ADD" ]; then
-            for ip in $TO_ADD; do
-              ufw allow from "$ip" to any port "$REDIS_PORT" proto tcp comment "$COMMENT" > /dev/null 2>&1
-              ADDED_COUNT=$((ADDED_COUNT + 1))
-            done
-          fi
+          
+          if [ "$CHANGES_MADE" = true ]; then
+            # Remove old IPs (delete from highest rule number to lowest)
+            if [ -n "$TO_REMOVE" ]; then
+              for ip in $TO_REMOVE; do
+                RULE_NUMS=$(ufw status numbered | grep "${REDIS_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+                for rule_num in $RULE_NUMS; do
+                  echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+                  REMOVED_COUNT=$((REMOVED_COUNT + 1))
+                done
+              done
+            fi
 
-          # Reload UFW
-          ufw reload > /dev/null 2>&1
+            # Add new IPs
+            if [ -n "$TO_ADD" ]; then
+              for ip in $TO_ADD; do
+                ufw allow from "$ip" to any port "$REDIS_PORT" proto tcp comment "$COMMENT" > /dev/null 2>&1
+                ADDED_COUNT=$((ADDED_COUNT + 1))
+              done
+            fi
+
+            # Note: No UFW reload needed - rules are applied immediately
+            # Reloading would cause brief connection drops
+          fi
 
           # Build email report
           TOTAL_IPS=$(echo "$NEW_IPS" | wc -l)
@@ -687,8 +706,16 @@
             REMOVED_LIST="$REMOVED_LIST\n  ... and $(($(echo "$TO_REMOVE" | wc -l) - 20)) more"
           fi
 
-          REPORT="UFW Whitelist Changes for $SERVICE_NAME
+          # Build status message
+          if [ "$CHANGES_MADE" = true ]; then
+            STATUS="✓ Changes Applied"
+          else
+            STATUS="✓ No Changes Needed"
+          fi
+
+          REPORT="UFW Whitelist Status for $SERVICE_NAME
           Timestamp: $(date -Iseconds)
+          Status: $STATUS
           
           Added IPs ($ADDED_COUNT):
           $ADDED_LIST
@@ -696,9 +723,13 @@
           Removed IPs ($REMOVED_COUNT):
           $REMOVED_LIST
           
+          Orphaned Rules Cleaned ($ORPHANED_COUNT):
+            Rules with wrong port (from old deploys)
+          
           Summary:
             - Total added: $ADDED_COUNT
             - Total removed: $REMOVED_COUNT
+            - Orphaned cleaned: $ORPHANED_COUNT
             - Current total: $TOTAL_IPS IPs whitelisted
           
           Server: $(hostname)
@@ -706,10 +737,16 @@
           
           View logs: sudo journalctl -u redis-ufw-whitelist-update.service -n 50"
 
-          # Send email report
+          # Send email report (always, even if no changes)
+          if [ "$CHANGES_MADE" = true ]; then
+            SUBJECT="[UFW] Whitelist Updated: $SERVICE_NAME (Port $REDIS_PORT)"
+          else
+            SUBJECT="[UFW] Whitelist Status: $SERVICE_NAME (Port $REDIS_PORT) - No Changes"
+          fi
+          
           /usr/local/bin/send-rate-limited-email.sh \
             "ufw-whitelist-redis" \
-            "[UFW] Whitelist Updated: $SERVICE_NAME (Port $REDIS_PORT)" \
+            "$SUBJECT" \
             "$REPORT"
 
           echo "[$(date -Iseconds)] UFW whitelist updated (added: $ADDED_COUNT, removed: $REMOVED_COUNT)"
@@ -1256,32 +1293,34 @@
     # POST-DEPLOYMENT INSTRUCTIONS
     # ============================================================================
     - name: Display manual restart instructions
-      debug:
-        msg: |
-          
-          ╔════════════════════════════════════════════════════════════════════════╗
-          ║                                                                        ║
-          ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
-          ║                                                                        ║
-          ║  Valkey configuration has been updated but the service was NOT        ║
-          ║  automatically restarted to prevent disruption.                       ║
-          ║                                                                        ║
-          ║  To apply the new configuration, you must MANUALLY restart Valkey:    ║
-          ║                                                                        ║
-          ║    sudo systemctl restart valkey-server                               ║
-          ║                                                                        ║
-          ║  ⚠️  WARNING: This will:                                              ║
-          ║    • Disconnect all active Redis connections                          ║
-          ║    • Trigger BGSAVE if data has changed (may take 2-3 minutes)        ║
-          ║    • Cause brief service interruption                                 ║
-          ║                                                                        ║
-          ║  💡 RECOMMENDATION:                                                   ║
-          ║    • Schedule restart during low-traffic period                       ║
-          ║    • Notify team before restarting                                    ║
-          ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
-          ║                                                                        ║
-          ║  To verify Valkey is running after restart:                           ║
-          ║    redis-cli -p 6380 --tls -a "$REDIS_PASSWORD" PING                 ║
-          ║                                                                        ║
-          ╚════════════════════════════════════════════════════════════════════════╝
+      shell: |
+        cat << 'EOF'
+        
+        ╔════════════════════════════════════════════════════════════════════════╗
+        ║                                                                        ║
+        ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+        ║                                                                        ║
+        ║  Valkey configuration has been updated but the service was NOT        ║
+        ║  automatically restarted to prevent disruption.                       ║
+        ║                                                                        ║
+        ║  To apply the new configuration, you must MANUALLY restart Valkey:    ║
+        ║                                                                        ║
+        ║    sudo systemctl restart valkey-server                               ║
+        ║                                                                        ║
+        ║  ⚠️  WARNING: This will:                                              ║
+        ║    • Disconnect all active Redis connections                          ║
+        ║    • Trigger BGSAVE if data has changed (may take 2-3 minutes)        ║
+        ║    • Cause brief service interruption                                 ║
+        ║                                                                        ║
+        ║  💡 RECOMMENDATION:                                                   ║
+        ║    • Schedule restart during low-traffic period                       ║
+        ║    • Notify team before restarting                                    ║
+        ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
+        ║                                                                        ║
+        ║  To verify Valkey is running after restart:                           ║
+        ║    redis-cli -p 6380 --tls -a "\$REDIS_PASSWORD" PING                 ║
+        ║                                                                        ║
+        ╚════════════════════════════════════════════════════════════════════════╝
+        
+EOF
           
