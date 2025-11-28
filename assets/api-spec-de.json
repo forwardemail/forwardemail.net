@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Willkommen zur umfassenden API-Dokumentation für Forward Email. Mit dieser API können Sie E-Mail-Weiterleitungen, Domains, Aliase, ausgehende E-Mails und vieles mehr programmatisch verwalten.\n\n## Hauptfunktionen\n* **Domainverwaltung:** Domains erstellen, abrufen, aktualisieren, löschen und verifizieren.\n\n* **Aliasverwaltung:** E-Mail-Aliase verwalten, einschließlich Erstellung, Aktualisierung und Empfängerverwaltung.\n\n* **Ausgehender SMTP-Versand:** E-Mails per SMTP senden, Limits verwalten und gesendete E-Mails verfolgen.\n\n* **Konto & Protokolle:** Kontodetails verwalten und Aktivitätsprotokolle herunterladen.\n\n* **Sicherheit:** TXT-Einträge verschlüsseln und Domainmitglieder/Einladungen verwalten.\n\n* **CardDAV-Kontakte:** Vollständige CRUD-Operationen für die Kontaktverwaltung mit vCard-Unterstützung.\n\n* **CalDAV-Kalender:** Umfassende Kalenderverwaltung mit Zeitzonen- und Farbunterstützung.\n\n* **IMAP/POP3-Nachrichten:** Umfassende Nachrichtenverwaltung mit erweiterten Suchfunktionen.\n\n* **IMAP/POP3-Ordner:** Vollständige Ordnerverwaltung inklusive Erstellen, Umbenennen und Löschen.\n\n## Authentifizierung\nDie meisten Endpunkte erfordern eine Authentifizierung mit Ihrem **API-Schlüssel**. Geben Sie den API-Schlüssel als `username` im Header der Basisauthentifizierung an und lassen Sie das Passwortfeld leer.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Ersetzen Sie `API_TOKEN` vor der Base64-Kodierung durch Ihren tatsächlichen Schlüssel.)\n\nEndpunkte für **Alias-Kontakte, -Kalender, -Nachrichten und -Ordner** erfordern einen generierten Alias-Benutzernamen und ein Passwort für die Basisauthentifizierung.\n\n## Fehler\nDie API verwendet standardmäßige HTTP-Statuscodes, um Erfolg oder Misserfolg anzuzeigen. Fehlerantworten enthalten einen JSON-Body mit einem `message`-Feld, das den Fehler detailliert beschreibt.\n\n| Statuscode | Bedeutung |\n\n-------------|---------------------|\n\n| 200 | OK |\n\n| 400 | Ungültige Anfrage |\n\n| 401 | Nicht autorisiert |\n\n| 403 | Verboten |\n\n| 404 | Nicht gefunden |\n\n| 409 | Konflikt |\n\n| 412 | Vorbedingung nicht erfüllt |\n\n| 429 | Zu viele Anfragen |\n\n| 500 | Interner Serverfehler |\n\n| 501 | Nicht implementiert |\n\n| 502 | Ungültiges Gateway |\n\n| 503 | Dienst nicht verfügbar |\n\n| 504 | Gateway-Timeout |\n\n\n*Bei einem 5xx-Fehler kontaktieren Sie bitte api@forwardemail.net.*\n\n## Lokalisierung\nAPI-Antworten werden basierend auf der erkannten Sprache des Benutzers oder dem Header „Accept-Language“ übersetzt. Über 25 Sprachen werden unterstützt.\n\n\n## Paginierung\nEndpunkte, die Listen zurückgeben, unterstützen die Paginierung über Abfrageparameter.\n\n| Parameter | Typ | Optional | Beschreibung | Standardwert | Einschränkungen |\n\n--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n\n| `page` | Ganzzahl | Ja | Abrufbare Seitenzahl. | 1 | `>= 1` |\n\n| `limit` | Ganzzahl | Ja | Anzahl der Ergebnisse pro Seite. | 25 | `>= 1`, `<= 100` |\n\n| `pagination` | Boolesch | Ja | Paginierung aktivieren (für einige Endpunkte vor dem 1. November 2024 erforderlich). | false | |\n\n**Paginierungs-Header:**\n\n* `X-Page-Count`: Gesamtseitenzahl.\n\n* `X-Page-Current`: Aktuelle Seitenzahl.\n\n* `X-Page-Size`: Anzahl der Elemente auf der aktuellen Seite.\n\n* `X-Item-Count`: Gesamtzahl der Elemente auf allen Seiten.\n\n* `Link`: Navigationslinks (vorherige, nächste, erste, letzte).\n\n**Beispiel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Empfohlene Bibliotheken\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Betreut von Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "E-Mail-Weiterleitungs-API-Server"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "Verwenden Sie Ihren API-Schlüssel als **Benutzernamen** für die Basisauthentifizierung. Lassen Sie das Passwortfeld leer.\n\n**Beispiel:** Wenn Ihr API-Schlüssel `YOUR_API_KEY` lautet, wäre der Base64-kodierte Wert für den `Authorization`-Header `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Verwenden Sie den generierten **Alias-Benutzernamen und das Alias-Passwort** für die Basisauthentifizierung. Dies gilt für Endpunkte unter:\n* Alias-Kontakte (CardDAV)\n* Alias-Kalender (CalDAV)\n* Alias-Nachrichten (IMAP/POP3)\n* Alias-Ordner (IMAP/POP3)\n\n**Beispiel:** Wenn der Alias-Benutzername `alias@domain.com` und das Passwort `GENERATED_PASSWORD` lautet, wäre der Base64-kodierte Wert `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Fehlermeldung"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "Alias-ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Objekttyp"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Aliasname (lokaler Teil der E-Mail-Adresse)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Vollständige Alias-E-Mail-Adresse"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "Domänen-ID"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Domainname"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Speicherplatzbedarf in Bytes für diesen Alias/diese Mailbox"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Speicherkontingent in Bytes für diesen Alias/dieses Postfach"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "Ob IMAP für diesen Alias aktiviert ist"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Ob die PGP-Verschlüsselung aktiviert ist"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP-öffentlicher Schlüssel, falls verfügbar"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Standortpräferenz"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Erstellungszeitstempel"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Zeitstempel der letzten Aktualisierung"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "Kontakt-ID (contact_id von CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Kontakt-UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "vollständiger Name des Ansprechpartners"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-Inhalt"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag für die Versionsverwaltung"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Ob Kontakt eine Gruppe ist"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Liste von E-Mail-Adressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Liste von Telefonnummern"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard-Inhalt (wird, falls nicht angegeben, aus anderen Feldern generiert)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "vollständiger Name des Ansprechpartners"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "Benutzerdefinierte Kontakt-ID (wird, falls nicht angegeben, automatisch generiert)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "Kontakt-UID (wird, falls nicht angegeben, automatisch generiert)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Liste von E-Mail-Adressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Liste von Telefonnummern"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Array von Telefonnummern (Alias für phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Adressarray"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Ob Kontakt eine Gruppe ist"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-Inhalt"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "vollständiger Name des Ansprechpartners"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Liste von E-Mail-Adressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Liste von Telefonnummern"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Array von Telefonnummern (Alias für phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Adressarray"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Ob Kontakt eine Gruppe ist"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "Kalender-ID (calendarId von CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendername"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschreibung"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderfarbe (Hexadezimalformat)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenderzeitzone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Reihenfolge der Kalenderanzeige"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendername"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "Benutzerdefinierte Kalender-ID (wird, falls nicht angegeben, automatisch generiert)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschreibung"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Kalenderfarbe (Hexadezimalformat, falls nicht angegeben, wird automatisch generiert)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Kalenderzeitzone (standardmäßig die Zeitzone des Benutzers oder UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Kalenderanzeigereihenfolge (Standardwert: 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendername"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschreibung"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderfarbe (Hexadezimalformat)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenderzeitzone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Reihenfolge der Kalenderanzeige"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "Kalenderereignis-ID (Ereignis-ID von CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "Kalender-ID, zu dem dieses Ereignis gehört"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "iCalendar-Daten (RFC 5545) für das Ereignis"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Ereignistitel/Zusammenfassung (aus iCal-Daten extrahiert)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Ereignisbeschreibung (aus iCal-Daten extrahiert)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Veranstaltungsort (aus iCal-Daten extrahiert)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Startdatum/-zeit der Veranstaltung (aus iCal-Daten extrahiert)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Datum/Uhrzeit des Veranstaltungsendes (aus iCal-Daten extrahiert)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "Eindeutiger Identifikator aus iCal-Daten"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Ereignisstatus (aus iCal-Daten extrahiert)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Veranstalter (aus iCal-Daten extrahiert)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Zeitstempel für die Soft-Deletion"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "Kalender-ID, dem das Ereignis hinzugefügt werden soll"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "Benutzerdefinierte Ereignis-ID (wird, falls nicht angegeben, automatisch generiert)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "iCalendar-Daten (RFC 5545) für das Ereignis. Muss im gültigen iCal-Format vorliegen."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Ereignis in einen anderen Kalender verschieben"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Aktualisierte iCalendar-Daten (RFC 5545) für das Ereignis"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "Ordner-ID"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Vollständiger Ordnerpfad"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Ordnername (letzter Teil des Pfades)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Pfad zum übergeordneten Ordner"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "Gültigkeit der IMAP-UID"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Nächster UID-Wert"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Änderungsindex"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Ob der Ordner abonniert ist"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Ordnerkennzeichnungen"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Aufbewahrungsdauer der Nachricht"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Sondernutzungsbezeichnung"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Ordnerpfad/Name"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Neuer Ordnerpfad/Name"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "Nachrichten-ID"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "Root-Nachrichten-ID für Threading"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "Ordner-ID, die die Nachricht enthält"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Ordnerpfad, der die Nachricht enthält"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "Thread-ID für die Konversationsgruppierung"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Wert des Message-ID-Headers"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Ob die Nachricht ungelesen ist"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Ob die Nachricht als markiert ist"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Ob die Nachricht gelöscht wurde"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Ob die Nachricht ein Entwurf ist"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Ob es sich bei der Nachricht um Junk/Spam handelt"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Ob die Nachricht kopiert wurde"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Ob die Nachricht durchsuchbar ist"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Ist die Nachricht abgelaufen?"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Ob die Nachricht Anhänge enthält"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Aufbewahrungsdatum der Nachricht"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Internes Datum (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Datum aus den Nachrichtenkopfzeilen"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Betreff der Nachricht"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP-Flags"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Nachrichtengröße in Bytes"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "IMAP-UID"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Modifikationssequenz"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Transaktionstyp"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Remote-IP-Adresse"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Zeitstempel der Nachrichtenerstellung"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Zeitstempel der letzten Aktualisierung der Nachricht"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Geparstes Nachrichtenobjekt (standardmäßig enthalten, setzen Sie ?nodemailer=false, um es auszuschließen)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Rohdaten des Nachrichteninhalts (standardmäßig enthalten, mit ?raw=false ausschließen)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "Absender-E-Mail-Adresse"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "E-Mail-Adressen der Empfänger"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "E-Mail-Adressen der CC-Empfänger"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "E-Mail-Adressen der BCC-Empfänger"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Betreff der Nachricht"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Klartextinhalt"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML-Inhalt"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Nachrichtenanhänge (Nodemailer-Format)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Zielordner (standardmäßig Posteingang)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-Flags, die für die Nachricht festgelegt werden sollen"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-Flags, die für die Nachricht festgelegt werden sollen"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Nachricht in diesen Ordner verschieben"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Die E-Mail-Adresse des Absenders (muss als Alias der Domain existieren)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Kommagetrennte Liste oder ein Array von Empfängern für die 'An'-Überschrift."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Durch Kommas getrennte Liste oder ein Array von Empfängern für den 'Cc'-Header."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Durch Kommas getrennte Liste oder ein Array von Empfängern für den „Bcc“-Header."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Der Betreff der E-Mail."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "Die Klartextversion der Nachricht."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "Die HTML-Version der Nachricht."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "Ein Array von Anhangsobjekten (siehe die allgemeinen Felder von Nodemailer)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "Die E-Mail-Adresse für den „Absender“-Header."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "Die E-Mail-Adresse für den „Antwort an“-Header."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "Die Message-ID, auf die die Nachricht antwortet."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Durch Leerzeichen getrennte Liste oder ein Array von Message-IDs."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Wenn diese Bedingung erfüllt ist, werden Daten: Bilder im HTML-Inhalt in eingebettete Anhänge umgewandelt."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Apple Watch-spezifische HTML-Version der Nachricht."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL-spezifische HTML-Version der Nachricht."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "Ein iCalendar-Ereignis als alternativer Nachrichteninhalt."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "Eine Auswahl alternativer Nachrichteninhalte."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Kodierung für die Text- und HTML-Zeichenketten (z. B. 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Benutzerdefinierte, im RFC822-Format erstellte Nachricht (anstatt die Nodemailer-Generierung zu verwenden)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Für Textwerte wurde eine bestimmte Kodierung erzwungen."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Prioritätsstufe der E-Mail."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Objekt oder Array von zusätzlichen Header-Feldern."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Optionale Message-ID für den Header „Message-ID“."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Optionales Datumsfeld. Darf nicht mehr als 30 Tage in der Zukunft liegen."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "Optionales Objekt von List-* Überschriften."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Vollqualifizierter Domänenname (FQDN) oder IP-Adresse"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Weisen Sie die Funktion demselben Team aus einer anderen Domäne zu; dies kann eine Domänen-ID oder ein FQDN sein. Verwenden Sie „none“, um die Funktion explizit zu deaktivieren."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Tarifart (standardmäßig „kostenlos“ oder der aktuell bezahlte Tarif des Nutzers)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Liste von E-Mail-Adressen (durch Komma, Leerzeichen oder Zeilenumbruch getrennt)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Erstelle einen Standard-Catch-All-Alias (Standardwert: true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Aktivieren Sie den Spam-Scanner-Schutz für Inhalte für Erwachsene"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Aktivieren Sie den Phishing-Schutz des Spam-Scanners."
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Aktivieren Sie den Schutz der ausführbaren Datei des Spam-Scanners."
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Aktivieren Sie den Virenschutz des Spam-Scanners."
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Alias-Empfänger müssen auf den E-Mail-Bestätigungslink klicken"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "MX-Record-Prüfung bei erweiterten Mail-Routing-Konfigurationen ignorieren"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Aktivieren Sie die Option, Header und Metadaten (ohne Nachrichteninhalt) für erfolgreich weitergeleitete, per Webhook gesendete, ausgehende SMTP- und IMAP-E-Mails zu speichern. Die Protokolle werden 7 Tage lang aufbewahrt. Diese Funktion unterstützt Sie bei der Überwachung und Fehlerbehebung der E-Mail-Zustellung durch detaillierte Einblicke in erfolgreiche Übertragungen."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Anzahl der Tage, für die ausgehende SMTP-Protokolle aufbewahrt werden (0–30, Standard: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "Webhook-URL zum Empfangen von Bounce-Ereignissen"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Bounce-Webhook deaktivieren"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Maximales Speicherkontingent pro Alias (z. B. „1 GB“)"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Benutzerdefinierter Port zur Konfiguration der SMTP-Weiterleitung (Standardwert ist '25')."
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Ob der Spam-Scanner-Schutz für Inhalte für Erwachsene auf dieser Domain aktiviert werden soll"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Ob der Phishing-Schutz des Spam-Scanners für diese Domain aktiviert werden soll"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Ob der Schutz vor ausführbaren Spam-Scannern für diese Domain aktiviert werden soll"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Ob der Spam-Scanner-Virenschutz für diese Domain aktiviert werden soll"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Globale Domänenstandardeinstellung dafür, ob Alias-Empfänger einen E-Mail-Bestätigungslink anklicken müssen, damit E-Mails weitergeleitet werden."
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Ob die MX-Record-Prüfung der Domain zur Verifizierung ignoriert werden soll (hauptsächlich bei fortgeschrittenen MX-Routing-Konfigurationen)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Aktivieren Sie die Option, Header und Metadaten (ohne Nachrichteninhalt) für erfolgreich weitergeleitete, per Webhook gesendete, ausgehende SMTP- und IMAP-E-Mails zu speichern. Die Protokolle werden 7 Tage lang aufbewahrt. Diese Funktion unterstützt Sie bei der Überwachung und Fehlerbehebung der E-Mail-Zustellung durch detaillierte Einblicke in erfolgreiche Übertragungen."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Anzahl der Tage, in denen ausgehende SMTP-E-Mails gespeichert werden (0 = sofortige Löschung)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "Webhook-URL zum Empfangen von Bounce-Benachrichtigungen oder „false“ zum Deaktivieren"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Speicherkontingent pro Alias (z. B. '1 GB', umgerechnet in Bytes)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Aliasname (falls nicht angegeben oder leer, wird ein zufälliger Alias generiert)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Durch Zeilenumbrüche/Leerzeichen/Kommas getrennte Zeichenkette gültiger E-Mail-Adressen, FQDNs, IP-Adressen oder Webhook-URLs"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Liste gültiger Empfänger"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Empfängerliste. Falls keine Empfängerliste angegeben oder leer ist, wird standardmäßig die E-Mail-Adresse des Anfragenden verwendet."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeschreibung"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Durch Zeilenumbrüche, Leerzeichen und Kommas getrennte Zeichenkette von Bezeichnungen"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array von Bezeichnungen"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Empfänger müssen auf den Bestätigungslink klicken (Standardeinstellung: Domänenbereich)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Ob dieser Alias aktiviert oder deaktiviert werden soll"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Fehlercode, falls Alias deaktiviert ist. Standardwert: 250"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "IMAP-Speicher für diesen Alias aktivieren oder deaktivieren"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "OpenPGP-Verschlüsselung für diesen Alias aktivieren oder deaktivieren"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP-öffentlicher Schlüssel im ASCII-Armor-Format"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Maximales Speicherkontingent (z. B. „1 GB“)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Urlaubsruffunktion aktivieren oder deaktivieren"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Startdatum (z. B. „JJJJ-MM-TT“) für den Urlaubsbetreuer"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Enddatum (z. B. „JJJJ-MM-TT“) für den Urlaubsbetreuer"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Betreff im Klartext für Urlaubsantwort"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Klartextnachricht für Urlaubsbetreuer"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Aliasname"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Durch Zeilenumbrüche/Leerzeichen/Kommas getrennte Zeichenkette gültiger E-Mail-Adressen, FQDNs, IP-Adressen oder Webhook-URLs"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Liste gültiger Empfänger"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeschreibung"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Durch Zeilenumbrüche, Leerzeichen und Kommas getrennte Zeichenkette von Bezeichnungen"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array von Bezeichnungen"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Empfänger müssen auf den Bestätigungslink klicken (Standardeinstellung: Domänenbereich)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Alias aktivieren oder deaktivieren"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Fehlercode, der verwendet wird, wenn der Alias deaktiviert ist (Standardwert: 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "IMAP-Speicher aktivieren oder deaktivieren"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "OpenPGP-Verschlüsselung aktivieren oder deaktivieren"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP-öffentlicher Schlüssel im ASCII-Armor-Format"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Maximales Speicherkontingent (z. B. „1 GB“)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Urlaubsruffunktion aktivieren oder deaktivieren"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Beginn des Urlaubsvertretungsdienstes (z. B. JJJJ-MM-TT)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Enddatum des Urlaubsvertreters (z. B. JJJJ-MM-TT)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Klartext-Betreff der Urlaubsantwort"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Klartextnachricht des Urlaubsbeantworters"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Ihr neues, individuell festgelegtes Passwort für den Alias"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Das bestehende Passwort für den Alias kann geändert werden, ohne den Postfachspeicher zu löschen."
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Vorhandenes Passwort überschreiben und IMAP-Speicher löschen (mit Vorsicht verwenden)."
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "E-Mail-Adresse zum Senden des Alias-Passworts und der Einrichtungsanleitung"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Aktuelle Anzahl der versendeten E-Mails"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Maximale Anzahl zulässiger E-Mails"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "Mitglieds-ID"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "E-Mail-Adresse des Mitglieds"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Rolle des Mitglieds"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Eingeladene E-Mail-Adresse"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "Seite mit den zurückzugebenden Ergebnissen. Falls nicht angegeben, wird der Wert 1 verwendet. Es muss eine Zahl größer oder gleich 1 sein.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Anzahl der Ergebnisse pro Seite. Standardmäßig werden 25 Ergebnisse angezeigt, falls nicht anders angegeben. Die Zahl muss zwischen 1 und 100 liegen.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Aktivieren Sie die Paginierung vor dem 1. November 2024.",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "Domänen-ID",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "Mitglieds-ID",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "E-Mail-Adresse",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "Kontakt-ID",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "Kalender-ID",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "Ordner-ID oder Pfad",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "Nachrichten-ID",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Konto"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Konto abrufen",
+        "description": "Rufen Sie Ihre Kontoinformationen ab.\n\n**Authentifizierung:** Dieser Endpunkt unterstützt sowohl die Authentifizierung mit API-Token als auch mit Alias-Anmeldeinformationen.\n\n- **Benutzerkonto (API-Token):** Nach erfolgreicher Authentifizierung mit Ihrem API-Token liefert dieser Endpunkt Ihre Benutzerkontoinformationen, einschließlich Tarifdetails, E-Mail-Adresse und API-Token.\n\n- **Alias-Konto (Alias-Anmeldeinformationen):** Nach erfolgreicher Authentifizierung mit Alias-Anmeldeinformationen (E-Mail-Adresse und generiertes Passwort) liefert dieser Endpunkt Alias-/Postfachinformationen, einschließlich Speicherplatznutzung, Speicherkontingent und Postfacheinstellungen. Dies ist für IMAP/POP3/CalDAV/CardDAV-Clients nützlich, um den Speicherstatus zu überprüfen.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Konto"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Konto aktualisieren",
+        "description": "Aktualisieren Sie Ihre Kontoinformationen.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Anzeigename"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Standortpräferenz"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Kontakte"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Kontaktliste",
+        "description": "Ruft eine Liste aller Kontakte des authentifizierten Alias ab. Dieser Endpunkt unterstützt die Paginierung und gibt Kontakte im CardDAV-Format zurück.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Kontakte"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Kontakt erstellen",
+        "description": "Erstellen Sie einen neuen Kontakt. Sie können entweder vCard-Inhalte direkt angeben oder einzelne Kontaktfelder, die in das vCard-Format konvertiert werden. Existiert bereits ein Kontakt mit derselben ID, wird ein Konfliktfehler angezeigt.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Kontakte"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Kontakt abrufen",
+        "description": "Rufen Sie einen bestimmten Kontakt anhand seiner ID ab. Der Kontakt wird im Standard-Kontaktformat mit vCard-Inhalt und analysierten Feldern zurückgegeben.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Kontakte"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Kontakt aktualisieren",
+        "description": "Aktualisieren Sie einen bestehenden Kontakt. Sie können entweder den Inhalt der vCard aktualisieren oder einzelne Felder zur Aktualisierung angeben. Die vCard des Kontakts wird neu generiert, wenn einzelne Felder angegeben werden.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Kontakte"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Kontakt löschen",
+        "description": "Einen bestimmten Kontakt endgültig löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalender"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Kalender auflisten",
+        "description": "Ruft eine Liste aller Kalender für den authentifizierten Alias ab. Dieser Endpunkt unterstützt die Paginierung und gibt Kalender im CalDAV-Format zurück.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Kalender"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Kalender erstellen",
+        "description": "Erstellen Sie einen neuen Kalender. Der Kalendername ist erforderlich, während andere Eigenschaften wie Farbe, Zeitzone und Beschreibung optional sind. Existiert bereits ein Kalender mit demselben Namen, wird ein Konfliktfehler angezeigt.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalender"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Kalender abrufen",
+        "description": "Rufen Sie einen bestimmten Kalender anhand seiner ID ab. Der Kalender wird mit all seinen Eigenschaften zurückgegeben, einschließlich Name, Beschreibung, Farbe, Zeitzone und Reihenfolge.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Kalender"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Kalender aktualisieren",
+        "description": "Aktualisieren Sie einen bestehenden Kalender. Sie können alle Kalendereigenschaften ändern, darunter Name, Beschreibung, Farbe, Zeitzone und Reihenfolge. Wenn Sie einen bereits vorhandenen Namen verwenden, wird ein Konfliktfehler angezeigt.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Kalender"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Kalender löschen",
+        "description": "Löschen Sie einen bestimmten Kalender endgültig. Diese Aktion kann nicht rückgängig gemacht werden und löscht auch alle darin enthaltenen Ereignisse.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenderereignisse"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Kalenderereignisse auflisten",
+        "description": "Ruft eine Liste der Kalenderereignisse für den authentifizierten Alias ab. Dieser Endpunkt unterstützt Paginierung und Filterung nach Kalender, Datumsbereich und Löschstatus.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Ereignisse nach Kalender-ID filtern",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Filterereignisse ab diesem Datum (ISO 8601-Format)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Filtern Sie Ereignisse, die vor diesem Datum enden (ISO 8601-Format)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Beziehen Sie vorläufig gelöschte Ereignisse in die Ergebnisse ein.",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Kalenderereignisse"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Kalenderereignis erstellen",
+        "description": "Erstellen Sie ein neues Kalenderereignis mit iCalendar-Daten. Das Ereignis wird validiert und analysiert, um allgemeine Eigenschaften für den einfachen Zugriff zu extrahieren.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "Kalenderereignis-ID",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenderereignisse"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Kalenderereignis abrufen",
+        "description": "Ein bestimmtes Kalenderereignis kann anhand seiner ID abgerufen werden. Das Ereignis wird mit allen seinen Eigenschaften, einschließlich der analysierten iCalendar-Daten, zurückgegeben.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Kalenderereignisse"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Kalenderereignis aktualisieren",
+        "description": "Aktualisieren Sie ein bestimmtes Kalenderereignis. Sie können die iCalendar-Daten ändern oder das Ereignis in einen anderen Kalender verschieben.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Kalenderereignisse"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Kalenderereignis löschen",
+        "description": "Ein bestimmter Kalendereintrag wird vorläufig gelöscht. Der Eintrag wird als gelöscht markiert, aber nicht endgültig aus der Datenbank entfernt.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Ordner"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Ordner auflisten",
+        "description": "Ruft eine Liste aller IMAP-Ordner/Postfächer für den authentifizierten Alias ab. Dieser Endpunkt unterstützt Paginierung und Filterung nach Abonnementstatus.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Ordner nach Abonnementstatus filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Ordner"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Ordner erstellen",
+        "description": "Erstellen Sie einen neuen IMAP-Ordner bzw. ein neues IMAP-Postfach. Der Ordnerpfad ist erforderlich und kann übergeordnete Ordner enthalten (z. B. „Posteingang/Unterordner“). Falls die übergeordneten Ordner nicht existieren, werden sie automatisch erstellt.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Ordner"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Ordner abrufen",
+        "description": "Rufen Sie einen bestimmten Ordner anhand seiner ID oder seines Pfads ab. Sie können entweder die Objekt-ID des Ordners oder seinen vollständigen Pfad (z. B. „INBOX/Unterordner“) als Kennung verwenden.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Ordner"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Ordner aktualisieren",
+        "description": "Einen vorhandenen Ordner aktualisieren/umbenennen. Dieser Vorgang benennt den Ordner in den neuen Pfad um, der im Anfragetext angegeben ist. Sie können entweder die Objekt-ID des Ordners oder seinen aktuellen Pfad als Kennung verwenden.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Ordner"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Ordner löschen",
+        "description": "Einen bestimmten Ordner endgültig löschen. Dieser Vorgang kann nicht rückgängig gemacht werden und löscht auch alle darin enthaltenen Nachrichten. Sie können entweder die Objekt-ID oder den Pfad des Ordners als Kennung verwenden.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Nachrichten"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Nachrichten auflisten und suchen",
+        "description": "Rufen Sie eine Liste von Nachrichten mit erweiterten Such- und Filterfunktionen ab. Dieser Endpunkt unterstützt die Paginierung und eine umfassende Suche in Nachrichteninhalten, Headern, Flags und Metadaten. Sie können nach Ordner, Flags, Inhalt, Headern, Datumsbereichen, Größe und mehr suchen.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Nachrichten nach Ordnerpfad filtern",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Nach Lesestatus filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Nach markiertem Status filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Nach dem Status „Gelöscht“ filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Nach Entwurfsstatus filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Nach Junk-/Spam-Status filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Nach Kopierstatus filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Nach durchsuchbarem Status filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Nach abgelaufenem Status filtern",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Filtern nach Vorhandensein von Anhängen",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Filtern nach Vorhandensein von Anhängen (Alias für has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Suche im Betreff der Nachricht",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Suche im Nachrichtentext",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Suche im Nachrichtentext (Alias für Nachrichtentext)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Suche in allen Nachrichtenkopfzeilen",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Suche nach Message-ID-Header",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Allgemeine Suche in Überschriften und Text",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Allgemeine Suche (Alias für Suche)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Nachrichten seit diesem Datum filtern (ISO 8601-Format)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Nachrichten vor diesem Datum filtern (ISO 8601-Format)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Nachrichten mit minimaler Größe in Bytes filtern",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Nachrichten mit maximaler Größe in Bytes filtern",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Suche nach Absender-Header",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Suche nach Bis-Überschrift",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Suche nach CC-Header",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Suche nach BCC-Header",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Suche nach Datum (Überschrift)",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Suche nach Antwort-an-Header",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Nachrichten"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Nachricht erstellen",
+        "description": "Erstellt/hängt eine neue Nachricht an einen Ordner an. Dieser Endpunkt akzeptiert das Standard-Nodemailer-Nachrichtenformat und ermöglicht die Angabe des Zielordners und der initialen Flags. Falls der Zielordner nicht existiert, wird er automatisch erstellt.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Nachrichten"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Nachricht abrufen",
+        "description": "Rufen Sie eine bestimmte Nachricht anhand ihrer ID ab. Standardmäßig enthält die Antwort das geparste Nodemailer-Objekt und den unformatierten Nachrichteninhalt. Sie können den Inhalt der Antwort mithilfe von Abfrageparametern steuern.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Gib das rohe EML-Format anstelle von JSON zurück.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Geparstes Nodemailer-Objekt einbinden",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Fügen Sie Anhänge in das Nodemailer-Objekt ein.",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Fügen Sie den Rohnachrichteninhalt hinzu.",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Nachrichten"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Aktualisierungsnachricht",
+        "description": "Aktualisieren Sie eine bestehende Nachricht. Sie können die Nachrichtenkennzeichnungen ändern oder die Nachricht in einen anderen Ordner verschieben. Falls der Zielordner nicht existiert, wird er automatisch erstellt.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Gib das rohe EML-Format anstelle von JSON zurück.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Nachrichten"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Nachricht löschen",
+        "description": "Eine bestimmte Nachricht endgültig löschen. Dieser Vorgang kann nicht rückgängig gemacht werden und entfernt die Nachricht dauerhaft aus dem Speicher. Im Gegensatz zu IMAP-Clients, die Nachrichten üblicherweise in den Papierkorb verschieben, führt dieser Endpunkt eine endgültige Löschung durch.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Download-Protokolle",
+        "description": "**Protokolle herunterladen**\n\nBeschreibung: Unsere API ermöglicht Ihnen das programmgesteuerte Herunterladen von Protokollen für Ihr Konto. Durch das Senden einer Anfrage an diesen Endpunkt werden alle Protokolle Ihres Kontos verarbeitet und Ihnen nach Abschluss als Anhang (Gzip-komprimierte CSV-Datei) per E-Mail zugesendet.\n\nSo können Sie Hintergrundprozesse mit einem Cronjob oder der Node.js-Jobplanungssoftware Bree einrichten, um die Protokolle bei Bedarf abzurufen. Bitte beachten Sie, dass dieser Endpunkt auf 10 Anfragen pro Tag beschränkt ist.\n\nDer Anhang hat die kleingeschriebene Form `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`. Die E-Mail selbst enthält eine kurze Zusammenfassung der abgerufenen Protokolle.",
         "tags": [
-          "Logs"
+          "Protokolle"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Protokolle nach vollqualifizierter Domäne („FQDN“) filtern. Falls keine Domäne angegeben wird, werden alle Protokolle aller Domänen abgerufen.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Protokolle können anhand von E-Mail-Adresse, Domain, Aliasnamen, IP-Adresse oder Datum (Format: MM/JJ, MM/TT/JJ, MM-TT, MM-TT-JJ oder TT.JJ) gesucht werden.",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Suche nach Protokollen anhand einer bestimmten Bounce-Kategorie (z. B. „Blockliste“).",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Suche nach Protokollen anhand eines bestimmten Fehlerantwortcodes (z. B. 421 oder 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Liste der ausgehenden SMTP-E-Mails",
+        "description": "**Ausgehende SMTP-E-Mails auflisten**\n\nBitte beachten Sie, dass dieser Endpunkt keine Werte für die Eigenschaften `message`, `headers` oder `rejectedErrors` einer E-Mail zurückgibt.\n\nUm diese Eigenschaften und ihre Werte abzurufen, verwenden Sie bitte den Endpunkt [E-Mail abrufen](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) mit einer E-Mail-ID.",
         "tags": [
-          "Emails"
+          "E-Mails"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "E-Mails anhand von Metadaten suchen.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "E-Mails anhand des Domainnamens suchen.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sortieren Sie nach einem bestimmten Feld (mit einem Bindestrich davor sortieren, um in umgekehrter Richtung zu sortieren). Standardmäßig wird nach „created_at“ sortiert, falls nicht anders angegeben.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Weitere Informationen finden Sie unter Paginierung.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Weitere Informationen finden Sie unter Paginierung.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Erstellen Sie eine ausgehende SMTP-E-Mail",
+        "description": "Unsere API zur E-Mail-Erstellung basiert auf der Konfiguration der Nachrichtenoptionen von Nodemailer und nutzt diese. Die unten aufgeführten Parameter für den Nachrichtentext finden Sie in der [Nodemailer-Nachrichtenkonfiguration](https://nodemailer.com/message/).\n\nMit Ausnahme von `envelope` und `dkim` (da diese automatisch für Sie konfiguriert werden) unterstützen wir alle Nodemailer-Optionen. Aus Sicherheitsgründen sind die Optionen `disableFileAccess` und `disableUrlAccess` automatisch auf `true` gesetzt.\n\nSie können entweder die Option `raw` mit Ihrer vollständigen E-Mail inklusive Headern übergeben oder die einzelnen Parameter für den Nachrichtentext angeben.\n\nDieser API-Endpunkt kodiert automatisch Emojis in den Headern (z. B. wird eine Betreffzeile wie `Subject: 🤓 Hello` automatisch in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` umgewandelt). Unser Ziel war es, eine extrem entwicklerfreundliche und unkomplizierte E-Mail-API zu entwickeln.\n\n**Authentifizierung:** Dieser Endpunkt unterstützt sowohl die Authentifizierung per API-Token als auch per Alias-Anmeldeinformationen. Sie können sich entweder mit Ihrem API-Schlüssel (empfohlen) oder mit Ihrer Alias-E-Mail-Adresse und dem generierten Passwort authentifizieren. Weitere Informationen finden Sie im Abschnitt „Authentifizierung“ der API-Dokumentation.",
         "tags": [
-          "Emails"
+          "E-Mails"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Limit für ausgehende SMTP-E-Mails festlegen",
+        "description": "Dies ist ein einfacher Endpunkt, der ein JSON-Objekt zurückgibt, das die Werte `count` und `limit` für die Anzahl der täglich ausgehenden SMTP-Nachrichten pro Konto enthält.",
         "tags": [
-          "Emails"
+          "E-Mails"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Ausgehende SMTP-E-Mails abrufen",
+        "description": "Eine bestimmte ausgehende SMTP-E-Mail abrufen.",
         "tags": [
-          "Emails"
+          "E-Mails"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Ausgehende SMTP-E-Mails löschen",
+        "description": "Das Löschen einer E-Mail setzt deren Status auf „Abgelehnt“ (und führt somit dazu, dass sie nicht weiter in der Warteschlange verarbeitet wird), wenn der aktuelle Status „Ausstehend“, „In der Warteschlange“ oder „Zurückgestellt“ lautet. E-Mails werden möglicherweise 30 Tage nach ihrer Erstellung und/oder dem Versand automatisch gelöscht. Daher sollten Sie eine Kopie ausgehender SMTP-E-Mails in Ihrem Client, Ihrer Datenbank oder Ihrer Anwendung speichern. Sie können unsere E-Mail-ID bei Bedarf in Ihrer Datenbank verwenden. Diese ID wird sowohl von den Endpunkten „E-Mail erstellen“ (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) als auch „E-Mail abrufen“ (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) zurückgegeben.",
         "tags": [
-          "Emails"
+          "E-Mails"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Domänen auflisten",
+        "description": "> [!NOTE]\n\nAb dem 1. November 2024 werden die API-Endpunkte für Listendomänen und Listendomänen-Aliase standardmäßig auf maximal 1000 Ergebnisse pro Seite beschränkt sein. Wenn Sie dieses Verhalten bereits jetzt aktivieren möchten, können Sie `?paginate=true` als zusätzlichen Abfrageparameter an die URL der Endpunktabfrage anhängen. Weitere Informationen finden Sie unter Paginierung.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Suche nach Domains anhand von Metadaten.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Suche nach Domains anhand des Domainnamens.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sortieren Sie nach einem bestimmten Feld (mit einem Bindestrich davor sortieren, um in umgekehrter Richtung zu sortieren). Standardmäßig wird nach „created_at“ sortiert, falls nicht anders angegeben.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Weitere Informationen finden Sie unter Paginierung.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Weitere Informationen finden Sie unter Paginierung.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Domäne erstellen",
+        "description": "Erstellt eine neue Domain im System. Über diesen Endpunkt können Sie einen vollqualifizierten Domainnamen (FQDN) oder eine IP-Adresse für die Nutzung mit der Plattform registrieren.\n\nZu den optionalen Konfigurationsoptionen gehören die Zuweisung der Domain zu einem bestehenden Team, die Festlegung eines Tariftyps (z. B. kostenlos, erweiterter Schutz oder Team) und die Konfiguration erweiterter Schutzfunktionen wie Spamfilterung, Virenprüfung und Empfängerverifizierung. Sie können außerdem festlegen, ob standardmäßig ein Catch-All-Alias erstellt werden soll, eine benutzerdefinierte Bounce-Webhook-URL für SMTP-Fehler festlegen und Speicherkontingente für E-Mail-Aliase dieser Domain definieren. Dieser Endpunkt führt die Validierung und Bereitstellung auf Domainebene durch. Wenn die Option `ignore_mx_check` aktiviert ist, wird die MX-Record-Überprüfung übersprungen (nur für erweiterte Routing-Konfigurationen empfohlen). Die Antwort enthält alle Details des erstellten Domain-Objekts, einschließlich der für die Konfiguration benötigten DNS-Einträge.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Domäne abrufen",
+        "description": "Eine bestimmte Domäne abrufen",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Domäne aktualisieren",
+        "description": "Eine bestimmte Domain aktualisieren.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Domäne löschen",
+        "description": "Eine bestimmte Domain löschen.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Domain-Einträge überprüfen",
+        "description": "Überprüfen Sie die DNS-Einträge für eine bestimmte Domain.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Überprüfen Sie die SMTP-Einträge der Domäne.",
+        "description": "Überprüft die SMTP-bezogenen DNS-Einträge für die angegebene Domäne.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Vollständig qualifizierter Domänenname (FQDN) zur Überprüfung",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Erstellen Sie ein domänenweites Catch-All-Passwort",
+        "description": "Erstellt ein domänenweites Standardpasswort. Wird kein Passwort angegeben, wird ein sicheres Zufallspasswort generiert.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "Der Domänenname, für den das Catch-All-Passwort erstellt werden soll"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Ihr neues, individuell festgelegtes Passwort, das als allgemeines Domänenpasswort verwendet werden soll. Lassen Sie dieses Feld leer, um ein sicheres Passwort zu generieren."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Die Beschreibung dient lediglich organisatorischen Zwecken."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Liste der domänenweiten Auffangpasswörter",
+        "description": "Gibt eine Liste der domänenweiten Catch-All-Passwörter zurück, die aktuell für die angegebene Domäne konfiguriert sind.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Vollständig qualifizierter Domänenname (FQDN), für den alle Auffangpasswörter aufgelistet werden sollen",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Entfernen Sie das domänenweite Auffangpasswort.",
+        "description": "Löscht ein domänenweites Catch-All-Passwort mithilfe der angegebenen Token-ID.",
         "tags": [
-          "Domains"
+          "Domänen"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "Der Domänenname, der mit dem Catch-All-Passwort verknüpft ist"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "Die Token-ID des domänenweiten Catch-All-Passworts zum Löschen"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Domain-Einladung annehmen",
+        "description": "Eine Einladung zu einer Domain annehmen.",
         "tags": [
-          "Invites"
+          "Einladungen"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Domain-Einladung erstellen",
+        "description": ">[!IMPORTANT]\n\nWenn der eingeladene Benutzer bereits Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail versendet.",
         "tags": [
-          "Invites"
+          "Einladungen"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "E-Mail-Adresse, an die Mitglieder der Domäne eingeladen werden sollen"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Gruppe, der der Benutzer zur Domänenmitgliedschaft hinzugefügt werden soll (kann entweder `\"admin\"` oder `\"user\"` sein)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Domain-Einladung entfernen",
+        "description": "Eine Einladung zu einer Domain entfernen.",
         "tags": [
-          "Invites"
+          "Einladungen"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "E-Mail-Adresse, die aus der Liste der Domänenmitglieder entfernt werden soll"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Domänenmitglied aktualisieren",
+        "description": "Ein Domänenmitglied aktualisieren.",
         "tags": [
-          "Members"
+          "Mitglieder"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Gruppe, mit der der Benutzer der Domänenmitgliedschaft hinzugefügt werden soll (kann entweder `\"admin\"` oder `\"user\"` sein)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Domänenmitglied entfernen",
+        "description": "Ein Domänenmitglied entfernen.",
         "tags": [
-          "Members"
+          "Mitglieder"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Generieren Sie ein Alias-Passwort",
+        "description": "Generieren Sie ein Passwort für einen Alias. Falls `emailed_instructions` nicht angegeben wird, enthält die Antwort den generierten Benutzernamen und das Passwort.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Vollqualifizierter Domänenname (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Eindeutiger Bezeichner des Alias"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Domänenaliase auflisten",
+        "description": ">[!NOTE]\n\nAb dem 1. November 2024 werden die API-Endpunkte für „Domains auflisten“ und „Domain-Aliase auflisten“ standardmäßig maximal 1000 Ergebnisse pro Seite anzeigen. Wenn Sie dieses Verhalten bereits jetzt aktivieren möchten, können Sie „?paginate=true“ als zusätzlichen Abfrageparameter an die URL der Endpunktabfrage anhängen. Weitere Informationen finden Sie unter Paginierung.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Suche nach Aliasen in einer Domäne anhand von Name, Bezeichnung oder Empfänger (Reguläre Ausdrücke werden unterstützt)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Suche nach Aliasen in einer Domäne anhand des Namens (Reguläre Ausdrücke werden unterstützt)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Suche nach Aliasen in einer Domäne anhand des Empfängers (Reguläre Ausdrücke werden unterstützt)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Sortieren Sie nach einem bestimmten Feld (mit einem einzelnen Bindestrich voranstellen – um in umgekehrter Reihenfolge zu sortieren). Standardmäßig wird nach dem Feld „created_at“ sortiert.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Neuen Domänenalias erstellen",
+        "description": "Erstellen Sie einen neuen Alias für eine bestimmte Domäne.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Domänenalias abrufen",
+        "description": "Einen spezifischen Alias für eine Domäne abrufen.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Domänenalias aktualisieren",
+        "description": "Einen spezifischen Alias für eine Domäne aktualisieren.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Domänenalias löschen",
+        "description": "Einen bestimmten Alias für eine Domäne löschen.",
         "tags": [
-          "Aliases"
+          "Aliase"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "TXT-Datensatz verschlüsseln",
+        "description": "Wir ermöglichen Ihnen die kostenlose Verschlüsselung Ihrer Datensätze, sogar im Gratis-Tarif. Datenschutz sollte keine optionale Funktion sein, sondern integraler Bestandteil aller Produktaspekte. Auf vielfachen Wunsch in der Diskussion zu unseren Datenschutzrichtlinien (https://discuss.privacyguides.net/t/forward-email-email-provider/13370) und in unseren GitHub-Issues (https://github.com/forwardemail/forwardemail.net/issues/254) haben wir diese Funktion hinzugefügt.",
         "tags": [
-          "Encrypt"
+          "Verschlüsseln"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Jeder gültige TXT-Datensatz für weitergeleitete E-Mails (Klartext)"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Konto",
+      "description": "Endpunkte für die Kontoverwaltung"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Protokolle",
+      "description": "Endpunkte für die Protokollverwaltung"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "E-Mails",
+      "description": "E-Mail-Verwaltungs-Endpunkte"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Domänen",
+      "description": "> [!TIP]\n\nDomain-Endpunkte mit dem Domainnamen <code>/v1/domains/:domain\\_name</code> als Endpunkt sind austauschbar mit der Domain-ID <code>:domain\\_id</code>. Das bedeutet, dass Sie die Domain entweder über ihren <code>Name</code>- oder ihren <code>ID</code>-Wert referenzieren können."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Einladungen",
+      "description": "Endpunkte für die Verwaltung von Domäneneinladungen"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Mitglieder",
+      "description": "Endpunkte für die Domänenmitgliedsverwaltung"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Aliase",
+      "description": "Endpunkte für die Domänenaliasverwaltung"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Verschlüsseln",
+      "description": "Verschlüsselungsendpunkte"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Kontakte",
+      "description": "Endpunkte für die Alias-Kontaktverwaltung (CardDAV)\n\n>[!NOTE]\n>Im Gegensatz zu anderen API-Endpunkten benötigen diese die Authentifizierungs-Header „username“ (entspricht dem Alias-Benutzernamen) und „password“ (entspricht dem vom Alias generierten Passwort).\n\n>[!TIP]\n\nDiese Endpunkte bieten vollständige CRUD-Operationen für die Kontaktverwaltung mit vCard-Unterstützung, einschließlich Erstellen, Abrufen, Aktualisieren und Löschen von Kontakten. Sie können entweder vCard-Inhalte direkt oder einzelne Kontaktfelder angeben, die in das vCard-Format konvertiert werden."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Kalender",
+      "description": "Endpunkte zur Verwaltung von Aliaskalendern (CalDAV)\n\n>[!NOTE]\n> Im Gegensatz zu anderen API-Endpunkten benötigen diese die Authentifizierungs-Header „username“ (entsprechend dem Alias-Benutzernamen) und „password“ (entsprechend dem generierten Alias-Passwort).\n\n>[!TIP]\n> Diese Endpunkte bieten eine umfassende Kalenderverwaltung mit Zeitzonen- und Farbunterstützung, einschließlich Erstellung, Abruf, Aktualisierung und Löschung von Kalendern. Kalendernamen sind erforderlich, während andere Eigenschaften wie Farbe, Zeitzone und Beschreibung optional sind."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Kalenderereignisse",
+      "description": "Endpunkte für die Verwaltung von Kalenderereignissen mit Alias (CalDAV)\n\n>[!NOTE]\n> Im Gegensatz zu anderen API-Endpunkten benötigen diese die Authentifizierungs-Header [Authentication](#description/authentication) mit dem Benutzernamen des Alias und dem generierten Passwort des Alias.\n\n>[!TIP]\n\nDiese Endpunkte bieten eine umfassende Kalenderereignisverwaltung mit vollständiger iCalendar-Unterstützung (RFC 5545). Ereignisse werden als iCal-Daten gespeichert und automatisch analysiert, um gängige Eigenschaften wie Zusammenfassung, Beschreibung, Ort und Datum für den einfachen Zugriff zu extrahieren. Ereignisse unterstützen das vorläufige Löschen und können nach Kalender, Datumsbereich und Löschstatus gefiltert werden."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Nachrichten",
+      "description": "Endpunkte für die Verwaltung von Alias-Nachrichten (IMAP/POP3)\n\n>[!NOTE]\n> Im Gegensatz zu anderen API-Endpunkten benötigen diese die Authentifizierungs-Header „username“ (entspricht dem Alias-Benutzernamen) und „password“ (entspricht dem vom Alias generierten Passwort).\n\n>[!TIP]\n\nDiese Endpunkte bieten umfassende Nachrichtenverwaltung mit erweiterten Suchfunktionen. Sie können nach Ordnern, Flags, Inhalten, Headern, Datumsbereichen, Größe und mehr suchen. Nachrichten können im Standard-Nodemailer-Format erstellt werden und unterstützen das Verschieben zwischen Ordnern sowie die Flag-Verwaltung.\n\nBitte stellen Sie sicher, dass Sie die Einrichtungsanweisungen für Ihre Domain befolgt haben. Diese Anweisungen finden Sie in unseren FAQ [Unterstützen Sie den E-Mail-Empfang mit IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Ordner",
+      "description": "Endpunkte zur Verwaltung von Aliasordnern (IMAP/POP3)\n\n>[!TIP]\n\nOrdner-Endpunkte mit dem Ordnerpfad <code>/v1/folders/:path</code> als Endpunkt sind austauschbar mit der Ordner-ID <code>:id</code>. Das bedeutet, Sie können auf den Ordner entweder über seinen <code>Pfad</code> oder seinen <code>ID</code>-Wert zugreifen.\n\n>[!NOTE]\n\nIm Gegensatz zu anderen API-Endpunkten benötigen diese die Authentifizierungs-Header „username“ (entspricht dem Alias-Benutzernamen) und „password“ (entspricht dem vom Alias generierten Passwort).\n\n>[!TIP]\n\nDiese Endpunkte ermöglichen die vollständige Ordnerverwaltung, einschließlich Erstellen, Umbenennen und Löschen. Ordnerpfade können übergeordnete Ordner enthalten (z. B. 'INBOX/Unterordner'), und übergeordnete Ordner werden automatisch erstellt, falls sie nicht existieren."
     }
   ]
 }
-

@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Tervetuloa kattavaan sähköpostin edelleenlähetyksen API-dokumentaatioon. Tämän API:n avulla voit hallita sähköpostin edelleenlähetystä, verkkotunnuksia, aliaksia, lähteviä sähköposteja ja paljon muuta ohjelmallisesti.\n\n## Tärkeimmät ominaisuudet\n* **Verkkotunnusten hallinta:** Luo, hae, päivitä, poista ja vahvista verkkotunnuksia.\n* **Aliasten hallinta:** Hallitse sähköpostialiaksia, mukaan lukien luominen, päivitykset ja vastaanottajien hallinta.\n* **Lähtevät SMTP:** Lähetä sähköposteja SMTP:n kautta, hallitse rajoituksia ja seuraa lähetettyjä sähköposteja.\n* **Tili ja lokit:** Hallitse tilisi tietoja ja lataa toimintalokeja.\n* **Turvallisuus:** Salaa TXT-tietueet ja hallitse verkkotunnuksen jäseniä/kutsuja.\n* **CardDAV-yhteystiedot:** Täydelliset CRUD-toiminnot yhteystietojen hallintaan vCard-tuella.\n* **CalDAV-kalenterit:** Täydellinen kalenterinhallinta aikavyöhyke- ja värituella.\n* **IMAP/POP3-viestit:** Kattava viestien hallinta edistyneillä hakutoiminnoilla.\n* **IMAP/POP3-kansiot:** Täydellinen kansioiden hallinta, mukaan lukien luominen, uudelleennimeäminen ja poistaminen.\n\n## Todennus\nUseimmat päätepisteet vaativat todennuksen **API-avaimella**. Anna API-avain `käyttäjänimenä` perustodennuksen otsikossa ja jätä salasana tyhjäksi.\n\n```http\nValtuutus: Perus QVBJX1RPS0VOOg==\n```\n(Korvaa `API_TOKEN` omalla avaimellasi ennen Base64-koodausta)\n\n**Yhteystietojen, kalentereiden, viestien ja kansioiden** aliaksiin liittyvät päätepisteet vaativat luodun alias-käyttäjätunnuksen ja salasanan perustodennusta varten.\n\n## Virheet\nAPI käyttää HTTP-standarditilakoodeja onnistumisen tai epäonnistumisen osoittamiseen. Virhevastaukset sisältävät JSON-rungon, jossa on `viesti`-kenttä, jossa on virheen tiedot.\n\n| Tilakoodi | Merkitys |\n|--------------|---------------------|\n| 200 | OK |\n| 400 | Virheellinen pyyntö |\n| 401 | Luvaton |\n| 403 | Kielletty |\n| 404 | Ei löydy |\n| 409 | Ristiriita |\n| 412 | Edellytys epäonnistui |\n| 429 | Liian monta pyyntöä |\n| 500 | Sisäinen palvelinvirhe|\n| 501 | Ei toteutettu |\n| 502 | Virheellinen yhdyskäytävä |\n| 503 | Palvelu ei ole käytettävissä |\n| 504 | Yhdyskäytävän aikakatkaisu |\n\n*Jos kohtaat `5xx`-virheen, ota yhteyttä osoitteeseen [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisointi\nAPI-vastaukset käännetään käyttäjän havaitun kieliasetuksen tai `Accept-Language`-otsikon perusteella. Yli 25 kieltä tuetaan.\n\n## Sivutus\nPäätepisteet, jotka palauttavat luetteloita, tukevat sivutusta kyselyparametrien avulla.\n\n| Parametri | Tyyppi | Valinnainen | Kuvaus | Oletusarvo | Rajoitukset |\n|---------------|----------|----------|-----------------------------------------------------------------------|---------|-------------------------|\n| `sivu` | Kokonaisluku | Kyllä | Haettava sivunumero. | 1 | `>= 1` |\n| `limit` | Kokonaisluku | Kyllä | Tulosten määrä sivulla. | 25 | `>= 1`, `<= 100` |\n| `sivutus` | Totuusarvo | Kyllä | Sivutustoiminto käytössä (vaaditaan joillekin päätepisteille ennen 1. marraskuuta 2024). | false | |\n\n**Sivutuksen otsikot:**\n* `X-Page-Count`: Sivujen kokonaismäärä.\n* `X-Page-Current`: Nykyinen sivunumero.\n* `X-Page-Size`: Nykyisellä sivulla olevien kohteiden lukumäärä.\n* `X-Item-Count`: Kohteiden kokonaismäärä kaikilla sivuilla.\n* `Link`: Navigointilinkit (edellinen, seuraava, ensimmäinen, viimeinen).\n\n**Esimerkki:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Suositellut kirjastot\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Ylläpitää Forward Email)\n* **Siirry:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "Sähköpostin edelleenlähetys-API-palvelin"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "Käytä API-avaintasi **käyttäjätunnuksena** perustodennuksessa. Jätä salasana-kenttä tyhjäksi.\n\n**Esimerkki:**\nJos API-avaimesi on `OMA_API_AVAIMESI`, `Valtuutus`-otsikon Base64-koodattu arvo olisi `echo -n \"OMA_API_AVAIMESI:\" | base64`.\n\n```http\nValtuutus: Perus WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Käytä luotua **alias-käyttäjätunnusta ja -salasanaa** perustodennukseen. Tämä koskee päätepisteitä seuraavissa:\n* Alias-yhteystiedot (CardDAV)\n* Alias-kalenterit (CalDAV)\n* Alias-viestit (IMAP/POP3)\n* Alias-kansiot (IMAP/POP3)\n\n**Esimerkki:**\nJos alias-käyttäjätunnus on `alias@domain.com` ja salasana on `GENERATED_PASSWORD`, Base64-koodattu arvo olisi `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nValtuutus: Perus YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Virheilmoitus"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "Alias-tunnus"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Objektityyppi"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Alias-nimi (sähköpostin paikallinen osa)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Koko alias-sähköpostiosoite"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "Verkkotunnustunnus"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Verkkotunnus"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Tämän aliaksen/postilaatikon käyttämä tallennustila tavuina"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Tämän aliaksen/postilaatikon tallennuskiintiö tavuina"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "Onko IMAP käytössä tälle aliakselle"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Onko PGP-salaus käytössä"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP-julkinen avain, jos saatavilla"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Kielikohtainen asetus"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Luonnin aikaleima"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Viimeisimmän päivityksen aikaleima"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "Yhteyshenkilön tunnus (contact_id CardDAVista)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Yhteyshenkilön UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Yhteyshenkilön koko nimi"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-sisältö"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag versiointia varten"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Onko yhteystieto ryhmä"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Sähköpostiosoitteiden taulukko"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Puhelinnumeroiden taulukko"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard-sisältö (jos sitä ei anneta, se luodaan muista kentistä)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Yhteyshenkilön koko nimi"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "Mukautettu yhteyshenkilön tunnus (jos sitä ei anneta, se luodaan automaattisesti)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "Yhteyshenkilön UID (jos sitä ei anneta, se luodaan automaattisesti)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Sähköpostiosoitteiden taulukko"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Puhelinnumeroiden taulukko"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Puhelinnumeroiden taulukko (alias puhelinnumeroille)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Osoitetaulukko"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Onko yhteystieto ryhmä"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-sisältö"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Yhteyshenkilön koko nimi"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Sähköpostiosoitteiden taulukko"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Puhelinnumeroiden taulukko"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Puhelinnumeroiden taulukko (alias puhelinnumeroille)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Osoitetaulukko"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Onko yhteystieto ryhmä"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "Kalenteritunnus (calendarId CalDAV:sta)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalenterin nimi"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenterin kuvaus"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenterin väri (heksadesimaalimuoto)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenterin aikavyöhyke"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Kalenterin näyttöjärjestys"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalenterin nimi"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "Mukautetun kalenterin tunnus (jos sitä ei anneta, se luodaan automaattisesti)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenterin kuvaus"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Kalenterin väri (heksadesimaalimuodossa, jos sitä ei anneta, luodaan automaattisesti)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Kalenterin aikavyöhyke (oletusarvoisesti käyttäjän aikavyöhyke tai UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Kalenterin näyttöjärjestys (oletusarvo on 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalenterin nimi"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenterin kuvaus"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenterin väri (heksadesimaalimuoto)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenterin aikavyöhyke"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Kalenterin näyttöjärjestys"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "Kalenteritapahtuman tunnus (eventId CalDAVista)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "Tämän tapahtuman kalenterin tunnus"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "iCalendar (RFC 5545) -tiedot tapahtumalle"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Tapahtuman otsikko/yhteenveto (poimittu iCal-datasta)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Tapahtuman kuvaus (poimittu iCal-datasta)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Tapahtumapaikka (ote iCal-datasta)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Tapahtuman alkamispäivämäärä/-aika (poimittu iCal-tiedoista)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Tapahtuman päättymispäivämäärä/-aika (poimittu iCal-tiedoista)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "iCal-datan yksilöllinen tunniste"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Tapahtuman tila (ote iCal-tiedoista)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Tapahtuman järjestäjä (poimittu iCal-datasta)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Pehmeän poiston aikaleima"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "Sen kalenterin tunnus, johon tapahtuma lisätään"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "Mukautettu tapahtumatunnus (jos sitä ei anneta, se luodaan automaattisesti)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "Tapahtuman iCalendar (RFC 5545) -tiedot. Tiedon on oltava kelvollisessa iCal-muodossa."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Siirrä tapahtuma eri kalenteriin"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Päivitetty iCalendar (RFC 5545) -tiedot tapahtumalle"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "Kansion tunnus"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Koko kansion polku"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Kansion nimi (polun viimeinen osa)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Yläkansion polku"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "IMAP UID:n voimassaolo"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Seuraava UID-arvo"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Muokkausindeksi"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Onko kansio tilattu"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Kansioiden liput"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Viestin säilytysaika"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Erityiskäyttönimitys"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Kansion polku/nimi"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Uusi kansiopolku/nimi"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "Viestin tunnus"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "Säikeiden juuriviestin tunnus"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "Viestin sisältävän kansion tunnus"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Viestin sisältävä kansiopolku"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "Keskusteluryhmittelyn ketjun tunnus"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Viesti-ID-otsikkoarvo"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Onko viesti lukematon"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Onko viesti merkitty lipulla"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Poistetaanko viesti"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Onko viesti luonnos"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Onko viesti roskapostia/roskapostia"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Kopioidaanko viesti"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Onko viesti haettavissa"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Onko viesti vanhentunut"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Onko viestissä liitteitä"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Viestin säilytyspäivämäärä"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Sisäinen päivämäärä (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Viestiotsikoiden päivämäärä"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Viestin aihe"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP-liput"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Viestin koko tavuina"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "IMAP-UID"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Muokkausjärjestys"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Transaktiotyyppi"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Etä-IP-osoite"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Viestin luomisen aikaleima"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Viestin viimeisimmän päivityksen aikaleima"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Jäsennetyn viestin objekti (sisältyy oletuksena, aseta ?nodemailer=false poisjättämiseksi)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Raaka viestisisältö (sisältyy oletuksena, aseta ?raw=false poisjättämiseksi)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "Lähettäjän sähköpostiosoite"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "Vastaanottajien sähköpostiosoitteet"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "Kopion vastaanottajien sähköpostiosoitteet"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "Piilokopion vastaanottajien sähköpostiosoitteet"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Viestin aihe"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Pelkkä tekstisisältö"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML-sisältö"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Viestin liitteet (Nodemailer-muodossa)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Kohdekansio (oletuksena INBOX)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "Viestille asetettavat IMAP-liput"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "Viestille asetettavat IMAP-liput"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Siirrä viesti tähän kansioon"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Lähettäjän sähköpostiosoite (sen on oltava verkkotunnuksen alias)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Pilkuilla erotettu luettelo tai vastaanottajien taulukko Vastaanottaja-otsikkoa varten."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Pilkuilla erotettu luettelo tai vastaanottajien taulukko 'Kopio'-otsikkoa varten."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Pilkuilla erotettu luettelo tai vastaanottajien taulukko 'Piilokopio'-otsikkoa varten."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Sähköpostin aihe."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "Viestin selkokielinen versio."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "Viestin HTML-versio."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "Liitetiedostojen objekteja sisältävä taulukko (katso Nodemailerin yleiset kentät)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "Lähettäjä-otsikon sähköpostiosoite."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "Vastaa-otsikon sähköpostiosoite."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "Viesti-ID, johon viesti on vastaus."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Välilyönneillä erotettu luettelo tai viestitunnusten taulukko."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Jos arvo on true, muuntaa HTML-sisällön data:-kuvat upotetuiksi liitteiksi."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Viestin Apple Watch -kohtainen HTML-versio."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL-viestin HTML-versio."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "iCalendar-tapahtuma vaihtoehtoisena viestisisältönä."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "Vaihtoehtoisten viestien sisältöjen kokoelma."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Tekstin ja HTML-merkkijonojen koodaus (esim. 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Mukautettu RFC822-muotoiltu viesti (Nodemailer-generoinnin sijaan)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Tekstiarvoille pakotettu koodaus."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Sähköpostin prioriteettitaso."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Objekti tai lisäotsikkokenttien taulukko."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Valinnainen viestitunnus 'Viestitunnus'-otsikkoa varten."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Valinnainen päivämääräotsikko. Ei voi olla yli 30 päivää tulevaisuudessa."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "List-*-otsikoiden valinnainen objekti."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Täydellinen verkkotunnusnimi (FQDN) tai IP-osoite"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Määritä samaan tiimiin toisesta verkkotunnuksesta; voi olla verkkotunnustunnus tai täydellinen verkkotunnus (FQDN). Käytä arvoa \"ei mitään\", jos haluat poistaa sen käytöstä erikseen."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Sopimuksen tyyppi (oletuksena 'ilmainen' tai käyttäjän nykyinen maksullinen paketti)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Erotinmerkein eroteltu sähköpostiosoitteiden luettelo (pilkulla, välilyönnillä tai rivinvaihdolla erotettuna)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Luo oletusarvoinen keräilyalias (oletusarvo on true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Ota käyttöön roskapostiskannerin aikuisille tarkoitetun sisällön suojaus"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Ota käyttöön roskapostiskannerin tietojenkalastelusuojaus"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Ota käyttöön roskapostiskannerin suoritettavan tiedoston suojaus"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Ota käyttöön roskapostiskannerin virustorjunta"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Vaadi alias-vastaanottajia napsauttamaan sähköpostiosoitteen vahvistuslinkkiä"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "Ohita MX-tietueiden tarkistus sähköpostin reitityksen lisäasetuksissa"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Valitse, että onnistuneesti edelleenlähetettyjen, webhook-lähetettyjen, lähtevien SMTP- ja IMAP-toimitettujen sähköpostien otsikot ja metatiedot (viestin sisältöä lukuun ottamatta) tallennetaan. Lokit säilytetään 7 päivää. Tämä ominaisuus auttaa sinua valvomaan ja vianmäärittämään sähköpostin toimituksen suorituskykyä tarjoamalla yksityiskohtaisia tietoja onnistuneista lähetyksistä."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Lähtevien SMTP-lokien säilytyspäivien määrä (0–30, oletusarvo: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "Webhookin URL-osoite palautustapahtumien vastaanottamiseksi"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Poista käytöstä palautuswebhook"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Tallennustilan enimmäiskiintiö aliasta kohden (esim. '1 Gt')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Mukautettu portti SMTP-edelleenlähetystä varten (oletus on '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Otetaanko käyttöön roskapostiskannerin aikuisille suunnatun sisällön suojaus tällä verkkotunnuksella"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Otetaanko roskapostiskannerin tietojenkalastelusuoja käyttöön tässä verkkotunnuksessa"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Otetaanko käyttöön roskapostiskannerin suoritettavan tiedoston suojaus tällä verkkotunnuksella"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Otetaanko roskapostiskannerin virustorjunta käyttöön tässä verkkotunnuksessa"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Globaali toimialueen oletusasetus sille, vaaditaanko aliasvastaanottajilta sähköpostin vahvistuslinkin napsauttamista sähköpostien kulkemiseksi"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Ohitetaanko verkkotunnuksen MX-tietueen tarkistus vahvistusta varten (pääasiassa edistyneissä MX-reititysasetuksissa)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Valitse, että onnistuneesti edelleenlähetettyjen, webhook-lähetettyjen, lähtevien SMTP- ja IMAP-toimitettujen sähköpostien otsikot ja metatiedot (viestin sisältöä lukuun ottamatta) tallennetaan. Lokit säilytetään 7 päivää. Tämä ominaisuus auttaa sinua valvomaan ja vianmäärittämään sähköpostin toimituksen suorituskykyä tarjoamalla yksityiskohtaisia tietoja onnistuneista lähetyksistä."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Lähtevien SMTP-sähköpostien tallennuspäivien määrä (0 = tyhjennä välittömästi)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "Webhookin URL-osoite palautusilmoitusten vastaanottamista varten tai false niiden poistamiseksi käytöstä"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Tallennuskiintiö aliasta kohden (esim. '1 Gt', jäsennettynä tavuiksi)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Alias-nimi (jos sitä ei anneta tai jos se on tyhjä, luodaan satunnainen alias)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Rivinvaihdolla/välilyönnillä/pilkulla erotettu merkkijono kelvollisista sähköpostiosoitteista, FQDN-osoitteista, IP-osoitteista tai webhook-URL-osoitteista"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Kelvollisten vastaanottajien taulukko"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Vastaanottajien luettelo. Jos sitä ei anneta tai se on tyhjä, oletuksena käytetään pyytäjän sähköpostiosoitetta."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Alias-kuvaus"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Rivinvaihdolla/välilyönnillä/pilkulla erotettu otsikkomerkkijono"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Tarrataulukko"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Vaadi vastaanottajia napsauttamaan vahvistuslinkkiä (oletusarvoisesti verkkotunnusasetus)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Otetaanko tämä alias käyttöön vai poistetaanko se käytöstä"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Virhekoodi, jos alias on poistettu käytöstä. Oletusarvo on 250."
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "Ota IMAP-tallennus käyttöön tai poista se käytöstä tälle aliakselle"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "Ota OpenPGP-salaus käyttöön tai poista se käytöstä tälle aliakselle"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP julkinen avain ASCII Armor -muodossa"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Tallennustilan enimmäiskiintiö (esim. 1 Gt)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Lomaviestin ottaminen käyttöön tai poistaminen käytöstä"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Lomaviestin aloituspäivämäärä (esim. 'VVVV-KK-PP')"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Lomaviestin päättymispäivämäärä (esim. 'VVVV-KK-PP')"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Lomaviestin selkokielinen aihe"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Lomavastaajan selkokielinen viesti"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Alias-nimi"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Rivinvaihdolla/välilyönnillä/pilkulla erotettu merkkijono kelvollisista sähköpostiosoitteista, FQDN-osoitteista, IP-osoitteista tai webhook-URL-osoitteista"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Kelvollisten vastaanottajien taulukko"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Alias-kuvaus"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Rivinvaihdolla/välilyönnillä/pilkulla erotettu otsikkomerkkijono"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Tarrataulukko"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Vaadi vastaanottajia napsauttamaan vahvistuslinkkiä (oletusarvoisesti verkkotunnusasetus)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Alias-ominaisuuden ottaminen käyttöön tai poistaminen käytöstä"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Virhekoodi, jota käytetään, jos alias on poistettu käytöstä (oletusarvo on 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "IMAP-tallennuksen ottaminen käyttöön tai poistaminen käytöstä"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "OpenPGP-salaus käyttöön tai poista se käytöstä"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP julkinen avain ASCII Armor -muodossa"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Tallennustilan enimmäiskiintiö (esim. 1 Gt)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Lomaviestin ottaminen käyttöön tai poistaminen käytöstä"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Lomavastaajan aloituspäivämäärä (esim. VVVV-KK-PP)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Lomavastaajan päättymispäivä (esim. VVVV-KK-PP)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Lomaviestin selkokielinen otsikko"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Lomavastaajan selkokielinen viesti"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Uusi mukautettu salasanasi aliakselle"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Aliaksen olemassa oleva salasana, jotta sitä voidaan vaihtaa poistamatta postilaatikon tallennustilaa"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Ohita olemassa oleva salasana ja poista IMAP-tallennustila (käytä varoen)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "Sähköpostiosoite, johon lähetetään aliaksen salasana ja asennusohjeet"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Lähetettyjen sähköpostien nykyinen määrä"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Sähköpostien enimmäismäärä"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "Jäsentunnus"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "Jäsenen sähköpostiosoite"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Jäsenen rooli"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Kutsuttu sähköpostiosoite"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "Palautettava tulossivu. Jos arvoa ei ole määritetty, arvo on 1. Luvun on oltava suurempi tai yhtä suuri kuin 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Sivua kohden palautettavien tulosten määrä. Oletusarvo on 25, jos sitä ei ole määritetty. Luvun on oltava suurempi tai yhtä suuri kuin 1 ja pienempi tai yhtä suuri kuin 100.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Ota sivutus käyttöön ennen 1. marraskuuta 2024",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "Verkkotunnustunnus",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "Alias-tunnus",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "Jäsentunnus",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "Sähköpostiosoite",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "Yhteyshenkilön tunnus",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "Kalenterin tunnus",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "Kansion tunnus tai polku",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "Viestin tunnus",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Tili"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Nouda tili",
+        "description": "Hae tilitietosi.\n\n**Todennus:** Tämä päätepiste tukee sekä API-token-todennusta että alias-tunnistetietojen todennusta.\n\n- **Käyttäjätili (API-token):** Kun todennus tehdään API-tokenilla, tämä päätepiste palauttaa käyttäjätilisi tiedot, mukaan lukien sopimuksen tiedot, sähköpostiosoite ja API-token.\n\n- **Alias-tili (alias-tunnistetiedot):** Kun todennus tehdään alias-tunnistetiedoilla (sähköpostiosoite ja luotu salasana), tämä päätepiste palauttaa alias-/postilaatikkotiedot, mukaan lukien käytetyn tallennustilan, tallennuskiintiön ja postilaatikon asetukset. Tämä on hyödyllistä IMAP/POP3/CalDAV/CardDAV-asiakkaille tallennustilan tilan tarkistamiseen.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Tili"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Päivitä tili",
+        "description": "Päivitä tilitietosi.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Näyttönimi"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Kielikohtainen asetus"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Yhteystiedot"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Listaa yhteystiedot",
+        "description": "Hae luettelo kaikista todennetun aliaksen yhteystiedoista. Tämä päätepiste tukee sivutusta ja palauttaa yhteystiedot CardDAV-muodossa.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Yhteystiedot"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Luo yhteystieto",
+        "description": "Luo uusi yhteystieto. Voit antaa joko vCard-sisällön suoraan tai yksittäisiä yhteystietokenttiä, jotka muunnetaan vCard-muotoon. Jos samalla tunnuksella varustettu yhteystieto on jo olemassa, palautetaan ristiriitavirhe.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Yhteystiedot"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Hae yhteystieto",
+        "description": "Hae tietty yhteystieto sen tunnuksen perusteella. Yhteystieto palautetaan vakiomuotoisessa yhteystietomuodossa, jossa on vCard-sisältöä ja jäsennetyt kentät.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Yhteystiedot"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Päivitä yhteystieto",
+        "description": "Päivitä olemassa oleva yhteystieto. Voit antaa joko päivitetyn vCard-sisällön tai yksittäisiä päivitettäviä kenttiä. Yhteystiedon vCard luodaan uudelleen, jos yksittäisiä kenttiä annetaan.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Yhteystiedot"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Poista yhteystieto",
+        "description": "Poista tietty yhteystieto pysyvästi. Tätä toimintoa ei voi perua.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalenterit"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Listaa kalenterit",
+        "description": "Hae luettelo kaikista todennetun aliaksen kalentereista. Tämä päätepiste tukee sivutusta ja palauttaa kalenterit CalDAV-muodossa.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Kalenterit"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Luo kalenteri",
+        "description": "Luo uusi kalenteri. Kalenterin nimi on pakollinen, kun taas muut ominaisuudet, kuten väri, aikavyöhyke ja kuvaus, ovat valinnaisia. Jos samanniminen kalenteri on jo olemassa, palautetaan ristiriitavirhe.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalenterit"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Hae kalenteri",
+        "description": "Hae tietty kalenteri sen tunnuksen perusteella. Kalenteri palautetaan kaikkien ominaisuuksiensa, kuten nimen, kuvauksen, värin, aikavyöhykkeen ja järjestyksen, kanssa.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Kalenterit"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Päivitä kalenteri",
+        "description": "Päivitä olemassa oleva kalenteri. Voit päivittää mitä tahansa kalenterin ominaisuuksia, kuten nimen, kuvauksen, värin, aikavyöhykkeen ja järjestyksen. Jos muutat nimen jo olemassa olevaan nimeen, saat ristiriitavirheen.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Kalenterit"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Poista kalenteri",
+        "description": "Poista tietty kalenteri pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa myös kaikki kalenterin tapahtumat.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenteritapahtumat"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Listaa kalenteritapahtumat",
+        "description": "Hae luettelo todennetun aliaksen kalenteritapahtumista. Tämä päätepiste tukee sivutusta ja suodattamista kalenterin, päivämääräalueen ja poistotilan mukaan.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Suodata tapahtumat kalenteritunnuksen mukaan",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Suodata tapahtumat tästä päivämäärästä alkaen (ISO 8601 -muoto)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Suodata tapahtumat, jotka päättyvät ennen tätä päivämäärää (ISO 8601 -muoto)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Sisällytä pehmeästi poistetut tapahtumat tuloksiin",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Kalenteritapahtumat"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Luo kalenteritapahtuma",
+        "description": "Luo uusi kalenteritapahtuma iCalendar-datalla. Tapahtuma validoidaan ja jäsennetään yleisten ominaisuuksien poimimiseksi helppoa käyttöä varten.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "Kalenteritapahtuman tunnus",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenteritapahtumat"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Hae kalenteritapahtuma",
+        "description": "Hae tietty kalenteritapahtuma sen tunnuksen perusteella. Tapahtuma palautetaan kaikkine ominaisuuksineen, mukaan lukien jäsennetyt iCalendar-tiedot.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Kalenteritapahtumat"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Päivitä kalenteritapahtuma",
+        "description": "Päivitä tietty kalenteritapahtuma. Voit muokata iCalendar-tietoja tai siirtää tapahtuman toiseen kalenteriin.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Kalenteritapahtumat"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Poista kalenteritapahtuma",
+        "description": "Poista tietty kalenteritapahtuma automaattisesti. Tapahtuma merkitään poistetuksi, mutta sitä ei poisteta pysyvästi tietokannasta.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Kansiot"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Listaa kansiot",
+        "description": "Hae luettelo kaikista todennetun aliaksen IMAP-kansioista/postilaatikoista. Tämä päätepiste tukee sivutusta ja suodattamista tilaustilan mukaan.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Suodata kansiot tilaustilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Kansiot"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Luo kansio",
+        "description": "Luo uusi IMAP-kansio/postilaatikko. Kansiopolku on pakollinen ja voi sisältää ylätason kansioita (esim. 'SAAPUNEET/Alikansio'). Jos ylätason kansioita ei ole, ne luodaan automaattisesti.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Kansiot"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Noutokansio",
+        "description": "Hae tietty kansio sen tunnuksen tai polun perusteella. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen koko polkua (esim. 'INBOX/Subfolder').",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Kansiot"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Päivitä kansio",
+        "description": "Päivitä/nimeä uudelleen olemassa oleva kansio. Tämä toiminto nimeää kansion uudelleen pyynnön rungossa määritetyn uuden polun mukaisesti. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen nykyistä polkua.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Kansiot"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Poista kansio",
+        "description": "Poista tietty kansio pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa myös kaikki kansiossa olevat viestit. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen polkua.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Viestit"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Listaa ja hae viestejä",
+        "description": "Hae viestiluettelo edistyneiden haku- ja suodatusominaisuuksien avulla. Tämä päätepiste tukee sivutusta ja kattavaa hakua viestien sisällöstä, otsikoista, lipuista ja metatiedoista. Voit hakea kansion, lippujen, sisällön, otsikoiden, päivämäärävälien, koon ja muiden ominaisuuksien mukaan.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Suodata viestit kansion polun mukaan",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Suodata lukutilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Suodata merkityn tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Suodata poistetun tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Suodata luonnostilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Suodata roskapostin tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Suodata kopioinnin tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Suodata haettavan tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Suodata vanhentuneen tilan mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Suodata liitteen läsnäolon mukaan",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Suodata liitteen läsnäolon mukaan (alias liitteelle has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Hae viestin aiheesta",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Hae viestin rungosta/tekstistä",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Hae viestin tekstistä (alias viestin rungolle)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Hae kaikista viestiotsikoista",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Hae viesti-ID-otsikon perusteella",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Yleinen haku otsikoista ja tekstistä",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Yleinen haku (haun alias)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Suodata viestit tästä päivämäärästä lähtien (ISO 8601 -muoto)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Suodata viestit ennen tätä päivämäärää (ISO 8601 -muoto)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Suodata viestit vähimmäiskoon mukaan tavuina",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Suodata viestit, joiden koko on tavuina suurin mahdollinen",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Hae Lähettäjä-otsikon mukaan",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Hae Vastaanottaja-otsikon mukaan",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Hae CC-otsikon perusteella",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Hae piilokopio-otsikon perusteella",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Hae päivämäärän mukaan -otsikko",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Hae vastausotsikon perusteella",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Viestit"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Luo viesti",
+        "description": "Luo/lisää uusi viesti kansioon. Tämä päätepiste hyväksyy Nodemailer-viestin standardimuodon ja antaa sinun määrittää kohdekansion ja alkumerkinnät. Jos kohdekansiota ei ole, se luodaan automaattisesti.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Viestit"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Nouda viesti",
+        "description": "Hae tietty viesti sen ID:n perusteella. Oletusarvoisesti vastaus sisältää jäsennetyn Nodemailer-objektin ja raakaviestin sisällön. Voit hallita sisällytettäviä tietoja kyselyparametrien avulla.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Palauttaa raaka EML-muodon JSON-muodon sijaan",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Sisällytä jäsennetyn Nodemailer-objektin",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Sisällytä liitteet Nodemailer-objektiin",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Sisällytä viestin raakasisältö",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Viestit"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Päivitä viesti",
+        "description": "Päivitä olemassa oleva viesti. Voit muokata viestin merkintöjä tai siirtää sen toiseen kansioon. Jos kohdekansiota ei ole olemassa, se luodaan automaattisesti.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Palauttaa raaka EML-muodon JSON-muodon sijaan",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Viestit"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Poista viesti",
+        "description": "Poista tietty viesti pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa viestin pysyvästi tallennustilasta. Toisin kuin IMAP-asiakasohjelmat, jotka yleensä siirtävät viestit roskakoriin, tämä päätepiste suorittaa pysyvän poiston.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Lataa lokit",
+        "description": "**Lataa lokeja**\n\nKuvaus: API-rajapintamme avulla voit ladata lokeja tilillesi ohjelmallisesti. Lähettämällä pyynnön tähän päätepisteeseen, kaikki tilisi lokit käsitellään ja lähetetään sinulle sähköpostiliitteenä (Gzip-pakattu CSV-taulukkotiedosto) valmistuttua.\n\nTämän avulla voit luoda taustatöitä Cron-työllä tai Node.js-työaikataulutusohjelmisto Breen avulla lokien vastaanottamiseen milloin tahansa. Huomaa, että tämä päätepiste on rajoitettu 10 pyyntöön päivässä.\n\nLiite on muotoa `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` pienellä kirjaimella, ja itse sähköposti sisältää lyhyen yhteenvedon noudetuista lokeista.",
         "tags": [
-          "Logs"
+          "Lokit"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Suodata lokit täysin pätevän verkkotunnuksen (\"FQDN\") mukaan. Jos sitä ei anneta, kaikkien verkkotunnusten kaikki lokit noudetaan.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Hae lokeja sähköpostiosoitteen, verkkotunnuksen, aliaksen, IP-osoitteen tai päivämäärän (muodossa KK/V, KK/PP/VV, KK-PP, KK-PP-VV tai KK.P.VV) mukaan.",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Hae lokeja tietyn palautusluokan mukaan (esim. \"estolista\").",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Hae lokeja tietyn virhevastauskoodin perusteella (esim. 421 tai 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Listaa lähtevät SMTP-sähköpostit",
+        "description": "**Listaa lähtevät SMTP-sähköpostit**\n\nHuomaa, että tämä päätepiste ei palauta ominaisuusarvoja sähköpostin viestille, otsikoille tai hylätyille virheille.\n\nPalautaaksesi nämä ominaisuudet ja niiden arvot, käytä [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) -päätepistettä ja sähköpostiosoitetta.",
         "tags": [
-          "Emails"
+          "Sähköpostit"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "Hae sähköposteja metatietojen perusteella.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "Hae sähköposteja verkkotunnuksen perusteella.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Lajittele tietyn kentän mukaan (lisää etuliite yhdellä yhdysmerkillä, jos haluat lajitella kentän vastakkaiseen suuntaan). Oletusarvo on created_at, jos sitä ei ole asetettu.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Katso lisätietoja kohdasta Sivutus.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Katso lisätietoja kohdasta Sivutus.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Luo lähtevä SMTP-sähköposti",
+        "description": "Sähköpostin luomiseen tarkoitettu API-rajapintamme on saanut inspiraationsa Nodemailerin viestiasetusten määrityksestä ja hyödyntää sitä. Käytä [Nodemailerin viestiasetuksia](https://nodemailer.com/message/) kaikkien alla olevien runkoparametrien osalta.\n\nHuomaa, että lukuun ottamatta `envelope`- ja `dkim`-parametreja (koska asetamme ne automaattisesti puolestasi), tuemme kaikkia Nodemailerin asetuksia. Asetamme `disableFileAccess`- ja `disableUrlAccess`-asetukset automaattisesti arvoon `true` turvallisuussyistä.\n\nSinun tulisi joko antaa yksittäinen `raw`-asetus raakasähköpostiviestisi kanssa, mukaan lukien otsikot, tai antaa yksittäiset runkoparametriasetukset alla.\n\nTämä API-päätepiste koodaa emojeja automaattisesti, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteenamme oli luoda erittäin kehittäjäystävällinen ja testeiltä suojattu sähköposti-API.\n\n**Todennus:** Tämä päätepiste tukee sekä API-token-todennusta että alias-tunnistetietojen todennusta. Voit todentaa itsesi joko API-avaimellasi (suositus) tai alias-sähköpostiosoitteellasi ja luodulla salasanallasi. Katso lisätietoja API-dokumentaation Todennus-osiosta.",
         "tags": [
-          "Emails"
+          "Sähköpostit"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Hanki lähtevän SMTP-sähköpostin rajoitus",
+        "description": "Tämä on yksinkertainen päätepiste, joka palauttaa JSON-objektin, joka sisältää tilikohtaisesti päivittäisten SMTP-lähtevien viestien lukumäärän `count`- ja `limit`-arvot.",
         "tags": [
-          "Emails"
+          "Sähköpostit"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Hae lähtevä SMTP-sähköposti",
+        "description": "Hae tietty lähtevä SMTP-sähköposti.",
         "tags": [
-          "Emails"
+          "Sähköpostit"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Poista lähtevä SMTP-sähköposti",
+        "description": "Sähköpostin poistaminen asettaa tilan tilaan \"hylätty\" (eikä sitä myöhemmin käsitellä jonossa) vain ja ainoastaan, jos nykyinen tila on \"odottaa\", \"jonossa\" tai \"lykätty\". Saatamme poistaa sähköposteja automaattisesti 30 päivän kuluttua niiden luomisesta ja/tai lähettämisestä – siksi sinun tulee säilyttää kopio lähtevistä SMTP-sähköposteista sähköpostiohjelmassasi, tietokannassasi tai sovelluksessasi. Voit halutessasi viitata sähköpostitunnukseemme tietokannassasi – tämä arvo palautetaan sekä [Luo sähköposti](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) että [Hae sähköposti](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) -päätepisteistä.",
         "tags": [
-          "Emails"
+          "Sähköpostit"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Listaa verkkotunnukset",
+        "description": "> [!NOTE]\n>1. marraskuuta 2024 alkaen lista-alueiden ja lista-alueiden aliaksien API-päätepisteiden oletusarvo on enintään 1000 tulosta sivua kohden. Jos haluat ottaa tämän käyttöön jo aiemmin, voit antaa `?paginate=true`-parametrin päätepistekyselyn URL-osoitteelle lisäkyselymerkkijonoparametrina. Lisätietoja on kohdassa Sivutus.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Hae verkkotunnuksia metatietojen perusteella.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Hae verkkotunnuksia verkkotunnuksen nimellä.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Lajittele tietyn kentän mukaan (lisää etuliite yhdellä yhdysmerkillä, jos haluat lajitella kentän vastakkaiseen suuntaan). Oletusarvo on created_at, jos sitä ei ole asetettu.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Katso lisätietoja kohdasta Sivutus.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Katso lisätietoja kohdasta Sivutus.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Luo verkkotunnus",
+        "description": "Luo järjestelmään uuden verkkotunnuksen. Tämän päätepisteen avulla voit rekisteröidä täysin pätevän verkkotunnuksen (FQDN) tai IP-osoitteen käytettäväksi alustan kanssa.\n\nValinnaisia määritysvaihtoehtoja ovat verkkotunnuksen määrittäminen olemassa olevalle tiimille, suunnitelman tyypin määrittäminen (esim. ilmainen, parannettu suojaus tai tiimi) ja lisäsuojausten, kuten roskapostisuodatuksen, virustorjunnan ja vastaanottajan vahvistuksen, määrittäminen. Voit myös määrittää, luodaanko oletusarvoisesti keräilyalias, asettaa mukautetun palautus-webhook-URL-osoitteen SMTP-virheitä varten ja määrittää tallennuskiintiörajat sähköpostialiaksille tällä verkkotunnuksella. Tämä päätepiste suorittaa verkkotunnustason validoinnin ja valmistelun. Jos `ignore_mx_check`-vaihtoehto on käytössä, MX-tietueen vahvistus ohitetaan (suositellaan vain edistyneille reititysasetuksille). Vastaus sisältää luodun verkkotunnusobjektin täydelliset tiedot, mukaan lukien konfigurointiin tarvittavat DNS-tietueet.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Hae verkkotunnus",
+        "description": "Hae tietty verkkotunnus",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Päivitä verkkotunnus",
+        "description": "Päivitä tietty verkkotunnus.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Poista verkkotunnus",
+        "description": "Poista tietty verkkotunnus.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Tarkista verkkotunnustietueet",
+        "description": "Tarkista tietyn verkkotunnuksen DNS-tietueet.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Tarkista verkkotunnuksen SMTP-tietueet",
+        "description": "Tarkistaa määritetyn verkkotunnuksen SMTP-liittyvät DNS-tietueet.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Täysin hyväksytty verkkotunnus (FQDN) vahvistettavaksi",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Luo koko verkkotunnuksen kattava salasana",
+        "description": "Luo koko verkkotunnuksen kattavan yleissalasanan. Jos salasanaa ei anneta, luodaan turvallinen satunnainen salasana.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "Verkkotunnus, jolle luodaan yleissalasana"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Uusi mukautettu salasanasi, jota käytetään koko verkkotunnuksen kattavana keräilysalasanana. Jätä tyhjäksi luodaksesi vahvan salasanan."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Kuvaus vain organisointitarkoituksiin."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Listaa koko verkkotunnuksen kattavat yleiset salasanat",
+        "description": "Palauttaa luettelon koko verkkotunnuksen laajuisista keräilysalasanoista, jotka on tällä hetkellä määritetty määritetylle verkkotunnukselle.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Täydellinen verkkotunnusnimi (FQDN), jolle keräilysalasanat listataan",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Poista koko verkkotunnuksen kattava yleissalasana",
+        "description": "Poistaa koko verkkotunnuksen kattavan keräilysalasanan annetun tunnisteen avulla.",
         "tags": [
-          "Domains"
+          "Verkkotunnukset"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "Yleiseen salasanaan liittyvä verkkotunnusnimi"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "Poistettavan koko verkkotunnuksen kattavan keräilysalasanan tunnustunnus"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Hyväksy verkkotunnuskutsu",
+        "description": "Hyväksy kutsu verkkotunnukseen.",
         "tags": [
-          "Invites"
+          "Kutsut"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Luo verkkotunnuskutsu",
+        "description": ">[!IMPORTANT]\n>Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä.",
         "tags": [
-          "Invites"
+          "Kutsut"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "Sähköpostiosoite, johon haluat kutsua verkkotunnuksen jäsenluetteloon"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Ryhmä, johon käyttäjä lisätään verkkotunnusjäsenyyteen (voi olla joko \"admin\" tai \"user\")"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Poista verkkotunnuskutsu",
+        "description": "Poista kutsu verkkotunnukseen.",
         "tags": [
-          "Invites"
+          "Kutsut"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "Verkkotunnuksen jäsenluettelosta poistettava sähköpostiosoite"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Päivitä verkkotunnuksen jäsen",
+        "description": "Päivitä verkkotunnuksen jäsen.",
         "tags": [
-          "Members"
+          "Jäsenet"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Ryhmä, johon käyttäjä päivitetään verkkotunnusjäsenyydeksi (voi olla joko \"admin\" tai \"user\")"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Poista verkkotunnuksen jäsen",
+        "description": "Poista verkkotunnuksen jäsen.",
         "tags": [
-          "Members"
+          "Jäsenet"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Luo aliassalasana",
+        "description": "Luo salasana aliakselle. Jos `emailed_instructions`-määrettä ei anneta, vastaus sisältää luodun käyttäjätunnuksen ja salasanan.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Täysin pätevä verkkotunnusnimi (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Aliaksen yksilöllinen tunniste"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Listaa verkkotunnusaliakset",
+        "description": ">[!NOTE]\n>1. marraskuuta 2024 alkaen `Listaa verkkotunnukset`- ja `Listaa verkkotunnuksen aliakset`-API-päätepisteiden oletusarvo on enintään 1000 tulosta sivua kohden. Jos haluat ottaa tämän käyttöön jo aiemmin, voit antaa `?paginate=true`-parametrin päätepistekyselyn URL-osoitteelle lisäkyselymerkkijonoparametrina. Lisätietoja on kohdassa Sivutus.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Hae aliaksia verkkotunnuksesta nimen, tunnisteen tai vastaanottajan perusteella (rek. lauseke tuettu)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Hae aliaksia verkkotunnuksesta nimen perusteella (rek. lauseke tuettu)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Hae aliaksia verkkotunnuksesta vastaanottajan mukaan (rek. lauseke tuettu)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Lajittele tietyn kentän mukaan (etuliite yhdellä yhdysmerkillä - lajitellaksesi käänteisesti). Oletusarvo on created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Luo uusi verkkotunnusalias",
+        "description": "Luo uusi alias tietylle verkkotunnukselle.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Hae verkkotunnuksen alias",
+        "description": "Hae tietty alias verkkotunnukselle.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Päivitä verkkotunnuksen alias",
+        "description": "Päivitä tietty verkkotunnuksen alias.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Poista verkkotunnuksen alias",
+        "description": "Poista tietty verkkotunnuksen alias.",
         "tags": [
-          "Aliases"
+          "Aliakset"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "Salaa TXT-tietue",
+        "description": "Voit salata tietueita jopa ilmaisversiossa täysin ilmaiseksi. Yksityisyyden ei pitäisi olla ominaisuus, vaan sen tulisi olla luonnostaan sisäänrakennettu osa kaikkia tuotteen ominaisuuksia. Olemme lisänneet tämän ominaisuuden, kuten [Tietosuojaoppaiden keskustelussa](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmissamme](https://github.com/forwardemail/forwardemail.net/issues/254) todettiin.",
         "tags": [
-          "Encrypt"
+          "Salaa"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Mikä tahansa kelvollinen välityssähköpostin selkotekstitiedosto"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Tili",
+      "description": "Tilinhallinnan päätepisteet"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Lokit",
+      "description": "Lokihallinnan päätepisteet"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "Sähköpostit",
+      "description": "Sähköpostin hallinnan päätepisteet"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Verkkotunnukset",
+      "description": "> [!TIP]\n> Verkkotunnusten päätepisteet, joiden päätepisteenä on verkkotunnuksen nimi <code>/v1/domains/:domain\\_name</code>, ovat keskenään vaihdettavissa verkkotunnuksen tunnuksen <code>:domain\\_id</code> kanssa. Tämä tarkoittaa, että voit viitata verkkotunnukseen joko sen <code>name</code>- tai <code>id</code>-arvolla."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Kutsut",
+      "description": "Verkkotunnuksen kutsujen hallinnan päätepisteet"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Jäsenet",
+      "description": "Verkkotunnuksen jäsenten hallinnan päätepisteet"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Aliakset",
+      "description": "Verkkotunnusaliasten hallinnan päätepisteet"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Salaa",
+      "description": "Salauksen päätepisteet"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Yhteystiedot",
+      "description": "Alias-yhteystietojen hallinnan päätepisteet (CardDAV)\n\n>[!NOTE]\n>Toisin kuin muut API-päätepisteet, nämä vaativat todennuksen \"käyttäjätunnus\", joka on yhtä suuri kuin aliaksen käyttäjätunnus, ja \"salasana\", joka on yhtä suuri kuin aliaksen luoma salasana, perusvaltuutusotsikoina.\n\n>[!TIP]\n>Nämä päätepisteet tarjoavat täydet CRUD-toiminnot yhteystietojen hallintaan vCard-tuella, mukaan lukien yhteystietojen luominen, hakeminen, päivittäminen ja poistaminen. Voit antaa joko vCard-sisältöä suoraan tai yksittäisiä yhteystietokenttiä, jotka muunnetaan vCard-muotoon."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Kalenterit",
+      "description": "Alias-kalentereiden hallinnan päätepisteet (CalDAV)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjänimi\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoina.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat täydellisen kalenterinhallinnan aikavyöhyke- ja värituella, mukaan lukien kalentereiden luominen, hakeminen, päivittäminen ja poistaminen. Kalenterien nimet ovat pakollisia, kun taas muut ominaisuudet, kuten väri, aikavyöhyke ja kuvaus, ovat valinnaisia."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Kalenteritapahtumat",
+      "description": "Alias-kalenteritapahtumien hallinnan päätepisteet (CalDAV)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjänimi\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasana\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoina.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat kattavan kalenteritapahtumien hallinnan täydellä iCalendar (RFC 5545) -tuella. Tapahtumat tallennetaan iCal-tietoina ja jäsennetään automaattisesti yleisten ominaisuuksien, kuten yhteenvedon, kuvauksen, sijainnin ja päivämäärät, erottamiseksi helppoa käyttöä varten. Tapahtumat tukevat pehmeää poistamista ja niitä voidaan suodattaa kalenterin, päivämääräalueen ja poistotilan mukaan."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Viestit",
+      "description": "Alias-viestien hallinnan päätepisteet (IMAP/POP3)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjätunnus\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoiksi.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat kattavan viestien hallinnan ja edistyneet hakuominaisuudet. Voit hakea kansion, lippujen, sisällön, otsikoiden, päivämääräalueiden, koon ja muiden ominaisuuksien mukaan. Viestejä voidaan luoda Nodemailer-vakiomuodossa, ja ne tukevat siirtymistä kansioiden välillä ja lippujen hallintaa.\n\nVarmista, että olet noudattanut verkkotunnuksesi asennusohjeita.\n\nNämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetaanko sähköpostin vastaanottamista IMAPin kautta?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Kansiot",
+      "description": "Alias-kansioiden hallinnan päätepisteet (IMAP/POP3)\n\n>[!TIP]\n> Kansioiden päätepisteet, joiden päätepiste on kansion polku <code>/v1/folders/:path</code>, ovat keskenään vaihdettavissa kansion tunnuksen <code>:id</code> kanssa. Tämä tarkoittaa, että voit viitata kansioon joko sen <code>path</code>- tai <code>id</code>-arvolla.\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat perusvaltuutusotsikoina [Authentication](#description/authentication) \"käyttäjänimi\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat täyden kansioiden hallinnan, mukaan lukien luomisen, uudelleennimeämisen ja poistamisen. Kansiopolut voivat sisältää ylätason kansioita (esim. 'SAAPUNEET/Alikansio'), ja ylätason kansiot luodaan automaattisesti, jos niitä ei ole olemassa."
     }
   ]
 }
-

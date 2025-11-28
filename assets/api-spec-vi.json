@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Chào mừng bạn đến với tài liệu API toàn diện về Forward Email. API này cho phép bạn quản lý việc chuyển tiếp email, tên miền, bí danh, email gửi đi và nhiều tính năng khác theo chương trình.\n\n## Các tính năng chính\n* **Quản lý tên miền:** Tạo, truy xuất, cập nhật, xóa và xác minh tên miền.\n* **Quản lý bí danh:** Quản lý bí danh email, bao gồm việc tạo, cập nhật và quản lý người nhận.\n* **SMTP gửi đi:** Gửi email qua SMTP, quản lý giới hạn và theo dõi email đã gửi.\n* **Tài khoản & Nhật ký:** Quản lý chi tiết tài khoản và tải xuống nhật ký hoạt động.\n* **Bảo mật:** Mã hóa bản ghi TXT và quản lý thành viên/lời mời tên miền.\n* **Danh bạ CardDAV:** Các thao tác CRUD đầy đủ để quản lý danh bạ với hỗ trợ vCard.\n* **Lịch CalDAV:** Quản lý lịch hoàn chỉnh với hỗ trợ múi giờ và màu sắc.\n* **Tin nhắn IMAP/POP3:** Quản lý tin nhắn toàn diện với khả năng tìm kiếm nâng cao.\n\n* **Thư mục IMAP/POP3:** Quản lý toàn bộ thư mục, bao gồm tạo, đổi tên và xóa.\n\n## Xác thực\nHầu hết các điểm cuối yêu cầu xác thực bằng **Khóa API** của bạn. Hãy cung cấp Khóa API dưới dạng `username` trong tiêu đề Xác thực Cơ bản, để trống mật khẩu.\n\n```http\nỦy quyền: Cơ bản QVBJX1RPS0VOOg==\n```\n(Thay thế `API_TOKEN` bằng khóa thực tế của bạn trước khi mã hóa Base64)\n\nCác điểm cuối liên quan đến **Danh bạ, Lịch, Tin nhắn và Thư mục Bí danh** yêu cầu tên người dùng và mật khẩu bí danh được tạo cho Xác thực Cơ bản.\n\n## Lỗi\nAPI sử dụng mã trạng thái HTTP tiêu chuẩn để chỉ ra thành công hay thất bại. Phản hồi lỗi bao gồm nội dung JSON với trường `message` nêu chi tiết lỗi.\n\n| Mã Trạng thái | Ý nghĩa |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Yêu cầu không hợp lệ |\n| 401 | Không được ủy quyền |\n| 403 | Bị cấm |\n| 404 | Không tìm thấy |\n| 409 | Xung đột |\n| 412 | Điều kiện tiên quyết không thành công |\n| 429 | Quá nhiều yêu cầu |\n| 500 | Lỗi máy chủ nội bộ |\n| 501 | Chưa triển khai |\n| 502 | Cổng không hợp lệ |\n| 503 | Dịch vụ không khả dụng |\n| 504 | Hết thời gian chờ cổng |\n\n*Nếu bạn gặp lỗi `5xx`, vui lòng liên hệ [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Bản địa hóa\nPhản hồi API được dịch dựa trên ngôn ngữ được phát hiện của người dùng hoặc tiêu đề `Accept-Language`. Hơn 25 ngôn ngữ được hỗ trợ.\n\n## Phân trang\nCác điểm cuối trả về danh sách hỗ trợ phân trang thông qua các tham số truy vấn.\n\n| Tham số | Kiểu | Tùy chọn | Mô tả | Mặc định | Ràng buộc |\n|--------------|---------|----------|--------------------------------------------------------------------------------|---------|--------------------|\n| `page` | Số nguyên | Có | Số trang cần truy xuất. | 1 | `>= 1` |\n| `limit` | Số nguyên | Có | Số lượng kết quả trên mỗi trang. | 25 | `>= 1`, `<= 100` |\n| `pagination` | Boolean | Có | Tùy chọn phân trang (bắt buộc trước ngày 1 tháng 11 năm 2024 đối với một số điểm cuối). | false | |\n\n**Tiêu đề phân trang:**\n* `X-Page-Count`: Tổng số trang.\n* `X-Page-Current`: Số trang hiện tại.\n* `X-Page-Size`: Số lượng mục trên trang hiện tại.\n* `X-Item-Count`: Tổng số mục trên tất cả các trang.\n* `Link`: Liên kết điều hướng (trước, sau, đầu, cuối).\n\n**Ví dụ:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Thư viện được đề xuất\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Được duy trì bởi Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "Máy chủ API Email chuyển tiếp"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nSử dụng Khóa API của bạn làm **tên người dùng** cho Xác thực Cơ bản. Để trống trường mật khẩu.\n\n**Ví dụ:**\nNếu Khóa API của bạn là `YOUR_API_KEY`, giá trị được mã hóa Base64 cho tiêu đề `Authorization` sẽ là `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nSử dụng **tên người dùng và mật khẩu bí danh** đã tạo cho Xác thực Cơ bản. Điều này áp dụng cho các điểm cuối trong:\n* Danh bạ Bí danh (CardDAV)\n* Lịch Bí danh (CalDAV)\n* Tin nhắn Bí danh (IMAP/POP3)\n* Thư mục Bí danh (IMAP/POP3)\n\n**Ví dụ:**\nNếu tên người dùng bí danh là `alias@domain.com` và mật khẩu là `GENERATED_PASSWORD`, giá trị được mã hóa Base64 sẽ là `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Thông báo lỗi"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "ID bí danh"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Loại đối tượng"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Tên bí danh (phần địa phương của email)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Địa chỉ email bí danh đầy đủ"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "ID miền"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Tên miền"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Dung lượng lưu trữ được sử dụng theo byte cho bí danh/hộp thư này"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Hạn ngạch lưu trữ tính bằng byte cho bí danh/hộp thư này"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "IMAP có được bật cho bí danh này không"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Có bật mã hóa PGP không"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "Khóa công khai PGP nếu có"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Tùy chọn địa phương"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Dấu thời gian tạo"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Dấu thời gian cập nhật lần cuối"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "ID liên hệ (contact_id từ CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Liên hệ UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Họ và tên đầy đủ của người liên hệ"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "Nội dung vCard"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag để quản lý phiên bản"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Cho dù liên hệ là một nhóm"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Mảng địa chỉ email"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Mảng số điện thoại"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "Nội dung vCard (nếu không được cung cấp, sẽ được tạo từ các trường khác)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Họ và tên đầy đủ của người liên hệ"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "ID liên hệ tùy chỉnh (nếu không được cung cấp, sẽ được tự động tạo)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "UID liên hệ (nếu không cung cấp, sẽ tự động tạo)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Mảng địa chỉ email"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Mảng số điện thoại"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Mảng số điện thoại (bí danh cho phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Mảng địa chỉ"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Cho dù liên hệ là một nhóm"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "Nội dung vCard"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Họ và tên đầy đủ của người liên hệ"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Mảng địa chỉ email"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Mảng số điện thoại"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Mảng số điện thoại (bí danh cho phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Mảng địa chỉ"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Cho dù liên hệ là một nhóm"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "ID lịch (calendarId từ CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Tên lịch"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Mô tả lịch"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Màu lịch (định dạng hex)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Múi giờ lịch"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Thứ tự hiển thị lịch"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Tên lịch"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "ID lịch tùy chỉnh (nếu không được cung cấp, sẽ được tự động tạo)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Mô tả lịch"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Màu lịch (định dạng hex, nếu không được cung cấp, sẽ được tự động tạo)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Múi giờ lịch (mặc định là múi giờ của người dùng hoặc UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Thứ tự hiển thị lịch (mặc định là 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Tên lịch"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Mô tả lịch"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Màu lịch (định dạng hex)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Múi giờ lịch"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Thứ tự hiển thị lịch"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "ID sự kiện lịch (eventId từ CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "ID của lịch sự kiện này thuộc về"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "Dữ liệu iCalendar (RFC 5545) cho sự kiện"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Tiêu đề/tóm tắt sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Mô tả sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Vị trí sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Ngày/giờ bắt đầu sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Ngày/giờ kết thúc sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "Mã định danh duy nhất từ dữ liệu iCal"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Trạng thái sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Người tổ chức sự kiện (trích xuất từ dữ liệu iCal)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Dấu thời gian xóa mềm"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "ID của lịch để thêm sự kiện vào"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "ID sự kiện tùy chỉnh (nếu không được cung cấp, sẽ được tự động tạo)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "Dữ liệu iCalendar (RFC 5545) cho sự kiện. Phải là định dạng iCal hợp lệ."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Di chuyển sự kiện sang một lịch khác"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Dữ liệu iCalendar (RFC 5545) được cập nhật cho sự kiện"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "ID thư mục"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Đường dẫn thư mục đầy đủ"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Tên thư mục (phần cuối của đường dẫn)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Đường dẫn thư mục cha"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "Tính hợp lệ của IMAP UID"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Giá trị UID tiếp theo"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Chỉ số sửa đổi"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Thư mục có được đăng ký không"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Cờ thư mục"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Thời gian lưu giữ tin nhắn"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Chỉ định sử dụng đặc biệt"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Đường dẫn/tên thư mục"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Đường dẫn/tên thư mục mới"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "ID tin nhắn"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "ID tin nhắn gốc cho luồng"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "ID thư mục chứa tin nhắn"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Đường dẫn thư mục chứa tin nhắn"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "ID chủ đề để nhóm cuộc trò chuyện"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Giá trị tiêu đề ID tin nhắn"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Có phải tin nhắn chưa đọc không"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Có gắn cờ cho tin nhắn không"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Có xóa tin nhắn không"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Liệu tin nhắn có phải là bản nháp không"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Cho dù tin nhắn là thư rác/thư rác"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Có sao chép tin nhắn không"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Có thể tìm kiếm tin nhắn không"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Tin nhắn đã hết hạn chưa"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Tin nhắn có tệp đính kèm không"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Ngày lưu giữ tin nhắn"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Ngày nội bộ (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Ngày từ tiêu đề tin nhắn"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Tiêu đề tin nhắn"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "Cờ IMAP"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Kích thước tin nhắn tính bằng byte"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "UID IMAP"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Trình tự sửa đổi"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Loại giao dịch"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Địa chỉ IP từ xa"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Dấu thời gian tạo tin nhắn"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Dấu thời gian cập nhật tin nhắn cuối cùng"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Đối tượng tin nhắn đã phân tích cú pháp (được bao gồm theo mặc định, đặt ?nodemailer=false để loại trừ)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Nội dung tin nhắn thô (được bao gồm theo mặc định, đặt ?raw=false để loại trừ)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "Địa chỉ email của người gửi"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "Địa chỉ email của người nhận"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "Địa chỉ email của người nhận CC"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "Địa chỉ email của người nhận BCC"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Tiêu đề tin nhắn"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Nội dung văn bản thuần túy"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "Nội dung HTML"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Tệp đính kèm tin nhắn (định dạng Nodemailer)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Thư mục đích (mặc định là HỘP THƯ ĐẾN)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "Cờ IMAP để thiết lập trên tin nhắn"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "Cờ IMAP để thiết lập trên tin nhắn"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Di chuyển tin nhắn đến thư mục này"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Địa chỉ email của người gửi (phải tồn tại dưới dạng bí danh của tên miền)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Danh sách được phân tách bằng dấu phẩy hoặc một mảng người nhận cho tiêu đề 'Đến'."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Danh sách được phân tách bằng dấu phẩy hoặc một mảng người nhận cho tiêu đề 'Cc'."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Danh sách được phân tách bằng dấu phẩy hoặc một mảng người nhận cho tiêu đề 'Bcc'."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Tiêu đề của email."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "Phiên bản văn bản thuần túy của tin nhắn."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "Phiên bản HTML của tin nhắn."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "Một mảng các đối tượng đính kèm (xem các trường chung của Nodemailer)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "Địa chỉ email cho tiêu đề 'Người gửi'."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "Địa chỉ email cho tiêu đề 'Trả lời'."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "ID tin nhắn dùng để trả lời tin nhắn."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Danh sách được phân tách bằng dấu cách hoặc một mảng ID tin nhắn."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Nếu đúng, chuyển đổi dữ liệu: hình ảnh trong nội dung HTML thành tệp đính kèm được nhúng."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Phiên bản HTML dành riêng cho Apple Watch của tin nhắn."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "Phiên bản HTML dành riêng cho AMP4EMAIL của tin nhắn."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "Sự kiện iCalendar như một nội dung tin nhắn thay thế."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "Một mảng nội dung tin nhắn thay thế."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Mã hóa cho chuỗi văn bản và HTML (ví dụ: 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Tin nhắn được tạo theo định dạng RFC822 tùy chỉnh (thay vì sử dụng công nghệ tạo Nodemailer)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Mã hóa bắt buộc phải sử dụng cho các giá trị văn bản."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Mức độ ưu tiên cho email."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Đối tượng hoặc mảng các trường tiêu đề bổ sung."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Message-ID tùy chọn cho tiêu đề 'Message-ID'."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Tiêu đề Ngày tùy chọn. Không thể quá 30 ngày trong tương lai."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "Đối tượng tùy chọn của tiêu đề List-*."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Tên miền đủ điều kiện (FQDN) hoặc địa chỉ IP"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Chỉ định cho cùng một nhóm từ một miền khác; có thể là ID miền hoặc FQDN. Sử dụng \"none\" để tắt rõ ràng."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Loại gói (mặc định là 'miễn phí' hoặc gói trả phí hiện tại của người dùng)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Danh sách địa chỉ email được phân tách (phân tách bằng dấu phẩy, dấu cách hoặc dòng mới)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Tạo một bí danh bắt tất cả mặc định (mặc định là đúng)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Bật tính năng bảo vệ nội dung người lớn của Spam Scanner"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Bật tính năng bảo vệ chống lừa đảo của Spam Scanner"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Bật tính năng bảo vệ tệp thực thi Spam Scanner"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Bật tính năng bảo vệ chống vi-rút của Spam Scanner"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Yêu cầu người nhận bí danh nhấp vào liên kết xác minh email"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "Bỏ qua kiểm tra bản ghi MX cho các thiết lập định tuyến thư nâng cao"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Chọn lưu trữ tiêu đề và siêu dữ liệu (trừ nội dung tin nhắn) cho các email đã chuyển tiếp thành công, gửi qua webhook, gửi qua SMTP và gửi qua IMAP, với nhật ký được lưu giữ trong 7 ngày. Tính năng này giúp bạn theo dõi và khắc phục sự cố hiệu suất gửi email với thông tin chi tiết về các lần gửi thành công."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Số ngày lưu giữ nhật ký SMTP gửi đi (0–30, mặc định: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "URL webhook để nhận sự kiện trả lại"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Vô hiệu hóa webhook trả lại"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Hạn ngạch lưu trữ tối đa cho mỗi bí danh (ví dụ: '1 GB')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Cổng tùy chỉnh để cấu hình chuyển tiếp SMTP (mặc định là '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Có nên bật tính năng bảo vệ nội dung người lớn của Spam Scanner trên miền này không"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Có nên bật tính năng bảo vệ chống lừa đảo Spam Scanner trên miền này không"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Có nên bật tính năng bảo vệ thực thi Spam Scanner trên miền này không"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Có nên bật tính năng bảo vệ chống vi-rút Spam Scanner trên miền này không"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Mặc định của miền toàn cầu về việc có yêu cầu người nhận bí danh nhấp vào liên kết xác minh email để email có thể chạy qua hay không"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Có nên bỏ qua kiểm tra bản ghi MX trên miền để xác minh hay không (chủ yếu đối với các thiết lập định tuyến MX nâng cao)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Chọn lưu trữ tiêu đề và siêu dữ liệu (trừ nội dung tin nhắn) cho các email đã chuyển tiếp thành công, gửi qua webhook, gửi qua SMTP và gửi qua IMAP, với nhật ký được lưu giữ trong 7 ngày. Tính năng này giúp bạn theo dõi và khắc phục sự cố hiệu suất gửi email với thông tin chi tiết về các lần gửi thành công."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Số ngày lưu trữ email SMTP gửi đi (0 = xóa ngay lập tức)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "URL webhook để nhận thông báo trả lại hoặc sai để vô hiệu hóa"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Hạn ngạch lưu trữ cho mỗi bí danh (ví dụ: '1 GB', được phân tích thành byte)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Tên bí danh (nếu không được cung cấp hoặc để trống, thì một bí danh ngẫu nhiên sẽ được tạo)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Chuỗi địa chỉ email hợp lệ, FQDN, IP hoặc URL webhook được phân tách bằng dấu ngắt dòng/dấu cách/dấu phẩy"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Mảng người nhận hợp lệ"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Danh sách người nhận. Nếu không được cung cấp hoặc để trống, mặc định là email của người yêu cầu"
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Mô tả bí danh"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Chuỗi nhãn được phân tách bằng dấu ngắt dòng/dấu cách/dấu phẩy"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Mảng nhãn"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Yêu cầu người nhận nhấp vào liên kết xác minh (mặc định là cài đặt tên miền)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Có nên bật hay tắt bí danh này không"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Mã lỗi nếu bí danh bị vô hiệu hóa. Mặc định là 250"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "Bật hoặc tắt lưu trữ IMAP cho bí danh này"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "Bật hoặc tắt mã hóa OpenPGP cho bí danh này"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "Khóa công khai OpenPGP ở định dạng ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Hạn ngạch lưu trữ tối đa (ví dụ: '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Bật hoặc tắt chế độ trả lời tự động"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Ngày bắt đầu (ví dụ: 'YYYY-MM-DD') cho người trả lời tự động"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Ngày kết thúc (ví dụ: 'YYYY-MM-DD') cho người trả lời tự động"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Tiêu đề văn bản thuần túy cho người trả lời tự động"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Tin nhắn văn bản thuần túy cho người trả lời tự động"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Tên bí danh"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Chuỗi địa chỉ email hợp lệ, FQDN, IP hoặc URL webhook được phân tách bằng dấu ngắt dòng/dấu cách/dấu phẩy"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Mảng người nhận hợp lệ"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Mô tả bí danh"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Chuỗi nhãn được phân tách bằng dấu ngắt dòng/dấu cách/dấu phẩy"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Mảng nhãn"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Yêu cầu người nhận nhấp vào liên kết xác minh (mặc định là cài đặt tên miền)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Bật hoặc tắt bí danh"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Mã lỗi sử dụng nếu bí danh bị vô hiệu hóa (mặc định là 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "Bật hoặc tắt lưu trữ IMAP"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "Bật hoặc tắt mã hóa OpenPGP"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "Khóa công khai OpenPGP ở định dạng ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Hạn ngạch lưu trữ tối đa (ví dụ: '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Bật hoặc tắt chế độ trả lời tự động"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Ngày bắt đầu trả lời tự động (ví dụ: YYYY-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Ngày kết thúc trả lời tự động (ví dụ: YYYY-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Chủ đề văn bản thuần túy của trình trả lời tự động"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Tin nhắn văn bản thuần túy của người trả lời tự động"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho bí danh"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Mật khẩu hiện tại cho bí danh để thay đổi mà không xóa bộ nhớ hộp thư"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Ghi đè mật khẩu hiện tại và xóa bộ nhớ IMAP (sử dụng thận trọng)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "Địa chỉ email để gửi mật khẩu bí danh và hướng dẫn thiết lập"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Số lượng email hiện tại đã gửi"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Số lượng email tối đa được phép"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "ID thành viên"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "Địa chỉ email của thành viên"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Vai trò của thành viên"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Địa chỉ email được mời"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "Trang kết quả cần trả về. Nếu không chỉ định, giá trị sẽ là 1. Phải là một số lớn hơn hoặc bằng 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Số lượng kết quả trả về trên mỗi trang. Mặc định là 25 nếu không chỉ định. Số này phải lớn hơn hoặc bằng 1 và nhỏ hơn hoặc bằng 100.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Chọn tham gia phân trang trước ngày 1 tháng 11 năm 2024",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "ID miền",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "ID bí danh",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "ID thành viên",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "ID email",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "ID liên hệ",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "ID lịch",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "ID thư mục hoặc đường dẫn",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "ID tin nhắn",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Tài khoản"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Lấy lại tài khoản",
+        "description": "Truy xuất thông tin tài khoản của bạn.\n\n**Xác thực:** Điểm cuối này hỗ trợ cả xác thực mã thông báo API và xác thực thông tin đăng nhập bí danh.\n\n- **Tài khoản người dùng (Mã thông báo API):** Khi được xác thực bằng mã thông báo API, điểm cuối này sẽ trả về thông tin tài khoản người dùng của bạn, bao gồm chi tiết gói, email và mã thông báo API.\n\n- **Tài khoản bí danh (Thông tin đăng nhập bí danh):** Khi được xác thực bằng thông tin đăng nhập bí danh (email và mật khẩu đã tạo), điểm cuối này sẽ trả về thông tin bí danh/hộp thư, bao gồm dung lượng lưu trữ đã sử dụng, hạn ngạch lưu trữ và cài đặt hộp thư. Điều này hữu ích cho các máy khách IMAP/POP3/CalDAV/CardDAV để kiểm tra trạng thái lưu trữ.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Tài khoản"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Cập nhật tài khoản",
+        "description": "Cập nhật thông tin tài khoản của bạn.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Tên hiển thị"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Tùy chọn địa phương"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Liên hệ"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Liệt kê danh bạ",
+        "description": "Truy xuất danh sách tất cả các liên hệ cho bí danh đã xác thực. Điểm cuối này hỗ trợ phân trang và trả về các liên hệ ở định dạng CardDAV.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Liên hệ"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Tạo liên hệ",
+        "description": "Tạo liên hệ mới. Bạn có thể cung cấp trực tiếp nội dung vCard hoặc từng trường liên hệ riêng lẻ sẽ được chuyển đổi sang định dạng vCard. Nếu đã tồn tại liên hệ có cùng ID, lỗi xung đột sẽ được trả về.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Liên hệ"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Lấy lại liên lạc",
+        "description": "Truy xuất một liên hệ cụ thể theo ID của liên hệ đó. Liên hệ được trả về theo định dạng Liên hệ chuẩn với nội dung vCard và các trường đã được phân tích cú pháp.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Liên hệ"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Cập nhật liên hệ",
+        "description": "Cập nhật liên hệ hiện có. Bạn có thể cung cấp nội dung vCard đã cập nhật hoặc các trường riêng lẻ để cập nhật. vCard của liên hệ sẽ được tạo lại nếu các trường riêng lẻ được cung cấp.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Liên hệ"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Xóa liên hệ",
+        "description": "Xóa vĩnh viễn một liên hệ cụ thể. Thao tác này không thể hoàn tác.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Lịch"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Liệt kê lịch",
+        "description": "Truy xuất danh sách tất cả lịch cho bí danh đã xác thực. Điểm cuối này hỗ trợ phân trang và trả về lịch ở định dạng CalDAV.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Lịch"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Tạo lịch",
+        "description": "Tạo một lịch mới. Tên lịch là bắt buộc, các thuộc tính khác như màu sắc, múi giờ và mô tả là tùy chọn. Nếu đã có lịch trùng tên, lỗi xung đột sẽ được trả về.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Lịch"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Lấy lại lịch",
+        "description": "Truy xuất một lịch cụ thể theo ID của lịch đó. Lịch được trả về với tất cả các thuộc tính bao gồm tên, mô tả, màu sắc, múi giờ và thứ tự.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Lịch"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Cập nhật lịch",
+        "description": "Cập nhật lịch hiện có. Bạn có thể cập nhật bất kỳ thuộc tính nào của lịch, bao gồm tên, mô tả, màu sắc, múi giờ và thứ tự. Nếu bạn đổi tên thành tên đã tồn tại, lỗi xung đột sẽ được trả về.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Lịch"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Xóa lịch",
+        "description": "Xóa vĩnh viễn một lịch cụ thể. Thao tác này không thể hoàn tác và cũng sẽ xóa tất cả sự kiện trong lịch.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Sự kiện Lịch"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Liệt kê các sự kiện trong lịch",
+        "description": "Truy xuất danh sách các sự kiện lịch cho bí danh đã xác thực. Điểm cuối này hỗ trợ phân trang và lọc theo lịch, phạm vi ngày và trạng thái xóa.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Lọc sự kiện theo ID lịch",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Lọc các sự kiện bắt đầu từ ngày này (định dạng ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Lọc các sự kiện kết thúc trước ngày này (định dạng ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Bao gồm các sự kiện đã xóa mềm trong kết quả",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Sự kiện Lịch"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Tạo sự kiện lịch",
+        "description": "Tạo một sự kiện lịch mới với dữ liệu iCalendar. Sự kiện sẽ được xác thực và phân tích cú pháp để trích xuất các thuộc tính chung giúp dễ dàng truy cập.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "ID sự kiện lịch",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Sự kiện Lịch"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Lấy lại sự kiện lịch",
+        "description": "Truy xuất một sự kiện lịch cụ thể theo ID của sự kiện đó. Sự kiện được trả về với tất cả các thuộc tính, bao gồm cả dữ liệu iCalendar đã được phân tích cú pháp.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Sự kiện Lịch"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Cập nhật sự kiện lịch",
+        "description": "Cập nhật một sự kiện lịch cụ thể. Bạn có thể sửa đổi dữ liệu iCalendar hoặc di chuyển sự kiện sang một lịch khác.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Sự kiện Lịch"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Xóa sự kiện lịch",
+        "description": "Xóa mềm một sự kiện lịch cụ thể. Sự kiện sẽ được đánh dấu là đã xóa nhưng không bị xóa vĩnh viễn khỏi cơ sở dữ liệu.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Thư mục"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Liệt kê các thư mục",
+        "description": "Truy xuất danh sách tất cả thư mục/hộp thư IMAP cho bí danh đã xác thực. Điểm cuối này hỗ trợ phân trang và lọc theo trạng thái đăng ký.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Lọc thư mục theo trạng thái đăng ký",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Thư mục"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Tạo thư mục",
+        "description": "Tạo thư mục/hộp thư IMAP mới. Đường dẫn thư mục là bắt buộc và có thể bao gồm các thư mục cha (ví dụ: 'HỘP THƯ ĐẾN/Thư mục con'). Nếu thư mục cha không tồn tại, chúng sẽ được tự động tạo.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Thư mục"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Lấy lại thư mục",
+        "description": "Truy xuất một thư mục cụ thể theo ID hoặc đường dẫn. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn đầy đủ (ví dụ: 'HỘP THƯ ĐẾN/Thư mục con') làm định danh.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Thư mục"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Cập nhật thư mục",
+        "description": "Cập nhật/đổi tên thư mục hiện có. Thao tác này đổi tên thư mục thành đường dẫn mới được chỉ định trong nội dung yêu cầu. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn hiện tại làm định danh.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Thư mục"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Xóa thư mục",
+        "description": "Xóa vĩnh viễn một thư mục cụ thể. Thao tác này không thể hoàn tác và cũng sẽ xóa tất cả thư trong thư mục. Bạn có thể sử dụng ObjectID của thư mục hoặc đường dẫn của thư mục làm định danh.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Tin nhắn"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Liệt kê và tìm kiếm tin nhắn",
+        "description": "Truy xuất danh sách tin nhắn với khả năng tìm kiếm và lọc nâng cao. Điểm cuối này hỗ trợ phân trang và tìm kiếm toàn diện trên nội dung tin nhắn, tiêu đề, cờ và siêu dữ liệu. Bạn có thể tìm kiếm theo thư mục, cờ, nội dung, tiêu đề, phạm vi ngày, kích thước và nhiều hơn nữa.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Lọc tin nhắn theo đường dẫn thư mục",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Lọc theo trạng thái đã đọc",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Lọc theo trạng thái được gắn cờ",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Lọc theo trạng thái đã xóa",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Lọc theo trạng thái bản nháp",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Lọc theo trạng thái thư rác/thư rác",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Lọc theo trạng thái đã sao chép",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Lọc theo trạng thái có thể tìm kiếm",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Lọc theo trạng thái hết hạn",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Lọc theo sự hiện diện của tệp đính kèm",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Lọc theo sự hiện diện của tệp đính kèm (bí danh cho has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Tìm kiếm trong chủ đề tin nhắn",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Tìm kiếm trong nội dung tin nhắn/văn bản",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Tìm kiếm trong văn bản tin nhắn (bí danh cho nội dung)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Tìm kiếm trong tất cả các tiêu đề tin nhắn",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Tìm kiếm theo tiêu đề Message-ID",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Tìm kiếm chung trên tiêu đề và văn bản",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Tìm kiếm chung (tên gọi khác của tìm kiếm)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Lọc tin nhắn kể từ ngày này (định dạng ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Lọc tin nhắn trước ngày này (định dạng ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Lọc tin nhắn có kích thước tối thiểu tính bằng byte",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Lọc tin nhắn có kích thước tối đa tính bằng byte",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Tìm kiếm theo Từ tiêu đề",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Tìm kiếm theo tiêu đề Đến",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Tìm kiếm theo tiêu đề CC",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Tìm kiếm theo tiêu đề BCC",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Tìm kiếm theo tiêu đề Ngày",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Tìm kiếm theo tiêu đề Trả lời",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Tin nhắn"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Tạo tin nhắn",
+        "description": "Tạo/thêm tin nhắn mới vào thư mục. Điểm cuối này chấp nhận định dạng tin nhắn Nodemailer chuẩn và cho phép bạn chỉ định thư mục đích và các cờ khởi tạo. Nếu thư mục đích không tồn tại, nó sẽ được tự động tạo.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Tin nhắn"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Lấy lại tin nhắn",
+        "description": "Truy xuất một tin nhắn cụ thể theo ID của nó. Theo mặc định, phản hồi bao gồm đối tượng Nodemailer đã được phân tích cú pháp và nội dung tin nhắn thô. Bạn có thể kiểm soát nội dung được bao gồm bằng cách sử dụng tham số truy vấn.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Trả về định dạng EML thô thay vì JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Bao gồm đối tượng Nodemailer đã phân tích cú pháp",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Bao gồm các tệp đính kèm trong đối tượng Nodemailer",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Bao gồm nội dung tin nhắn thô",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Tin nhắn"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Cập nhật tin nhắn",
+        "description": "Cập nhật tin nhắn hiện có. Bạn có thể sửa đổi cờ tin nhắn hoặc di chuyển nó sang một thư mục khác. Nếu thư mục đích không tồn tại, nó sẽ tự động được tạo.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Trả về định dạng EML thô thay vì JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Tin nhắn"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Xóa tin nhắn",
+        "description": "Xóa vĩnh viễn một tin nhắn cụ thể. Thao tác này không thể hoàn tác và sẽ xóa vĩnh viễn tin nhắn khỏi bộ nhớ. Không giống như các máy khách IMAP thường di chuyển tin nhắn vào Thùng rác, điểm cuối này thực hiện thao tác xóa cứng.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Tải xuống nhật ký",
+        "description": "**Tải xuống nhật ký**\n\nMô tả: API của chúng tôi cho phép bạn tải xuống nhật ký cho tài khoản của mình theo chương trình. Việc gửi yêu cầu đến điểm cuối này sẽ xử lý tất cả nhật ký cho tài khoản của bạn và gửi email cho bạn dưới dạng tệp đính kèm (tệp bảng tính CSV được nén Gzip) sau khi hoàn tất.\n\nĐiều này cho phép bạn tạo các tác vụ nền bằng tác vụ Cron hoặc sử dụng phần mềm lập lịch tác vụ Node.js Bree để nhận nhật ký bất cứ khi nào bạn muốn. Lưu ý rằng điểm cuối này bị giới hạn ở `10` yêu cầu mỗi ngày.\n\nTệp đính kèm là dạng chữ thường của `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` và bản thân email chứa tóm tắt ngắn gọn về các nhật ký đã được truy xuất.",
         "tags": [
-          "Logs"
+          "Nhật ký"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Lọc nhật ký theo tên miền đủ điều kiện (\"FQDN\"). Nếu không được cung cấp, tất cả nhật ký trên tất cả các tên miền sẽ được truy xuất.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Tìm kiếm nhật ký theo email, tên miền, tên bí danh, địa chỉ IP hoặc ngày (định dạng M/Y, M/D/YY, M-D, M-D-YY hoặc M.D.YY).",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Tìm kiếm nhật ký theo danh mục trả lại cụ thể (ví dụ: \"danh sách chặn\").",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Tìm kiếm nhật ký theo mã phản hồi lỗi cụ thể (ví dụ: 421 hoặc 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Liệt kê các email SMTP gửi đi",
+        "description": "**Liệt kê email SMTP gửi đi**\n\nLưu ý rằng điểm cuối này không trả về giá trị thuộc tính cho `message`, `headers` hay `rejectedErrors` của email.\n\nĐể trả về các thuộc tính đó và giá trị của chúng, vui lòng sử dụng điểm cuối [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) với ID email.",
         "tags": [
-          "Emails"
+          "Email"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "Tìm kiếm email theo siêu dữ liệu.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "Tìm kiếm email theo tên miền.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sắp xếp theo một trường cụ thể (thêm tiền tố bằng dấu gạch ngang - để sắp xếp theo hướng ngược lại của trường đó). Mặc định là created_at nếu không được đặt.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Xem mục Phân trang để biết thêm thông tin chi tiết.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Xem mục Phân trang để biết thêm thông tin chi tiết.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Tạo email SMTP gửi đi",
+        "description": "API tạo email của chúng tôi được lấy cảm hứng và tận dụng cấu hình tùy chọn tin nhắn của Nodemailer. Vui lòng tham khảo [Cấu hình tin nhắn Nodemailer](https://nodemailer.com/message/) cho tất cả các tham số nội dung bên dưới.\n\nLưu ý rằng ngoại trừ `envelope` và `dkim` (vì chúng tôi tự động thiết lập chúng cho bạn), chúng tôi hỗ trợ tất cả các tùy chọn của Nodemailer. Chúng tôi tự động đặt các tùy chọn `disableFileAccess` và `disableUrlAccess` thành `true` vì mục đích bảo mật.\n\nBạn nên truyền tùy chọn duy nhất `raw` cho email thô đầy đủ của mình, bao gồm cả tiêu đề, hoặc truyền từng tùy chọn tham số nội dung bên dưới.\n\nĐiểm cuối API này sẽ tự động mã hóa biểu tượng cảm xúc cho bạn nếu chúng được tìm thấy trong tiêu đề (ví dụ: dòng tiêu đề `Subject: 🤓 Hello` sẽ tự động được chuyển đổi thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Mục tiêu của chúng tôi là tạo ra một API email cực kỳ thân thiện với nhà phát triển và chống giả mạo.\n\n**Xác thực:** Điểm cuối này hỗ trợ cả xác thực mã thông báo API và xác thực thông tin đăng nhập bí danh. Bạn có thể xác thực bằng khóa API (khuyến nghị) hoặc địa chỉ email bí danh và mật khẩu đã tạo. Xem phần Xác thực trong tài liệu API để biết chi tiết.",
         "tags": [
-          "Emails"
+          "Email"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Nhận giới hạn email SMTP gửi đi",
+        "description": "Đây là điểm cuối đơn giản trả về một đối tượng JSON chứa `count` và `limit` cho số lượng tin nhắn SMTP gửi đi hàng ngày trên mỗi tài khoản.",
         "tags": [
-          "Emails"
+          "Email"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Lấy email SMTP gửi đi",
+        "description": "Lấy một email SMTP gửi đi cụ thể.",
         "tags": [
-          "Emails"
+          "Email"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Xóa email SMTP gửi đi",
+        "description": "Việc xóa email sẽ đặt trạng thái thành `\"bị từ chối\"` (và sau đó không xử lý email trong hàng đợi) nếu và chỉ khi trạng thái hiện tại là `\"đang chờ xử lý\"`, `\"đang xếp hàng\"` hoặc `\"đã hoãn lại\"`. Chúng tôi có thể tự động xóa email sau 30 ngày kể từ khi email được tạo và/hoặc gửi – do đó, bạn nên lưu một bản sao email SMTP gửi đi trong máy khách, cơ sở dữ liệu hoặc ứng dụng của mình. Bạn có thể tham chiếu giá trị ID email của chúng tôi trong cơ sở dữ liệu nếu muốn – giá trị này được trả về từ cả hai điểm cuối [Tạo email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) và [Lấy lại email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
-          "Emails"
+          "Email"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Danh sách tên miền",
+        "description": "> [!NOTE]\n>Kể từ ngày 1 tháng 11 năm 2024, các điểm cuối API cho tên miền Danh sách và bí danh tên miền Danh sách sẽ mặc định là `1000` kết quả tối đa trên mỗi trang. Nếu bạn muốn sớm tham gia hành vi này, bạn có thể truyền `?paginate=true` làm tham số chuỗi truy vấn bổ sung vào URL cho truy vấn điểm cuối. Xem Phân trang để biết thêm thông tin chi tiết.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Tìm kiếm tên miền theo siêu dữ liệu.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Tìm kiếm tên miền theo tên miền.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sắp xếp theo một trường cụ thể (thêm tiền tố bằng dấu gạch ngang - để sắp xếp theo hướng ngược lại của trường đó). Mặc định là created_at nếu không được đặt.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Xem mục Phân trang để biết thêm thông tin chi tiết.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Xem mục Phân trang để biết thêm thông tin chi tiết.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Tạo tên miền",
+        "description": "Tạo một tên miền mới trong hệ thống. Điểm cuối này cho phép bạn đăng ký tên miền đủ điều kiện (FQDN) hoặc địa chỉ IP để sử dụng với nền tảng.\n\nCác tùy chọn cấu hình tùy chọn bao gồm gán tên miền cho một nhóm hiện có, thiết lập loại gói (ví dụ: miễn phí, bảo vệ nâng cao hoặc nhóm) và cấu hình các biện pháp bảo vệ nâng cao như lọc thư rác, quét vi-rút và xác minh người nhận. Bạn cũng có thể cấu hình xem có nên tạo bí danh catch-all theo mặc định hay không, thiết lập URL webhook trả lại tùy chỉnh cho các lỗi SMTP và xác định giới hạn hạn ngạch lưu trữ cho các bí danh email trên tên miền này. Điểm cuối này thực hiện xác thực và cung cấp ở cấp độ tên miền. Nếu tùy chọn `ignore_mx_check` được bật, việc xác minh bản ghi MX sẽ bị bỏ qua (chỉ được khuyến nghị cho các thiết lập định tuyến nâng cao). Phản hồi sẽ chứa đầy đủ chi tiết về đối tượng tên miền đã tạo, bao gồm các bản ghi DNS cần thiết cho cấu hình.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Lấy lại tên miền",
+        "description": "Lấy lại một tên miền cụ thể",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Cập nhật tên miền",
+        "description": "Cập nhật một tên miền cụ thể.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Xóa tên miền",
+        "description": "Xóa một tên miền cụ thể.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Xác minh bản ghi tên miền",
+        "description": "Xác minh bản ghi DNS cho một tên miền cụ thể.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Xác minh bản ghi SMTP của miền",
+        "description": "Xác minh các bản ghi DNS liên quan đến SMTP cho tên miền đã chỉ định.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Tên miền đủ điều kiện (FQDN) để xác minh",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Tạo mật khẩu chung cho toàn miền",
+        "description": "Tạo mật khẩu chung cho toàn miền. Nếu không cung cấp mật khẩu, một mật khẩu ngẫu nhiên an toàn sẽ được tạo.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "Tên miền để tạo mật khẩu chung cho"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Mật khẩu mới tùy chỉnh của bạn để sử dụng cho mật khẩu chung cho toàn miền. Để trống để tạo mật khẩu mạnh."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Mô tả chỉ nhằm mục đích tổ chức."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Liệt kê mật khẩu chung cho toàn miền",
+        "description": "Trả về danh sách các mật khẩu chung cho toàn miền hiện đang được cấu hình cho miền đã chỉ định.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Tên miền đủ điều kiện (FQDN) để liệt kê mật khẩu bắt buộc",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Xóa mật khẩu bắt tất cả trên toàn miền",
+        "description": "Xóa mật khẩu chung cho toàn miền bằng ID mã thông báo được cung cấp.",
         "tags": [
-          "Domains"
+          "Tên miền"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "Tên miền liên quan đến mật khẩu bắt tất cả"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "Mã thông báo ID của mật khẩu bắt tất cả trên toàn miền để xóa"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Chấp nhận lời mời tên miền",
+        "description": "Chấp nhận lời mời vào một tên miền.",
         "tags": [
-          "Invites"
+          "Lời mời"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Tạo lời mời tên miền",
+        "description": ">[!IMPORTANT]\n>Nếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì lời mời sẽ tự động được chấp nhận và không gửi email.",
         "tags": [
-          "Invites"
+          "Lời mời"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "Địa chỉ email để mời vào danh sách thành viên miền"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Nhóm để thêm người dùng vào tư cách thành viên miền (có thể là `\"admin\"` hoặc `\"user\"`)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Xóa lời mời tên miền",
+        "description": "Xóa lời mời đến một tên miền.",
         "tags": [
-          "Invites"
+          "Lời mời"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "Địa chỉ email cần xóa khỏi danh sách thành viên miền"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Cập nhật thành viên miền",
+        "description": "Cập nhật thành viên miền.",
         "tags": [
-          "Members"
+          "Thành viên"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Nhóm để cập nhật người dùng lên thành viên miền (có thể là một trong `\"admin\"` hoặc `\"user\"`)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Xóa thành viên miền",
+        "description": "Xóa thành viên miền.",
         "tags": [
-          "Members"
+          "Thành viên"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Tạo mật khẩu bí danh",
+        "description": "Tạo mật khẩu cho bí danh. Nếu không cung cấp `emailed_instructions`, phản hồi sẽ chứa tên người dùng và mật khẩu đã tạo.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Tên miền đủ điều kiện (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Mã định danh duy nhất của bí danh"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Liệt kê các bí danh tên miền",
+        "description": ">[!NOTE]\n>Kể từ ngày 1 tháng 11 năm 2024, các điểm cuối API cho `Danh sách tên miền` và `Danh sách bí danh tên miền` sẽ mặc định là `1000` kết quả tối đa trên mỗi trang. Nếu bạn muốn chọn tham gia sớm, bạn có thể truyền `?paginate=true` làm tham số chuỗi truy vấn bổ sung vào URL cho truy vấn điểm cuối. Xem mục Phân trang để biết thêm thông tin chi tiết.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Tìm kiếm bí danh trong miền theo tên, nhãn hoặc người nhận (hỗ trợ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Tìm kiếm bí danh trong một miền theo tên (hỗ trợ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Tìm kiếm bí danh trong một miền theo người nhận (hỗ trợ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Sắp xếp theo một trường cụ thể (thêm tiền tố bằng dấu gạch ngang - để sắp xếp ngược lại). Mặc định là created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Tạo bí danh tên miền mới",
+        "description": "Tạo bí danh mới cho một tên miền cụ thể.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Lấy lại bí danh tên miền",
+        "description": "Lấy bí danh cụ thể cho một tên miền.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Cập nhật bí danh tên miền",
+        "description": "Cập nhật bí danh cụ thể cho một miền.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Xóa bí danh tên miền",
+        "description": "Xóa bí danh cụ thể cho một tên miền.",
         "tags": [
-          "Aliases"
+          "Bí danh"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "Mã hóa bản ghi TXT",
+        "description": "Chúng tôi cho phép bạn mã hóa hồ sơ ngay cả trên gói miễn phí mà không mất phí. Quyền riêng tư không nên là một tính năng, mà nên được tích hợp sẵn trong mọi khía cạnh của sản phẩm. Theo yêu cầu cao trong [thảo luận về Hướng dẫn Quyền riêng tư](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) và trong [các vấn đề GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), chúng tôi đã thêm tính năng này.",
         "tags": [
-          "Encrypt"
+          "Mã hóa"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Bất kỳ bản ghi TXT văn bản thuần túy Email chuyển tiếp hợp lệ nào"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Tài khoản",
+      "description": "Điểm cuối quản lý tài khoản"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Nhật ký",
+      "description": "Điểm cuối quản lý nhật ký"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "Email",
+      "description": "Điểm cuối quản lý email"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Tên miền",
+      "description": "> [!TIP]\n> Các điểm cuối miền có tên miền là <code>/v1/domains/:domain\\_name</code> có thể hoán đổi với ID miền là <code>:domain\\_id</code>. Điều này có nghĩa là bạn có thể tham chiếu đến miền bằng giá trị <code>name</code> hoặc <code>id</code> của nó."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Lời mời",
+      "description": "Điểm cuối quản lý lời mời tên miền"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Thành viên",
+      "description": "Điểm cuối quản lý thành viên miền"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Bí danh",
+      "description": "Điểm cuối quản lý bí danh tên miền"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Mã hóa",
+      "description": "Điểm cuối mã hóa"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Liên hệ",
+      "description": "Điểm cuối quản lý danh bạ bí danh (CardDAV)\n\n>[!NOTE]\n>Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu Xác thực \"tên người dùng\" bằng với tên người dùng bí danh và \"mật khẩu\" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền Cơ bản.\n\n>[!TIP]\n>Các điểm cuối này cung cấp đầy đủ các thao tác CRUD để quản lý danh bạ với hỗ trợ vCard, bao gồm tạo, truy xuất, cập nhật và xóa danh bạ. Bạn có thể cung cấp trực tiếp nội dung vCard hoặc các trường liên hệ riêng lẻ sẽ được chuyển đổi sang định dạng vCard."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Lịch",
+      "description": "Điểm cuối quản lý lịch bí danh (CalDAV)\n\n>[!NOTE]\n> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Authentication](#description/authentication) \"username\" bằng với tên người dùng bí danh và \"password\" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền Cơ bản.\n\n>[!TIP]\n> Các điểm cuối này cung cấp khả năng quản lý lịch hoàn chỉnh với hỗ trợ múi giờ và màu sắc, bao gồm tạo, truy xuất, cập nhật và xóa lịch. Tên lịch là bắt buộc, trong khi các thuộc tính khác như màu sắc, múi giờ và mô tả là tùy chọn."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Sự kiện Lịch",
+      "description": "Điểm cuối quản lý sự kiện lịch bí danh (CalDAV)\n\n>[!NOTE]\n> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Authentication](#description/authentication) \"username\" bằng với tên người dùng bí danh và \"password\" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền Cơ bản.\n\n>[!TIP]\n> Các điểm cuối này cung cấp khả năng quản lý sự kiện lịch toàn diện với hỗ trợ iCalendar đầy đủ (RFC 5545). Sự kiện được lưu trữ dưới dạng dữ liệu iCal và được phân tích cú pháp tự động để trích xuất các thuộc tính chung như tóm tắt, mô tả, vị trí và ngày tháng để dễ dàng truy cập. Sự kiện hỗ trợ xóa mềm và có thể được lọc theo lịch, phạm vi ngày và trạng thái xóa."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Tin nhắn",
+      "description": "Điểm cuối quản lý tin nhắn bí danh (IMAP/POP3)\n\n>[!NOTE]\n> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Xác thực](#description/authentication) \"username\" bằng với tên người dùng bí danh và \"password\" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền Cơ bản.\n\n>[!TIP]\n> Các điểm cuối này cung cấp khả năng quản lý tin nhắn toàn diện với khả năng tìm kiếm nâng cao. Bạn có thể tìm kiếm theo thư mục, cờ, nội dung, tiêu đề, phạm vi ngày, kích thước, v.v. Tin nhắn có thể được tạo bằng định dạng Nodemailer chuẩn và hỗ trợ di chuyển giữa các thư mục và quản lý cờ.\n\nVui lòng đảm bảo rằng bạn đã làm theo hướng dẫn thiết lập cho tên miền của mình.\nBạn có thể tìm thấy những hướng dẫn này trong phần Câu hỏi thường gặp của chúng tôi [Bạn có hỗ trợ nhận email bằng IMAP không?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Thư mục",
+      "description": "Điểm cuối quản lý thư mục bí danh (IMAP/POP3)\n\n>[!TIP]\n> Các điểm cuối thư mục có đường dẫn thư mục <code>/v1/folders/:path</code> là điểm cuối có thể hoán đổi với ID thư mục <code>:id</code>. Điều này có nghĩa là bạn có thể tham chiếu đến thư mục bằng giá trị <code>path</code> hoặc <code>id</code> của nó.\n\n>[!NOTE]\n> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Authentication](#description/authentication) \"username\" bằng với tên người dùng bí danh và \"password\" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền Cơ bản.\n\n>[!TIP]\n> Các điểm cuối này cung cấp khả năng quản lý thư mục đầy đủ, bao gồm tạo, đổi tên và xóa. Đường dẫn thư mục có thể bao gồm các thư mục cha (ví dụ: 'HỘP THƯ ĐẾN/Thư mục con') và các thư mục cha sẽ được tạo tự động nếu chúng không tồn tại."
     }
   ]
 }
-

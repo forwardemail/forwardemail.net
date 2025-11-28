@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email에 대한 포괄적인 API 설명서에 오신 것을 환영합니다. 이 API를 사용하면 이메일 전달, 도메인, 별칭, 발신 이메일 등을 프로그래밍 방식으로 관리할 수 있습니다.\n\n## 주요 기능\n* **도메인 관리:** 도메인을 생성, 검색, 업데이트, 삭제 및 확인합니다.\n* **별칭 관리:** 생성, 업데이트 및 수신자 관리를 포함하여 이메일 별칭을 관리합니다.\n* **발신 SMTP:** SMTP를 통해 이메일을 전송하고, 한도를 관리하고, 전송된 이메일을 추적합니다.\n* **계정 및 로그:** 계정 정보를 관리하고 활동 로그를 다운로드합니다.\n* **보안:** TXT 레코드를 암호화하고 도메인 구성원/초대를 관리합니다.\n* **CardDAV 연락처:** vCard를 지원하는 연락처 관리를 위한 전체 CRUD 작업을 수행합니다.\n* **CalDAV 캘린더:** 시간대 및 색상 지원을 통한 완벽한 캘린더 관리\n* **IMAP/POP3 메시지:** 고급 검색 기능을 갖춘 포괄적인 메시지 관리\n* **IMAP/POP3 폴더:** 생성, 이름 변경, 삭제를 포함한 전체 폴더 관리\n\n## 인증\n대부분의 엔드포인트는 **API 키**를 사용한 인증이 필요합니다. 기본 인증 헤더에 API 키를 `username`으로 입력하고 비밀번호는 비워 두세요.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Base64 인코딩 전 `API_TOKEN`을 실제 키로 바꾸세요.)\n\n**별칭 연락처, 캘린더, 메시지 및 폴더**와 관련된 엔드포인트는 기본 인증을 위해 생성된 별칭 사용자 이름과 비밀번호가 필요합니다.\n\n## 오류\nAPI는 표준 HTTP 상태 코드를 사용하여 성공 또는 실패를 나타냅니다. 오류 응답에는 오류를 자세히 설명하는 `message` 필드가 있는 JSON 본문이 포함됩니다.\n\n| 상태 코드 | 의미 |\n|-------------|---------------------|\n| 200 | 정상 |\n| 400 | 잘못된 요청 |\n| 401 | 승인되지 않음 |\n| 403 | 금지됨 |\n| 404 | 찾을 수 없음 |\n| 409 | 충돌 |\n| 412 | 전제 조건 실패 |\n| 429 | 요청이 너무 많음 |\n| 500 | 내부 서버 오류 |\n| 501 | 구현되지 않음 |\n| 502 | 잘못된 게이트웨이 |\n| 503 | 서비스를 사용할 수 없음 |\n| 504 | 게이트웨이 시간 초과 |\n\n*`5xx` 오류가 발생하는 경우 [api@forwardemail.net](mailto:api@forwardemail.net)으로 문의해 주세요.*\n\n## 현지화\nAPI 응답은 사용자의 감지된 로캘 또는 `Accept-Language` 헤더를 기반으로 번역됩니다. 25개 이상의 언어가 지원됩니다.\n\n## 페이지 매김\n목록을 반환하는 엔드포인트는 쿼리 매개변수를 통한 페이지 매김을 지원합니다.\n\n| 매개변수 | 유형 | 선택 사항 | 설명 | 기본값 | 제약 조건 |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page` | 정수 | 예 | 검색할 페이지 번호 | 1 | `>= 1` |\n| `limit` | 정수 | 예 | 페이지당 결과 수 | 25 | `>= 1`, `<= 100` |\n| `pagination` | 부울 | 예 | 페이지 매김 동작 옵트인(일부 엔드포인트의 경우 2024년 11월 1일 이전 필수). | false | |\n\n**페이지 매김 헤더:**\n* `X-Page-Count`: 총 페이지 수\n* `X-Page-Current`: 현재 페이지 번호\n* `X-Page-Size`: 현재 페이지의 항목 수입니다.\n* `X-Item-Count`: 모든 페이지의 총 항목 수입니다.\n* `Link`: 탐색 링크(이전, 다음, 처음, 마지막).\n\n**예:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 추천 라이브러리\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email에서 관리)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "이메일 전달 API 서버"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\n기본 인증의 **사용자 이름**으로 API 키를 사용하세요. 비밀번호 필드는 비워 두세요.\n\n**예:**\nAPI 키가 `YOUR_API_KEY`인 경우, `Authorization` 헤더의 Base64 인코딩 값은 `echo -n \"YOUR_API_KEY:\" | base64`입니다.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\n기본 인증에는 생성된 **별칭 사용자 이름 및 비밀번호**를 사용하세요. 이는 다음 엔드포인트에 적용됩니다.\n* 별칭 연락처(CardDAV)\n* 별칭 캘린더(CalDAV)\n* 별칭 메시지(IMAP/POP3)\n* 별칭 폴더(IMAP/POP3)\n\n**예:**\n별칭 사용자 이름이 `alias@domain.com`이고 비밀번호가 `GENERATED_PASSWORD`인 경우, Base64로 인코딩된 값은 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`입니다.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "오류 메시지"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "별칭 ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "객체 유형"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "별칭 이름(이메일의 로컬 부분)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "전체 별칭 이메일 주소"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "도메인 ID"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "도메인 이름"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "이 별칭/사서함에 사용된 저장 공간(바이트)"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "이 별칭/사서함에 대한 저장 할당량(바이트)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "이 별칭에 IMAP가 활성화되어 있는지 여부"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "PGP 암호화가 활성화되어 있는지 여부"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP 공개 키(사용 가능한 경우)"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "로케일 환경 설정"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "생성 타임스탬프"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "마지막 업데이트 타임스탬프"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "연락처 ID(CardDAV의 contact_id)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "UID에 문의하세요"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "연락처의 성명"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard 콘텐츠"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "버전 관리를 위한 ETag"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "연락처가 그룹인지 여부"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "이메일 주소 배열"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "전화번호 배열"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard 콘텐츠(제공되지 않으면 다른 필드에서 생성됩니다)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "연락처의 성명"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "사용자 지정 연락처 ID(제공되지 않으면 자동 생성됨)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "연락처 UID(제공되지 않으면 자동 생성됨)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "이메일 주소 배열"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "전화번호 배열"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "전화번호 배열(phone_numbers의 별칭)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "주소 배열"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "연락처가 그룹인지 여부"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard 콘텐츠"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "연락처의 성명"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "이메일 주소 배열"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "전화번호 배열"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "전화번호 배열(phone_numbers의 별칭)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "주소 배열"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "연락처가 그룹인지 여부"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "캘린더 ID(CalDAV의 CalendarId)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "캘린더 이름"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "달력 설명"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "달력 색상(16진수 형식)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "달력 시간대"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "달력 표시 순서"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "캘린더 이름"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "사용자 정의 캘린더 ID(제공되지 않으면 자동 생성됨)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "달력 설명"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "달력 색상(16진수 형식, 제공되지 않으면 자동 생성됨)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "달력 시간대(기본값은 사용자 시간대 또는 UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "달력 표시 순서(기본값은 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "캘린더 이름"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "달력 설명"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "달력 색상(16진수 형식)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "달력 시간대"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "달력 표시 순서"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "캘린더 이벤트 ID(CalDAV의 eventId)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "이 이벤트가 속한 달력의 ID"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "이벤트에 대한 iCalendar(RFC 5545) 데이터"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "이벤트 제목/요약(iCal 데이터에서 추출)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "이벤트 설명(iCal 데이터에서 추출)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "이벤트 위치(iCal 데이터에서 추출)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "이벤트 시작 날짜/시간(iCal 데이터에서 추출)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "이벤트 종료 날짜/시간(iCal 데이터에서 추출)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "iCal 데이터의 고유 식별자"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "이벤트 상태(iCal 데이터에서 추출)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "이벤트 주최자(iCal 데이터에서 추출)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "소프트 삭제 타임스탬프"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "이벤트를 추가할 캘린더의 ID"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "사용자 정의 이벤트 ID(제공되지 않으면 자동 생성됨)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "이벤트에 대한 iCalendar(RFC 5545) 데이터입니다. 유효한 iCal 형식이어야 합니다."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "이벤트를 다른 캘린더로 이동"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "이벤트에 대한 iCalendar(RFC 5545) 데이터가 업데이트되었습니다."
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "폴더 ID"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "전체 폴더 경로"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "폴더 이름(경로의 마지막 부분)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "상위 폴더 경로"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "IMAP UID 유효성"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "다음 UID 값"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "수정 지수"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "폴더가 구독되었는지 여부"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "폴더 플래그"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "메시지 보존 기간"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "특수 용도 지정"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "폴더 경로/이름"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "새 폴더 경로/이름"
           }
         }
       },
@@ -931,94 +974,94 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "메시지 ID"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "스레딩을 위한 루트 메시지 ID"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "메시지가 포함된 폴더 ID"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "메시지가 포함된 폴더 경로"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "대화 그룹화를 위한 스레드 ID"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "메시지 ID 헤더 값"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "메시지가 읽히지 않았는지 여부"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "메시지가 플래그로 지정되었는지 여부"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "메시지가 삭제되었는지 여부"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "메시지가 초안인지 여부"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "메시지가 정크/스팸인지 여부"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "메시지가 복사되는지 여부"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "메시지를 검색할 수 있는지 여부"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "메시지가 만료되었는지 여부"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "메시지에 첨부 파일이 있는지 여부"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "메시지 보존 날짜"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "내부 날짜(IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "메시지 헤더의 날짜"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "메시지 제목"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP 플래그"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "메시지 크기(바이트)"
           },
           "uid": {
             "type": "integer",
@@ -1026,37 +1069,39 @@
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "수정 순서"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "거래 유형"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "원격 IP 주소"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "메시지 생성 타임스탬프"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "메시지 마지막 업데이트 타임스탬프"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "구문 분석된 메시지 객체(기본적으로 포함됨, 제외하려면 ?nodemailer=false로 설정)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "원시 메시지 콘텐츠(기본적으로 포함됨, 제외하려면 ?raw=false로 설정)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "발신자 이메일 주소"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "수신자 이메일 주소"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "CC 수신자 이메일 주소"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "BCC 수신자 이메일 주소"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "메시지 제목"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "일반 텍스트 콘텐츠"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML 콘텐츠"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "메시지 첨부 파일(Nodemailer 형식)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "대상 폴더(기본값은 INBOX)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "메시지에 설정할 IMAP 플래그"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "메시지에 설정할 IMAP 플래그"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "이 폴더로 메시지를 이동하세요"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "발신자의 이메일 주소(도메인의 별칭으로 존재해야 함)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "'받는 사람' 헤더에 대한 쉼표로 구분된 목록 또는 수신자 배열입니다."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "'Cc' 헤더에 대한 수신자 목록(쉼표로 구분) 또는 배열입니다."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "'Bcc' 헤더에 대한 수신자 목록(쉼표로 구분) 또는 배열입니다."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "이메일의 제목."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "메시지의 평문 버전."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "메시지의 HTML 버전입니다."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "첨부 파일 객체의 배열(Nodemailer의 일반 필드 참조)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "'발신자' 헤더에 대한 이메일 주소입니다."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "'답장' 헤더에 대한 이메일 주소입니다."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "메시지가 답장되는 메시지 ID입니다."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "공백으로 구분된 목록 또는 메시지 ID 배열입니다."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "true인 경우, HTML 콘텐츠의 이미지 데이터를 내장된 첨부 파일로 변환합니다."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Apple Watch 전용 HTML 버전의 메시지입니다."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL 전용 HTML 버전의 메시지입니다."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "대체 메시지 콘텐츠로서의 iCalendar 이벤트."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "다양한 대체 메시지 콘텐츠."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "텍스트 및 HTML 문자열에 대한 인코딩(예: 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "사용자 정의 RFC822 형식 메시지 생성(Nodemailer 생성 대신)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "텍스트 값에 강제로 인코딩을 사용해야 합니다."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "이메일의 우선순위 수준입니다."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "추가 헤더 필드의 객체 또는 배열입니다."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "'Message-ID' 헤더에 대한 선택적 Message-ID입니다."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "선택 사항인 날짜 헤더입니다. 30일 이후의 날짜를 입력할 수 없습니다."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "List-* 헤더의 선택적 객체입니다."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "정규화된 도메인 이름(FQDN) 또는 IP 주소"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "다른 도메인의 동일한 팀에 할당합니다. 도메인 ID 또는 FQDN일 수 있습니다. \"none\"을 사용하면 명시적으로 비활성화할 수 있습니다."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "플랜 유형(기본값은 '무료' 또는 사용자의 현재 유료 플랜)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "구분 기호로 구분된 이메일 주소 목록(쉼표, 공백 또는 줄 바꿈으로 구분)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "기본 포괄적 별칭을 만듭니다(기본값은 true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "스팸 스캐너 성인 콘텐츠 보호 활성화"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "스팸 스캐너 피싱 보호 활성화"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "스팸 스캐너 실행 파일 보호 활성화"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "스팸 스캐너 바이러스 보호 활성화"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "별칭 수신자에게 이메일 확인 링크를 클릭하도록 요구"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "고급 메일 라우팅 설정에 대한 MX 레코드 확인 무시"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "성공적으로 전달된 이메일, 웹훅으로 전송된 이메일, 아웃바운드 SMTP 및 IMAP으로 전송된 이메일의 헤더와 메타데이터(메시지 내용 제외)를 저장하도록 옵트인하세요. 로그는 7일 동안 보관됩니다. 이 기능을 사용하면 성공적인 전송에 대한 자세한 정보를 통해 이메일 전송 성능을 모니터링하고 문제를 해결할 수 있습니다."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "아웃바운드 SMTP 로그를 보관할 일 수(0~30, 기본값: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "바운스 이벤트를 수신하기 위한 웹훅 URL"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "바운스 웹훅 비활성화"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "별칭당 최대 저장 용량 할당량(예: '1GB')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "SMTP 전달을 위해 구성할 사용자 지정 포트(기본값은 '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "이 도메인에서 스팸 스캐너 성인 콘텐츠 보호를 활성화할지 여부"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "이 도메인에서 스팸 스캐너 피싱 보호를 활성화할지 여부"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "이 도메인에서 스팸 스캐너 실행 파일 보호를 활성화할지 여부"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "이 도메인에서 스팸 스캐너 바이러스 보호 기능을 활성화할지 여부"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "이메일이 통과하기 위해 별칭 수신자가 이메일 확인 링크를 클릭하도록 요구할지 여부에 대한 글로벌 도메인 기본값"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "도메인의 MX 레코드 확인을 무시할지 여부(주로 고급 MX 라우팅 설정의 경우)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "성공적으로 전달된 이메일, 웹훅으로 전송된 이메일, 아웃바운드 SMTP 및 IMAP으로 전송된 이메일의 헤더와 메타데이터(메시지 내용 제외)를 저장하도록 옵트인하세요. 로그는 7일 동안 보관됩니다. 이 기능을 사용하면 성공적인 전송에 대한 자세한 정보를 통해 이메일 전송 성능을 모니터링하고 문제를 해결할 수 있습니다."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "아웃바운드 SMTP 이메일을 저장하는 일수(0 = 즉시 삭제)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "반송 알림을 수신하려면 Webhook URL을 입력하거나, 비활성화하려면 false를 입력하세요."
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "별칭당 저장 할당량(예: '1GB', 바이트로 구문 분석)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "별칭 이름(제공되지 않거나 비어 있는 경우 무작위 별칭이 생성됩니다)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "줄 바꿈/공백/쉼표로 구분된 유효한 이메일 주소, FQDN, IP 또는 웹훅 URL 문자열"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "유효한 수신자 배열"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "수신자 목록입니다. 제공되지 않거나 비어 있는 경우 요청자의 이메일로 기본 설정됩니다."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "별칭 설명"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "줄 바꿈/공백/쉼표로 구분된 레이블 문자열"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "라벨 배열"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "수신자에게 확인 링크를 클릭하도록 요구(기본값은 도메인 설정)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "이 별칭을 활성화할지 비활성화할지 여부"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "별칭이 비활성화된 경우 발생하는 오류 코드입니다. 기본값은 250입니다."
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "이 별칭에 대한 IMAP 저장소를 활성화하거나 비활성화합니다."
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "이 별칭에 대해 OpenPGP 암호화를 활성화하거나 비활성화합니다."
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "ASCII Armor 형식의 OpenPGP 공개 키"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "저장 용량 최대 할당량(예: '1GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "휴가 응답 기능 활성화 또는 비활성화"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "휴가 응답자의 시작 날짜(예: 'YYYY-MM-DD')"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "휴가 응답자의 종료 날짜(예: 'YYYY-MM-DD')"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "휴가 응답자를 위한 평문 제목"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "휴가 응답자를 위한 일반 텍스트 메시지"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "별칭"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "줄 바꿈/공백/쉼표로 구분된 유효한 이메일 주소, FQDN, IP 또는 웹훅 URL 문자열"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "유효한 수신자 배열"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "별칭 설명"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "줄 바꿈/공백/쉼표로 구분된 레이블 문자열"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "라벨 배열"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "수신자에게 확인 링크를 클릭하도록 요구(기본값은 도메인 설정)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "별칭 활성화 또는 비활성화"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "별칭이 비활성화된 경우 사용할 오류 코드(기본값은 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "IMAP 저장소 활성화 또는 비활성화"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "OpenPGP 암호화 활성화 또는 비활성화"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "ASCII Armor 형식의 OpenPGP 공개 키"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "저장 최대 할당량(예: '1GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "휴가 응답 기능 활성화 또는 비활성화"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "휴가 응답 시작 날짜(예: YYYY-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "휴가 응답 종료일(예: YYYY-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "휴가 응답자의 평문 제목"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "휴가 응답자의 평문 메시지"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "별칭에 사용할 사용자 지정 새 비밀번호"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "별칭에 대한 기존 비밀번호를 사서함 저장소를 삭제하지 않고 변경할 수 있습니다."
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "기존 비밀번호를 재정의하고 IMAP 저장소를 삭제하세요(신중하게 사용하세요)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "별칭 비밀번호와 설정 지침을 보낼 이메일 주소"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "현재 전송된 이메일 수"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "허용되는 최대 이메일 수"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "회원 ID"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "회원 이메일 주소"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "회원의 역할"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "초대된 이메일 주소"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "반환할 결과 페이지입니다. 지정하지 않으면 값은 1이 됩니다. 1 이상의 숫자여야 합니다.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "페이지당 반환할 결과 수입니다. 지정하지 않으면 기본값은 25입니다. 1 이상 100 이하의 숫자여야 합니다.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "2024년 11월 1일 이전에 페이지 매김에 참여하세요",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "도메인 ID",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "별칭 ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "회원 ID",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "이메일 ID",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "연락처 ID",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "캘린더 ID",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "폴더 ID 또는 경로",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "메시지 ID",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "계정"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "계정 검색",
+        "description": "계정 정보를 가져오세요.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다.\n\n- **사용자 계정(API 토큰):** API 토큰으로 인증되면 이 엔드포인트는 요금제 세부 정보, 이메일, API 토큰을 포함한 사용자 계정 정보를 반환합니다.\n\n- **별칭 계정(별칭 자격 증명):** 별칭 자격 증명(이메일 및 생성된 비밀번호)으로 인증되면 이 엔드포인트는 사용된 저장 공간, 저장 공간 할당량, 사서함 설정을 포함한 별칭/사서함 정보를 반환합니다. 이는 IMAP/POP3/CalDAV/CardDAV 클라이언트가 저장 공간 상태를 확인하는 데 유용합니다.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "계정"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "계정 업데이트",
+        "description": "계정 정보를 업데이트하세요.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "표시 이름"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "로케일 환경 설정"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "콘택트 렌즈"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "연락처 목록",
+        "description": "인증된 별칭에 대한 모든 연락처 목록을 검색합니다. 이 엔드포인트는 페이지 매김을 지원하며 CardDAV 형식으로 연락처를 반환합니다.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "콘택트 렌즈"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "연락처 만들기",
+        "description": "새 연락처를 만드세요. vCard 콘텐츠를 직접 제공하거나 vCard 형식으로 변환될 개별 연락처 필드를 제공할 수 있습니다. 동일한 ID를 가진 연락처가 이미 있는 경우 충돌 오류가 반환됩니다.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "콘택트 렌즈"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "연락처 검색",
+        "description": "ID로 특정 연락처를 검색합니다. 연락처는 vCard 콘텐츠와 구문 분석된 필드를 포함하는 표준 연락처 형식으로 반환됩니다.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "콘택트 렌즈"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "연락처 업데이트",
+        "description": "기존 연락처를 업데이트합니다. 업데이트된 vCard 콘텐츠 또는 개별 필드를 제공하여 업데이트할 수 있습니다. 개별 필드를 제공하면 연락처의 vCard가 다시 생성됩니다.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "콘택트 렌즈"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "연락처 삭제",
+        "description": "특정 연락처를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없습니다.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "달력"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "캘린더 목록",
+        "description": "인증된 별칭에 대한 모든 캘린더 목록을 검색합니다. 이 엔드포인트는 페이지 매김을 지원하며 CalDAV 형식으로 캘린더를 반환합니다.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "달력"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "캘린더 만들기",
+        "description": "새 캘린더를 만듭니다. 캘린더 이름은 필수이며, 색상, 시간대, 설명 등의 다른 속성은 선택 사항입니다. 동일한 이름의 캘린더가 이미 있는 경우 충돌 오류가 반환됩니다.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "달력"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "달력 검색",
+        "description": "ID로 특정 캘린더를 검색합니다. 캘린더는 이름, 설명, 색상, 시간대, 순서를 포함한 모든 속성과 함께 반환됩니다.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "달력"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "캘린더 업데이트",
+        "description": "기존 캘린더를 업데이트합니다. 이름, 설명, 색상, 시간대, 순서 등 모든 캘린더 속성을 업데이트할 수 있습니다. 이미 존재하는 이름으로 이름을 변경하면 충돌 오류가 반환됩니다.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "달력"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "캘린더 삭제",
+        "description": "특정 캘린더를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 캘린더에 있는 모든 일정이 삭제됩니다.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "캘린더 이벤트"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "캘린더 이벤트 목록",
+        "description": "인증된 별칭에 대한 캘린더 이벤트 목록을 가져옵니다. 이 엔드포인트는 캘린더, 날짜 범위 및 삭제 상태별 페이지 매김 및 필터링을 지원합니다.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "캘린더 ID로 이벤트 필터링",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "이 날짜부터 시작하는 이벤트 필터링(ISO 8601 형식)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "이 날짜 이전에 종료되는 이벤트 필터링(ISO 8601 형식)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "결과에 소프트 삭제된 이벤트 포함",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "캘린더 이벤트"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "캘린더 이벤트 만들기",
+        "description": "iCalendar 데이터로 새 캘린더 이벤트를 만듭니다. 이벤트의 유효성을 검사하고 구문 분석을 통해 공통 속성을 추출하여 쉽게 액세스할 수 있도록 합니다.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "캘린더 이벤트 ID",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "캘린더 이벤트"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "캘린더 이벤트 검색",
+        "description": "ID로 특정 캘린더 이벤트를 검색합니다. 이벤트는 구문 분석된 iCalendar 데이터를 포함한 모든 속성과 함께 반환됩니다.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "캘린더 이벤트"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "캘린더 이벤트 업데이트",
+        "description": "특정 캘린더 이벤트를 업데이트하세요. iCalendar 데이터를 수정하거나 이벤트를 다른 캘린더로 이동할 수 있습니다.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "캘린더 이벤트"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "캘린더 이벤트 삭제",
+        "description": "특정 캘린더 이벤트를 일시 삭제합니다. 해당 이벤트는 삭제된 것으로 표시되지만 데이터베이스에서 영구적으로 삭제되는 것은 아닙니다.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "폴더"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "폴더 목록",
+        "description": "인증된 별칭에 대한 모든 IMAP 폴더/사서함 목록을 검색합니다. 이 엔드포인트는 구독 상태별 페이지 매김 및 필터링을 지원합니다.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "구독 상태별로 폴더 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "폴더"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "폴더 만들기",
+        "description": "새 IMAP 폴더/사서함을 만드세요. 폴더 경로는 필수이며 상위 폴더(예: '받은 편지함/하위 폴더')를 포함할 수 있습니다. 상위 폴더가 없으면 자동으로 생성됩니다.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "폴더"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "폴더 검색",
+        "description": "ID 또는 경로로 특정 폴더를 검색합니다. 폴더의 ObjectID 또는 전체 경로(예: 'INBOX/Subfolder')를 식별자로 사용할 수 있습니다.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "폴더"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "폴더 업데이트",
+        "description": "기존 폴더를 업데이트하거나 이름을 변경합니다. 이 작업은 요청 본문에 지정된 새 경로로 폴더 이름을 변경합니다. 폴더의 ObjectID 또는 현재 경로를 식별자로 사용할 수 있습니다.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "폴더"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "폴더 삭제",
+        "description": "특정 폴더를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 폴더 내의 모든 메시지가 삭제됩니다. 폴더의 ObjectID 또는 경로를 식별자로 사용할 수 있습니다.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "메시지"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "메시지 나열 및 검색",
+        "description": "고급 검색 및 필터링 기능을 사용하여 메시지 목록을 검색하세요. 이 엔드포인트는 메시지 내용, 헤더, 플래그 및 메타데이터에 대한 페이지 매김 및 포괄적인 검색을 지원합니다. 폴더, 플래그, 내용, 헤더, 날짜 범위, 크기 등으로 검색할 수 있습니다.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "폴더 경로로 메시지 필터링",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "읽은 상태별 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "플래그가 지정된 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "삭제된 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "초안 상태별 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "정크/스팸 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "복사된 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "검색 가능한 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "만료 상태로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "첨부 파일 존재 여부로 필터링",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "첨부 파일 존재 여부에 따른 필터링(has_attachments의 별칭)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "메시지 제목에서 검색",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "메시지 본문/텍스트에서 검색",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "메시지 텍스트에서 검색(본문 별칭)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "모든 메시지 헤더에서 검색",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "메시지 ID 헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "헤더와 텍스트에 대한 일반 검색",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "일반 검색(검색의 별칭)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "이 날짜 이후의 메시지 필터링(ISO 8601 형식)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "이 날짜 이전의 메시지 필터링(ISO 8601 형식)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "최소 바이트 크기의 메시지 필터링",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "최대 바이트 크기의 메시지 필터링",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "헤더에서 검색",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "CC 헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "BCC 헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "날짜 헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "답장 헤더로 검색",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "메시지"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "메시지 만들기",
+        "description": "폴더에 새 메시지를 생성/추가합니다. 이 엔드포인트는 표준 Nodemailer 메시지 형식을 지원하며 대상 폴더와 초기 플래그를 지정할 수 있습니다. 대상 폴더가 없으면 자동으로 생성됩니다.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "메시지"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "메시지 검색",
+        "description": "ID로 특정 메시지를 검색합니다. 기본적으로 응답에는 파싱된 Nodemailer 객체와 원시 메시지 내용이 포함됩니다. 쿼리 매개변수를 사용하여 포함되는 내용을 제어할 수 있습니다.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "JSON 대신 원시 EML 형식을 반환합니다.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "구문 분석된 Nodemailer 객체를 포함합니다.",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Nodemailer 객체에 첨부 파일 포함",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "원시 메시지 내용을 포함합니다",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "메시지"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "업데이트 메시지",
+        "description": "기존 메시지를 업데이트하세요. 메시지 플래그를 수정하거나 다른 폴더로 이동할 수 있습니다. 대상 폴더가 없으면 자동으로 생성됩니다.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "JSON 대신 원시 EML 형식을 반환합니다.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "메시지"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "메시지 삭제",
+        "description": "특정 메시지를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 저장소에서 메시지가 영구적으로 삭제됩니다. 일반적으로 메시지를 휴지통으로 옮기는 IMAP 클라이언트와 달리, 이 엔드포인트는 영구 삭제를 수행합니다.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "로그 다운로드",
+        "description": "**로그 다운로드**\n\n설명: 저희 API를 사용하면 프로그래밍 방식으로 계정의 로그를 다운로드할 수 있습니다. 이 엔드포인트에 요청을 제출하면 계정의 모든 로그가 처리되고, 완료되면 Gzip으로 압축된 CSV 스프레드시트 파일인 첨부 파일로 이메일로 전송됩니다.\n\n이를 통해 Cron 작업이나 Node.js 작업 스케줄링 소프트웨어인 Bree를 사용하여 백그라운드 작업을 생성하여 원하는 시간에 로그를 수신할 수 있습니다. 이 엔드포인트는 하루에 `10`개의 요청으로 제한됩니다.\n\n첨부 파일은 `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`의 소문자 형식이며, 이메일 자체에는 검색된 로그에 대한 간략한 요약이 포함되어 있습니다.",
         "tags": [
-          "Logs"
+          "로그"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "정규화된 도메인(\"FQDN\")으로 로그를 필터링합니다. FQDN을 지정하지 않으면 모든 도메인의 모든 로그가 검색됩니다.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "이메일, 도메인, 별칭 이름, IP 주소 또는 날짜(M/Y, M/D/YY, M-D, M-D-YY 또는 M.D.YY 형식)로 로그를 검색합니다.",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "특정 반송 카테고리(예: \"차단 목록\")로 로그를 검색합니다.",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "특정 오류 응답 코드(예: 421 또는 550)로 로그를 검색합니다.",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "아웃바운드 SMTP 이메일 나열",
+        "description": "**발신 SMTP 이메일 나열**\n\n이 엔드포인트는 이메일의 `message`, `headers`, `rejectedErrors` 속성 값을 반환하지 않습니다.\n\n해당 속성과 값을 반환하려면 이메일 ID와 함께 [이메일 검색](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) 엔드포인트를 사용하세요.",
         "tags": [
-          "Emails"
+          "이메일"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "메타데이터로 이메일을 검색합니다.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "도메인 이름으로 이메일을 검색합니다.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "특정 필드를 기준으로 정렬합니다(하이픈 하나만 붙이면 해당 필드의 역방향으로 정렬). 설정하지 않으면 created_at이 기본값으로 사용됩니다.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "자세한 내용은 페이지 매김을 참조하세요.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "자세한 내용은 페이지 매김을 참조하세요.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "아웃바운드 SMTP 이메일 만들기",
+        "description": "이메일 생성을 위한 API는 Nodemailer의 메시지 옵션 구성에서 영감을 받아 이를 활용합니다. 아래 모든 본문 매개변수는 [Nodemailer 메시지 구성](https://nodemailer.com/message/)을 참조하세요.\n\n`envelope`와 `dkim`(자동으로 설정됨)을 제외한 모든 Nodemailer 옵션을 지원합니다. 보안을 위해 `disableFileAccess` 및 `disableUrlAccess` 옵션은 `true`로 자동 설정됩니다.\n\n헤더를 포함한 전체 원시 이메일과 함께 `raw` 옵션 하나를 전달하거나, 아래에 개별 본문 매개변수 옵션을 전달해야 합니다.\n\n이 API 엔드포인트는 헤더에 이모지가 있는 경우 자동으로 인코딩합니다(예: `Subject: 🤓 Hello`라는 제목은 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`로 자동 변환됨). 저희의 목표는 개발자 친화적이고 더미 검증이 가능한 이메일 API를 만드는 것이었습니다.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다. API 키(권장) 또는 별칭 이메일 주소와 생성된 비밀번호를 사용하여 인증할 수 있습니다. 자세한 내용은 API 설명서의 인증 섹션을 참조하세요.",
         "tags": [
-          "Emails"
+          "이메일"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "아웃바운드 SMTP 이메일 제한 가져오기",
+        "description": "이는 계정별로 일일 SMTP 발신 메시지 수에 대한 `count`와 `limit`를 포함하는 JSON 객체를 반환하는 간단한 엔드포인트입니다.",
         "tags": [
-          "Emails"
+          "이메일"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "아웃바운드 SMTP 이메일 검색",
+        "description": "특정 아웃바운드 SMTP 이메일을 검색합니다.",
         "tags": [
-          "Emails"
+          "이메일"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "아웃바운드 SMTP 이메일 삭제",
+        "description": "이메일 삭제 시, 현재 상태가 \"보류 중\", \"대기 중\" 또는 \"지연됨\" 중 하나인 경우에만 상태가 \"거부됨\"으로 설정되고 대기열에서 처리되지 않습니다. 이메일은 생성 및/또는 발송 후 30일이 지나면 자동으로 삭제될 수 있으므로 클라이언트, 데이터베이스 또는 애플리케이션에 발신 SMTP 이메일 사본을 보관해야 합니다. 필요한 경우 데이터베이스에서 이메일 ID 값을 참조할 수 있습니다. 이 값은 [이메일 생성](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) 및 [이메일 검색](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) 엔드포인트 모두에서 반환됩니다.",
         "tags": [
-          "Emails"
+          "이메일"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "도메인 목록",
+        "description": "> [!NOTE]\n>2024년 11월 1일부터 목록 도메인 및 목록 도메인 별칭에 대한 API 엔드포인트는 페이지당 최대 결과 수가 `1000개`로 기본 설정됩니다. 이 동작을 미리 적용하려면 엔드포인트 쿼리 URL에 추가 쿼리 문자열 매개변수로 `?paginate=true`를 전달하면 됩니다. 자세한 내용은 페이지네이션을 참조하세요.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "메타데이터로 도메인을 검색합니다.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "도메인 이름으로 도메인을 검색하세요.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "특정 필드를 기준으로 정렬합니다(하이픈 하나만 붙이면 해당 필드의 역방향으로 정렬). 설정하지 않으면 created_at이 기본값으로 사용됩니다.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "자세한 내용은 페이지 매김을 참조하세요.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "자세한 내용은 페이지 매김을 참조하세요.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "도메인 생성",
+        "description": "시스템에 새 도메인을 생성합니다. 이 엔드포인트를 사용하면 플랫폼에서 사용할 정규화된 도메인 이름(FQDN) 또는 IP 주소를 등록할 수 있습니다.\n\n선택적인 구성 옵션으로는 기존 팀에 도메인 할당, 플랜 유형 설정(예: 무료, 강화된 보호 또는 팀), 스팸 필터링, 바이러스 검사, 수신자 확인과 같은 고급 보호 기능 구성이 있습니다. 또한 기본적으로 포괄 별칭을 생성할지 여부를 구성하고, SMTP 실패 시 사용자 지정 반송 웹훅 URL을 설정하고, 이 도메인의 이메일 별칭에 대한 저장 공간 할당량 한도를 정의할 수 있습니다. 이 엔드포인트는 도메인 수준의 유효성 검사 및 프로비저닝을 수행합니다. `ignore_mx_check` 옵션을 활성화하면 MX 레코드 확인이 건너뜁니다(고급 라우팅 설정에만 권장). 응답에는 구성에 필요한 DNS 레코드를 포함하여 생성된 도메인 개체에 대한 전체 정보가 포함됩니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "도메인 검색",
+        "description": "특정 도메인 검색",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "도메인 업데이트",
+        "description": "특정 도메인을 업데이트합니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "도메인 삭제",
+        "description": "특정 도메인을 삭제합니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "도메인 레코드 확인",
+        "description": "특정 도메인에 대한 DNS 레코드를 확인합니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "도메인 SMTP 레코드 확인",
+        "description": "지정된 도메인에 대한 SMTP 관련 DNS 레코드를 확인합니다.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "검증을 위한 정규화된 도메인 이름(FQDN)",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "도메인 전체에 적용되는 포괄적인 비밀번호 만들기",
+        "description": "도메인 전체에 적용되는 포괄적인 비밀번호를 생성합니다. 비밀번호를 제공하지 않으면 안전한 무작위 비밀번호가 생성됩니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "포괄적인 비밀번호를 생성하기 위한 도메인 이름"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "도메인 전체의 포괄적인 비밀번호에 사용할 사용자 지정 새 비밀번호입니다. 강력한 비밀번호를 생성하려면 비워 두세요."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "이 설명은 조직 목적으로만 사용됩니다."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "도메인 전체의 포괄적인 비밀번호 나열",
+        "description": "지정된 도메인에 현재 구성되어 있는 도메인 전체의 포괄적인 비밀번호 목록을 반환합니다.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "포괄적인 비밀번호를 나열할 정규화된 도메인 이름(FQDN)",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "도메인 전체의 포괄적 비밀번호 제거",
+        "description": "제공된 토큰 ID를 사용하여 도메인 전체의 포괄적인 비밀번호를 삭제합니다.",
         "tags": [
-          "Domains"
+          "도메인"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "포괄적인 비밀번호와 연관된 도메인 이름"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "삭제할 도메인 전체 포괄 비밀번호의 토큰 ID"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "도메인 초대 수락",
+        "description": "도메인 초대를 수락합니다.",
         "tags": [
-          "Invites"
+          "초대합니다"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "도메인 초대 만들기",
+        "description": ">[!IMPORTANT]\n>초대되는 사용자가 이미 다른 도메인의 승인된 회원이고, 초대하는 관리자가 회원으로 등록되어 있는 경우, 초대는 자동으로 승인되고 이메일은 전송되지 않습니다.",
         "tags": [
-          "Invites"
+          "초대합니다"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "도메인 회원 목록에 초대할 이메일 주소"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "사용자를 도메인 멤버십에 추가할 그룹(`\"admin\"` 또는 `\"user\"` 중 하나일 수 있음)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "도메인 초대 제거",
+        "description": "도메인에 대한 초대를 제거합니다.",
         "tags": [
-          "Invites"
+          "초대합니다"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "도메인 회원 목록에서 제거할 이메일 주소"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "도메인 멤버 업데이트",
+        "description": "도메인 멤버를 업데이트합니다.",
         "tags": [
-          "Members"
+          "회원들"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "사용자를 도메인 멤버십으로 업데이트할 그룹(`\"admin\"` 또는 `\"user\"` 중 하나일 수 있음)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "도메인 멤버 제거",
+        "description": "도메인 구성원을 제거합니다.",
         "tags": [
-          "Members"
+          "회원들"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "별칭 비밀번호 생성",
+        "description": "별칭에 대한 비밀번호를 생성합니다. `emailed_instructions`가 제공되지 않으면 생성된 사용자 이름과 비밀번호가 응답에 포함됩니다.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "정규화된 도메인 이름(FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "별칭의 고유 식별자"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "도메인 별칭 나열",
+        "description": ">[!NOTE]\n>2024년 11월 1일부터 `도메인 목록` 및 `도메인 별칭 목록` API 엔드포인트는 페이지당 최대 결과 수가 `1,000개`로 기본 설정됩니다. 이 기능을 미리 사용하려면 엔드포인트 쿼리 URL에 `?paginate=true`를 추가 쿼리 문자열 매개변수로 전달하면 됩니다. 자세한 내용은 페이지네이션을 참조하세요.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "이름, 레이블 또는 수신자를 기준으로 도메인의 별칭 검색(RegExp 지원)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "이름으로 도메인의 별칭 검색(RegExp 지원)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "수신자별로 도메인의 별칭 검색(RegExp 지원)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "특정 필드를 기준으로 정렬합니다(하이픈 하나만 접두사로 사용하면 역순으로 정렬). 기본값은 created_at입니다.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "새 도메인 별칭 만들기",
+        "description": "특정 도메인에 대한 새로운 별칭을 만듭니다.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "도메인 별칭 검색",
+        "description": "도메인에 대한 특정 별칭을 검색합니다.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "도메인 별칭 업데이트",
+        "description": "도메인의 특정 별칭을 업데이트합니다.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "도메인 별칭 삭제",
+        "description": "도메인의 특정 별칭을 삭제합니다.",
         "tags": [
-          "Aliases"
+          "별칭"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "TXT 레코드 암호화",
+        "description": "무료 플랜에서도 기록 암호화를 무료로 제공합니다. 개인정보 보호는 단순한 기능이 아니라 제품의 모든 측면에 기본적으로 내장되어야 합니다. [개인정보 보호 가이드 토론](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)과 [GitHub 이슈](https://github.com/forwardemail/forwardemail.net/issues/254)에서 많은 요청이 있었기에 이 기능을 추가했습니다.",
         "tags": [
-          "Encrypt"
+          "암호화"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "유효한 전달 이메일 일반 텍스트 TXT 레코드"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "계정",
+      "description": "계정 관리 엔드포인트"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "로그",
+      "description": "로그 관리 엔드포인트"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "이메일",
+      "description": "이메일 관리 엔드포인트"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "도메인",
+      "description": "> [!TIP]\n> 도메인 이름 <code>/v1/domains/:domain\\_name</code>을 엔드포인트로 사용하는 도메인 엔드포인트는 도메인 ID <code>:domain\\_id</code>와 상호 교환 가능합니다. 즉, <code>name</code> 또는 <code>id</code> 값으로 도메인을 참조할 수 있습니다."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "초대합니다",
+      "description": "도메인 초대 관리 엔드포인트"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "회원들",
+      "description": "도메인 멤버 관리 엔드포인트"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "별칭",
+      "description": "도메인 별칭 관리 엔드포인트"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "암호화",
+      "description": "암호화 엔드포인트"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "콘택트 렌즈",
+      "description": "별칭 연락처 관리 엔드포인트(CardDAV)\n\n>[!NOTE]\n>다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 별칭 사용자 이름과 동일한 인증 \"username\"과 별칭에서 생성된 비밀번호와 동일한 \"password\"를 요구합니다.\n\n>[!TIP]\n>이 엔드포인트는 연락처 생성, 검색, 업데이트 및 삭제를 포함하여 vCard 지원을 통해 연락처 관리를 위한 전체 CRUD 작업을 제공합니다. vCard 콘텐츠를 직접 제공하거나 vCard 형식으로 변환될 개별 연락처 필드를 제공할 수 있습니다."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "달력",
+      "description": "별칭 캘린더 관리 엔드포인트(CalDAV)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 캘린더 생성, 검색, 업데이트 및 삭제를 포함하여 시간대 및 색상 지원을 통해 완벽한 캘린더 관리를 제공합니다. 캘린더 이름은 필수이며, 색상, 시간대, 설명과 같은 다른 속성은 선택 사항입니다."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "캘린더 이벤트",
+      "description": "별칭 캘린더 이벤트 관리 엔드포인트(CalDAV)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"사용자 이름\"이 별칭 사용자 이름과 동일하고 \"암호\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 iCalendar(RFC 5545)를 완벽하게 지원하는 포괄적인 캘린더 이벤트 관리 기능을 제공합니다. 이벤트는 iCal 데이터로 저장되며, 요약, 설명, 위치, 날짜와 같은 공통 속성을 자동으로 파싱하여 쉽게 액세스할 수 있도록 합니다. 이벤트는 소프트 삭제를 지원하며 캘린더, 날짜 범위, 삭제 상태별로 필터링할 수 있습니다."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "메시지",
+      "description": "별칭 메시지 관리 엔드포인트(IMAP/POP3)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"사용자 이름\"이 별칭 사용자 이름과 동일하고 \"비밀번호\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 고급 검색 기능을 통해 포괄적인 메시지 관리 기능을 제공합니다. 폴더, 플래그, 콘텐츠, 헤더, 날짜 범위, 크기 등으로 검색할 수 있습니다. 메시지는 표준 Nodemailer 형식을 사용하여 생성할 수 있으며, 폴더 간 이동 및 플래그 관리를 지원합니다.\n\n도메인 설정 지침을 준수했는지 확인하세요.\n해당 지침은 FAQ 섹션 [IMAP으로 이메일 수신을 지원하시나요?](/faq#do-you-support-receiving-email-with-imap)에서 확인할 수 있습니다."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "폴더",
+      "description": "별칭 폴더 관리 엔드포인트(IMAP/POP3)\n\n>[!TIP]\n> 폴더 경로 <code>/v1/folders/:path</code>를 엔드포인트로 사용하는 폴더 엔드포인트는 폴더 ID <code>:id</code>와 상호 교환 가능합니다. 즉, <code>path</code> 또는 <code>id</code> 값으로 폴더를 참조할 수 있습니다.\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 폴더 생성, 이름 변경, 삭제를 포함한 전체 폴더 관리 기능을 제공합니다. 폴더 경로에는 상위 폴더(예: '받은 편지함/하위 폴더')가 포함될 수 있으며, 상위 폴더가 없으면 자동으로 생성됩니다."
     }
   ]
 }
-

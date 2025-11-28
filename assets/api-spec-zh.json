@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />欢迎阅读 Forward Email 的完整 API 文档。此 API 允许您以编程方式管理电子邮件转发、域名、别名、外发邮件等。\n\n## 主要功能\n\n* **域名管理：** 创建、检索、更新、删除和验证域名。\n\n* **别名管理：** 管理电子邮件别名，包括创建、更新和收件人管理。\n\n* **外发 SMTP：** 通过 SMTP 发送电子邮件，管理发送限制并跟踪已发送邮件。\n\n* **帐户和日志：** 管理您的帐户详细信息并下载活动日志。\n\n* **安全性：** 加密 TXT 记录并管理域成员/邀请。\n\n* **CardDAV 联系人：** 支持 vCard 的联系人管理的完整 CRUD 操作。\n\n* **CalDAV 日历：** 提供完整的日历管理功能，支持时区和颜色。\n\n* **IMAP/POP3 邮件：** 提供全面的邮件管理功能，并具备高级搜索功能。\n\n* **IMAP/POP3 文件夹：** 提供完整的文件夹管理功能，包括创建、重命名和删除。\n\n## 身份验证\n\n大多数端点需要使用您的 **API 密钥** 进行身份验证。请在基本身份验证标头中将 API 密钥作为 `username` 提供，密码留空。\n\n```http\n\nAuthorization: Basic QVBJX1RPS0VOOg==\n\n```\n\n（在进行 Base64 编码之前，请将 `API_TOKEN` 替换为您的实际密钥）\n\n与**别名联系人、日历、邮件和文件夹**相关的端点需要生成别名用户名和密码才能进行基本身份验证。\n\n## 错误\n\nAPI 使用标准 HTTP 状态代码来指示成功或失败。错误响应包含一个 JSON 正文，其中包含一个 `message` 字段，详细说明错误信息。\n\n| 状态码 | 含义 |\n\n|-------------|---------------------|\n\n| 200 | 正常 |\n\n| 400 | 错误请求 |\n\n| 401 | 未授权 |\n\n| 403 | 禁止访问 |\n\n| 404 | 未找到 |\n\n| 409 | 冲突 |\n\n| 412 | 前提条件失败 |\n\n| 429 | 请求过多 |\n\n| 500 | 内部服务器错误 |\n\n| 501 | 未实现 |\n\n| 502 | 网关错误 |\n\n| 503 | 服务不可用 |\n\n| 504 | 网关超时 |\n\n*如果您遇到 `5xx` 错误，请联系 [api@forwardemail.net](mailto:api@forwardemail.net)。*\n\n## 本地化\n\nAPI 响应会根据用户检测到的语言环境或 `Accept-Language` 标头进行翻译。支持超过 25 种语言。\n\n## 分页\n\n返回列表的端点支持通过查询参数进行分页。\n\n| 参数 | 类型 | 可选 | 描述 | 默认值 | 约束 |\n\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n\n| `page` | 整数 | 是 | 要检索的页码。 | 1 | `>= 1` |\n\n| `limit` | 整数 | 是 | 每页显示的结果数。 | 25 | `>= 1`, `<= 100` |\n\n| `pagination` | 布尔值 | 是 |启用分页功能（部分接口需在 2024 年 11 月 1 日前启用）。| false | |\n\n**分页标头：**\n\n* `X-Page-Count`：总页数。\n\n* `X-Page-Current`：当前页码。\n\n* `X-Page-Size`：当前页的项目数。\n\n* `X-Item-Count`：所有页面中的项目总数。\n\n* `Link`：导航链接（上一页、下一页、首页、末页）。\n\n**示例：**\n\n```bash\n\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n\n-u API_TOKEN:\n\n```\n\n## 推荐库\n\n* **Ruby：** [Faraday](https://github.com/lostisland/faraday)\n\n* **Python：** [requests](https://requests.readthedocs.io/en/latest/)\n\n* **Java：** [OkHttp](https://square.github.io/okhttp/)\n\n* **PHP：** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n\n* **JavaScript/Node.js：** [superagent](https://github.com/visionmedia/superagent) (由 Forward Email 维护)\n\n* **Go：** `net/http`\n\n* **.NET：** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "转发邮件 API 服务器"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "请使用您的 API 密钥作为基本身份验证的**用户名**。密码字段留空。\n\n**示例：**\n\n如果您的 API 密钥为 `YOUR_API_KEY`，则 `Authorization` 标头的 Base64 编码值将为 `echo -n \"YOUR_API_KEY:\" | base64`。\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n\n```\n\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "请使用生成的**别名用户名和密码**进行基本身份验证。这适用于以下端点：\n\n* 别名联系人 (CardDAV)\n\n* 别名日历 (CalDAV)\n\n* 别名邮件 (IMAP/POP3)\n\n* 别名文件夹 (IMAP/POP3)\n\n**示例：**\n\n如果别名用户名是 `alias@domain.com`，密码是 `GENERATED_PASSWORD`，则 Base64 编码后的值将是 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`。\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "错误信息"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "别名 ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "对象类型"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "别名（电子邮件的本地部分）"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "完整别名电子邮件地址"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "域名"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "域名"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "此别名/邮箱使用的存储空间（以字节为单位）"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "此别名/邮箱的存储配额（以字节为单位）"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "此别名是否启用了 IMAP"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "是否启用 PGP 加密"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP 公钥（如有）"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "区域设置偏好"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "创建时间戳"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "最后更新时间戳"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "联系人 ID（来自 CardDAV 的 contact_id）"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "联系 UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "联系人的全名"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard 内容"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "版本控制的 ETag"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "是否联系是群体"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "电子邮件地址数组"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "电话号码数组"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard 内容（如果未提供，将从其他字段生成）"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "联系人的全名"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "自定义联系人 ID（如未提供，将自动生成）"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "联系 UID（如未提供，将自动生成）"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "电子邮件地址数组"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "电话号码数组"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "电话号码数组（phone_numbers 的别名）"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "地址数组"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "是否联系是群体"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard 内容"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "联系人的全名"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "电子邮件地址数组"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "电话号码数组"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "电话号码数组（phone_numbers 的别名）"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "地址数组"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "是否联系是群体"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "日历 ID（来自 CalDAV 的 calendarId）"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "日历名称"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "日历说明"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "日历颜色（十六进制格式）"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "日历时区"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "日历显示顺序"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "日历名称"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "自定义日历 ID（如果未提供，将自动生成）"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "日历说明"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "日历颜色（十六进制格式，如未提供，将自动生成）"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "日历时区（默认为用户时区或 UTC）"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "日历显示顺序（默认为 0）"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "日历名称"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "日历说明"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "日历颜色（十六进制格式）"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "日历时区"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "日历显示顺序"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "日历事件 ID（来自 CalDAV 的 eventId）"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "此事件所属日历的 ID"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "事件的 iCalendar (RFC 5545) 数据"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "事件标题/摘要（提取自 iCal 数据）"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "事件描述（提取自 iCal 数据）"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "事件地点（从 iCal 数据中提取）"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "事件开始日期/时间（从 iCal 数据中提取）"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "事件结束日期/时间（从 iCal 数据中提取）"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "来自 iCal 数据的唯一标识符"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "事件状态（从 iCal 数据中提取）"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "活动组织者（摘自 iCal 数据）"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "软删除时间戳"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "要添加事件的日历 ID"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "自定义事件 ID（如果未提供，则会自动生成）"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "事件的 iCalendar（RFC 5545）数据。必须为有效的 iCal 格式。"
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "将活动移至其他日历"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "已更新事件的 iCalendar (RFC 5545) 数据"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "文件夹 ID"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "完整文件夹路径"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "文件夹名称（路径的最后一部分）"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "父文件夹路径"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "IMAP UID 有效性"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "下一个 UID 值"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "修正指数"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "文件夹是否已订阅"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "文件夹标记"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "信息保留期限"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "特殊用途指定"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "文件夹路径/名称"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "新文件夹路径/名称"
           }
         }
       },
@@ -931,94 +974,94 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "消息 ID"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "用于线程的根消息 ID"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "包含该消息的文件夹 ID"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "包含该消息的文件夹路径"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "对话分组的主题 ID"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "消息 ID 标头值"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "消息是否未读"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "消息是否被标记"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "消息是否被删除"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "消息是否为草稿"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "邮件是否为垃圾邮件/骚扰邮件"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "消息是否被复制"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "消息是否可搜索"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "邮件是否已过期"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "邮件是否包含附件"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "信息保留日期"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "内部日期（IMAP）"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "邮件头中的日期"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "邮件主题"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP标志"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "消息大小（字节）"
           },
           "uid": {
             "type": "integer",
@@ -1026,37 +1069,39 @@
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "修饰序列"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "交易类型"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "远程IP地址"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "消息创建时间戳"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "消息最后更新时间戳"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "已解析的消息对象（默认包含，设置 ?nodemailer=false 可排除）"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "原始邮件内容（默认包含，设置 ?raw=false 可排除）"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "发件人电子邮件地址"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "收件人电子邮件地址"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "抄送收件人电子邮件地址"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "密送收件人电子邮件地址"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "邮件主题"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "纯文本内容"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML 内容"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "邮件附件（Nodemailer格式）"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "目标文件夹（默认为收件箱）"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "要设置在邮件上的 IMAP 标志"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "要设置在邮件上的 IMAP 标志"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "将邮件移至此文件夹"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "发件人的电子邮件地址（必须作为域的别名存在）。"
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "“To”标头中的收件人列表或数组，以逗号分隔。"
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "以逗号分隔的收件人列表或数组，用于“抄送”标头。"
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "密送 (Bcc) 标头的收件人列表或数组，以逗号分隔。"
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "邮件主题。"
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "消息的纯文本版本。"
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "邮件的HTML版本。"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "附件对象数组（参见 Nodemailer 的公共字段）。"
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "“发件人”标头中的电子邮件地址。"
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "“回复至”标头的电子邮件地址。"
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "该消息回复的消息 ID。"
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "以空格分隔的消息 ID 列表或数组。"
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "如果为真，则将 HTML 内容中的图像数据转换为嵌入式附件。"
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "该消息的HTML版本专为Apple Watch设计。"
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL 特有的 HTML 版本邮件。"
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "将 iCalendar 事件作为替代消息内容。"
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "一系列备选消息内容。"
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "文本和 HTML 字符串的编码（例如，'utf-8'、'hex'、'base64'）。"
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "自定义生成的 RFC822 格式邮件（而不是使用 Nodemailer 生成）。"
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "强制对文本值进行编码。"
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "邮件优先级。"
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "附加标头字段的对象或数组。"
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "“Message-ID”标头的可选消息ID。"
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "可选的日期标题。日期不能超过未来 30 天。"
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "可选的 List-* 标头对象。"
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "完全限定域名 (FQDN) 或 IP 地址"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "从另一个域分配给同一团队；可以是域 ID 或完全限定域名 (FQDN)。使用“none”可明确禁用。"
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "套餐类型（默认为“免费”或用户当前付费套餐）"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "以逗号、空格或换行符分隔的电子邮件地址列表"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "创建默认的通用别名（默认为 true）"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "启用垃圾邮件扫描器成人内容保护"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "启用垃圾邮件扫描器网络钓鱼防护"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "启用垃圾邮件扫描程序可执行文件保护"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "启用垃圾邮件扫描器病毒防护"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "要求别名收件人点击电子邮件验证链接"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "对于高级邮件路由设置，忽略 MX 记录检查。"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "选择启用此功能，即可存储成功转发、通过 Webhook 发送、外发 SMTP 和 IMAP 发送的电子邮件的邮件头和元数据（不包括邮件内容），日志保留 7 天。此功能可帮助您监控和排查电子邮件发送性能问题，并提供成功发送的详细信息。"
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "保留出站 SMTP 日志的天数（0-30 天，默认值：0 天）"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "用于接收退信事件的 Webhook URL"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "禁用反弹 webhook"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "每个别名的最大存储配额（例如“1 GB”）"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "用于配置 SMTP 转发的自定义端口（默认值为“25”）"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "是否在此域名上启用垃圾邮件扫描器成人内容保护"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "是否在此域上启用垃圾邮件扫描器网络钓鱼防护"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "是否在此域上启用垃圾邮件扫描程序可执行文件保护"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "是否在此域上启用垃圾邮件扫描器病毒防护"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "全局域默认设置，用于指定是否要求别名收件人点击电子邮件验证链接才能发送邮件。"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "是否忽略域上的 MX 记录检查以进行验证（主要用于高级 MX 路由设置）"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "选择启用此功能，即可存储成功转发、通过 Webhook 发送、外发 SMTP 和 IMAP 发送的电子邮件的邮件头和元数据（不包括邮件内容），日志保留 7 天。此功能可帮助您监控和排查电子邮件发送性能问题，并提供成功发送的详细信息。"
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "存储外发SMTP邮件的天数（0 = 立即清除）"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "用于接收退信通知的 Webhook URL，如果设置为 false 则禁用"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "每个别名的存储配额（例如“1 GB”，解析为字节）"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "别名（如果未提供或为空，则会生成一个随机别名）"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名 (FQDN)、IP 地址或 Webhook URL 字符串"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "有效收件人数组"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "收件人列表。如果未提供或为空，则默认为请求者的电子邮件地址。"
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "别名描述"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "以换行符/空格/逗号分隔的标签字符串"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "标签数组"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "要求收件人点击验证链接（默认为域设置）"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "是否启用或禁用此别名"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "别名禁用时的错误代码。默认值为 250。"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "启用或禁用此别名的 IMAP 存储"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "启用或禁用此别名的 OpenPGP 加密"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP 公钥（ASCII Armor 格式）"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "存储最大配额（例如“1 GB”）"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "启用或禁用假期响应器"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "休假响应者的起始日期（例如“YYYY-MM-DD”）"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "休假响应者的结束日期（例如“YYYY-MM-DD”）"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "假期回复器的纯文本主题"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "度假回复器的纯文本消息"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "别名"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名 (FQDN)、IP 地址或 Webhook URL 字符串"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "有效收件人数组"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "别名描述"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "以换行符/空格/逗号分隔的标签字符串"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "标签数组"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "要求收件人点击验证链接（默认为域设置）"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "启用或禁用别名"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "别名禁用时使用的错误代码（默认为 250）"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "启用或禁用 IMAP 存储"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "启用或禁用 OpenPGP 加密"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP 公钥（ASCII Armor 格式）"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "存储最大配额（例如，“1 GB”）"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "启用或禁用假期响应器"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "休假响应者开始日期（例如 YYYY-MM-DD）"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "休假回复结束日期（例如 YYYY-MM-DD）"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "度假回复者的纯文本主题"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "度假回复者的纯文本消息"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "您为别名设置的新自定义密码"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "现有别名密码，无需删除邮箱存储即可更改。"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "覆盖现有密码并删除 IMAP 存储（请谨慎使用）"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "用于发送别名密码和设置说明的电子邮件地址"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "当前已发送邮件数量"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "允许的最大电子邮件数量"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "会员编号"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "会员电子邮件地址"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "成员角色"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "受邀电子邮件地址"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "要返回的结果页数。如果未指定，则默认值为 1。必须为大于或等于 1 的数字。",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "每页返回的结果数。如果未指定，则默认为 25。必须是大于等于 1 且小于等于 100 的数字。",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "在2024年11月1日之前选择启用分页功能",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "域名",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "别名 ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "会员编号",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "邮箱地址",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "联系 ID",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "日历 ID",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "文件夹 ID 或路径",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "消息 ID",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "帐户"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "找回账户",
+        "description": "获取您的帐户信息。\n\n**身份验证：**此端点支持 API 令牌身份验证和别名凭据身份验证。\n\n- **用户帐户（API 令牌）：**使用 API 令牌进行身份验证后，此端点将返回您的用户帐户信息，包括套餐详情、电子邮件地址和 API 令牌。\n\n- **别名帐户（别名凭据）：**使用别名凭据（电子邮件地址和生成的密码）进行身份验证后，此端点将返回别名/邮箱信息，包括已用存储空间、存储配额和邮箱设置。这对于 IMAP/POP3/CalDAV/CardDAV 客户端检查存储状态非常有用。",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "帐户"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "更新帐户",
+        "description": "请更新您的账户信息。",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "显示名称"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "区域设置偏好"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "联系方式"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "联系人列表",
+        "description": "获取已验证别名下的所有联系人列表。此端点支持分页，并以 CardDAV 格式返回联系人。",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "联系方式"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "创建联系人",
+        "description": "创建新联系人。您可以直接提供 vCard 内容，也可以提供单个联系人字段，这些字段将被转换为 vCard 格式。如果已存在具有相同 ID 的联系人，系统将返回冲突错误。",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "联系方式"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "找回联系人",
+        "description": "通过联系人 ID 检索特定联系人。联系人将以标准联系人格式返回，包含 vCard 内容和已解析字段。",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "联系方式"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "更新联系方式",
+        "description": "更新现有联系人。您可以提供更新后的 vCard 内容，也可以单独更新各个字段。如果单独提供字段，系统将重新生成联系人的 vCard。",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "联系方式"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "删除联系人",
+        "description": "永久删除特定联系人。此操作无法撤销。",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "日历"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "列出日历",
+        "description": "获取已验证别名下的所有日历列表。此端点支持分页，并以 CalDAV 格式返回日历。",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "日历"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "创建日历",
+        "description": "创建一个新日历。日历名称为必填项，其他属性（例如颜色、时区和描述）为可选。如果已存在同名日历，则会返回冲突错误。",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "日历"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "检索日历",
+        "description": "通过 ID 获取特定日历。返回的日历包含其所有属性，包括名称、描述、颜色、时区和顺序。",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "日历"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "更新日历",
+        "description": "更新现有日历。您可以更新日历的任何属性，包括名称、描述、颜色、时区和顺序。如果将名称更改为已存在的名称，则会返回冲突错误。",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "日历"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "删除日历",
+        "description": "永久删除指定日历。此操作无法撤销，并且会同时删除日历中的所有事件。",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "日历事件"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "列出日历事件",
+        "description": "获取已验证别名的日历事件列表。此端点支持按日历、日期范围和删除状态进行分页和筛选。",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "按日历 ID 筛选事件",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "筛选从此日期开始的事件（ISO 8601 格式）",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "筛选在此日期之前结束的事件（ISO 8601 格式）",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "将软删除事件包含在结果中",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "日历事件"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "创建日历事件",
+        "description": "使用 iCalendar 数据创建一个新的日历事件。系统将验证并解析该事件，以提取常用属性方便访问。",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "日历事件 ID",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "日历事件"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "获取日历事件",
+        "description": "通过 ID 检索特定日历事件。返回的事件包含其所有属性，包括已解析的 iCalendar 数据。",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "日历事件"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "更新日历事件",
+        "description": "更新特定日历事件。您可以修改 iCalendar 数据或将事件移动到其他日历。",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "日历事件"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "删除日历事件",
+        "description": "对特定日历事件进行软删除。该事件将被标记为已删除，但不会从数据库中永久删除。",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "文件夹"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "列出文件夹",
+        "description": "获取已验证别名的所有 IMAP 文件夹/邮箱列表。此端点支持按订阅状态分页和筛选。",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "按订阅状态筛选文件夹",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "文件夹"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "创建文件夹",
+        "description": "创建一个新的 IMAP 文件夹/邮箱。文件夹路径为必填项，可以包含父文件夹（例如，“收件箱/子文件夹”）。如果父文件夹不存在，系统会自动创建。",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "文件夹"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "检索文件夹",
+        "description": "通过 ID 或路径检索特定文件夹。您可以使用文件夹的 ObjectID 或其完整路径（例如，“收件箱/子文件夹”）作为标识符。",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "文件夹"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "更新文件夹",
+        "description": "更新/重命名现有文件夹。此操作会将文件夹重命名为请求正文中指定的新路径。您可以使用文件夹的 ObjectID 或其当前路径作为标识符。",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "文件夹"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "删除文件夹",
+        "description": "永久删除指定文件夹。此操作无法撤销，并且会删除文件夹内的所有邮件。您可以使用文件夹的 ObjectID 或路径作为标识符。",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "消息"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "列出和搜索消息",
+        "description": "使用高级搜索和筛选功能检索邮件列表。此端点支持分页和对邮件内容、邮件头、标记和元数据的全面搜索。您可以按文件夹、标记、内容、邮件头、日期范围、大小等进行搜索。",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "按文件夹路径筛选邮件",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "按读取状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "按标记状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "按已删除状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "按草稿状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "按垃圾邮件/广告邮件状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "按已复制状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "按可搜索状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "按过期状态筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "按附件是否存在筛选",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "按附件存在情况筛选（has_attachments 的别名）",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "在邮件主题中搜索",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "在邮件正文/文本中搜索",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "在邮件正文（邮件正文的别名）中搜索",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "搜索所有邮件头",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "按消息 ID 标头搜索",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "跨标题和文本的通用搜索",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "通用搜索（搜索的别名）",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "筛选此日期之后的邮件（ISO 8601 格式）",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "筛选此日期之前的邮件（ISO 8601 格式）",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "筛选大小最小（以字节为单位）的消息",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "筛选大小超过限制（以字节为单位）的消息",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "按“发件人”标题搜索",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "按“至”标题搜索",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "按 CC 标头搜索",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "按密送标头搜索",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "按日期标题搜索",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "按回复邮件标题搜索",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "消息"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "创建消息",
+        "description": "向文件夹创建/追加新邮件。此接口接受标准的 Nodemailer 邮件格式，并允许您指定目标文件夹和初始标志。如果目标文件夹不存在，系统将自动创建。",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "消息"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "检索消息",
+        "description": "通过邮件 ID 检索特定邮件。默认情况下，响应包含已解析的 Nodemailer 对象和原始邮件内容。您可以使用查询参数控制包含的内容。",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "返回原始 EML 格式，而不是 JSON 格式。",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "包含已解析的 Nodemailer 对象",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "在 Nodemailer 对象中包含附件",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "包含原始消息内容",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "消息"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "更新消息",
+        "description": "更新现有邮件。您可以修改邮件标记或将其移动到其他文件夹。如果目标文件夹不存在，系统将自动创建。",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "返回原始 EML 格式，而不是 JSON 格式。",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "消息"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "删除消息",
+        "description": "永久删除特定邮件。此操作无法撤销，并将从存储中永久删除该邮件。与通常将邮件移至“已删除邮件”的 IMAP 客户端不同，此端点执行的是彻底删除。",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "下载日志",
+        "description": "**下载日志**\n\n说明：我们的 API 允许您通过编程方式下载帐户日志。向此接口提交请求后，系统将处理您帐户的所有日志，并在处理完成后以附件形式（Gzip 压缩的 CSV 电子表格文件）通过电子邮件发送给您。\n\n这样，您可以使用 Cron 作业或 Node.js 作业调度软件 Bree 创建后台作业，随时接收日志。请注意，此接口每天最多只能发送 10 次请求。\n\n附件文件名为 `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`（小写），邮件正文包含已检索日志的简要摘要。",
         "tags": [
-          "Logs"
+          "日志"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "按完全限定域名（“FQDN”）筛选日志。如果未提供，则将检索所有域中的所有日志。",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "按电子邮件、域名、别名、IP 地址或日期（M/Y、M/D/YY、M-D、M-D-YY 或 M.D.YY 格式）搜索日志。",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "按特定退信类别（例如“黑名单”）搜索日志。",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "按特定错误响应代码（例如 421 或 550）搜索日志。",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "列出外发的SMTP电子邮件",
+        "description": "**列出已发送的 SMTP 邮件**\n\n请注意，此端点不会返回邮件的 `message`、`headers` 或 `rejectedErrors` 属性值。\n\n要返回这些属性及其值，请使用带有邮件 ID 的 [检索邮件](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) 端点。",
         "tags": [
-          "Emails"
+          "电子邮件"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "按元数据搜索电子邮件。",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "按域名搜索电子邮件。",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "按特定字段排序（前缀为单个连字符 - 表示按该字段的相反方向排序）。如果未设置，则默认为 created_at。",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "请参阅“分页”了解更多信息。",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "请参阅“分页”了解更多信息。",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "创建出站 SMTP 电子邮件",
+        "description": "我们的邮件创建 API 借鉴并利用了 Nodemailer 的消息选项配置。请参考 [Nodemailer 消息配置](https://nodemailer.com/message/) 中所有邮件正文参数的设置。\n\n请注意，除了 `envelope` 和 `dkim`（我们会自动为您设置）之外，我们支持所有 Nodemailer 选项。出于安全考虑，我们会自动将 `disableFileAccess` 和 `disableUrlAccess` 选项设置为 `true`。\n\n您可以传递包含完整邮件头的原始邮件正文，并传递 `raw` 选项；或者，您也可以传递以下各个邮件正文参数选项。\n\n如果邮件头中包含表情符号，此 API 端点会自动对其进行编码（例如，主题行 `Subject: 🤓 Hello` 会自动转换为 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`）。我们的目标是打造一个对开发者极其友好且易于上手的邮件 API。 **身份验证：** 此接口支持 API 令牌身份验证和别名凭据身份验证。您可以使用 API 密钥（推荐）或别名电子邮件地址和生成的密码进行身份验证。有关详细信息，请参阅 API 文档中的“身份验证”部分。",
         "tags": [
-          "Emails"
+          "电子邮件"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "获取出站 SMTP 电子邮件限制",
+        "description": "这是一个简单的端点，它返回一个 JSON 对象，其中包含每个帐户每天 SMTP 出站消息数量的 `count` 和 `limit`。",
         "tags": [
-          "Emails"
+          "电子邮件"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "检索外发的 SMTP 电子邮件",
+        "description": "检索特定的外发SMTP电子邮件。",
         "tags": [
-          "Emails"
+          "电子邮件"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "删除外发 SMTP 电子邮件",
+        "description": "邮件删除操作会将邮件状态设置为“已拒绝”（并且不会再将其放入队列中处理），前提是邮件的当前状态为“待处理”、“已排队”或“已延迟”。我们可能会在邮件创建和/或发送 30 天后自动清除邮件，因此您应该在客户端、数据库或应用程序中保留一份外发 SMTP 邮件的副本。您可以根据需要引用数据库中的邮件 ID 值——该值会从[创建邮件](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email)和[检索邮件](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email)端点返回。",
         "tags": [
-          "Emails"
+          "电子邮件"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "列出域名",
+        "description": "> [!NOTE]\n\n自 2024 年 11 月 1 日起，列表域和列表域别名的 API 端点默认每页最多显示 1000 条结果。如果您希望提前启用此功能，可以在端点查询的 URL 中添加 `?paginate=true` 作为查询字符串参数。更多信息请参阅分页文档。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "通过元数据搜索域名。",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "按域名搜索域名。",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "按特定字段排序（前缀为单个连字符 - 表示按该字段的相反方向排序）。如果未设置，则默认为 created_at。",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "请参阅“分页”了解更多信息。",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "请参阅“分页”了解更多信息。",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "创建域",
+        "description": "在系统中创建一个新域。此端点允许您注册一个完全限定域名 (FQDN) 或 IP 地址，以便与平台配合使用。\n\n可选配置选项包括将域分配给现有团队、设置套餐类型（例如，免费、增强保护或团队）以及配置高级保护功能，例如垃圾邮件过滤、病毒扫描和收件人验证。您还可以配置是否默认创建通配符别名、为 SMTP 失败设置自定义退信 Webhook URL，以及定义此域上电子邮件别名的存储配额限制。此端点执行域级验证和配置。如果启用 `ignore_mx_check` 选项，则会跳过 MX 记录验证（建议仅在高级路由设置中使用）。响应将包含已创建域对象的完整详细信息，包括配置所需的 DNS 记录。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "检索域",
+        "description": "检索特定域名",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "更新域",
+        "description": "更新特定域名。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "删除域名",
+        "description": "删除特定域名。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "验证域名记录",
+        "description": "验证特定域名的DNS记录。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "验证域 SMTP 记录",
+        "description": "验证指定域的 SMTP 相关 DNS 记录。",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "完全限定域名 (FQDN) 用于验证",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "创建域范围的通配符密码",
+        "description": "创建一个域范围内的通用密码。如果未提供密码，则会生成一个安全的随机密码。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "用于创建通用密码的域名"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "您自定义的新密码，将用作域范围内的通用密码。留空则生成强密码。"
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "仅供组织机构参考。"
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "列出域内所有通用密码",
+        "description": "返回当前为指定域配置的域范围通用密码列表。",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "要列出所有通配符密码的完全限定域名 (FQDN)",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "移除域范围内的所有密码",
+        "description": "使用提供的令牌 ID 删除域范围内的通用密码。",
         "tags": [
-          "Domains"
+          "域名"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "与通配符密码关联的域名"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "要删除的域范围通用密码的令牌 ID"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "接受域名邀请",
+        "description": "接受域名邀请。",
         "tags": [
-          "Invites"
+          "邀请"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "创建域名邀请",
+        "description": ">[!IMPORTANT]\n\n>如果被邀请的用户已经是邀请该用户的管理员所属的其他域的已接受成员，则系统将自动接受邀请，而不会发送电子邮件。",
         "tags": [
-          "Invites"
+          "邀请"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "要邀请加入域成员列表的电子邮件地址"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "要将用户添加到域成员身份的组（可以是“admin”或“user”之一）"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "移除域名邀请",
+        "description": "移除对某个域名的邀请。",
         "tags": [
-          "Invites"
+          "邀请"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "要从域成员列表中移除的电子邮件地址"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "更新域成员",
+        "description": "更新域成员。",
         "tags": [
-          "Members"
+          "成员"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "要将用户更新到域成员身份的组（可以是“admin”或“user”之一）"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "移除域成员",
+        "description": "移除域成员。",
         "tags": [
-          "Members"
+          "成员"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "生成别名密码",
+        "description": "为别名生成密码。如果未提供 `emailed_instructions`，则响应将包含生成的用户名和密码。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "完全限定域名 (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "别名的唯一标识符"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "列出域名别名",
+        "description": ">[!NOTE]\n>自 2024 年 11 月 1 日起，“列出域名”和“列出域名别名”的 API 端点默认每页最多显示 1000 条结果。如果您希望提前启用此功能，可以在端点查询的 URL 中添加 `?paginate=true` 作为查询字符串参数。更多信息请参阅分页文档。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "按名称、标签或收件人搜索域中的别名（支持正则表达式）",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "按名称搜索域中的别名（支持正则表达式）",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "按收件人搜索域中的别名（支持正则表达式）",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "按特定字段排序（前缀为单个连字符 - 表示反向排序）。默认为 created_at。",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "创建新的域名别名",
+        "description": "为特定域名创建新别名。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "获取域名别名",
+        "description": "获取域的特定别名。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "更新域名别名",
+        "description": "更新域名的特定别名。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "删除域名别名",
+        "description": "删除域名的特定别名。",
         "tags": [
-          "Aliases"
+          "别名"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "加密TXT记录",
+        "description": "即使是免费套餐，我们也允许您免费加密记录。隐私不应是一项附加功能，而应是产品各个方面固有的组成部分。正如[隐私指南讨论](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)和[GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254)中用户强烈要求的那样，我们添加了此功能。",
         "tags": [
-          "Encrypt"
+          "加密"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "任何有效的转发电子邮件纯文本 TXT 记录"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "帐户",
+      "description": "账户管理端点"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "日志",
+      "description": "日志管理端点"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "电子邮件",
+      "description": "电子邮件管理端点"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "域名",
+      "description": "> [!TIP]\n\n域名端点以域名 <code>/v1/domains/:domain\\_name</code> 为准，与以域名 ID <code>:domain\\_id</code> 为准。这意味着您可以使用域名 <code>name</code> 或 ID <code>id</code> 值来引用该域名。"
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "邀请",
+      "description": "域邀请管理端点"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "成员",
+      "description": "域成员管理端点"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "别名",
+      "description": "域别名管理端点"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "加密",
+      "description": "加密端点"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "联系方式",
+      "description": "别名联系人管理端点 (CardDAV)\n\n>[!NOTE]\n\n>与其他 API 端点不同，这些端点需要使用基本身份验证标头，其中“username”等于别名用户名，“password”等于别名生成的密码。\n\n>[!TIP]\n\n>这些端点提供完整的联系人管理 CRUD 操作，支持 vCard，包括创建、检索、更新和删除联系人。您可以直接提供 vCard 内容，也可以提供单个联系人字段，这些字段将被转换为 vCard 格式。"
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "日历",
+      "description": "别名日历管理端点 (CalDAV)\n\n>[!NOTE]\n\n> 与其他 API 端点不同，这些端点需要使用基本身份验证标头，其中“username”应等于别名用户名，“password”应等于别名生成的密码。\n\n>[!TIP]\n\n> 这些端点提供完整的日历管理功能，支持时区和颜色设置，包括日历的创建、检索、更新和删除。日历名称为必填项，而颜色、时区和描述等其他属性为可选。"
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "日历事件",
+      "description": "别名日历事件管理端点 (CalDAV)\n\n>[!NOTE]\n\n> 与其他 API 端点不同，这些端点需要使用基本身份验证标头，其中“username”应等于别名用户名，“password”应等于别名生成的密码。\n\n>[!TIP]\n\n> 这些端点提供全面的日历事件管理功能，并完全支持 iCalendar (RFC 5545)。事件以 iCal 数据的形式存储，并自动解析以提取摘要、描述、位置和日期等常用属性，方便访问。事件支持软删除，并可按日历、日期范围和删除状态进行筛选。"
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "消息",
+      "description": "别名邮件管理端点 (IMAP/POP3)\n\n>[!NOTE]\n\n> 与其他 API 端点不同，这些端点需要使用基本身份验证标头，其中“username”应等于别名用户名，“password”应等于别名生成的密码。\n\n>[!TIP]\n\n> 这些端点提供全面的邮件管理功能，并具备高级搜索功能。您可以按文件夹、标记、内容、标头、日期范围、大小等进行搜索。邮件可以使用标准的 Nodemailer 格式创建，并支持在文件夹之间移动和标记管理。\n\n请确保您已按照域的设置说明进行操作。\n\n这些说明可以在我们的常见问题解答部分找到[你们是否支持使用 IMAP 接收电子邮件？](/faq#do-you-support-receiving-email-with-imap)。"
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "文件夹",
+      "description": "别名文件夹管理端点 (IMAP/POP3)\n\n>[!TIP]\n\n> 以文件夹路径 <code>/v1/folders/:path</code> 为端点的文件夹端点与以文件夹 ID <code>:id</code> 为端点的文件夹端点可以互换使用。这意味着您可以使用 <code>path</code> 或 <code>id</code> 值来引用文件夹。\n\n>[!NOTE]\n\n> 与其他 API 端点不同，这些端点需要使用基本身份验证标头，其中“username” 等于别名用户名，“password” 等于别名生成的密码。\n\n>[!TIP]\n\n> 这些端点提供完整的文件夹管理功能，包括创建、重命名和删除。文件夹路径可以包含父文件夹（例如，“INBOX/Subfolder”），如果父文件夹不存在，则会自动创建。"
     }
   ]
 }
-

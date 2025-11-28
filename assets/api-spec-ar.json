@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />مرحبًا بك في توثيق واجهة برمجة التطبيقات (API) الشاملة لإعادة توجيه البريد الإلكتروني. تتيح لك هذه الواجهة إدارة إعادة توجيه البريد الإلكتروني، والنطاقات، والأسماء المستعارة، ورسائل البريد الإلكتروني الصادرة، والمزيد برمجيًا.\n\n## الميزات الرئيسية\n* **إدارة النطاقات:** إنشاء النطاقات، واسترجاعها، وتحديثها، وحذفها، والتحقق منها.\n* **إدارة الأسماء المستعارة:** إدارة أسماء البريد الإلكتروني المستعارة، بما في ذلك الإنشاء، والتحديثات، وإدارة المستلمين.\n* **بروتوكول SMTP الصادر:** إرسال رسائل البريد الإلكتروني عبر SMTP، وإدارة الحدود، وتتبع رسائل البريد الإلكتروني المرسلة.\n* **الحساب والسجلات:** إدارة تفاصيل حسابك وتنزيل سجلات النشاط.\n* **الأمان:** تشفير سجلات TXT وإدارة أعضاء/دعوات النطاق.\n* **جهات اتصال CardDAV:** عمليات CRUD كاملة لإدارة جهات الاتصال مع دعم vCard.\n* **تقويمات CalDAV:** إدارة تقويم كاملة مع دعم المنطقة الزمنية والألوان.\n* **رسائل IMAP/POP3:** إدارة شاملة للرسائل مع إمكانيات بحث متقدمة.\n* **مجلدات IMAP/POP3:** إدارة كاملة للمجلدات، بما في ذلك الإنشاء وإعادة التسمية والحذف.\n\n## المصادقة\nتتطلب معظم نقاط النهاية المصادقة باستخدام **مفتاح واجهة برمجة التطبيقات** الخاص بك. أدخل مفتاح واجهة برمجة التطبيقات كـ \"اسم المستخدم\" في ترويسة المصادقة الأساسية، مع ترك كلمة المرور فارغة.\n\n```http\nالتفويض: أساسي QVBJX1RPS0VOOg==\n```\n(استبدل `API_TOKEN` بمفتاحك الفعلي قبل ترميز Base64)\n\nتتطلب نقاط النهاية المتعلقة بـ **جهات الاتصال البديلة، والتقويمات، والرسائل، والمجلدات** اسم مستخدم وكلمة مرور بديلين مُولّدين للمصادقة الأساسية.\n\n## الأخطاء\nتستخدم واجهة برمجة التطبيقات رموز حالة HTTP القياسية للإشارة إلى النجاح أو الفشل. تتضمن استجابات الأخطاء نص JSON مع حقل \"رسالة\" يُفصّل الخطأ.\n\n| رمز الحالة | المعنى |\n|-------------|---------------------|\n| 200 | موافق |\n| 400 | طلب خاطئ |\n| 401 | غير مُصرّح به |\n| 403 | ممنوع |\n| 404 | غير موجود |\n| 409 | تعارض |\n| 412 | فشل الشرط المسبق |\n| 429 | طلبات كثيرة جدًا |\n| 500 | خطأ داخلي في الخادم |\n| 501 | غير مُنفّذ |\n| 502 | بوابة خاطئة |\n| 503 | الخدمة غير متاحة |\n| 504 | انتهاء مهلة البوابة |\n\n*إذا واجهتَ خطأ `5xx`، يُرجى التواصل مع [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## الترجمة\nتُترجم استجابات واجهة برمجة التطبيقات بناءً على الإعدادات المحلية التي اكتشفها المستخدم أو ترويسة `Accept-Language`. يدعم البرنامج أكثر من 25 لغة.\n\n## ترقيم الصفحات\nتدعم نقاط النهاية التي تُرجع القوائم ترقيم الصفحات عبر معلمات الاستعلام.\n\n| المعلمة | النوع | اختياري | الوصف | افتراضي | القيود |\n|-------------|----------|-----------|----------------------------------------------------------------------------|----------|------------------------|\n| `page` | عدد صحيح | نعم | رقم الصفحة المطلوب استرجاعها. | 1 | `>= 1` |\n| `limit` | عدد صحيح | نعم | عدد النتائج في الصفحة. | ٢٥ | `>= ١`، `<= ١٠٠` |\n| `ترقيم الصفحات` | منطقي | نعم | الاشتراك في سلوك ترقيم الصفحات (مطلوب قبل ١ نوفمبر ٢٠٢٤ لبعض نقاط النهاية). | خطأ | |\n\n**رؤوس ترقيم الصفحات:**\n* `X-Page-Count`: إجمالي عدد الصفحات.\n* `X-Page-Current`: رقم الصفحة الحالية.\n* `X-Page-Size`: عدد العناصر في الصفحة الحالية.\n* `X-Item-Count`: إجمالي عدد العناصر في جميع الصفحات.\n* `X-Link`: روابط التنقل (السابق، التالي، الأول، الأخير).\n\n**مثال:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## المكتبات الموصى بها\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (يُدار بواسطة إعادة توجيه البريد الإلكتروني)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "خادم API لإعادة توجيه البريد الإلكتروني"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "استخدم مفتاح واجهة برمجة التطبيقات (API) كاسم مستخدم للمصادقة الأساسية. اترك حقل كلمة المرور فارغًا.\n\nمثال:\nإذا كان مفتاح واجهة برمجة التطبيقات (API) الخاص بك هو `YOUR_API_KEY`، فإن قيمة Base64 المُرمَّزة لرأس `Authorization` ستكون `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "استخدم **اسم المستخدم وكلمة المرور المستعارين** المُولَّدين للمصادقة الأساسية. ينطبق هذا على نقاط النهاية ضمن:\n* جهات اتصال المستعارة (CardDAV)\n* التقويمات المستعارة (CalDAV)\n* الرسائل المستعارة (IMAP/POP3)\n* المجلدات المستعارة (IMAP/POP3)\n\n**مثال:**\nإذا كان اسم المستخدم المستعار هو `alias@domain.com` وكلمة المرور هي `GENERATED_PASSWORD`، فإن قيمة Base64 المُرمَّزة ستكون `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nالتفويض: أساسي YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "رسالة الخطأ"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "معرف الاسم المستعار"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "نوع الكائن"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "الاسم المستعار (الجزء المحلي من البريد الإلكتروني)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "عنوان البريد الإلكتروني الكامل"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "معرف المجال"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "اسم النطاق"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "مساحة التخزين المستخدمة بالبايت لهذا الاسم المستعار/صندوق البريد"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "حصة التخزين بالبايت لهذا الاسم المستعار/صندوق البريد"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "ما إذا كان IMAP ممكّنًا لهذا الاسم المستعار"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "ما إذا كان تشفير PGP ممكّنًا"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "مفتاح PGP العام إذا كان متاحًا"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "تفضيلات الموقع"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "طابع زمني للإنشاء"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "طابع زمني للتحديث الأخير"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "معرف جهة الاتصال (contact_id من CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "معرف جهة الاتصال"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "الاسم الكامل للجهة الاتصال"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "محتوى بطاقة vCard"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag لإصدارات"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "سواء كانت جهة الاتصال مجموعة"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "مجموعة من عناوين البريد الإلكتروني"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "مجموعة من أرقام الهواتف"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "محتوى vCard (إذا لم يتم توفيره، فسيتم إنشاؤه من حقول أخرى)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "الاسم الكامل للجهة الاتصال"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "معرف جهة الاتصال المخصص (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "معرف جهة الاتصال الفريد (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "مجموعة من عناوين البريد الإلكتروني"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "مجموعة من أرقام الهواتف"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "مجموعة من أرقام الهواتف (اسم مستعار لـ phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "مجموعة من العناوين"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "سواء كانت جهة الاتصال مجموعة"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "محتوى بطاقة vCard"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "الاسم الكامل للجهة الاتصال"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "مجموعة من عناوين البريد الإلكتروني"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "مجموعة من أرقام الهواتف"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "مجموعة من أرقام الهواتف (اسم مستعار لـ phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "مجموعة من العناوين"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "سواء كانت جهة الاتصال مجموعة"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "معرف التقويم (معرف التقويم من CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "اسم التقويم"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "وصف التقويم"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "لون التقويم (تنسيق سداسي عشري)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "المنطقة الزمنية للتقويم"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "ترتيب عرض التقويم"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "اسم التقويم"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "معرف التقويم المخصص (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "وصف التقويم"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "لون التقويم (تنسيق سداسي عشري، إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "المنطقة الزمنية للتقويم (الافتراضي هو المنطقة الزمنية للمستخدم أو UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "ترتيب عرض التقويم (الافتراضي هو 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "اسم التقويم"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "وصف التقويم"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "لون التقويم (تنسيق سداسي عشري)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "المنطقة الزمنية للتقويم"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "ترتيب عرض التقويم"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "معرف حدث التقويم (معرف الحدث من CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "معرف التقويم الذي ينتمي إليه هذا الحدث"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "بيانات iCalendar (RFC 5545) للحدث"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "عنوان الحدث/الملخص (مستخرج من بيانات iCal)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "وصف الحدث (مستخرج من بيانات iCal)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "موقع الحدث (مستخرج من بيانات iCal)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "تاريخ/وقت بدء الحدث (مستخرج من بيانات iCal)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "تاريخ/وقت انتهاء الحدث (مستخرج من بيانات iCal)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "معرف فريد من بيانات iCal"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "حالة الحدث (مستخرجة من بيانات iCal)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "منظم الحدث (مستخرج من بيانات iCal)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "طابع زمني للحذف الناعم"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "معرف التقويم الذي سيتم إضافة الحدث إليه"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "معرف الحدث المخصص (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "بيانات iCalendar (RFC 5545) للحدث. يجب أن تكون بتنسيق iCal صالح."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "نقل الحدث إلى تقويم مختلف"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "تم تحديث بيانات iCalendar (RFC 5545) للحدث"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "معرف المجلد"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "مسار المجلد الكامل"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "اسم المجلد (الجزء الأخير من المسار)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "مسار المجلد الرئيسي"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "صحة معرف IMAP UID"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "قيمة UID التالية"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "مؤشر التعديل"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "ما إذا كان المجلد مشتركًا"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "أعلام المجلد"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "فترة الاحتفاظ بالرسالة"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "تسمية الاستخدام الخاص"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "مسار المجلد/الاسم"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "مسار/اسم المجلد الجديد"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "معرف الرسالة"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "معرف الرسالة الجذرية للترابط"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "معرف المجلد الذي يحتوي على الرسالة"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "مسار المجلد الذي يحتوي على الرسالة"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "معرف الموضوع لتجميع المحادثة"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "قيمة رأس معرف الرسالة"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "ما إذا كانت الرسالة غير مقروءة"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "ما إذا كانت الرسالة مميزة"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "هل سيتم حذف الرسالة"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "هل الرسالة مسودة؟"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "ما إذا كانت الرسالة غير مرغوب فيها/بريد عشوائي"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "هل تم نسخ الرسالة"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "ما إذا كانت الرسالة قابلة للبحث"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "ما إذا كانت الرسالة منتهية الصلاحية"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "ما إذا كانت الرسالة تحتوي على مرفقات"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "تاريخ الاحتفاظ بالرسالة"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "التاريخ الداخلي (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "التاريخ من رؤوس الرسائل"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "موضوع الرسالة"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "أعلام IMAP"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "حجم الرسالة بالبايت"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "معرف IMAP الفريد"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "تسلسل التعديل"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "نوع المعاملة"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "عنوان IP البعيد"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "طابع زمني لإنشاء الرسالة"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "طابع زمني لتحديث آخر رسالة"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "كائن الرسالة المُحلل (مُضمن افتراضيًا، اضبط ?nodemailer=false للاستبعاد)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "محتوى الرسالة الخام (مضمن بشكل افتراضي، اضبط ?raw=false للاستبعاد)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "عنوان البريد الإلكتروني للمرسل"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "عناوين البريد الإلكتروني للمستلمين"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "عناوين البريد الإلكتروني لمتلقي النسخة الكربونية"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "عناوين البريد الإلكتروني لمتلقي نسخة مخفية"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "موضوع الرسالة"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "محتوى نص عادي"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "محتوى HTML"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "مرفقات الرسائل (تنسيق Nodemailer)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "المجلد المستهدف (الافتراضي هو صندوق الوارد)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "علامات IMAP التي يجب تعيينها على الرسالة"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "علامات IMAP التي يجب تعيينها على الرسالة"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "نقل الرسالة إلى هذا المجلد"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "عنوان البريد الإلكتروني للمرسل (يجب أن يكون موجودًا كاسم مستعار للنطاق)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لعنوان \"إلى\"."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لرأس \"نسخة إلى\"."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لرأس \"Bcc\"."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "موضوع البريد الإلكتروني."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "النسخة النصية العادية للرسالة."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "النسخة HTML من الرسالة."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "مجموعة من كائنات المرفقات (انظر الحقول المشتركة في Nodemailer)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "عنوان البريد الإلكتروني لرأس \"المرسل\"."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "عنوان البريد الإلكتروني لعنوان \"الرد على\"."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "معرف الرسالة التي يتم الرد عليها."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "قائمة مفصولة بمسافة أو مجموعة من معرفات الرسائل."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "إذا كانت هذه القيمة صحيحة، فسيتم تحويل البيانات: الصور الموجودة في محتوى HTML إلى مرفقات مضمنة."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "إصدار HTML من الرسالة خاص بـ Apple Watch."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "إصدار HTML خاص بـ AMP4EMAIL من الرسالة."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "حدث iCalendar كمحتوى رسالة بديل."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "مجموعة من محتوى الرسائل البديلة."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "ترميز النص وسلاسل HTML (على سبيل المثال، 'utf-8'، 'hex'، 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "رسالة مخصصة بتنسيق RFC822 (بدلاً من استخدام إنشاء Nodemailer)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "ترميز إجباري للاستخدام لقيم النص."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "مستوى الأولوية للبريد الإلكتروني."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "كائن أو مجموعة من حقول الرأس الإضافية."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "معرف الرسالة اختياري لعنوان \"معرف الرسالة\"."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "عنوان تاريخ اختياري. لا يمكن أن يتجاوز 30 يومًا في المستقبل."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "كائن اختياري من عناوين List-*."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "اسم المجال المؤهل بالكامل (FQDN) أو عنوان IP"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "التعيين للفريق نفسه من نطاق آخر؛ يمكن أن يكون معرف نطاق أو اسم نطاق مؤهل بالكامل. استخدم \"لا شيء\" لتعطيله صراحةً."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "نوع الخطة (الافتراضي هو \"مجاني\" أو الخطة المدفوعة الحالية للمستخدم)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "قائمة محدودة من عناوين البريد الإلكتروني (مفصولة بفاصلة أو مسافة أو سطر جديد)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "إنشاء اسم مستعار افتراضي لجميع العناصر (الافتراضي هو true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "تمكين حماية محتوى البالغين من Spam Scanner"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "تمكين حماية Spam Scanner من التصيد الاحتيالي"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "تمكين حماية الملفات القابلة للتنفيذ لـ Spam Scanner"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "تمكين الحماية من الفيروسات من خلال Spam Scanner"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "مطالبة مستلمي الأسماء المستعارة بالنقر فوق رابط التحقق من البريد الإلكتروني"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "تجاهل فحص سجل MX لإعدادات توجيه البريد المتقدمة"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "اختر حفظ عناوين الرسائل وبياناتها الوصفية (باستثناء محتوى الرسالة) للرسائل المُعاد توجيهها بنجاح، والمُرسلة عبر خطاف الويب، والصادرة عبر SMTP، والمُسلّمة عبر IMAP، مع الاحتفاظ بالسجلات لمدة 7 أيام. تساعدك هذه الميزة على مراقبة أداء تسليم البريد الإلكتروني واستكشاف أخطائه وإصلاحها، مع رؤى تفصيلية حول عمليات الإرسال الناجحة."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "عدد الأيام للاحتفاظ بسجلات SMTP الصادرة (0–30، الافتراضي: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "عنوان URL لـ Webhook لتلقي أحداث الارتداد"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "تعطيل خطاف الويب المرتد"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "الحد الأقصى لحصة التخزين لكل اسم مستعار (على سبيل المثال '1 جيجابايت')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "منفذ مخصص لتكوين إعادة توجيه SMTP (الافتراضي هو '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "ما إذا كان سيتم تمكين حماية محتوى البالغين من Spam Scanner على هذا المجال"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "ما إذا كان سيتم تمكين حماية Spam Scanner من التصيد الاحتيالي على هذا المجال"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "ما إذا كان سيتم تمكين حماية Spam Scanner القابلة للتنفيذ على هذا المجال"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "ما إذا كان سيتم تمكين الحماية من الفيروسات من خلال Spam Scanner على هذا المجال"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "النطاق العالمي الافتراضي لمعرفة ما إذا كان يجب على مستلمي الأسماء المستعارة النقر فوق رابط التحقق من البريد الإلكتروني لتدفق رسائل البريد الإلكتروني"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "ما إذا كان سيتم تجاهل فحص سجل MX على المجال للتحقق (خاصةً لإعدادات توجيه MX المتقدمة)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "اختر حفظ عناوين الرسائل وبياناتها الوصفية (باستثناء محتوى الرسالة) للرسائل المُعاد توجيهها بنجاح، والمُرسلة عبر خطاف الويب، والصادرة عبر SMTP، والمُسلّمة عبر IMAP، مع الاحتفاظ بالسجلات لمدة 7 أيام. تساعدك هذه الميزة على مراقبة أداء تسليم البريد الإلكتروني واستكشاف أخطائه وإصلاحها، مع رؤى تفصيلية حول عمليات الإرسال الناجحة."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "عدد الأيام اللازمة لتخزين رسائل البريد الإلكتروني SMTP الصادرة (0 = الإزالة فورًا)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "عنوان URL لـ Webhook لتلقي إشعارات الارتداد، أو False لتعطيله"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "حصة التخزين لكل اسم مستعار (على سبيل المثال \"1 جيجابايت\"، مقسمة إلى بايتات)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "اسم مستعار (إذا لم يتم توفيره أو إذا كان فارغًا، فسيتم إنشاء اسم مستعار عشوائي)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "سلسلة من عناوين البريد الإلكتروني الصالحة، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين IP، أو عناوين URL لشبكة الويب، مفصولة بفاصل/مسافة/فاصلة"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "مجموعة من المستلمين الصالحين"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "قائمة المستلمين. إذا لم تُقدّم أو كانت فارغة، فسيتم تعيينها افتراضيًا على بريد مقدم الطلب الإلكتروني."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "وصف الاسم المستعار"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "سلسلة من العلامات مفصولة بفاصل/مسافة/فاصلة"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "مجموعة من العلامات"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (يتم تعيينه افتراضيًا على إعداد المجال)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "ما إذا كان سيتم تمكين هذا الاسم المستعار أو تعطيله"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "رمز الخطأ في حال تعطيل الاسم المستعار. القيمة الافتراضية ٢٥٠"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "تمكين أو تعطيل تخزين IMAP لهذا الاسم المستعار"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "تمكين أو تعطيل تشفير OpenPGP لهذا الاسم المستعار"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "مفتاح OpenPGP العام بتنسيق ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "الحد الأقصى لحصة التخزين (على سبيل المثال \"1 جيجابايت\")"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "تمكين أو تعطيل الرد التلقائي"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "تاريخ البدء (على سبيل المثال 'YYYY-MM-DD') لمستجيب الإجازة"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "تاريخ الانتهاء (على سبيل المثال 'YYYY-MM-DD') لمستجيب الإجازة"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "موضوع نص عادي للإجابة التلقائية"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "رسالة نصية عادية للرد على المكالمات أثناء الإجازة"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "الاسم المستعار"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "سلسلة من عناوين البريد الإلكتروني الصالحة، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين IP، أو عناوين URL لشبكة الويب، مفصولة بفاصل/مسافة/فاصلة"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "مجموعة من المستلمين الصالحين"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "وصف الاسم المستعار"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "سلسلة من العلامات مفصولة بفاصل/مسافة/فاصلة"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "مجموعة من العلامات"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (يتم تعيينه افتراضيًا على إعداد المجال)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "تمكين أو تعطيل الاسم المستعار"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "رمز الخطأ الذي يجب استخدامه إذا تم تعطيل الاسم المستعار (القيمة الافتراضية هي 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "تمكين أو تعطيل تخزين IMAP"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "تمكين أو تعطيل تشفير OpenPGP"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "مفتاح OpenPGP العام بتنسيق ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "الحد الأقصى لحصة التخزين (على سبيل المثال، '1 جيجابايت')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "تمكين أو تعطيل الرد التلقائي"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "تاريخ بدء الرد التلقائي (على سبيل المثال YYYY-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "تاريخ انتهاء الرد التلقائي (على سبيل المثال YYYY-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "موضوع نص عادي للإجابة على الإجازة"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "رسالة نصية عادية من المجيب التلقائي"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "كلمة المرور الجديدة المخصصة لك لاستخدامها في الاسم المستعار"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "كلمة المرور الحالية للاسم المستعار لتغييرها دون حذف مساحة تخزين صندوق البريد"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "تجاوز كلمة المرور الحالية وحذف تخزين IMAP (استخدم بحذر)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "عنوان البريد الإلكتروني لإرسال كلمة المرور المستعارة وتعليمات الإعداد"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "العدد الحالي للرسائل الإلكترونية المرسلة"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "الحد الأقصى لعدد رسائل البريد الإلكتروني المسموح بها"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "معرف العضو"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "عنوان البريد الإلكتروني للعضو"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "دور العضو"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "عنوان البريد الإلكتروني المدعو"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "صفحة النتائج المطلوب إرجاعها. إذا لم تُحدَّد القيمة، فستكون ١. يجب أن يكون الرقم أكبر من أو يساوي ١.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "عدد النتائج المعروضة في كل صفحة. الافتراضي هو ٢٥ إذا لم يُحدد. يجب أن يكون العدد أكبر من أو يساوي ١، وأصغر من أو يساوي ١٠٠.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "الاشتراك في الترقيم قبل 1 نوفمبر 2024",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "معرف المجال",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "معرف الاسم المستعار",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "معرف العضو",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "معرف البريد الإلكتروني",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "معرف جهة الاتصال",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "معرف التقويم",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "معرف المجلد أو المسار",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "معرف الرسالة",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "حساب"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "استرداد الحساب",
+        "description": "استرجع معلومات حسابك.\n\n**المصادقة:** تدعم هذه النقطة النهائية كلاً من مصادقة رمز واجهة برمجة التطبيقات (API) ومصادقة بيانات اعتماد الاسم المستعار.\n\n- **حساب المستخدم (رمز واجهة برمجة التطبيقات):** عند المصادقة باستخدام رمز واجهة برمجة التطبيقات، تُرجع هذه النقطة النهائية معلومات حساب المستخدم، بما في ذلك تفاصيل الخطة والبريد الإلكتروني ورمز واجهة برمجة التطبيقات.\n\n- **حساب الاسم المستعار (بيانات اعتماد الاسم المستعار):** عند المصادقة باستخدام بيانات اعتماد الاسم المستعار (البريد الإلكتروني وكلمة المرور المُولّدة)، تُرجع هذه النقطة النهائية معلومات الاسم المستعار/صندوق البريد، بما في ذلك مساحة التخزين المُستخدمة وحصة التخزين وإعدادات صندوق البريد. يُعد هذا مفيدًا لعملاء IMAP/POP3/CalDAV/CardDAV للتحقق من حالة التخزين.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "حساب"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "تحديث الحساب",
+        "description": "تحديث معلومات حسابك.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "اسم العرض"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "تفضيلات الموقع"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "جهات الاتصال"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "قائمة جهات الاتصال",
+        "description": "استرجاع قائمة بجميع جهات الاتصال للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم الصفحي وتُرجع جهات الاتصال بتنسيق CardDAV.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "جهات الاتصال"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "إنشاء جهة اتصال",
+        "description": "أنشئ جهة اتصال جديدة. يمكنك إما توفير محتوى vCard مباشرةً أو حقول جهات اتصال فردية سيتم تحويلها إلى صيغة vCard. في حال وجود جهة اتصال بنفس المعرف، سيتم إرجاع خطأ تعارض.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "جهات الاتصال"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "استرداد جهة الاتصال",
+        "description": "استرجاع جهة اتصال محددة من خلال مُعرِّفها. يتم إرجاع جهة الاتصال بتنسيق جهة اتصال قياسي مع محتوى vCard وحقول مُحلَّلة.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "جهات الاتصال"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "تحديث جهة الاتصال",
+        "description": "تحديث جهة اتصال موجودة. يمكنك إما توفير محتوى vCard مُحدّث أو حقول فردية للتحديث. سيتم إعادة إنشاء vCard الخاصة بجهة الاتصال في حال توفير حقول فردية.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "جهات الاتصال"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "حذف جهة الاتصال",
+        "description": "حذف جهة اتصال محددة نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "التقويمات"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "قائمة التقويمات",
+        "description": "استرجاع قائمة بجميع التقويمات للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم الصفحي وتُرجع التقويمات بتنسيق CalDAV.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "التقويمات"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "إنشاء التقويم",
+        "description": "أنشئ تقويمًا جديدًا. اسم التقويم مطلوب، بينما الخصائص الأخرى، مثل اللون والمنطقة الزمنية والوصف، اختيارية. في حال وجود تقويم بنفس الاسم، سيظهر خطأ تعارض.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "التقويمات"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "استرجاع التقويم",
+        "description": "استرجاع تقويم محدد من خلال مُعرِّفه. سيتم إرجاع التقويم مع جميع خصائصه، بما في ذلك الاسم والوصف واللون والمنطقة الزمنية والترتيب.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "التقويمات"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "تحديث التقويم",
+        "description": "تحديث تقويم موجود. يمكنك تحديث أيٍّ من خصائص التقويم، بما في ذلك الاسم والوصف واللون والمنطقة الزمنية والترتيب. في حال تغيير الاسم إلى اسم موجود بالفعل، سيظهر خطأ تعارض.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "التقويمات"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "حذف التقويم",
+        "description": "حذف تقويم مُحدد نهائيًا. لا يُمكن التراجع عن هذا الإجراء، وسيؤدي أيضًا إلى حذف جميع الأحداث في التقويم.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "أحداث التقويم"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "قائمة أحداث التقويم",
+        "description": "استرجع قائمة أحداث التقويم للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم والتصفية حسب التقويم، ونطاق التاريخ، وحالة الحذف.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "تصفية الأحداث حسب معرف التقويم",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "تصفية الأحداث بدءًا من هذا التاريخ (تنسيق ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "تصفية الأحداث التي تنتهي قبل هذا التاريخ (تنسيق ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "تضمين الأحداث المحذوفة مؤقتًا في النتائج",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "أحداث التقويم"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "إنشاء حدث تقويمي",
+        "description": "أنشئ حدثًا تقويميًا جديدًا باستخدام بيانات iCalendar. سيتم التحقق من صحة الحدث وتحليله لاستخراج خصائصه المشتركة لتسهيل الوصول إليه.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "معرف حدث التقويم",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "أحداث التقويم"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "استرداد حدث التقويم",
+        "description": "استرجاع حدث تقويم محدد من خلال مُعرِّفه. سيتم إرجاع الحدث مع جميع خصائصه، بما في ذلك بيانات iCalendar المُحلَّلة.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "أحداث التقويم"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "تحديث حدث التقويم",
+        "description": "تحديث حدث تقويمي محدد. يمكنك تعديل بيانات iCalendar أو نقل الحدث إلى تقويم آخر.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "أحداث التقويم"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "حذف حدث التقويم",
+        "description": "حذف مؤقت لحدث تقويمي محدد. سيتم وضع علامة على الحدث بأنه محذوف، ولكن لن يُحذف نهائيًا من قاعدة البيانات.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "المجلدات"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "قائمة المجلدات",
+        "description": "استرجاع قائمة بجميع مجلدات/صناديق بريد IMAP للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم والتصفية حسب حالة الاشتراك.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "تصفية المجلدات حسب حالة الاشتراك",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "المجلدات"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "إنشاء مجلد",
+        "description": "أنشئ مجلدًا/صندوق بريد IMAP جديدًا. مسار المجلد مطلوب، ويمكن أن يتضمن المجلدات الرئيسية (مثل \"صندوق الوارد/المجلد الفرعي\"). إذا لم تكن المجلدات الرئيسية موجودة، فسيتم إنشاؤها تلقائيًا.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "المجلدات"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "استرداد المجلد",
+        "description": "استرجاع مجلد محدد من خلال معرفه أو مساره. يمكنك استخدام معرف كائن المجلد أو مساره الكامل (مثلاً، \"الوارد/المجلد الفرعي\") كمعرف.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "المجلدات"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "تحديث المجلد",
+        "description": "تحديث/إعادة تسمية مجلد موجود. تُعيد هذه العملية تسمية المجلد إلى المسار الجديد المُحدد في نص الطلب. يمكنك استخدام مُعرّف كائن المجلد أو مساره الحالي كمُعرّف.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "المجلدات"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "حذف المجلد",
+        "description": "حذف مجلد محدد نهائيًا. لا يمكن التراجع عن هذا الإجراء، وسيؤدي أيضًا إلى حذف جميع الرسائل داخل المجلد. يمكنك استخدام مُعرِّف كائن المجلد أو مساره كمُعرِّف.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "رسائل"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "قائمة الرسائل والبحث عنها",
+        "description": "استرجاع قائمة الرسائل مع إمكانيات بحث وتصفية متقدمة. تدعم هذه الأداة ترقيم الصفحات والبحث الشامل في محتوى الرسائل، والرؤوس، والعلامات، والبيانات الوصفية. يمكنك البحث حسب المجلد، والعلامات، والمحتوى، والرؤوس، ونطاقات التواريخ، والحجم، والمزيد.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "تصفية الرسائل حسب مسار المجلد",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "تصفية حسب حالة القراءة",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "تصفية حسب الحالة المميزة",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "تصفية حسب الحالة المحذوفة",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "تصفية حسب حالة المسودة",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "تصفية حسب حالة البريد العشوائي",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "تصفية حسب حالة النسخ",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "تصفية حسب الحالة القابلة للبحث",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "تصفية حسب حالة انتهاء الصلاحية",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "التصفية حسب وجود المرفق",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "التصفية حسب وجود المرفق (الاسم المستعار لـ has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "البحث في موضوع الرسالة",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "البحث في نص الرسالة/النص",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "البحث في نص الرسالة (الاسم المستعار للنص)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "البحث في جميع رؤوس الرسائل",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "البحث حسب رأس معرف الرسالة",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "البحث العام عبر العناوين والنصوص",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "البحث العام (اسم مستعار للبحث)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "تصفية الرسائل منذ هذا التاريخ (تنسيق ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "تصفية الرسائل قبل هذا التاريخ (تنسيق ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "تصفية الرسائل ذات الحجم الأدنى بالبايتات",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "تصفية الرسائل ذات الحجم الأقصى بالبايتات",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "البحث حسب العنوان من",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "البحث حسب العنوان",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "البحث عن طريق رأس CC",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "البحث عن طريق عنوان BCC",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "البحث حسب التاريخ",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "البحث عن طريق عنوان الرد",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "رسائل"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "إنشاء رسالة",
+        "description": "أنشئ/أضِف رسالة جديدة إلى مجلد. تقبل هذه النقطة النهائية تنسيق رسائل Nodemailer القياسي، وتتيح لك تحديد المجلد المستهدف والعلامات الأولية. إذا لم يكن المجلد المستهدف موجودًا، فسيتم إنشاؤه تلقائيًا.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "رسائل"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "استرجاع الرسالة",
+        "description": "استرجاع رسالة محددة من خلال مُعرِّفها. افتراضيًا، تتضمن الاستجابة كائن Nodemailer المُحلَّل ومحتوى الرسالة الخام. يمكنك التحكم في المحتوى المُضمَّن باستخدام مُعاملات الاستعلام.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "إرجاع تنسيق EML الخام بدلاً من JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "تضمين كائن Nodemailer المُحلل",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "تضمين المرفقات في كائن Nodemailer",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "تضمين محتوى الرسالة الخام",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "رسائل"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "تحديث الرسالة",
+        "description": "تحديث رسالة موجودة. يمكنك تعديل علامات الرسالة أو نقلها إلى مجلد آخر. إذا لم يكن المجلد المستهدف موجودًا، فسيتم إنشاؤه تلقائيًا.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "إرجاع تنسيق EML الخام بدلاً من JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "رسائل"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "حذف الرسالة",
+        "description": "حذف رسالة محددة نهائيًا. لا يمكن التراجع عن هذا الإجراء، وسيؤدي إلى حذف الرسالة نهائيًا من وحدة التخزين. بخلاف عملاء IMAP الذين ينقلون الرسائل عادةً إلى سلة المهملات، تُجري هذه النقطة النهائية حذفًا نهائيًا.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "تنزيل السجلات",
+        "description": "**تنزيل السجلات**\n\nالوصف: تتيح لك واجهة برمجة التطبيقات (API) الخاصة بنا تنزيل سجلات حسابك برمجيًا. سيؤدي إرسال طلب إلى هذه النقطة النهائية إلى معالجة جميع سجلات حسابك وإرسالها إليك عبر البريد الإلكتروني كمرفق (ملف جدول بيانات CSV مضغوط بصيغة Gzip) بمجرد اكتماله.\n\nيتيح لك هذا إنشاء مهام خلفية باستخدام مهمة Cron أو باستخدام برنامج Bree لجدولة مهام Node.js لتلقي السجلات وقتما تشاء. يُرجى العلم أن هذه النقطة النهائية محدودة بـ \"10\" طلبات يوميًا.\n\nالمرفق هو الشكل الصغير لـ \"email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz\"، ويحتوي البريد الإلكتروني نفسه على ملخص موجز للسجلات المسترجعة.",
         "tags": [
-          "Logs"
+          "السجلات"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "تصفية السجلات حسب النطاق المؤهل بالكامل (\"FQDN\"). في حال عدم توفره، سيتم استرداد جميع السجلات عبر جميع النطاقات.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "ابحث عن السجلات حسب البريد الإلكتروني أو المجال أو الاسم المستعار أو عنوان IP أو التاريخ (تنسيق M/Y، M/D/YY، M-D، M-D-YY، أو M.D.YY).",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "ابحث عن السجلات حسب فئة الارتداد المحددة (على سبيل المثال \"قائمة الحظر\").",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "ابحث عن السجلات حسب رمز استجابة الخطأ المحدد (على سبيل المثال 421 أو 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "قائمة رسائل البريد الإلكتروني الصادرة SMTP",
+        "description": "**قائمة رسائل SMTP الصادرة**\n\nيرجى ملاحظة أن هذه النقطة النهائية لا تُرجع قيم خصائص \"message\" أو \"headers\" أو \"rejectedErrors\" في البريد الإلكتروني.\n\nلإرجاع هذه الخصائص وقيمها، يُرجى استخدام نقطة النهاية [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) مع مُعرّف بريد إلكتروني.",
         "tags": [
-          "Emails"
+          "رسائل البريد الإلكتروني"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "البحث عن رسائل البريد الإلكتروني عن طريق البيانات الوصفية.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "البحث عن رسائل البريد الإلكتروني حسب اسم المجال.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز في الاتجاه المعاكس لذلك الحقل). افتراضيًا، يتم تعيين created_at إذا لم يتم ضبطه.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "إنشاء بريد إلكتروني SMTP صادر",
+        "description": "واجهة برمجة التطبيقات (API) الخاصة بنا لإنشاء رسائل البريد الإلكتروني مستوحاة من إعدادات خيارات الرسائل في Nodemailer وتستفيد منها. يُرجى الرجوع إلى إعدادات رسائل Nodemailer (https://nodemailer.com/message/) لجميع معلمات النص أدناه.\n\nيرجى ملاحظة أنه باستثناء \"الظرف\" و\"dkim\" (لأننا نضبطهما تلقائيًا)، فإننا ندعم جميع خيارات Nodemailer. نضبط تلقائيًا خياري \"disableFileAccess\" و\"disableUrlAccess\" على \"true\" لأغراض أمنية.\n\nيجب عليك إما تمرير خيار \"raw\" المفرد مع رسالتك الإلكترونية الخام الكاملة بما في ذلك العناوين، أو تمرير خيارات معلمات النص الفردية أدناه.\n\nستقوم نقطة نهاية واجهة برمجة التطبيقات هذه بترميز الرموز التعبيرية تلقائيًا عند وجودها في العناوين (على سبيل المثال، يتم تحويل سطر الموضوع \"الموضوع: 🤓 مرحبًا\" إلى \"الموضوع: =?UTF-8?Q?=F0=9F=A4=93?= مرحبًا\" تلقائيًا). كان هدفنا إنشاء واجهة برمجة تطبيقات بريد إلكتروني سهلة الاستخدام للغاية للمطورين ومقاومة للأخطاء البرمجية.\n\n**المصادقة:** تدعم هذه النقطة النهائية كلاً من مصادقة رمز واجهة برمجة التطبيقات ومصادقة بيانات اعتماد الاسم المستعار. يمكنك المصادقة باستخدام مفتاح واجهة برمجة التطبيقات (الموصى به) أو عنوان بريدك الإلكتروني المستعار وكلمة المرور المُولّدة. راجع قسم المصادقة في وثائق واجهة برمجة التطبيقات لمزيد من التفاصيل.",
         "tags": [
-          "Emails"
+          "رسائل البريد الإلكتروني"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "الحصول على حد البريد الإلكتروني الصادر SMTP",
+        "description": "هذه نقطة نهاية بسيطة تقوم بإرجاع كائن JSON يحتوي على \"count\" و\"limit\" لعدد رسائل SMTP الصادرة اليومية على أساس كل حساب.",
         "tags": [
-          "Emails"
+          "رسائل البريد الإلكتروني"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "استرداد البريد الإلكتروني الصادر SMTP",
+        "description": "استرداد بريد إلكتروني SMTP صادر محدد.",
         "tags": [
-          "Emails"
+          "رسائل البريد الإلكتروني"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "حذف البريد الإلكتروني الصادر SMTP",
+        "description": "سيؤدي حذف البريد الإلكتروني إلى ضبط الحالة إلى \"مرفوض\" (ومن ثم لن تتم معالجته في قائمة الانتظار) فقط إذا كانت الحالة الحالية إحدى الحالات التالية: \"معلق\" أو \"في قائمة الانتظار\" أو \"مؤجل\". قد نقوم بحذف رسائل البريد الإلكتروني تلقائيًا بعد 30 يومًا من إنشائها و/أو إرسالها، لذا يُرجى الاحتفاظ بنسخة من رسائل SMTP الصادرة في عميلك أو قاعدة بياناتك أو تطبيقك. يمكنك الرجوع إلى قيمة معرف البريد الإلكتروني في قاعدة بياناتك إذا رغبت في ذلك، حيث يتم إرجاع هذه القيمة من نقطتي النهاية [إنشاء بريد إلكتروني](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) و[استرداد البريد الإلكتروني](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
-          "Emails"
+          "رسائل البريد الإلكتروني"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "قائمة المجالات",
+        "description": "> [!NOTE]\n>اعتبارًا من 1 نوفمبر 2024، سيتم ضبط نقاط نهاية واجهة برمجة التطبيقات (API) لنطاقات القائمة وأسماء نطاقات القائمة المستعارة افتراضيًا على 1000 نتيجة كحد أقصى لكل صفحة. إذا كنت ترغب في تفعيل هذا السلوك مبكرًا، يمكنك تمرير ?paginate=true كمعامل سلسلة استعلام إضافي إلى عنوان URL لاستعلام نقطة النهاية. راجع قسم \"الترقيم\" لمزيد من المعلومات.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "البحث عن المجالات حسب البيانات الوصفية.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "البحث عن المجالات حسب اسم المجال.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز في الاتجاه المعاكس لذلك الحقل). افتراضيًا، يتم تعيين created_at إذا لم يتم ضبطه.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "إنشاء المجال",
+        "description": "يُنشئ نطاقًا جديدًا في النظام. تتيح لك هذه النقطة النهائية تسجيل اسم نطاق مؤهل بالكامل (FQDN) أو عنوان IP للاستخدام مع المنصة.\n\nتتضمن خيارات التكوين الاختيارية تعيين النطاق لفريق موجود، وتحديد نوع الخطة (مثلًا: مجانية، أو حماية مُحسّنة، أو فريق)، وتكوين حماية متقدمة مثل تصفية البريد العشوائي، وفحص الفيروسات، والتحقق من المستلم. يمكنك أيضًا تكوين ما إذا كان يجب إنشاء اسم مستعار شامل افتراضيًا، وتعيين عنوان URL مخصص لخطاف الويب المرتد في حالات فشل SMTP، وتحديد حدود حصة التخزين لعناوين البريد الإلكتروني البديلة على هذا النطاق. تُجري هذه النقطة النهائية التحقق من صحة النطاق وتوفيره. في حال تفعيل خيار \"ignore_mx_check\"، يتم تخطي التحقق من سجل MX (موصى به فقط لإعدادات التوجيه المتقدمة). ستتضمن الاستجابة تفاصيل كاملة عن كائن النطاق المُنشأ، بما في ذلك سجلات DNS اللازمة للتكوين.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "استرداد المجال",
+        "description": "استرجاع نطاق معين",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "تحديث المجال",
+        "description": "تحديث مجال معين.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "حذف المجال",
+        "description": "حذف نطاق معين.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "التحقق من سجلات المجال",
+        "description": "التحقق من سجلات DNS لنطاق معين.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "التحقق من سجلات SMTP للمجال",
+        "description": "يتحقق من سجلات DNS المرتبطة بـ SMTP للنطاق المحدد.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "اسم المجال المؤهل بالكامل (FQDN) للتحقق",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "إنشاء كلمة مرور شاملة على مستوى المجال",
+        "description": "يُنشئ كلمة مرور شاملة على مستوى النطاق. في حال عدم وجود كلمة مرور، سيتم إنشاء كلمة مرور عشوائية آمنة.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "اسم المجال لإنشاء كلمة المرور الشاملة لـ"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "كلمة مرورك الجديدة المخصصة لاستخدامها في كلمة المرور الشاملة على مستوى النطاق. اتركها فارغة لإنشاء كلمة مرور قوية."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "الوصف لأغراض التنظيم فقط."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "قائمة كلمات المرور الشاملة على مستوى المجال",
+        "description": "يقوم بإرجاع قائمة بكلمات المرور الشاملة على مستوى المجال والتي تم تكوينها حاليًا للمجال المحدد.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "اسم المجال المؤهل بالكامل (FQDN) الذي سيتم إدراج كلمات المرور الشاملة له",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "إزالة كلمة المرور الشاملة على مستوى المجال",
+        "description": "يقوم بحذف كلمة مرور شاملة على مستوى المجال باستخدام معرف الرمز المقدم.",
         "tags": [
-          "Domains"
+          "المجالات"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "اسم المجال المرتبط بكلمة المرور الشاملة"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "معرف الرمز المميز لكلمة المرور الشاملة على مستوى المجال المراد حذفها"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "قبول دعوة النطاق",
+        "description": "قبول دعوة إلى المجال.",
         "tags": [
-          "Invites"
+          "دعوات"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "إنشاء دعوة للمجال",
+        "description": ">[!IMPORTANT]\n>إذا كان المستخدم المدعو عضوًا مقبولًا في أي نطاق آخر ينتمي إليه المسؤول الذي دعاه، فسيتم قبول الدعوة تلقائيًا ولن يتم إرسال بريد إلكتروني.",
         "tags": [
-          "Invites"
+          "دعوات"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "عنوان البريد الإلكتروني للدعوة إلى قائمة أعضاء المجال"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "المجموعة التي سيتم إضافة المستخدم إليها إلى عضوية المجال (يمكن أن تكون واحدة من \"admin\" أو \"user\"\")"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "إزالة دعوة النطاق",
+        "description": "إزالة دعوة إلى المجال.",
         "tags": [
-          "Invites"
+          "دعوات"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "عنوان البريد الإلكتروني المراد إزالته من قائمة أعضاء المجال"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "تحديث عضو المجال",
+        "description": "تحديث عضو المجال.",
         "tags": [
-          "Members"
+          "أعضاء"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "المجموعة التي تقوم بتحديث المستخدم إلى عضوية المجال مع (يمكن أن تكون واحدة من \"admin\" أو \"user\"\")"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "إزالة عضو المجال",
+        "description": "إزالة عضو المجال.",
         "tags": [
-          "Members"
+          "أعضاء"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "إنشاء كلمة مرور مستعارة",
+        "description": "إنشاء كلمة مرور للاسم المستعار. إذا لم يُقدَّم `emailed_instructions`، فستتضمن الاستجابة اسم المستخدم وكلمة المرور المُولَّدَين.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "اسم النطاق المؤهل بالكامل (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "معرف فريد للاسم المستعار"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "قائمة أسماء النطاقات المستعارة",
+        "description": ">[!NOTE]\n>اعتبارًا من 1 نوفمبر 2024، سيتم ضبط نقاط نهاية واجهة برمجة التطبيقات (API) لـ \"قائمة النطاقات\" و\"قائمة أسماء النطاقات المستعارة\" افتراضيًا على \"1000\" نتيجة كحد أقصى لكل صفحة. إذا كنت ترغب في تفعيل هذا السلوك مبكرًا، يمكنك تمرير \"?paginate=true\" كمعامل سلسلة استعلام إضافي إلى عنوان URL لاستعلام نقطة النهاية. راجع \"الترقيم\" لمزيد من المعلومات.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم أو التسمية أو المستلم (يدعم RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم (يدعم RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب المستلم (يدعم RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز العكسي). الإعداد الافتراضي هو created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "إنشاء اسم نطاق مستعار جديد",
+        "description": "إنشاء اسم مستعار جديد لنطاق محدد.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "استرداد اسم النطاق المستعار",
+        "description": "استرداد اسم مستعار محدد لنطاق.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "تحديث اسم النطاق المستعار",
+        "description": "تحديث اسم مستعار محدد لنطاق.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "حذف اسم النطاق المستعار",
+        "description": "حذف اسم مستعار محدد لنطاق ما.",
         "tags": [
-          "Aliases"
+          "الأسماء المستعارة"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "تشفير سجل TXT",
+        "description": "نسمح لك بتشفير السجلات حتى في الخطة المجانية دون أي تكلفة. الخصوصية ليست ميزة، بل يجب أن تكون جزءًا لا يتجزأ من جميع جوانب المنتج. بناءً على طلبنا الملحّ في [مناقشة أدلة الخصوصية](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) وفي [مشكلاتنا على GitHub](https://github.com/forwardemail/forwardemail.net/issues/254)، أضفنا هذه الميزة.",
         "tags": [
-          "Encrypt"
+          "تشفير"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "أي سجل نص عادي صالح لإعادة توجيه البريد الإلكتروني"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "حساب",
+      "description": "نقاط نهاية إدارة الحسابات"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "السجلات",
+      "description": "نقاط نهاية إدارة السجلات"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "رسائل البريد الإلكتروني",
+      "description": "نقاط نهاية إدارة البريد الإلكتروني"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "المجالات",
+      "description": "> [!TIP]\n> نقاط نهاية النطاق التي تحمل اسم النطاق <code>/v1/domains/:domain\\_name</code> كنقطة نهاية لها، يمكن استخدامها مع مُعرّف النطاق <code>:domain\\_id</code>. هذا يعني أنه يمكنك الإشارة إلى النطاق إما باستخدام قيمة <code>name</code> أو <code>id</code>."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "دعوات",
+      "description": "نقاط نهاية إدارة دعوة النطاق"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "أعضاء",
+      "description": "نقاط نهاية إدارة أعضاء المجال"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "الأسماء المستعارة",
+      "description": "نقاط نهاية إدارة أسماء النطاق المستعارة"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "تشفير",
+      "description": "نقاط نهاية التشفير"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "جهات الاتصال",
+      "description": "نقاط نهاية إدارة جهات الاتصال المستعارة (CardDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط مصادقة \"اسم المستخدم\" مساويًا لاسم المستخدم المستعار و\"كلمة المرور\" مساوية لكلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية عمليات CRUD كاملة لإدارة جهات الاتصال مع دعم vCard، بما في ذلك إنشاء جهات الاتصال واسترجاعها وتحديثها وحذفها. يمكنك إما توفير محتوى vCard مباشرةً أو حقول جهات اتصال فردية سيتم تحويلها إلى تنسيق vCard."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "التقويمات",
+      "description": "نقاط نهاية إدارة التقويمات البديلة (CalDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم البديل و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم البديل كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط إدارة شاملة للتقويمات مع دعم المنطقة الزمنية واللون، بما في ذلك إنشاء التقويمات واسترجاعها وتحديثها وحذفها. أسماء التقويمات مطلوبة، بينما خصائص أخرى مثل اللون والمنطقة الزمنية والوصف اختيارية."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "أحداث التقويم",
+      "description": "نقاط نهاية إدارة أحداث التقويم البديلة (CalDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم البديل و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم البديل كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط إدارة شاملة لأحداث التقويم مع دعم كامل لـ iCalendar (RFC 5545). تُخزّن الأحداث كبيانات iCal، وتُحلّل تلقائيًا لاستخراج خصائص شائعة مثل الملخص والوصف والموقع والتواريخ لسهولة الوصول إليها. تدعم الأحداث الحذف المؤقت، ويمكن تصفيتها حسب التقويم ونطاق التاريخ وحالة الحذف."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "رسائل",
+      "description": "نقاط نهاية إدارة رسائل الأسماء المستعارة (IMAP/POP3)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط [مصادقة](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط إدارة شاملة للرسائل مع إمكانيات بحث متقدمة. يمكنك البحث حسب المجلد، والعلامات، والمحتوى، والرؤوس، ونطاقات التواريخ، والحجم، والمزيد. يمكن إنشاء الرسائل باستخدام تنسيق Nodemailer القياسي، كما تدعم التنقل بين المجلدات وإدارة العلامات.\n\nيرجى التأكد من اتباع تعليمات الإعداد الخاصة بنطاقك.\n\nيمكنك العثور على هذه التعليمات في قسم الأسئلة الشائعة [هل تدعم استلام البريد الإلكتروني عبر IMAP؟](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "المجلدات",
+      "description": "نقاط نهاية إدارة مجلدات الأسماء المستعارة (IMAP/POP3)\n\n>[!TIP]\n> نقاط نهاية المجلدات التي يكون مسارها <code>/v1/folders/:path</code> نقطة نهايتها قابلة للتبادل مع معرف المجلد <code>:id</code>. هذا يعني أنه يمكنك الإشارة إلى المجلد إما باستخدام قيمة <code>path</code> أو <code>id</code>.\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية إدارة كاملة للمجلدات، بما في ذلك الإنشاء وإعادة التسمية والحذف. يمكن أن تتضمن مسارات المجلدات مجلدات رئيسية (على سبيل المثال، \"البريد الوارد/المجلد الفرعي\")، وسيتم إنشاء المجلدات الرئيسية تلقائيًا إذا لم تكن موجودة."
     }
   ]
 }
-

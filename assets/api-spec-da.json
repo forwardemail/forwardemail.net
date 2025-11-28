@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Velkommen til den omfattende API-dokumentation til videresendelse af e-mail. Denne API giver dig mulighed for at administrere videresendelse af e-mail, domæner, aliasser, udgående e-mails og mere programmatisk.\n\n## Nøglefunktioner\n* **Domæneadministration:** Opret, hent, opdater, slet og verificer domæner.\n* **Aliasadministration:** Administrer e-mailaliasser, herunder oprettelse, opdateringer og modtageradministration.\n* **Udgående SMTP:** Send e-mails via SMTP, administrer grænser og spor sendte e-mails.\n* **Konto og logfiler:** Administrer dine kontooplysninger og download aktivitetslogfiler.\n* **Sikkerhed:** Krypter TXT-poster og administrer domænemedlemmer/invitationer.\n* **CardDAV-kontakter:** Fuld CRUD-operationer til kontaktadministration med vCard-understøttelse.\n* **CalDAV-kalendere:** Komplet kalenderadministration med understøttelse af tidszone og farver.\n* **IMAP/POP3-meddelelser:** Omfattende meddelelseshåndtering med avancerede søgefunktioner.\n\n* **IMAP/POP3-mapper:** Fuld mappehåndtering inklusive oprettelse, omdøbning og sletning.\n\n## Godkendelse\nDe fleste slutpunkter kræver godkendelse ved hjælp af din **API-nøgle**. Angiv API-nøglen som `brugernavn` i headeren for grundlæggende godkendelse, og lad adgangskoden være tom.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Erstat `API_TOKEN` med din faktiske nøgle før Base64-kodning)\n\nSlutpunkter relateret til **Aliaskontakter, kalendere, meddelelser og mapper** kræver et genereret aliasbrugernavn og en adgangskode til grundlæggende godkendelse.\n\n## Fejl\nAPI'en bruger standard HTTP-statuskoder til at angive succes eller fiasko. Fejlsvar inkluderer en JSON-brødtekst med et `message`-felt, der beskriver fejlen.\n\n| Statuskode | Betydning |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Forkert anmodning |\n| 401 | Uautoriseret |\n| 403 | Forbudt |\n| 404 | Ikke fundet |\n| 409 | Konflikt |\n| 412 | Forudsætning mislykkedes |\n| 429 | For mange anmodninger |\n| 500 | Intern serverfejl |\n| 501 | Ikke implementeret |\n| 502 | Forkert gateway |\n| 503 | Tjeneste ikke tilgængelig |\n| 504 | Gateway timeout |\n\n*Hvis du støder på en `5xx`-fejl, bedes du kontakte [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisering\nAPI-svar oversættes baseret på brugerens registrerede lokalitet eller `Accept-Language`-headeren. Over 25 sprog understøttes.\n\n## Paginering\nSlutpunkter, der returnerer lister, understøtter paginering via forespørgselsparametre.\n\n| Parameter | Type | Valgfri | Beskrivelse | Standard | Begrænsninger |\n|--------------|----------|-------------------------------------------------------------------------|---------|-------------------------------------------------|\n| `page` | Heltal | Ja | Sidetal, der skal hentes. | 1 | `>= 1` |\n| `limit` | Heltal | Ja | Antal resultater pr. side. | 25 | `>= 1`, `<= 100` |\n| `pagination` | Boolean | Ja | Tilvælg pagination-adfærd (påkrævet før 1. november 2024 for nogle slutpunkter). | false | |\n\n**Pagineringsoverskrifter:**\n* `X-Page-Count`: Samlet sideantal.\n* `X-Page-Current`: Aktuelt sidetal.\n* `X-Page-Size`: Antal elementer på den aktuelle side.\n* `X-Item-Count`: Samlet antal elementer på tværs af alle sider.\n* `Link`: Navigationslinks (forrige, næste, første, sidste).\n\n**Eksempel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Anbefalede biblioteker\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Vedligeholdes af Videresend Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "API-server til videresendelse af e-mail"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "Brug din API-nøgle som **brugernavn** til basisgodkendelse. Lad adgangskodefeltet være tomt.\n\n**Eksempel:**\nHvis din API-nøgle er `YOUR_API_KEY`, vil den Base64-kodede værdi for `Authorization`-headeren være `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Brug det genererede **alias-brugernavn og den genererede adgangskode** til basisgodkendelse. Dette gælder for slutpunkter under:\n* Alias-kontakter (CardDAV)\n* Alias-kalendere (CalDAV)\n* Alias-beskeder (IMAP/POP3)\n* Alias-mapper (IMAP/POP3)\n\n**Eksempel:**\nHvis alias-brugernavnet er `alias@domain.com`, og adgangskoden er `GENERATED_PASSWORD`, vil den Base64-kodede værdi være `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Fejlmeddelelse"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "Alias-ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Objekttype"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Aliasnavn (lokal del af e-mail)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Fuld alias-e-mailadresse"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "Domæne-ID"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Domænenavn"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Lagring brugt i bytes for dette alias/denne postkasse"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Lagerkvote i bytes for dette alias/denne postkasse"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "Om IMAP er aktiveret for dette alias"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Om PGP-kryptering er aktiveret"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP offentlig nøgle, hvis tilgængelig"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Lokalitetspræference"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Tidsstempel for oprettelse"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Tidsstempel for sidste opdatering"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "Kontakt-ID (contact_id fra CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Kontakt-UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Kontaktpersonens fulde navn"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-indhold"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag til versionsstyring"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Om kontakten er en gruppe"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array af e-mailadresser"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Række af telefonnumre"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard-indhold (hvis ikke angivet, genereres det fra andre felter)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Kontaktpersonens fulde navn"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "Brugerdefineret kontakt-ID (hvis ikke angivet, genereres det automatisk)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "Kontakt-UID (hvis ikke angivet, genereres det automatisk)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array af e-mailadresser"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Række af telefonnumre"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Matrix af telefonnumre (alias for telefonnumre)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Adresserække"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Om kontakten er en gruppe"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-indhold"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Kontaktpersonens fulde navn"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array af e-mailadresser"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Række af telefonnumre"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Matrix af telefonnumre (alias for telefonnumre)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Adresserække"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Om kontakten er en gruppe"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "Kalender-id (kalender-id fra CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernavn"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeskrivelse"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderfarve (hex-format)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenderens tidszone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Kalenderens visningsrækkefølge"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernavn"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "Brugerdefineret kalender-ID (hvis ikke angivet, genereres det automatisk)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeskrivelse"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Kalenderfarve (hex-format genereres automatisk, hvis ikke angivet)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Kalendertidszone (standard er brugerens tidszone eller UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Kalenderens visningsrækkefølge (standardindstilling er 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernavn"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeskrivelse"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderfarve (hex-format)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalenderens tidszone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Kalenderens visningsrækkefølge"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "Kalenderbegivenheds-ID (begivenheds-ID fra CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "ID på den kalender, som denne begivenhed tilhører"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "iCalendar (RFC 5545) data for begivenheden"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Begivenhedstitel/resumé (udtrukket fra iCal-data)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Hændelsesbeskrivelse (udtrukket fra iCal-data)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Begivenhedssted (udtrukket fra iCal-data)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Begivenhedens startdato/tidspunkt (udtrukket fra iCal-data)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Slutdato/tidspunkt for begivenhed (udtrukket fra iCal-data)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "Unik identifikator fra iCal-data"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Hændelsesstatus (udtrukket fra iCal-data)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Arrangør af begivenhed (udtrukket fra iCal-data)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Tidsstempel for blød sletning"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "ID på den kalender, som begivenheden skal tilføjes til"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "Brugerdefineret begivenheds-ID (hvis ikke angivet, genereres det automatisk)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "iCalendar-data (RFC 5545) for begivenheden. Skal være i gyldigt iCal-format."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Flyt begivenhed til en anden kalender"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Opdaterede iCalendar (RFC 5545) data for begivenheden"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "Mappe-ID"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Fuld mappesti"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Mappenavn (sidste del af stien)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Sti til overordnet mappe"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "IMAP UID-gyldighed"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Næste UID-værdi"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Ændringsindeks"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Om mappen er abonneret"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Mappeflag"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Opbevaringsperiode for beskeder"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Særlig anvendelsesbetegnelse"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Mappesti/navn"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Ny mappesti/navn"
           }
         }
       },
@@ -931,94 +974,94 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "Besked-ID"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "Rodmeddelelses-ID til trådning"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "Mappe-ID'et, der indeholder beskeden"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Mappestien, der indeholder beskeden"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "Tråd-ID for samtalegruppering"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Værdi for header i besked-ID"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Om beskeden er ulæst"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Om beskeden er markeret"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Om beskeden er slettet"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Om beskeden er en kladde"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Om beskeden er uønsket/spam"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Om beskeden kopieres"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Om beskeden er søgbar"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Om beskeden er udløbet"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Om beskeden har vedhæftede filer"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Dato for opbevaring af besked"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Intern dato (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Dato fra beskedoverskrifter"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Emne for beskeden"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP-flag"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Meddelelsesstørrelse i bytes"
           },
           "uid": {
             "type": "integer",
@@ -1026,37 +1069,39 @@
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Ændringssekvens"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Transaktionstype"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Fjern IP-adresse"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Tidsstempel for oprettelse af besked"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Tidsstempel for sidste opdatering af beskeden"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Parset beskedobjekt (inkluderet som standard, sæt ?nodemailer=false for at udelukke)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Rå beskedindhold (inkluderet som standard, sæt ?raw=false for at ekskludere)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "Afsenderens e-mailadresse"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "Modtagerens e-mailadresser"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "CC-modtageres e-mailadresser"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "BCC-modtageres e-mailadresser"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Emne for beskeden"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Almindeligt tekstindhold"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML-indhold"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Vedhæftede filer i beskeder (Nodemailer-format)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Målmappe (standard er INDBAKKE)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-flag, der skal sættes på beskeden"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-flag, der skal sættes på beskeden"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Flyt besked til denne mappe"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Afsenderens e-mailadresse (skal eksistere som et alias for domænet)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Kommasepareret liste eller et array af modtagere til 'Til'-headeren."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Kommasepareret liste eller et array af modtagere til 'Cc'-headeren."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Kommasepareret liste eller en matrix af modtagere til 'Bcc'-headeren."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Emnet for e-mailen."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "Klartekstversionen af beskeden."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "HTML-versionen af beskeden."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "En matrix af vedhæftede objekter (se Nodemailers almindelige felter)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "E-mailadressen til headeren 'Afsender'."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "E-mailadressen til headeren 'Svar til'."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "Det besked-ID, som beskeden er et svar på."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Mellemrumssepareret liste eller en matrix af meddelelses-ID'er."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Hvis sand, konverteres data: billeder i HTML-indholdet til integrerede vedhæftede filer."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Apple Watch-specifik HTML-version af beskeden."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL-specifik HTML-version af beskeden."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "En iCalendar-begivenhed som alternativt beskedindhold."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "En række alternative beskedindhold."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Kodning for tekst og HTML-strenge (f.eks. 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Brugerdefineret genereret RFC822-formateret besked (i stedet for at bruge Nodemailer-generering)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Kodning tvunget til at blive brugt til tekstværdier."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Prioritetsniveau for e-mailen."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Objekt eller matrix af yderligere headerfelter."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Valgfrit besked-ID til headeren 'Besked-ID'."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Valgfri datooverskrift. Må ikke være mere end 30 dage ude i fremtiden."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "Valgfrit objekt for List-*-overskrifter."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Fuldt kvalificeret domænenavn (FQDN) eller IP-adresse"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Tildel til samme team fra et andet domæne; kan være et domæne-ID eller FQDN. Brug \"ingen\" for eksplicit at deaktivere."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Plantype (standardindstilling er 'gratis' eller brugerens nuværende betalte plan)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Afgrænset liste over e-mailadresser (separeret af komma, mellemrum eller linjeskift)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Opret et standard catch-all alias (standardindstillingen er sand)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Aktivér Spam Scanner beskyttelse mod voksenindhold"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Aktivér Spam Scanner phishing-beskyttelse"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Aktivér beskyttelse mod eksekverbar Spam Scanner"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Aktivér Spam Scanner-virusbeskyttelse"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Kræv, at aliasmodtagere klikker på e-mailbekræftelseslinket"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "Ignorer MX-postkontrol for avancerede mailrouting-opsætninger"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Tilmeld dig lagring af headere og metadata (eksklusive beskedindhold) for vellykkede videresendte, webhook-sendte, udgående SMTP- og IMAP-leverede e-mails, hvor logfiler gemmes i 7 dage. Denne funktion hjælper dig med at overvåge og fejlfinde e-mailleveringsydelsen med detaljeret indsigt i vellykkede transmissioner."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Antal dage, hvor udgående SMTP-logfiler skal gemmes (0-30, standard: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "Webhook-URL til at modtage afvisningshændelser"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Deaktiver webhook med afvisning"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Maksimal lagerkvote pr. alias (f.eks. '1 GB')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Brugerdefineret port til konfiguration af SMTP-videresendelse (standard er '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Om Spam Scanner-beskyttelse mod voksenindhold skal aktiveres på dette domæne"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Om phishing-beskyttelse fra Spam Scanner skal aktiveres på dette domæne"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Om beskyttelse af eksekverbare filer i Spam Scanner skal aktiveres på dette domæne"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Om Spam Scanner-virusbeskyttelse skal aktiveres på dette domæne"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Global domænestandard for, om aliasmodtagere skal klikke på et e-mailbekræftelseslink for at e-mails kan sendes"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Om MX-postkontrollen på domænet skal ignoreres til verifikation (primært for avancerede MX-routingopsætninger)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Tilmeld dig lagring af headere og metadata (eksklusive beskedindhold) for vellykkede videresendte, webhook-sendte, udgående SMTP- og IMAP-leverede e-mails, hvor logfiler gemmes i 7 dage. Denne funktion hjælper dig med at overvåge og fejlfinde e-mailleveringsydelsen med detaljeret indsigt i vellykkede transmissioner."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Antal dage til lagring af udgående SMTP-e-mails (0 = ryd straks)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "Webhook-URL for at modtage afvisningsnotifikationer, eller false for at deaktivere"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Lagerkvote pr. alias (f.eks. '1 GB', parset til bytes)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Aliasnavn (hvis ikke angivet eller tomt, genereres et tilfældigt alias)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Linjeskift/mellemrum/kommasepareret streng af gyldige e-mailadresser, FQDN'er, IP-adresser eller webhook-URL'er"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Array af gyldige modtagere"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Liste over modtagere. Hvis den ikke er angivet eller er tom, bruges som standard anmoderens e-mailadresse"
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeskrivelse"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Linjeskift/mellemrum/kommasepareret streng af etiketter"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array af etiketter"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Kræv, at modtagere klikker på bekræftelseslinket (domæneindstillinger er standard)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Om dette alias skal aktiveres eller deaktiveres"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Fejlkode hvis alias er deaktiveret. Standardindstillingen er 250."
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "Aktivér eller deaktiver IMAP-lagring for dette alias"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "Aktivér eller deaktiver OpenPGP-kryptering for dette alias"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP offentlig nøgle i ASCII Armor-format"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Maksimal lagerpladskvote (f.eks. '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Aktivér eller deaktiver feriesvar"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Startdato (f.eks. 'ÅÅÅÅ-MM-DD') for feriesvar"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Slutdato (f.eks. 'ÅÅÅÅ-MM-DD') for feriesvar"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Emne i almindelig tekst til feriesvar"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Klartekstbesked til feriesvar"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Aliasnavn"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Linjeskift/mellemrum/kommasepareret streng af gyldige e-mailadresser, FQDN'er, IP-adresser eller webhook-URL'er"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Array af gyldige modtagere"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeskrivelse"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Linjeskift/mellemrum/kommasepareret streng af etiketter"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array af etiketter"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Kræv, at modtagere klikker på bekræftelseslinket (domæneindstillinger er standard)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Aktivér eller deaktiver alias"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Fejlkode, der skal bruges, hvis alias er deaktiveret (standard er 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "Aktivér eller deaktiver IMAP-lagring"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "Aktivér eller deaktiver OpenPGP-kryptering"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP offentlig nøgle i ASCII Armor-format"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Maksimal lagerpladskvote (f.eks. '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Aktivér eller deaktiver feriesvar"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Startdato for feriesvar (f.eks. ÅÅÅÅ-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Slutdato for feriesvar (f.eks. ÅÅÅÅ-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Almindelig emne for feriesvar"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Almindelig tekstbesked fra feriesvar"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Din brugerdefinerede nye adgangskode til brug for aliaset"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Eksisterende adgangskode til alias for at ændre den uden at slette postkasselageret"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Tilsidesæt eksisterende adgangskode og slet IMAP-lager (brug med forsigtighed)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "E-mailadresse til afsendelse af aliasadgangskode og opsætningsinstruktioner"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Nuværende antal sendte e-mails"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Maksimalt antal tilladte e-mails"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "Medlems-ID"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "Medlems e-mailadresse"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Medlems rolle"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Inviteret e-mailadresse"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "Side med resultater, der skal returneres. Hvis ikke angivet, vil værdien være 1. Skal være et tal større end eller lig med 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Antal resultater, der skal returneres pr. side. Standardværdien er 25, hvis ikke angivet. Skal være et tal, der er større end eller lig med 1, og mindre end eller lig med 100.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Tilmeld dig paginering inden 1. november 2024",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "Domæne-ID",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "Medlems-ID",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "E-mail-ID",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "Kontakt-ID",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "Kalender-ID",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "Mappe-ID eller sti",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "Besked-ID",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Konto"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Hent konto",
+        "description": "Hent dine kontooplysninger.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-token-godkendelse og alias-legitimationsgodkendelse.\n\n- **Brugerkonto (API-token):** Når dette slutpunkt er godkendt med dit API-token, returnerer det dine brugerkontooplysninger, inklusive planoplysninger, e-mail og API-token.\n\n- **Aliaskonto (Alias-legitimationsoplysninger):** Når dette slutpunkt er godkendt med alias-legitimationsoplysninger (e-mail og genereret adgangskode), returnerer det alias-/postkasseoplysninger, inklusive brugt lagerplads, lagerkvote og postkasseindstillinger. Dette er nyttigt for IMAP/POP3/CalDAV/CardDAV-klienter til at kontrollere lagerstatus.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Konto"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Opdater konto",
+        "description": "Opdater dine kontooplysninger.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Vist navn"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Lokalitetspræference"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Kontakter"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Liste over kontakter",
+        "description": "Hent en liste over alle kontakter for det godkendte alias. Dette slutpunkt understøtter paginering og returnerer kontakter i CardDAV-format.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Kontakter"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Opret kontakt",
+        "description": "Opret en ny kontakt. Du kan enten angive vCard-indhold direkte eller individuelle kontaktfelter, der konverteres til vCard-format. Hvis en kontakt med samme ID allerede findes, returneres en konfliktfejl.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Kontakter"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Hent kontakt",
+        "description": "Hent en specifik kontakt via dens ID. Kontakten returneres i standardkontaktformatet med vCard-indhold og parsede felter.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Kontakter"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Opdater kontakt",
+        "description": "Opdater en eksisterende kontakt. Du kan enten angive opdateret vCard-indhold eller individuelle felter, der skal opdateres. Kontaktens vCard vil blive regenereret, hvis individuelle felter angives.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Kontakter"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Slet kontakt",
+        "description": "Slet en bestemt kontakt permanent. Denne handling kan ikke fortrydes.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalendere"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Liste over kalendere",
+        "description": "Hent en liste over alle kalendere for det godkendte alias. Dette slutpunkt understøtter paginering og returnerer kalendere i CalDAV-format.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Kalendere"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Opret kalender",
+        "description": "Opret en ny kalender. Kalendernavnet er påkrævet, mens andre egenskaber som farve, tidszone og beskrivelse er valgfrie. Hvis der allerede findes en kalender med samme navn, returneres en konfliktfejl.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalendere"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Hent kalender",
+        "description": "Hent en specifik kalender via dens ID. Kalenderen returneres med alle dens egenskaber, herunder navn, beskrivelse, farve, tidszone og rækkefølge.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Kalendere"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Opdater kalender",
+        "description": "Opdater en eksisterende kalender. Du kan opdatere alle kalenderegenskaber, herunder navn, beskrivelse, farve, tidszone og rækkefølge. Hvis du ændrer navnet til et, der allerede findes, returneres en konfliktfejl.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Kalendere"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Slet kalender",
+        "description": "Slet en bestemt kalender permanent. Denne handling kan ikke fortrydes og vil også slette alle begivenheder i kalenderen.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenderbegivenheder"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Liste over kalenderbegivenheder",
+        "description": "Hent en liste over kalenderbegivenheder for det godkendte alias. Dette slutpunkt understøtter paginering og filtrering efter kalender, datointerval og sletningsstatus.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Filtrer begivenheder efter kalender-ID",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Filtrer begivenheder startende fra denne dato (ISO 8601-format)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Filtrer begivenheder, der slutter før denne dato (ISO 8601-format)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Inkluder midlertidigt slettede begivenheder i resultaterne",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Kalenderbegivenheder"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Opret kalenderbegivenhed",
+        "description": "Opret en ny kalenderbegivenhed med iCalendar-data. Begivenheden vil blive valideret og analyseret for at udtrække fælles egenskaber for nem adgang.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "Kalenderbegivenheds-ID",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalenderbegivenheder"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Hent kalenderbegivenhed",
+        "description": "Hent en specifik kalenderbegivenhed via dens ID. Begivenheden returneres med alle dens egenskaber, inklusive parsede iCalendar-data.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Kalenderbegivenheder"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Opdater kalenderbegivenhed",
+        "description": "Opdater en specifik kalenderbegivenhed. Du kan ændre iCalendar-dataene eller flytte begivenheden til en anden kalender.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Kalenderbegivenheder"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Slet kalenderbegivenhed",
+        "description": "Slet en specifik kalenderbegivenhed midlertidigt. Begivenheden vil blive markeret som slettet, men ikke permanent fjernet fra databasen.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Mapper"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Liste over mapper",
+        "description": "Hent en liste over alle IMAP-mapper/postkasser for det godkendte alias. Dette slutpunkt understøtter paginering og filtrering efter abonnementsstatus.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Filtrer mapper efter abonnementsstatus",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Mapper"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Opret mappe",
+        "description": "Opret en ny IMAP-mappe/postkasse. Mappestien er påkrævet og kan omfatte overordnede mapper (f.eks. 'INDBAKKE/Undermappe'). Hvis overordnede mapper ikke findes, oprettes de automatisk.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Mapper"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Hent mappe",
+        "description": "Hent en bestemt mappe via dens ID eller sti. Du kan bruge enten mappens ObjectID eller dens fulde sti (f.eks. 'INDBAKKE/Undermappe') som identifikator.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Mapper"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Opdater mappe",
+        "description": "Opdater/omdøb en eksisterende mappe. Denne handling omdøber mappen til den nye sti, der er angivet i anmodningsteksten. Du kan bruge enten mappens objekt-ID eller dens aktuelle sti som identifikator.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Mapper"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Slet mappe",
+        "description": "Slet en bestemt mappe permanent. Denne handling kan ikke fortrydes og vil også slette alle beskeder i mappen. Du kan bruge enten mappens objekt-ID eller dens sti som identifikator.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Beskeder"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Liste over og søg efter beskeder",
+        "description": "Hent en liste over meddelelser med avancerede søge- og filtreringsfunktioner. Dette slutpunkt understøtter paginering og omfattende søgning på tværs af meddelelsesindhold, overskrifter, flag og metadata. Du kan søge efter mappe, flag, indhold, overskrifter, datointervaller, størrelse og mere.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Filtrer beskeder efter mappesti",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Filtrer efter læst status",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Filtrer efter markeret status",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Filtrer efter slettet status",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Filtrer efter kladdestatus",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Filtrer efter uønsket/spam-status",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Filtrer efter kopieret status",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Filtrer efter søgbar status",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Filtrer efter udløbet status",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Filtrer efter tilstedeværelse af vedhæftede filer",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Filtrer efter tilstedeværelse af vedhæftede filer (alias for has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Søg i emnefeltet",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Søg i beskedens brødtekst",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Søg i beskedtekst (alias for brødtekst)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Søg i alle beskedoverskrifter",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Søg efter besked-ID-header",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Generel søgning på tværs af overskrifter og tekst",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Generel søgning (alias for søgning)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Filtrer beskeder siden denne dato (ISO 8601-format)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Filtrer beskeder før denne dato (ISO 8601-format)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Filtrer beskeder med minimumsstørrelse i bytes",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Filtrer beskeder med maksimal størrelse i bytes",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Søg efter Fra-overskrift",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Søg efter Til-overskrift",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Søg efter CC-overskrift",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Søg efter BCC-overskrift",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Søg efter datooverskrift",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Søg efter Svar-til-overskrift",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Beskeder"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Opret besked",
+        "description": "Opret/tilføj en ny besked til en mappe. Dette slutpunkt accepterer standard Nodemailer-meddelelsesformat og giver dig mulighed for at angive destinationsmappen og startflag. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Beskeder"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Hent besked",
+        "description": "Hent en specifik besked via dens ID. Som standard inkluderer svaret det parsede Nodemailer-objekt og det rå beskedindhold. Du kan kontrollere, hvad der inkluderes, ved hjælp af forespørgselsparametre.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Returner rå EML-format i stedet for JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Inkluder parset Nodemailer-objekt",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Medtag vedhæftede filer i Nodemailer-objektet",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Inkluder rå beskedindhold",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Beskeder"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Opdater besked",
+        "description": "Opdater en eksisterende besked. Du kan ændre beskedens markeringer eller flytte den til en anden mappe. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Returner rå EML-format i stedet for JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Beskeder"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Slet besked",
+        "description": "Slet en specifik besked permanent. Denne handling kan ikke fortrydes og vil permanent fjerne beskeden fra lageret. I modsætning til IMAP-klienter, der typisk flytter beskeder til papirkurven, udfører dette slutpunkt en fuldstændig sletning.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Download logfiler",
+        "description": "**Download logs**\n\nBeskrivelse: Vores API giver dig programmatisk mulighed for at downloade logs til din konto. Hvis du sender en anmodning til dette slutpunkt, behandles alle logs til din konto og sendes til dig via e-mail som en vedhæftet fil (komprimeret Gzip CSV-regnearkfil), når de er færdige.\n\nDette giver dig mulighed for at oprette baggrundsjob med et Cron-job eller bruge Node.js-jobplanlægningssoftwaren Bree til at modtage logs, når du ønsker det. Bemærk, at dette slutpunkt er begrænset til `10` anmodninger om dagen.\n\nVedhæftningen er den lille form af `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, og selve e-mailen indeholder en kort oversigt over de hentede logs.",
         "tags": [
-          "Logs"
+          "Logfiler"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Filtrer logfiler efter fuldt kvalificeret domæne (\"FQDN\"). Hvis ikke angivet, hentes alle logfiler på tværs af alle domæner.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Søg efter logfiler efter e-mail, domæne, aliasnavn, IP-adresse eller dato (M/Å, M/D/ÅÅ, M-D, M-D-ÅÅ eller M.D.ÅÅ format).",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Søg efter logfiler efter en specifik afvisningskategori (f.eks. \"blokeringsliste\").",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Søg efter logfiler efter en specifik fejlresponskode (f.eks. 421 eller 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Liste over udgående SMTP-e-mails",
+        "description": "**Vis udgående SMTP-e-mails**\n\nBemærk, at dette slutpunkt ikke returnerer egenskabsværdier for en e-mails `message`, `headers` eller `rejectedErrors`.\n\nFor at returnere disse egenskaber og deres værdier skal du bruge slutpunktet [Hent email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) med et e-mail-ID.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "Søg efter e-mails via metadata.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "Søg efter e-mails efter domænenavn.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sortér efter et specifikt felt (præfiks med en enkelt bindestreg - for at sortere i omvendt retning af det pågældende felt). Standardindstillingen er created_at, hvis den ikke er angivet.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Se Paginering for mere indsigt.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Se Paginering for mere indsigt.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Opret udgående SMTP-e-mail",
+        "description": "Vores API til at oprette en e-mail er inspireret af og udnytter Nodemailers konfiguration af beskedindstillinger. Se venligst [Nodemailer message configuration](https://nodemailer.com/message/) for alle nedenfor nævnte brødtekstparametre.\n\nBemærk, at med undtagelse af `envelope` og `dkim` (da vi automatisk indstiller dem for dig), understøtter vi alle Nodemailer-indstillinger. Vi indstiller automatisk `disableFileAccess` og `disableUrlAccess` til `true` af sikkerhedsmæssige årsager.\n\nDu skal enten give den enkelte indstilling `raw` med din rå fulde e-mail inklusive headere eller give individuelle brødtekstparameterindstillinger nedenfor.\n\nDette API-slutpunkt vil automatisk kode emojis for dig, hvis de findes i headerne (f.eks. bliver emnelinjen `Subject: 🤓 Hello` automatisk konverteret til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Vores mål var at lave en ekstremt udviklervenlig og dummy-sikker e-mail-API.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-tokengodkendelse og aliaslegitimationsgodkendelse. Du kan godkende ved hjælp af enten din API-nøgle (anbefales) eller din alias-e-mailadresse og genererede adgangskode. Se afsnittet Godkendelse i API-dokumentationen for at få flere oplysninger.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Få grænsen for udgående SMTP-e-mails",
+        "description": "Dette er et simpelt slutpunkt, der returnerer et JSON-objekt, der indeholder `count` og `limit` for antallet af daglige udgående SMTP-beskeder på kontobasis.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Hent udgående SMTP-e-mail",
+        "description": "Hent en specifik udgående SMTP-e-mail.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Slet udgående SMTP-e-mail",
+        "description": "Sletning af e-mails vil sætte status til \"afvist\" (og efterfølgende ikke behandle den i køen), hvis og kun hvis den aktuelle status er en af \"afventer\", \"i kø\" eller \"udskudt\". Vi kan slette e-mails automatisk 30 dage efter, at de blev oprettet og/eller sendt – derfor bør du gemme en kopi af udgående SMTP-e-mails i din klient, database eller applikation. Du kan referere til vores e-mail-ID-værdi i din database, hvis det ønskes – denne værdi returneres fra både [Opret e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) og [Hent e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) slutpunkter.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Liste over domæner",
+        "description": "> [!NOTE]\n>Fra den 1. november 2024 vil API-slutpunkterne for listedomæner og listedomænealiaser som standard være `1000` maksimale resultater pr. side. Hvis du vil tilmelde dig denne funktionsmåde tidligt, kan du sende `?paginate=true` som en ekstra forespørgselsstrengparameter til URL'en for slutpunktsforespørgslen. Se Paginering for mere indsigt.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Søg efter domæner via metadata.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Søg efter domæner efter domænenavn.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sortér efter et specifikt felt (præfiks med en enkelt bindestreg - for at sortere i omvendt retning af det pågældende felt). Standardindstillingen er created_at, hvis den ikke er angivet.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Se Paginering for mere indsigt.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Se Paginering for mere indsigt.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Opret domæne",
+        "description": "Opretter et nyt domæne i systemet. Dette slutpunkt giver dig mulighed for at registrere et fuldt kvalificeret domænenavn (FQDN) eller en IP-adresse til brug med platformen.\n\nValgfrie konfigurationsmuligheder inkluderer tildeling af domænet til et eksisterende team, indstilling af en plantype (f.eks. gratis, forbedret beskyttelse eller team) og konfiguration af avanceret beskyttelse såsom spamfiltrering, virusscanning og modtagerverifikation. Du kan også konfigurere, om et catch-all-alias skal oprettes som standard, indstille en brugerdefineret bounce webhook-URL til SMTP-fejl og definere lagerkvotegrænser for e-mail-aliasser på dette domæne. Dette slutpunkt udfører validering og klargøring på domæneniveau. Hvis indstillingen `ignore_mx_check` er aktiveret, springes MX-postverifikation over (anbefales kun til avancerede routingopsætninger). Svaret vil indeholde alle detaljer om det oprettede domæneobjekt, inklusive DNS-poster, der er nødvendige til konfiguration.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Hent domæne",
+        "description": "Hent et specifikt domæne",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Opdater domæne",
+        "description": "Opdater et specifikt domæne.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Slet domæne",
+        "description": "Slet et specifikt domæne.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Bekræft domæneregistreringer",
+        "description": "Bekræft DNS-poster for et specifikt domæne.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Bekræft domænets SMTP-poster",
+        "description": "Bekræfter de SMTP-relaterede DNS-poster for det angivne domæne.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Fuldt kvalificeret domænenavn (FQDN) til verificering",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Opret en domæneomfattende adgangskode",
+        "description": "Opretter en domæneomfattende, fælles adgangskode. Hvis der ikke angives nogen adgangskode, genereres en sikker, tilfældig adgangskode.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "Domænenavnet, som den generelle adgangskode skal oprettes til"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Din brugerdefinerede nye adgangskode, der skal bruges som den domæneomfattende, fælles adgangskode. Lad feltet stå tomt for at generere en stærk adgangskode."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Beskrivelse kun til organisatoriske formål."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Liste over domæneomfattende adgangskoder",
+        "description": "Returnerer en liste over domæneomfattende catch-all-adgangskoder, der i øjeblikket er konfigureret for det angivne domæne.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Fuldt kvalificeret domænenavn (FQDN), som der skal vises catch-all-adgangskoder for",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Fjern domæneomfattende catch-all-adgangskode",
+        "description": "Sletter en domæneomfattende catch-all-adgangskode ved hjælp af det angivne token-ID.",
         "tags": [
-          "Domains"
+          "Domæner"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "Domænenavnet, der er knyttet til den generelle adgangskode"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "Token-ID'et for den domæneomfattende catch-all-adgangskode, der skal slettes"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Accepter domæneinvitation",
+        "description": "Accepter en invitation til et domæne.",
         "tags": [
-          "Invites"
+          "Invitationer"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Opret domæneinvitation",
+        "description": ">[!IMPORTANT]\n>Hvis den inviterede bruger allerede er et accepteret medlem af andre domæner, som administratoren, der inviterer dem, er medlem af, accepterer invitationen automatisk og sender ikke en e-mail.",
         "tags": [
-          "Invites"
+          "Invitationer"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "E-mailadresse, der skal inviteres til domænemedlemslisten"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Gruppe, hvor brugeren skal tilføjes til domænemedlemskabet (kan være en af `\"admin\"` eller `\"user\"`)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Fjern domæneinvitation",
+        "description": "Fjern en invitation til et domæne.",
         "tags": [
-          "Invites"
+          "Invitationer"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "E-mailadresse, der skal fjernes fra listen over domænemedlemmer"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Opdater domænemedlem",
+        "description": "Opdater et domænemedlem.",
         "tags": [
-          "Members"
+          "Medlemmer"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Gruppe, hvor brugeren skal opdateres til domænemedlemskabet (kan være en af `\"admin\"` eller `\"user\"`)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Fjern domænemedlem",
+        "description": "Fjern et domænemedlem.",
         "tags": [
-          "Members"
+          "Medlemmer"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Generer en aliasadgangskode",
+        "description": "Generer en adgangskode til et alias. Hvis `emailed_instructions` ikke angives, vil svaret indeholde det genererede brugernavn og den genererede adgangskode.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Fuldt kvalificeret domænenavn (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Unik identifikator for aliasset"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Liste over domænealiasser",
+        "description": ">[!NOTE]\n>Fra 1. november 2024 vil API-slutpunkterne for `List domains` og `List domain aliases` som standard være `1000` maksimale resultater pr. side. Hvis du vil tilmelde dig denne funktionsmåde tidligt, kan du sende `?paginate=true` som en ekstra forespørgselsstrengparameter til URL'en for slutpunktsforespørgslen. Se Paginering for mere indsigt.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Søg efter aliasser i et domæne efter navn, etiket eller modtager (RegExp understøttes)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Søg efter aliasser i et domæne efter navn (RegExp understøttes)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Søg efter aliasser i et domæne efter modtager (RegExp understøttes)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Sortér efter et specifikt felt (præfiks med en enkelt bindestreg - for at sortere i omvendt rækkefølge). Standardindstillingen er created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Opret nyt domænealias",
+        "description": "Opret et nyt alias for et specifikt domæne.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Hent domænealias",
+        "description": "Hent et specifikt alias for et domæne.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Opdater domænealias",
+        "description": "Opdater et specifikt alias for et domæne.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Slet domænealias",
+        "description": "Slet et specifikt alias for et domæne.",
         "tags": [
-          "Aliases"
+          "Aliaser"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "Krypter TXT-post",
+        "description": "Vi giver dig mulighed for at kryptere poster, selv med gratisabonnementet, uden omkostninger. Privatliv bør ikke være en funktion, det bør være indbygget i alle aspekter af et produkt. Som efterspurgt i en [diskussion om privatlivsvejledninger](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) og på vores [GitHub-problemer](https://github.com/forwardemail/forwardemail.net/issues/254) har vi tilføjet dette.",
         "tags": [
-          "Encrypt"
+          "Krypter"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Enhver gyldig post til videresendelse af e-mail i klartekst (TXT)"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Konto",
+      "description": "Kontostyringsslutpunkter"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Logfiler",
+      "description": "Slutpunkter for logstyring"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "E-mails",
+      "description": "Slutpunkter for e-mailadministration"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Domæner",
+      "description": "> [!TIP]\n> Domæneslutpunkter med et domænenavn <code>/v1/domains/:domain\\_name</code> som deres slutpunkt kan udskiftes med et domænes ID <code>:domain\\_id</code>. Det betyder, at du kan referere til domænet enten ved hjælp af dets <code>name</code>- eller <code>id</code>-værdi."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Invitationer",
+      "description": "Slutpunkter for administration af domæneinvitationer"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Medlemmer",
+      "description": "Slutpunkter for administration af domænemedlemmer"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Aliaser",
+      "description": "Slutpunkter for administration af domænealias"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Krypter",
+      "description": "Krypteringsslutpunkter"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Kontakter",
+      "description": "Endpoints til administration af aliaskontakter (CardDAV)\n\n>[!NOTE]\n>I modsætning til andre API-endpoints kræver disse godkendelse \"brugernavn\" lig med aliasbrugernavnet og \"adgangskode\" lig med den aliasgenererede adgangskode som Basic Authorization-headere.\n\n>[!TIP]\n>Disse endpoints leverer komplette CRUD-operationer til kontaktadministration med vCard-understøttelse, herunder oprettelse, hentning, opdatering og sletning af kontakter. Du kan angive enten vCard-indhold direkte eller individuelle kontaktfelter, der konverteres til vCard-format."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Kalendere",
+      "description": "Endpoints til administration af aliaskalendere (CalDAV)\n\n>[!NOTE]\n> I modsætning til andre API-endpoints kræver disse [Authentication](#description/authentication) \"username\" lig med alias-brugernavnet og \"password\" lig med den alias-genererede adgangskode som Basic Authorization-headere.\n\n>[!TIP]\n> Disse endpoints giver komplet kalenderadministration med understøttelse af tidszone og farve, herunder oprettelse, hentning, opdatering og sletning af kalendere. Kalendernavne er påkrævet, mens andre egenskaber som farve, tidszone og beskrivelse er valgfrie."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Kalenderbegivenheder",
+      "description": "Endpoints til administration af aliaskalenderbegivenheder (CalDAV)\n\n>[!NOTE]\n> I modsætning til andre API-endpoints kræver disse [Authentication](#description/authentication) \"username\" lig med aliasbrugernavnet og \"password\" lig med den aliasgenererede adgangskode som Basic Authorization-headere.\n\n>[!TIP]\n> Disse endpoints giver omfattende administration af kalenderbegivenheder med fuld iCalendar (RFC 5545)-understøttelse. Begivenheder gemmes som iCal-data og parses automatisk for at udtrække almindelige egenskaber som resumé, beskrivelse, placering og datoer for nem adgang. Begivenheder understøtter blød sletning og kan filtreres efter kalender, datointerval og sletningsstatus."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Beskeder",
+      "description": "Endpoints til administration af aliasmeddelelser (IMAP/POP3)\n\n>[!NOTE]\n> I modsætning til andre API-endpoints kræver disse [Authentication](#description/authentication) \"username\" lig med alias-brugernavnet og \"password\" lig med den alias-genererede adgangskode som Basic Authorization-headere.\n\n>[!TIP]\n> Disse endpoints tilbyder omfattende meddelelseshåndtering med avancerede søgefunktioner. Du kan søge efter mappe, flag, indhold, headere, datointervaller, størrelse og mere. Beskeder kan oprettes ved hjælp af standard Nodemailer-format og understøtter flytning mellem mapper og flaghåndtering.\n\nSørg for, at du har fulgt opsætningsvejledningen for dit domæne.\nDisse instruktioner kan findes i vores FAQ-sektion [Understøtter I modtagelse af e-mail med IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Mapper",
+      "description": "Endpunkter til administration af aliasmapper (IMAP/POP3)\n\n>[!TIP]\n> Mappeslutpunkter med en mappes sti <code>/v1/folders/:path</code> som deres slutpunkt kan udskiftes med en mappes ID <code>:id</code>. Det betyder, at du kan referere til mappen ved enten dens <code>path</code> eller <code>id</code> værdi.\n\n>[!NOTE]\n> I modsætning til andre API-slutpunkter kræver disse [Authentication](#description/authentication) \"brugernavn\" lig med aliasbrugernavnet og \"adgangskode\" lig med den aliasgenererede adgangskode som Basic Authorization-headere.\n\n>[!TIP]\n> Disse slutpunkter giver fuld mappeadministration, herunder oprettelse, omdøbning og sletning. Mappestier kan omfatte overordnede mapper (f.eks. 'INDBAKKE/Undermappe'), og overordnede mapper oprettes automatisk, hvis de ikke findes."
     }
   ]
 }
-

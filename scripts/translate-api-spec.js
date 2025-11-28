@@ -8,6 +8,7 @@ require('#config/env');
 
 const fs = require('node:fs');
 const path = require('node:path');
+const process = require('node:process');
 
 const Redis = require('@ladjs/redis');
 const pMap = require('p-map');
@@ -20,7 +21,10 @@ const locales = require('#config/locales');
 const logger = require('#helpers/logger');
 
 // Initialize Google Translate client
-const translate = new Translate();
+const translate = new Translate({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  key: process.env.GOOGLE_API_KEY
+});
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

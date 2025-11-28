@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Добро пожаловать в подробную документацию по API для пересылки электронной почты. Этот API позволяет программно управлять пересылкой электронной почты, доменами, псевдонимами, исходящими письмами и другими функциями.\n\n## Основные функции\n* **Управление доменами:** Создание, извлечение, обновление, удаление и верификация доменов.\n* **Управление псевдонимами:** Управление псевдонимами электронной почты, включая создание, обновление и управление получателями.\n* **Исходящий SMTP:** Отправка писем по SMTP, управление ограничениями и отслеживание отправленных писем.\n* **Учетная запись и журналы:** Управление данными вашей учетной записи и загрузка журналов активности.\n* **Безопасность:** Шифрование TXT-записей и управление участниками/приглашениями домена.\n* **Контакты CardDAV:** Полный набор CRUD-операций для управления контактами с поддержкой vCard.\n* **Календари CalDAV:** Полное управление календарями с поддержкой часовых поясов и цветов.\n* **Сообщения IMAP/POP3:** Комплексное управление сообщениями с расширенными возможностями поиска.\n* **Папки IMAP/POP3:** Полное управление папками, включая создание, переименование и удаление.\n\n## Аутентификация\nДля большинства конечных точек требуется аутентификация с использованием вашего **ключа API**. Укажите ключ API в качестве `username` в заголовке базовой аутентификации, оставив пароль пустым.\n\n```http\nАвторизация: Базовая QVBJX1RPS0VOOg==\n```\n(Замените `API_TOKEN` на ваш фактический ключ перед кодированием в Base64)\n\nДля конечных точек, связанных с **псевдонимами контактов, календарей, сообщений и папок**, требуется сгенерированный псевдоним имени пользователя и пароля для базовой аутентификации.\n\n## Ошибки\nAPI использует стандартные коды статуса HTTP для обозначения успеха или неудачи. Ответы об ошибках включают тело JSON с полем `message`, описывающим ошибку.\n\n| Код статуса | Значение |\n|------------|---------------------|\n| 200 | OK |\n| 400 | Неверный запрос |\n| 401 | Неавторизован |\n| 403 | Запрещено |\n| 404 | Не найдено |\n| 409 | Конфликт |\n| 412 | Предварительное условие не выполнено |\n| 429 | Слишком много запросов |\n| 500 | Внутренняя ошибка сервера |\n| 501 | Не реализовано |\n| 502 | Неверный шлюз |\n| 503 | Служба недоступна |\n| 504 | Истекло время ожидания шлюза |\n\n*Если вы столкнулись с ошибкой `5xx`, свяжитесь с [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Локализация\nОтветы API переводятся на основе обнаруженных локалей пользователя или заголовка `Accept-Language`. Поддерживается более 25 языков.\n\n## Пагинация\nКонечные точки, возвращающие списки, поддерживают пагинацию через параметры запроса.\n\n| Параметр | Тип | Необязательный | Описание | По умолчанию | Ограничения |\n|-------------|---------|-----------|----------------------------------------------------------------------------|---------|--------------------|\n| `page` | Целое число | Да | Номер страницы для извлечения. | 1 | `>= 1` |\n| `limit` | Целое число | Да | Количество результатов на странице. | 25 | `>= 1`, `<= 100` |\n| `pagination` | Логическое значение | Да | Включение пагинации (требуется до 1 ноября 2024 г. для некоторых конечных точек). | false | |\n\n**Заголовки пагинации:**\n* `X-Page-Count`: Общее количество страниц.\n* `X-Page-Current`: Номер текущей страницы.\n* `X-Page-Size`: Количество элементов на текущей странице.\n* `X-Item-Count`: Общее количество элементов на всех страницах.\n* `Link`: Навигационные ссылки (предыдущая, следующая, первая, последняя).\n\n**Пример:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Рекомендуемые библиотеки\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Поддерживается пересылкой электронной почты)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "API-сервер пересылки электронной почты"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nИспользуйте свой ключ API в качестве **имени пользователя** для базовой аутентификации. Оставьте поле пароля пустым.\n\n**Пример:**\nЕсли ваш ключ API — `YOUR_API_KEY`, то значение в кодировке Base64 для заголовка `Authorization` будет выглядеть так: `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nАвторизация: Базовая WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nИспользуйте сгенерированные **имя пользователя и пароль псевдонима** для базовой аутентификации. Это применимо к конечным точкам в разделах:\n* Псевдоним контактов (CardDAV)\n* Псевдоним календарей (CalDAV)\n* Псевдоним сообщений (IMAP/POP3)\n* Псевдоним папок (IMAP/POP3)\n\n**Пример:**\nЕсли имя пользователя псевдонима — `alias@domain.com`, а пароль — `GENERATED_PASSWORD`, значение в кодировке Base64 будет выглядеть так: `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nАвторизация: Базовая YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Сообщение об ошибке"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "Псевдоним ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Тип объекта"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Псевдоним (локальная часть адреса электронной почты)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Полный псевдоним адреса электронной почты"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "Идентификатор домена"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Доменное имя"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Объем хранилища, используемый для этого псевдонима/почтового ящика (в байтах)"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Квота хранения в байтах для этого псевдонима/почтового ящика"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "Включен ли IMAP для этого псевдонима"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Включено ли шифрование PGP"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "Открытый ключ PGP (если доступен)"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Предпочтения локали"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Метка времени создания"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Метка времени последнего обновления"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "Идентификатор контакта (contact_id из CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Контактный UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Полное имя контакта"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "содержимое vCard"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag для управления версиями"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Является ли контакт группой"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Массив адресов электронной почты"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Массив телефонных номеров"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "Содержимое vCard (если не указано, будет сгенерировано из других полей)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Полное имя контакта"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "Пользовательский идентификатор контакта (если не указан, будет сгенерирован автоматически)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "Контактный UID (если не указан, будет сгенерирован автоматически)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Массив адресов электронной почты"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Массив телефонных номеров"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Массив телефонных номеров (псевдоним для phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Массив адресов"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Является ли контакт группой"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "содержимое vCard"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Полное имя контакта"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Массив адресов электронной почты"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Массив телефонных номеров"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Массив телефонных номеров (псевдоним для phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Массив адресов"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Является ли контакт группой"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "Идентификатор календаря (calendarId из CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Название календаря"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Описание календаря"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Цвет календаря (шестнадцатеричный формат)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Календарь часового пояса"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Порядок отображения календаря"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Название календаря"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "Пользовательский идентификатор календаря (если не указан, будет сгенерирован автоматически)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Описание календаря"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Цвет календаря (шестнадцатеричный формат, если не указан, будет сгенерирован автоматически)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Часовой пояс календаря (по умолчанию — часовой пояс пользователя или UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Порядок отображения календаря (по умолчанию 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Название календаря"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Описание календаря"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Цвет календаря (шестнадцатеричный формат)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Календарь часового пояса"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Порядок отображения календаря"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "Идентификатор события календаря (eventId из CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "Идентификатор календаря, к которому принадлежит это событие"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "Данные iCalendar (RFC 5545) для события"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Название/краткое описание события (извлечено из данных iCal)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Описание события (извлечено из данных iCal)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Место события (извлечено из данных iCal)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Дата/время начала события (извлечено из данных iCal)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Дата/время окончания события (извлечено из данных iCal)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "Уникальный идентификатор из данных iCal"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Статус события (извлечен из данных iCal)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Организатор мероприятия (извлечено из данных iCal)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Метка времени мягкого удаления"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "Идентификатор календаря, в который нужно добавить событие"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "Пользовательский идентификатор события (если не указан, будет сгенерирован автоматически)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "Данные iCalendar (RFC 5545) для события. Должны быть в допустимом формате iCal."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Перенести событие в другой календарь"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Обновленные данные iCalendar (RFC 5545) для события"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "Идентификатор папки"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Полный путь к папке"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Имя папки (последняя часть пути)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Путь к родительской папке"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "Действительность UID IMAP"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Следующее значение UID"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Индекс модификации"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Подписана ли папка"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Флаги папок"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Срок хранения сообщений"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Специальное назначение"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Путь/имя папки"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Новый путь/имя папки"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "Идентификатор сообщения"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "Идентификатор корневого сообщения для потоковой передачи"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "Идентификатор папки, содержащей сообщение"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Путь к папке, содержащей сообщение"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "Идентификатор потока для группировки бесед"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Значение заголовка Message-ID"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Непрочитано ли сообщение"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Помечено ли сообщение"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Удалено ли сообщение"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Является ли сообщение черновиком"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Является ли сообщение спамом"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Копируется ли сообщение"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Можно ли выполнить поиск по сообщению?"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Срок действия сообщения истек"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Есть ли вложения в сообщении"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Дата хранения сообщения"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Внутренняя дата (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Дата из заголовков сообщения"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Тема сообщения"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "Флаги IMAP"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Размер сообщения в байтах"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "IMAP-UID"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Последовательность модификации"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Тип транзакции"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Удаленный IP-адрес"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Метка времени создания сообщения"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Метка времени последнего обновления сообщения"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Проанализированный объект сообщения (включен по умолчанию, установите ?nodemailer=false для исключения)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Необработанное содержимое сообщения (включено по умолчанию, установите ?raw=false, чтобы исключить)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "Адрес электронной почты отправителя"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "Адреса электронной почты получателей"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "Адреса электронной почты получателей копий"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "Адреса электронной почты получателей скрытых копий"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Тема сообщения"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Простой текстовый контент"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML-контент"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Вложения сообщений (формат Nodemailer)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Целевая папка (по умолчанию INBOX)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "Флаги IMAP для установки в сообщении"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "Флаги IMAP для установки в сообщении"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Переместить сообщение в эту папку"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Адрес электронной почты отправителя (должен существовать как псевдоним домена)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Список получателей, разделенных запятыми, или массив получателей для заголовка «Кому»."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Список получателей, разделенных запятыми, или массив получателей для заголовка «Копия»."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Список получателей, разделенных запятыми, или массив для заголовка «Скрытая копия»."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Тема письма."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "Текстовая версия сообщения."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "HTML-версия сообщения."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "Массив объектов вложений (см. общие поля Nodemailer)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "Адрес электронной почты для заголовка «Отправитель»."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "Адрес электронной почты для заголовка «Ответить»."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "Идентификатор сообщения, на которое отправлено сообщение."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Список, разделенный пробелами, или массив идентификаторов сообщений."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Если значение равно true, преобразует данные: изображения в HTML-содержимом во встроенные вложения."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "HTML-версия сообщения для Apple Watch."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "Специфическая HTML-версия сообщения AMP4EMAIL."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "Событие iCalendar как альтернативный контент сообщения."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "Массив альтернативного содержания сообщений."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Кодировка текста и HTML-строк (например, «utf-8», «hex», «base64»)."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Пользовательское сообщение в формате RFC822 (вместо использования генерации Nodemailer)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Для текстовых значений принудительно применяется кодировка."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Уровень приоритета электронного письма."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Объект или массив дополнительных полей заголовка."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Дополнительный Message-ID для заголовка «Message-ID»."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Необязательный заголовок «Дата». Не может быть позже 30 дней."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "Необязательный объект заголовков List-*."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Полное доменное имя (FQDN) или IP-адрес"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Назначить той же команде из другого домена; можно указать идентификатор домена или полное доменное имя. Для явного отключения используйте значение «none»."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Тип плана (по умолчанию «бесплатный» или текущий платный план пользователя)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Список адресов электронной почты с разделителями (запятыми, пробелами или символами новой строки)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Создать универсальный псевдоним по умолчанию (значение по умолчанию — true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Включить защиту от контента для взрослых с помощью спам-сканера"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Включить защиту от фишинга Spam Scanner"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Включить защиту исполняемого файла Spam Scanner"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Включить защиту от вирусов Spam Scanner"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Требовать от получателей псевдонимов нажатия ссылки для подтверждения адреса электронной почты"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "Игнорировать проверку записи MX для расширенных настроек маршрутизации почты"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Включите сохранение заголовков и метаданных (за исключением содержимого сообщений) для успешно пересланных, отправленных через вебхук, исходящих SMTP и доставленных по IMAP писем с сохранением журналов в течение 7 дней. Эта функция поможет вам отслеживать и устранять неполадки с доставкой электронной почты, предоставляя подробную информацию об успешных отправках."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Количество дней для хранения исходящих журналов SMTP (0–30, по умолчанию: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "URL-адрес веб-перехватчика для получения событий отказа"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Отключить веб-перехватчик отказов"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Максимальная квота хранения для псевдонима (например, «1 ГБ»)"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Пользовательский порт для настройки пересылки SMTP (по умолчанию «25»)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Включать ли защиту от контента для взрослых с помощью Spam Scanner на этом домене?"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Включать ли защиту от фишинга Spam Scanner на этом домене?"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Включать ли защиту исполняемого файла Spam Scanner на этом домене?"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Включать ли антивирусную защиту Spam Scanner на этом домене?"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Глобальное значение домена по умолчанию, определяющее, требуется ли, чтобы получатели псевдонимов нажимали ссылку для подтверждения адреса электронной почты, чтобы электронные письма проходили через него."
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Игнорировать ли проверку MX-записи в домене для подтверждения (в основном для расширенных настроек маршрутизации MX)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Включите сохранение заголовков и метаданных (за исключением содержимого сообщений) для успешно пересланных, отправленных через вебхук, исходящих SMTP и доставленных по IMAP писем с сохранением журналов в течение 7 дней. Эта функция поможет вам отслеживать и устранять неполадки с доставкой электронной почты, предоставляя подробную информацию об успешных отправках."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Количество дней хранения исходящих писем SMTP (0 = немедленно очистить)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "URL-адрес веб-перехватчика для получения уведомлений о недоставке или значение false для отключения"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Квота хранения для каждого псевдонима (например, «1 ГБ», в байтах)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Имя псевдонима (если не указано или пусто, то генерируется случайный псевдоним)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Строка допустимых адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенных разрывами строк, пробелами или запятыми"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Массив допустимых получателей"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Список получателей. Если не указан или пуст, по умолчанию используется адрес электронной почты отправителя запроса."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Описание псевдонима"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Строка меток, разделенная разрывом строки/пробелом/запятой"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Массив этикеток"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Требовать от получателей нажатия ссылки подтверждения (по умолчанию установлено в настройках домена)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Включить или отключить этот псевдоним"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Код ошибки, если псевдоним отключен. По умолчанию — 250."
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "Включить или отключить хранилище IMAP для этого псевдонима"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "Включить или отключить шифрование OpenPGP для этого псевдонима"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "Открытый ключ OpenPGP в формате ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Максимальная квота хранилища (например, «1 ГБ»)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Включить или отключить автоответчик"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Дата начала (например, «ГГГГ-ММ-ДД») для автоответчика"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Дата окончания (например, «ГГГГ-ММ-ДД») для автоответчика"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Тема сообщения в виде открытого текста для автоответчика"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Текстовое сообщение для автоответчика"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Псевдоним"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Строка допустимых адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенных разрывами строк, пробелами или запятыми"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Массив допустимых получателей"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Описание псевдонима"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Строка меток, разделенная разрывом строки/пробелом/запятой"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Массив этикеток"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Требовать от получателей нажатия ссылки подтверждения (по умолчанию установлено в настройках домена)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Включить или отключить псевдоним"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Код ошибки, который следует использовать, если псевдоним отключен (по умолчанию 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "Включить или отключить хранилище IMAP"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "Включить или отключить шифрование OpenPGP"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "Открытый ключ OpenPGP в формате ASCII Armor"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Максимальная квота хранилища (например, «1 ГБ»)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Включить или отключить автоответчик"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Дата начала отпуска (например, ГГГГ-ММ-ДД)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Дата окончания отпуска (например, ГГГГ-ММ-ДД)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Тема ответа на вопрос об отпуске открытым текстом"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Текстовое сообщение автоответчика"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Ваш новый пароль для использования в качестве псевдонима"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Существующий пароль для псевдонима, чтобы изменить его без удаления хранилища почтового ящика"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Переопределить существующий пароль и удалить хранилище IMAP (использовать с осторожностью)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "Адрес электронной почты для отправки пароля псевдонима и инструкций по настройке"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Текущее количество отправленных писем"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Максимально допустимое количество писем"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "Идентификатор участника"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "Адрес электронной почты участника"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Роль участника"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Приглашенный адрес электронной почты"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "Страница с результатами для возврата. Если значение не указано, оно будет равно 1. Должно быть числом, большим или равным 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Количество результатов, возвращаемых на страницу. По умолчанию 25, если не указано иное. Должно быть числом больше или равно 1 и меньше или равно 100.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Подключить пагинацию до 1 ноября 2024 г.",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "Идентификатор домена",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "Псевдоним ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "Идентификатор участника",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "Идентификатор электронной почты",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "Контактный идентификатор",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "Идентификатор календаря",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "Идентификатор папки или путь",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "Идентификатор сообщения",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Счет"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Восстановить учетную запись",
+        "description": "Получите информацию о вашей учётной записи.\n\n**Аутентификация:** Эта конечная точка поддерживает как аутентификацию с помощью API-токена, так и аутентификацию с помощью псевдонима.\n\n- **Учётная запись пользователя (API-токен):** При аутентификации с помощью API-токена эта конечная точка возвращает информацию о вашей учётной записи, включая сведения о тарифном плане, адрес электронной почты и API-токен.\n\n- **Учётная запись псевдонима (учётные данные псевдонима):** При аутентификации с помощью псевдонима (адрес электронной почты и сгенерированный пароль) эта конечная точка возвращает информацию о псевдониме/почтовом ящике, включая использованное хранилище, квоту хранилища и настройки почтового ящика. Это полезно для клиентов IMAP/POP3/CalDAV/CardDAV для проверки состояния хранилища.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Счет"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Обновить аккаунт",
+        "description": "Обновите информацию своей учетной записи.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Отображаемое имя"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Предпочтения локали"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Контакты"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Список контактов",
+        "description": "Получить список всех контактов для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и возвращает контакты в формате CardDAV.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Контакты"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Создать контакт",
+        "description": "Создайте новый контакт. Вы можете предоставить либо непосредственно содержимое vCard, либо отдельные поля контакта, которые будут преобразованы в формат vCard. Если контакт с таким же идентификатором уже существует, будет возвращена ошибка конфликта.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Контакты"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Восстановить контакт",
+        "description": "Получить конкретный контакт по его идентификатору. Контакт возвращается в стандартном формате Contact с содержимым vCard и проанализированными полями.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Контакты"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Обновить контакт",
+        "description": "Обновите существующий контакт. Вы можете предоставить как обновлённое содержимое vCard, так и отдельные поля для обновления. Если вы предоставите отдельные поля, vCard контакта будет сгенерирована заново.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Контакты"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Удалить контакт",
+        "description": "Удалить определённый контакт навсегда. Это действие не может быть отменено.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Календари"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Список календарей",
+        "description": "Получить список всех календарей для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и возвращает календари в формате CalDAV.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Календари"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Создать календарь",
+        "description": "Создайте новый календарь. Имя календаря обязательно, другие свойства, такие как цвет, часовой пояс и описание, необязательны. Если календарь с таким именем уже существует, будет возвращена ошибка конфликта.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Календари"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Получить календарь",
+        "description": "Получить конкретный календарь по его идентификатору. Календарь возвращается со всеми своими свойствами, включая название, описание, цвет, часовой пояс и порядок.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Календари"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Обновление календаря",
+        "description": "Обновите существующий календарь. Вы можете изменить любые свойства календаря, включая название, описание, цвет, часовой пояс и порядок. Если изменить название на уже существующее, возникнет ошибка конфликта.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Календари"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Удалить календарь",
+        "description": "Удалить выбранный календарь навсегда. Это действие не может быть отменено и также удалит все события в календаре.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Календарь событий"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Список событий календаря",
+        "description": "Получить список событий календаря для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и фильтрацию по календарю, диапазону дат и статусу удаления.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Фильтровать события по идентификатору календаря",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Фильтровать события, начиная с этой даты (формат ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Фильтровать события, заканчивающиеся до этой даты (формат ISO 8601)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Включить в результаты обратимо удаленные события",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Календарь событий"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Создать событие календаря",
+        "description": "Создайте новое событие в календаре с данными iCalendar. Событие будет проверено и проанализировано для извлечения общих свойств для удобства доступа.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "Идентификатор события календаря",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Календарь событий"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Получить событие календаря",
+        "description": "Получить конкретное событие календаря по его идентификатору. Событие возвращается со всеми его свойствами, включая проанализированные данные iCalendar.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Календарь событий"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Обновление календаря событий",
+        "description": "Обновите конкретное событие в календаре. Вы можете изменить данные iCalendar или перенести событие в другой календарь.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Календарь событий"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Удалить событие календаря",
+        "description": "Мягкое удаление определенного события из календаря. Событие будет отмечено как удалённое, но не будет удалено из базы данных навсегда.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Папки"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Список папок",
+        "description": "Получает список всех папок/почтовых ящиков IMAP для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и фильтрацию по статусу подписки.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Фильтровать папки по статусу подписки",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Папки"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Создать папку",
+        "description": "Создайте новую папку/почтовый ящик IMAP. Путь к папке обязателен и может включать родительские папки (например, «INBOX/Подпапка»). Если родительские папки отсутствуют, они будут созданы автоматически.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Папки"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Восстановить папку",
+        "description": "Получить конкретную папку по её идентификатору или пути. В качестве идентификатора можно использовать ObjectID папки или её полный путь (например, «INBOX/Subfolder»).",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Папки"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Обновить папку",
+        "description": "Обновить/переименовать существующую папку. Эта операция переименовывает папку в соответствии с новым путём, указанным в теле запроса. В качестве идентификатора можно использовать ObjectID папки или её текущий путь.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Папки"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Удалить папку",
+        "description": "Удалить определённую папку навсегда. Это действие не может быть отменено и также удалит все сообщения в папке. В качестве идентификатора можно использовать ObjectID папки или путь к ней.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Сообщения"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Список и поиск сообщений",
+        "description": "Получайте список сообщений с расширенными возможностями поиска и фильтрации. Эта конечная точка поддерживает постраничную навигацию и комплексный поиск по содержимому сообщений, заголовкам, флагам и метаданным. Вы можете искать по папке, флагам, содержимому, заголовкам, диапазонам дат, размеру и другим параметрам.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Фильтровать сообщения по пути к папке",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Фильтр по статусу прочтения",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Фильтр по помеченному статусу",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Фильтр по удаленному статусу",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Фильтр по статусу черновика",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Фильтр по статусу спама/нежелательной почты",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Фильтр по статусу копирования",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Фильтр по статусу поиска",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Фильтр по просроченному статусу",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Фильтр по наличию вложений",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Фильтр по наличию вложений (псевдоним для has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Поиск по теме сообщения",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Поиск в тексте сообщения",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Поиск в тексте сообщения (псевдоним тела)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Поиск во всех заголовках сообщений",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Поиск по заголовку Message-ID",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Общий поиск по заголовкам и тексту",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Общий поиск (псевдоним для поиска)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Фильтр сообщений с этой даты (формат ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Фильтровать сообщения до этой даты (формат ISO 8601)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Фильтровать сообщения по минимальному размеру в байтах",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Фильтровать сообщения по максимальному размеру в байтах",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Поиск по заголовку «Из»",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Поиск по заголовку «Кому»",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Поиск по заголовку CC",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Поиск по заголовку BCC",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Поиск по заголовку даты",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Поиск по заголовку «Ответить»",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Сообщения"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Создать сообщение",
+        "description": "Создание/добавление нового сообщения в папку. Эта конечная точка принимает стандартный формат сообщений Nodemailer и позволяет указать целевую папку и начальные флаги. Если целевая папка не существует, она будет создана автоматически.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Сообщения"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Получить сообщение",
+        "description": "Извлечение конкретного сообщения по его идентификатору. По умолчанию ответ включает в себя разобранный объект Nodemailer и необработанное содержимое сообщения. Вы можете управлять тем, что включается, с помощью параметров запроса.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Возвращает необработанный формат EML вместо JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Включить проанализированный объект Nodemailer",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Включить вложения в объект Nodemailer",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Включить необработанное содержание сообщения",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Сообщения"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Обновление сообщения",
+        "description": "Обновите существующее сообщение. Вы можете изменить флаги сообщения или переместить его в другую папку. Если целевая папка не существует, она будет создана автоматически.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Возвращает необработанный формат EML вместо JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Сообщения"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Удалить сообщение",
+        "description": "Удалить определённое сообщение без возможности восстановления. Это действие не может быть отменено и навсегда удалит сообщение из хранилища. В отличие от IMAP-клиентов, которые обычно перемещают сообщения в корзину, эта конечная точка выполняет безвозвратное удаление.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Загрузить журналы",
+        "description": "**Скачать журналы**\n\nОписание: Наш API позволяет программно загружать журналы вашей учётной записи. Отправка запроса на эту конечную точку обработает все журналы вашей учётной записи и отправит их вам по электронной почте в виде вложения (CSV-файл, сжатый Gzip).\n\nЭто позволяет создавать фоновые задания с помощью Cron-задания или с помощью программы планирования заданий Node.js Bree для получения журналов в любое удобное время. Обратите внимание, что эта конечная точка ограничена 10 запросами в день.\n\nВложение представляет собой строчную форму `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, а само письмо содержит краткую сводку полученных журналов.",
         "tags": [
-          "Logs"
+          "Журналы"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Фильтрация журналов по полному доменному имени (FQDN). Если имя не указано, будут извлечены все журналы по всем доменам.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Поиск журналов по адресу электронной почты, домену, псевдониму, IP-адресу или дате (формат М/Г, М/Д/ГГ, М-Д, М-Д-ГГ или М.Д.ГГ).",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Поиск журналов по определенной категории отказов (например, «черный список»).",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Поиск журналов по определенному коду ответа об ошибке (например, 421 или 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Список исходящих писем SMTP",
+        "description": "**Список исходящих SMTP-сообщений**\n\nОбратите внимание, что эта конечная точка не возвращает значения свойств `message`, `headers` и `rejectedErrors` электронного письма.\n\nЧтобы получить эти свойства и их значения, используйте конечную точку [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) с идентификатором электронной почты.",
         "tags": [
-          "Emails"
+          "Электронные письма"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "Поиск писем по метаданным.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "Поиск писем по доменному имени.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Сортировка по указанному полю (префикс с одним дефисом — для сортировки в обратном направлении по этому полю). По умолчанию используется created_at, если не задано.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Создать исходящее SMTP-сообщение",
+        "description": "Наш API для создания электронных писем основан на конфигурации параметров сообщений Nodemailer и использует её. Для всех параметров тела письма ниже обратитесь к [конфигурации сообщений Nodemailer](https://nodemailer.com/message/).\n\nОбратите внимание, что, за исключением `envelope` и `dkim` (поскольку мы устанавливаем их автоматически), мы поддерживаем все параметры Nodemailer. В целях безопасности мы автоматически устанавливаем параметры `disableFileAccess` и `disableUrlAccess` в значение `true`.\n\nВам следует либо передать единственный параметр `raw` вместе с полным текстом письма, включая заголовки, либо передать отдельные параметры тела письма ниже.\n\nЭта конечная точка API автоматически кодирует эмодзи, если они встречаются в заголовках (например, тема `Subject: 🤓 Hello` автоматически преобразуется в `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Нашей целью было создать максимально удобный для разработчиков и защищенный от мошенничества API электронной почты.\n\n**Аутентификация:** Эта конечная точка поддерживает как аутентификацию по API-токену, так и аутентификацию по псевдониму. Вы можете пройти аутентификацию, используя либо свой API-ключ (рекомендуется), либо свой псевдоним адреса электронной почты и сгенерированный пароль. Подробности см. в разделе «Аутентификация» в документации по API.",
         "tags": [
-          "Emails"
+          "Электронные письма"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Получить лимит исходящей электронной почты SMTP",
+        "description": "Это простая конечная точка, которая возвращает объект JSON, содержащий «количество» и «лимит» количества ежедневных исходящих SMTP-сообщений для каждой учетной записи.",
         "tags": [
-          "Emails"
+          "Электронные письма"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Получить исходящую SMTP-почту",
+        "description": "Получить определенное исходящее SMTP-сообщение электронной почты.",
         "tags": [
-          "Emails"
+          "Электронные письма"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Удалить исходящую SMTP-почту",
+        "description": "Удаление письма приведёт к установке статуса «отклонено» (и, следовательно, не будет обрабатываться в очереди) только в том случае, если текущий статус — «ожидание», «в очереди» или «отложенный». Мы можем автоматически удалять письма через 30 дней после их создания и/или отправки, поэтому вам следует сохранять копии исходящих SMTP-сообщений в вашем клиенте, базе данных или приложении. При желании вы можете использовать наш идентификатор электронной почты в вашей базе данных — это значение возвращается как конечными точками [Создать письмо] (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email), так и [Получить письмо] (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
-          "Emails"
+          "Электронные письма"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Список доменов",
+        "description": "> [!NOTE]\n>С 1 ноября 2024 года конечные точки API для доменов List и псевдонимов доменов List будут по умолчанию отображать максимум 1000 результатов на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL-адрес запроса конечной точки. Подробнее см. в разделе «Пагинация».",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Поиск доменов по метаданным.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Поиск доменов по доменному имени.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Сортировка по указанному полю (префикс с одним дефисом — для сортировки в обратном направлении по этому полю). По умолчанию используется created_at, если не задано.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Создать домен",
+        "description": "Создаёт новый домен в системе. Эта конечная точка позволяет зарегистрировать полное доменное имя (FQDN) или IP-адрес для использования с платформой.\n\nДополнительные параметры конфигурации включают назначение домена существующей команде, установку типа плана (например, бесплатный, улучшенная защита или командный) и настройку расширенных мер защиты, таких как фильтрация спама, сканирование на вирусы и проверка получателя. Вы также можете указать, следует ли создавать псевдоним для перехвата всех сообщений по умолчанию, задать URL-адрес веб-перехвата для сообщений об ошибках SMTP и определить квоты хранения для псевдонимов электронной почты в этом домене. Эта конечная точка выполняет проверку и подготовку на уровне домена. Если включен параметр `ignore_mx_check`, проверка MX-записи пропускается (рекомендуется только для расширенных настроек маршрутизации). Ответ будет содержать полную информацию о созданном объекте домена, включая записи DNS, необходимые для настройки.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Получить домен",
+        "description": "Получить определенный домен",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Обновить домен",
+        "description": "Обновить определенный домен.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Удалить домен",
+        "description": "Удалить определенный домен.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Проверить записи домена",
+        "description": "Проверьте записи DNS для определенного домена.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Проверьте записи SMTP домена",
+        "description": "Проверяет записи DNS, связанные с SMTP, для указанного домена.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Полное доменное имя (FQDN) для проверки",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Создайте пароль для всего домена",
+        "description": "Создаёт универсальный пароль для всего домена. Если пароль не указан, будет сгенерирован случайный пароль.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "Доменное имя, для которого будет создан универсальный пароль"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Ваш новый пароль для использования в качестве пароля для всех доменов. Оставьте поле пустым, чтобы создать надёжный пароль."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Описание приведено исключительно для организационных целей."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Список паролей для всех доменов",
+        "description": "Возвращает список общедоменных паролей, которые в данный момент настроены для указанного домена.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Полное доменное имя (FQDN), для которого необходимо перечислить пароли для всеобщей аутентификации",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Удалить пароль для всех доменов",
+        "description": "Удаляет общедоменный пароль, используя предоставленный идентификатор токена.",
         "tags": [
-          "Domains"
+          "Домены"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "Доменное имя, связанное с универсальным паролем"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "Идентификатор токена общедоменного пароля для удаления"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Принять приглашение домена",
+        "description": "Принять приглашение в домен.",
         "tags": [
-          "Invites"
+          "Приглашения"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Создать приглашение на домен",
+        "description": ">[!IMPORTANT]\n>Если приглашаемый пользователь уже является принятым участником любого другого домена, к которому принадлежит приглашающий его администратор, то приглашение будет принято автоматически и не будет отправлено электронное письмо.",
         "tags": [
-          "Invites"
+          "Приглашения"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "Адрес электронной почты для приглашения в список участников домена"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Группа, к которой нужно добавить пользователя для членства в домене (может быть `\"admin\"` или `\"user\"`)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Удалить приглашение домена",
+        "description": "Удалить приглашение в домен.",
         "tags": [
-          "Invites"
+          "Приглашения"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "Адрес электронной почты, который нужно удалить из списка участников домена"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Обновление члена домена",
+        "description": "Обновление члена домена.",
         "tags": [
-          "Members"
+          "Участники"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Группа для обновления членства пользователя в домене (может быть `\"admin\"` или `\"user\"`)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Удалить участника домена",
+        "description": "Удалить участника домена.",
         "tags": [
-          "Members"
+          "Участники"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Сгенерировать пароль псевдонима",
+        "description": "Сгенерируйте пароль для псевдонима. Если `emailed_instructions` не указан, ответ будет содержать сгенерированные имя пользователя и пароль.",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Полное доменное имя (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Уникальный идентификатор псевдонима"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Список доменных псевдонимов",
+        "description": ">[!NOTE]\n>С 1 ноября 2024 года конечные точки API для «Списка доменов» и «Списка псевдонимов доменов» по умолчанию будут отображать максимум 1000 результатов на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL-адрес запроса конечной точки. Подробнее см. в разделе «Пагинация».",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Поиск псевдонимов в домене по имени, метке или получателю (поддерживается RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Поиск псевдонимов в домене по имени (поддерживается RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Поиск псевдонимов в домене по получателю (поддерживается RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Сортировать по заданному полю (префикс с одним дефисом — для сортировки в обратном порядке). По умолчанию — created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Создать новый псевдоним домена",
+        "description": "Создайте новый псевдоним для определенного домена.",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Получить псевдоним домена",
+        "description": "Получить определенный псевдоним для домена.",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Обновить псевдоним домена",
+        "description": "Обновите определенный псевдоним для домена.",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Удалить псевдоним домена",
+        "description": "Удалить определенный псевдоним для домена.",
         "tags": [
-          "Aliases"
+          "Псевдонимы"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "Зашифровать TXT-запись",
+        "description": "Мы позволяем вам шифровать записи бесплатно даже на бесплатном тарифе. Конфиденциальность не должна быть просто функцией, она должна быть неотъемлемой частью всех аспектов продукта. Мы добавили эту функцию по многочисленным просьбам в [обсуждении руководств по конфиденциальности](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) и в [обсуждении проблем на GitHub](https://github.com/forwardemail/forwardemail.net/issues/254).",
         "tags": [
-          "Encrypt"
+          "Шифровать"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Любая допустимая запись открытого текста TXT для пересылки электронной почты"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Счет",
+      "description": "Конечные точки управления учетными записями"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Журналы",
+      "description": "Конечные точки управления журналами"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "Электронные письма",
+      "description": "Конечные точки управления электронной почтой"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Домены",
+      "description": "> [!TIP]\n> Конечные точки домена с именем <code>/v1/domains/:domain\\_name</code> взаимозаменяемы с идентификатором домена <code>:domain\\_id</code>. Это означает, что вы можете ссылаться на домен либо по его значению <code>name</code>, либо по значению <code>id</code>."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Приглашения",
+      "description": "Конечные точки управления приглашениями домена"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Участники",
+      "description": "Конечные точки управления членами домена"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Псевдонимы",
+      "description": "Конечные точки управления псевдонимами домена"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Шифровать",
+      "description": "Конечные точки шифрования"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Контакты",
+      "description": "Конечные точки управления псевдонимами контактов (CardDAV)\n\n>[!NOTE]\n>В отличие от других конечных точек API, для этих конечных точек требуется аутентификация с указанием имени пользователя псевдонима и пароля, сгенерированного псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n>Эти конечные точки предоставляют полный набор CRUD-операций для управления контактами с поддержкой vCard, включая создание, извлечение, обновление и удаление контактов. Вы можете предоставить как непосредственно содержимое vCard, так и отдельные поля контактов, которые будут преобразованы в формат vCard."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Календари",
+      "description": "Конечные точки управления псевдонимами календарей (CalDAV)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Authentication](#description/authentication) \"username\", совпадающий с именем пользователя псевдонима, и \"password\", совпадающий с паролем, сгенерированным псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают полное управление календарями с поддержкой часовых поясов и цветов, включая создание, извлечение, обновление и удаление календарей. Названия календарей обязательны, другие свойства, такие как цвет, часовой пояс и описание, необязательны."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Календарь событий",
+      "description": "Псевдонимы конечных точек управления событиями календаря (CalDAV)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Authentication](#description/authentication) «имя пользователя», равное имени пользователя псевдонима, и «пароль», равный сгенерированному паролю псевдонима, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают комплексное управление событиями календаря с полной поддержкой iCalendar (RFC 5545). События хранятся в виде данных iCal и автоматически анализируются для извлечения общих свойств, таких как краткое описание, описание, местоположение и даты, для удобства доступа. События поддерживают обратимое удаление и могут быть отфильтрованы по календарю, диапазону дат и статусу удаления."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Сообщения",
+      "description": "Конечные точки управления сообщениями-псевдонимами (IMAP/POP3)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Аутентификация](#description/authentication) «имя пользователя», равное имени пользователя-псевдонима, и «пароль», равный сгенерированному паролю-псевдониму, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают комплексное управление сообщениями с расширенными возможностями поиска. Вы можете искать по папкам, флагам, содержимому, заголовкам, диапазонам дат, размеру и другим параметрам. Сообщения можно создавать в стандартном формате Nodemailer, они поддерживают перемещение между папками и управление флагами.\n\nУбедитесь, что вы выполнили инструкции по настройке для своего домена.\nЭти инструкции можно найти в разделе часто задаваемых вопросов [Поддерживаете ли вы получение электронной почты по протоколу IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Папки",
+      "description": "Конечные точки управления псевдонимами папок (IMAP/POP3)\n\n>[!TIP]\n> Конечные точки папок с путём <code>/v1/folders/:path</code> взаимозаменяемы с идентификатором папки <code>:id</code>. Это означает, что вы можете ссылаться на папку по её значению <code>path</code> или <code>id</code>.\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Authentication](#description/authentication) \"username\", равный имени пользователя псевдонима, и \"password\", равный паролю, сгенерированному псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают полное управление папками, включая создание, переименование и удаление. Пути к папкам могут включать родительские папки (например, «INBOX/Subfolder»), и родительские папки будут созданы автоматически, если они не существуют."
     }
   ]
 }
-

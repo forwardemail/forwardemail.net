@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 25      | `>= 1`, `<= 100`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welkom bij de uitgebreide API-documentatie voor Forward Email. Met deze API kunt u e-maildoorsturing, domeinen, aliassen, uitgaande e-mails en meer programmatisch beheren.\n\n## Belangrijkste functies\n* **Domeinbeheer:** Domeinen aanmaken, ophalen, bijwerken, verwijderen en verifiëren.\n* **Aliasbeheer:** E-mailaliassen beheren, inclusief aanmaken, bijwerken en ontvangersbeheer.\n* **Uitgaande SMTP:** E-mails verzenden via SMTP, limieten beheren en verzonden e-mails volgen.\n* **Account & Logs:** Uw accountgegevens beheren en activiteitenlogs downloaden.\n* **Beveiliging:** TXT-records versleutelen en domeinleden/uitnodigingen beheren.\n* **CardDAV-contacten:** Volledige CRUD-functies voor contactbeheer met vCard-ondersteuning.\n* **CalDAV-agenda's:** Volledig agendabeheer met tijdzone- en kleurondersteuning.\n* **IMAP/POP3-berichten:** Uitgebreid berichtenbeheer met geavanceerde zoekmogelijkheden.\n* **IMAP/POP3-mappen:** Volledig mappenbeheer, inclusief aanmaken, hernoemen en verwijderen.\n\n## Authenticatie\nDe meeste eindpunten vereisen authenticatie met uw **API-sleutel**. Geef de API-sleutel op als `gebruikersnaam` in de header van de basisauthenticatie en laat het wachtwoord leeg.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Vervang `API_TOKEN` door uw daadwerkelijke sleutel vóór Base64-codering)\n\nEindpunten gerelateerd aan **Alias-contacten, agenda's, berichten en mappen** vereisen een gegenereerde alias-gebruikersnaam en -wachtwoord voor basisauthenticatie.\n\n## Fouten\nDe API gebruikt standaard HTTP-statuscodes om succes of mislukking aan te geven. Foutreacties bevatten een JSON-body met een `bericht`-veld waarin de fout wordt beschreven.\n\n| Statuscode | Betekenis |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Ongeldige aanvraag |\n| 401 | Ongeautoriseerd |\n| 403 | Verboden |\n| 404 | Niet gevonden |\n| 409 | Conflict |\n| 412 | Voorwaarde mislukt |\n| 429 | Te veel aanvragen |\n| 500 | Interne serverfout |\n| 501 | Niet geïmplementeerd |\n| 502 | Ongeldige gateway |\n| 503 | Service niet beschikbaar |\n| 504 | Gateway-time-out |\n\n*Als u een `5xx`-fout tegenkomt, neem dan contact op met [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisatie\nAPI-reacties worden vertaald op basis van de gedetecteerde landinstellingen van de gebruiker of de header `Accept-Language`. Er worden meer dan 25 talen ondersteund.\n\n## Paginering\nEindpunten die lijsten retourneren, ondersteunen paginering via queryparameters.\n\n| Parameter | Type | Optioneel | Beschrijving | Standaard | Beperkingen |\n|-------------|---------|----------|-----------------------------------------------------------------------------|---------|---------------------|\n| `page` | Geheel getal | Ja | Op te halen paginanummer. | 1 | `>= 1` |\n| `limit` | Geheel getal | Ja | Aantal resultaten per pagina. | 25 | `>= 1`, `<= 100` |\n| `paginering` | Booleaans | Ja | Opt-in voor paginering (vereist vóór 1 november 2024 voor sommige eindpunten). | false | |\n\n**Paginatieheaders:**\n* `X-Page-Count`: Totaal aantal pagina's.\n* `X-Page-Current`: Huidig paginanummer.\n* `X-Page-Size`: Aantal items op de huidige pagina.\n* `X-Item-Count`: Totaal aantal items op alle pagina's.\n* `Link`: Navigatielinks (vorige, volgende, eerste, laatste).\n\n**Voorbeeld:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Aanbevolen bibliotheken\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Onderhouden door Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "Forward Email API Server"
+      "description": "API-server voor doorsturen van e-mail"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "Gebruik uw API-sleutel als **gebruikersnaam** voor basisauthenticatie. Laat het wachtwoordveld leeg.\n\n**Voorbeeld:**\nAls uw API-sleutel `YOUR_API_KEY` is, is de Base64-gecodeerde waarde voor de header `Authorization` `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nGebruik de gegenereerde **alias gebruikersnaam en wachtwoord** voor basisverificatie. Dit geldt voor eindpunten onder:\n* Alias Contacten (CardDAV)\n* Alias Agenda's (CalDAV)\n* Alias Berichten (IMAP/POP3)\n* Alias Mappen (IMAP/POP3)\n\n**Voorbeeld:**\nAls de alias gebruikersnaam `alias@domein.com` is en het wachtwoord `GENERATED_PASSWORD`, dan is de Base64-gecodeerde waarde `echo -n \"alias@domein.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorisatie: Basis YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -38,7 +38,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "description": "Error message"
+            "description": "Foutmelding"
           }
         }
       },
@@ -150,65 +150,65 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Alias ID"
+            "description": "Alias-ID"
           },
           "object": {
             "type": "string",
             "example": "alias",
-            "description": "Object type"
+            "description": "Objecttype"
           },
           "name": {
             "type": "string",
-            "description": "Alias name (local part of email)"
+            "description": "Aliasnaam (lokaal deel van e-mail)"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Full alias email address"
+            "description": "Volledig alias-e-mailadres"
           },
           "domain_id": {
             "type": "string",
-            "description": "Domain ID"
+            "description": "Domein-ID"
           },
           "domain_name": {
             "type": "string",
-            "description": "Domain name"
+            "description": "Domeinnaam"
           },
           "storage_used": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage used in bytes for this alias/mailbox"
+            "description": "Opslag gebruikt in bytes voor deze alias/mailbox"
           },
           "storage_quota": {
             "type": "integer",
             "format": "int64",
-            "description": "Storage quota in bytes for this alias/mailbox"
+            "description": "Opslagquotum in bytes voor deze alias/mailbox"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Whether IMAP is enabled for this alias"
+            "description": "Of IMAP is ingeschakeld voor deze alias"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Whether PGP encryption is enabled"
+            "description": "Of PGP-encryptie is ingeschakeld"
           },
           "public_key": {
             "type": "string",
-            "description": "PGP public key if available"
+            "description": "PGP-openbare sleutel indien beschikbaar"
           },
           "locale": {
             "type": "string",
-            "description": "Locale preference"
+            "description": "Lokale voorkeur"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Tijdstempel van creatie"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Last update timestamp"
+            "description": "Tijdstempel laatste update"
           }
         },
         "example": {
@@ -246,27 +246,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Contact ID (contact_id from CardDAV)"
+            "description": "Contact-ID (contact_id van CardDAV)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID"
+            "description": "Contact-UID"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Volledige naam van de contactpersoon"
           },
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-inhoud"
           },
           "etag": {
             "type": "string",
-            "description": "ETag for versioning"
+            "description": "ETag voor versiebeheer"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Of contact een groep is"
           },
           "emails": {
             "type": "array",
@@ -282,9 +282,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array van e-mailadressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -299,9 +301,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Array van telefoonnummers"
           },
           "created_at": {
             "type": "string",
@@ -313,7 +317,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["contact"]
+            "enum": [
+              "contact"
+            ]
           }
         },
         "example": {
@@ -323,8 +329,18 @@
           "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
           "etag": "etag123",
           "is_group": false,
-          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
-          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
           "created_at": "2025-01-01T00:00:00.000Z",
           "updated_at": "2025-01-01T00:00:00.000Z",
           "object": "contact"
@@ -335,19 +351,19 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content (if not provided, will be generated from other fields)"
+            "description": "vCard-inhoud (indien niet opgegeven, wordt gegenereerd vanuit andere velden)"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Volledige naam van de contactpersoon"
           },
           "contact_id": {
             "type": "string",
-            "description": "Custom contact ID (if not provided, will be auto-generated)"
+            "description": "Aangepaste contact-ID (indien niet opgegeven, wordt automatisch gegenereerd)"
           },
           "uid": {
             "type": "string",
-            "description": "Contact UID (if not provided, will be auto-generated)"
+            "description": "Contact-UID (indien niet opgegeven, wordt automatisch gegenereerd)"
           },
           "emails": {
             "type": "array",
@@ -363,9 +379,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array van e-mailadressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -380,9 +398,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Array van telefoonnummers"
           },
           "phones": {
             "type": "array",
@@ -397,9 +417,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Array van telefoonnummers (alias voor phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -426,11 +448,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Array van adressen"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Of contact een groep is"
           }
         }
       },
@@ -439,11 +461,11 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "vCard content"
+            "description": "vCard-inhoud"
           },
           "full_name": {
             "type": "string",
-            "description": "Contact's full name"
+            "description": "Volledige naam van de contactpersoon"
           },
           "emails": {
             "type": "array",
@@ -459,9 +481,11 @@
                   "default": "INTERNET"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of email addresses"
+            "description": "Array van e-mailadressen"
           },
           "phone_numbers": {
             "type": "array",
@@ -476,9 +500,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers"
+            "description": "Array van telefoonnummers"
           },
           "phones": {
             "type": "array",
@@ -493,9 +519,11 @@
                   "default": "CELL"
                 }
               },
-              "required": ["value"]
+              "required": [
+                "value"
+              ]
             },
-            "description": "Array of phone numbers (alias for phone_numbers)"
+            "description": "Array van telefoonnummers (alias voor phone_numbers)"
           },
           "addresses": {
             "type": "array",
@@ -522,11 +550,11 @@
                 }
               }
             },
-            "description": "Array of addresses"
+            "description": "Array van adressen"
           },
           "is_group": {
             "type": "boolean",
-            "description": "Whether contact is a group"
+            "description": "Of contact een groep is"
           }
         }
       },
@@ -546,27 +574,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar ID (calendarId from CalDAV)"
+            "description": "Agenda-ID (calendarId van CalDAV)"
           },
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernaam"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschrijving"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderkleur (hex-formaat)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalendertijdzone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Weergavevolgorde van de kalender"
           },
           "created_at": {
             "type": "string",
@@ -578,7 +606,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar"]
+            "enum": [
+              "calendar"
+            ]
           }
         },
         "example": {
@@ -595,31 +625,33 @@
       },
       "CalendarInput": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernaam"
           },
           "calendar_id": {
             "type": "string",
-            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+            "description": "Aangepaste kalender-ID (indien niet opgegeven, wordt deze automatisch gegenereerd)"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschrijving"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+            "description": "Kalenderkleur (hex-formaat, indien niet opgegeven, wordt automatisch gegenereerd)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+            "description": "Tijdzone van de kalender (standaard de tijdzone van de gebruiker of UTC)"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order (defaults to 0)"
+            "description": "Weergavevolgorde van de kalender (standaard 0)"
           }
         }
       },
@@ -628,23 +660,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Calendar name"
+            "description": "Kalendernaam"
           },
           "description": {
             "type": "string",
-            "description": "Calendar description"
+            "description": "Kalenderbeschrijving"
           },
           "color": {
             "type": "string",
-            "description": "Calendar color (hex format)"
+            "description": "Kalenderkleur (hex-formaat)"
           },
           "timezone": {
             "type": "string",
-            "description": "Calendar timezone"
+            "description": "Kalendertijdzone"
           },
           "order": {
             "type": "integer",
-            "description": "Calendar display order"
+            "description": "Weergavevolgorde van de kalender"
           }
         }
       },
@@ -661,55 +693,55 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Calendar event ID (eventId from CalDAV)"
+            "description": "Kalendergebeurtenis-ID (eventId van CalDAV)"
           },
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar this event belongs to"
+            "description": "ID van de kalender waartoe deze gebeurtenis behoort"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event"
+            "description": "iCalendar (RFC 5545) gegevens voor het evenement"
           },
           "summary": {
             "type": "string",
-            "description": "Event title/summary (extracted from iCal data)"
+            "description": "Titel/samenvatting van het evenement (geëxtraheerd uit iCal-gegevens)"
           },
           "description": {
             "type": "string",
-            "description": "Event description (extracted from iCal data)"
+            "description": "Beschrijving van het evenement (geëxtraheerd uit iCal-gegevens)"
           },
           "location": {
             "type": "string",
-            "description": "Event location (extracted from iCal data)"
+            "description": "Locatie van het evenement (geëxtraheerd uit iCal-gegevens)"
           },
           "start_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event start date/time (extracted from iCal data)"
+            "description": "Begindatum/tijd van het evenement (geëxtraheerd uit iCal-gegevens)"
           },
           "end_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Event end date/time (extracted from iCal data)"
+            "description": "Einddatum/-tijd van het evenement (geëxtraheerd uit iCal-gegevens)"
           },
           "uid": {
             "type": "string",
-            "description": "Unique identifier from iCal data"
+            "description": "Unieke identificatie van iCal-gegevens"
           },
           "status": {
             "type": "string",
-            "description": "Event status (extracted from iCal data)"
+            "description": "Gebeurtenisstatus (geëxtraheerd uit iCal-gegevens)"
           },
           "organizer": {
             "type": "string",
-            "description": "Event organizer (extracted from iCal data)"
+            "description": "Evenementorganisator (geëxtraheerd uit iCal-gegevens)"
           },
           "deleted_at": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Soft deletion timestamp"
+            "description": "Tijdstempel voor zachte verwijdering"
           },
           "created_at": {
             "type": "string",
@@ -721,7 +753,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["calendar_event"]
+            "enum": [
+              "calendar_event"
+            ]
           }
         },
         "example": {
@@ -744,19 +778,22 @@
       },
       "CalendarEventInput": {
         "type": "object",
-        "required": ["calendar_id", "ical"],
+        "required": [
+          "calendar_id",
+          "ical"
+        ],
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "ID of the calendar to add the event to"
+            "description": "ID van de kalender waaraan de gebeurtenis moet worden toegevoegd"
           },
           "event_id": {
             "type": "string",
-            "description": "Custom event ID (if not provided, will be auto-generated)"
+            "description": "Aangepaste gebeurtenis-ID (indien niet opgegeven, wordt automatisch gegenereerd)"
           },
           "ical": {
             "type": "string",
-            "description": "iCalendar (RFC 5545) data for the event. Must be valid iCal format."
+            "description": "iCalendar (RFC 5545)-gegevens voor het evenement. Moeten geldig iCal-formaat hebben."
           }
         },
         "example": {
@@ -769,11 +806,11 @@
         "properties": {
           "calendar_id": {
             "type": "string",
-            "description": "Move event to a different calendar"
+            "description": "Gebeurtenis verplaatsen naar een andere agenda"
           },
           "ical": {
             "type": "string",
-            "description": "Updated iCalendar (RFC 5545) data for the event"
+            "description": "Bijgewerkte iCalendar (RFC 5545) gegevens voor het evenement"
           }
         }
       },
@@ -798,53 +835,53 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Folder ID"
+            "description": "Map-ID"
           },
           "path": {
             "type": "string",
-            "description": "Full folder path"
+            "description": "Volledig mappad"
           },
           "name": {
             "type": "string",
-            "description": "Folder name (last part of path)"
+            "description": "Mapnaam (laatste deel van het pad)"
           },
           "parent": {
             "type": "string",
             "nullable": true,
-            "description": "Parent folder path"
+            "description": "Pad van bovenliggende map"
           },
           "uid_validity": {
             "type": "integer",
-            "description": "IMAP UID validity"
+            "description": "IMAP UID-geldigheid"
           },
           "uid_next": {
             "type": "integer",
-            "description": "Next UID value"
+            "description": "Volgende UID-waarde"
           },
           "modify_index": {
             "type": "integer",
-            "description": "Modification index"
+            "description": "Wijzigingsindex"
           },
           "subscribed": {
             "type": "boolean",
-            "description": "Whether folder is subscribed"
+            "description": "Of de map geabonneerd is"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Folder flags"
+            "description": "Mapvlaggen"
           },
           "retention": {
             "type": "integer",
             "nullable": true,
-            "description": "Message retention period"
+            "description": "Bewaartermijn van berichten"
           },
           "special_use": {
             "type": "string",
             "nullable": true,
-            "description": "Special use designation"
+            "description": "Speciale gebruiksaanduiding"
           },
           "created_at": {
             "type": "string",
@@ -856,7 +893,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["folder"]
+            "enum": [
+              "folder"
+            ]
           }
         },
         "example": {
@@ -878,21 +917,25 @@
       },
       "FolderInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "Folder path/name"
+            "description": "Pad/naam van map"
           }
         }
       },
       "FolderUpdateInput": {
         "type": "object",
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "properties": {
           "path": {
             "type": "string",
-            "description": "New folder path/name"
+            "description": "Nieuw mappad/naam"
           }
         }
       },
@@ -931,132 +974,134 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Message ID"
+            "description": "Bericht-ID"
           },
           "root_id": {
             "type": "string",
-            "description": "Root message ID for threading"
+            "description": "Root-bericht-ID voor threading"
           },
           "folder_id": {
             "type": "string",
-            "description": "Folder ID containing the message"
+            "description": "Map-ID die het bericht bevat"
           },
           "folder_path": {
             "type": "string",
-            "description": "Folder path containing the message"
+            "description": "Mappad met het bericht"
           },
           "thread_id": {
             "type": "string",
-            "description": "Thread ID for conversation grouping"
+            "description": "Thread-ID voor conversatiegroepering"
           },
           "header_message_id": {
             "type": "string",
-            "description": "Message-ID header value"
+            "description": "Bericht-ID-headerwaarde"
           },
           "is_unread": {
             "type": "boolean",
-            "description": "Whether message is unread"
+            "description": "Of het bericht ongelezen is"
           },
           "is_flagged": {
             "type": "boolean",
-            "description": "Whether message is flagged"
+            "description": "Of het bericht gemarkeerd is"
           },
           "is_deleted": {
             "type": "boolean",
-            "description": "Whether message is deleted"
+            "description": "Of het bericht is verwijderd"
           },
           "is_draft": {
             "type": "boolean",
-            "description": "Whether message is a draft"
+            "description": "Of het bericht een concept is"
           },
           "is_junk": {
             "type": "boolean",
-            "description": "Whether message is junk/spam"
+            "description": "Of het bericht ongewenst/spam is"
           },
           "is_copied": {
             "type": "boolean",
-            "description": "Whether message is copied"
+            "description": "Of het bericht gekopieerd is"
           },
           "is_searchable": {
             "type": "boolean",
-            "description": "Whether message is searchable"
+            "description": "Of het bericht doorzoekbaar is"
           },
           "is_expired": {
             "type": "boolean",
-            "description": "Whether message is expired"
+            "description": "Of het bericht verlopen is"
           },
           "has_attachment": {
             "type": "boolean",
-            "description": "Whether message has attachments"
+            "description": "Of het bericht bijlagen heeft"
           },
           "retention_date": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Message retention date"
+            "description": "Bewaartermijn van berichten"
           },
           "internal_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Internal date (IMAP)"
+            "description": "Interne datum (IMAP)"
           },
           "header_date": {
             "type": "string",
             "format": "date-time",
-            "description": "Date from message headers"
+            "description": "Datum uit berichtkoppen"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Onderwerp van het bericht"
           },
           "flags": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags"
+            "description": "IMAP-vlaggen"
           },
           "size": {
             "type": "integer",
-            "description": "Message size in bytes"
+            "description": "Berichtgrootte in bytes"
           },
           "uid": {
             "type": "integer",
-            "description": "IMAP UID"
+            "description": "IMAP-UID"
           },
           "modseq": {
             "type": "integer",
-            "description": "Modification sequence"
+            "description": "Wijzigingsvolgorde"
           },
           "transaction": {
             "type": "string",
-            "description": "Transaction type"
+            "description": "Transactietype"
           },
           "remote_address": {
             "type": "string",
-            "description": "Remote IP address"
+            "description": "Extern IP-adres"
           },
           "created_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message creation timestamp"
+            "description": "Tijdstempel voor het maken van een bericht"
           },
           "updated_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Message last update timestamp"
+            "description": "Tijdstempel van laatste update van bericht"
           },
           "nodemailer": {
             "type": "object",
-            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+            "description": "Geparseerd berichtobject (standaard inbegrepen, stel ?nodemailer=false in om uit te sluiten)"
           },
           "raw": {
             "type": "string",
-            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+            "description": "Onbewerkte berichtinhoud (standaard inbegrepen, stel ?raw=false in om uit te sluiten)"
           },
           "object": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           }
         },
         "example": {
@@ -1079,7 +1124,9 @@
           "internal_date": "2025-01-01T00:00:00.000Z",
           "header_date": "2025-01-01T00:00:00.000Z",
           "subject": "Test Message",
-          "flags": ["\\Seen"],
+          "flags": [
+            "\\Seen"
+          ],
           "size": 1024,
           "uid": 1,
           "modseq": 1,
@@ -1096,7 +1143,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "Sender email address"
+            "description": "E-mailadres van de afzender"
           },
           "to": {
             "oneOf": [
@@ -1111,7 +1158,7 @@
                 }
               }
             ],
-            "description": "Recipient email addresses"
+            "description": "E-mailadressen van ontvangers"
           },
           "cc": {
             "oneOf": [
@@ -1126,7 +1173,7 @@
                 }
               }
             ],
-            "description": "CC recipient email addresses"
+            "description": "E-mailadressen van CC-ontvangers"
           },
           "bcc": {
             "oneOf": [
@@ -1141,30 +1188,30 @@
                 }
               }
             ],
-            "description": "BCC recipient email addresses"
+            "description": "E-mailadressen van BCC-ontvangers"
           },
           "subject": {
             "type": "string",
-            "description": "Message subject"
+            "description": "Onderwerp van het bericht"
           },
           "text": {
             "type": "string",
-            "description": "Plain text content"
+            "description": "Inhoud in platte tekst"
           },
           "html": {
             "type": "string",
-            "description": "HTML content"
+            "description": "HTML-inhoud"
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Message attachments (Nodemailer format)"
+            "description": "Berichtbijlagen (Nodemailer-indeling)"
           },
           "folder": {
             "type": "string",
-            "description": "Target folder (defaults to INBOX)"
+            "description": "Doelmap (standaard INBOX)"
           },
           "flags": {
             "oneOf": [
@@ -1178,7 +1225,7 @@
                 }
               }
             ],
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-vlaggen die op het bericht moeten worden ingesteld"
           }
         }
       },
@@ -1190,11 +1237,11 @@
             "items": {
               "type": "string"
             },
-            "description": "IMAP flags to set on the message"
+            "description": "IMAP-vlaggen die op het bericht moeten worden ingesteld"
           },
           "folder": {
             "type": "string",
-            "description": "Move message to this folder"
+            "description": "Bericht naar deze map verplaatsen"
           }
         }
       },
@@ -1337,7 +1384,7 @@
           "from": {
             "type": "string",
             "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)."
+            "description": "Het e-mailadres van de afzender (moet bestaan als alias van het domein)."
           },
           "to": {
             "oneOf": [
@@ -1352,7 +1399,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'To' header."
+            "description": "Door komma's gescheiden lijst of een matrix met ontvangers voor de 'Aan'-header."
           },
           "cc": {
             "oneOf": [
@@ -1367,7 +1414,7 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            "description": "Door komma's gescheiden lijst of een matrix met ontvangers voor de 'Cc'-header."
           },
           "bcc": {
             "oneOf": [
@@ -1382,40 +1429,40 @@
                 }
               }
             ],
-            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            "description": "Door komma's gescheiden lijst of een matrix met ontvangers voor de 'Bcc'-header."
           },
           "subject": {
             "type": "string",
-            "description": "The subject of the email."
+            "description": "Het onderwerp van de e-mail."
           },
           "text": {
             "type": "string",
-            "description": "The plaintext version of the message."
+            "description": "De plattetekstversie van het bericht."
           },
           "html": {
             "type": "string",
-            "description": "The HTML version of the message."
+            "description": "De HTML-versie van het bericht."
           },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of attachment objects (see Nodemailer's common fields)."
+            "description": "Een reeks bijlageobjecten (zie Algemene velden van Nodemailer)."
           },
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Sender' header."
+            "description": "Het e-mailadres voor de header 'Afzender'."
           },
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "The email address for the 'Reply-To' header."
+            "description": "Het e-mailadres voor de 'Reply-To'-header."
           },
           "inReplyTo": {
             "type": "string",
-            "description": "The Message-ID the message is in reply to."
+            "description": "De bericht-ID waarop het bericht een antwoord is."
           },
           "references": {
             "oneOf": [
@@ -1429,38 +1476,38 @@
                 }
               }
             ],
-            "description": "Space-separated list or an array of Message-IDs."
+            "description": "Door spaties gescheiden lijst of een array van bericht-ID's."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "If true, converts data: images in the HTML content to embedded attachments."
+            "description": "Als dit waar is, worden gegevens omgezet: afbeeldingen in de HTML-inhoud naar ingesloten bijlagen."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Apple Watch specific HTML version of the message."
+            "description": "Apple Watch-specifieke HTML-versie van het bericht."
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL specific HTML version of the message."
+            "description": "AMP4EMAIL-specifieke HTML-versie van het bericht."
           },
           "icalEvent": {
             "type": "object",
-            "description": "An iCalendar event as an alternative message content."
+            "description": "Een iCalendar-gebeurtenis als alternatieve berichtinhoud."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "An array of alternative message content."
+            "description": "Een reeks alternatieve berichtinhoud."
           },
           "encoding": {
             "type": "string",
-            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            "description": "Codering voor de tekst en HTML-strings (bijv. 'utf-8', 'hex', 'base64')."
           },
           "raw": {
             "type": "string",
-            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            "description": "Op maat gegenereerd RFC822-geformatteerd bericht (in plaats van Nodemailer-generatie)."
           },
           "textEncoding": {
             "type": "string",
@@ -1468,7 +1515,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Encoding forced to be used for text values."
+            "description": "Codering moet verplicht worden gebruikt voor tekstwaarden."
           },
           "priority": {
             "type": "string",
@@ -1477,7 +1524,7 @@
               "normal",
               "low"
             ],
-            "description": "Priority level for the email."
+            "description": "Prioriteitsniveau voor de e-mail."
           },
           "headers": {
             "oneOf": [
@@ -1492,11 +1539,11 @@
                 }
               }
             ],
-            "description": "Object or array of additional header fields."
+            "description": "Object of array met extra headervelden."
           },
           "messageId": {
             "type": "string",
-            "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "Optionele Message-ID voor de 'Message-ID'-header."
           },
           "date": {
             "oneOf": [
@@ -1508,11 +1555,11 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Optionele datumkoptekst. Kan niet meer dan 30 dagen in de toekomst liggen."
           },
           "list": {
             "type": "object",
-            "description": "Optional object of List-* headers."
+            "description": "Optioneel object van List-* headers."
           }
         }
       },
@@ -1744,12 +1791,12 @@
         "properties": {
           "domain": {
             "type": "string",
-            "description": "Fully qualified domain name (FQDN) or IP address"
+            "description": "Volledig gekwalificeerde domeinnaam (FQDN) of IP-adres"
           },
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+            "description": "Toewijzen aan hetzelfde team vanuit een ander domein; kan een domein-ID of FQDN zijn. Gebruik \"geen\" om expliciet uit te schakelen."
           },
           "plan": {
             "type": "string",
@@ -1758,7 +1805,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+            "description": "Plantype (standaard 'gratis' of het huidige betaalde abonnement van de gebruiker)"
           },
           "catchall": {
             "oneOf": [
@@ -1767,64 +1814,64 @@
               },
               {
                 "type": "string",
-                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+                "description": "Gescheiden lijst met e-mailadressen (gescheiden door komma's, spaties of nieuwe regels)"
               }
             ],
-            "description": "Create a default catch-all alias (defaults to true)"
+            "description": "Maak een standaard catch-all alias (standaard ingesteld op true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Spam Scanner-bescherming voor inhoud voor volwassenen inschakelen"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Spam Scanner phishing-beveiliging inschakelen"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Spam Scanner-uitvoerbare bescherming inschakelen"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Spam Scanner-virusbeveiliging inschakelen"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require alias recipients to click email verification link"
+            "description": "Vereist dat aliasontvangers op de e-mailverificatielink klikken"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Ignore MX record check for advanced mail routing setups"
+            "description": "Negeer MX-recordcontrole voor geavanceerde e-mailrouteringsinstellingen"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Geef toestemming om headers en metadata (exclusief berichtinhoud) op te slaan voor succesvol doorgestuurde, via webhooks verzonden, uitgaande SMTP- en IMAP-bezorgde e-mails. De logs worden 7 dagen bewaard. Deze functie helpt u bij het bewaken en oplossen van problemen met de prestaties van e-mailbezorging, met gedetailleerde inzichten in succesvolle verzendingen."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+            "description": "Aantal dagen dat uitgaande SMTP-logs bewaard moeten blijven (0–30, standaard: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Webhook URL to receive bounce events"
+                "description": "Webhook-URL om bounce-gebeurtenissen te ontvangen"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "Disable bounce webhook"
+                "description": "Bounce-webhook uitschakelen"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage max quota per alias (e.g. '1 GB')"
+            "description": "Maximale opslagquotum per alias (bijv. '1 GB')"
           }
         }
       },
@@ -1840,41 +1887,41 @@
                 "type": "number"
               }
             ],
-            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+            "description": "Aangepaste poort om te configureren voor SMTP-doorsturen (standaard is '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Of de bescherming tegen inhoud voor volwassenen van Spam Scanner op dit domein moet worden ingeschakeld"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Of de phishingbeveiliging van Spam Scanner op dit domein moet worden ingeschakeld"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Of de uitvoerbare bescherming van Spam Scanner op dit domein moet worden ingeschakeld"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Of de Spam Scanner-virusbeveiliging op dit domein moet worden ingeschakeld"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+            "description": "Standaardinstelling voor globaal domein voor de vraag of aliasontvangers op een e-mailverificatielink moeten klikken om e-mails door te laten stromen"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+            "description": "Of de MX-recordcontrole op het domein voor verificatie moet worden genegeerd (vooral bij geavanceerde MX-routeringsinstellingen)"
           },
           "has_delivery_logs": {
             "type": "boolean",
-            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+            "description": "Geef toestemming om headers en metadata (exclusief berichtinhoud) op te slaan voor succesvol doorgestuurde, via webhooks verzonden, uitgaande SMTP- en IMAP-bezorgde e-mails. De logs worden 7 dagen bewaard. Deze functie helpt u bij het bewaken en oplossen van problemen met de prestaties van e-mailbezorging, met gedetailleerde inzichten in succesvolle verzendingen."
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+            "description": "Aantal dagen om uitgaande SMTP-e-mails op te slaan (0 = direct verwijderen)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1889,11 +1936,11 @@
                 ]
               }
             ],
-            "description": "Webhook URL to receive bounce notifications, or false to disable"
+            "description": "Webhook-URL om bouncemeldingen te ontvangen, of false om uit te schakelen"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+            "description": "Opslagquotum per alias (bijv. '1 GB', geparseerd in bytes)"
           }
         }
       },
@@ -2044,13 +2091,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+            "description": "Aliasnaam (indien niet opgegeven of leeg, wordt een willekeurige alias gegenereerd)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Door regelafbrekingen/spaties/komma's gescheiden reeksen van geldige e-mailadressen, FQDN's, IP's of webhook-URL's"
               },
               {
                 "type": "array",
@@ -2058,37 +2105,37 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Array van geldige ontvangers"
               }
             ],
-            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+            "description": "Lijst met ontvangers. Indien niet opgegeven of leeg, wordt standaard het e-mailadres van de aanvrager gebruikt."
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeschrijving"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Door regelafbrekingen/spaties/komma's gescheiden reeks labels"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array van labels"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Vereisen dat ontvangers op de verificatielink klikken (standaardinstelling domein)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Whether to enable or disable this alias"
+            "description": "Of deze alias moet worden in- of uitgeschakeld"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2097,43 +2144,43 @@
               421,
               550
             ],
-            "description": "Error code if alias is disabled. Defaults to 250"
+            "description": "Foutcode als alias is uitgeschakeld. Standaardwaarde is 250."
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage for this alias"
+            "description": "IMAP-opslag voor deze alias in- of uitschakelen"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption for this alias"
+            "description": "OpenPGP-codering voor deze alias in- of uitschakelen"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP openbare sleutel in ASCII Armor-formaat"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage max quota (e.g. '1 GB')"
+            "description": "Maximale opslagquotum (bijv. '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Vakantiebeantwoorder in- of uitschakelen"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Startdatum (bijv. 'JJJJ-MM-DD') voor vakantierespondent"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+            "description": "Einddatum (bijv. 'JJJJ-MM-DD') voor vakantiebeantwoorder"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject for vacation responder"
+            "description": "Onderwerp in platte tekst voor vakantiebeantwoorder"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message for vacation responder"
+            "description": "Plattetekstbericht voor vakantiebeantwoorder"
           }
         }
       },
@@ -2142,13 +2189,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Alias name"
+            "description": "Aliasnaam"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+                "description": "Door regelafbrekingen/spaties/komma's gescheiden reeksen van geldige e-mailadressen, FQDN's, IP's of webhook-URL's"
               },
               {
                 "type": "array",
@@ -2156,36 +2203,36 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Array van geldige ontvangers"
               }
             ]
           },
           "description": {
             "type": "string",
-            "description": "Alias description"
+            "description": "Aliasbeschrijving"
           },
           "labels": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Line-break/space/comma separated string of labels"
+                "description": "Door regelafbrekingen/spaties/komma's gescheiden reeks labels"
               },
               {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Array of labels"
+                "description": "Array van labels"
               }
             ]
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Require recipients to click verification link (defaults to domain setting)"
+            "description": "Vereisen dat ontvangers op de verificatielink klikken (standaardinstelling domein)"
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable alias"
+            "description": "Alias in- of uitschakelen"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -2194,43 +2241,43 @@
               421,
               550
             ],
-            "description": "Error code to use if alias is disabled (defaults to 250)"
+            "description": "Foutcode die moet worden gebruikt als de alias is uitgeschakeld (standaard 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Enable or disable IMAP storage"
+            "description": "IMAP-opslag in- of uitschakelen"
           },
           "has_pgp": {
             "type": "boolean",
-            "description": "Enable or disable OpenPGP encryption"
+            "description": "OpenPGP-codering in- of uitschakelen"
           },
           "public_key": {
             "type": "string",
-            "description": "OpenPGP public key in ASCII Armor format"
+            "description": "OpenPGP openbare sleutel in ASCII Armor-formaat"
           },
           "max_quota": {
             "type": "string",
-            "description": "Storage maximum quota (e.g., '1 GB')"
+            "description": "Maximale opslagquotum (bijv. '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Enable or disable vacation responder"
+            "description": "Vakantiebeantwoorder in- of uitschakelen"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+            "description": "Begindatum vakantiewerker (bijv. JJJJ-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+            "description": "Einddatum vakantieresponder (bijv. JJJJ-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Plaintext subject of vacation responder"
+            "description": "Onderwerp van de vakantiebeantwoorder in platte tekst"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Plaintext message of vacation responder"
+            "description": "Tekstbericht van de vakantiebeantwoorder"
           }
         }
       },
@@ -2239,20 +2286,20 @@
         "properties": {
           "new_password": {
             "type": "string",
-            "description": "Your custom new password to use for the alias"
+            "description": "Uw nieuwe aangepaste wachtwoord voor de alias"
           },
           "password": {
             "type": "string",
-            "description": "Existing password for alias to change it without deleting mailbox storage"
+            "description": "Bestaand wachtwoord voor alias om het te wijzigen zonder de mailboxopslag te verwijderen"
           },
           "is_override": {
             "type": "boolean",
-            "description": "Override existing password and delete IMAP storage (use with caution)"
+            "description": "Bestaand wachtwoord overschrijven en IMAP-opslag verwijderen (voorzichtig gebruiken)"
           },
           "emailed_instructions": {
             "type": "string",
             "format": "email",
-            "description": "Email address to send alias password and setup instructions"
+            "description": "E-mailadres om aliaswachtwoord en installatie-instructies te verzenden"
           }
         }
       },
@@ -2261,11 +2308,11 @@
         "properties": {
           "count": {
             "type": "integer",
-            "description": "Current count of emails sent"
+            "description": "Huidig aantal verzonden e-mails"
           },
           "limit": {
             "type": "integer",
-            "description": "Maximum number of emails allowed"
+            "description": "Maximaal aantal toegestane e-mails"
           }
         }
       },
@@ -2274,16 +2321,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Member ID"
+            "description": "Lidmaatschaps-ID"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Member's email address"
+            "description": "E-mailadres van het lid"
           },
           "role": {
             "type": "string",
-            "description": "Member's role"
+            "description": "Rol van het lid"
           }
         }
       },
@@ -2293,7 +2340,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Invited email address"
+            "description": "Uitgenodigd e-mailadres"
           }
         }
       }
@@ -2302,7 +2349,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "description": "De pagina met de te retourneren resultaten. Indien niet gespecificeerd, is de waarde 1. Moet een getal groter dan of gelijk aan 1 zijn.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2312,7 +2359,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Number of results to return per page. Defaults to 25 if not specified. Must be a number greater than or equal to 1, and less than or equal to 100.",
+        "description": "Aantal resultaten per pagina. Standaardwaarde is 25 indien niet gespecificeerd. Moet een getal zijn groter dan of gelijk aan 1 en kleiner dan of gelijk aan 100.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -2323,7 +2370,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Opt-in to pagination before November 1st, 2024",
+        "description": "Geef u vóór 1 november 2024 op voor paginering",
         "schema": {
           "type": "boolean"
         }
@@ -2332,7 +2379,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Domain ID",
+        "description": "Domein-ID",
         "schema": {
           "type": "string"
         }
@@ -2341,7 +2388,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Alias ID",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -2350,7 +2397,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "Member ID",
+        "description": "Lidmaatschaps-ID",
         "schema": {
           "type": "string"
         }
@@ -2359,7 +2406,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "E-mailadres",
         "schema": {
           "type": "string"
         }
@@ -2368,7 +2415,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Contact ID",
+        "description": "Contact-ID",
         "schema": {
           "type": "string"
         }
@@ -2377,7 +2424,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Calendar ID",
+        "description": "Kalender-ID",
         "schema": {
           "type": "string"
         }
@@ -2386,7 +2433,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Folder ID or path",
+        "description": "Map-ID of pad",
         "schema": {
           "type": "string"
         }
@@ -2395,7 +2442,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Message ID",
+        "description": "Bericht-ID",
         "schema": {
           "type": "string"
         }
@@ -2534,16 +2581,14 @@
       }
     }
   },
-
-
   "paths": {
     "/v1/account": {
       "get": {
         "tags": [
-          "Account"
+          "Rekening"
         ],
-        "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "summary": "Account ophalen",
+        "description": "Haal uw accountgegevens op.\n\n**Authenticatie:** Dit eindpunt ondersteunt zowel API-tokenauthenticatie als aliasreferenties.\n\n- **Gebruikersaccount (API-token):** Wanneer geverifieerd met uw API-token, retourneert dit eindpunt uw gebruikersaccountgegevens, inclusief abonnementsgegevens, e-mailadres en API-token.\n\n- **Aliasaccount (aliasreferenties):** Wanneer geverifieerd met aliasreferenties (e-mailadres en gegenereerd wachtwoord), retourneert dit eindpunt alias-/mailboxgegevens, waaronder gebruikte opslagruimte, opslagquota en mailboxinstellingen. Dit is handig voor IMAP-/POP3-/CalDAV-/CardDAV-clients om de opslagstatus te controleren.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2629,10 +2674,10 @@
       },
       "put": {
         "tags": [
-          "Account"
+          "Rekening"
         ],
-        "summary": "Update account",
-        "description": "Update your account information.",
+        "summary": "Account bijwerken",
+        "description": "Werk uw accountgegevens bij.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2648,11 +2693,11 @@
                 "properties": {
                   "display_name": {
                     "type": "string",
-                    "description": "Display name"
+                    "description": "Weergavenaam"
                   },
                   "locale": {
                     "type": "string",
-                    "description": "Locale preference"
+                    "description": "Lokale voorkeur"
                   }
                 }
               }
@@ -2685,10 +2730,10 @@
     "/v1/contacts": {
       "get": {
         "tags": [
-          "Contacts"
+          "Contacten"
         ],
-        "summary": "List contacts",
-        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "summary": "Contactenlijst",
+        "description": "Haal een lijst op met alle contacten voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en retourneert contacten in CardDAV-formaat.",
         "operationId": "listContacts",
         "security": [
           {
@@ -2759,10 +2804,10 @@
       },
       "post": {
         "tags": [
-          "Contacts"
+          "Contacten"
         ],
-        "summary": "Create contact",
-        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "summary": "Contactpersoon aanmaken",
+        "description": "Maak een nieuw contact aan. U kunt vCard-inhoud rechtstreeks opgeven of individuele contactvelden die naar vCard-formaat worden geconverteerd. Als er al een contact met dezelfde ID bestaat, wordt er een conflictfout weergegeven.",
         "operationId": "createContact",
         "security": [
           {
@@ -2811,10 +2856,10 @@
     "/v1/contacts/{id}": {
       "get": {
         "tags": [
-          "Contacts"
+          "Contacten"
         ],
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "summary": "Contactpersoon ophalen",
+        "description": "Haal een specifiek contact op via de ID. Het contact wordt geretourneerd in het standaard Contact-formaat met vCard-inhoud en geparseerde velden.",
         "operationId": "retrieveContact",
         "security": [
           {
@@ -2853,10 +2898,10 @@
       },
       "put": {
         "tags": [
-          "Contacts"
+          "Contacten"
         ],
-        "summary": "Update contact",
-        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "summary": "Contactpersoon bijwerken",
+        "description": "Werk een bestaand contact bij. U kunt zowel bijgewerkte vCard-inhoud als afzonderlijke velden opgeven. De vCard van het contact wordt opnieuw gegenereerd als er afzonderlijke velden worden opgegeven.",
         "operationId": "updateContact",
         "security": [
           {
@@ -2911,10 +2956,10 @@
       },
       "delete": {
         "tags": [
-          "Contacts"
+          "Contacten"
         ],
-        "summary": "Delete contact",
-        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "summary": "Contactpersoon verwijderen",
+        "description": "Verwijder een specifiek contact permanent. Deze actie kan niet ongedaan worden gemaakt.",
         "operationId": "deleteContact",
         "security": [
           {
@@ -2955,10 +3000,10 @@
     "/v1/calendars": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalenders"
         ],
-        "summary": "List calendars",
-        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "summary": "Lijstkalenders",
+        "description": "Haal een lijst op met alle agenda's voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en retourneert agenda's in CalDAV-formaat.",
         "operationId": "listCalendars",
         "security": [
           {
@@ -3029,10 +3074,10 @@
       },
       "post": {
         "tags": [
-          "Calendars"
+          "Kalenders"
         ],
-        "summary": "Create calendar",
-        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "summary": "Kalender maken",
+        "description": "Maak een nieuwe agenda. De agendanaam is verplicht, terwijl andere eigenschappen zoals kleur, tijdzone en beschrijving optioneel zijn. Als er al een agenda met dezelfde naam bestaat, wordt er een conflictfout geretourneerd.",
         "operationId": "createCalendar",
         "security": [
           {
@@ -3081,10 +3126,10 @@
     "/v1/calendars/{id}": {
       "get": {
         "tags": [
-          "Calendars"
+          "Kalenders"
         ],
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "summary": "Kalender ophalen",
+        "description": "Haal een specifieke kalender op via de ID. De kalender wordt geretourneerd met al zijn eigenschappen, inclusief naam, beschrijving, kleur, tijdzone en volgorde.",
         "operationId": "retrieveCalendar",
         "security": [
           {
@@ -3123,10 +3168,10 @@
       },
       "put": {
         "tags": [
-          "Calendars"
+          "Kalenders"
         ],
-        "summary": "Update calendar",
-        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "summary": "Kalender bijwerken",
+        "description": "Een bestaande agenda bijwerken. U kunt alle eigenschappen van de agenda bijwerken, waaronder naam, beschrijving, kleur, tijdzone en volgorde. Als u de naam wijzigt in een bestaande naam, wordt er een conflictfout weergegeven.",
         "operationId": "updateCalendar",
         "security": [
           {
@@ -3181,10 +3226,10 @@
       },
       "delete": {
         "tags": [
-          "Calendars"
+          "Kalenders"
         ],
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "summary": "Kalender verwijderen",
+        "description": "Verwijder een specifieke agenda permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert ook alle evenementen in de agenda.",
         "operationId": "deleteCalendar",
         "security": [
           {
@@ -3225,10 +3270,10 @@
     "/v1/calendar-events": {
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalendergebeurtenissen"
         ],
-        "summary": "List calendar events",
-        "description": "Retrieve a list of calendar events for the authenticated alias. This endpoint supports pagination and filtering by calendar, date range, and deletion status.",
+        "summary": "Lijst met agenda-evenementen",
+        "description": "Haal een lijst op met agenda-evenementen voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en filtering op agenda, datumbereik en verwijderingsstatus.",
         "operationId": "listCalendarEvents",
         "security": [
           {
@@ -3239,7 +3284,7 @@
           {
             "name": "calendar_id",
             "in": "query",
-            "description": "Filter events by calendar ID",
+            "description": "Filter evenementen op kalender-ID",
             "required": false,
             "schema": {
               "type": "string"
@@ -3248,7 +3293,7 @@
           {
             "name": "start_date",
             "in": "query",
-            "description": "Filter events starting from this date (ISO 8601 format)",
+            "description": "Filter gebeurtenissen vanaf deze datum (ISO 8601-formaat)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3258,7 +3303,7 @@
           {
             "name": "end_date",
             "in": "query",
-            "description": "Filter events ending before this date (ISO 8601 format)",
+            "description": "Filter gebeurtenissen die vóór deze datum eindigen (ISO 8601-indeling)",
             "required": false,
             "schema": {
               "type": "string",
@@ -3268,7 +3313,7 @@
           {
             "name": "include_deleted",
             "in": "query",
-            "description": "Include soft-deleted events in results",
+            "description": "Soft-deleted events in resultaten opnemen",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -3309,10 +3354,10 @@
       },
       "post": {
         "tags": [
-          "Calendar Events"
+          "Kalendergebeurtenissen"
         ],
-        "summary": "Create calendar event",
-        "description": "Create a new calendar event with iCalendar data. The event will be validated and parsed to extract common properties for easy access.",
+        "summary": "Kalendergebeurtenis maken",
+        "description": "Maak een nieuwe agenda-afspraak met iCalendar-gegevens. De afspraak wordt gevalideerd en geparseerd om gemeenschappelijke kenmerken te extraheren voor eenvoudige toegang.",
         "operationId": "createCalendarEvent",
         "security": [
           {
@@ -3361,7 +3406,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Calendar event ID",
+          "description": "Kalendergebeurtenis-ID",
           "schema": {
             "type": "string"
           }
@@ -3369,10 +3414,10 @@
       ],
       "get": {
         "tags": [
-          "Calendar Events"
+          "Kalendergebeurtenissen"
         ],
-        "summary": "Retrieve calendar event",
-        "description": "Retrieve a specific calendar event by its ID. The event is returned with all its properties including parsed iCalendar data.",
+        "summary": "Agenda-evenement ophalen",
+        "description": "Haal een specifieke agendagebeurtenis op via de ID. De gebeurtenis wordt geretourneerd met al zijn eigenschappen, inclusief geparseerde iCalendar-gegevens.",
         "operationId": "retrieveCalendarEvent",
         "security": [
           {
@@ -3406,10 +3451,10 @@
       },
       "put": {
         "tags": [
-          "Calendar Events"
+          "Kalendergebeurtenissen"
         ],
-        "summary": "Update calendar event",
-        "description": "Update a specific calendar event. You can modify the iCalendar data or move the event to a different calendar.",
+        "summary": "Kalendergebeurtenis bijwerken",
+        "description": "Een specifieke agenda-afspraak bijwerken. U kunt de iCalendar-gegevens aanpassen of de afspraak naar een andere agenda verplaatsen.",
         "operationId": "updateCalendarEvent",
         "security": [
           {
@@ -3453,10 +3498,10 @@
       },
       "delete": {
         "tags": [
-          "Calendar Events"
+          "Kalendergebeurtenissen"
         ],
-        "summary": "Delete calendar event",
-        "description": "Soft delete a specific calendar event. The event will be marked as deleted but not permanently removed from the database.",
+        "summary": "Agenda-evenement verwijderen",
+        "description": "Een specifieke agenda-gebeurtenis tijdelijk verwijderen. De gebeurtenis wordt gemarkeerd als verwijderd, maar niet permanent uit de database verwijderd.",
         "operationId": "deleteCalendarEvent",
         "security": [
           {
@@ -3492,10 +3537,10 @@
     "/v1/folders": {
       "get": {
         "tags": [
-          "Folders"
+          "Mappen"
         ],
-        "summary": "List folders",
-        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "summary": "Mappen weergeven",
+        "description": "Haal een lijst op met alle IMAP-mappen/mailboxen voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en filtering op abonnementsstatus.",
         "operationId": "listFolders",
         "security": [
           {
@@ -3512,7 +3557,7 @@
           {
             "name": "subscribed",
             "in": "query",
-            "description": "Filter folders by subscription status",
+            "description": "Filter mappen op abonnementsstatus",
             "schema": {
               "type": "boolean"
             }
@@ -3574,10 +3619,10 @@
       },
       "post": {
         "tags": [
-          "Folders"
+          "Mappen"
         ],
-        "summary": "Create folder",
-        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "summary": "Map maken",
+        "description": "Maak een nieuwe IMAP-map/mailbox aan. Het pad naar de map is vereist en kan bovenliggende mappen bevatten (bijv. 'INBOX/Submap'). Als de bovenliggende mappen niet bestaan, worden ze automatisch aangemaakt.",
         "operationId": "createFolder",
         "security": [
           {
@@ -3623,10 +3668,10 @@
     "/v1/folders/{id}": {
       "get": {
         "tags": [
-          "Folders"
+          "Mappen"
         ],
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "summary": "Map ophalen",
+        "description": "Haal een specifieke map op via de ID of het pad. U kunt de ObjectID van de map of het volledige pad (bijv. 'INBOX/Submap') als identificatie gebruiken.",
         "operationId": "retrieveFolder",
         "security": [
           {
@@ -3665,10 +3710,10 @@
       },
       "put": {
         "tags": [
-          "Folders"
+          "Mappen"
         ],
-        "summary": "Update folder",
-        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "summary": "Map bijwerken",
+        "description": "Een bestaande map bijwerken/hernoemen. Met deze bewerking wordt de map hernoemd naar het nieuwe pad dat is opgegeven in de aanvraagbody. U kunt de ObjectID van de map of het huidige pad als identificatie gebruiken.",
         "operationId": "updateFolder",
         "security": [
           {
@@ -3720,10 +3765,10 @@
       },
       "delete": {
         "tags": [
-          "Folders"
+          "Mappen"
         ],
-        "summary": "Delete folder",
-        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "summary": "Map verwijderen",
+        "description": "Verwijder een specifieke map permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert ook alle berichten in de map. U kunt de ObjectID of het pad van de map als identificatie gebruiken.",
         "operationId": "deleteFolder",
         "security": [
           {
@@ -3764,10 +3809,10 @@
     "/v1/messages": {
       "get": {
         "tags": [
-          "Messages"
+          "Berichten"
         ],
-        "summary": "List and search messages",
-        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "summary": "Berichten weergeven en zoeken",
+        "description": "Haal een lijst met berichten op met geavanceerde zoek- en filtermogelijkheden. Dit eindpunt ondersteunt paginering en uitgebreid zoeken in berichtinhoud, headers, vlaggen en metadata. U kunt zoeken op map, vlaggen, inhoud, headers, datumbereik, grootte en meer.",
         "operationId": "listMessages",
         "security": [
           {
@@ -3784,7 +3829,7 @@
           {
             "name": "folder",
             "in": "query",
-            "description": "Filter messages by folder path",
+            "description": "Berichten filteren op mappad",
             "schema": {
               "type": "string"
             }
@@ -3792,7 +3837,7 @@
           {
             "name": "is_unread",
             "in": "query",
-            "description": "Filter by read status",
+            "description": "Filter op leesstatus",
             "schema": {
               "type": "boolean"
             }
@@ -3800,7 +3845,7 @@
           {
             "name": "is_flagged",
             "in": "query",
-            "description": "Filter by flagged status",
+            "description": "Filter op gemarkeerde status",
             "schema": {
               "type": "boolean"
             }
@@ -3808,7 +3853,7 @@
           {
             "name": "is_deleted",
             "in": "query",
-            "description": "Filter by deleted status",
+            "description": "Filter op verwijderde status",
             "schema": {
               "type": "boolean"
             }
@@ -3816,7 +3861,7 @@
           {
             "name": "is_draft",
             "in": "query",
-            "description": "Filter by draft status",
+            "description": "Filteren op conceptstatus",
             "schema": {
               "type": "boolean"
             }
@@ -3824,7 +3869,7 @@
           {
             "name": "is_junk",
             "in": "query",
-            "description": "Filter by junk/spam status",
+            "description": "Filteren op junk-/spamstatus",
             "schema": {
               "type": "boolean"
             }
@@ -3832,7 +3877,7 @@
           {
             "name": "is_copied",
             "in": "query",
-            "description": "Filter by copied status",
+            "description": "Filteren op gekopieerde status",
             "schema": {
               "type": "boolean"
             }
@@ -3840,7 +3885,7 @@
           {
             "name": "is_searchable",
             "in": "query",
-            "description": "Filter by searchable status",
+            "description": "Filter op doorzoekbare status",
             "schema": {
               "type": "boolean"
             }
@@ -3848,7 +3893,7 @@
           {
             "name": "is_expired",
             "in": "query",
-            "description": "Filter by expired status",
+            "description": "Filter op verlopen status",
             "schema": {
               "type": "boolean"
             }
@@ -3856,7 +3901,7 @@
           {
             "name": "has_attachments",
             "in": "query",
-            "description": "Filter by attachment presence",
+            "description": "Filter op aanwezigheid van bijlage",
             "schema": {
               "type": "boolean"
             }
@@ -3864,7 +3909,7 @@
           {
             "name": "has_attachment",
             "in": "query",
-            "description": "Filter by attachment presence (alias for has_attachments)",
+            "description": "Filteren op aanwezigheid van bijlage (alias voor has_attachments)",
             "schema": {
               "type": "boolean"
             }
@@ -3872,7 +3917,7 @@
           {
             "name": "subject",
             "in": "query",
-            "description": "Search in message subject",
+            "description": "Zoeken in berichtonderwerp",
             "schema": {
               "type": "string"
             }
@@ -3880,7 +3925,7 @@
           {
             "name": "body",
             "in": "query",
-            "description": "Search in message body/text",
+            "description": "Zoeken in berichttekst",
             "schema": {
               "type": "string"
             }
@@ -3888,7 +3933,7 @@
           {
             "name": "text",
             "in": "query",
-            "description": "Search in message text (alias for body)",
+            "description": "Zoeken in berichttekst (alias voor hoofdtekst)",
             "schema": {
               "type": "string"
             }
@@ -3896,7 +3941,7 @@
           {
             "name": "headers",
             "in": "query",
-            "description": "Search in all message headers",
+            "description": "Zoeken in alle berichtkoppen",
             "schema": {
               "type": "string"
             }
@@ -3904,7 +3949,7 @@
           {
             "name": "message_id",
             "in": "query",
-            "description": "Search by Message-ID header",
+            "description": "Zoeken op bericht-ID-header",
             "schema": {
               "type": "string"
             }
@@ -3912,7 +3957,7 @@
           {
             "name": "search",
             "in": "query",
-            "description": "General search across headers and text",
+            "description": "Algemeen zoeken in kopteksten en tekst",
             "schema": {
               "type": "string"
             }
@@ -3920,7 +3965,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "General search (alias for search)",
+            "description": "Algemeen zoeken (alias voor zoeken)",
             "schema": {
               "type": "string"
             }
@@ -3928,7 +3973,7 @@
           {
             "name": "since",
             "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
+            "description": "Berichten sinds deze datum filteren (ISO 8601-formaat)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3937,7 +3982,7 @@
           {
             "name": "before",
             "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
+            "description": "Berichten filteren vóór deze datum (ISO 8601-formaat)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3946,7 +3991,7 @@
           {
             "name": "min_size",
             "in": "query",
-            "description": "Filter messages with minimum size in bytes",
+            "description": "Filter berichten met minimale grootte in bytes",
             "schema": {
               "type": "integer"
             }
@@ -3954,7 +3999,7 @@
           {
             "name": "max_size",
             "in": "query",
-            "description": "Filter messages with maximum size in bytes",
+            "description": "Filter berichten met maximale grootte in bytes",
             "schema": {
               "type": "integer"
             }
@@ -3962,7 +4007,7 @@
           {
             "name": "from",
             "in": "query",
-            "description": "Search by From header",
+            "description": "Zoeken op Van header",
             "schema": {
               "type": "string"
             }
@@ -3970,7 +4015,7 @@
           {
             "name": "to",
             "in": "query",
-            "description": "Search by To header",
+            "description": "Zoeken op Naar koptekst",
             "schema": {
               "type": "string"
             }
@@ -3978,7 +4023,7 @@
           {
             "name": "cc",
             "in": "query",
-            "description": "Search by CC header",
+            "description": "Zoeken op CC-header",
             "schema": {
               "type": "string"
             }
@@ -3986,7 +4031,7 @@
           {
             "name": "bcc",
             "in": "query",
-            "description": "Search by BCC header",
+            "description": "Zoeken op BCC-header",
             "schema": {
               "type": "string"
             }
@@ -3994,7 +4039,7 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Search by Date header",
+            "description": "Zoeken op datumkoptekst",
             "schema": {
               "type": "string"
             }
@@ -4002,7 +4047,7 @@
           {
             "name": "reply-to",
             "in": "query",
-            "description": "Search by Reply-To header",
+            "description": "Zoeken op Reply-To-header",
             "schema": {
               "type": "string"
             }
@@ -4064,10 +4109,10 @@
       },
       "post": {
         "tags": [
-          "Messages"
+          "Berichten"
         ],
-        "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Bericht maken",
+        "description": "Een nieuw bericht aanmaken/toevoegen aan een map. Dit eindpunt accepteert de standaard Nodemailer-berichtindeling en biedt u de mogelijkheid om de doelmap en de beginvlaggen op te geven. Als de doelmap niet bestaat, wordt deze automatisch aangemaakt.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4113,10 +4158,10 @@
     "/v1/messages/{id}": {
       "get": {
         "tags": [
-          "Messages"
+          "Berichten"
         ],
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "summary": "Bericht ophalen",
+        "description": "Haal een specifiek bericht op via de ID. Standaard bevat het antwoord het geparseerde Nodemailer-object en de onbewerkte inhoud van het bericht. U kunt bepalen wat er wordt opgenomen met behulp van queryparameters.",
         "operationId": "retrieveMessage",
         "security": [
           {
@@ -4130,7 +4175,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Geef het ruwe EML-formaat terug in plaats van JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4139,7 +4184,7 @@
           {
             "name": "nodemailer",
             "in": "query",
-            "description": "Include parsed Nodemailer object",
+            "description": "Inclusief geparseerd Nodemailer-object",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4148,7 +4193,7 @@
           {
             "name": "attachments",
             "in": "query",
-            "description": "Include attachments in Nodemailer object",
+            "description": "Bijlagen toevoegen aan Nodemailer-object",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4157,7 +4202,7 @@
           {
             "name": "raw",
             "in": "query",
-            "description": "Include raw message content",
+            "description": "Voeg onbewerkte berichtinhoud toe",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4197,10 +4242,10 @@
       },
       "put": {
         "tags": [
-          "Messages"
+          "Berichten"
         ],
-        "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "summary": "Bericht bijwerken",
+        "description": "Een bestaand bericht bijwerken. U kunt de berichtvlaggen aanpassen of het bericht naar een andere map verplaatsen. Als de doelmap niet bestaat, wordt deze automatisch aangemaakt.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4214,7 +4259,7 @@
           {
             "name": "eml",
             "in": "query",
-            "description": "Return raw EML format instead of JSON",
+            "description": "Geef het ruwe EML-formaat terug in plaats van JSON",
             "schema": {
               "type": "boolean",
               "default": false
@@ -4267,10 +4312,10 @@
       },
       "delete": {
         "tags": [
-          "Messages"
+          "Berichten"
         ],
-        "summary": "Delete message",
-        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "summary": "Bericht verwijderen",
+        "description": "Verwijder een specifiek bericht permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert het bericht permanent uit de opslag. In tegenstelling tot IMAP-clients, die berichten doorgaans naar de Prullenbak verplaatsen, voert dit eindpunt een definitieve verwijdering uit.",
         "operationId": "deleteMessage",
         "security": [
           {
@@ -4308,14 +4353,12 @@
         }
       }
     },
-
-
     "/v1/logs/download": {
       "get": {
-        "summary": "Download logs",
-        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.",
+        "summary": "Logboeken downloaden",
+        "description": "**Logs downloaden**\n\nBeschrijving: Met onze API kunt u programmatisch logs voor uw account downloaden. Door een verzoek in te dienen bij dit eindpunt, worden alle logs voor uw account verwerkt en na voltooiing als bijlage (Gzip-gecomprimeerd CSV-spreadsheetbestand) naar u gemaild.\n\nHiermee kunt u achtergrondtaken aanmaken met een cron-taak of met de Node.js-taakplanningssoftware Bree om logs te ontvangen wanneer u maar wilt. Houd er rekening mee dat dit eindpunt beperkt is tot `10` verzoeken per dag.\n\nDe bijlage is de kleine letter `email-deliverability-logs-JJJJ-MM-DD-u-mm-A-z.csv.gz` en de e-mail zelf bevat een korte samenvatting van de opgehaalde logs.",
         "tags": [
-          "Logs"
+          "Logboeken"
         ],
         "security": [
           {
@@ -4326,7 +4369,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "description": "Filter logs op volledig gekwalificeerd domein (\"FQDN\"). Indien niet opgegeven, worden alle logs van alle domeinen opgehaald.",
             "schema": {
               "type": "string"
             }
@@ -4334,7 +4377,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "description": "Zoek naar logs op e-mailadres, domein, aliasnaam, IP-adres of datum (in de indeling M/J, M/D/JJ, M-D, M-D-JJ of M.D.JJ).",
             "schema": {
               "type": "string"
             }
@@ -4342,7 +4385,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "description": "Zoek naar logs op basis van een specifieke bouncecategorie (bijv. 'blokkeerlijst').",
             "schema": {
               "type": "string"
             }
@@ -4350,7 +4393,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "description": "Zoek naar logs op basis van een specifieke foutresponscode (bijv. 421 of 550).",
             "schema": {
               "type": "integer"
             }
@@ -4390,10 +4433,10 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "summary": "Lijst met uitgaande SMTP-e-mails",
+        "description": "**Uitgaande SMTP-e-mails weergeven**\n\nHoud er rekening mee dat dit eindpunt geen eigenschapswaarden retourneert voor de 'berichten', 'headers' en 'rejectedErrors' van een e-mail.\n\nOm deze eigenschappen en hun waarden te retourneren, gebruikt u het eindpunt [E-mail ophalen](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) met een e-mail-ID.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4404,7 +4447,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for emails by metadata.",
+            "description": "Zoek naar e-mails op basis van metagegevens.",
             "schema": {
               "type": "string"
             }
@@ -4412,7 +4455,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for emails by domain name.",
+            "description": "Zoek naar e-mails op domeinnaam.",
             "schema": {
               "type": "string"
             }
@@ -4420,7 +4463,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sorteren op een specifiek veld (voorvoegsel met een enkel streepje - om in de omgekeerde richting van dat veld te sorteren). Standaard is dit created_at als deze optie niet is ingesteld.",
             "schema": {
               "type": "string"
             }
@@ -4428,7 +4471,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Zie Paginering voor meer informatie.",
             "schema": {
               "type": "string"
             }
@@ -4436,7 +4479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Zie Paginering voor meer informatie.",
             "schema": {
               "type": "string"
             }
@@ -4468,10 +4511,10 @@
         }
       },
       "post": {
-        "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "summary": "Uitgaande SMTP-e-mail maken",
+        "description": "Onze API voor het maken van een e-mail is geïnspireerd op en maakt gebruik van de berichtopties van Nodemailer. Raadpleeg de [berichtconfiguratie van Nodemailer](https://nodemailer.com/message/) voor alle onderstaande bodyparameters.\n\nMet uitzondering van `envelope` en `dkim` (aangezien we die automatisch voor u instellen), ondersteunen we alle Nodemailer-opties. Om veiligheidsredenen stellen we de opties `disableFileAccess` en `disableUrlAccess` automatisch in op `true`.\n\nU dient ofwel de optie `raw` mee te sturen met uw volledige raw-e-mail inclusief headers, ofwel de onderstaande opties voor individuele bodyparameters door te geven.\n\nDit API-eindpunt codeert automatisch emoji's als ze in de headers voorkomen (bijvoorbeeld: een onderwerpregel met de tekst `Subject: 🤓 Hello` wordt automatisch omgezet naar `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Ons doel was om een uiterst ontwikkelaarsvriendelijke en onfeilbare e-mail-API te maken.\n\n**Authenticatie:** Dit eindpunt ondersteunt zowel API-tokenauthenticatie als alias-referenties. U kunt authenticeren met uw API-sleutel (aanbevolen) of uw alias-e-mailadres en gegenereerd wachtwoord. Zie het gedeelte Authenticatie in de API-documentatie voor meer informatie.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4521,10 +4564,10 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Get outbound SMTP email limit",
-        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
+        "summary": "Haal de limiet voor uitgaande SMTP-e-mail op",
+        "description": "Dit is een eenvoudig eindpunt dat een JSON-object retourneert met de `count` en `limit` voor het aantal dagelijkse uitgaande SMTP-berichten per account.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4558,10 +4601,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "summary": "Uitgaande SMTP-e-mail ophalen",
+        "description": "Haal een specifiek uitgaand SMTP-e-mailadres op.",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4591,10 +4634,10 @@
         }
       },
       "delete": {
-        "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "summary": "Uitgaande SMTP-e-mail verwijderen",
+        "description": "Het verwijderen van e-mails zet de status op 'afgewezen' (en verwerkt deze vervolgens niet in de wachtrij) als en alleen als de huidige status 'in behandeling', 'in wachtrij' of 'uitgesteld' is. We kunnen e-mails automatisch verwijderen na 30 dagen nadat ze zijn aangemaakt en/of verzonden. Bewaar daarom een kopie van uitgaande SMTP-e-mails in uw client, database of applicatie. U kunt desgewenst verwijzen naar onze e-mail-ID in uw database. Deze waarde wordt geretourneerd door zowel de eindpunten [E-mail maken](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) als [E-mail ophalen](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
-          "Emails"
+          "E-mails"
         ],
         "security": [
           {
@@ -4632,10 +4675,10 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "List domains",
-        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Lijstdomeinen",
+        "description": "> [!NOTE]\n>Vanaf 1 november 2024 staan de API-eindpunten voor lijstdomeinen en lijstdomeinaliassen standaard op maximaal `1000` resultaten per pagina. Als u zich hier al eerder voor wilt aanmelden, kunt u `?paginate=true` als extra querystringparameter aan de URL voor de eindpuntquery doorgeven. Zie Paginering voor meer informatie.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4646,7 +4689,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for domains by metadata.",
+            "description": "Zoek naar domeinen op basis van metagegevens.",
             "schema": {
               "type": "string"
             }
@@ -4654,7 +4697,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Search for domains by domain name.",
+            "description": "Zoek naar domeinen op domeinnaam.",
             "schema": {
               "type": "string"
             }
@@ -4662,7 +4705,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "description": "Sorteren op een specifiek veld (voorvoegsel met een enkel streepje - om in de omgekeerde richting van dat veld te sorteren). Standaard is dit created_at als deze optie niet is ingesteld.",
             "schema": {
               "type": "string"
             }
@@ -4670,7 +4713,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Zie Paginering voor meer informatie.",
             "schema": {
               "type": "string"
             }
@@ -4678,7 +4721,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "See Pagination for more insight.",
+            "description": "Zie Paginering voor meer informatie.",
             "schema": {
               "type": "string"
             }
@@ -4707,10 +4750,10 @@
         }
       },
       "post": {
-        "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "summary": "Domein aanmaken",
+        "description": "Creëert een nieuw domein in het systeem. Met dit eindpunt kunt u een volledig gekwalificeerde domeinnaam (FQDN) of IP-adres registreren voor gebruik met het platform.\n\nOptionele configuratieopties omvatten het toewijzen van het domein aan een bestaand team, het instellen van een abonnementstype (bijv. gratis, uitgebreide beveiliging of team) en het configureren van geavanceerde beveiligingen zoals spamfiltering, virusscans en ontvangersverificatie. U kunt ook configureren of er standaard een catch-all-alias moet worden aangemaakt, een aangepaste bounce-webhook-URL instellen voor SMTP-fouten en opslagquotalimieten definiëren voor e-mailaliassen op dit domein. Dit eindpunt voert validatie en provisioning op domeinniveau uit. Als de optie `ignore_mx_check` is ingeschakeld, wordt MX-recordverificatie overgeslagen (alleen aanbevolen voor geavanceerde routeringsinstellingen). Het antwoord bevat alle details van het aangemaakte domeinobject, inclusief de DNS-records die nodig zijn voor de configuratie.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4759,10 +4802,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "summary": "Domein ophalen",
+        "description": "Een specifiek domein ophalen",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4792,10 +4835,10 @@
         }
       },
       "put": {
-        "summary": "Update domain",
-        "description": "Update a specific domain.",
+        "summary": "Domein bijwerken",
+        "description": "Een specifiek domein bijwerken.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4834,10 +4877,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain",
-        "description": "Delete a specific domain.",
+        "summary": "Domein verwijderen",
+        "description": "Een specifiek domein verwijderen.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4880,10 +4923,10 @@
         }
       ],
       "get": {
-        "summary": "Verify domain records",
-        "description": "Verify DNS records for a specific domain.",
+        "summary": "Domeinrecords verifiëren",
+        "description": "Controleer DNS-records voor een specifiek domein.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "security": [
           {
@@ -4916,18 +4959,18 @@
     },
     "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
-        "summary": "Verify domain SMTP records",
-        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "summary": "Controleer SMTP-records van het domein",
+        "description": "Controleert de SMTP-gerelateerde DNS-records voor het opgegeven domein.",
         "operationId": "verifySmtpRecords",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) to verify",
+            "description": "Volledig gekwalificeerde domeinnaam (FQDN) om te verifiëren",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -4965,10 +5008,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Create domain-wide catch-all password",
-        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "summary": "Maak een domeinbreed catch-all-wachtwoord aan",
+        "description": "Creëert een domeinbreed verzamelwachtwoord. Als er geen wachtwoord wordt opgegeven, wordt er een veilig willekeurig wachtwoord gegenereerd.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "parameters": [
           {
@@ -4978,7 +5021,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name to create the catch-all password for"
+            "description": "De domeinnaam om het verzamelwachtwoord voor te maken"
           }
         ],
         "requestBody": {
@@ -4990,11 +5033,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                    "description": "Uw nieuwe, aangepaste wachtwoord voor het domeinbrede verzamelwachtwoord. Laat dit leeg om een sterk wachtwoord te genereren."
                   },
                   "description": {
                     "type": "string",
-                    "description": "Description for organization purposes only."
+                    "description": "Beschrijving uitsluitend bedoeld voor organisatorische doeleinden."
                   }
                 }
               },
@@ -5039,18 +5082,18 @@
         }
       },
       "get": {
-        "summary": "List domain-wide catch-all passwords",
-        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "summary": "Domeinbrede catch-all-wachtwoorden weergeven",
+        "description": "Retourneert een lijst met domeinbrede catch-all-wachtwoorden die momenteel zijn geconfigureerd voor het opgegeven domein.",
         "operationId": "listCatchAllPasswords",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "parameters": [
           {
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "description": "Volledig gekwalificeerde domeinnaam (FQDN) waarvoor u algemene wachtwoorden wilt vermelden",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -5116,10 +5159,10 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Remove domain-wide catch-all password",
-        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "summary": "Verwijder domeinbrede catch-all-wachtwoorden",
+        "description": "Verwijdert een domeinbreed catch-all-wachtwoord met behulp van de opgegeven token-ID.",
         "tags": [
-          "Domains"
+          "Domeinen"
         ],
         "parameters": [
           {
@@ -5129,7 +5172,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The domain name associated with the catch-all password"
+            "description": "De domeinnaam die aan het catch-all-wachtwoord is gekoppeld"
           },
           {
             "name": "token_id",
@@ -5138,7 +5181,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The token ID of the domain-wide catch-all password to delete"
+            "description": "De token-ID van het domeinbrede catch-all-wachtwoord dat moet worden verwijderd"
           }
         ],
         "responses": {
@@ -5188,10 +5231,10 @@
         }
       ],
       "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
+        "summary": "Domeinuitnodiging accepteren",
+        "description": "Accepteer een uitnodiging voor een domein.",
         "tags": [
-          "Invites"
+          "Uitnodigingen"
         ],
         "security": [
           {
@@ -5227,10 +5270,10 @@
         }
       },
       "post": {
-        "summary": "Create domain invite",
-        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+        "summary": "Domeinuitnodiging maken",
+        "description": ">[!IMPORTANT]\n>Als de uitgenodigde gebruiker al een geaccepteerd lid is van een ander domein waarvan de beheerder die hem uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.",
         "tags": [
-          "Invites"
+          "Uitnodigingen"
         ],
         "security": [
           {
@@ -5249,12 +5292,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite to domain members list"
+                    "description": "E-mailadres om uit te nodigen voor de domeinledenlijst"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Groep waaraan de gebruiker aan het domeinlidmaatschap moet worden toegevoegd (kan `\"admin\"` of `\"user\"` zijn)"
                   }
                 }
               }
@@ -5290,10 +5333,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain invite",
-        "description": "Remove an invitation to a domain.",
+        "summary": "Domeinuitnodiging verwijderen",
+        "description": "Een uitnodiging voor een domein verwijderen.",
         "tags": [
-          "Invites"
+          "Uitnodigingen"
         ],
         "security": [
           {
@@ -5312,7 +5355,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove from domain members list"
+                    "description": "E-mailadres om te verwijderen uit de domeinledenlijst"
                   }
                 }
               }
@@ -5361,10 +5404,10 @@
         }
       ],
       "put": {
-        "summary": "Update domain member",
-        "description": "Update a domain member.",
+        "summary": "Domeinlid bijwerken",
+        "description": "Een domeinlid bijwerken.",
         "tags": [
-          "Members"
+          "Leden"
         ],
         "security": [
           {
@@ -5380,7 +5423,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
+                    "description": "Groep waarmee de gebruiker moet worden bijgewerkt naar het domeinlidmaatschap (kan `\"admin\"` of `\"user\"` zijn)"
                   }
                 }
               }
@@ -5413,10 +5456,10 @@
         }
       },
       "delete": {
-        "summary": "Remove domain member",
-        "description": "Remove a domain member.",
+        "summary": "Domeinlid verwijderen",
+        "description": "Een domeinlid verwijderen.",
         "tags": [
-          "Members"
+          "Leden"
         ],
         "security": [
           {
@@ -5454,10 +5497,10 @@
     },
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
-        "summary": "Generate an alias password",
-        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "summary": "Genereer een aliaswachtwoord",
+        "description": "Genereer een wachtwoord voor een alias. Als `emailed_instructions` niet is opgegeven, bevat het antwoord de gegenereerde gebruikersnaam en het wachtwoord.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "parameters": [
           {
@@ -5467,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fully qualified domain name (FQDN)"
+            "description": "Volledig gekwalificeerde domeinnaam (FQDN)"
           },
           {
             "name": "alias_id",
@@ -5476,7 +5519,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Unique identifier of the alias"
+            "description": "Unieke identificatie van de alias"
           }
         ],
         "requestBody": {
@@ -5530,10 +5573,10 @@
         }
       ],
       "get": {
-        "summary": "List domain aliases",
-        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
+        "summary": "Domeinaliassen weergeven",
+        "description": ">[!NOTE]\n>Vanaf 1 november 2024 staan de API-eindpunten voor 'Lijst domeinen' en 'Lijst domeinaliassen' standaard op maximaal '1000' resultaten per pagina. Als u zich hier al eerder voor wilt aanmelden, kunt u '?paginate=true' als extra querystringparameter aan de URL voor de eindpuntquery doorgeven. Zie Paginering voor meer informatie.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "security": [
           {
@@ -5544,7 +5587,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "description": "Zoeken naar aliassen in een domein op naam, label of ontvanger (RegExp ondersteund)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5553,7 +5596,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "description": "Zoeken naar aliassen in een domein op naam (RegExp ondersteund)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5562,7 +5605,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "description": "Zoeken naar aliassen in een domein op ontvanger (RegExp ondersteund)",
             "required": false,
             "schema": {
               "type": "string"
@@ -5571,7 +5614,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "description": "Sorteren op een specifiek veld (voorvoegsel met een enkel streepje - om omgekeerd te sorteren). Standaard is dit created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -5610,10 +5653,10 @@
         }
       },
       "post": {
-        "summary": "Create new domain alias",
-        "description": "Create a new alias for a specific domain.",
+        "summary": "Nieuw domeinalias aanmaken",
+        "description": "Maak een nieuwe alias voor een specifiek domein.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "security": [
           {
@@ -5668,10 +5711,10 @@
         }
       ],
       "get": {
-        "summary": "Retrieve domain alias",
-        "description": "Retrieve a specific alias for a domain.",
+        "summary": "Domeinalias ophalen",
+        "description": "Haal een specifieke alias op voor een domein.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "security": [
           {
@@ -5701,10 +5744,10 @@
         }
       },
       "put": {
-        "summary": "Update domain alias",
-        "description": "Update a specific alias for a domain.",
+        "summary": "Domeinalias bijwerken",
+        "description": "Een specifieke alias voor een domein bijwerken.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "security": [
           {
@@ -5746,10 +5789,10 @@
         }
       },
       "delete": {
-        "summary": "Delete domain alias",
-        "description": "Delete a specific alias for a domain.",
+        "summary": "Domeinalias verwijderen",
+        "description": "Een specifieke alias voor een domein verwijderen.",
         "tags": [
-          "Aliases"
+          "Aliassen"
         ],
         "security": [
           {
@@ -5787,10 +5830,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Encrypt TXT Record",
-        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
+        "summary": "TXT-record versleutelen",
+        "description": "We bieden je de mogelijkheid om records te versleutelen, zelfs met het gratis abonnement, zonder extra kosten. Privacy zou geen functie moeten zijn, maar een inherent onderdeel van alle aspecten van een product. Zoals gevraagd in een discussie over [Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) en op onze [GitHub-issues](https://github.com/forwardemail/forwardemail.net/issues/254) hebben we dit toegevoegd.",
         "tags": [
-          "Encrypt"
+          "Versleutelen"
         ],
         "security": [
           {
@@ -5809,7 +5852,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Any valid Forward Email plaintext TXT record"
+                    "description": "Een geldige Forward Email plaintext TXT-record"
                   }
                 }
               }
@@ -5855,57 +5898,56 @@
   },
   "tags": [
     {
-      "name": "Account",
-      "description": "Account management endpoints"
+      "name": "Rekening",
+      "description": "Eindpunten voor accountbeheer"
     },
     {
-      "name": "Logs",
-      "description": "Log management endpoints"
+      "name": "Logboeken",
+      "description": "Eindpunten voor logboekbeheer"
     },
     {
-      "name": "Emails",
-      "description": "Email management endpoints"
+      "name": "E-mails",
+      "description": "Eindpunten voor e-mailbeheer"
     },
     {
-      "name": "Domains",
-      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
+      "name": "Domeinen",
+      "description": "> [!TIP]\n> Domeineindpunten met de domeinnaam <code>/v1/domains/:domein\\_naam</code> als eindpunt zijn uitwisselbaar met de domein-ID <code>:domein\\_id</code>. Dit betekent dat u naar het domein kunt verwijzen met de waarde <code>naam</code> of <code>id</code>."
     },
     {
-      "name": "Invites",
-      "description": "Domain invite management endpoints"
+      "name": "Uitnodigingen",
+      "description": "Eindpunten voor domeinuitnodigingsbeheer"
     },
     {
-      "name": "Members",
-      "description": "Domain member management endpoints"
+      "name": "Leden",
+      "description": "Eindpunten voor domeinlidbeheer"
     },
     {
-      "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "name": "Aliassen",
+      "description": "Eindpunten voor domeinaliasbeheer"
     },
     {
-      "name": "Encrypt",
-      "description": "Encryption endpoints"
+      "name": "Versleutelen",
+      "description": "Encryptie-eindpunten"
     },
     {
-      "name": "Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
+      "name": "Contacten",
+      "description": "Alias-contactbeheer-eindpunten (CardDAV)\n\n>[!NOTE]\n>In tegenstelling tot andere API-eindpunten vereisen deze een authenticatie-\"gebruikersnaam\" die gelijk is aan de aliasgebruikersnaam en een \"wachtwoord\" dat gelijk is aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n>Deze eindpunten bieden volledige CRUD-bewerkingen voor contactbeheer met vCard-ondersteuning, inclusief het aanmaken, ophalen, bijwerken en verwijderen van contacten. U kunt vCard-inhoud rechtstreeks aanleveren of individuele contactvelden die naar vCard-formaat worden geconverteerd."
     },
     {
-      "name": "Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
+      "name": "Kalenders",
+      "description": "Alias-agendabeheer-eindpunten (CalDAV)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden volledig agendabeheer met ondersteuning voor tijdzones en kleuren, inclusief het aanmaken, ophalen, bijwerken en verwijderen van agenda's. Agendanamen zijn vereist, terwijl andere eigenschappen zoals kleur, tijdzone en beschrijving optioneel zijn."
     },
     {
-      "name": "Calendar Events",
-      "description": "Alias calendar events management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive calendar event management with full iCalendar (RFC 5545) support. Events are stored as iCal data and automatically parsed to extract common properties like summary, description, location, and dates for easy access. Events support soft deletion and can be filtered by calendar, date range, and deletion status."
+      "name": "Kalendergebeurtenissen",
+      "description": "Alias-eindpunten voor agenda-evenementenbeheer (CalDAV)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden uitgebreid agenda-evenementenbeheer met volledige iCalendar (RFC 5545)-ondersteuning. Evenementen worden opgeslagen als iCal-gegevens en automatisch geparseerd om algemene eigenschappen zoals samenvatting, beschrijving, locatie en datums te extraheren voor eenvoudige toegang. Evenementen ondersteunen soft delete en kunnen worden gefilterd op agenda, datumbereik en verwijderstatus."
     },
     {
-      "name": "Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Berichten",
+      "description": "Eindpunten voor aliasberichtenbeheer (IMAP/POP3)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden uitgebreid berichtenbeheer met geavanceerde zoekmogelijkheden. U kunt zoeken op map, vlaggen, inhoud, headers, datumbereiken, grootte en meer. Berichten kunnen worden aangemaakt in de standaard Nodemailer-indeling en ondersteunen het verplaatsen tussen mappen en vlagbeheer.\n\nZorg ervoor dat u de installatie-instructies voor uw domein hebt gevolgd.\nDeze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-mail met IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+      "name": "Mappen",
+      "description": "Alias-eindpunten voor mapbeheer (IMAP/POP3)\n\n>[!TIP]\n> Map-eindpunten met het pad <code>/v1/folders/:path</code> van een map als eindpunt zijn uitwisselbaar met de ID <code>:id</code> van een map. Dit betekent dat u naar de map kunt verwijzen met de waarde <code>path</code> of <code>id</code>.\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden volledig mapbeheer, inclusief het aanmaken, hernoemen en verwijderen. Mappaden kunnen bovenliggende mappen bevatten (bijvoorbeeld 'INBOX/Submap'). Bovenliggende mappen worden automatisch aangemaakt als ze nog niet bestaan."
     }
   ]
 }
-
