@@ -25,7 +25,8 @@ const HOSTNAMES = _.uniq(
         env.MX1_HOST,
         env.MX2_HOST,
         env.MAIL_HOST,
-        env.REDIS_HOST
+        env.REDIS_HOST,
+        env.SQLITE_HOST
       ]
     : [
         'api.forwardemail.net',
@@ -39,7 +40,8 @@ const HOSTNAMES = _.uniq(
         'mx1.forwardemail.net',
         'mx2.forwardemail.net',
         'mail.forwardemail.net',
-        'redis.forwardemail.net'
+        'redis.forwardemail.net',
+        'sqlite.forwardemail.net'
       ]
 ).sort();
 
