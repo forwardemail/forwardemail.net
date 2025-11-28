@@ -135,6 +135,99 @@
           "api_token": "15ac16ae21784aa2cb4d5508"
         }
       },
+      "AliasAccount": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "name",
+          "email",
+          "domain_id",
+          "domain_name",
+          "storage_used",
+          "storage_quota"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Alias ID"
+          },
+          "object": {
+            "type": "string",
+            "example": "alias",
+            "description": "Object type"
+          },
+          "name": {
+            "type": "string",
+            "description": "Alias name (local part of email)"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Full alias email address"
+          },
+          "domain_id": {
+            "type": "string",
+            "description": "Domain ID"
+          },
+          "domain_name": {
+            "type": "string",
+            "description": "Domain name"
+          },
+          "storage_used": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Storage used in bytes for this alias/mailbox"
+          },
+          "storage_quota": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Storage quota in bytes for this alias/mailbox"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "Whether IMAP is enabled for this alias"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "Whether PGP encryption is enabled"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "PGP public key if available"
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale preference"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "example": {
+          "id": "683fb2e81cc5d449a0d4cd9e",
+          "object": "alias",
+          "name": "user",
+          "email": "user@example.com",
+          "domain_id": "683fb2e81cc5d449a0d4cd9f",
+          "domain_name": "example.com",
+          "storage_used": 524288000,
+          "storage_quota": 10737418240,
+          "has_imap": true,
+          "has_pgp": false,
+          "public_key": "",
+          "locale": "en",
+          "created_at": "2025-06-04T02:43:52.646Z",
+          "updated_at": "2025-06-04T02:43:55.350Z"
+        }
+      },
       "Contact": {
         "type": "object",
         "required": [
@@ -2450,11 +2543,14 @@
           "Account"
         ],
         "summary": "Retrieve account",
-        "description": "Retrieve your account information.",
+        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
         "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "responses": {
@@ -2463,7 +2559,59 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
+                },
+                "examples": {
+                  "userAccount": {
+                    "summary": "User Account (API Token Authentication)",
+                    "description": "Response when authenticated with API token",
+                    "value": {
+                      "sessions": [],
+                      "has_newsletter": true,
+                      "plan": "enhanced_protection",
+                      "email": "user@example.com",
+                      "max_quota_per_alias": 10737418240,
+                      "full_email": "user@example.com",
+                      "display_name": "John Doe",
+                      "otp_enabled": false,
+                      "last_locale": "en",
+                      "address_country": "US",
+                      "id": "683fb2e81cc5d449a0d4cd9d",
+                      "object": "user",
+                      "locale": "en",
+                      "created_at": "2025-06-04T02:43:52.646Z",
+                      "updated_at": "2025-06-04T02:43:55.350Z",
+                      "address_html": "",
+                      "api_token": "15ac16ae21784aa2cb4d5508"
+                    }
+                  },
+                  "aliasAccount": {
+                    "summary": "Alias Account (Alias Credentials Authentication)",
+                    "description": "Response when authenticated with alias email and generated password. Useful for IMAP/POP3/CalDAV/CardDAV storage information.",
+                    "value": {
+                      "id": "683fb2e81cc5d449a0d4cd9e",
+                      "object": "alias",
+                      "name": "user",
+                      "email": "user@example.com",
+                      "domain_id": "683fb2e81cc5d449a0d4cd9f",
+                      "domain_name": "example.com",
+                      "storage_used": 524288000,
+                      "storage_quota": 10737418240,
+                      "has_imap": true,
+                      "has_pgp": false,
+                      "public_key": "",
+                      "locale": "en",
+                      "created_at": "2025-06-04T02:43:52.646Z",
+                      "updated_at": "2025-06-04T02:43:55.350Z"
+                    }
+                  }
                 }
               }
             }

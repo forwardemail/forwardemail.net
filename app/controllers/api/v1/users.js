@@ -9,7 +9,7 @@ const _ = require('#helpers/lodash');
 
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const config = require('#config');
-const { Users } = require('#models');
+const { Users, Aliases } = require('#models');
 
 async function create(ctx) {
   const { body } = ctx.request;
@@ -38,9 +38,44 @@ async function create(ctx) {
 }
 
 async function retrieve(ctx) {
-  // since we already have the user object
-  // just send it over as a response
-  ctx.body = ctx.state.user.toObject();
+  // Check if this is alias authentication (has session.db)
+  if (ctx.state?.session?.db) {
+    // Alias authentication - return alias/mailbox information
+    // Fetch the alias with populated user information
+    const alias = await Aliases.findById(ctx.state.user.alias_id)
+      .populate('user', `id email plan ${config.userFields.isBanned}`)
+      .populate('domain', 'id name plan max_quota_per_alias')
+      .lean()
+      .exec();
+
+    if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
+
+    // Get storage information
+    const storageUsed = alias.storage_used || 0;
+    const maxQuotaPerAlias =
+      alias.domain.max_quota_per_alias || config.maxQuotaPerAlias;
+
+    // Return alias account information
+    ctx.body = {
+      id: alias.id,
+      object: 'alias',
+      name: alias.name,
+      email: `${alias.name}@${alias.domain.name}`,
+      domain_id: alias.domain.id,
+      domain_name: alias.domain.name,
+      storage_used: storageUsed,
+      storage_quota: maxQuotaPerAlias,
+      has_imap: alias.has_imap,
+      has_pgp: alias.has_pgp,
+      public_key: alias.public_key,
+      locale: alias.locale || ctx.locale,
+      created_at: alias.created_at,
+      updated_at: alias.updated_at
+    };
+  } else {
+    // User authentication - return user account information
+    ctx.body = ctx.state.user.toObject();
+  }
 }
 
 async function update(ctx) {

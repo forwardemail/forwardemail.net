@@ -1856,3 +1856,41 @@ test('messages search with pagination', async (t) => {
   t.is(res2.status, 200);
   t.is(res2.body.length, 5); // Remaining 5 messages
 });
+
+//
+// Account Tests
+//
+
+test('retrieves alias account information with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const res = await api
+    .get('/v1/account')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  // Should return 200 with alias account information
+  t.is(res.status, 200);
+  t.is(res.body.object, 'alias');
+  t.is(res.body.name, alias.name);
+  t.is(res.body.email, `${alias.name}@${domain.name}`);
+  t.is(res.body.domain_id, domain.id);
+  t.is(res.body.domain_name, domain.name);
+  t.true(typeof res.body.storage_used === 'number');
+  t.true(typeof res.body.storage_quota === 'number');
+  t.true(res.body.storage_quota > 0);
+  t.is(res.body.has_imap, true);
+  t.true(typeof res.body.has_pgp === 'boolean');
+  t.true(typeof res.body.locale === 'string');
+  t.true(typeof res.body.created_at === 'string');
+  t.true(typeof res.body.updated_at === 'string');
+});
+
+test('fails to retrieve account without auth', async (t) => {
+  const { api } = t.context;
+  const res = await api.get('/v1/account');
+  t.is(res.status, 401);
+});
