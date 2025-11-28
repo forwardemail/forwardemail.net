@@ -6,6 +6,7 @@ export class SettingsModal {
     this.visible = ko.observable(false);
     this.apiKey = ko.observable('');
     this.theme = ko.observable('system');
+    this.section = ko.observable('general');
     this.composePlainDefault = ko.observable(Local.get('compose_plain_default') === '1');
     this.aliasEmail = ko.observable(this.getAliasEmail());
     this.pgpKeys = ko.observableArray([]);
@@ -31,6 +32,10 @@ export class SettingsModal {
     this.visible(true);
   };
 
+  setSection = (section) => {
+    this.section(section);
+  };
+
   loadFromStorage() {
     this.error('');
     this.success('');
@@ -48,6 +53,7 @@ export class SettingsModal {
     this.editingKeyName('');
     this.editingKeyValue('');
     this.editingIndex(-1);
+    this.section(this.section() || 'general');
   }
 
   close = () => {

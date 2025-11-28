@@ -64,6 +64,22 @@ webmail-client/
 
 Based on the provided requirements, here's what needs to be built:
 
+### Current Focus / Next Steps
+
+- Fix calendar dark theme primary color override (still shows d0bcff) and improve height for month view.
+- Wire calendar events once API endpoints are available; currently local only.
+- Settings sidebar markup added; finish wiring sections to content and logic later.
+- Storage widget may need Account fields fallback.
+
+### UI polish plan (mailbox/settings)
+- Header & toolbar: clamp search width; standardize icon buttons/dropdowns; remove inline styles.
+- Sidebar/Nav: translateX slide-in with backdrop; closed by default on mobile; clean section spacing/dividers; shared menu styling for account dropdown.
+- Theme/tokens: consolidate semantic colors (surface/text/border/accent/success/warn/error) for alerts/toasts/buttons/links; fix light-mode contrast and dark-mode accent consistency.
+- Layout/spacing: unify mailbox grid (3/2/1 columns via media queries); spacing scale (4/8/12/16/24); remove inline margins for structure.
+- Components/reuse: shared classes for dropdown panel, action menu, chip/badge, card, list row, icon button; move inline SVG masks/styles into CSS.
+- Mobile polish: single scroll container; tap targets ≥44px; header stays one row until very narrow then intentional stack.
+- Motion/states: subtle transitions for sidebar/dropdowns; strong focus-visible outlines; dropdowns close on blur/escape.
+
 ### Phase 1: Source Material Needed
 
 Since `mail-overrides/` was removed, we need to either:
@@ -740,15 +756,16 @@ export default defineConfig({
 **Updated next steps (post-implementation):**
 - Finish assets (fonts/icons) and run production build.
 - Inline attachments support once API exposes `cid`/download URLs; consider attachment upload flow instead of base64.
-- Compose enhancements: From selector (aliases), drafts, error toasts, keyboard shortcuts, reply/reply-all/forward stubs.
+- Compose enhancements: From selector (aliases), drafts, error toasts, keyboard shortcuts, reply/reply-all/forward stubs; outbox/offline queue with retry.
 - Recipient UX polish: chip autocomplete (contacts/CardDAV) when available.
 - Message actions: delete/move, unread indicators in list, retries on errors.
 - Settings page (or modal) expansion: PGP support, contacts sync, additional preferences.
-- Styling/mobile polish: light-mode contrast fixes (message canvas, headers/buttons, emoji picker), responsive stacking for folders/messages/reader on small screens, consistent padding/spacing.
+- Styling/mobile polish: light-mode contrast fixes (message canvas, headers/buttons, emoji picker), responsive stacking for folders/messages/reader on small screens, consistent padding/spacing; toast notifications.
 - Send robustness: offline/outbox queue via IDB + replay, error toasts/retry.
 - Crypto: signature verification indicator, clearer decrypt error states.
-- Search/filter: filters (has attachment/date range) using cached data; optional body indexing.
+- Search/filter: filters (has attachment/date range) using cached data; optional body indexing; saved searches.
 - PWA polish: clear caches on sign-out, offline fallback page, install prompt/icons.
+- Calendar: wire event API (list/create/update/delete), drag/drop updates, event caching in IDB; dark theme overrides; multi-calendar colors; settings for default calendar.
 
 ---
 

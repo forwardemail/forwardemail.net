@@ -123,6 +123,7 @@ export class MailboxView {
     this.hasNextPage = ko.observable(false);
     this.query = ko.observable('');
     this.unreadOnly = ko.observable(false);
+    this.hasAttachmentsOnly = ko.observable(false);
     this.moveTarget = ko.observable('');
     this.actionMenuOpen = ko.observable(false);
     this.pgpStatus = ko.observable('');
@@ -130,13 +131,39 @@ export class MailboxView {
     this.passphraseCache = {};
     this.contacts = ko.observableArray([]);
     this.searchIndex = null;
+    this.toasts = null;
+    this.storageUsed = ko.observable(0);
+    this.storageTotal = ko.observable(0);
     this.searchTimer = null;
+    this.sidebarOpen = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
+    this.isDesktop = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
+    this.accountMenuOpen = ko.observable(false);
+    this.mobileReader = ko.observable(false);
+    this.handleResize = () => {
+      if (typeof window === 'undefined') return;
+      const desktop = window.innerWidth > 820;
+      this.isDesktop(desktop);
+      if (!desktop) this.sidebarOpen(false);
+      if (desktop) this.mobileReader(false);
+    };
+    this.showFilters = ko.observable(false);
+    this.currentAccount = ko.observable(this.email());
+    this.defaultFolders = [
+      { path: 'INBOX', name: 'Inbox', icon: 'inbox' },
+      { path: 'Drafts', name: 'Drafts', icon: 'drafts' },
+      { path: 'Sent Mail', name: 'Sent Mail', icon: 'sent' },
+      { path: 'Archive', name: 'Archive', icon: 'archive' },
+      { path: 'Spam', name: 'Spam', icon: 'spam' },
+      { path: 'Trash', name: 'Trash', icon: 'trash' },
+      { path: 'Outbox', name: 'Outbox', icon: 'outbox' }
+    ];
 
     this.filteredMessages = ko.pureComputed(() => {
       const folder = this.selectedFolder();
       const q = (this.query() || '').trim();
-      let list = this.messages().filter((msg) => msg.folder === folder);
-      if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
+    let list = this.messages().filter((msg) => msg.folder === folder);
+    if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
+    if (this.hasAttachmentsOnly()) list = list.filter((m) => m.has_attachment);
       if (!q || !this.searchIndex) return list;
       const results = this.searchIndex.search(q, { enrich: true });
       const ids = new Set();
@@ -168,10 +195,11 @@ export class MailboxView {
 
   updateFolderUnread(folderPath, count) {
     if (!folderPath) return;
-    this.unreadCounts[folderPath] = typeof count === 'number' ? count : 0;
+    const key = folderPath.toLowerCase();
+    this.unreadCounts[key] = typeof count === 'number' ? count : 0;
     this.folders(
       this.folders().map((f) =>
-        f.path === folderPath ? { ...f, count: this.unreadCounts[folderPath] } : f
+        f.path?.toLowerCase() === key ? { ...f, count: this.unreadCounts[key] } : f
       )
     );
   }
@@ -208,15 +236,52 @@ export class MailboxView {
     window.location.href = '/';
   };
 
+  initListeners() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.handleResize);
+    }
+  }
+
+  toggleSidebar = () => {
+    this.sidebarOpen(!this.sidebarOpen());
+    this.accountMenuOpen(false);
+    this.showFilters(false);
+  };
+
+  toggleAccountMenu = () => {
+    this.accountMenuOpen(!this.accountMenuOpen());
+  };
+
+  addAccount = () => {
+    // Placeholder: redirect to login to add another account
+    this.accountMenuOpen(false);
+    window.location.href = '/';
+  };
+
+  backToList = () => {
+    this.selectedMessage(null);
+    this.mobileReader(false);
+    this.actionMenuOpen(false);
+  };
+
   selectFolder = (folderName) => {
     this.selectedFolder(folderName);
     this.page(1);
     this.loadMessages();
+    if (typeof window !== 'undefined' && window.innerWidth <= 820) {
+      this.sidebarOpen(false);
+    }
   };
 
   selectMessage = (message) => {
     this.selectedMessage(message);
-    if (message) this.loadMessage(message);
+    if (message) {
+      this.loadMessage(message);
+      if (typeof window !== 'undefined' && window.innerWidth <= 820) {
+        this.mobileReader(true);
+        this.sidebarOpen(false);
+      }
+    }
   };
 
   async load() {
@@ -224,12 +289,13 @@ export class MailboxView {
       this.setMockData();
       return;
     }
+    this.initListeners();
 
     try {
       // Try cached folders first
       const cachedFolders = await db.folders.toArray();
       if (cachedFolders?.length) {
-        this.folders(cachedFolders);
+        this.folders(this.buildFolderList(cachedFolders));
         if (!this.selectedFolder()) {
           const inbox = cachedFolders.find((f) => f.path?.toUpperCase?.() === 'INBOX');
           this.selectedFolder(inbox?.path || cachedFolders[0].path);
@@ -242,28 +308,7 @@ export class MailboxView {
         ? foldersRaw
         : foldersRaw.Items || foldersRaw.items || [];
 
-      const mappedFolders = folders.map((f) => ({
-        id: f.id || f.Id,
-        path: f.path || f.Path || f.fullName || f.FullName || f.name || 'INBOX',
-        name: f.name || f.Name || f.path || f.Path || 'Folder',
-        count:
-          f.Unread ||
-          f.unread ||
-          f.unseen ||
-          f.Unseen ||
-          f.unreadCount ||
-          f.total_unread ||
-          f.Count ||
-          0,
-        specialUse: f.special_use || f.SpecialUse
-      }));
-
-      mappedFolders.sort((a, b) => {
-        const aInbox = a.path?.toUpperCase?.() === 'INBOX' ? 0 : 1;
-        const bInbox = b.path?.toUpperCase?.() === 'INBOX' ? 0 : 1;
-        if (aInbox !== bInbox) return aInbox - bInbox;
-        return a.path.localeCompare(b.path);
-      });
+      const mappedFolders = this.buildFolderList(folders);
 
       this.folders(mappedFolders);
       await db.folders.clear();
@@ -278,6 +323,7 @@ export class MailboxView {
 
       await this.loadMessages();
       this.loadContacts();
+      this.loadQuota();
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
@@ -316,7 +362,8 @@ export class MailboxView {
         page: this.page(),
         limit: this.limit,
         ...(this.query() ? { search: this.query() } : {}),
-        ...(this.unreadOnly() ? { is_unread: true } : {})
+        ...(this.unreadOnly() ? { is_unread: true } : {}),
+        ...(this.hasAttachmentsOnly() ? { has_attachment: true } : {})
       });
 
       const list = messagesRes?.Result?.List || messagesRes?.Result || messagesRes || [];
@@ -755,12 +802,14 @@ export class MailboxView {
       this.messageBody('');
       this.attachments([]);
       this.updateUnreadCountFromList();
+      this.toasts?.show('Message deleted', 'success');
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
       this.error(error?.message || 'Unable to delete message.');
+      this.toasts?.show(this.error(), 'error');
     }
     this.actionMenuOpen(false);
   }
@@ -815,9 +864,10 @@ export class MailboxView {
     this.composeModal.subject(`Re: ${message.subject || ''}`);
     if (this.composeModal.editorView) {
       this.composeModal.editorView.commands.setContent(
-        `<p></p><blockquote>${this.messageBody()}</blockquote>`
+        `<p><br></p><blockquote>${this.messageBody()}</blockquote>`
       );
     }
+    if (this.composeModal.focusEditorStart) this.composeModal.focusEditorStart();
     this.actionMenuOpen(false);
   }
 
@@ -827,9 +877,10 @@ export class MailboxView {
     this.composeModal.subject(`Fwd: ${message.subject || ''}`);
     if (this.composeModal.editorView) {
       this.composeModal.editorView.commands.setContent(
-        `<p></p><hr>${this.messageBody()}`
+        `<p><br></p><hr>${this.messageBody()}`
       );
     }
+    if (this.composeModal.focusEditorStart) this.composeModal.focusEditorStart();
     this.actionMenuOpen(false);
   }
 
@@ -871,6 +922,16 @@ export class MailboxView {
     this.loadMessages();
   };
 
+  toggleAttachmentFilter = () => {
+    this.hasAttachmentsOnly(!this.hasAttachmentsOnly());
+    this.page(1);
+    this.loadMessages();
+  };
+
+  toggleFilters = () => {
+    this.showFilters(!this.showFilters());
+  };
+
   async loadContacts() {
     try {
       const res = await Remote.request('Contacts', { limit: 500 });
@@ -894,6 +955,71 @@ export class MailboxView {
     } catch (error) {
       console.warn('Contacts load failed', error);
     }
+  }
+
+  async loadQuota() {
+    try {
+      // if Account endpoint available, fetch for quota
+      const res = await Remote.request('Account', {});
+      const used = res?.storage_used || res?.storage_used_by_aliases || 0;
+      const total =
+        res?.storage_quota ||
+        res?.max_quota_per_alias ||
+        res?.max_quota ||
+        res?.max_quota_per_aliases ||
+        0;
+      if (total) {
+        this.storageUsed(used);
+        this.storageTotal(total);
+      }
+    } catch (error) {
+      // non-blocking
+    }
+  }
+
+  buildFolderList(folders) {
+    const parsed = (folders || []).map((f) => ({
+      id: f.id || f.Id,
+      path: f.path || f.Path || f.fullName || f.FullName || f.name || 'INBOX',
+      name: f.name || f.Name || f.path || f.Path || 'Folder',
+      count:
+        f.Unread ||
+        f.unread ||
+        f.unseen ||
+        f.Unseen ||
+        f.unreadCount ||
+        f.total_unread ||
+        f.Count ||
+        0,
+      specialUse: f.special_use || f.SpecialUse
+    }));
+
+    const map = new Map();
+    parsed.forEach((f) => {
+      if (!f.path) return;
+      map.set(f.path.toLowerCase(), f);
+    });
+
+    const ordered = [];
+    this.defaultFolders.forEach((def) => {
+      const found = map.get(def.path.toLowerCase());
+      const merged = {
+        ...def,
+        ...(found || {}),
+        icon: def.icon || found?.icon || 'folder',
+        count: found?.count || 0
+      };
+      ordered.push(merged);
+    });
+
+    const extras = parsed.filter(
+      (f) => !this.defaultFolders.some((d) => d.path.toLowerCase() === (f.path || '').toLowerCase())
+    );
+    extras
+      .sort((a, b) => (a.name || a.path || '').localeCompare(b.name || b.path || ''))
+      .forEach((f) => ordered.push({ ...f, icon: f.icon || 'folder' }));
+
+    return ordered;
   }
 
   setMockData() {
@@ -932,7 +1058,7 @@ export class MailboxView {
       }
     ];
 
-    this.folders(mockFolders);
+    this.folders(this.buildFolderList(mockFolders));
     this.selectedFolder('INBOX');
     this.messages(mockMessages);
     this.selectedMessage(mockMessages[0]);

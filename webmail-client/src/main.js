@@ -5,8 +5,10 @@ import { ComposeModal } from './components/ComposeModal';
 import { SettingsModal } from './components/SettingsModal';
 import { PassphraseModal } from './components/PassphraseModal';
 import { CalendarView } from './components/CalendarView';
+import { Toasts } from './components/Toast';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
+import { navigate } from './utils/navigation';
 import './styles/main.css';
 
 function detectRoute() {
@@ -23,12 +25,15 @@ const viewModel = {
   composeModal: new ComposeModal(),
   settingsModal: new SettingsModal(),
   pgpPassphraseModal: new PassphraseModal(),
-  calendarView: new CalendarView()
+  calendarView: new CalendarView(),
+  navigate
 };
 
+viewModel.toasts = new Toasts();
 viewModel.mailboxView.composeModal = viewModel.composeModal;
 viewModel.mailboxView.passphraseModal = viewModel.pgpPassphraseModal;
 viewModel.calendarView.mailboxView = viewModel.mailboxView;
+viewModel.calendarView.toasts = viewModel.toasts;
 
 viewModel.route.subscribe((route) => {
   const mailboxMode = route === 'mailbox' || route === 'settings' || route === 'calendar';

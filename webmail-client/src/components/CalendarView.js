@@ -153,6 +153,7 @@ export class CalendarView {
     const end = endDate ? this.formatDateTimeLocal(endDate) : start;
     if (!title || !start) {
       this.error('Title and start are required.');
+      this.toasts?.show(this.error(), 'error');
       return;
     }
     // TODO: call API to persist event
@@ -173,6 +174,7 @@ export class CalendarView {
     this.events(updated);
     this.newEventModal(false);
     this.error('');
+    this.toasts?.show('Event saved (local)', 'success');
     this.renderCalendar();
   }
 

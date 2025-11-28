@@ -88,6 +88,13 @@ export class ComposeModal {
         this.body(editor.getHTML());
       }
     });
+    setTimeout(() => {
+      try {
+        this.editorView?.commands.focus();
+      } catch {
+        // ignore
+      }
+    }, 0);
 
     // wire emoji picker event
     if (this.emojiPickerEl && this.emojiHandler) {
@@ -102,6 +109,14 @@ export class ComposeModal {
         this.insertEmoji(emoji);
       };
       picker.addEventListener('emoji-click', this.emojiHandler);
+    }
+  }
+
+  focusEditorStart() {
+    try {
+      this.editorView?.commands.focus('start');
+    } catch {
+      // ignore
     }
   }
 
@@ -197,16 +212,18 @@ export class ComposeModal {
     // Use alias basic auth (same as reading) for outbound send
     Remote.request('Emails', payload, { method: 'POST' })
       .then(() => {
-        this.success('Message queued.');
-        this.sending(false);
-        setTimeout(() => {
-          this.close();
-        }, 800);
-      })
-      .catch((error) => {
-        this.error(error?.message || 'Unable to send message.');
-        this.sending(false);
-      });
+      this.success('Message queued.');
+      this.sending(false);
+      if (this.toasts) this.toasts.show('Message queued', 'success');
+      setTimeout(() => {
+        this.close();
+      }, 800);
+    })
+    .catch((error) => {
+      this.error(error?.message || 'Unable to send message.');
+      if (this.toasts) this.toasts.show(this.error(), 'error');
+      this.sending(false);
+    });
     return false;
   };
 
