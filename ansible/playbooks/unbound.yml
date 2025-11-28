@@ -155,6 +155,32 @@
         mode: '0644'
       notify: Restart Unbound
 
+    # Add failure notification to Unbound service
+    - name: Create unbound service override directory
+      file:
+        path: /etc/systemd/system/unbound.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Add OnFailure notification to unbound service
+      copy:
+        dest: /etc/systemd/system/unbound.service.d/failure-notification.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          OnFailure=failure-notification@%n.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Unbound
+
+    - name: Reload systemd daemon for unbound override
+      systemd:
+        daemon_reload: yes
+
     - name: Ensure Unbound is enabled and started
       ansible.builtin.systemd:
         name: unbound

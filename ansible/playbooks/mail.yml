@@ -183,6 +183,11 @@
       copy:
         dest: /etc/systemd/system/nginx.service.d/override.conf
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          OnFailure=failure-notification@%n.service
+
           [Service]
           User=www-data
           Group=www-data

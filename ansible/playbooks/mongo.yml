@@ -220,6 +220,31 @@
         mongodb_version: "6.0.18"
         mongodb_security_authorization: "enabled"
 
+    # Add failure notification to mongod service
+    - name: Create mongod service override directory
+      file:
+        path: /etc/systemd/system/mongod.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Add OnFailure notification to mongod service
+      copy:
+        dest: /etc/systemd/system/mongod.service.d/failure-notification.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          OnFailure=failure-notification@%n.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon for mongod override
+      systemd:
+        daemon_reload: yes
+
     # Configure MongoDB for TLS/SSL
     - name: Ensure MongoDB TLS/SSL configuration directory exists
       file:
@@ -363,8 +388,11 @@
       copy:
         dest: /etc/systemd/system/mongo-ufw-whitelist-update.service
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=Update MongoDB UFW IP Whitelist
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot
@@ -374,6 +402,8 @@
       copy:
         dest: /etc/systemd/system/mongo-ufw-whitelist-update.timer
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=Update MongoDB UFW IP Whitelist Every 10 Minutes
 
@@ -457,10 +487,10 @@
               exit 1
             fi
             echo "Bucket created successfully: ${BACKUP_BUCKET}"
-            
+
             # Harden bucket security
             echo "Applying security hardening to bucket..."
-            
+
             # Block public access (R2 specific)
             if aws s3api put-public-access-block \
               --bucket "${BACKUP_BUCKET}" \
@@ -470,7 +500,7 @@
             else
               echo "⚠ Could not set public access block (may not be supported by R2)"
             fi
-            
+
             # Set private ACL
             if aws s3api put-bucket-acl \
               --bucket "${BACKUP_BUCKET}" \
@@ -480,7 +510,7 @@
             else
               echo "⚠ Could not set bucket ACL (may not be supported by R2)"
             fi
-            
+
             echo "Bucket security hardening completed"
           else
             echo "Bucket exists: ${BACKUP_BUCKET}"
@@ -496,7 +526,7 @@
             /usr/local/bin/send-rate-limited-email.sh "mongodb-backup" "[ERROR] MongoDB Backup Failed on $(hostname)" "$ERROR_MSG"
             exit 1
           fi
-          
+
           echo "MongoDB encrypted backup completed: ${S3_PATH}"
           echo "Backup finished at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
@@ -547,12 +577,12 @@
 
             FILE_DATE=$(echo "$line" | awk '{print $1" "$2}')
             FILE_PATH=$(echo "$line" | awk '{print $4}')
-            
+
             # Extract timestamp from filename (ISO 8601 format: mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
             # Filename format: mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
             FILENAME=$(basename "$FILE_PATH")
             ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
-            
+
             # Try to parse timestamp from filename first (more reliable), fallback to S3 metadata date
             if [ -n "$ISO_TIMESTAMP" ]; then
               # Parse ISO 8601 timestamp from filename
@@ -582,12 +612,12 @@
                 echo "ERROR: Failed to delete ${FILE_PATH}"
                 ERRORS=$((ERRORS + 1))
               fi
-            
+
             # For backups 8-30 days old, keep only one per day
             elif [ "$FILE_TIMESTAMP" -lt "$SEVEN_DAYS_AGO" ]; then
               # Extract date from ISO 8601 timestamp in filename (YYYY-MM-DD)
               BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
-              
+
               if [ -z "$BACKUP_DATE" ]; then
                 echo "Warning: Could not extract date from timestamp ${ISO_TIMESTAMP}, keeping file"
                 KEPT_RECENT=$((KEPT_RECENT + 1))
@@ -596,7 +626,7 @@
 
               # Track if we've already kept one backup for this date
               STATE_FILE="/tmp/mongo-cleanup-${BACKUP_DATE}.keep"
-              
+
               if [ -f "$STATE_FILE" ]; then
                 # Already kept one backup for this date, delete this one
                 echo "Deleting non-latest daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
@@ -621,7 +651,7 @@
           # Summary report
           # Clean up state files
           rm -f /tmp/mongo-cleanup-*.keep
-          
+
           echo ""
           echo "=== MongoDB Backup Cleanup Summary ==="
           echo "Deleted (>30 days): ${DELETED_OLD}"
@@ -644,6 +674,8 @@
       copy:
         dest: /etc/systemd/system/mongodb-backup.service
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=MongoDB Backup to Cloudflare R2
           OnFailure=failure-notification@%n.service
@@ -668,6 +700,8 @@
       copy:
         dest: /etc/systemd/system/mongodb-backup.timer
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=MongoDB Backup Every 6 Hours
 

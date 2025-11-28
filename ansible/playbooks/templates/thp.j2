@@ -1,8 +1,11 @@
+# WARNING: This file is managed by Ansible
+# Manual changes will be overwritten on next deployment
 [Unit]
 Description=Disable Transparent Huge Pages (THP)
 DefaultDependencies=no
 After=sysinit.target local-fs.target
 Before=mongod.service
+OnFailure=failure-notification@%n.service
 
 [Service]
 Type=oneshot

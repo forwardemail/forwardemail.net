@@ -292,3 +292,28 @@
       register: pm2_startup_result
     - name: Install pm2 startup script
       shell: sudo env PATH=$PATH:/home/deploy/n/bin pm2 startup ubuntu -u deploy --hp /home/deploy
+
+    # Add failure notification to PM2 service
+    - name: Create pm2-deploy service override directory
+      file:
+        path: /etc/systemd/system/pm2-deploy.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Add OnFailure notification to pm2-deploy service
+      copy:
+        dest: /etc/systemd/system/pm2-deploy.service.d/failure-notification.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          OnFailure=failure-notification@%n.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon for pm2-deploy override
+      systemd:
+        daemon_reload: yes

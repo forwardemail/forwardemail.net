@@ -1,7 +1,10 @@
+# WARNING: This file is managed by Ansible
+# Manual changes will be overwritten on next deployment
 [Unit]
 Description=Disable swapfile
 Documentation=man:swapon(8) man:systemd.swap(5)
 After=local-fs.target
+OnFailure=failure-notification@%n.service
 
 [Service]
 Type=oneshot

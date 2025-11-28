@@ -277,9 +277,12 @@
       copy:
         dest: /etc/systemd/system/valkey-server.service
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=Valkey In-Memory Data Store
           After=network.target
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=simple
@@ -291,6 +294,7 @@
           TimeoutStartSec=90
           TimeoutStopSec=90
           Restart=always
+          RestartSec=5s
           RuntimeDirectory=valkey
           RuntimeDirectoryMode=0755
 
@@ -562,7 +566,8 @@
           # RDB snapshot - single rule for maximum throughput
           # 30-minute interval provides crash recovery while minimizing BGSAVE overhead
           # Backup script runs at :15 past the hour (offset to avoid conflicts)
-          save 1800 1       # Every 30 minutes if any changes (max 30-min data loss)
+          # Every 30 minutes if any changes (max 30-min data loss)
+          save 1800 1
 
           # Performance Optimizations
           tcp-backlog 65536
@@ -665,8 +670,11 @@
       copy:
         dest: /etc/systemd/system/redis-ufw-whitelist-update.service
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=Update Redis UFW IP Whitelist
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot
@@ -1155,9 +1163,12 @@
       copy:
         dest: /etc/systemd/system/redis-command-monitor.service
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
           Description=Monitor Redis Command Usage (BGSAVE, KEYS)
           After=valkey-server.service
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot
