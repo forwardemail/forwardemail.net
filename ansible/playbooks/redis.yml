@@ -630,40 +630,99 @@
           #!/bin/bash
           set -e
 
-          # Fetch current IP list
-          NEW_IPS=$(curl -s https://forwardemail.net/ips/v4.txt?comments=false | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
-
-          # Get current UFW rules for Redis TLS port
+          # Configuration
           REDIS_PORT="${REDIS_PORT:-6380}"
-          CURRENT_IPS=$(ufw status | grep "${REDIS_PORT}/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
+          IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
+          COMMENT="Auto-whitelist Redis TLS"
+          SERVICE_NAME="Redis"
+          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
 
-          # Track if changes were made
-          CHANGED=0
+          echo "[$(date -Iseconds)] Fetching IP whitelist..."
+          NEW_IPS=$(curl -s "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+
+          if [ -z "$NEW_IPS" ]; then
+            echo "[$(date -Iseconds)] ERROR: Failed to fetch IP list or list is empty"
+            exit 1
+          fi
+
+          # Get current IPs from UFW
+          CURRENT_IPS=$(ufw status | grep "${REDIS_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+
+          # Calculate diff
+          TO_ADD=$(comm -13 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
+          TO_REMOVE=$(comm -23 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
+
+          # Check if changes needed
+          if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ]; then
+            echo "[$(date -Iseconds)] No changes needed"
+            exit 0
+          fi
+
+          echo "[$(date -Iseconds)] Changes detected - updating UFW rules..."
+
+          # Remove old IPs (delete from highest rule number to lowest)
+          REMOVED_COUNT=0
+          if [ -n "$TO_REMOVE" ]; then
+            for ip in $TO_REMOVE; do
+              RULE_NUMS=$(ufw status numbered | grep "${REDIS_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+              for rule_num in $RULE_NUMS; do
+                echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+                REMOVED_COUNT=$((REMOVED_COUNT + 1))
+              done
+            done
+          fi
 
           # Add new IPs
-          for ip in $NEW_IPS; do
-            if ! echo "$CURRENT_IPS" | grep -q "^${ip}$"; then
-              ufw allow from "$ip" to any port "$REDIS_PORT" proto tcp comment "Auto-whitelist Redis TLS"
-              CHANGED=1
-            fi
-          done
-
-          # Remove old IPs (not in new list)
-          for ip in $CURRENT_IPS; do
-            if ! echo "$NEW_IPS" | grep -q "^${ip}$"; then
-              # Find and delete the rule
-              RULE_NUM=$(ufw status numbered | grep "${REDIS_PORT}/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
-              if [ -n "$RULE_NUM" ]; then
-                echo "y" | ufw delete "$RULE_NUM"
-                CHANGED=1
-              fi
-            fi
-          done
-
-          # Reload UFW if changes were made
-          if [ $CHANGED -eq 1 ]; then
-            ufw reload
+          ADDED_COUNT=0
+          if [ -n "$TO_ADD" ]; then
+            for ip in $TO_ADD; do
+              ufw allow from "$ip" to any port "$REDIS_PORT" proto tcp comment "$COMMENT" > /dev/null 2>&1
+              ADDED_COUNT=$((ADDED_COUNT + 1))
+            done
           fi
+
+          # Reload UFW
+          ufw reload > /dev/null 2>&1
+
+          # Build email report
+          TOTAL_IPS=$(echo "$NEW_IPS" | wc -l)
+          ADDED_LIST=$(echo "$TO_ADD" | sed 's/^/  - /' | head -20)
+          REMOVED_LIST=$(echo "$TO_REMOVE" | sed 's/^/  - /' | head -20)
+          
+          if [ $(echo "$TO_ADD" | wc -l) -gt 20 ]; then
+            ADDED_LIST="$ADDED_LIST\n  ... and $(($(echo "$TO_ADD" | wc -l) - 20)) more"
+          fi
+          
+          if [ $(echo "$TO_REMOVE" | wc -l) -gt 20 ]; then
+            REMOVED_LIST="$REMOVED_LIST\n  ... and $(($(echo "$TO_REMOVE" | wc -l) - 20)) more"
+          fi
+
+          REPORT="UFW Whitelist Changes for $SERVICE_NAME
+          Timestamp: $(date -Iseconds)
+          
+          Added IPs ($ADDED_COUNT):
+          $ADDED_LIST
+          
+          Removed IPs ($REMOVED_COUNT):
+          $REMOVED_LIST
+          
+          Summary:
+            - Total added: $ADDED_COUNT
+            - Total removed: $REMOVED_COUNT
+            - Current total: $TOTAL_IPS IPs whitelisted
+          
+          Server: $(hostname)
+          Port: $REDIS_PORT/tcp
+          
+          View logs: sudo journalctl -u redis-ufw-whitelist-update.service -n 50"
+
+          # Send email report
+          /usr/local/bin/send-rate-limited-email.sh \
+            "ufw-whitelist-redis" \
+            "[UFW] Whitelist Updated: $SERVICE_NAME (Port $REDIS_PORT)" \
+            "$REPORT"
+
+          echo "[$(date -Iseconds)] UFW whitelist updated (added: $ADDED_COUNT, removed: $REMOVED_COUNT)"
 
     # Create systemd timer for UFW whitelist updates
     - name: Create UFW whitelist update systemd service
