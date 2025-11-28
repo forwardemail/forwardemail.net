@@ -441,7 +441,7 @@
           maxmemory {{ valkey_maxmemory_mb }}mb
 
           # Memory eviction policy
-          maxmemory-policy allkeys-lru
+          maxmemory-policy volatile-ttl
 
           # LRU and minimal TTL algorithms are not precise but approximated
           maxmemory-samples 5
@@ -456,19 +456,16 @@
 
           ############################## APPEND ONLY MODE ###############################
 
-          # AOF persistence (configured in ANSIBLE MANAGED BLOCK)
-          # appendonly yes
-          # appendfsync everysec
+          # AOF disabled - using RDB-only for session/cache store
+          # High write frequency (1000s/sec) makes AOF overhead too high
+          # Acceptable data loss window: last RDB snapshot to crash
+          appendonly no
 
-          # Rewrite the AOF file in background when it gets too big
-          auto-aof-rewrite-percentage 100
-          auto-aof-rewrite-min-size 64mb
-
-          # Load truncated AOF file
-          aof-load-truncated yes
-
-          # Use RDB-AOF hybrid format
-          aof-use-rdb-preamble yes
+          # AOF settings (unused but kept for reference)
+          # auto-aof-rewrite-percentage 100
+          # auto-aof-rewrite-min-size 64mb
+          # aof-load-truncated yes
+          # aof-use-rdb-preamble yes
 
           ################################ THREADED I/O #################################
 
@@ -558,12 +555,14 @@
           tls-ca-cert-file /etc/valkey/ssl/ca.pem
           tls-auth-clients no
 
-          # Persistence
-          appendonly yes
-          appendfsync everysec
-          save 900 1
-          save 300 10
-          save 60 10000
+          # Persistence - RDB only for session/cache store
+          # AOF disabled due to high write frequency (1000s writes/sec)
+          appendonly no
+
+          # RDB snapshot - single rule for maximum throughput
+          # 30-minute interval provides crash recovery while minimizing BGSAVE overhead
+          # Backup script runs at :15 past the hour (offset to avoid conflicts)
+          save 1800 1       # Every 30 minutes if any changes (max 30-min data loss)
 
           # Performance Optimizations
           tcp-backlog 65536
@@ -725,6 +724,10 @@
 
           # Redirect stderr to stdout so all output goes to journal
           exec 2>&1
+
+          # Redis Backup Script - RDB Only
+          # AOF is disabled for this session/cache store due to high write frequency
+          # This script creates RDB snapshots and uploads to R2
 
           # Environment variables (set via systemd service or environment)
           AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
@@ -1037,16 +1040,21 @@
           ExecStartPost=/usr/local/bin/cleanup-redis-backups.sh
 
     # Create systemd timer for Redis backup (every 6 hours)
+    # Runs at :15 minutes past the hour to avoid conflict with automatic RDB saves
     - name: Create Redis backup systemd timer
       copy:
         dest: /etc/systemd/system/redis-backup.timer
         content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
           [Unit]
-          Description=Redis Backup Every 6 Hours
+          Description=Redis Backup Every 6 Hours (at :15 past the hour)
 
           [Timer]
+          # Run at 00:15, 06:15, 12:15, 18:15 (offset from automatic saves)
+          OnCalendar=00/6:15:00
+          # Fallback: if system was off during scheduled time, run 15 min after boot
           OnBootSec=15min
-          OnUnitActiveSec=6h
 
           [Install]
           WantedBy=timers.target

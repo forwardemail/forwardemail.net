@@ -265,7 +265,7 @@ redis-cli INFO memory | grep mem_fragmentation_ratio
 
 # Set maxmemory limit (80% of available RAM)
 redis-cli CONFIG SET maxmemory 8gb
-redis-cli CONFIG SET maxmemory-policy allkeys-lru
+redis-cli CONFIG SET maxmemory-policy volatile-ttl
 
 # Restart Redis to defragment memory
 sudo systemctl restart redis-server
