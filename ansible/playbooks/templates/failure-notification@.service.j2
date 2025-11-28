@@ -4,6 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
+RemainAfterExit=no
 ExecStart=/usr/local/bin/send-failure-notification.sh %i
 User=root
 Group=root

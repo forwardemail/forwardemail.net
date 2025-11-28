@@ -678,6 +678,7 @@
 
           [Service]
           Type=oneshot
+          RemainAfterExit=no
           ExecStart=/usr/local/bin/update-redis-ufw-whitelist.sh
 
     - name: Create UFW whitelist update systemd timer
@@ -1030,6 +1031,7 @@
 
           [Service]
           Type=oneshot
+          RemainAfterExit=no
           TimeoutStartSec=600
           TimeoutStopSec=30
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
@@ -1172,6 +1174,7 @@
 
           [Service]
           Type=oneshot
+          RemainAfterExit=no
           Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
           Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default(lookup('env', 'REDIS_PORT'), true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"

@@ -396,6 +396,7 @@
 
           [Service]
           Type=oneshot
+          RemainAfterExit=no
           ExecStart=/usr/local/bin/update-mongo-ufw-whitelist.sh
 
     - name: Create UFW whitelist update systemd timer
@@ -682,6 +683,7 @@
 
           [Service]
           Type=oneshot
+          RemainAfterExit=no
           TimeoutStartSec=600
           TimeoutStopSec=30
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
