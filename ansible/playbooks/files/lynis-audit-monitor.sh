@@ -254,3 +254,6 @@ main() {
 
 # Run main function
 main
+
+# Explicit exit
+exit 0
