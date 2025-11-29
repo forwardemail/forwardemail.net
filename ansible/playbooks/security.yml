@@ -21,10 +21,9 @@
       service:
         name: postfix
         state: restarted
-    - name: Restart auditd
-      service:
-        name: auditd
-        state: restarted
+    - name: Reload auditd rules
+      command: augenrules --load
+      changed_when: false
     - name: Restart rsyslog
       service:
         name: rsyslog
@@ -737,7 +736,7 @@
         owner: root
         group: root
         mode: '0640'
-      notify: Restart auditd
+      notify: Reload auditd rules
 
     - name: Deploy bash command logging configuration
       copy:

@@ -59,11 +59,31 @@ if ! check_rate_limit; then
   exit 0
 fi
 
+# Detect if body is HTML
+IS_HTML=false
+if echo "$BODY" | grep -q "<html\|<HTML\|<body\|<BODY\|<div\|<DIV\|<p>\|<P>"; then
+  IS_HTML=true
+fi
+
 # Send email to each recipient
 IFS=',' read -ra ADDR <<< "$RECIPIENTS"
 for email in "${ADDR[@]}"; do
   email=$(echo "$email" | xargs)  # trim whitespace
-  echo "$BODY" | mail -s "$SUBJECT" "$email"
+  
+  if [ "$IS_HTML" = true ]; then
+    # Send HTML email with proper headers
+    (
+      echo "To: $email"
+      echo "Subject: $SUBJECT"
+      echo "MIME-Version: 1.0"
+      echo "Content-Type: text/html; charset=UTF-8"
+      echo ""
+      echo "$BODY"
+    ) | sendmail -t
+  else
+    # Send plain text email
+    echo "$BODY" | mail -s "$SUBJECT" "$email"
+  fi
 done
 
 logger -t rate-limited-email "Email sent for $SERVICE_NAME: $SUBJECT"
