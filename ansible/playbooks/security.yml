@@ -430,6 +430,31 @@
         group: root
         force: no
 
+    # Create state directories for monitoring systems
+    - name: Create Lynis audit monitor state directory
+      file:
+        path: /var/lib/lynis-audit-monitor
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create package monitor state directory
+      file:
+        path: /var/lib/package-monitor
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create open ports monitor state directory
+      file:
+        path: /var/lib/open-ports-monitor
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Deploy system resource monitor script
       copy:
         src: "{{ playbook_dir }}/files/system-resource-monitor.sh"
