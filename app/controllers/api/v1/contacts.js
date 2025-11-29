@@ -277,23 +277,24 @@ async function create(ctx) {
     vCardContent = `BEGIN:VCARD
 VERSION:3.0
 UID:${uid}
-FN:${body.full_name || ''}`;
+FN:${body.full_name || ''}
+`;
 
     if (body.emails && Array.isArray(body.emails)) {
       for (const email of body.emails) {
-        vCardContent += `\nEMAIL;TYPE=${email.type || 'INTERNET'}:${
+        vCardContent += `EMAIL;TYPE=${email.type || 'INTERNET'}:${
           email.value
-        }`;
+        }\n`;
       }
     }
 
     if (body.phone_numbers && Array.isArray(body.phone_numbers)) {
       for (const phone of body.phone_numbers) {
-        vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
+        vCardContent += `TEL;TYPE=${phone.type || 'CELL'}:${phone.value}\n`;
       }
     }
 
-    vCardContent += '\nEND:VCARD';
+    vCardContent += 'END:VCARD';
   }
 
   // Generate ETag
@@ -589,23 +590,24 @@ async function update(ctx) {
       vCardContent = `BEGIN:VCARD
 VERSION:3.0
 UID:${contact.uid}
-FN:${contact.fullName || ''}`;
+FN:${contact.fullName || ''}
+`;
 
       if (contact.emails && Array.isArray(contact.emails)) {
         for (const email of contact.emails) {
-          vCardContent += `\nEMAIL;TYPE=${email.type || 'INTERNET'}:${
+          vCardContent += `EMAIL;TYPE=${email.type || 'INTERNET'}:${
             email.value
-          }`;
+          }\n`;
         }
       }
 
       if (contact.phoneNumbers && Array.isArray(contact.phoneNumbers)) {
         for (const phone of contact.phoneNumbers) {
-          vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
+          vCardContent += `TEL;TYPE=${phone.type || 'CELL'}:${phone.value}\n`;
         }
       }
 
-      vCardContent += '\nEND:VCARD';
+      vCardContent += 'END:VCARD';
       contact.content = vCardContent;
     }
 

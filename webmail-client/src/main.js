@@ -5,6 +5,7 @@ import { ComposeModal } from './components/ComposeModal';
 import { SettingsModal } from './components/SettingsModal';
 import { PassphraseModal } from './components/PassphraseModal';
 import { CalendarView } from './components/CalendarView';
+import { ContactsView } from './components/ContactsView';
 import { Toasts } from './components/Toast';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
@@ -12,6 +13,7 @@ import './styles/main.css';
 
 function detectRoute() {
   if (window.location.pathname.startsWith('/calendar')) return 'calendar';
+  if (window.location.pathname.startsWith('/contacts')) return 'contacts';
   if (window.location.pathname.startsWith('/mailbox/settings')) return 'settings';
   if (window.location.pathname.startsWith('/mailbox')) return 'mailbox';
   return 'login';
@@ -24,8 +26,12 @@ const viewModel = {
   composeModal: new ComposeModal(),
   settingsModal: new SettingsModal(),
   pgpPassphraseModal: new PassphraseModal(),
-  calendarView: new CalendarView()
+  calendarView: new CalendarView(),
+  contactsView: new ContactsView()
 };
+
+// Forward declaration for handleHashActions
+let handleHashActions;
 
 // SPA-style navigation to avoid reload flicker
 viewModel.navigate = (path) => {
@@ -35,27 +41,53 @@ viewModel.navigate = (path) => {
     window.location.href = path;
     return;
   }
+
+  // Check auth for protected routes
+  const targetRoute = path.startsWith('/mailbox/settings') ? 'settings' :
+                      path.startsWith('/mailbox') ? 'mailbox' :
+                      path.startsWith('/calendar') ? 'calendar' :
+                      path.startsWith('/contacts') ? 'contacts' : 'login';
+
+  if (
+    (targetRoute === 'mailbox' || targetRoute === 'settings' || targetRoute === 'calendar' || targetRoute === 'contacts') &&
+    !Local.get('authToken') &&
+    !Local.get('alias_auth')
+  ) {
+    history.replaceState({}, '', '/');
+    viewModel.route('login');
+    return;
+  }
+
   history.pushState({}, '', path);
   viewModel.route(detectRoute());
+
+  // Handle hash-based actions after route is set
+  if (handleHashActions) {
+    handleHashActions();
+  }
 };
 
 // expose navigation to child contexts
 viewModel.mailboxView.navigate = viewModel.navigate;
 viewModel.settingsModal.navigate = viewModel.navigate;
 viewModel.calendarView.navigate = viewModel.navigate;
+viewModel.contactsView.navigate = viewModel.navigate;
 
 viewModel.toasts = new Toasts();
 viewModel.mailboxView.composeModal = viewModel.composeModal;
 viewModel.mailboxView.passphraseModal = viewModel.pgpPassphraseModal;
 viewModel.calendarView.mailboxView = viewModel.mailboxView;
 viewModel.calendarView.toasts = viewModel.toasts;
+viewModel.contactsView.toasts = viewModel.toasts;
 
 viewModel.route.subscribe((route) => {
-  const mailboxMode = route === 'mailbox' || route === 'settings' || route === 'calendar';
+  const mailboxMode =
+    route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts';
   document.body.classList.toggle('mailbox-mode', mailboxMode);
   if (route !== 'mailbox') viewModel.composeModal.close();
   if (route === 'settings') viewModel.settingsModal.open();
   if (route === 'calendar') viewModel.calendarView.load();
+  if (route === 'contacts') viewModel.contactsView.load();
 });
 
 function applyTheme(pref) {
@@ -83,20 +115,25 @@ function initStarfield() {
 function bootstrap() {
   const root = document.getElementById('rl-app');
   if (!root) return;
-  root.style.visibility = 'hidden';
 
-  const route = viewModel.route();
+  let route = viewModel.route();
 
+  // Check auth before showing anything
   if (
-    (route === 'mailbox' || route === 'settings') &&
+    (route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts') &&
     !Local.get('authToken') &&
     !Local.get('alias_auth')
   ) {
-    window.location.replace('/');
-    return;
+    // Use navigate instead of full page reload to prevent flicker
+    viewModel.route('login');
+    history.replaceState({}, '', '/');
+    route = 'login';
   }
 
-  document.body.classList.toggle('mailbox-mode', route === 'mailbox' || route === 'settings');
+  document.body.classList.toggle(
+    'mailbox-mode',
+    route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts'
+  );
 
   viewModel.settingsModal.applyTheme = applyTheme;
   applyTheme();
@@ -106,8 +143,11 @@ function bootstrap() {
   if (route === 'mailbox') viewModel.mailboxView.load();
   if (route === 'settings') viewModel.settingsModal.open();
   if (route === 'calendar') viewModel.calendarView.load();
+  if (route === 'contacts') viewModel.contactsView.load();
   initStarfield();
-  root.style.visibility = 'visible';
+
+  // Mark as ready to show - use class for better performance
+  root.classList.add('ready');
 
   if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
@@ -127,3 +167,57 @@ if (document.readyState === 'loading') {
 window.addEventListener('popstate', () => {
   viewModel.route(detectRoute());
 });
+
+// Handle hash-based compose deep link (e.g., /mailbox#compose=user@example.com)
+handleHashActions = function() {
+  const hash = window.location.hash || '';
+  if (hash.startsWith('#compose=')) {
+    const addr = decodeURIComponent(hash.replace('#compose=', ''));
+    if (addr) {
+      // Only set route if not already on mailbox
+      const currentRoute = viewModel.route();
+      if (currentRoute !== 'mailbox') {
+        viewModel.route('mailbox');
+      }
+      // Use setTimeout to ensure the route and modal are ready
+      setTimeout(() => {
+        viewModel.mailboxView.composeModal.open();
+        viewModel.mailboxView.composeModal.toList([addr]);
+      }, 0);
+    }
+  } else if (hash.startsWith('#addevent=')) {
+    const addr = decodeURIComponent(hash.replace('#addevent=', ''));
+    // Only set route if not already on calendar
+    const currentRoute = viewModel.route();
+    if (currentRoute !== 'calendar') {
+      viewModel.route('calendar');
+    }
+    // Use setTimeout to ensure the route and calendar are ready
+    setTimeout(() => {
+      if (viewModel.calendarView.prefillQuickEvent) {
+        viewModel.calendarView.prefillQuickEvent(addr);
+      }
+    }, 0);
+  } else if (hash.startsWith('#search=')) {
+    const term = decodeURIComponent(hash.replace('#search=', ''));
+    // Only set route if not already on mailbox
+    const currentRoute = viewModel.route();
+    if (currentRoute !== 'mailbox') {
+      viewModel.route('mailbox');
+    }
+    setTimeout(() => {
+      if (typeof viewModel.mailboxView.onSearch === 'function') {
+        viewModel.mailboxView.onSearch(term);
+        viewModel.mailboxView.page?.(1);
+        viewModel.mailboxView.loadMessages?.();
+      }
+    }, 0);
+  } else {
+    return;
+  }
+  // clear hash to avoid repeat
+  history.replaceState({}, '', window.location.pathname);
+}
+
+window.addEventListener('hashchange', handleHashActions);
+handleHashActions();

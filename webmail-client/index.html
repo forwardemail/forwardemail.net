@@ -67,6 +67,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        visibility: hidden;
+      }
+
+      #rl-app.ready {
+        visibility: visible;
       }
 
       body.mailbox-mode #rl-app {
@@ -794,6 +799,129 @@
         overflow: auto;
       }
 
+      .fe-contacts-shell {
+        background: var(--color-panel);
+        border: 1px solid var(--color-border);
+        border-radius: 14px;
+        padding: 12px;
+        min-height: calc(100vh - 140px);
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 12px;
+      }
+
+      .fe-contacts-list {
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 10px;
+        background: var(--color-panel);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .fe-contacts-list-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: space-between;
+      }
+
+      .fe-contacts-items {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow: auto;
+        max-height: 520px;
+      }
+
+      .fe-contact-row {
+        padding: 10px;
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .fe-contact-row.active {
+        border-color: var(--color-accent);
+        background: rgba(0, 175, 248, 0.06);
+      }
+
+      .fe-contact-name {
+        font-weight: 600;
+        color: var(--color-text);
+        font-size: 14px;
+      }
+
+      .fe-contact-email {
+        color: var(--color-muted);
+        font-size: 13px;
+        word-break: break-all;
+      }
+
+      .fe-contacts-detail {
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 14px;
+        background: var(--color-panel);
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .fe-contacts-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .fe-contacts-detail-col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fe-contact-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      body.light-mode .fe-contacts-shell,
+      body.light-mode .fe-contacts-list,
+      body.light-mode .fe-contacts-detail {
+        background: #ffffff;
+        border-color: #e2e8f0;
+      }
+
+      body.light-mode .fe-contact-row {
+        border-color: #e5e7eb;
+      }
+
+      .fe-menu-danger {
+        color: #f87171;
+      }
+
+      @media (max-width: 1024px) {
+        .fe-contacts-shell {
+          grid-template-columns: 1fr;
+        }
+        .fe-contacts-items {
+          max-height: 360px;
+        }
+        .fe-contacts-detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .fe-button {
         padding: 10px 14px;
         border-radius: 10px;
@@ -830,6 +958,17 @@
 
       .fe-button.ghost:hover:not(:disabled) {
         filter: brightness(1.05);
+      }
+
+      .fe-button.fe-danger {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #b91c1c;
+      }
+
+      .fe-button.fe-danger:hover:not(:disabled) {
+        background: #b91c1c;
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
       }
 
       .fe-mailbox-shell {
@@ -1873,7 +2012,7 @@
       <canvas id="stars2"></canvas>
       <canvas id="stars3"></canvas>
     </div>
-    <div class="fe-login-wrapper" data-bind="visible: route() === 'login'">
+    <div class="fe-login-wrapper" style="display: none;" data-bind="visible: route() === 'login'">
       <div class="LoginView" data-bind="with: loginUserView">
         <div class="fe-login-header">
           <div class="fe-logo" aria-hidden="true">
@@ -2406,6 +2545,137 @@
             <span>Schedule</span>
           </div>
         <div id="sx-calendar" style="min-height: calc(100vh - 140px);"></div>
+      </div>
+    </div>
+
+    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'contacts', with: contactsView">
+      <div class="fe-mailbox-header">
+        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
+        <div class="fe-title-left">
+          <h1>Contacts</h1>
+          <span data-bind="text: email"></span>
+        </div>
+      </div>
+
+        <div class="fe-contacts-shell">
+          <div class="fe-contacts-list">
+            <div class="fe-contacts-list-header">
+              <input type="search" class="fe-search" placeholder="Search contacts" data-bind="textInput: query" />
+            <button class="fe-button ghost fe-icon-btn" type="button" title="New contact" aria-label="New contact" data-bind="click: startNewContact">＋</button>
+            </div>
+            <!-- ko if: loading -->
+            <div class="fe-empty">Loading contacts…</div>
+            <!-- /ko -->
+            <!-- ko if: error -->
+          <div class="fe-alert error" data-bind="text: error"></div>
+          <!-- /ko -->
+          <!-- ko if: !loading() && filteredContacts().length -->
+          <ul class="fe-contacts-items" data-bind="foreach: filteredContacts">
+            <li class="fe-contact-row" data-bind="click: $parent.selectContact, css: { active: $parent.selectedContact() && $parent.selectedContact().id === id }">
+              <div class="fe-contact-name" data-bind="text: name || email || 'Unknown'"></div>
+              <div class="fe-contact-email" data-bind="text: email"></div>
+            </li>
+          </ul>
+          <!-- /ko -->
+          <!-- ko if: !loading() && !filteredContacts().length -->
+          <div class="fe-empty">No contacts found.</div>
+          <!-- /ko -->
+        </div>
+
+        <div class="fe-contacts-detail">
+          <!-- ko if: selectedContact -->
+          <div data-bind="with: selectedDraft">
+            <div class="fe-contacts-detail-grid">
+              <div class="fe-contacts-detail-col">
+                <div class="fe-reader-subject" data-bind="text: name || 'Contact'"></div>
+                <div class="fe-reader-from" data-bind="text: email"></div>
+
+                <!-- Contact fields -->
+                <label class="fe-settings-row">Name
+                  <input class="fe-input" type="text" data-bind="textInput: name, disable: !$parent.isEditing()" />
+                </label>
+                <label class="fe-settings-row">Primary email
+                  <input class="fe-input" type="email" data-bind="textInput: email, disable: !$parent.isEditing()" />
+                </label>
+                <label class="fe-settings-row">Phone
+                  <input class="fe-input" type="text" data-bind="textInput: phone, disable: !$parent.isEditing()" />
+                </label>
+
+                <label class="fe-settings-row">Birthday
+                  <input class="fe-input" type="date" data-bind="value: birthday, disable: !$parent.isEditing()" />
+                </label>
+
+                <label class="fe-settings-row">Mailing address
+                  <textarea class="fe-textarea" rows="3" data-bind="textInput: address, disable: !$parent.isEditing()"></textarea>
+                </label>
+
+              </div>
+
+              <div class="fe-contacts-detail-col">
+                <label class="fe-settings-row">Notes
+                  <textarea class="fe-textarea" rows="5" data-bind="textInput: notes, disable: !$parent.isEditing()"></textarea>
+                </label>
+                <div class="fe-contact-actions">
+                  <!-- View mode -->
+                  <!-- ko if: !$parent.isEditing() -->
+                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.startMail($data); }">Send email</button>
+                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.addEvent($data); }">Add event</button>
+                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.viewEmails($data); }">Search emails</button>
+                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.openEdit($data); }">Edit</button>
+                  <button class="fe-button fe-danger" type="button" data-bind="click: function(){ $parent.openDeleteConfirm($data); }">Delete</button>
+                  <!-- /ko -->
+                </div>
+                <!-- Edit mode -->
+                <!-- ko if: $parent.isEditing -->
+                <div class="fe-contact-actions">
+                  <button class="fe-button ghost" type="button" data-bind="click: $parent.cancelEdit">Cancel</button>
+                  <button class="fe-button" type="button" data-bind="click: function(){ $parent.saveContactInline(); }">Save</button>
+                </div>
+                <!-- /ko -->
+              </div>
+            </div>
+          </div>
+          <!-- /ko -->
+            <!-- ko if: !selectedContact() && !loading() -->
+            <div class="fe-empty">Select a contact to view details.</div>
+          <!-- /ko -->
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'contacts' && contactsView.confirmVisible()">
+      <div class="fe-modal" data-bind="with: contactsView">
+        <div class="fe-modal-header">
+          <h2>Delete contact</h2>
+          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: cancelDelete">✕</button>
+        </div>
+        <div class="fe-modal-body">
+          <div class="fe-alert error">Are you sure you want to delete this contact?</div>
+          <div class="fe-modal-actions">
+            <button class="fe-button ghost" type="button" data-bind="click: cancelDelete">Cancel</button>
+            <button class="fe-button fe-danger" type="button" data-bind="click: function(){ deleteContact(confirmTarget); }">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'contacts' && contactsView.modalVisible()">
+      <div class="fe-modal" data-bind="with: contactsView">
+        <div class="fe-modal-header">
+          <h2 data-bind="text: modalMode() === 'edit' ? 'Edit contact' : 'New contact'"></h2>
+          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: cancelEdit">✕</button>
+        </div>
+        <div class="fe-modal-body">
+          <input class="fe-input" type="text" placeholder="Full name" data-bind="textInput: modalName" />
+          <input class="fe-input" type="email" placeholder="Email" data-bind="textInput: modalEmail" />
+          <input class="fe-input" type="text" placeholder="Phone" data-bind="textInput: modalPhone" />
+          <textarea class="fe-textarea" placeholder="Notes" rows="3" data-bind="textInput: modalNotes"></textarea>
+          <div class="fe-alert error" data-bind="visible: modalError, text: modalError"></div>
+          <div class="fe-modal-actions">
+            <button class="fe-button ghost" type="button" data-bind="click: closeModal">Cancel</button>
+            <button class="fe-button" type="button" data-bind="click: saveContactInline, disable: modalSaving">Save</button>
+          </div>
+        </div>
       </div>
     </div>
 

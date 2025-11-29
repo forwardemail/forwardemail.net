@@ -132,6 +132,16 @@ export class CalendarView {
     }
   }
 
+  prefillQuickEvent(email) {
+    const startLocal = this.formatDateTimeLocal(new Date(Date.now() + 10 * 60 * 1000));
+    this.newEventTitle(email ? `Meeting with ${email}` : 'New event');
+    this.newEventStart(startLocal);
+    this.newEventDuration(60);
+    this.newEventDescription(email ? `Follow up with ${email}` : '');
+    this.newEventNotify(0);
+    this.newEventModal(true);
+  }
+
   async promptNewEvent(date) {
     const dateObj = this.toDate(date);
     const startLocal = this.formatDateTimeLocal(dateObj || new Date());
