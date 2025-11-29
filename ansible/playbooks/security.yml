@@ -745,6 +745,34 @@
         owner: root
         group: root
         mode: '0644'
+    - name: Create zsh configuration directory
+      file:
+        path: /etc/zsh/zshrc.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Deploy zsh command logging configuration
+      copy:
+        src: "{{ playbook_dir }}/files/bash-logging.sh"
+        dest: /etc/zsh/zshrc.d/command-logging.zsh
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Ensure zshrc sources zshrc.d directory
+      blockinfile:
+        path: /etc/zsh/zshrc
+        create: yes
+        block: |
+          # Source command logging
+          if [ -d /etc/zsh/zshrc.d ]; then
+            for file in /etc/zsh/zshrc.d/*.zsh; do
+              [ -r "$file" ] && source "$file"
+            done
+          fi
+        owner: root
+        group: root
+        mode: '0644'
 
     - name: Configure rsyslog to capture bash commands
       blockinfile:
@@ -752,7 +780,10 @@
         create: yes
         block: |
           # Log bash commands to separate file
-          local6.* /var/log/bash-commands.log
+          if $programname == 'bash_command' or $programname == 'zsh_command' then {
+              action(type="omfile" file="/var/log/bash-commands.log" FileOwner="syslog" FileGroup="adm" FileCreateMode="0640")
+              stop
+          }
         owner: root
         group: root
         mode: '0644'
@@ -762,8 +793,8 @@
       file:
         path: /var/log/bash-commands.log
         state: touch
-        owner: root
-        group: root
+        owner: syslog
+        group: adm
         mode: '0640'
 
     - name: Configure logrotate for bash commands log
@@ -777,7 +808,7 @@
               delaycompress
               missingok
               notifempty
-              create 0640 root root
+              create 0640 syslog adm
               sharedscripts
               postrotate
                   /usr/lib/rsyslog/rsyslog-rotate
