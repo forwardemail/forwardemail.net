@@ -1510,6 +1510,149 @@
         white-space: nowrap;
       }
 
+      /* Conversation view styles */
+      .fe-conversation-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow: auto;
+        flex: 1;
+      }
+
+      .fe-conversation-item {
+        padding: 12px;
+        border-radius: 10px;
+        background: var(--color-panel);
+        border: 1px solid var(--color-border);
+        cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .fe-conversation-item:hover {
+        background: rgba(0, 175, 248, 0.04);
+      }
+
+      .fe-conversation-item.active {
+        border-color: rgba(0, 175, 248, 0.4);
+        background: rgba(0, 175, 248, 0.08);
+      }
+
+      .fe-conversation-item.fe-unread .fe-conversation-subject,
+      .fe-conversation-item.fe-unread .fe-conversation-from {
+        font-weight: 700;
+      }
+
+      .fe-conversation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 0;
+      }
+
+      .fe-conversation-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .fe-conversation-from {
+        color: var(--color-muted);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .fe-conversation-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        background-color: rgba(0, 175, 248, 0.15);
+        color: var(--brand-primary);
+        border-radius: 11px;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .fe-conversation-date {
+        font-size: 12px;
+        color: var(--color-muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .fe-conversation-subject {
+        color: var(--color-text);
+        font-size: 15px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .fe-conversation-preview {
+        color: var(--color-muted);
+        font-size: 13px;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .fe-conversation-messages {
+        margin-top: 8px;
+        padding-top: 12px;
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .fe-conversation-message {
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: background 0.15s;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .fe-conversation-message:hover {
+        background: rgba(0, 175, 248, 0.08);
+      }
+
+      .fe-conversation-message.active {
+        background: rgba(0, 175, 248, 0.15);
+        border-left: 3px solid var(--brand-primary);
+        padding-left: 9px;
+      }
+
+      .fe-conversation-message.fe-unread {
+        background: rgba(0, 175, 248, 0.1);
+        font-weight: 600;
+      }
+
+      .fe-icon-btn.fe-active {
+        background: rgba(0, 175, 248, 0.15);
+        color: var(--brand-primary);
+        border-color: rgba(0, 175, 248, 0.3);
+      }
+
       .fe-empty {
         border: 1px dashed var(--color-border);
         border-radius: 10px;
@@ -2075,6 +2218,15 @@
               />
             </div>
             <div class="fe-toolbar-actions">
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                title="Toggle conversation view"
+                aria-label="Toggle conversation view"
+                data-bind="click: toggleThreading, css: { 'fe-active': threadingEnabled }"
+              >
+                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </button>
               <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ navigate('/contacts'); }">
                 <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
               </button>
@@ -2172,7 +2324,8 @@
           <div class="fe-empty">Loading messages…</div>
           <!-- /ko -->
 
-          <!-- ko if: !loading() && filteredMessages().length -->
+          <!-- Traditional message list (threading disabled) -->
+          <!-- ko if: !loading() && !threadingEnabled() && filteredMessages().length -->
           <ul class="fe-message-list" data-bind="foreach: filteredMessages">
             <li
               class="fe-message"
@@ -2188,7 +2341,57 @@
           </ul>
           <!-- /ko -->
 
-          <!-- ko if: !loading() && !filteredMessages().length -->
+          <!-- Conversation view (threading enabled) -->
+          <!-- ko if: !loading() && threadingEnabled() && conversations().length -->
+          <ul class="fe-conversation-list" data-bind="foreach: conversations">
+            <li class="fe-conversation-item" data-bind="
+              click: function() { $parent.selectConversation($data); },
+              css: {
+                'fe-unread': hasUnread,
+                'fe-expanded': $parent.isConversationExpanded(id),
+                'active': $parent.selectedConversation() && $parent.selectedConversation().id === id
+              }">
+
+              <!-- Conversation header -->
+              <div class="fe-conversation-header">
+                <div class="fe-conversation-meta">
+                  <span class="fe-conversation-from" data-bind="text: latestFrom"></span>
+                  <!-- ko if: messageCount > 1 -->
+                  <span class="fe-conversation-count" data-bind="text: messageCount"></span>
+                  <!-- /ko -->
+                  <!-- ko if: hasAttachment -->
+                  <svg class="fe-icon-sm" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px; opacity: 0.6;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                  <!-- /ko -->
+                </div>
+                <span class="fe-conversation-date" data-bind="text: latestDate ? $parent.formatDate(latestDate) : ''"></span>
+              </div>
+
+              <!-- Subject -->
+              <div class="fe-conversation-subject" data-bind="text: displaySubject"></div>
+
+              <!-- Preview -->
+              <div class="fe-conversation-preview" data-bind="text: $parent.getConversationPreview($data)"></div>
+
+              <!-- Expanded message list -->
+              <!-- ko if: $parent.isConversationExpanded(id) && messages.length > 1 -->
+              <div class="fe-conversation-messages" data-bind="foreach: messages">
+                <div class="fe-conversation-message" data-bind="
+                  click: function(msg, e) { e.stopPropagation(); $parents[1].selectMessage(msg); },
+                  css: { 'fe-unread': is_unread, 'active': $parents[1].selectedMessage() && $parents[1].selectedMessage().id === id }">
+                  <div class="fe-message-top">
+                    <span class="fe-message-from" data-bind="text: from"></span>
+                    <span class="fe-message-date" data-bind="text: date"></span>
+                  </div>
+                  <div class="fe-message-snippet" data-bind="text: snippet"></div>
+                </div>
+              </div>
+              <!-- /ko -->
+            </li>
+          </ul>
+          <!-- /ko -->
+
+          <!-- Empty state -->
+          <!-- ko if: !loading() && !filteredMessages().length && !conversations().length -->
           <div class="fe-empty">No messages in this folder yet.</div>
           <!-- /ko -->
 

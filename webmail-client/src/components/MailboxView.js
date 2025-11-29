@@ -8,6 +8,7 @@ import PostalMime from 'postal-mime';
 import FlexSearch from 'flexsearch';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { db } from '../utils/db';
+import { groupIntoConversations, deduplicateMessages, buildConversationTree, flattenConversationTree } from '../utils/threading';
 
 function bufferToDataUrl(attachment) {
   try {
@@ -137,6 +138,11 @@ export class MailboxView {
     this.searchTimer = null;
     this.sidebarOpen = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
     this.isDesktop = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
+    // Threading
+    this.threadingEnabled = ko.observable(Local.get('threading_enabled') !== 'false'); // enabled by default
+    this.conversations = ko.observableArray([]);
+    this.selectedConversation = ko.observable(null);
+    this.expandedConversations = ko.observable(new Set()); // Track which conversations are expanded
     this.accountMenuOpen = ko.observable(false);
     this.mobileReader = ko.observable(false);
     this.handleResize = () => {
@@ -408,6 +414,15 @@ export class MailboxView {
           this.messages().map((msg) => ({ ...msg, updatedAt: Date.now() }))
         );
         this.rebuildSearchIndex(this.messages());
+
+        // Group messages into conversations if threading is enabled
+        if (this.threadingEnabled()) {
+          const conversations = groupIntoConversations(this.messages());
+          this.conversations(conversations);
+        } else {
+          this.conversations([]);
+        }
+
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
           messagesRes?.Unread ||
@@ -1020,6 +1035,68 @@ export class MailboxView {
       .forEach((f) => ordered.push({ ...f, icon: f.icon || 'folder' }));
 
     return ordered;
+  }
+
+  toggleThreading() {
+    const newValue = !this.threadingEnabled();
+    this.threadingEnabled(newValue);
+    Local.set('threading_enabled', newValue ? 'true' : 'false');
+
+    // Re-group messages
+    if (newValue) {
+      const conversations = groupIntoConversations(this.messages());
+      this.conversations(conversations);
+    } else {
+      this.conversations([]);
+    }
+
+    this.toasts?.show(
+      newValue ? 'Conversation view enabled' : 'Conversation view disabled',
+      'success'
+    );
+  }
+
+  toggleConversation(conversationId) {
+    const expanded = this.expandedConversations();
+    const newExpanded = new Set(expanded);
+
+    if (newExpanded.has(conversationId)) {
+      newExpanded.delete(conversationId);
+    } else {
+      newExpanded.add(conversationId);
+    }
+
+    this.expandedConversations(newExpanded);
+    this.expandedConversations.valueHasMutated?.();
+  }
+
+  isConversationExpanded(conversationId) {
+    return this.expandedConversations().has(conversationId);
+  }
+
+  selectConversation(conversation) {
+    this.selectedConversation(conversation);
+
+    // Auto-expand when selected
+    if (!this.isConversationExpanded(conversation.id)) {
+      this.toggleConversation(conversation.id);
+    }
+
+    // Select the latest message in the conversation
+    if (conversation.messages && conversation.messages.length > 0) {
+      const latestMessage = conversation.messages[conversation.messages.length - 1];
+      this.selectedMessage(latestMessage);
+      this.loadMessage(latestMessage);
+    }
+  }
+
+  getConversationPreview(conversation) {
+    if (!conversation) return '';
+
+    const count = conversation.messageCount;
+    if (count === 1) return conversation.snippet;
+
+    return `(${count} messages) ${conversation.snippet}`;
   }
 
   setMockData() {
