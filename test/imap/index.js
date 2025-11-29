@@ -48,9 +48,9 @@ const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

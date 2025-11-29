@@ -35,9 +35,9 @@ const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const { Emails } = require('#models');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

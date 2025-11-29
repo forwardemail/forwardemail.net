@@ -33,9 +33,9 @@ const webConfig = require('#config/web');
 
 const { Users, Domains, Payments, Aliases } = require('#models');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 
@@ -86,6 +86,7 @@ exports.setupApiServer = async (t) => {
   subscriber.setMaxListeners(0);
   t.context.subscriber = subscriber;
 
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const sqlitePort = await getPort();
   const SQLite = require('../sqlite-server');
   const sqlite = new SQLite({ client, subscriber });

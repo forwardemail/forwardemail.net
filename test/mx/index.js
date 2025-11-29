@@ -37,9 +37,9 @@ const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

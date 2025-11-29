@@ -33,9 +33,9 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 const xmlHelpers = require('#helpers/carddav-xml');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

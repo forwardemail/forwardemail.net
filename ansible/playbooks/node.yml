@@ -270,22 +270,7 @@
       args:
         executable: /bin/bash
     
-    # Deploy PM2 error notification script
-    - name: Deploy PM2 error notification script
-      template:
-        src: "{{ playbook_dir }}/templates/pm2-error-notification.js.j2"
-        dest: /usr/local/bin/pm2-error-notification.js
-        owner: deploy
-        group: deploy
-        mode: '0755'
-    
-    - name: Install nodemailer for PM2 error notifications
-      become: true
-      become_user: deploy
-      shell: source /home/deploy/.bashrc && cd /usr/local/bin && npm install nodemailer
-      args:
-        executable: /bin/bash
-    
+
     - name: Check that pm2 startup script exists
       stat:
         path: /etc/systemd/system/pm2-deploy.service

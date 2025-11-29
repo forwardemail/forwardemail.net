@@ -52,9 +52,9 @@ const processEmail = require('#helpers/process-email');
 const { Logs, Domains, Emails } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

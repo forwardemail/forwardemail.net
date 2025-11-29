@@ -32,9 +32,9 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 

@@ -30,9 +30,9 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
-// dynamically import @ava/get-port
+// dynamically import get-port
 let getPort;
-import('@ava/get-port').then((obj) => {
+import('get-port').then((obj) => {
   getPort = obj.default;
 });
 
