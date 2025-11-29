@@ -1,0 +1,33 @@
+[Unit]
+Description=Root Access Monitor
+Documentation=https://github.com/forwardemail/forwardemail.net
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/root-access-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=root-access-monitor
+
+# Security hardening
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/log /var/lock /tmp /etc/security-monitor
+
+# Resource limits
+MemoryLimit=256M
+CPUQuota=10%
+TasksMax=10
+
+# Restart policy
+Restart=on-failure
+RestartSec=60
+
+# Failure notification
+OnFailure=failure-notification@%n.service
+
+[Install]
+WantedBy=multi-user.target

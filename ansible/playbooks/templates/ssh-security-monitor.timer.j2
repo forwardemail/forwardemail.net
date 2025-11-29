@@ -1,0 +1,14 @@
+[Unit]
+Description=SSH Security Monitor Timer
+Documentation=https://github.com/forwardemail/forwardemail.net
+Requires=ssh-security-monitor.service
+
+[Timer]
+# Run every 10 minutes
+OnBootSec=3min
+OnUnitActiveSec=10min
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

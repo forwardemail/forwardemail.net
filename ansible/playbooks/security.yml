@@ -364,6 +364,212 @@
       systemd:
         daemon_reload: yes
 
+    # Deploy security monitoring scripts
+    - name: Create security monitor configuration directory
+      file:
+        path: /etc/security-monitor
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create authorized IPs whitelist file
+      copy:
+        dest: /etc/security-monitor/authorized-ips.conf
+        content: |
+          # Authorized IP addresses (one per line)
+          # Example: 192.168.1.100
+        mode: '0644'
+        owner: root
+        group: root
+        force: no
+
+    - name: Create authorized users whitelist file
+      copy:
+        dest: /etc/security-monitor/authorized-users.conf
+        content: |
+          # Authorized users (one per line)
+          devops
+          deploy
+        mode: '0644'
+        owner: root
+        group: root
+        force: no
+
+    - name: Create authorized USB devices whitelist file
+      copy:
+        dest: /etc/security-monitor/authorized-usb-devices.conf
+        content: |
+          # Authorized USB devices (vendor:product format, one per line)
+          # Example: 1234:5678
+          # Get IDs using: lsusb
+        mode: '0644'
+        owner: root
+        group: root
+        force: no
+
+    - name: Create authorized root users whitelist file
+      copy:
+        dest: /etc/security-monitor/authorized-root-users.conf
+        content: |
+          # Authorized root users (one per line)
+          devops
+        mode: '0644'
+        owner: root
+        group: root
+        force: no
+
+    - name: Create authorized sudo users whitelist file
+      copy:
+        dest: /etc/security-monitor/authorized-sudo-users.conf
+        content: |
+          # Authorized sudo users (one per line)
+          devops
+        mode: '0644'
+        owner: root
+        group: root
+        force: no
+
+    - name: Deploy system resource monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/system-resource-monitor.sh"
+        dest: /usr/local/bin/system-resource-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy SSH security monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/ssh-security-monitor.sh"
+        dest: /usr/local/bin/ssh-security-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy USB device monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/usb-device-monitor.sh"
+        dest: /usr/local/bin/usb-device-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy root access monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/root-access-monitor.sh"
+        dest: /usr/local/bin/root-access-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Deploy systemd service units
+    - name: Deploy system resource monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/system-resource-monitor.service.j2"
+        dest: /etc/systemd/system/system-resource-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy system resource monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/system-resource-monitor.timer.j2"
+        dest: /etc/systemd/system/system-resource-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy SSH security monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/ssh-security-monitor.service.j2"
+        dest: /etc/systemd/system/ssh-security-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy SSH security monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/ssh-security-monitor.timer.j2"
+        dest: /etc/systemd/system/ssh-security-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy USB device monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/usb-device-monitor.service.j2"
+        dest: /etc/systemd/system/usb-device-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy USB device monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/usb-device-monitor.timer.j2"
+        dest: /etc/systemd/system/usb-device-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy USB device monitor udev rules
+      template:
+        src: "{{ playbook_dir }}/templates/usb-monitor.rules.j2"
+        dest: /etc/udev/rules.d/99-usb-monitor.rules
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy root access monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/root-access-monitor.service.j2"
+        dest: /etc/systemd/system/root-access-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy root access monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/root-access-monitor.timer.j2"
+        dest: /etc/systemd/system/root-access-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Reload systemd and enable monitoring services
+    - name: Reload systemd daemon for monitoring services
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start system resource monitor timer
+      systemd:
+        name: system-resource-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start SSH security monitor timer
+      systemd:
+        name: ssh-security-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start USB device monitor timer
+      systemd:
+        name: usb-device-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start root access monitor timer
+      systemd:
+        name: root-access-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Reload udev rules for USB monitoring
+      command: udevadm control --reload-rules
+
+    - name: Trigger udev rules
+      command: udevadm trigger
+
     # create devops group
     - name: Create devops group
       group:

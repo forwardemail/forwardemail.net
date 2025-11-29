@@ -1,0 +1,14 @@
+[Unit]
+Description=USB Device Monitor Timer
+Documentation=https://github.com/forwardemail/forwardemail.net
+Requires=usb-device-monitor.service
+
+[Timer]
+# Run every 5 minutes
+OnBootSec=4min
+OnUnitActiveSec=5min
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

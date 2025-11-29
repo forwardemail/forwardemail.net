@@ -1,0 +1,15 @@
+# USB Device Monitor udev Rules
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+#
+# This file triggers the USB device monitor when USB devices are added
+# Place in /etc/udev/rules.d/99-usb-monitor.rules
+
+# Trigger USB device monitor when any USB device is added
+ACTION=="add", SUBSYSTEM=="usb", RUN+="/usr/local/bin/usb-device-monitor.sh"
+
+# Log USB device additions to syslog
+ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", RUN+="/usr/bin/logger -t usb-monitor 'USB device added: $env{PRODUCT}'"
+
+# Log USB device removals to syslog
+ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", RUN+="/usr/bin/logger -t usb-monitor 'USB device removed: $env{PRODUCT}'"

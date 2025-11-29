@@ -1,0 +1,33 @@
+[Unit]
+Description=System Resource Monitor
+Documentation=https://github.com/forwardemail/forwardemail.net
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/system-resource-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=system-resource-monitor
+
+# Security hardening
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/log /var/lock /tmp
+
+# Resource limits
+MemoryLimit=256M
+CPUQuota=10%
+TasksMax=10
+
+# Restart policy
+Restart=on-failure
+RestartSec=60
+
+# Failure notification
+OnFailure=failure-notification@%n.service
+
+[Install]
+WantedBy=multi-user.target
