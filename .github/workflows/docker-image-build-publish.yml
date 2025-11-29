@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: false
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
