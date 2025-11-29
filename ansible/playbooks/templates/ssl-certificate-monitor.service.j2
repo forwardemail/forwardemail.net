@@ -1,31 +1,17 @@
 [Unit]
-Description=SSL Certificate Monitor
+Description=Ssl Certificate Monitor
 After=network.target
+Docs=https://github.com/forwardemail/forwardemail.net
 
 [Service]
 Type=oneshot
-Environment="WEB_URL={{ web_url | default('https://forwardemail.net') }}"
+Environment="WEB_URL=https://forwardemail.net"
 ExecStart=/usr/local/bin/ssl-certificate-monitor.sh
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=ssl-certificate-monitor
-
-# Security hardening
-PrivateTmp=yes
-NoNewPrivileges=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=/var/log /var/lock
-ProtectKernelTunables=yes
-ProtectKernelModules=yes
-ProtectControlGroups=yes
-RestrictRealtime=yes
-RestrictNamespaces=yes
-LockPersonality=yes
-MemoryDenyWriteExecute=no
-RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
-SystemCallFilter=@system-service
-SystemCallErrorNumber=EPERM
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target

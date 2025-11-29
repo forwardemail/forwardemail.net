@@ -1,6 +1,7 @@
 [Unit]
-Description=Lynis System Security Audit Monitor
+Description=Lynis Audit Monitor
 After=network.target
+Docs=https://github.com/forwardemail/forwardemail.net
 
 [Service]
 Type=oneshot
@@ -8,23 +9,8 @@ ExecStart=/usr/local/bin/lynis-audit-monitor.sh
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=lynis-audit-monitor
-
-# Security hardening
-PrivateTmp=yes
-NoNewPrivileges=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=/var/log /var/lib/lynis-audit-monitor /var/lock /etc/security-monitor
-ProtectKernelTunables=yes
-ProtectKernelModules=yes
-ProtectControlGroups=yes
-RestrictRealtime=yes
-RestrictNamespaces=yes
-LockPersonality=yes
-MemoryDenyWriteExecute=no
-RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
-SystemCallFilter=@system-service
-SystemCallErrorNumber=EPERM
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target

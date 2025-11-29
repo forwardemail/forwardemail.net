@@ -21,6 +21,14 @@
       service:
         name: postfix
         state: restarted
+    - name: Restart auditd
+      service:
+        name: auditd
+        state: restarted
+    - name: Restart rsyslog
+      service:
+        name: rsyslog
+        state: restarted
   tasks:
     - name: Delete Digital Ocean Networking Configuration
       ansible.builtin.file:
@@ -714,6 +722,71 @@
 
     - name: Trigger udev rules
       command: udevadm trigger
+
+    # Configure comprehensive command logging
+    - name: Install auditd for command logging
+      apt:
+        name: auditd
+        state: present
+        update_cache: yes
+
+    - name: Deploy audit rules for command logging
+      copy:
+        src: "{{ playbook_dir }}/files/audit-commands.rules"
+        dest: /etc/audit/rules.d/audit-commands.rules
+        owner: root
+        group: root
+        mode: '0640'
+      notify: Restart auditd
+
+    - name: Deploy bash command logging configuration
+      copy:
+        src: "{{ playbook_dir }}/files/bash-logging.sh"
+        dest: /etc/profile.d/bash-logging.sh
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Configure rsyslog to capture bash commands
+      blockinfile:
+        path: /etc/rsyslog.d/50-bash-logging.conf
+        create: yes
+        block: |
+          # Log bash commands to separate file
+          local6.* /var/log/bash-commands.log
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart rsyslog
+
+    - name: Create bash commands log file
+      file:
+        path: /var/log/bash-commands.log
+        state: touch
+        owner: root
+        group: root
+        mode: '0640'
+
+    - name: Configure logrotate for bash commands log
+      copy:
+        dest: /etc/logrotate.d/bash-commands
+        content: |
+          /var/log/bash-commands.log {
+              daily
+              rotate 30
+              compress
+              delaycompress
+              missingok
+              notifempty
+              create 0640 root root
+              sharedscripts
+              postrotate
+                  /usr/lib/rsyslog/rsyslog-rotate
+              endscript
+          }
+        owner: root
+        group: root
+        mode: '0644'
 
     # create devops group
     - name: Create devops group

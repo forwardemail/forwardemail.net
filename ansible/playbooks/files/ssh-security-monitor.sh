@@ -232,9 +232,10 @@ analyze_logged_in_users() {
     fi
 }
 
-# Analyze recent commands (from bash history and sudo logs)
+# Analyze recent commands (from bash history, sudo logs, and bash-commands.log)
 analyze_recent_commands() {
     local new_entries="$1"
+    local last_check=$(get_last_check)
 
     # Get sudo commands from auth.log
     local sudo_commands=$(echo "$new_entries" | grep -E "sudo:.*COMMAND=" || true)
@@ -248,6 +249,43 @@ analyze_recent_commands() {
 
             log_activity "  user=$user command=$command timestamp=$timestamp"
         done <<< "$sudo_commands"
+    fi
+
+    # Get all bash commands from bash-commands.log
+    if [ -f /var/log/bash-commands.log ]; then
+        local bash_commands=$(awk -v start="$last_check" '
+            BEGIN { 
+                cmd="date +%s"
+                cmd | getline current_time
+                close(cmd)
+            }
+            {
+                # Extract timestamp from log line
+                match($0, /[A-Z][a-z]{2} +[0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2}/, ts)
+                if (ts[0]) {
+                    cmd="date -d \"" ts[0] " " strftime("%Y") "\" +%s 2>/dev/null"
+                    cmd | getline log_time
+                    close(cmd)
+                    if (log_time >= start) print
+                }
+            }
+        ' /var/log/bash-commands.log 2>/dev/null || echo "")
+
+        if [ -n "$bash_commands" ]; then
+            log_activity "ALL BASH COMMANDS EXECUTED:"
+            while IFS= read -r line; do
+                log_activity "  $line"
+            done <<< "$bash_commands"
+        fi
+    fi
+
+    # Get su usage
+    local su_usage=$(echo "$new_entries" | grep -E "su:.*session (opened|closed)" || true)
+    if [ -n "$su_usage" ]; then
+        log_activity "SU USAGE:"
+        while IFS= read -r line; do
+            log_activity "  $line"
+        done <<< "$su_usage"
     fi
 }
 

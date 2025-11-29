@@ -1,7 +1,7 @@
 [Unit]
-Description=USB Device Monitor
-Documentation=https://github.com/forwardemail/forwardemail.net
+Description=Usb Device Monitor
 After=network.target
+Docs=https://github.com/forwardemail/forwardemail.net
 
 [Service]
 Type=oneshot
@@ -9,25 +9,8 @@ ExecStart=/usr/local/bin/usb-device-monitor.sh
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=usb-device-monitor
-
-# Security hardening
-PrivateTmp=yes
-NoNewPrivileges=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=/var/log /var/lock /tmp /etc/security-monitor
-
-# Resource limits
-MemoryLimit=256M
-CPUQuota=10%
-TasksMax=10
-
-# Restart policy
-Restart=on-failure
-RestartSec=60
-
-# Failure notification
-OnFailure=failure-notification@%n.service
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,40 @@
+# Audit Rules for Command Logging
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+#
+# This file contains audit rules to track all command executions
+# and user activity on the system
+
+## Remove any existing rules
+-D
+
+## Buffer Size
+-b 8192
+
+## Failure Mode
+## 0=silent 1=printk 2=panic
+-f 1
+
+## Track all command executions (execve syscall)
+-a always,exit -F arch=b64 -S execve -k commands
+-a always,exit -F arch=b32 -S execve -k commands
+
+## Track user/group file modifications
+-w /etc/passwd -p wa -k identity
+-w /etc/group -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/gshadow -p wa -k identity
+
+## Track sudo configuration changes
+-w /etc/sudoers -p wa -k sudoers
+-w /etc/sudoers.d/ -p wa -k sudoers
+
+## Track su usage
+-w /bin/su -p x -k su_usage
+
+## Track SSH key modifications
+-w /root/.ssh -p wa -k root_ssh_keys
+-w /home/ -p wa -k user_ssh_keys
+
+## Make configuration immutable (requires reboot to change)
+-e 2
