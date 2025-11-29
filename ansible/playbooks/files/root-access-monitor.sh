@@ -317,8 +317,8 @@ main() {
 
             log_message "Sudo command detected: $sudo_user executed $sudo_command"
 
-            if ! is_authorized_sudo_user "$sudo_user"; then
-                if should_send_alert "sudo" "$sudo_user"; then
+            if ! is_authorized_sudo_user "$sudo_user" || true; then
+                if should_send_alert "sudo" "$sudo_user" || true; then
                     send_sudo_alert "$sudo_user" "$sudo_command" "$sudo_time"
                 fi
             else
@@ -339,8 +339,8 @@ main() {
             if [ -n "$su_user" ]; then
                 log_message "Su to root detected by user: $su_user"
 
-                if ! is_authorized_root_user "$su_user"; then
-                    if should_send_alert "su" "$su_user"; then
+                if ! is_authorized_root_user "$su_user" || true; then
+                    if should_send_alert "su" "$su_user" || true; then
                         send_su_alert "$su_user" "$recent_su"
                     fi
                 else
