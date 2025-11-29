@@ -1,0 +1,11 @@
+[Unit]
+Description=SSL Certificate Monitor Timer
+Requires=ssl-certificate-monitor.service
+
+[Timer]
+OnCalendar=daily
+OnBootSec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

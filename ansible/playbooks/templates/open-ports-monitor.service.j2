@@ -1,0 +1,30 @@
+[Unit]
+Description=Open Ports Monitor
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/open-ports-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=open-ports-monitor
+
+# Security hardening
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/log /var/lib/open-ports-monitor /var/lock /etc/security-monitor
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=no
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

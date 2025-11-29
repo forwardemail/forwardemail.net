@@ -157,9 +157,13 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 
 Comprehensive automated monitoring with email notifications for:
 - 📊 **System Resource Monitoring** - CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds
-- 🔐 **SSH Security Monitoring** - Failed logins, root access, unknown IPs
+- 🔐 **SSH Security Monitoring** - ALL SSH activity (successful/failed logins, logged in users, commands)
 - 🔌 **USB Device Monitoring** - Unknown device detection with whitelisting
 - 👤 **Root Access Monitoring** - Sudo, su, and direct root login tracking
+- 🔍 **[Lynis](https://github.com/CISOfy/lynis) System Audit** - Daily security audits with hardening index
+- 📦 **Package Installation Monitoring** - Track package installations, upgrades, removals
+- 🌐 **Open Ports Monitoring** - Monitor network ports and detect changes
+- 🔒 **SSL Certificate Monitoring** - Certificate expiration tracking for WEB_URL
 
 **Features**:
 - ⏱️ Periodic monitoring via [systemd](https://github.com/systemd/systemd) timers
@@ -175,31 +179,35 @@ Comprehensive automated monitoring with email notifications for:
 
 **[Monitoring Testing Guide](docs/MONITORING_TESTING.md)**
 
-Complete testing procedures for **all 14 monitoring systems** across the infrastructure:
+Complete testing procedures for **all 18 monitoring systems** across the infrastructure:
 
-**Security Playbook (4 systems)**:
+**Security Playbook (8 systems)**:
 1. System Resource Monitor
-2. SSH Security Monitor
+2. SSH Security Monitor (Enhanced - logs ALL SSH activity)
 3. USB Device Monitor
 4. Root Access Monitor
+5. [Lynis](https://github.com/CISOfy/lynis) System Audit Monitor
+6. Package Installation Monitor
+7. Open Ports Monitor
+8. SSL Certificate Monitor
 
 **Node Playbook (1 system)**:
-5. [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
+9. [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
 
 **MongoDB Playbook (3 systems)**:
-6. [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
-7. MongoDB UFW Whitelist Update Monitoring
-8. MongoDB Backup Monitoring
+10. [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
+11. MongoDB UFW Whitelist Update Monitoring
+12. MongoDB Backup Monitoring
 
 **Redis Playbook (4 systems)**:
-9. [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
-10. Redis UFW Whitelist Update Monitoring
-11. Redis Backup Monitoring
-12. Redis Command Usage Monitoring
+13. [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
+14. Redis UFW Whitelist Update Monitoring
+15. Redis Backup Monitoring
+16. Redis Command Usage Monitoring
 
 **Mail & DNS Playbooks (2 systems)**:
-13. Mail Service Failure Notifications
-14. [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
+17. Mail Service Failure Notifications
+18. [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
 
 **Each system includes**:
 - ✅ Purpose and description

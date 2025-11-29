@@ -1,0 +1,11 @@
+[Unit]
+Description=Package Installation Monitor Timer
+Requires=package-monitor.service
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,6 +1,6 @@
 # Comprehensive Ansible Monitoring Testing Guide
 
-This guide provides complete testing procedures for all monitoring and notification systems deployed across your Ansible playbooks.
+This guide provides complete testing procedures for all **18 monitoring systems** deployed across the Forward Email infrastructure.
 
 ---
 
@@ -23,11 +23,15 @@ This guide provides complete testing procedures for all monitoring and notificat
 
 ### Monitoring Systems Deployed
 
-**Security Playbook (security.yml)**
-- System Resource Monitor (CPU/Memory)
-- SSH Security Monitor
-- USB Device Monitor
-- Root Access Monitor
+**Security Playbook (security.yml) - 8 systems**
+- System Resource Monitor (CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds)
+- SSH Security Monitor (Enhanced - logs ALL SSH activity: successful/failed logins, logged in users, commands)
+- USB Device Monitor (Unknown device detection with whitelisting)
+- Root Access Monitor (Sudo, su, and direct root login tracking)
+- Lynis System Audit Monitor (Daily security audits with hardening index)
+- Package Installation Monitor (Track installations, upgrades, removals)
+- Open Ports Monitor (Monitor network ports and detect changes)
+- SSL Certificate Monitor (Certificate expiration tracking for WEB_URL)
 
 **Node Playbook (node.yml)**
 - PM2 Service Failure Notifications
@@ -142,15 +146,16 @@ sudo journalctl -u system-resource-monitor.service -n 20
 
 ---
 
-### 2. SSH Security Monitor
+### 2. SSH Security Monitor (Enhanced)
 
-**Purpose**: Monitors failed SSH logins, root access, and unknown IP addresses
+**Purpose**: Monitors ALL SSH activity including successful logins, failed attempts, logged in users, and commands executed
 
 **Files Deployed**:
 - Script: `/usr/local/bin/ssh-security-monitor.sh`
 - Service: `/etc/systemd/system/ssh-security-monitor.service`
 - Timer: `/etc/systemd/system/ssh-security-monitor.timer`
 - Log: `/var/log/ssh-security-monitor.log`
+- Activity Log: `/var/log/ssh-activity.log` (logs ALL SSH activity)
 - Whitelist: `/etc/security-monitor/authorized-ips.conf`
 - Whitelist: `/etc/security-monitor/authorized-users.conf`
 
@@ -170,32 +175,65 @@ sudo systemctl list-timers | grep ssh-security-monitor
 # 3. Manually trigger the monitor
 sudo systemctl start ssh-security-monitor.service
 
-# 4. Check the log output
+# 4. Check the monitoring log output
 sudo tail -f /var/log/ssh-security-monitor.log
 
-# Expected: Shows SSH activity summary
+# Expected: Shows SSH monitoring status
 
-# 5. View authorized IPs whitelist
+# 5. Check the activity log (logs ALL SSH activity)
+sudo tail -f /var/log/ssh-activity.log
+
+# Expected: Shows successful logins, failed attempts, sudo commands
+
+# 6. View authorized IPs whitelist
 sudo cat /etc/security-monitor/authorized-ips.conf
 
-# 6. View authorized users whitelist
+# 7. View authorized users whitelist
 sudo cat /etc/security-monitor/authorized-users.conf
 
-# 7. Check recent SSH authentication attempts
+# 8. Check recent SSH authentication attempts
 sudo journalctl -u ssh.service -n 100 | grep -i "failed\|accepted"
+
+# 9. Check currently logged in users
+who
+
+# 10. Check recent sudo commands
+sudo journalctl -n 100 | grep sudo
 ```
 
 **Trigger Alert Test**:
 
 ```bash
+# Test 1: Successful login logging
+ssh valid_user@localhost
+
+# Check activity log for successful login
+sudo grep "SUCCESSFUL LOGIN" /var/log/ssh-activity.log
+
+# Test 2: Failed login detection
 # From another machine, attempt failed SSH logins (5+ times)
-# This will trigger the failed login threshold
+ssh invalid_user@localhost  # Repeat 5+ times
 
-# Or test root SSH access (immediate alert, no rate limiting)
+# Check for failed login detection
+sudo grep "FAILED LOGINS" /var/log/ssh-activity.log
+
+# Test 3: Root SSH access (immediate alert, no rate limiting)
 # (Only if root login is enabled for testing)
+ssh root@localhost
 
-# Check for alert
+# Check for immediate root access alert
+sudo grep "ROOT SSH ACCESS" /var/log/ssh-activity.log
+
+# Test 4: Sudo command logging
+sudo ls /root
+
+# Check for sudo command logging
+sudo grep "SUDO COMMANDS" /var/log/ssh-activity.log
+
+# Trigger monitoring to send alerts
 sudo systemctl start ssh-security-monitor.service
+
+# Check for alerts
 sudo tail -f /var/log/ssh-security-monitor.log
 sudo tail -f /var/log/mail.log
 ```
@@ -203,9 +241,15 @@ sudo tail -f /var/log/mail.log
 **Validation Checklist**:
 - [ ] Timer is active and enabled
 - [ ] Service executes without errors
-- [ ] Log file shows SSH activity
+- [ ] Monitoring log shows status
+- [ ] Activity log shows ALL SSH activity
+- [ ] Successful logins are logged
 - [ ] Failed login attempts are detected
-- [ ] Root SSH access triggers immediate alert
+- [ ] Currently logged in users are tracked
+- [ ] Sudo commands are logged
+- [ ] Root SSH access triggers immediate alert (no rate limiting)
+- [ ] Failed login alerts sent after threshold
+- [ ] Hourly activity summaries sent
 - [ ] Unknown IPs are detected
 - [ ] Whitelisted IPs/users don't trigger alerts
 
@@ -358,6 +402,331 @@ sudo tail -f /var/log/root-access-monitor.log
 - [ ] Whitelisted users don't trigger alerts
 - [ ] Non-whitelisted users trigger alerts
 
+---
+
+### 5. Lynis System Audit Monitor
+
+**Purpose**: Run daily security audits using [Lynis](https://github.com/CISOfy/lynis) and report findings
+
+**Files Deployed**:
+- Script: `/usr/local/bin/lynis-audit-monitor.sh`
+- Service: `/etc/systemd/system/lynis-audit-monitor.service`
+- Timer: `/etc/systemd/system/lynis-audit-monitor.timer`
+- Log: `/var/log/lynis-audit-monitor.log`
+- Lynis Report: `/var/log/lynis-report.dat`
+
+**Testing Commands**:
+
+```bash
+# 1. Check timer is active
+sudo systemctl status lynis-audit-monitor.timer
+
+# Expected: Active: active (waiting)
+
+# 2. Check timer schedule
+sudo systemctl list-timers | grep lynis-audit-monitor
+
+# Expected: Shows next run time (daily)
+
+# 3. Manually trigger the audit
+sudo systemctl start lynis-audit-monitor.service
+
+# 4. Check the log output
+sudo tail -f /var/log/lynis-audit-monitor.log
+
+# Expected: Shows audit progress and results
+
+# 5. View Lynis report
+sudo cat /var/log/lynis-report.dat
+
+# 6. Check hardening index
+sudo grep "hardening_index=" /var/log/lynis-report.dat
+
+# Expected: Shows score 0-100
+
+# 7. Check if Lynis is installed
+which lynis
+
+# Expected: /usr/local/lynis/lynis or similar
+```
+
+**Trigger Alert Test**:
+
+```bash
+# Run manual Lynis audit
+sudo lynis audit system --quick
+
+# Wait for next timer execution or manually trigger
+sudo systemctl start lynis-audit-monitor.service
+
+# Check for email alert
+sudo tail -f /var/log/mail.log
+sudo journalctl -u lynis-audit-monitor.service -n 20
+```
+
+**Validation Checklist**:
+- [ ] Timer is active and enabled
+- [ ] Service executes without errors
+- [ ] Lynis is installed (auto-installed if missing)
+- [ ] Audit runs successfully
+- [ ] Hardening index is calculated
+- [ ] Warnings and suggestions are reported
+- [ ] Vulnerable packages are identified
+- [ ] Email alert is sent daily
+
+---
+
+### 6. Package Installation Monitor
+
+**Purpose**: Track package installations, upgrades, and removals
+
+**Files Deployed**:
+- Script: `/usr/local/bin/package-monitor.sh`
+- Service: `/etc/systemd/system/package-monitor.service`
+- Timer: `/etc/systemd/system/package-monitor.timer`
+- Log: `/var/log/package-monitor.log`
+- State File: `/var/lib/package-monitor/package-state.txt`
+
+**Testing Commands**:
+
+```bash
+# 1. Check timer is active
+sudo systemctl status package-monitor.timer
+
+# Expected: Active: active (waiting)
+
+# 2. Check timer schedule
+sudo systemctl list-timers | grep package-monitor
+
+# Expected: Shows next run time (hourly)
+
+# 3. Manually trigger the monitor
+sudo systemctl start package-monitor.service
+
+# 4. Check the log output
+sudo tail -f /var/log/package-monitor.log
+
+# Expected: Shows package monitoring status
+
+# 5. View current package state
+sudo cat /var/lib/package-monitor/package-state.txt | head -20
+
+# Expected: Shows list of installed packages
+
+# 6. Check state directory exists
+ls -la /var/lib/package-monitor/
+
+# Expected: Shows package-state.txt file
+```
+
+**Trigger Alert Test**:
+
+```bash
+# Install a test package
+sudo apt-get install -y htop
+
+# Wait for next timer execution or manually trigger
+sudo systemctl start package-monitor.service
+
+# Check for package change detection
+sudo grep "Package changes detected" /var/log/package-monitor.log
+
+# Check for email alert
+sudo tail -f /var/log/mail.log
+
+# Remove the test package
+sudo apt-get remove -y htop
+
+# Trigger monitoring again
+sudo systemctl start package-monitor.service
+
+# Check for removal detection
+sudo grep "removed" /var/log/package-monitor.log
+```
+
+**Validation Checklist**:
+- [ ] Timer is active and enabled
+- [ ] Service executes without errors
+- [ ] Package state file is created
+- [ ] Installations are detected
+- [ ] Upgrades are detected
+- [ ] Removals are detected
+- [ ] Email alerts are sent for changes
+
+---
+
+### 7. Open Ports Monitor
+
+**Purpose**: Monitor open network ports and detect new or closed ports
+
+**Files Deployed**:
+- Script: `/usr/local/bin/open-ports-monitor.sh`
+- Service: `/etc/systemd/system/open-ports-monitor.service`
+- Timer: `/etc/systemd/system/open-ports-monitor.timer`
+- Log: `/var/log/open-ports-monitor.log`
+- State File: `/var/lib/open-ports-monitor/ports-state.txt`
+
+**Testing Commands**:
+
+```bash
+# 1. Check timer is active
+sudo systemctl status open-ports-monitor.timer
+
+# Expected: Active: active (waiting)
+
+# 2. Check timer schedule
+sudo systemctl list-timers | grep open-ports-monitor
+
+# Expected: Shows next run time (hourly)
+
+# 3. Manually trigger the monitor
+sudo systemctl start open-ports-monitor.service
+
+# 4. Check the log output
+sudo tail -f /var/log/open-ports-monitor.log
+
+# Expected: Shows port monitoring status
+
+# 5. View current open ports
+sudo ss -tuln | grep LISTEN
+
+# Expected: Shows listening ports
+
+# 6. View monitored ports state
+sudo cat /var/lib/open-ports-monitor/ports-state.txt
+
+# Expected: Shows list of open ports
+
+# 7. Check state directory exists
+ls -la /var/lib/open-ports-monitor/
+
+# Expected: Shows ports-state.txt file
+```
+
+**Trigger Alert Test**:
+
+```bash
+# Start a test service on a new port
+python3 -m http.server 8888 &
+
+# Note the process ID
+echo $!
+
+# Wait for next timer execution or manually trigger
+sudo systemctl start open-ports-monitor.service
+
+# Check for new port detection
+sudo grep "Port changes detected" /var/log/open-ports-monitor.log
+sudo grep "8888" /var/log/open-ports-monitor.log
+
+# Check for email alert
+sudo tail -f /var/log/mail.log
+
+# Stop the test service
+pkill -f "http.server 8888"
+
+# Trigger monitoring again
+sudo systemctl start open-ports-monitor.service
+
+# Check for closed port detection
+sudo grep "closed" /var/log/open-ports-monitor.log
+```
+
+**Validation Checklist**:
+- [ ] Timer is active and enabled
+- [ ] Service executes without errors
+- [ ] Ports state file is created
+- [ ] Open ports are tracked
+- [ ] New ports are detected
+- [ ] Closed ports are detected
+- [ ] Process information is included
+- [ ] Firewall status is checked
+- [ ] Email alerts are sent for changes
+
+---
+
+### 8. SSL Certificate Monitor
+
+**Purpose**: Monitor SSL certificate expiration for WEB_URL environment variable
+
+**Files Deployed**:
+- Script: `/usr/local/bin/ssl-certificate-monitor.sh`
+- Service: `/etc/systemd/system/ssl-certificate-monitor.service`
+- Timer: `/etc/systemd/system/ssl-certificate-monitor.timer`
+- Log: `/var/log/ssl-certificate-monitor.log`
+
+**Testing Commands**:
+
+```bash
+# 1. Check timer is active
+sudo systemctl status ssl-certificate-monitor.timer
+
+# Expected: Active: active (waiting)
+
+# 2. Check timer schedule
+sudo systemctl list-timers | grep ssl-certificate-monitor
+
+# Expected: Shows next run time (daily)
+
+# 3. Check WEB_URL environment variable
+echo $WEB_URL
+
+# Expected: Shows URL (e.g., https://forwardemail.net)
+
+# 4. Manually trigger the monitor
+sudo systemctl start ssl-certificate-monitor.service
+
+# 5. Check the log output
+sudo tail -f /var/log/ssl-certificate-monitor.log
+
+# Expected: Shows certificate status
+
+# 6. Check certificate manually
+echo | openssl s_client -servername forwardemail.net -connect forwardemail.net:443 2>/dev/null | openssl x509 -noout -dates
+
+# Expected: Shows certificate validity dates
+
+# 7. View service logs
+sudo journalctl -u ssl-certificate-monitor.service -n 50
+```
+
+**Trigger Alert Test**:
+
+```bash
+# Set WEB_URL if not set
+export WEB_URL=https://forwardemail.net
+
+# Run monitoring with explicit WEB_URL
+sudo WEB_URL=https://forwardemail.net systemctl start ssl-certificate-monitor.service
+
+# Check for certificate status in logs
+sudo grep "Certificate status" /var/log/ssl-certificate-monitor.log
+
+# Check for days remaining
+sudo grep "days remaining" /var/log/ssl-certificate-monitor.log
+
+# Check for email alert (if certificate is expiring soon)
+sudo tail -f /var/log/mail.log
+
+# Test with a different URL (optional)
+sudo WEB_URL=https://expired.badssl.com systemctl start ssl-certificate-monitor.service
+
+# Check for expiration alert
+sudo grep "CRITICAL\|WARNING" /var/log/ssl-certificate-monitor.log
+```
+
+**Validation Checklist**:
+- [ ] Timer is active and enabled
+- [ ] Service executes without errors
+- [ ] WEB_URL environment variable is read
+- [ ] Certificate expiration is checked
+- [ ] Days remaining is calculated
+- [ ] Warning alerts sent (< 30 days)
+- [ ] Critical alerts sent (< 7 days)
+- [ ] Certificate chain information included
+- [ ] OCSP status checked
+
+---
 ---
 
 ## Node Playbook Monitoring

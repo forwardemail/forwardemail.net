@@ -462,6 +462,38 @@
         group: root
         mode: '0755'
 
+    - name: Deploy Lynis audit monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/lynis-audit-monitor.sh"
+        dest: /usr/local/bin/lynis-audit-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy package monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/package-monitor.sh"
+        dest: /usr/local/bin/package-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy open ports monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/open-ports-monitor.sh"
+        dest: /usr/local/bin/open-ports-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Deploy SSL certificate monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/ssl-certificate-monitor.sh"
+        dest: /usr/local/bin/ssl-certificate-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
     # Deploy systemd service units
     - name: Deploy system resource monitor service
       template:
@@ -535,6 +567,70 @@
         group: root
         mode: '0644'
 
+    - name: Deploy Lynis audit monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/lynis-audit-monitor.service.j2"
+        dest: /etc/systemd/system/lynis-audit-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy Lynis audit monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/lynis-audit-monitor.timer.j2"
+        dest: /etc/systemd/system/lynis-audit-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy package monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/package-monitor.service.j2"
+        dest: /etc/systemd/system/package-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy package monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/package-monitor.timer.j2"
+        dest: /etc/systemd/system/package-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy open ports monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/open-ports-monitor.service.j2"
+        dest: /etc/systemd/system/open-ports-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy open ports monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/open-ports-monitor.timer.j2"
+        dest: /etc/systemd/system/open-ports-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy SSL certificate monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/ssl-certificate-monitor.service.j2"
+        dest: /etc/systemd/system/ssl-certificate-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy SSL certificate monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/ssl-certificate-monitor.timer.j2"
+        dest: /etc/systemd/system/ssl-certificate-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+
     # Reload systemd and enable monitoring services
     - name: Reload systemd daemon for monitoring services
       systemd:
@@ -561,6 +657,30 @@
     - name: Enable and start root access monitor timer
       systemd:
         name: root-access-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start Lynis audit monitor timer
+      systemd:
+        name: lynis-audit-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start package monitor timer
+      systemd:
+        name: package-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start open ports monitor timer
+      systemd:
+        name: open-ports-monitor.timer
+        enabled: yes
+        state: started
+
+    - name: Enable and start SSL certificate monitor timer
+      systemd:
+        name: ssl-certificate-monitor.timer
         enabled: yes
         state: started
 
