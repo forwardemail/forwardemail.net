@@ -80,6 +80,10 @@ viewModel.calendarView.mailboxView = viewModel.mailboxView;
 viewModel.calendarView.toasts = viewModel.toasts;
 viewModel.contactsView.toasts = viewModel.toasts;
 
+// Share storage observables between mailbox and settings
+viewModel.settingsModal.storageUsed = viewModel.mailboxView.storageUsed;
+viewModel.settingsModal.storageTotal = viewModel.mailboxView.storageTotal;
+
 viewModel.route.subscribe((route) => {
   const mailboxMode =
     route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts';

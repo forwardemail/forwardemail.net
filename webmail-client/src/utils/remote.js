@@ -73,7 +73,16 @@ export const Remote = {
       MessageUpdate: { path: '/v1/messages', method: 'PUT' },
       MessageDelete: { path: '/v1/messages', method: 'DELETE' },
       Contacts: { path: '/v1/contacts', method: 'GET' },
+      ContactsCreate: { path: '/v1/contacts', method: 'POST' },
+      ContactsUpdate: { path: '/v1/contacts', method: 'PUT' },
+      ContactsDelete: { path: '/v1/contacts', method: 'DELETE' },
       Calendars: { path: '/v1/calendars', method: 'GET' },
+      Calendar: { path: '/v1/calendars', method: 'GET' },
+      CalendarUpdate: { path: '/v1/calendars', method: 'PUT' },
+      CalendarEvents: { path: '/v1/calendar-events', method: 'GET' },
+      CalendarEventCreate: { path: '/v1/calendar-events', method: 'POST' },
+      CalendarEventUpdate: { path: '/v1/calendar-events', method: 'PUT' },
+      CalendarEventDelete: { path: '/v1/calendar-events', method: 'DELETE' },
       Emails: { path: '/v1/emails', method: 'POST' },
       Account: { path: '/v1/account', method: 'GET' }
     };

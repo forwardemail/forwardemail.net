@@ -17,6 +17,9 @@ export class SettingsModal {
     this.error = ko.observable('');
     this.success = ko.observable('');
     this.applyTheme = () => {};
+    // Storage observables will be shared from MailboxView in main.js
+    this.storageUsed = null;
+    this.storageTotal = null;
 
     this.loadFromStorage();
   }

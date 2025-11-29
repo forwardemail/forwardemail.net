@@ -2385,17 +2385,17 @@
 
             <!-- Accounts -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'accounts'">
-              <div class="fe-settings-card">
+              <div class="fe-settings-card" data-bind="visible: storageTotal() > 0">
                 <h3>Storage</h3>
                 <div class="fe-storage" style="margin:0;">
                   <div class="fe-storage-header">
                     <small>Storage</small>
-                    <small>5%</small>
+                    <small data-bind="text: Math.round((storageUsed() / storageTotal()) * 100) + '%'"></small>
                   </div>
                   <div class="fe-storage-bar">
-                    <div class="fe-storage-fill" style="width: 5%;"></div>
+                    <div class="fe-storage-fill" data-bind="style: { width: Math.min(100, Math.round((storageUsed() / storageTotal()) * 100)) + '%' }"></div>
                   </div>
-                  <small class="fe-storage-caption">500 MB of 10 GB</small>
+                  <small class="fe-storage-caption" data-bind="text: Math.round(storageUsed()/1024/1024) + ' MB of ' + Math.round(storageTotal()/1024/1024/1024) + ' GB'"></small>
                 </div>
                 <div class="fe-settings-actions" style="margin-top:10px;">
                   <button class="fe-button ghost" type="button">Increase storage</button>
@@ -2831,6 +2831,40 @@
         <div class="fe-modal-actions">
           <button class="fe-button ghost" type="button" data-bind="click: function(){ newEventModal(false); }">Cancel</button>
           <button class="fe-button" type="button" data-bind="click: saveNewEvent">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'calendar' && calendarView.editEventModal()">
+      <div class="fe-modal" data-bind="with: calendarView">
+        <div class="fe-modal-header">
+          <h2>Edit Event</h2>
+          <button class="fe-button ghost" type="button" data-bind="click: cancelEditEvent">Close</button>
+        </div>
+        <div class="fe-modal-body">
+          <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: editEventTitle" />
+          <input class="fe-input" type="datetime-local" placeholder="Start" data-bind="value: editEventStart" />
+          <div class="fe-recipient-row">
+            <input class="fe-input" type="number" min="5" step="5" placeholder="Duration (minutes)" data-bind="value: editEventDuration" />
+            <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: editEventNotify" />
+          </div>
+          <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: editEventDescription"></textarea>
+          <div class="fe-alert error" data-bind="visible: error, text: error" style="display:none;"></div>
+
+          <!-- Delete Confirmation -->
+          <div class="fe-alert warning" data-bind="visible: showDeleteConfirm" style="display:none; margin-top: 1rem;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>Are you sure you want to delete this event?</strong></p>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="fe-button fe-danger" type="button" data-bind="click: confirmDeleteEvent">Yes, Delete</button>
+              <button class="fe-button ghost" type="button" data-bind="click: cancelDeleteEvent">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div class="fe-modal-actions">
+          <button class="fe-button fe-danger" type="button" data-bind="click: promptDeleteEvent, visible: !showDeleteConfirm()">Delete</button>
+          <div style="flex: 1;"></div>
+          <button class="fe-button ghost" type="button" data-bind="click: cancelEditEvent">Cancel</button>
+          <button class="fe-button" type="button" data-bind="click: updateEvent, visible: !showDeleteConfirm()">Update</button>
         </div>
       </div>
     </div>
