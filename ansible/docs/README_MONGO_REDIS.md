@@ -1,27 +1,34 @@
 # MongoDB and Valkey Deployment Guide
 
-> [!NOTE]
+> \[!NOTE]
 > This document describes the MongoDB (`mongo.yml`) and Valkey (`redis.yml`) Ansible playbooks for the Forward Email infrastructure.
 
-> [!NOTE]
-> We use Valkey, a Redis fork, installed directly via APT packages for maximum compatibility and control.
+> \[!NOTE]
+> We use **custom installations** for both databases:
+>
+> * **MongoDB 6.0.18**: Installed directly from official MongoDB repository (no third-party Ansible roles)
+> * **Valkey**: Compiled from source for maximum control
+>
+> This approach gives us full control over configuration and follows a consistent pattern across all database deployments.
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > These playbooks deploy production-grade database infrastructure with automated backups, security hardening, and email alerting..
+
 
 ## Overview
 
 These playbooks provide complete automation for:
 
-- **MongoDB v6** installation and configuration
-- **Valkey** (Redis fork) installation and configuration
-- **Dynamic swap configuration** (swap file size = system RAM)
-- **TLS/SSL encryption** for both databases
-- **UFW firewall** with dynamic IP whitelist management
-- **DNS caching** with DNSSEC, DANE, and DNS-over-TLS support
-- **Kernel optimizations** for database performance
-- **Automated encrypted backups** to Cloudflare R2 every 6 hours
-- **Intelligent backup retention** (30-day retention with daily consolidation after 7 days)
+* **MongoDB v6** installation and configuration
+* **Valkey** (Redis fork) installation and configuration
+* **Dynamic swap configuration** (swap file size = system RAM)
+* **TLS/SSL encryption** for both databases
+* **UFW firewall** with dynamic IP whitelist management
+* **DNS caching** with DNSSEC, DANE, and DNS-over-TLS support
+* **Kernel optimizations** for database performance
+* **Automated encrypted backups** to Cloudflare R2 every 6 hours
+* **Intelligent backup retention** (30-day retention with daily consolidation after 7 days)
+
 
 ## Architecture
 
@@ -46,42 +53,42 @@ mongo.yml / redis.yml
 └── Database installation and configuration
 ```
 
-> [!TIP]
+> \[!TIP]
 > **Key point:** THP, ulimits, and base sysctl settings are configured once in `security.yml` and inherited by all hosts including `mongo` and `redis`. This avoids duplication and ensures consistency.
 
 ### User Model
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > **Security best practice:** Database services run as dedicated unprivileged users:
 
-- **MongoDB** runs as `mongod` user (created by MongoDB package)
-- **Redis** runs as `redis` user (created by Redis package)
-- **deploy** user is for application code deployment
-- **devops** user has sudo access for administration
+* **MongoDB** runs as `mongod` user (created by MongoDB package)
+* **Redis** runs as `redis` user (created by Redis package)
+* **deploy** user is for application code deployment
+* **devops** user has sudo access for administration
 
 This provides proper isolation and follows the principle of least privilege.
 
+
 ## Files
 
-- **`mongo.yml`** - MongoDB deployment playbook
-- **`redis.yml`** - Redis deployment playbook
-- **`unbound.yml`** - DNS caching with DNSSEC/DANE support
-- **`security.yml`** - Security hardening (updated to include mongo/redis hosts)
-- **`requirements.yml`** - Ansible Galaxy role dependencies
+* **`mongo.yml`** - MongoDB deployment playbook
+* **`redis.yml`** - Redis deployment playbook
+* **`unbound.yml`** - DNS caching with DNSSEC/DANE support
+* **`security.yml`** - Security hardening (updated to include mongo/redis hosts)
+* **`requirements.yml`** - Ansible collections and roles (MongoDB and Valkey use custom installations)
+
 
 ## Prerequisites
 
-### Ansible Roles
+### No External Dependencies
 
-Install the required Ansible roles from Galaxy:
-
-```bash
-cd /path/to/forwardemail.net
-ansible-galaxy install -r ansible/requirements.yml
-```
-
-This installs:
-- `trfore.mongodb_install` v3.0.5 - MongoDB installation
+> \[!NOTE]
+> **No Ansible Galaxy roles required!** Both MongoDB and Valkey use custom installations:
+>
+> * **MongoDB**: Installed directly from official MongoDB APT repository
+> * **Valkey**: Compiled from source (GitHub release)
+>
+> This eliminates external dependencies and gives us full control over the installation process.
 
 ### Environment Variables
 
@@ -107,9 +114,24 @@ export BACKUP_SECRET="your-strong-backup-encryption-password"
 #### MongoDB-Specific Variables
 
 ```bash
-export MONGO_HOST="mongo.example.com"
+export MONGO_HOST="mongo.example.com"  # Hostname or IP address
+export MONGO_PORT="27017"  # Default: 27017
+export MONGO_USER="admin"  # Admin username (single user with all permissions)
+export MONGO_PASS="your-strong-mongodb-password"  # Admin password
 export MONGO_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forwardemail-backups"
 ```
+
+> \[!NOTE]
+> **Single Admin User:** We use one admin user (`MONGO_USER`/`MONGO_PASS`) with all necessary roles:
+>
+> * `root` - Full administrative access
+> * `userAdminAnyDatabase` - User management
+> * `dbAdminAnyDatabase` - Database administration
+> * `readWriteAnyDatabase` - Read/write all databases
+> * `clusterAdmin` - Cluster management
+> * `backup` + `restore` - Backup operations
+>
+> This simplifies credential management while maintaining full functionality.
 
 #### Redis-Specific Variables
 
@@ -120,51 +142,55 @@ export REDIS_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forw
 export REDIS_DATA_DIR="/var/lib/valkey"  # Optional, defaults to "/var/lib/valkey"
 ```
 
+
 ## Features
 
 ### 1. Security & Access Control
 
 #### Dynamic IP Whitelist
 
-> [!NOTE]
+> \[!NOTE]
 > Both playbooks automatically fetch and maintain an IP whitelist from:
+
 ```
 https://forwardemail.net/ips/v4.txt?comments=false
 ```
 
-- UFW rules are updated every 10 minutes via systemd timer
-- Only whitelisted IPs can access MongoDB (port 27017) and Redis (port 6380)
-- Automatic addition of new IPs and removal of old IPs
-- Changes are applied without manual intervention
+* UFW rules are updated every 10 minutes via systemd timer
+* Only whitelisted IPs can access MongoDB (port 27017) and Redis (port 6380)
+* Automatic addition of new IPs and removal of old IPs
+* Changes are applied without manual intervention
 
 #### TLS/SSL Encryption
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > All database connections are encrypted with TLS/SSL.
 
 **MongoDB:**
-- Configured with `requireTLS` mode
-- Uses combined PEM file (certificate + key)
-- CA certificate for client verification
-- All connections must use TLS
+
+* Configured with `requireTLS` mode
+* Uses combined PEM file (certificate + key)
+* CA certificate for client verification
+* All connections must use TLS
 
 **Redis:**
-- TLS enabled on port 6380 (standard port 6379 disabled)
-- Password authentication required
-- Separate certificate, key, and CA files
-- Client authentication optional (`tls-auth-clients no`)
+
+* TLS enabled on port 6380 (standard port 6379 disabled)
+* Password authentication required
+* Separate certificate, key, and CA files
+* Client authentication optional (`tls-auth-clients no`)
 
 ### 2. Automated Encrypted Backups
 
 #### Backup Schedule
 
-- Backups run every 6 hours via systemd timer
-- First backup runs 15 minutes after boot
-- Subsequent backups run at 6-hour intervals
+* Backups run every 6 hours via systemd timer
+* First backup runs 15 minutes after boot
+* Subsequent backups run at 6-hour intervals
 
 #### Encryption
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > All backups are encrypted using **GPG symmetric encryption** with AES256 cipher before uploading to R2:
 
 ```bash
@@ -181,14 +207,16 @@ gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET"
 #### Backup Strategy
 
 **MongoDB:**
-- Uses `mongodump` with `--oplog` for point-in-time recovery capability
-- Compressed with gzip before encryption
-- Streamed directly to R2 (no local storage required)
+
+* Uses `mongodump` with `--oplog` for point-in-time recovery capability
+* Compressed with gzip before encryption
+* Streamed directly to R2 (no local storage required)
 
 **Redis:**
-- Uses `BGSAVE` command (non-blocking background save)
-- Creates RDB snapshot without impacting production
-- Waits for BGSAVE completion before uploading
+
+* Uses `BGSAVE` command (non-blocking background save)
+* Creates RDB snapshot without impacting production
+* Waits for BGSAVE completion before uploading
 
 #### Storage Structure
 
@@ -218,33 +246,37 @@ s3://bucket-name/
 
 Cleanup runs automatically after each backup with the following retention policy:
 
-- **0-7 days**: Keep all backups (4 per day = 28 backups)
-- **8-30 days**: Keep only the latest backup per day (23 backups)
-- **30+ days**: Delete all backups
+* **0-7 days**: Keep all backups (4 per day = 28 backups)
+* **8-30 days**: Keep only the latest backup per day (23 backups)
+* **30+ days**: Delete all backups
 
 This provides:
-- Fine-grained recovery for the past week
-- Daily recovery points for the past month
-- Automatic cleanup to control storage costs
+
+* Fine-grained recovery for the past week
+* Daily recovery points for the past month
+* Automatic cleanup to control storage costs
 
 ### 4. DNS Caching with DNSSEC and DANE
 
 **Unbound DNS resolver** is automatically configured on all hosts via `unbound.yml` (imported by `security.yml`).
 
 **Features:**
-- **DNSSEC validation** - Cryptographic verification of DNS responses
-- **DANE/TLSA support** - DNS-based authentication of TLS certificates
-- **DNS-over-TLS (DoT)** - Encrypted DNS queries to Cloudflare (1.1.1.1)
-- **Query minimization** - Enhanced privacy
-- **Aggressive NSEC** - Faster negative responses
-- **DNS rebinding protection** - Security hardening
+
+* **DNSSEC validation** - Cryptographic verification of DNS responses
+* **DANE/TLSA support** - DNS-based authentication of TLS certificates
+* **DNS-over-TLS (DoT)** - Encrypted DNS queries to Cloudflare (1.1.1.1)
+* **Query minimization** - Enhanced privacy
+* **Aggressive NSEC** - Faster negative responses
+* **DNS rebinding protection** - Security hardening
 
 **Cache TTLs optimized for fast failover:**
-- Minimum TTL: 60 seconds
-- Maximum TTL: 300 seconds (5 minutes)
-- Negative cache TTL: 60 seconds
+
+* Minimum TTL: 60 seconds
+* Maximum TTL: 300 seconds (5 minutes)
+* Negative cache TTL: 60 seconds
 
 **Verification:**
+
 ```bash
 # Test DNS resolution
 dig @127.0.0.1 +short cloudflare.com
@@ -264,19 +296,22 @@ sudo systemctl status unbound
 Both MongoDB and Redis playbooks automatically configure swap space per official recommendations.
 
 **Redis Official Documentation:**
+
 > "Ensured that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Redis instance accidentally consumes too much memory, Redis can crash when it is out of memory, or the Linux kernel OOM killer can kill the Redis process."
 
 Source: [Redis Administration - Memory](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/)
 
 **Implementation:**
-- Automatically detects total system RAM using `free -m`
-- Creates `/swapfile` with size equal to RAM
-- Sets `vm.swappiness=1` (minimize swapping but allow for safety)
-- Overrides `vm.swappiness=0` from security.yml
-- Idempotent: only recreates swap if size doesn't match RAM
-- Persists across reboots via `/etc/fstab`
+
+* Automatically detects total system RAM using `free -m`
+* Creates `/swapfile` with size equal to RAM
+* Sets `vm.swappiness=1` (minimize swapping but allow for safety)
+* Overrides `vm.swappiness=0` from security.yml
+* Idempotent: only recreates swap if size doesn't match RAM
+* Persists across reboots via `/etc/fstab`
 
 **Verification:**
+
 ```bash
 # Check swap status
 sudo swapon --show
@@ -289,19 +324,21 @@ free -h
 ```
 
 **Why this matters:**
-- **Without swap:** Database crashes or OOM killer terminates process
-- **With swap:** Latency spikes are detectable, allowing intervention before crash
-- **Swappiness=1:** Minimizes performance impact while providing safety net
+
+* **Without swap:** Database crashes or OOM killer terminates process
+* **With swap:** Latency spikes are detectable, allowing intervention before crash
+* **Swappiness=1:** Minimizes performance impact while providing safety net
 
 ### 6. Performance Optimizations
 
 #### Kernel Parameters (Inherited from security.yml)
 
 **Base settings for all hosts:**
-- `vm.swappiness = 0` - Disable swapping (overridden to `1` for MongoDB/Redis)
-- `nofile = 65536` - File descriptor limit
-- `nproc = 65536` - Process limit
-- THP disabled via systemd service
+
+* `vm.swappiness = 0` - Disable swapping (overridden to `1` for MongoDB/Redis)
+* `nofile = 65536` - File descriptor limit
+* `nproc = 65536` - Process limit
+* THP disabled via systemd service
 
 #### MongoDB-Specific Optimizations
 
@@ -361,6 +398,7 @@ sudo chown redis:redis /var/lib/valkey/dump.rdb
 sudo systemctl start redis-server
 ```
 
+
 ## Usage
 
 ### Running the Playbooks
@@ -399,6 +437,7 @@ export BACKUP_SECRET="your-backup-password"
 # Run playbook
 ansible-playbook ansible/playbooks/redis.yml -i ansible/playbooks/templates/hosts.yml
 ```
+
 
 ## Monitoring & Maintenance
 
@@ -449,13 +488,15 @@ aws s3 ls s3://forwardemail-backups/mongodb/ --recursive --endpoint-url="$AWS_EN
 aws s3 ls s3://forwardemail-backups/redis/ --recursive --endpoint-url="$AWS_ENDPOINT_URL"
 ```
 
+
 ## Security Considerations
 
-1. **BACKUP_SECRET**: Store securely (e.g., in a password manager or secrets management system)
+1. **BACKUP\_SECRET**: Store securely (e.g., in a password manager or secrets management system)
 2. **SSL Certificates**: Ensure certificates are properly secured with appropriate file permissions
 3. **R2 Credentials**: Use dedicated R2 access keys with minimal permissions (read/write to backup bucket only)
 4. **Redis Password**: Use a strong password (generate with `openssl rand -base64 32`)
 5. **IP Whitelist**: Regularly verify the IP whitelist source is accurate and up-to-date
+
 
 ## Troubleshooting
 
@@ -512,41 +553,46 @@ sudo /usr/local/bin/update-mongo-ufw-whitelist.sh
 curl -s https://forwardemail.net/ips/v4.txt?comments=false
 ```
 
+
 ## Performance Considerations
 
 ### MongoDB
 
-- Backups run with `--oplog` which captures incremental changes
-- `mongodump` reads from the database but doesn't block writes
-- Consider running backups during off-peak hours if performance is critical
-- Monitor WiredTiger cache pressure during backups
+* Backups run with `--oplog` which captures incremental changes
+* `mongodump` reads from the database but doesn't block writes
+* Consider running backups during off-peak hours if performance is critical
+* Monitor WiredTiger cache pressure during backups
 
 ### Redis
 
-- `BGSAVE` uses fork() which requires free memory equal to dataset size
-- No blocking of client operations during backup
-- Monitor disk I/O during save operations
-- RDB persistence configured with balanced save intervals
+* `BGSAVE` uses fork() which requires free memory equal to dataset size
+* No blocking of client operations during backup
+* Monitor disk I/O during save operations
+* RDB persistence configured with balanced save intervals
+
 
 ## Architecture
 
 ### MongoDB Configuration
 
-- **Version**: MongoDB 6.0.18 (Community Edition)
-- **Port**: 27017 (TLS required)
-- **Authentication**: Enabled
-- **Storage Engine**: WiredTiger
-- **Replication**: Not configured (standalone)
+* **Version**: MongoDB 6.0.18 (Community Edition)
+* **Port**: 27017 (TLS required)
+* **Authentication**: Enabled
+* **Storage Engine**: WiredTiger
+* **Replication**: Not configured (standalone)
+
+> \[!WARNING]
+> **MongoDB is LOCKED to v6.0.18** - Do not upgrade to v7 or v8 due to severe performance regressions (up to 3x slower queries, increased memory overhead, degraded concurrency). See [MONGODB\_OPERATIONS\_GUIDE.md](MONGODB_OPERATIONS_GUIDE.md) for details and references.
 
 ### Redis Configuration
 
-- **Port**: 6380 (TLS), 6379 disabled
-- **Authentication**: Password required
-- **Persistence**: RDB + AOF
-- **AOF Sync**: everysec
-- **RDB Save**: 900s/1 change, 300s/10 changes, 60s/10000 changes
+* **Port**: 6380 (TLS), 6379 disabled
+* **Authentication**: Password required
+* **Persistence**: RDB + AOF
+* **AOF Sync**: everysec
+* **RDB Save**: 900s/1 change, 300s/10 changes, 60s/10000 changes
+
 
 ## License
 
-Copyright (c) Forward Email LLC
-SPDX-License-Identifier: BUSL-1.1
+[(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)

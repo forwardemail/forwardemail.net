@@ -2,6 +2,7 @@
 
 This guide covers kernel and OS-level optimizations implemented in the MongoDB playbook to maximize performance on Ubuntu systems.
 
+
 ## Kernel Optimizations
 
 The `mongo.yml` playbook automatically configures the following kernel parameters for optimal MongoDB performance.
@@ -22,7 +23,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Reduces latency by keeping hot data in memory.
 
-#### vm.dirty_background_ratio = 10
+#### vm.dirty\_background\_ratio = 10
 
 **Purpose:** Controls when dirty pages are flushed to disk in the background.
 
@@ -32,7 +33,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Prevents hard pauses during write operations, ensuring consistent query performance.
 
-#### vm.dirty_ratio = 20
+#### vm.dirty\_ratio = 20
 
 **Purpose:** Controls when dirty pages cause a hard pause for synchronous writes.
 
@@ -52,7 +53,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Allows MongoDB to handle thousands of concurrent connections without dropping requests.
 
-#### net.ipv4.tcp_max_syn_backlog = 4096
+#### net.ipv4.tcp\_max\_syn\_backlog = 4096
 
 **Purpose:** Increases the maximum number of SYN packets queued.
 
@@ -62,9 +63,9 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Prevents connection drops during traffic spikes.
 
-#### net.ipv4.tcp_fin_timeout = 30
+#### net.ipv4.tcp\_fin\_timeout = 30
 
-**Purpose:** Reduces the time TCP connections stay in FIN_WAIT state.
+**Purpose:** Reduces the time TCP connections stay in FIN\_WAIT state.
 
 **Why it matters:** Shorter FIN timeout allows faster connection recycling, freeing up resources for new connections.
 
@@ -72,7 +73,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Improves connection throughput and resource utilization.
 
-#### net.ipv4.tcp_keepalive_intvl = 30
+#### net.ipv4.tcp\_keepalive\_intvl = 30
 
 **Purpose:** Sets the interval between TCP keepalive probes.
 
@@ -82,7 +83,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 
 **Performance impact:** Faster detection of failed connections.
 
-#### net.ipv4.tcp_keepalive_time = 120
+#### net.ipv4.tcp\_keepalive\_time = 120
 
 **Purpose:** Sets the time before sending TCP keepalive probes.
 
@@ -99,11 +100,12 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-mongodb.conf` and appl
 **Why disabled:** THP causes significant latency and memory usage issues with MongoDB.
 
 **How it works:**
-- THP allows the kernel to automatically allocate 2MB pages instead of 4KB pages
-- While this sounds beneficial, it causes problems for MongoDB:
-  - **Copy-on-write overhead:** When MongoDB forks for backups, THP causes excessive memory copying
-  - **Latency spikes:** THP defragmentation runs in the background, causing unpredictable latency
-  - **Memory bloat:** THP can cause MongoDB to use more memory than expected
+
+* THP allows the kernel to automatically allocate 2MB pages instead of 4KB pages
+* While this sounds beneficial, it causes problems for MongoDB:
+  * **Copy-on-write overhead:** When MongoDB forks for backups, THP causes excessive memory copying
+  * **Latency spikes:** THP defragmentation runs in the background, causing unpredictable latency
+  * **Memory bloat:** THP can cause MongoDB to use more memory than expected
 
 **Official MongoDB recommendation:** [MongoDB documentation](https://www.mongodb.com/docs/manual/tutorial/disable-transparent-huge-pages/) explicitly recommends disabling THP.
 
@@ -126,10 +128,11 @@ cat /sys/kernel/mm/transparent_hugepage/enabled
 **Purpose:** Allows MongoDB to open many files and processes simultaneously.
 
 **Why it matters:** MongoDB requires high file descriptor limits to:
-- Manage many database connections
-- Keep multiple data files open
-- Handle journal files and indexes
-- Support large numbers of concurrent operations
+
+* Manage many database connections
+* Keep multiple data files open
+* Handle journal files and indexes
+* Support large numbers of concurrent operations
 
 **Configuration:** The playbook creates `/etc/security/limits.d/mongodb.conf` with:
 
@@ -141,8 +144,9 @@ mongod       hard        nproc        64000
 ```
 
 **Recommended values:**
-- `nofile` (open files): 64000
-- `nproc` (max processes): 64000
+
+* `nofile` (open files): 64000
+* `nproc` (max processes): 64000
 
 **Default values:** Typically 1024 (far too low for MongoDB).
 
@@ -154,6 +158,7 @@ mongod       hard        nproc        64000
 sudo -u mongod bash -c 'ulimit -n'  # Check open files limit
 sudo -u mongod bash -c 'ulimit -u'  # Check process limit
 ```
+
 
 ## Performance Monitoring
 
@@ -228,6 +233,7 @@ mongosh --eval "printjson(db.serverStatus().connections)"
 mongosh --eval "printjson(rs.status())"
 ```
 
+
 ## Troubleshooting
 
 ### High Latency
@@ -235,6 +241,7 @@ mongosh --eval "printjson(rs.status())"
 **Symptoms:** Slow query response times, timeouts
 
 **Possible causes:**
+
 1. THP not disabled
 2. Swapping occurring
 3. Insufficient indexes
@@ -263,6 +270,7 @@ iostat -x 1
 **Symptoms:** "Connection refused" or "Too many connections" errors
 
 **Possible causes:**
+
 1. Connection backlog full
 2. Max connections reached
 3. File descriptor limits too low
@@ -291,6 +299,7 @@ sudo -u mongod bash -c 'ulimit -n'
 **Symptoms:** High memory usage, OOM errors, swapping
 
 **Possible causes:**
+
 1. Working set larger than RAM
 2. Memory leaks
 3. Insufficient memory allocation
@@ -320,6 +329,7 @@ vmstat 1
 **Symptoms:** Slow writes, high disk latency
 
 **Possible causes:**
+
 1. Using wrong filesystem (not XFS)
 2. Missing `noatime` mount option
 3. Insufficient disk throughput
@@ -341,6 +351,7 @@ iostat -x 1
 mongosh --eval "printjson(db.serverStatus().wiredTiger.log)"
 ```
 
+
 ## Performance Benchmarking
 
 ### MongoDB Performance Test
@@ -360,10 +371,10 @@ echo '{ nThreads: 16, fileSizeMB: 1000, sleepMicros: 0, mmf: true, r: true, w: t
 
 **Typical performance on modern hardware:**
 
-- **Read operations:** 10,000-50,000 ops/sec
-- **Write operations:** 5,000-25,000 ops/sec
-- **Latency:** < 10ms average
-- **Memory overhead:** < 20% of data size
+* **Read operations:** 10,000-50,000 ops/sec
+* **Write operations:** 5,000-25,000 ops/sec
+* **Latency:** < 10ms average
+* **Memory overhead:** < 20% of data size
 
 **Factors affecting performance:**
 
@@ -372,32 +383,36 @@ echo '{ nThreads: 16, fileSizeMB: 1000, sleepMicros: 0, mmf: true, r: true, w: t
 3. **Disk:** SSD/NVMe significantly improves performance
 4. **Network:** Low-latency network is critical for replica sets
 
+
 ## Summary
 
 The MongoDB playbook implements the following optimizations:
 
 **Kernel Level:**
-- ✅ `vm.swappiness = 1` - Minimizes swapping
-- ✅ `vm.dirty_background_ratio = 10` - Smooth background writes
-- ✅ `vm.dirty_ratio = 20` - Prevents hard pauses
-- ✅ `net.core.somaxconn = 4096` - Increases connection queue
-- ✅ `net.ipv4.tcp_max_syn_backlog = 4096` - Increases SYN queue
-- ✅ `net.ipv4.tcp_fin_timeout = 30` - Faster connection recycling
-- ✅ `net.ipv4.tcp_keepalive_intvl = 30` - Faster dead connection detection
-- ✅ `net.ipv4.tcp_keepalive_time = 120` - Balanced keepalive timing
-- ✅ Transparent Huge Pages disabled - Prevents latency spikes
+
+* ✅ `vm.swappiness = 1` - Minimizes swapping
+* ✅ `vm.dirty_background_ratio = 10` - Smooth background writes
+* ✅ `vm.dirty_ratio = 20` - Prevents hard pauses
+* ✅ `net.core.somaxconn = 4096` - Increases connection queue
+* ✅ `net.ipv4.tcp_max_syn_backlog = 4096` - Increases SYN queue
+* ✅ `net.ipv4.tcp_fin_timeout = 30` - Faster connection recycling
+* ✅ `net.ipv4.tcp_keepalive_intvl = 30` - Faster dead connection detection
+* ✅ `net.ipv4.tcp_keepalive_time = 120` - Balanced keepalive timing
+* ✅ Transparent Huge Pages disabled - Prevents latency spikes
 
 **System Level:**
-- ✅ `nofile = 64000` - Allows many open files
-- ✅ `nproc = 64000` - Allows many processes
+
+* ✅ `nofile = 64000` - Allows many open files
+* ✅ `nproc = 64000` - Allows many processes
 
 **Result:** Production-ready MongoDB deployment optimized for high performance, low latency, and stability.
 
+
 ## References
 
-- [MongoDB Production Notes](https://www.mongodb.com/docs/manual/administration/production-notes/)
-- [Disable Transparent Huge Pages](https://www.mongodb.com/docs/manual/tutorial/disable-transparent-huge-pages/)
-- [Optimizing Your Linux Environment for MongoDB - SeveralNines](https://severalnines.com/blog/optimizing-your-linux-environment-mongodb/)
+* [MongoDB Production Notes](https://www.mongodb.com/docs/manual/administration/production-notes/)
+* [Disable Transparent Huge Pages](https://www.mongodb.com/docs/manual/tutorial/disable-transparent-huge-pages/)
+* [Optimizing Your Linux Environment for MongoDB - SeveralNines](https://severalnines.com/blog/optimizing-your-linux-environment-mongodb/)
 
 ---
 

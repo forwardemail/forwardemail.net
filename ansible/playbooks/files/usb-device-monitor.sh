@@ -225,7 +225,7 @@ send_unknown_device_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "usb-device-${vendor_id}-${product_id}" "$subject" "$body"
+        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "usb-device-${vendor_id}-${product_id}" "$subject"
         log_message "Unknown device alert sent: ${vendor_id}:${product_id}"
     else
         echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"

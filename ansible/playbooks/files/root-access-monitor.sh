@@ -20,12 +20,14 @@ LOCK_DURATION=1800  # 30 minutes between alerts
 CONFIG_DIR="/etc/security-monitor"
 AUTHORIZED_ROOT_USERS_FILE="$CONFIG_DIR/authorized-root-users.conf"
 AUTHORIZED_SUDO_USERS_FILE="$CONFIG_DIR/authorized-sudo-users.conf"
+LAST_CHECK_FILE="$CONFIG_DIR/root-access-last-check.timestamp"
 
 # Ensure directories and files exist
 mkdir -p "$CONFIG_DIR"
 touch "$MONITOR_LOG" 2>/dev/null || MONITOR_LOG="/tmp/root-access-monitor.log"
 touch "$AUTHORIZED_ROOT_USERS_FILE" 2>/dev/null || true
 touch "$AUTHORIZED_SUDO_USERS_FILE" 2>/dev/null || true
+touch "$LAST_CHECK_FILE" 2>/dev/null || echo "0" > "$LAST_CHECK_FILE"
 
 # Logging function
 log_message() {
@@ -72,15 +74,39 @@ is_authorized_sudo_user() {
     return 1
 }
 
-# Get recent sudo commands (last 10 minutes)
+# Get last check timestamp
+get_last_check() {
+    if [ -f "$LAST_CHECK_FILE" ]; then
+        cat "$LAST_CHECK_FILE" 2>/dev/null || echo "0"
+    else
+        echo "0"
+    fi
+}
+
+# Update last check timestamp
+update_last_check() {
+    date +%s > "$LAST_CHECK_FILE"
+}
+
+# Get recent sudo commands since last check
 get_recent_sudo_commands() {
+    local last_check=$(get_last_check)
+    local current_time=$(date +%s)
+    
+    if [ "$last_check" -eq 0 ]; then
+        # First run - check last 10 minutes
+        last_check=$((current_time - 600))
+    fi
+    
     if [ -f "$AUTH_LOG" ]; then
-        # Look for sudo commands in auth.log
-        grep "sudo:" "$AUTH_LOG" 2>/dev/null | \
-            grep -v "grep" | \
-            tail -50 | \
-            grep "COMMAND=" | \
-            awk '{
+        # Convert timestamp to date format for grep
+        local start_date=$(date -d "@$last_check" '+%b %_d %H:%M:%S' 2>/dev/null || date '+%b %_d %H:%M:%S')
+        
+        # Get entries since last check
+        awk -v start="$start_date" '
+            BEGIN { found=0 }
+            $0 ~ start { found=1 }
+            found && /sudo:/ && /COMMAND=/ {
                 for(i=1;i<=NF;i++) {
                     if($i ~ /^USER=/) {
                         user=$i;
@@ -93,16 +119,31 @@ get_recent_sudo_commands() {
                         break;
                     }
                 }
-            }'
+            }
+        ' "$AUTH_LOG" 2>/dev/null
     fi
 }
 
-# Get recent su to root attempts
+# Get recent su to root attempts since last check
 get_su_to_root() {
+    local last_check=$(get_last_check)
+    local current_time=$(date +%s)
+    
+    if [ "$last_check" -eq 0 ]; then
+        # First run - check last 10 minutes
+        last_check=$((current_time - 600))
+    fi
+    
     if [ -f "$AUTH_LOG" ]; then
-        grep -E "su\[.*\].*session opened for user root" "$AUTH_LOG" 2>/dev/null | \
-            grep -v "grep" | \
-            tail -20
+        # Convert timestamp to date format for grep
+        local start_date=$(date -d "@$last_check" '+%b %_d %H:%M:%S' 2>/dev/null || date '+%b %_d %H:%M:%S')
+        
+        # Get entries since last check
+        awk -v start="$start_date" '
+            BEGIN { found=0 }
+            $0 ~ start { found=1 }
+            found && /su\[.*\].*session opened for user root/ { print }
+        ' "$AUTH_LOG" 2>/dev/null
     fi
 }
 
@@ -201,7 +242,7 @@ send_sudo_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject" "$body"
+        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject"
         log_message "Sudo alert sent for user: $user"
     else
         echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
@@ -292,7 +333,7 @@ send_su_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject" "$body"
+        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject"
         log_message "Su to root alert sent for user: $user"
     else
         echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
@@ -307,47 +348,49 @@ main() {
     # Check for recent sudo commands
     sudo_commands=$(get_recent_sudo_commands)
     if [ -n "$sudo_commands" ]; then
-        # Get the most recent sudo command
-        recent_sudo=$(echo "$sudo_commands" | tail -1)
-        if [ -n "$recent_sudo" ]; then
-            # Extract user and command
-            sudo_user=$(echo "$recent_sudo" | awk '{print $4}')
-            sudo_command=$(echo "$recent_sudo" | awk '{for(i=5;i<=NF;i++) printf "%s ", $i; print ""}')
-            sudo_time=$(echo "$recent_sudo" | awk '{print $1, $2, $3}')
+        # Process each new sudo command
+        while IFS= read -r recent_sudo; do
+            if [ -n "$recent_sudo" ]; then
+                # Extract user and command
+                sudo_user=$(echo "$recent_sudo" | awk '{print $4}')
+                sudo_command=$(echo "$recent_sudo" | awk '{for(i=5;i<=NF;i++) printf "%s ", $i; print ""}')
+                sudo_time=$(echo "$recent_sudo" | awk '{print $1, $2, $3}')
 
-            log_message "Sudo command detected: $sudo_user executed $sudo_command"
+                log_message "Sudo command detected: $sudo_user executed $sudo_command"
 
-            if ! is_authorized_sudo_user "$sudo_user" || true; then
-                if should_send_alert "sudo" "$sudo_user" || true; then
-                    send_sudo_alert "$sudo_user" "$sudo_command" "$sudo_time"
+                if ! is_authorized_sudo_user "$sudo_user"; then
+                    if should_send_alert "sudo" "$sudo_user"; then
+                        send_sudo_alert "$sudo_user" "$sudo_command" "$sudo_time"
+                    fi
+                else
+                    log_message "Sudo user $sudo_user is authorized (skipping alert)"
                 fi
-            else
-                log_message "Sudo user $sudo_user is authorized"
             fi
-        fi
+        done <<< "$sudo_commands"
     fi
 
     # Check for su to root
     su_attempts=$(get_su_to_root)
     if [ -n "$su_attempts" ]; then
-        # Get the most recent su attempt
-        recent_su=$(echo "$su_attempts" | tail -1)
-        if [ -n "$recent_su" ]; then
-            # Extract user who performed su
-            su_user=$(echo "$recent_su" | grep -oP 'by \K[^ ]+' | head -1)
+        # Process each new su attempt
+        while IFS= read -r recent_su; do
+            if [ -n "$recent_su" ]; then
+                # Extract user who performed su
+                su_user=$(echo "$recent_su" | grep -oP 'by \K[^ ]+' | head -1)
 
-            if [ -n "$su_user" ]; then
-                log_message "Su to root detected by user: $su_user"
+                if [ -n "$su_user" ]; then
+                    log_message "Su to root detected by user: $su_user"
 
-                if ! is_authorized_root_user "$su_user" || true; then
-                    if should_send_alert "su" "$su_user" || true; then
-                        send_su_alert "$su_user" "$recent_su"
+                    if ! is_authorized_root_user "$su_user"; then
+                        if should_send_alert "su" "$su_user"; then
+                            send_su_alert "$su_user" "$recent_su"
+                        fi
+                    else
+                        log_message "Su user $su_user is authorized (skipping alert)"
                     fi
-                else
-                    log_message "Su user $su_user is authorized"
                 fi
             fi
-        fi
+        done <<< "$su_attempts"
     fi
 
     # Check for console root logins
@@ -358,6 +401,9 @@ main() {
         # Console logins are logged but not alerted separately
     fi
 
+    # Update last check timestamp
+    update_last_check
+    
     log_message "Root access monitoring check completed"
 }
 

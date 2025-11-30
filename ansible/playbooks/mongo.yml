@@ -210,13 +210,72 @@
         reload: true
         sysctl_file: /etc/sysctl.d/99-mongodb.conf
 
-    # Install MongoDB using trfore.mongodb_install role
-    - name: Install MongoDB v6
-      include_role:
-        name: trfore.mongodb_install
-      vars:
-        mongodb_version: "6.0.18"
-        mongodb_security_authorization: "enabled"
+    # Install MongoDB using custom installation (no Galaxy role)
+    # WARNING: DO NOT upgrade to MongoDB 7.0 or 8.0 due to severe performance regressions
+    # MongoDB 7.0 has been reported to be up to 25x slower than 6.0 for index-based queries
+    # MongoDB 8.0's "36% faster" claim is compared to 7.0, NOT 6.0
+    # Root causes: Slot-Based Execution engine issues and WiredTiger ticket reduction
+    # Forward Email's query patterns (aggregations, index lookups, regex) are directly affected
+    # References:
+    # - https://www.mongodb.com/community/forums/t/performance-drop-after-upgrade-6-0-10-7-0-1/246712
+    # - https://revisit.tech/blog/mongodb-8-0-performanace-is-36-percent-higher-but-there-is-a-catch/
+    # - https://dev.to/manoj_from_revisit_dot_tech/mongodb-80-performance-is-36-higher-nope-its-not--35jk
+    
+    - name: Add MongoDB GPG key
+      apt_key:
+        url: https://www.mongodb.org/static/pgp/server-6.0.asc
+        state: present
+
+    - name: Add MongoDB repository
+      apt_repository:
+        repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 multiverse"
+        state: present
+        filename: mongodb-org-6.0
+
+    - name: Install MongoDB 6.0.18
+      apt:
+        name:
+          - mongodb-org=6.0.18
+          - mongodb-org-database=6.0.18
+          - mongodb-org-server=6.0.18
+          - mongodb-org-mongos=6.0.18
+          - mongodb-org-tools=6.0.18
+        state: present
+        update_cache: yes
+
+    - name: Hold MongoDB packages to prevent accidental upgrades
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - mongodb-org
+        - mongodb-org-database
+        - mongodb-org-server
+        - mongodb-org-mongos
+        - mongodb-org-tools
+
+    - name: Ensure MongoDB data directory exists
+      file:
+        path: /var/lib/mongodb
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: '0755'
+
+    - name: Ensure MongoDB log directory exists
+      file:
+        path: /var/log/mongodb
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: '0755'
+
+    - name: Enable and start mongod service
+      systemd:
+        name: mongod
+        enabled: yes
+        state: started
+        daemon_reload: yes
 
     # Add failure notification to mongod service
     - name: Create mongod service override directory

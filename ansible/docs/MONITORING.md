@@ -1,8 +1,10 @@
 # Security Monitoring System
 
+
 ## Overview
 
 This monitoring system provides comprehensive automated email notifications for system resource thresholds, SSH security events, USB device detection, and root access monitoring. All monitoring is implemented using battle-tested bash scripts with systemd timers for reliable periodic execution.
+
 
 ## Features
 
@@ -10,85 +12,93 @@ This monitoring system provides comprehensive automated email notifications for 
 
 Monitors CPU and memory usage with multiple threshold levels:
 
-- **75%** - Warning level (first alert)
-- **80%** - Elevated warning
-- **90%** - Critical warning
-- **95%** - Severe warning
-- **100%** - Maximum capacity
+* **75%** - Warning level (first alert)
+* **80%** - Elevated warning
+* **90%** - Critical warning
+* **95%** - Severe warning
+* **100%** - Maximum capacity
 
 **Monitoring Frequency**: Every 5 minutes
 
 **Alert Content**:
-- Current CPU/Memory percentages
-- Threshold exceeded
-- Top 10 processes by CPU usage
-- Top 10 processes by memory usage
-- System uptime and load averages
-- Available disk space
-- Memory breakdown (used, free, cached, swap)
-- Actionable recommendations
+
+* Current CPU/Memory percentages
+* Threshold exceeded
+* Top 10 processes by CPU usage
+* Top 10 processes by memory usage
+* System uptime and load averages
+* Available disk space
+* Memory breakdown (used, free, cached, swap)
+* Actionable recommendations
 
 ### 2. SSH Security Monitoring
 
 Monitors SSH access for suspicious activity:
 
 **Monitored Events**:
-- Failed login attempts (threshold: 5 attempts)
-- Successful logins (all)
-- Root user access (immediate alert)
-- Logins from unknown IP addresses
-- Logins outside business hours (8am-6pm by default)
+
+* Failed login attempts (threshold: 5 attempts)
+* Successful logins (all)
+* Root user access (immediate alert)
+* Logins from unknown IP addresses
+* Logins outside business hours (8am-6pm by default)
 
 **Monitoring Frequency**: Every 10 minutes
 
 **Alert Content**:
-- Event type (failed login, root access, etc.)
-- Username and IP address
-- Timestamp
-- Recent login history
-- Failed attempt count
-- Actionable recommendations
+
+* Event type (failed login, root access, etc.)
+* Username and IP address
+* Timestamp
+* Recent login history
+* Failed attempt count
+* Actionable recommendations
 
 ### 3. USB Device Monitoring
 
 Detects and alerts on unknown USB devices:
 
 **Monitored Events**:
-- New USB device connected
-- Unknown device (not in whitelist)
-- USB storage device connected
-- Device removal
+
+* New USB device connected
+* Unknown device (not in whitelist)
+* USB storage device connected
+* Device removal
 
 **Monitoring Method**: Periodic checks every 5 minutes + real-time via udev rules
 
 **Alert Content**:
-- Device type and description
-- Vendor and product ID
-- Serial number
-- Connection timestamp
-- Current authorized devices list
-- Actionable recommendations
+
+* Device type and description
+* Vendor and product ID
+* Serial number
+* Connection timestamp
+* Current authorized devices list
+* Actionable recommendations
 
 ### 4. Root Access Monitoring
 
 Monitors root user access and privilege escalation:
 
 **Monitored Events**:
-- Direct root login via SSH
-- Direct root login via console
-- sudo usage by users
-- su to root
-- Privilege escalation attempts
+
+* Direct root login via SSH
+* Direct root login via console
+* sudo usage by users
+* su to root
+* Privilege escalation attempts
 
 **Monitoring Frequency**: Every 5 minutes
 
 **Alert Content**:
-- Access method (SSH, console, sudo, su)
-- Username
-- Source IP (if applicable)
-- Command executed (for sudo)
-- Timestamp
-- Actionable recommendations
+
+* Access method (SSH, console, sudo, su)
+* Username
+* Source IP (if applicable)
+* Command executed (for sudo)
+* Timestamp
+* Actionable recommendations
+
 
 ## Installation
 
@@ -99,17 +109,18 @@ cd ansible
 ansible-playbook -i hosts.yml playbooks/security.yml
 ```
 
+
 ## Configuration
 
 ### Email Notifications
 
 Email notifications use the existing Postfix SMTP relay configuration. Ensure these environment variables are set:
 
-- `POSTFIX_USERNAME` - SMTP username
-- `POSTFIX_PASSWORD` - SMTP password
-- `POSTFIX_RCPTS` - Alert recipients (comma-separated)
-- `SMTP_HOST` - SMTP server (default: smtp.forwardemail.net)
-- `SMTP_PORT` - SMTP port (default: 465)
+* `POSTFIX_USERNAME` - SMTP username
+* `POSTFIX_PASSWORD` - SMTP password
+* `POSTFIX_RCPTS` - Alert recipients (comma-separated)
+* `SMTP_HOST` - SMTP server (default: smtp.forwardemail.net)
+* `SMTP_PORT` - SMTP port (default: 465)
 
 ### Whitelists
 
@@ -195,33 +206,35 @@ BUSINESS_HOURS_START=8   # 8am
 BUSINESS_HOURS_END=18    # 6pm
 ```
 
+
 ## Rate Limiting
 
 All monitoring scripts implement intelligent rate limiting to prevent alert flooding:
 
-- **Resource thresholds**: 1 hour cooldown per threshold
-- **SSH failed logins**: 30 minutes cooldown
-- **SSH root access**: No rate limiting (always alert)
-- **USB unknown device**: 1 hour cooldown per device
-- **Root access (sudo/su)**: 30 minutes cooldown per user
+* **Resource thresholds**: 1 hour cooldown per threshold
+* **SSH failed logins**: 30 minutes cooldown
+* **SSH root access**: No rate limiting (always alert)
+* **USB unknown device**: 1 hour cooldown per device
+* **Root access (sudo/su)**: 30 minutes cooldown per user
 
 Rate limiting uses lockfiles in `/var/lock/` with unique identifiers for each alert type and threshold.
+
 
 ## Systemd Services
 
 ### Services
 
-- `system-resource-monitor.service` - System resource monitoring
-- `ssh-security-monitor.service` - SSH security monitoring
-- `usb-device-monitor.service` - USB device monitoring
-- `root-access-monitor.service` - Root access monitoring
+* `system-resource-monitor.service` - System resource monitoring
+* `ssh-security-monitor.service` - SSH security monitoring
+* `usb-device-monitor.service` - USB device monitoring
+* `root-access-monitor.service` - Root access monitoring
 
 ### Timers
 
-- `system-resource-monitor.timer` - Runs every 5 minutes
-- `ssh-security-monitor.timer` - Runs every 10 minutes
-- `usb-device-monitor.timer` - Runs every 5 minutes
-- `root-access-monitor.timer` - Runs every 5 minutes
+* `system-resource-monitor.timer` - Runs every 5 minutes
+* `ssh-security-monitor.timer` - Runs every 10 minutes
+* `usb-device-monitor.timer` - Runs every 5 minutes
+* `root-access-monitor.timer` - Runs every 5 minutes
 
 ### Managing Services
 
@@ -265,14 +278,15 @@ Disable monitoring:
 sudo systemctl disable --now system-resource-monitor.timer
 ```
 
+
 ## Log Files
 
 Monitoring logs are stored in:
 
-- `/var/log/system-resource-monitor.log`
-- `/var/log/ssh-security-monitor.log`
-- `/var/log/usb-device-monitor.log`
-- `/var/log/root-access-monitor.log`
+* `/var/log/system-resource-monitor.log`
+* `/var/log/ssh-security-monitor.log`
+* `/var/log/usb-device-monitor.log`
+* `/var/log/root-access-monitor.log`
 
 View logs:
 
@@ -282,6 +296,7 @@ sudo tail -f /var/log/ssh-security-monitor.log
 sudo tail -f /var/log/usb-device-monitor.log
 sudo tail -f /var/log/root-access-monitor.log
 ```
+
 
 ## Testing
 
@@ -367,6 +382,7 @@ sudo su -
 #### USB Device Alert
 
 Connect an unknown USB device (not in whitelist) to trigger an alert.
+
 
 ## Troubleshooting
 
@@ -461,6 +477,7 @@ cat /etc/security-monitor/authorized-ips.conf
 
 3. Ensure no trailing whitespace or special characters
 
+
 ## Security Considerations
 
 1. **Script Permissions**: All scripts run as root but with minimal privileges via systemd security hardening
@@ -469,25 +486,27 @@ cat /etc/security-monitor/authorized-ips.conf
 4. **Rate Limiting**: Prevents DoS via alert flooding
 5. **Whitelist Management**: Secure storage with restricted modification
 
+
 ## Maintenance
 
 ### Weekly Tasks
 
-- Review monitoring logs for patterns
-- Update whitelists as needed
-- Verify email delivery
+* Review monitoring logs for patterns
+* Update whitelists as needed
+* Verify email delivery
 
 ### Monthly Tasks
 
-- Review alert thresholds and adjust if needed
-- Check disk space for log files
-- Update authorized users/IPs/devices lists
+* Review alert thresholds and adjust if needed
+* Check disk space for log files
+* Update authorized users/IPs/devices lists
 
 ### Quarterly Tasks
 
-- Review and update business hours configuration
-- Audit monitoring effectiveness
-- Update documentation
+* Review and update business hours configuration
+* Audit monitoring effectiveness
+* Update documentation
+
 
 ## Architecture
 
@@ -499,6 +518,7 @@ The monitoring system follows these design principles:
 4. **Battle-Tested Reliability**: Uses proven patterns from existing infrastructure
 5. **Consistent Architecture**: Follows existing systemd-based notification patterns
 
+
 ## Support
 
 For issues or questions:
@@ -508,10 +528,11 @@ For issues or questions:
 3. Review this documentation
 4. Contact the infrastructure team
 
+
 ## References
 
-- [Server Auditing Best Practices](https://serverauditing.com/)
-- [SSH Monitoring Guide](https://sshmonitor.com/)
-- [SSL Certificate Monitoring](https://sslmonitor.com/)
-- [Forward Email Documentation](https://forwardemail.net/)
-- [Systemd Timer Documentation](https://www.freedesktop.org/software/systemd/man/systemd.timer.html)
+* [Server Auditing Best Practices](https://serverauditing.com/)
+* [SSH Monitoring Guide](https://sshmonitor.com/)
+* [SSL Certificate Monitoring](https://sslmonitor.com/)
+* [Forward Email Documentation](https://forwardemail.net/)
+* [Systemd Timer Documentation](https://www.freedesktop.org/software/systemd/man/systemd.timer.html)

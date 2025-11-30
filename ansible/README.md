@@ -1,7 +1,8 @@
 # Ansible Infrastructure Documentation
 
-> [!NOTE]
+> \[!NOTE]
 > This directory contains [Ansible](https://github.com/ansible/ansible) playbooks and comprehensive documentation for deploying and managing the Forward Email infrastructure.
+
 
 ## 📁 Directory Structure
 
@@ -43,44 +44,51 @@ ansible/
 │   ├── ssh-keys.yml            # SSH key deployment
 │   ├── deployment-keys.yml     # Deployment keys
 │   └── patch-dns-role.yml      # DNS role patches
-└── requirements.yml             # Ansible Galaxy dependencies
+└── requirements.yml             # Ansible collections and roles
 ```
 
 ---
 
+
 ## 📚 Table of Contents
 
-- [Getting Started](#getting-started)
-- [Deployment Guides](#deployment-guides)
-- [Monitoring & Alerting](#monitoring--alerting)
-- [Operations & Maintenance](#operations--maintenance)
-- [Performance Tuning](#performance-tuning)
-- [Disaster Recovery](#disaster-recovery)
-- [Security & Auditing](#security--auditing)
-- [Common Commands](#common-commands)
-- [Related Resources](#related-resources)
+* [Getting Started](#getting-started)
+* [Deployment Guides](#deployment-guides)
+* [Monitoring & Alerting](#monitoring--alerting)
+* [Operations & Maintenance](#operations--maintenance)
+* [Performance Tuning](#performance-tuning)
+* [Disaster Recovery](#disaster-recovery)
+* [Security & Auditing](#security--auditing)
+* [Common Commands](#common-commands)
+* [Related Resources](#related-resources)
 
 ---
 
+
 ## 🚀 Getting Started
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > Before deploying any services, ensure you have:
 >
-> - [Ansible](https://github.com/ansible/ansible) 2.9+ installed
-> - SSH access to target servers
-> - Required environment variables configured
-> - SSL/TLS certificates ready
+> * [Ansible](https://github.com/ansible/ansible) 2.9+ installed
+> * SSH access to target servers
+> * Required environment variables configured
+> * SSL/TLS certificates ready
 
 ### Prerequisites
 
 ```bash
 # Install Ansible
 pip install ansible
-
-# Install Ansible Galaxy dependencies
-ansible-galaxy install -r ansible/requirements.yml
 ```
+
+> \[!NOTE]
+> **No Ansible Galaxy dependencies required!** Our playbooks use custom installations:
+>
+> * **MongoDB 6.0.18**: Installed directly from official MongoDB repository
+> * **Valkey**: Compiled from source
+>
+> This eliminates external role dependencies and gives us full control.
 
 ### Environment Variables
 
@@ -118,6 +126,7 @@ ansible-playbook ansible/playbooks/mail.yml -i hosts.yml
 
 ---
 
+
 ## 📖 Deployment Guides
 
 ### Database Deployment
@@ -126,13 +135,16 @@ ansible-playbook ansible/playbooks/mail.yml -i hosts.yml
 
 Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and [Valkey](https://github.com/valkey-io/valkey) (Redis fork) with:
 
-- ✅ SSL/TLS encryption
-- ✅ UFW firewall configuration
-- ✅ Automated backups to Cloudflare R2
-- ✅ Email alerting system
-- ✅ Security hardening
+* ✅ SSL/TLS encryption
+* ✅ UFW firewall configuration
+* ✅ Automated backups to Cloudflare R2
+* ✅ Email alerting system
+* ✅ Security hardening
 
-> [!TIP]
+> \[!WARNING]
+> **MongoDB is LOCKED to v6.0.18** - Do not upgrade to v7 or v8 due to severe performance regressions. See [MONGODB\_OPERATIONS\_GUIDE.md](docs/MONGODB_OPERATIONS_GUIDE.md) for details.
+
+> \[!TIP]
 > Start here if you're deploying database services for the first time.
 
 ### Mail Server Deployment
@@ -141,16 +153,17 @@ Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and 
 
 Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 
-- 📧 SMTP server configuration (ports 25, 587, 465, 2525, 2587, 2465, 2455, 2555)
-- 📬 IMAP server setup (ports 993, 2993)
-- 📮 POP3 server setup (ports 995, 2995)
-- 🔐 TLS/SSL certificate management
-- 🛡️ Security best practices
+* 📧 SMTP server configuration (ports 25, 587, 465, 2525, 2587, 2465, 2455, 2555)
+* 📬 IMAP server setup (ports 993, 2993)
+* 📮 POP3 server setup (ports 995, 2995)
+* 🔐 TLS/SSL certificate management
+* 🛡️ Security best practices
 
-> [!WARNING]
+> \[!WARNING]
 > Mail servers require proper DNS configuration (MX, SPF, DKIM, DMARC) before deployment.
 
 ---
+
 
 ## 🔔 Monitoring & Alerting
 
@@ -160,24 +173,24 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 
 Comprehensive automated monitoring with email notifications for:
 
-- 📊 **System Resource Monitoring** - CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds
-- 🔐 **SSH Security Monitoring** - ALL SSH activity (successful/failed logins, logged in users, commands)
-- 🔌 **USB Device Monitoring** - Unknown device detection with whitelisting
-- 👤 **Root Access Monitoring** - Sudo, su, and direct root login tracking
-- 🔍 **[Lynis](https://github.com/CISOfy/lynis) System Audit** - Daily security audits with hardening index
-- 📦 **Package Installation Monitoring** - Track package installations, upgrades, removals
-- 🌐 **Open Ports Monitoring** - Monitor network ports and detect changes
-- 🔒 **SSL Certificate Monitoring** - Certificate expiration tracking for WEB_URL
+* 📊 **System Resource Monitoring** - CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds
+* 🔐 **SSH Security Monitoring** - ALL SSH activity (successful/failed logins, logged in users, commands)
+* 🔌 **USB Device Monitoring** - Unknown device detection with whitelisting
+* 👤 **Root Access Monitoring** - Sudo, su, and direct root login tracking
+* 🔍 **[Lynis](https://github.com/CISOfy/lynis) System Audit** - Daily security audits with hardening index
+* 📦 **Package Installation Monitoring** - Track package installations, upgrades, removals
+* 🌐 **Open Ports Monitoring** - Monitor network ports and detect changes
+* 🔒 **SSL Certificate Monitoring** - Certificate expiration tracking for WEB\_URL
 
 **Features**:
 
-- ⏱️ Periodic monitoring via [systemd](https://github.com/systemd/systemd) timers
-- 📧 HTML-formatted email alerts
-- 🚦 Intelligent rate limiting
-- 🎯 Whitelist-based filtering
-- 🔒 Security hardened services
+* ⏱️ Periodic monitoring via [systemd](https://github.com/systemd/systemd) timers
+* 📧 HTML-formatted email alerts
+* 🚦 Intelligent rate limiting
+* 🎯 Whitelist-based filtering
+* 🔒 Security hardened services
 
-> [!NOTE]
+> \[!NOTE]
 > All monitoring integrates with the existing Postfix SMTP relay and notification infrastructure.
 
 ### Comprehensive Monitoring Testing
@@ -196,37 +209,39 @@ Complete testing procedures for **all 18 monitoring systems** across the infrast
 6. Package Installation Monitor
 7. Open Ports Monitor
 8. SSL Certificate Monitor
-9. **Node Playbook (1 system)**:
-   - [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
-10. **MongoDB Playbook (3 systems)**:
-    - [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
-    - MongoDB UFW Whitelist Update Monitoring
-    - MongoDB Backup Monitoring
-11. **Redis Playbook (4 systems)**:
 
-- [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
-- Redis UFW Whitelist Update Monitoring
-- Redis Backup Monitoring
-- Redis Command Usage Monitoring
+**Node Playbook (1 system)**:
+9\. [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
 
-12. **Mail & DNS Playbooks (2 systems)**:
+**MongoDB Playbook (3 systems)**:
+10\. [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
+11\. MongoDB UFW Whitelist Update Monitoring
+12\. MongoDB Backup Monitoring
 
-- Mail Service Failure Notifications
-- [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
+**Redis Playbook (4 systems)**:
+13\. [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
+14\. Redis UFW Whitelist Update Monitoring
+15\. Redis Backup Monitoring
+16\. Redis Command Usage Monitoring
+
+**Mail & DNS Playbooks (2 systems)**:
+17\. Mail Service Failure Notifications
+18\. [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
 
 **Each system includes**:
 
-- ✅ Purpose and description
-- ✅ Files deployed
-- ✅ Testing commands
-- ✅ Alert trigger tests
-- ✅ Validation checklists
-- ✅ Troubleshooting procedures
+* ✅ Purpose and description
+* ✅ Files deployed
+* ✅ Testing commands
+* ✅ Alert trigger tests
+* ✅ Validation checklists
+* ✅ Troubleshooting procedures
 
-> [!TIP]
+> \[!TIP]
 > Use this guide to verify all monitoring systems after deployment or infrastructure changes.
 
 ---
+
 
 ## 🔧 Operations & Maintenance
 
@@ -236,14 +251,14 @@ Complete testing procedures for **all 18 monitoring systems** across the infrast
 
 Comprehensive operational procedures including:
 
-- 🔄 Backup and restore procedures
-- 📊 Monitoring and health checks
-- 🔍 Query optimization
-- 🗄️ Index management
-- 📈 Capacity planning
-- 🚨 Troubleshooting common issues
+* 🔄 Backup and restore procedures
+* 📊 Monitoring and health checks
+* 🔍 Query optimization
+* 🗄️ Index management
+* 📈 Capacity planning
+* 🚨 Troubleshooting common issues
 
-> [!NOTE]
+> \[!NOTE]
 > This guide covers day-to-day [MongoDB](https://github.com/mongodb/mongo) administration tasks.
 
 ### Service User Management
@@ -252,12 +267,13 @@ Comprehensive operational procedures including:
 
 Documentation of service users and their permissions:
 
-- 👤 User roles and responsibilities
-- 🔑 Permission matrices
-- 📁 File ownership guidelines
-- 🔒 Security considerations
+* 👤 User roles and responsibilities
+* 🔑 Permission matrices
+* 📁 File ownership guidelines
+* 🔒 Security considerations
 
 ---
+
 
 ## ⚡ Performance Tuning
 
@@ -267,14 +283,14 @@ Documentation of service users and their permissions:
 
 Optimize [MongoDB](https://github.com/mongodb/mongo) for production workloads:
 
-- 🎯 WiredTiger cache configuration
-- 💾 Memory allocation strategies
-- 🔄 Connection pool tuning
-- 📊 Query performance optimization
-- 🗂️ Index strategies
-- 💿 Storage engine tuning
+* 🎯 WiredTiger cache configuration
+* 💾 Memory allocation strategies
+* 🔄 Connection pool tuning
+* 📊 Query performance optimization
+* 🗂️ Index strategies
+* 💿 Storage engine tuning
 
-> [!TIP]
+> \[!TIP]
 > Apply these optimizations after initial deployment and load testing.
 
 ### Redis/Valkey Performance
@@ -283,14 +299,15 @@ Optimize [MongoDB](https://github.com/mongodb/mongo) for production workloads:
 
 Maximize [Redis](https://github.com/redis/redis)/[Valkey](https://github.com/valkey-io/valkey) performance:
 
-- 🚀 Memory optimization
-- ⚡ I/O threading configuration
-- 🔄 Persistence strategies
-- 📈 Monitoring and metrics
-- 🎯 Eviction policies
-- 🔧 Kernel parameter tuning
+* 🚀 Memory optimization
+* ⚡ I/O threading configuration
+* 🔄 Persistence strategies
+* 📈 Monitoring and metrics
+* 🎯 Eviction policies
+* 🔧 Kernel parameter tuning
 
 ---
+
 
 ## 🆘 Disaster Recovery
 
@@ -298,14 +315,14 @@ Maximize [Redis](https://github.com/redis/redis)/[Valkey](https://github.com/val
 
 Complete disaster recovery procedures:
 
-- 💾 Backup strategies and schedules
-- 🔄 Restore procedures
-- 🚨 Incident response workflows
-- 📋 Recovery checklists
-- 🧪 Testing procedures
-- 📞 Escalation paths
+* 💾 Backup strategies and schedules
+* 🔄 Restore procedures
+* 🚨 Incident response workflows
+* 📋 Recovery checklists
+* 🧪 Testing procedures
+* 📞 Escalation paths
 
-> [!CAUTION]
+> \[!CAUTION]
 > Review and test disaster recovery procedures regularly. Don't wait for an actual disaster!
 
 ### Backup Schedule
@@ -316,10 +333,11 @@ Complete disaster recovery procedures:
 | Redis/Valkey   | Every 6 hours | 30 days   | Cloudflare R2 |
 | System configs | Daily         | 90 days   | Cloudflare R2 |
 
-> [!NOTE]
+> \[!NOTE]
 > Backups older than 7 days are consolidated to one per day to save storage space.
 
 ---
+
 
 ## 🔒 Security & Auditing
 
@@ -327,29 +345,30 @@ Complete disaster recovery procedures:
 
 All critical system events are monitored and reported via email:
 
-- 🚫 **[fail2ban](https://github.com/fail2ban/fail2ban)** - IP ban notifications
-- 📦 **unattended-upgrades** - System update alerts
-- 💾 **MongoDB backups** - Backup failure alerts
-- 💾 **Redis backups** - Backup failure alerts
-- 🔴 **[PM2](https://github.com/Unitech/pm2) errors** - Application crash notifications
-- ⚠️ **[systemd](https://github.com/systemd/systemd) failures** - Service failure alerts
-- 📊 **Resource monitoring** - CPU/Memory threshold alerts
-- 🔐 **SSH security** - Failed login and root access alerts
-- 🔌 **USB devices** - Unknown device detection alerts
-- 👤 **Root access** - Privilege escalation alerts
+* 🚫 **[fail2ban](https://github.com/fail2ban/fail2ban)** - IP ban notifications
+* 📦 **unattended-upgrades** - System update alerts
+* 💾 **MongoDB backups** - Backup failure alerts
+* 💾 **Redis backups** - Backup failure alerts
+* 🔴 **[PM2](https://github.com/Unitech/pm2) errors** - Application crash notifications
+* ⚠️ **[systemd](https://github.com/systemd/systemd) failures** - Service failure alerts
+* 📊 **Resource monitoring** - CPU/Memory threshold alerts
+* 🔐 **SSH security** - Failed login and root access alerts
+* 🔌 **USB devices** - Unknown device detection alerts
+* 👤 **Root access** - Privilege escalation alerts
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > Configure `POSTFIX_RCPTS` environment variable to receive alerts.
 
 ### Rate Limiting
 
 Email alerts are rate-limited to prevent flooding:
 
-- **Limit**: 10 emails per hour per service (varies by alert type)
-- **Tracking**: Lockfile-based in `/var/lock/` and JSON-based in `/var/lib/email-rate-limits/`
-- **Logging**: All rate limit events logged to syslog and service logs
+* **Limit**: 10 emails per hour per service (varies by alert type)
+* **Tracking**: Lockfile-based in `/var/lock/` and JSON-based in `/var/lib/email-rate-limits/`
+* **Logging**: All rate limit events logged to syslog and service logs
 
 ---
+
 
 ## 🔧 Common Commands
 
@@ -423,56 +442,66 @@ sudo journalctl -u <service-name> -n 50
 
 ---
 
+
 ## 🔗 Related Resources
 
 ### External Documentation
 
-- [Ansible Documentation](https://docs.ansible.com/)
-- [Ansible GitHub](https://github.com/ansible/ansible)
-- [MongoDB Official Documentation](https://docs.mongodb.com/)
-- [MongoDB GitHub](https://github.com/mongodb/mongo)
-- [Redis Documentation](https://redis.io/documentation)
-- [Redis GitHub](https://github.com/redis/redis)
-- [Valkey Documentation](https://valkey.io/docs/)
-- [Valkey GitHub](https://github.com/valkey-io/valkey)
-- [PM2 Documentation](https://pm2.keymetrics.io/docs/)
-- [PM2 GitHub](https://github.com/Unitech/pm2)
-- [systemd Documentation](https://www.freedesktop.org/wiki/Software/systemd/)
-- [systemd GitHub](https://github.com/systemd/systemd)
-- [fail2ban GitHub](https://github.com/fail2ban/fail2ban)
-- [Unbound Documentation](https://nlnetlabs.nl/documentation/unbound/)
-- [Unbound GitHub](https://github.com/NLnetLabs/unbound)
+* [Ansible Documentation](https://docs.ansible.com/)
+* [Ansible GitHub](https://github.com/ansible/ansible)
+* [MongoDB Official Documentation](https://docs.mongodb.com/)
+* [MongoDB GitHub](https://github.com/mongodb/mongo)
+* [Redis Documentation](https://redis.io/documentation)
+* [Redis GitHub](https://github.com/redis/redis)
+* [Valkey Documentation](https://valkey.io/docs/)
+* [Valkey GitHub](https://github.com/valkey-io/valkey)
+* [PM2 Documentation](https://pm2.keymetrics.io/docs/)
+* [PM2 GitHub](https://github.com/Unitech/pm2)
+* [systemd Documentation](https://www.freedesktop.org/wiki/Software/systemd/)
+* [systemd GitHub](https://github.com/systemd/systemd)
+* [fail2ban GitHub](https://github.com/fail2ban/fail2ban)
+* [Unbound Documentation](https://nlnetlabs.nl/documentation/unbound/)
+* [Unbound GitHub](https://github.com/NLnetLabs/unbound)
 
-### Ansible Roles Used
+### Ansible Collections Used
 
-- [`trfore/ansible-role-mongodb-install`](https://github.com/trfore/ansible-role-mongodb-install) v3.0.5 - MongoDB installation
-- [`hifis.toolkit`](https://github.com/hifis-net/ansible-collection-toolkit) collection v6.2.2 - System hardening and unattended upgrades
+* [`hifis.toolkit`](https://github.com/hifis-net/ansible-collection-toolkit) collection v6.2.2 - System hardening and unattended upgrades
 
-> [!NOTE]
+> \[!NOTE]
+> **MongoDB and Valkey use custom installations** (no external roles):
+>
+> * **MongoDB**: Installed directly from official MongoDB APT repository
+> * **Valkey**: Compiled from source (GitHub releases)
+>
+> This approach eliminates dependencies on third-party roles and provides full control over configuration.
+
+> \[!NOTE]
 > [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
 
 ---
+
 
 ## 📝 Document Conventions
 
 Throughout this documentation, you'll see these GitHub-style alerts:
 
-> [!NOTE]
+> \[!NOTE]
 > General information and helpful context
 
-> [!TIP]
+> \[!TIP]
 > Suggestions and best practices
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > Critical information that must be followed
 
-> [!WARNING]
+> \[!WARNING]
 > Potential issues or risks to be aware of
 
-> [!CAUTION]
+> \[!CAUTION]
 > Dangerous operations that could cause data loss or downtime
 
 ---
+
 
 ## 🤝 Contributing
 
@@ -494,6 +523,7 @@ When making infrastructure changes:
 4. Document all environment variables and configuration
 
 ---
+
 
 ## 📧 Support
 

@@ -2,6 +2,7 @@
 
 This guide covers kernel and OS-level optimizations implemented in the Redis playbook to maximize performance on Ubuntu systems.
 
+
 ## Kernel Optimizations
 
 The `redis.yml` playbook automatically configures the following kernel parameters for optimal Redis performance.
@@ -10,7 +11,7 @@ The `redis.yml` playbook automatically configures the following kernel parameter
 
 All sysctl parameters are configured in `/etc/sysctl.d/99-redis.conf` and applied automatically.
 
-#### vm.overcommit_memory = 1
+#### vm.overcommit\_memory = 1
 
 **Purpose:** Prevents background save failures during RDB snapshots.
 
@@ -38,7 +39,7 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-redis.conf` and applie
 
 **Performance impact:** Allows Redis to handle thousands of concurrent connections without dropping requests.
 
-#### net.ipv4.tcp_max_syn_backlog = 65536
+#### net.ipv4.tcp\_max\_syn\_backlog = 65536
 
 **Purpose:** Increases the maximum number of SYN packets queued.
 
@@ -55,11 +56,12 @@ All sysctl parameters are configured in `/etc/sysctl.d/99-redis.conf` and applie
 **Why disabled:** THP causes significant latency and memory usage issues with Redis.
 
 **How it works:**
-- THP allows the kernel to automatically allocate 2MB pages instead of 4KB pages
-- While this sounds beneficial, it causes problems for Redis:
-  - **Copy-on-write overhead:** When Redis forks for background saves, THP causes excessive memory copying
-  - **Latency spikes:** THP defragmentation runs in the background, causing unpredictable latency
-  - **Memory bloat:** THP can cause Redis to use more memory than expected
+
+* THP allows the kernel to automatically allocate 2MB pages instead of 4KB pages
+* While this sounds beneficial, it causes problems for Redis:
+  * **Copy-on-write overhead:** When Redis forks for background saves, THP causes excessive memory copying
+  * **Latency spikes:** THP defragmentation runs in the background, causing unpredictable latency
+  * **Memory bloat:** THP can cause Redis to use more memory than expected
 
 **Official Redis recommendation:** [Redis documentation](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/) explicitly recommends disabling THP.
 
@@ -76,6 +78,7 @@ echo never > /sys/kernel/mm/transparent_hugepage/defrag
 cat /sys/kernel/mm/transparent_hugepage/enabled
 # Should show: always madvise [never]
 ```
+
 
 ## Redis Configuration Optimizations
 
@@ -126,6 +129,7 @@ tcp-keepalive 0
 ```
 maxclients 10000
 ```
+
 
 ## Performance Monitoring
 
@@ -191,6 +195,7 @@ redis-cli INFO stats | grep -E "keyspace_hits|keyspace_misses"
 redis-cli INFO clients | grep -E "connected_clients|rejected_connections"
 ```
 
+
 ## Troubleshooting
 
 ### High Latency
@@ -198,6 +203,7 @@ redis-cli INFO clients | grep -E "connected_clients|rejected_connections"
 **Symptoms:** Slow response times, timeouts
 
 **Possible causes:**
+
 1. THP not disabled
 2. Swapping occurring
 3. Background saves blocking
@@ -226,6 +232,7 @@ redis-cli --latency
 **Symptoms:** Clients cannot connect to Redis
 
 **Possible causes:**
+
 1. Connection backlog full
 2. Max clients reached
 3. Firewall blocking connections
@@ -252,6 +259,7 @@ redis-cli CONFIG SET maxclients 20000
 **Symptoms:** High memory usage, OOM errors
 
 **Possible causes:**
+
 1. Memory fragmentation
 2. No maxmemory limit set
 3. Memory leaks
@@ -270,6 +278,7 @@ redis-cli CONFIG SET maxmemory-policy volatile-ttl
 # Restart Redis to defragment memory
 sudo systemctl restart redis-server
 ```
+
 
 ## Performance Benchmarking
 
@@ -290,10 +299,10 @@ redis-benchmark -h redis.example.com -p 6380 --tls --cert /path/to/client.crt --
 
 **Typical performance on modern hardware:**
 
-- **GET operations:** 100,000+ ops/sec
-- **SET operations:** 80,000+ ops/sec
-- **Latency:** < 1ms average
-- **Memory overhead:** < 20% of data size
+* **GET operations:** 100,000+ ops/sec
+* **SET operations:** 80,000+ ops/sec
+* **Latency:** < 1ms average
+* **Memory overhead:** < 20% of data size
 
 **Factors affecting performance:**
 
@@ -302,29 +311,33 @@ redis-benchmark -h redis.example.com -p 6380 --tls --cert /path/to/client.crt --
 3. **Network:** Low-latency network is critical
 4. **Disk:** Only matters for persistence operations
 
+
 ## Summary
 
 The Redis playbook implements the following optimizations:
 
 **Kernel Level:**
-- ✅ `vm.overcommit_memory = 1` - Prevents fork failures
-- ✅ `vm.swappiness = 1` - Minimizes swapping
-- ✅ `net.core.somaxconn = 65536` - Increases connection queue
-- ✅ `net.ipv4.tcp_max_syn_backlog = 65536` - Increases SYN queue
-- ✅ Transparent Huge Pages disabled - Prevents latency spikes
+
+* ✅ `vm.overcommit_memory = 1` - Prevents fork failures
+* ✅ `vm.swappiness = 1` - Minimizes swapping
+* ✅ `net.core.somaxconn = 65536` - Increases connection queue
+* ✅ `net.ipv4.tcp_max_syn_backlog = 65536` - Increases SYN queue
+* ✅ Transparent Huge Pages disabled - Prevents latency spikes
 
 **Redis Configuration:**
-- ✅ `tcp-backlog 65536` - Matches kernel settings
-- ✅ `tcp-keepalive 0` - Enables connection reuse
-- ✅ `maxclients 10000` - Allows concurrent connections
+
+* ✅ `tcp-backlog 65536` - Matches kernel settings
+* ✅ `tcp-keepalive 0` - Enables connection reuse
+* ✅ `maxclients 10000` - Allows concurrent connections
 
 **Result:** Production-ready Redis deployment optimized for high performance, low latency, and stability.
 
+
 ## References
 
-- [Redis Administration Documentation](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/)
-- [Redis Latency Diagnosis](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/latency/)
-- [Performance Tuning for Redis - SeveralNines](https://severalnines.com/blog/performance-tuning-redis/)
+* [Redis Administration Documentation](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/)
+* [Redis Latency Diagnosis](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/latency/)
+* [Performance Tuning for Redis - SeveralNines](https://severalnines.com/blog/performance-tuning-redis/)
 
 ---
 

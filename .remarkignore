@@ -4,4 +4,3 @@ locales/README.md
 *-*.md
 WHITEPAPER.md
 mail-overrides
-ansible/**/*.md

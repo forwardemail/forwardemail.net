@@ -58,12 +58,55 @@ should_send_alert() {
 # Get CPU usage percentage
 get_cpu_usage() {
     # Get CPU usage over 2 seconds for accuracy
-    top -bn2 -d 1 | grep "Cpu(s)" | tail -1 | awk '{print 100 - $8}' | cut -d. -f1
+    # Use multiple methods for robustness
+    local cpu_usage
+    
+    # Method 1: Use top command
+    cpu_usage=$(top -bn2 -d 1 | grep "Cpu(s)" | tail -1 | awk '{idle=$8; if (idle ~ /^[0-9]+\.?[0-9]*$/) print int(100 - idle); else print "ERROR"}')
+    
+    # Validate the result
+    if [[ "$cpu_usage" == "ERROR" ]] || [[ -z "$cpu_usage" ]] || ! [[ "$cpu_usage" =~ ^[0-9]+$ ]]; then
+        # Fallback: Use mpstat if available
+        if command -v mpstat &> /dev/null; then
+            cpu_usage=$(mpstat 1 1 | awk '/Average/ {idle=$NF; if (idle ~ /^[0-9]+\.?[0-9]*$/) print int(100 - idle); else print "0"}')
+        else
+            # Fallback: Use /proc/stat
+            cpu_usage=$(awk '/^cpu / {usage=($2+$4)*100/($2+$4+$5)} END {print int(usage)}' /proc/stat)
+        fi
+    fi
+    
+    # Final validation - ensure it's a valid number between 0-100
+    if ! [[ "$cpu_usage" =~ ^[0-9]+$ ]] || [ "$cpu_usage" -lt 0 ] || [ "$cpu_usage" -gt 100 ]; then
+        cpu_usage=0
+    fi
+    
+    echo "$cpu_usage"
 }
 
 # Get memory usage percentage
 get_memory_usage() {
-    free | grep Mem | awk '{printf "%.0f", ($3/$2) * 100}'
+    local mem_usage
+    
+    # Get memory usage with validation
+    mem_usage=$(free | grep Mem | awk '{
+        if ($2 > 0) {
+            usage = ($3/$2) * 100;
+            if (usage >= 0 && usage <= 100) {
+                printf "%.0f", usage;
+            } else {
+                print "0";
+            }
+        } else {
+            print "0";
+        }
+    }')
+    
+    # Validate the result
+    if ! [[ "$mem_usage" =~ ^[0-9]+$ ]] || [ "$mem_usage" -lt 0 ] || [ "$mem_usage" -gt 100 ]; then
+        mem_usage=0
+    fi
+    
+    echo "$mem_usage"
 }
 
 # Get top processes by CPU
@@ -231,7 +274,7 @@ send_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject" "$body"
+        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject"
         log_message "Alert sent: ${resource} ${current_value}% (threshold: ${threshold}%)"
     else
         # Fallback to sendmail

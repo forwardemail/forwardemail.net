@@ -206,23 +206,25 @@ When `MAIL_SSL_ENABLED=true`:
    * `security.yml` installs the upstream `oefenweb.fail2ban` role for SSH
    * `mail.yml` adds a SnappyMail-specific jail that watches auth failures (enabled via `auth_syslog = On`)
 
+
 ## Dependency Checklist
 
-| Component | Purpose |
-|-----------|---------|
-| `php8.2-curl` | Required for CardDAV/CalDAV sync (`curl_exec` must not be disabled in the FPM pool). |
-| `php8.2-sqlite3` | Backing store for contacts (SnappyMail defaults to SQLite). |
-| `php8.2-redis` | Session storage via Redis. |
-| `php8.2-intl`, `php8.2-mbstring`, `php8.2-xml`, `php8.2-gd`, `php8.2-zip` | Required by SnappyMail core. |
+| Component                                                                 | Purpose                                                                              |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `php8.2-curl`                                                             | Required for CardDAV/CalDAV sync (`curl_exec` must not be disabled in the FPM pool). |
+| `php8.2-sqlite3`                                                          | Backing store for contacts (SnappyMail defaults to SQLite).                          |
+| `php8.2-redis`                                                            | Session storage via Redis.                                                           |
+| `php8.2-intl`, `php8.2-mbstring`, `php8.2-xml`, `php8.2-gd`, `php8.2-zip` | Required by SnappyMail core.                                                         |
 
 After Ansible runs, confirm `phpinfo()` from the deployed site lists these modules under “Loaded Extensions”.
 
+
 ## Operational Tips
 
-- **Runtime data is mutable**: SnappyMail copies the seed configs into `dist/data/_data_/_default_/`. Toggling plugins or settings writes to those runtime files. Deleting them (or the entire `data/` directory) resets to the seeds.
-- **Reset a user’s settings**: remove `dist/data/_data_/_default_/storage/<domain>/<user>/settings/` (and `settings_local/`). The next login pulls the latest defaults from `application.ini`.
-- **Reset CardDAV config**: delete `dist/data/_data_/_default_/storage/<domain>/<user>/configs/contacts_sync`. The Forward Email plugin will recreate it on login.
-- **Plugin state**: the authoritative file is `dist/data/_data_/_default_/configs/plugins.ini`. Editing the git copy only affects new deployments.
+* **Runtime data is mutable**: SnappyMail copies the seed configs into `dist/data/_data_/_default_/`. Toggling plugins or settings writes to those runtime files. Deleting them (or the entire `data/` directory) resets to the seeds.
+* **Reset a user’s settings**: remove `dist/data/_data_/_default_/storage/<domain>/<user>/settings/` (and `settings_local/`). The next login pulls the latest defaults from `application.ini`.
+* **Reset CardDAV config**: delete `dist/data/_data_/_default_/storage/<domain>/<user>/configs/contacts_sync`. The Forward Email plugin will recreate it on login.
+* **Plugin state**: the authoritative file is `dist/data/_data_/_default_/configs/plugins.ini`. Editing the git copy only affects new deployments.
 
 
 ## Troubleshooting

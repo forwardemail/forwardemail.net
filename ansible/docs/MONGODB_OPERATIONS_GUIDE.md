@@ -1,18 +1,72 @@
 # MongoDB Operations Guide
 
-> [!NOTE]
+> \[!WARNING]
+> **DO NOT UPGRADE TO MONGODB v7 OR v8**
+>
+> MongoDB v7 and v8 have **severe performance regressions** compared to v6:
+>
+> * Up to **3x slower query performance** in real-world workloads
+> * Significant **memory overhead increases**
+> * **Degraded performance under high concurrency**
+>
+> **References:**
+>
+> * [MongoDB 8.0 Performance is 36% Higher? Nope, It's Not](https://dev.to/manoj_from_revisit_dot_tech/mongodb-80-performance-is-36-higher-nope-its-not--35jk)
+> * [Performance Drop After Upgrade 6.0.10 → 7.0.1 (MongoDB Forums)](https://www.mongodb.com/community/forums/t/performance-drop-after-upgrade-6-0-10-7-0-1/246712/30?ref=revisit.tech)
+> * [MongoDB 8.0 Performance is 36% Higher, But There's a Catch](https://revisit.tech/blog/mongodb-8-0-performanace-is-36-percent-higher-but-there-is-a-catch/)
+>
+> **Our deployment is LOCKED to MongoDB v6.0.18 until these issues are resolved.**
+
+> \[!NOTE]
 > This guide covers advanced MongoDB operations including version upgrades, migrations, performance analysis, troubleshooting, and index optimization.
+>
+> **MongoDB Installation Method:** We use a **custom installation** directly from the official MongoDB repository (no third-party Ansible Galaxy roles). This gives us full control over configuration and follows the same pattern as our Valkey/Redis deployment.
+>
+> **User Configuration:** Single admin user (`MONGO_USER`/`MONGO_PASS`) with all necessary roles (root, userAdmin, dbAdmin, backup, restore).
+
 
 ## Table of Contents
 
-1. [MongoDB Version Upgrades](#mongodb-version-upgrades)
-2. [Database Migration](#database-migration)
-3. [Troubleshooting Frozen/Locked Databases](#troubleshooting-frozenlocked-databases)
-4. [Performance Analysis](#performance-analysis)
-5. [Index Analysis and Optimization](#index-analysis-and-optimization)
-6. [Using explain()](#using-explain)
+* [MongoDB Version Upgrades](#mongodb-version-upgrades)
+  * [Upgrade Path Requirements](#upgrade-path-requirements)
+  * [Upgrading from MongoDB 6.0 to 7.0](#upgrading-from-mongodb-60-to-70)
+  * [Updating the Ansible Playbook for New Versions](#updating-the-ansible-playbook-for-new-versions)
+* [Database Migration](#database-migration)
+  * [Migrating Between MongoDB Instances](#migrating-between-mongodb-instances)
+* [Troubleshooting Frozen/Locked Databases](#troubleshooting-frozenlocked-databases)
+  * [Identifying Frozen/Stuck Operations](#identifying-frozenstuck-operations)
+  * [Killing Stuck Operations](#killing-stuck-operations)
+  * [Common Causes of Frozen Databases](#common-causes-of-frozen-databases)
+  * [Emergency Recovery Procedures](#emergency-recovery-procedures)
+* [Performance Analysis](#performance-analysis)
+  * [Using serverStatus for Performance Metrics](#using-serverstatus-for-performance-metrics)
+  * [Using mongostat (Real-Time Monitoring)](#using-mongostat-real-time-monitoring)
+  * [Using mongotop (Collection-Level Activity)](#using-mongotop-collection-level-activity)
+  * [Enabling Database Profiler](#enabling-database-profiler)
+  * [Analyzing Slow Queries from Logs](#analyzing-slow-queries-from-logs)
+* [Index Analysis and Optimization](#index-analysis-and-optimization)
+  * [Viewing Existing Indexes](#viewing-existing-indexes)
+  * [Identifying Unused Indexes](#identifying-unused-indexes)
+  * [Dropping Unused Indexes](#dropping-unused-indexes)
+  * [Creating Optimal Indexes](#creating-optimal-indexes)
+  * [Index Monitoring](#index-monitoring)
+* [Using explain()](#using-explain)
+  * [Explain Modes](#explain-modes)
+  * [Basic Usage](#basic-usage)
+  * [Analyzing explain() Output](#analyzing-explain-output)
+  * [Example Analysis](#example-analysis)
+  * [Using explain() with Aggregations](#using-explain-with-aggregations)
+  * [Using explain() with Updates and Deletes](#using-explain-with-updates-and-deletes)
+  * [Identifying Missing Indexes from explain()](#identifying-missing-indexes-from-explain)
+  * [Comparing Query Plans](#comparing-query-plans)
+* [Performance Optimization Checklist](#performance-optimization-checklist)
+  * [Quick Wins](#quick-wins)
+  * [Index Optimization](#index-optimization)
+  * [Query Optimization](#query-optimization)
+  * [System Optimization](#system-optimization)
+* [Additional Resources](#additional-resources)
+* [License](#license)
 
----
 
 ## MongoDB Version Upgrades
 
@@ -21,6 +75,7 @@
 MongoDB requires **sequential major version upgrades**. You cannot skip major versions.
 
 **Upgrade Path:**
+
 ```
 MongoDB 6.0 → 7.0 → 8.0
 ```
@@ -38,6 +93,7 @@ db.adminCommand({ getParameter: 1, featureCompatibilityVersion: 1 })
 ```
 
 Expected output:
+
 ```javascript
 { featureCompatibilityVersion: { version: "6.0" }, ok: 1 }
 ```
@@ -143,29 +199,21 @@ Follow the same procedure as above, but:
 
 ### Updating the Ansible Playbook for New Versions
 
-To use a different MongoDB version in the playbook, update the `mongodb_version` variable in `mongo.yml`:
+> \[!WARNING]
+> **DO NOT UPGRADE TO v7 OR v8** - See performance warnings at the top of this document.
+
+If you absolutely must upgrade (not recommended), update the `mongodb_version` variable in `mongo.yml`:
 
 ```yaml
-- name: Install MongoDB v7
-  include_role:
-    name: trfore.mongodb_install
-  vars:
-    mongodb_version: "7.0.18"  # Change this to desired version
-    mongodb_security_authorization: "enabled"
+vars:
+  # WARNING: See performance warnings before changing this!
+  mongodb_version: "7.0.18"  # Change this to desired version
 ```
 
-Or for MongoDB 8.0:
-
-```yaml
-- name: Install MongoDB v8
-  include_role:
-    name: trfore.mongodb_install
-  vars:
-    mongodb_version: "8.0.5"  # Change this to desired version
-    mongodb_security_authorization: "enabled"
-```
+**Note**: Our custom installation uses direct APT package installation from the official MongoDB repository, not third-party Ansible roles. You'll also need to update the APT repository configuration in the playbook to match the new major version.
 
 ---
+
 
 ## Database Migration
 
@@ -215,8 +263,9 @@ mongorestore --host=localhost --port=27017 \
 #### Method 2: Using Filesystem Snapshots (Fastest for Large Databases)
 
 **Prerequisites:**
-- Both servers must use the same MongoDB version
-- Target server must be shut down
+
+* Both servers must use the same MongoDB version
+* Target server must be shut down
 
 **Steps:**
 
@@ -279,6 +328,7 @@ rs.remove("source-server.example.com:27017")
 Point your application to the new server.
 
 ---
+
 
 ## Troubleshooting Frozen/Locked Databases
 
@@ -357,8 +407,9 @@ db.currentOp({ "secs_running": { $gt: 60 } }).inprog.forEach(function(op) {
 #### 1. Lock Contention
 
 **Symptoms:**
-- Operations showing `"waitingForLock": true`
-- High number of queued operations
+
+* Operations showing `"waitingForLock": true`
+* High number of queued operations
 
 **Diagnosis:**
 
@@ -371,16 +422,18 @@ db.currentOp({ "waitingForLock": true })
 ```
 
 **Solutions:**
-- Identify and optimize slow queries causing locks
-- Consider using read preference `secondaryPreferred` for read-heavy workloads
-- Ensure indexes exist for frequently queried fields
+
+* Identify and optimize slow queries causing locks
+* Consider using read preference `secondaryPreferred` for read-heavy workloads
+* Ensure indexes exist for frequently queried fields
 
 #### 2. WiredTiger Cache Pressure
 
 **Symptoms:**
-- High cache eviction rate
-- Slow query performance
-- High disk I/O
+
+* High cache eviction rate
+* Slow query performance
+* High disk I/O
 
 **Diagnosis:**
 
@@ -414,8 +467,9 @@ mongod --wiredTigerCacheSizeGB 8
 #### 3. Long-Running Index Builds
 
 **Symptoms:**
-- `createIndexes` operation running for extended time
-- Database appears frozen
+
+* `createIndexes` operation running for extended time
+* Database appears frozen
 
 **Diagnosis:**
 
@@ -424,17 +478,19 @@ db.currentOp({ "op": "command", "command.createIndexes": { $exists: true } })
 ```
 
 **Solutions:**
-- Wait for index build to complete (can take hours for large collections)
-- Kill the operation if necessary: `db.killOp(opid)`
-- Build indexes during off-peak hours
-- Use background index builds (default in MongoDB 4.2+)
+
+* Wait for index build to complete (can take hours for large collections)
+* Kill the operation if necessary: `db.killOp(opid)`
+* Build indexes during off-peak hours
+* Use background index builds (default in MongoDB 4.2+)
 
 #### 4. Insufficient Resources
 
 **Symptoms:**
-- High CPU usage
-- High memory usage
-- Slow disk I/O
+
+* High CPU usage
+* High memory usage
+* Slow disk I/O
 
 **Diagnosis:**
 
@@ -451,10 +507,11 @@ db.serverStatus().opcounters
 ```
 
 **Solutions:**
-- Scale up hardware (CPU, RAM, faster disks)
-- Optimize queries and add indexes
-- Implement connection pooling in applications
-- Consider sharding for horizontal scaling
+
+* Scale up hardware (CPU, RAM, faster disks)
+* Optimize queries and add indexes
+* Implement connection pooling in applications
+* Consider sharding for horizontal scaling
 
 ### Emergency Recovery Procedures
 
@@ -491,6 +548,7 @@ sudo systemctl start mongod
 ```
 
 ---
+
 
 ## Performance Analysis
 
@@ -566,6 +624,7 @@ sudo grep -E "ms$" /var/log/mongodb/mongod.log | grep -E "[0-9]{3,}ms$"
 ```
 
 ---
+
 
 ## Index Analysis and Optimization
 
@@ -676,6 +735,7 @@ db.currentOp({
 
 ---
 
+
 ## Using explain()
 
 The `explain()` method provides detailed information about query execution, including query plan, execution statistics, and index usage.
@@ -706,29 +766,34 @@ db.collection.find({ field: value }).explain("allPlansExecution")
 #### Key Metrics to Check
 
 **1. executionTimeMillis**
-- Total time to execute the query
-- Lower is better
-- Target: < 100ms for most queries
+
+* Total time to execute the query
+* Lower is better
+* Target: < 100ms for most queries
 
 **2. totalDocsExamined**
-- Number of documents scanned
-- Should be close to `nReturned` for optimal queries
-- High values indicate missing indexes
+
+* Number of documents scanned
+* Should be close to `nReturned` for optimal queries
+* High values indicate missing indexes
 
 **3. totalKeysExamined**
-- Number of index keys scanned
-- Should be close to `nReturned`
+
+* Number of index keys scanned
+* Should be close to `nReturned`
 
 **4. nReturned**
-- Number of documents returned
-- Compare with `totalDocsExamined` to calculate efficiency
+
+* Number of documents returned
+* Compare with `totalDocsExamined` to calculate efficiency
 
 **5. stage**
-- Query execution stage
-- **COLLSCAN**: Full collection scan (bad, add index)
-- **IXSCAN**: Index scan (good)
-- **FETCH**: Fetching documents after index scan
-- **SORT**: In-memory sort (consider adding sort index)
+
+* Query execution stage
+* **COLLSCAN**: Full collection scan (bad, add index)
+* **IXSCAN**: Index scan (good)
+* **FETCH**: Fetching documents after index scan
+* **SORT**: In-memory sort (consider adding sort index)
 
 ### Example Analysis
 
@@ -760,9 +825,10 @@ db.users.find({ city: "New York", age: { $gt: 25 } }).sort({ createdAt: -1 }).ex
 ```
 
 **Analysis:**
-- ✅ Uses index (`IXSCAN`)
-- ✅ Low execution time (15ms)
-- ✅ Efficient: `nReturned` = `totalDocsExamined` = 100
+
+* ✅ Uses index (`IXSCAN`)
+* ✅ Low execution time (15ms)
+* ✅ Efficient: `nReturned` = `totalDocsExamined` = 100
 
 **Bad Output (Collection Scan):**
 
@@ -783,10 +849,11 @@ db.users.find({ city: "New York", age: { $gt: 25 } }).sort({ createdAt: -1 }).ex
 ```
 
 **Analysis:**
-- ❌ Full collection scan (`COLLSCAN`)
-- ❌ High execution time (2500ms)
-- ❌ Inefficient: Scanned 1M docs to return 100
-- **Solution:** Create index on `{ city: 1, age: 1 }`
+
+* ❌ Full collection scan (`COLLSCAN`)
+* ❌ High execution time (2500ms)
+* ❌ Inefficient: Scanned 1M docs to return 100
+* **Solution:** Create index on `{ city: 1, age: 1 }`
 
 ### Using explain() with Aggregations
 
@@ -843,52 +910,54 @@ print("Plan 2: " + plan2.executionStats.executionTimeMillis + "ms")
 
 ---
 
+
 ## Performance Optimization Checklist
 
 ### Quick Wins
 
-- ✅ Add indexes for frequently queried fields
-- ✅ Use projection to limit returned fields
-- ✅ Use `limit()` to restrict result set size
-- ✅ Enable query profiler to identify slow queries
-- ✅ Monitor `db.currentOp()` for long-running operations
+* ✅ Add indexes for frequently queried fields
+* ✅ Use projection to limit returned fields
+* ✅ Use `limit()` to restrict result set size
+* ✅ Enable query profiler to identify slow queries
+* ✅ Monitor `db.currentOp()` for long-running operations
 
 ### Index Optimization
 
-- ✅ Follow ESR rule for compound indexes
-- ✅ Remove unused indexes (check with `$indexStats`)
-- ✅ Use covered queries (query only uses index, no FETCH stage)
-- ✅ Create indexes for sort operations
-- ✅ Use partial indexes for filtered queries
+* ✅ Follow ESR rule for compound indexes
+* ✅ Remove unused indexes (check with `$indexStats`)
+* ✅ Use covered queries (query only uses index, no FETCH stage)
+* ✅ Create indexes for sort operations
+* ✅ Use partial indexes for filtered queries
 
 ### Query Optimization
 
-- ✅ Use `explain("executionStats")` to analyze queries
-- ✅ Avoid `$where` and `$regex` without anchors
-- ✅ Use `$in` instead of multiple `$or` conditions
-- ✅ Limit array sizes in documents
-- ✅ Use aggregation pipeline for complex queries
+* ✅ Use `explain("executionStats")` to analyze queries
+* ✅ Avoid `$where` and `$regex` without anchors
+* ✅ Use `$in` instead of multiple `$or` conditions
+* ✅ Limit array sizes in documents
+* ✅ Use aggregation pipeline for complex queries
 
 ### System Optimization
 
-- ✅ Tune WiredTiger cache size (~50% of RAM)
-- ✅ Use SSD storage for better I/O performance
-- ✅ Enable compression for storage efficiency
-- ✅ Monitor system resources (CPU, RAM, disk I/O)
-- ✅ Implement connection pooling in applications
+* ✅ Tune WiredTiger cache size (\~50% of RAM)
+* ✅ Use SSD storage for better I/O performance
+* ✅ Enable compression for storage efficiency
+* ✅ Monitor system resources (CPU, RAM, disk I/O)
+* ✅ Implement connection pooling in applications
 
 ---
+
 
 ## Additional Resources
 
-- [MongoDB Manual](https://www.mongodb.com/docs/manual/)
-- [MongoDB Performance Best Practices](https://www.mongodb.com/company/blog/performance-best-practices-indexing)
-- [MongoDB University](https://university.mongodb.com/)
-- [MongoDB Community Forums](https://www.mongodb.com/community/forums/)
+* [MongoDB Manual](https://www.mongodb.com/docs/manual/)
+* [MongoDB Performance Best Practices](https://www.mongodb.com/company/blog/performance-best-practices-indexing)
+* [MongoDB University](https://university.mongodb.com/)
+* [MongoDB Community Forums](https://www.mongodb.com/community/forums/)
 
 ---
 
+
 ## License
 
-Copyright (c) Forward Email LLC
-SPDX-License-Identifier: BUSL-1.1
+[(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)

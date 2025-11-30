@@ -150,6 +150,11 @@ send_audit_report() {
     local warnings=$(echo "$report_data" | cut -d'|' -f3)
     local suggestions=$(echo "$report_data" | cut -d'|' -f4)
 
+    # Validate hardening_index is a number
+    if ! [[ "$hardening_index" =~ ^[0-9]+$ ]]; then
+        hardening_index=0
+    fi
+
     # Determine severity color
     local color="#5cb85c"  # Green
     local severity="GOOD"

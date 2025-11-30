@@ -211,10 +211,13 @@ analyze_failed_logins() {
         local failed_ips=$(echo "$failed_logins" | grep -oP "from \K[\d\.]+" | sort | uniq -c | sort -rn)
 
         while read -r count ip; do
-            log_activity "FAILED LOGINS: ip=$ip count=$count"
+            # Validate count is a valid number
+            if [[ "$count" =~ ^[0-9]+$ ]] && [[ "$ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                log_activity "FAILED LOGINS: ip=$ip count=$count"
 
-            if [ "$count" -ge "$FAILED_THRESHOLD" ] && should_send_alert "failed-$ip"; then
-                send_failed_login_alert "$ip" "$count" "$failed_logins"
+                if [ "$count" -ge "$FAILED_THRESHOLD" ] && should_send_alert "failed-$ip"; then
+                    send_failed_login_alert "$ip" "$count" "$failed_logins"
+                fi
             fi
         done <<< "$failed_ips"
     fi

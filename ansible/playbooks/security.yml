@@ -738,13 +738,34 @@
         mode: '0640'
       notify: Reload auditd rules
 
-    - name: Deploy bash command logging configuration
+    # Deploy enhanced bash/zsh command logging to multiple locations
+    # This ensures ALL commands are logged regardless of shell type or mode:
+    # - /etc/profile.d/ for login shells
+    # - /etc/bash.bashrc for all interactive bash shells
+    # - /etc/zsh/zshrc for all zsh shells
+    # - SSH ForceCommand wrapper for non-interactive SSH commands
+    
+    - name: Deploy enhanced bash command logging to profile.d (login shells)
       copy:
-        src: "{{ playbook_dir }}/files/bash-logging.sh"
+        src: "{{ playbook_dir }}/files/bash-logging-enhanced.sh"
         dest: /etc/profile.d/bash-logging.sh
         owner: root
         group: root
         mode: '0644'
+    
+    - name: Deploy enhanced bash command logging to bash.bashrc (all interactive bash)
+      blockinfile:
+        path: /etc/bash.bashrc
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - Command Logging"
+        block: |
+          # Source bash command logging for all interactive shells
+          if [ -f /etc/profile.d/bash-logging.sh ]; then
+              source /etc/profile.d/bash-logging.sh
+          fi
+        owner: root
+        group: root
+        mode: '0644'
+    
     - name: Create zsh configuration directory
       file:
         path: /etc/zsh/zshrc.d
@@ -752,17 +773,20 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Deploy zsh command logging configuration
+    
+    - name: Deploy enhanced zsh command logging configuration
       copy:
-        src: "{{ playbook_dir }}/files/bash-logging.sh"
+        src: "{{ playbook_dir }}/files/bash-logging-enhanced.sh"
         dest: /etc/zsh/zshrc.d/command-logging.zsh
         owner: root
         group: root
         mode: '0644'
+    
     - name: Ensure zshrc sources zshrc.d directory
       blockinfile:
         path: /etc/zsh/zshrc
         create: yes
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - Command Logging"
         block: |
           # Source command logging
           if [ -d /etc/zsh/zshrc.d ]; then

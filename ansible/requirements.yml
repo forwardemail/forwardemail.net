@@ -25,6 +25,3 @@ roles:
   - name: sysctl
     src: oefenweb.sysctl
     version: v1.0.44
-  - name: mongodb_install
-    src: trfore.mongodb_install
-    version: v3.0.5

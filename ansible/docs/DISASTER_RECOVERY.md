@@ -1,19 +1,37 @@
 # Disaster Recovery Guide
 
-> [!CAUTION]
+> \[!CAUTION]
 > This guide provides comprehensive procedures for recovering MongoDB and Redis databases from catastrophic failures and migrating to new servers with minimal downtime.
 
-> [!IMPORTANT]
+> \[!IMPORTANT]
 > Review and test these procedures regularly. Don't wait for an actual disaster!
+
+
 ## Table of Contents
 
-1. [DNS TTL Configuration](#dns-ttl-configuration)
-2. [MongoDB Disaster Recovery](#mongodb-disaster-recovery)
-3. [Redis Disaster Recovery](#redis-disaster-recovery)
-4. [Failover to New Server](#failover-to-new-server)
-5. [Testing Disaster Recovery](#testing-disaster-recovery)
+* [DNS TTL Configuration](#dns-ttl-configuration)
+  * [Recommended TTL Values](#recommended-ttl-values)
+  * [Setting DNS TTL for Database Hostnames](#setting-dns-ttl-for-database-hostnames)
+* [MongoDB Disaster Recovery](#mongodb-disaster-recovery)
+  * [Scenario 1: Complete Server Failure](#scenario-1-complete-server-failure)
+  * [Scenario 2: Data Corruption](#scenario-2-data-corruption)
+* [Redis Disaster Recovery](#redis-disaster-recovery)
+  * [Scenario 1: Complete Server Failure](#scenario-1-complete-server-failure-1)
+  * [Scenario 2: Data Loss (Cache Invalidation)](#scenario-2-data-loss-cache-invalidation)
+* [Failover to New Server](#failover-to-new-server)
+  * [Pre-Failover Checklist](#pre-failover-checklist)
+  * [Planned Failover Procedure (Zero-Downtime)](#planned-failover-procedure-zero-downtime)
+* [Testing Disaster Recovery](#testing-disaster-recovery)
+  * [Regular DR Testing Schedule](#regular-dr-testing-schedule)
+  * [DR Test Procedure](#dr-test-procedure)
+  * [Backup Verification Script](#backup-verification-script)
+* [Emergency Contacts and Escalation](#emergency-contacts-and-escalation)
+  * [Critical Incident Response](#critical-incident-response)
+  * [Escalation Path](#escalation-path)
+* [Post-Incident Review](#post-incident-review)
+* [Additional Resources](#additional-resources)
+* [License](#license)
 
----
 
 ## DNS TTL Configuration
 
@@ -23,8 +41,8 @@ The playbooks configure local DNS caching with [Unbound](https://github.com/NLne
 
 **For MongoDB and Redis hostnames:**
 
-- **Production A/AAAA Records**: 300 seconds (5 minutes)
-- **Staging/Dev A/AAAA Records**: 60 seconds (1 minute)
+* **Production A/AAAA Records**: 300 seconds (5 minutes)
+* **Staging/Dev A/AAAA Records**: 60 seconds (1 minute)
 
 **Rationale:**
 
@@ -56,21 +74,23 @@ redis.example.com    A      1.2.3.5      TTL: 300
 redis.example.com    AAAA   2001:db8::2  TTL: 300
 ```
 
-> [!WARNING]
+> \[!WARNING]
 > **Important:** Set these TTL values **before** an outage occurs. Changing TTL during an outage will not take effect until the old TTL expires.
 
 ---
+
 
 ## MongoDB Disaster Recovery
 
 ### Scenario 1: Complete Server Failure
 
-> [!CAUTION]
+> \[!CAUTION]
 > **Critical scenario requiring immediate action**
 
 **Symptoms:**
-- MongoDB server is completely unreachable
-- Hardware failure, data center outage, or catastrophic software failure
+
+* MongoDB server is completely unreachable
+* Hardware failure, data center outage, or catastrophic software failure
 
 **Recovery Steps:**
 
@@ -145,9 +165,10 @@ mongosh --host mongo.example.com --tls --tlsCertificateKeyFile=/path/to/client.p
 ### Scenario 2: Data Corruption
 
 **Symptoms:**
-- MongoDB is running but data is corrupted
-- Queries returning incorrect results
-- Database validation errors
+
+* MongoDB is running but data is corrupted
+* Queries returning incorrect results
+* Database validation errors
 
 **Recovery Steps:**
 
@@ -206,16 +227,18 @@ db.adminCommand({ fsyncUnlock: 1 })
 
 ---
 
+
 ## Redis Disaster Recovery
 
 ### Scenario 1: Complete Server Failure
 
-> [!CAUTION]
+> \[!CAUTION]
 > **Critical scenario requiring immediate action**
 
 **Symptoms:**
-- Redis server is completely unreachable
-- Hardware failure or data center outage
+
+* Redis server is completely unreachable
+* Hardware failure or data center outage
 
 **Recovery Steps:**
 
@@ -281,8 +304,9 @@ redis-cli -h redis.example.com -p 6380 --tls --cert /path/to/client.crt --key /p
 ### Scenario 2: Data Loss (Cache Invalidation)
 
 **Symptoms:**
-- Redis is running but data is missing or stale
-- Cache hit rate drops to zero
+
+* Redis is running but data is missing or stale
+* Cache hit rate drops to zero
 
 **Recovery Steps:**
 
@@ -318,18 +342,19 @@ redis-cli -h redis.example.com -p 6380 --tls --cert /path/to/client.crt --key /p
 
 ---
 
+
 ## Failover to New Server
 
 ### Pre-Failover Checklist
 
 Before initiating a planned failover, ensure the following:
 
-- [ ] New server is provisioned and configured via Ansible playbooks
-- [ ] Latest backup is available and verified
-- [ ] DNS TTL is set to 300 seconds (5 minutes) or lower
-- [ ] Application connection strings use hostnames (not IPs)
-- [ ] Monitoring is in place to detect issues
-- [ ] Rollback plan is documented
+* [ ] New server is provisioned and configured via Ansible playbooks
+* [ ] Latest backup is available and verified
+* [ ] DNS TTL is set to 300 seconds (5 minutes) or lower
+* [ ] Application connection strings use hostnames (not IPs)
+* [ ] Monitoring is in place to detect issues
+* [ ] Rollback plan is documented
 
 ### Planned Failover Procedure (Zero-Downtime)
 
@@ -406,14 +431,16 @@ sudo systemctl start redis-backup.service
 
 ---
 
+
 ## Testing Disaster Recovery
 
 ### Regular DR Testing Schedule
 
 **Recommended Frequency:**
-- **Full DR Test**: Quarterly (every 3 months)
-- **Backup Verification**: Monthly
-- **Restore Test**: Monthly
+
+* **Full DR Test**: Quarterly (every 3 months)
+* **Backup Verification**: Monthly
+* **Restore Test**: Monthly
 
 ### DR Test Procedure
 
@@ -533,17 +560,20 @@ Run this script daily via cron:
 
 ---
 
+
 ## Emergency Contacts and Escalation
 
 ### Critical Incident Response
 
 **Priority 1 (Database Down):**
+
 1. Alert on-call engineer immediately
 2. Begin disaster recovery procedure
 3. Update status page
 4. Notify stakeholders every 15 minutes
 
 **Priority 2 (Performance Degradation):**
+
 1. Investigate root cause
 2. Consider failover if issue persists
 3. Update status page
@@ -558,6 +588,7 @@ Run this script daily via cron:
 
 ---
 
+
 ## Post-Incident Review
 
 After any disaster recovery event, conduct a post-incident review:
@@ -570,16 +601,17 @@ After any disaster recovery event, conduct a post-incident review:
 
 ---
 
+
 ## Additional Resources
 
-- [MongoDB Backup and Restore Documentation](https://www.mongodb.com/docs/manual/core/backups/)
-- [Redis Persistence Documentation](https://redis.io/docs/management/persistence/)
-- [Unbound DNS Resolver](https://github.com/NLnetLabs/unbound)
-- [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
+* [MongoDB Backup and Restore Documentation](https://www.mongodb.com/docs/manual/core/backups/)
+* [Redis Persistence Documentation](https://redis.io/docs/management/persistence/)
+* [Unbound DNS Resolver](https://github.com/NLnetLabs/unbound)
+* [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 
 ---
 
+
 ## License
 
-Copyright (c) Forward Email LLC
-SPDX-License-Identifier: BUSL-1.1
+[(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)
