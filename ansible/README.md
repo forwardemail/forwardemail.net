@@ -448,7 +448,8 @@ sudo journalctl -u <service-name> -n 50
 - [`trfore/ansible-role-mongodb-install`](https://github.com/trfore/ansible-role-mongodb-install) v3.0.5 - MongoDB installation
 - [`hifis.toolkit`](https://github.com/hifis-net/ansible-collection-toolkit) collection v6.2.2 - System hardening and unattended upgrades
 
-> [!NOTE] > [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
+> [!NOTE]
+> [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
 
 ---
 
