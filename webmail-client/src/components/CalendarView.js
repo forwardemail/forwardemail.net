@@ -123,20 +123,30 @@ export class CalendarView {
     this.selectedDate = ko.observable(null);
     this.newEventModal = ko.observable(false);
     this.newEventTitle = ko.observable('');
-    this.newEventStart = ko.observable('');
+    this.newEventDate = ko.observable(''); // Date only (YYYY-MM-DD)
+    this.newEventStartTime = ko.observable(''); // Time only (HH:mm)
+    this.newEventEndTime = ko.observable(''); // Time only (HH:mm)
+    this.newEventStart = ko.observable(''); // Keep for backward compatibility
     this.newEventDuration = ko.observable(60); // minutes
     this.newEventDescription = ko.observable('');
     this.newEventNotify = ko.observable(0);
+    this.showStartTimePicker = ko.observable(false);
+    this.showEndTimePicker = ko.observable(false);
     // Edit event modal
     this.editEventModal = ko.observable(false);
     this.editEventId = ko.observable('');
     this.editEventTitle = ko.observable('');
-    this.editEventStart = ko.observable('');
+    this.editEventDate = ko.observable(''); // Date only (YYYY-MM-DD)
+    this.editEventStartTime = ko.observable(''); // Time only (HH:mm)
+    this.editEventEndTime = ko.observable(''); // Time only (HH:mm)
+    this.editEventStart = ko.observable(''); // Keep for backward compatibility
     this.editEventDuration = ko.observable(60);
     this.editEventDescription = ko.observable('');
     this.editEventNotify = ko.observable(0);
     this.editEventCalendarId = ko.observable('');
     this.showDeleteConfirm = ko.observable(false);
+    this.showEditStartTimePicker = ko.observable(false);
+    this.showEditEndTimePicker = ko.observable(false);
   }
 
   load = async () => {
@@ -396,9 +406,23 @@ export class CalendarView {
   }
 
   prefillQuickEvent(email) {
-    const startLocal = this.formatDateTimeLocal(new Date(Date.now() + 10 * 60 * 1000));
+    const startDate = new Date(Date.now() + 10 * 60 * 1000);
+    const startLocal = this.formatDateTimeLocal(startDate);
+
+    // Extract date and time components
+    const datePart = startLocal.split('T')[0]; // YYYY-MM-DD
+    const timePart = startLocal.split('T')[1]; // HH:mm
+
     this.newEventTitle(email ? `Meeting with ${email}` : 'New event');
-    this.newEventStart(startLocal);
+    this.newEventDate(datePart);
+    this.newEventStartTime(timePart);
+
+    // Set end time (1 hour later)
+    const endDate = new Date(startDate.getTime() + 60 * 60000);
+    const endTimePart = this.formatDateTimeLocal(endDate).split('T')[1];
+    this.newEventEndTime(endTimePart);
+
+    this.newEventStart(startLocal); // Keep for backward compatibility
     this.newEventDuration(60);
     this.newEventDescription(email ? `Follow up with ${email}` : '');
     this.newEventNotify(0);
@@ -407,9 +431,23 @@ export class CalendarView {
 
   async promptNewEvent(date) {
     const dateObj = this.toDate(date);
-    const startLocal = this.formatDateTimeLocal(dateObj || new Date());
+    const startDate = dateObj || new Date();
+    const startLocal = this.formatDateTimeLocal(startDate);
+
+    // Extract date and time components
+    const datePart = startLocal.split('T')[0]; // YYYY-MM-DD
+    const timePart = startLocal.split('T')[1]; // HH:mm
+
     this.newEventTitle('');
-    this.newEventStart(startLocal);
+    this.newEventDate(datePart);
+    this.newEventStartTime(timePart);
+
+    // Set end time (1 hour later)
+    const endDate = new Date(startDate.getTime() + 60 * 60000);
+    const endTimePart = this.formatDateTimeLocal(endDate).split('T')[1];
+    this.newEventEndTime(endTimePart);
+
+    this.newEventStart(startLocal); // Keep for backward compatibility
     this.newEventDuration(60);
     this.newEventDescription('');
     this.newEventNotify(0);
@@ -418,15 +456,31 @@ export class CalendarView {
 
   async saveNewEvent() {
     const title = (this.newEventTitle() || '').trim();
-    const start = this.newEventStart();
-    const duration = Number(this.newEventDuration()) || 60;
+    const date = this.newEventDate();
+    const startTime = this.newEventStartTime();
+    const endTime = this.newEventEndTime();
     const notify = Number(this.newEventNotify()) || 0;
-    const startDate = start ? new Date(start) : null;
-    const endDate = startDate ? new Date(startDate.getTime() + duration * 60000) : null;
-    const end = endDate ? this.formatDateTimeLocal(endDate) : start;
 
-    if (!title || !start) {
-      this.error('Title and start are required.');
+    if (!title || !date || !startTime || !endTime) {
+      this.error('Title, date, and times are required.');
+      this.toasts?.show(this.error(), 'error');
+      return;
+    }
+
+    // Combine date and times to create ISO datetime strings
+    const startDateTime = `${date}T${startTime}`;
+    const endDateTime = `${date}T${endTime}`;
+    const startDate = new Date(startDateTime);
+    const endDate = new Date(endDateTime);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      this.error('Invalid date or time format.');
+      this.toasts?.show(this.error(), 'error');
+      return;
+    }
+
+    if (endDate <= startDate) {
+      this.error('End time must be after start time.');
       this.toasts?.show(this.error(), 'error');
       return;
     }
@@ -552,7 +606,18 @@ export class CalendarView {
     // Convert ISO dates to datetime-local format for the input
     const startDate = new Date(fullEvent.start);
     const endDate = new Date(fullEvent.end);
-    this.editEventStart(this.formatDateTimeLocal(startDate));
+    const startLocal = this.formatDateTimeLocal(startDate);
+    const endLocal = this.formatDateTimeLocal(endDate);
+
+    // Extract date and time components
+    const datePart = startLocal.split('T')[0]; // YYYY-MM-DD
+    const startTimePart = startLocal.split('T')[1]; // HH:mm
+    const endTimePart = endLocal.split('T')[1]; // HH:mm
+
+    this.editEventDate(datePart);
+    this.editEventStartTime(startTimePart);
+    this.editEventEndTime(endTimePart);
+    this.editEventStart(startLocal); // Keep for backward compatibility
 
     // Calculate duration in minutes
     const duration = Math.round((endDate - startDate) / 60000);
@@ -568,19 +633,35 @@ export class CalendarView {
   async updateEvent() {
     const id = this.editEventId();
     const title = (this.editEventTitle() || '').trim();
-    const start = this.editEventStart();
-    const duration = Number(this.editEventDuration()) || 60;
+    const date = this.editEventDate();
+    const startTime = this.editEventStartTime();
+    const endTime = this.editEventEndTime();
     const notify = Number(this.editEventNotify()) || 0;
     const calendarId = this.editEventCalendarId();
 
-    if (!title || !start) {
-      this.error('Title and start are required.');
+    if (!title || !date || !startTime || !endTime) {
+      this.error('Title, date, and times are required.');
       this.toasts?.show(this.error(), 'error');
       return;
     }
 
-    const startDate = start ? new Date(start) : null;
-    const endDate = startDate ? new Date(startDate.getTime() + duration * 60000) : null;
+    // Combine date and times to create ISO datetime strings
+    const startDateTime = `${date}T${startTime}`;
+    const endDateTime = `${date}T${endTime}`;
+    const startDate = new Date(startDateTime);
+    const endDate = new Date(endDateTime);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      this.error('Invalid date or time format.');
+      this.toasts?.show(this.error(), 'error');
+      return;
+    }
+
+    if (endDate <= startDate) {
+      this.error('End time must be after start time.');
+      this.toasts?.show(this.error(), 'error');
+      return;
+    }
 
     try {
       // Generate iCal format data
@@ -704,5 +785,74 @@ export class CalendarView {
   cancelEditEvent() {
     this.showDeleteConfirm(false);
     this.editEventModal(false);
+  }
+
+  // Generate time options in 15-minute increments (12-hour format with AM/PM)
+  generateTimeOptions() {
+    const options = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        const period = hour < 12 ? 'AM' : 'PM';
+        const m = String(minute).padStart(2, '0');
+        const h24 = String(hour).padStart(2, '0');
+
+        options.push({
+          display: `${displayHour}:${m} ${period}`,
+          value: `${h24}:${m}`
+        });
+      }
+    }
+    return options;
+  }
+
+  timeOptions = this.generateTimeOptions();
+
+  toggleStartTimePicker() {
+    this.showStartTimePicker(!this.showStartTimePicker());
+    if (this.showStartTimePicker()) {
+      this.showEndTimePicker(false);
+    }
+  }
+
+  toggleEndTimePicker() {
+    this.showEndTimePicker(!this.showEndTimePicker());
+    if (this.showEndTimePicker()) {
+      this.showStartTimePicker(false);
+    }
+  }
+
+  selectStartTime(timeObj) {
+    this.newEventStartTime(timeObj.value);
+    this.showStartTimePicker(false);
+  }
+
+  selectEndTime(timeObj) {
+    this.newEventEndTime(timeObj.value);
+    this.showEndTimePicker(false);
+  }
+
+  toggleEditStartTimePicker() {
+    this.showEditStartTimePicker(!this.showEditStartTimePicker());
+    if (this.showEditStartTimePicker()) {
+      this.showEditEndTimePicker(false);
+    }
+  }
+
+  toggleEditEndTimePicker() {
+    this.showEditEndTimePicker(!this.showEditEndTimePicker());
+    if (this.showEditEndTimePicker()) {
+      this.showEditStartTimePicker(false);
+    }
+  }
+
+  selectEditStartTime(timeObj) {
+    this.editEventStartTime(timeObj.value);
+    this.showEditStartTimePicker(false);
+  }
+
+  selectEditEndTime(timeObj) {
+    this.editEventEndTime(timeObj.value);
+    this.showEditEndTimePicker(false);
   }
 }

@@ -5,9 +5,10 @@ import { config } from '../config';
 import { sanitizeHtml } from '../utils/sanitize';
 import * as openpgp from 'openpgp';
 import PostalMime from 'postal-mime';
-import FlexSearch from 'flexsearch';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { db } from '../utils/db';
+import { SearchService, SEARCH_INDEX_KEY } from '../utils/search-service';
+import { enqueueSync, replaySyncQueue } from '../utils/sync-queue';
 import { groupIntoConversations, deduplicateMessages, buildConversationTree, flattenConversationTree } from '../utils/threading';
 
 function bufferToDataUrl(attachment) {
@@ -15,29 +16,53 @@ function bufferToDataUrl(attachment) {
     const { content, contentType, mimeType, type } = attachment || {};
     if (!content) return '';
     const mime = contentType || mimeType || type || 'application/octet-stream';
+
     // content can be Buffer-like (Uint8Array/ArrayBuffer) or string
     let base64;
+
     if (typeof content === 'string') {
+      // Check if already base64 encoded
       const isB64 = /^[A-Za-z0-9/+]+={0,2}$/.test(content.replace(/\s+/g, ''));
       base64 = isB64 ? content.replace(/\s+/g, '') : btoa(unescape(encodeURIComponent(content)));
     } else if (content instanceof ArrayBuffer) {
+      // Convert ArrayBuffer to base64 without spread operator (avoids stack overflow)
       const view = new Uint8Array(content);
-      base64 = btoa(String.fromCharCode(...view));
+      base64 = arrayBufferToBase64(view);
     } else if (ArrayBuffer.isView(content)) {
-      const view = new Uint8Array(content.buffer);
-      base64 = btoa(String.fromCharCode(...view));
+      // Convert typed array to base64
+      const view = new Uint8Array(content.buffer || content);
+      base64 = arrayBufferToBase64(view);
     } else if (content?.data) {
-      base64 = btoa(String.fromCharCode(...content.data));
+      // Handle {type: 'Buffer', data: [...]} format
+      const view = new Uint8Array(content.data);
+      base64 = arrayBufferToBase64(view);
     } else if (Array.isArray(content)) {
-      base64 = btoa(String.fromCharCode(...content));
+      // Handle plain array
+      const view = new Uint8Array(content);
+      base64 = arrayBufferToBase64(view);
     } else {
       return '';
     }
+
     return `data:${mime};base64,${base64}`;
   } catch (error) {
     console.error('bufferToDataUrl failed', error);
     return '';
   }
+}
+
+// Helper function to convert ArrayBuffer to base64 without stack overflow
+function arrayBufferToBase64(uint8Array) {
+  // For large buffers, process in chunks to avoid stack overflow
+  const chunkSize = 8192; // 8KB chunks
+  let binary = '';
+
+  for (let i = 0; i < uint8Array.length; i += chunkSize) {
+    const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+    binary += String.fromCharCode.apply(null, chunk);
+  }
+
+  return btoa(binary);
 }
 
 function applyInlineAttachments(html, attachments) {
@@ -90,6 +115,38 @@ function sanitizeAttachments(list) {
   });
 }
 
+const DATA_URL_REGEX = /^data:/i;
+const INLINE_DATA_URL_SRC_REGEX = /src=["']data:[^"']*["']/gi;
+
+function stripInlineDataUrls(html) {
+  if (!html) return html;
+  return html.replace(INLINE_DATA_URL_SRC_REGEX, 'data-inline-removed="true"');
+}
+
+function extractTextContent(html) {
+  if (!html) return '';
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function serializeAttachmentsForCache(list) {
+  return sanitizeAttachments(list).map((att) => {
+    const hrefIsDataUrl = att.href ? DATA_URL_REGEX.test(att.href) : false;
+    return {
+      name: att.name || att.filename,
+      filename: att.filename,
+      size: att.size,
+      contentId: att.contentId,
+      contentType: att.contentType,
+      href: hrefIsDataUrl ? undefined : att.href // drop data URLs before writing to IndexedDB
+    };
+  });
+}
+
 const normalizeFlags = (flags) => {
   if (Array.isArray(flags)) return flags;
   if (typeof flags === 'string') {
@@ -131,10 +188,21 @@ export class MailboxView {
     this.pgpKeys = [];
     this.passphraseCache = {};
     this.contacts = ko.observableArray([]);
-    this.searchIndex = null;
+    const includeBody = Local.get('search_body_index') !== '0';
+    this.bodyIndexingEnabled = ko.observable(includeBody);
+    this.searchService = new SearchService({
+      includeBody,
+      account: this.email() || 'default'
+    });
+    this.searchIndexLoaded = false;
     this.toasts = null;
     this.storageUsed = ko.observable(0);
     this.storageTotal = ko.observable(0);
+    this.localUsage = ko.observable(0);
+    this.localQuota = ko.observable(0);
+    this.indexCount = ko.observable(0);
+    this.indexSize = ko.observable(0);
+    this.syncPending = ko.observable(0);
     this.searchTimer = null;
     this.sidebarOpen = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
     this.isDesktop = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
@@ -143,6 +211,17 @@ export class MailboxView {
     this.conversations = ko.observableArray([]);
     this.selectedConversation = ko.observable(null);
     this.expandedConversations = ko.observable(new Set()); // Track which conversations are expanded
+
+    // Subscribe to threading changes to auto-update conversations
+    this.threadingEnabled.subscribe((enabled) => {
+      Local.set('threading_enabled', enabled ? 'true' : 'false');
+      if (enabled && this.messages().length > 0) {
+        const conversations = groupIntoConversations(this.messages());
+        this.conversations(conversations);
+      } else {
+        this.conversations([]);
+      }
+    });
     this.accountMenuOpen = ko.observable(false);
     this.mobileReader = ko.observable(false);
     this.handleResize = () => {
@@ -154,6 +233,9 @@ export class MailboxView {
     };
     this.showFilters = ko.observable(false);
     this.currentAccount = ko.observable(this.email());
+    this.currentAccount.subscribe(() => {
+      this.searchService.account = this.getAccountKey();
+    });
     this.defaultFolders = [
       { path: 'INBOX', name: 'Inbox', icon: 'inbox' },
       { path: 'Drafts', name: 'Drafts', icon: 'drafts' },
@@ -167,25 +249,11 @@ export class MailboxView {
     this.filteredMessages = ko.pureComputed(() => {
       const folder = this.selectedFolder();
       const q = (this.query() || '').trim();
-    let list = this.messages().filter((msg) => msg.folder === folder);
-    if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
-    if (this.hasAttachmentsOnly()) list = list.filter((m) => m.has_attachment);
-      if (!q || !this.searchIndex) return list;
-      const results = this.searchIndex.search(q, { enrich: true });
-      const ids = new Set();
-      const hits = [];
-      results.forEach((res) => {
-        const arr = res?.result || res || [];
-        arr.forEach((id) => {
-          if (ids.has(id)) return;
-          const msg = list.find((m) => m.id === id);
-          if (msg) {
-            ids.add(id);
-            hits.push(msg);
-          }
-        });
-      });
-      return hits;
+      let list = this.messages().filter((msg) => msg.folder === folder);
+      if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
+      if (this.hasAttachmentsOnly()) list = list.filter((m) => m.has_attachment);
+      if (!q) return list;
+      return this.searchService ? this.searchService.search(q, list) : list;
     });
     this.availableMoveTargets = ko.pureComputed(() =>
       this.folders().filter((f) => f.path !== this.selectedFolder())
@@ -197,6 +265,14 @@ export class MailboxView {
       if (firstOther) this.moveTarget(firstOther.path);
       this.actionMenuOpen(false);
     });
+  }
+
+  getAccountKey() {
+    return this.currentAccount?.() || this.email() || 'default';
+  }
+
+  getBodyIndexPref() {
+    return this.bodyIndexingEnabled?.() !== false;
   }
 
   updateFolderUnread(folderPath, count) {
@@ -245,6 +321,95 @@ export class MailboxView {
   initListeners() {
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.handleResize);
+    }
+  }
+
+  async refreshSyncCounts() {
+    try {
+      const pending = await db.syncQueue.where('status').equals('pending').count();
+      this.syncPending(pending);
+    } catch {
+      this.syncPending(0);
+    }
+  }
+
+  async refreshIndexStats() {
+    try {
+      const account = this.getAccountKey();
+      const meta = await db.indexMeta.get({ account, key: SEARCH_INDEX_KEY });
+      if (meta?.value?.count >= 0) this.indexCount(meta.value.count);
+      if (meta?.value?.sizeBytes >= 0) this.indexSize(meta.value.sizeBytes || 0);
+    } catch {
+      // ignore
+    }
+  }
+
+  async toggleBodyIndexing(enabled) {
+    const current = this.bodyIndexingEnabled();
+    const value = typeof enabled === 'boolean' ? enabled : !current;
+    this.bodyIndexingEnabled(value);
+    Local.set('search_body_index', value ? '1' : '0');
+    // Rebuild service and index with current messages
+    this.searchService = new SearchService({
+      includeBody: value,
+      account: this.getAccountKey()
+    });
+    await this.rebuildSearchIndex(this.messages());
+  }
+
+  async rebuildSearchFromCache() {
+    await this.rebuildSearchIndex(this.messages());
+    await this.refreshIndexStats();
+  }
+
+  async processSyncQueue() {
+    const account = this.getAccountKey();
+    try {
+      await replaySyncQueue(async (record) => {
+        const { action, data } = record;
+        if (action === 'updateFlags') {
+          await Remote.request(
+            'Message',
+            {
+              id: data.id,
+              folder: data.folder,
+              flags: data.flags
+            },
+            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+          );
+        } else if (action === 'move') {
+          await Remote.request(
+            'MessageUpdate',
+            { folder: data.target },
+            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+          );
+        } else if (action === 'delete') {
+          await Remote.request(
+            'MessageDelete',
+            {},
+            { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+          );
+        } else if (action === 'send') {
+          await Remote.request('Emails', data.payload, { method: 'POST' });
+          if (data.localId) await this.removeOutboxMessage(data.localId);
+        }
+      }, account);
+      await this.refreshSyncCounts();
+      if (this.selectedFolder() === 'Outbox') {
+        await this.loadMessages();
+      }
+    } catch (err) {
+      console.warn('sync queue replay failed', err);
+    }
+  }
+
+  async removeOutboxMessage(localId) {
+    if (!localId) return;
+    try {
+      await db.messages.delete(localId);
+      await db.messageBodies.delete(localId);
+    } catch (err) {
+      console.warn('Failed to remove outbox message', err);
     }
   }
 
@@ -297,9 +462,18 @@ export class MailboxView {
     }
     this.initListeners();
 
+    const account = this.getAccountKey();
+
     try {
+      await this.refreshSyncCounts();
+      await this.processSyncQueue();
+      if (!this.searchIndexLoaded) {
+        await this.searchService.loadFromCache();
+        this.searchIndexLoaded = true;
+        this.indexCount(this.searchService.entries.length || 0);
+      }
       // Try cached folders first
-      const cachedFolders = await db.folders.toArray();
+      const cachedFolders = await db.folders.where('account').equals(account).toArray();
       if (cachedFolders?.length) {
         this.folders(this.buildFolderList(cachedFolders));
         if (!this.selectedFolder()) {
@@ -317,9 +491,13 @@ export class MailboxView {
       const mappedFolders = this.buildFolderList(folders);
 
       this.folders(mappedFolders);
-      await db.folders.clear();
+      await db.folders.where('account').equals(account).delete();
       await db.folders.bulkAdd(
-        mappedFolders.map((f) => ({ ...f, updatedAt: Date.now() }))
+        mappedFolders.map((f) => ({
+          ...f,
+          account,
+          updatedAt: Date.now()
+        }))
       );
 
       if (!this.selectedFolder() && mappedFolders.length > 0) {
@@ -351,15 +529,18 @@ export class MailboxView {
     this.messageBody('');
     this.selectedMessage(null);
     this.messages([]);
-    this.searchIndex = null;
+    const account = this.getAccountKey();
 
     let cached = [];
     try {
       // seed from cache for instant UI
-      cached = await db.messages.where('folder').equals(this.selectedFolder()).toArray();
+      cached = await db.messages
+        .where('[account+folder]')
+        .equals([account, this.selectedFolder()])
+        .toArray();
       if (cached?.length) {
         this.messages(cached);
-        this.rebuildSearchIndex(cached);
+        await this.rebuildSearchIndex(cached);
         this.selectedMessage(cached[0] || null);
       }
 
@@ -376,44 +557,65 @@ export class MailboxView {
       this.hasNextPage(Array.isArray(list) && list.length >= this.limit);
 
       if (Array.isArray(list) && list.length > 0) {
-        this.messages(
-          list.map((m) => ({
-            id: m.Uid || m.id || m.uid,
-            folder: m.folder_path || m.folder || m.path || this.selectedFolder(),
-            from:
-              m.From?.Display ||
-              m.From?.Email ||
-              m.from?.text ||
-              m.from ||
-              m.sender ||
-              (m.nodemailer?.from && m.nodemailer.from.text) ||
-              'Unknown',
-            subject: m.Subject || m.subject || '(No subject)',
-            snippet:
-              m.Plain?.slice?.(0, 140) ||
-              m.snippet ||
-              m.preview ||
-              m.textAsHtml ||
-              m.text ||
-              (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
-              '',
-            date: this.formatDate(
-              m.Date || m.date || m.header_date || m.internal_date || ''
-            ),
-            flags: normalizeFlags(m.flags),
-            is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
-            has_attachment: m.has_attachment || m.hasAttachments || false
+        const mappedList = list.map((m) => ({
+          id: m.Uid || m.id || m.uid,
+          account,
+          folder: m.folder_path || m.folder || m.path || this.selectedFolder(),
+          from:
+            m.From?.Display ||
+            m.From?.Email ||
+            m.from?.text ||
+            m.from ||
+            m.sender ||
+            (m.nodemailer?.from && m.nodemailer.from.text) ||
+            'Unknown',
+          subject: m.Subject || m.subject || '(No subject)',
+          snippet:
+            m.Plain?.slice?.(0, 140) ||
+            m.snippet ||
+            m.preview ||
+            m.textAsHtml ||
+            m.text ||
+            (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
+            '',
+          date: this.formatDate(
+            m.Date || m.date || m.header_date || m.internal_date || ''
+          ),
+          flags: normalizeFlags(m.flags),
+          is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
+          has_attachment: m.has_attachment || m.hasAttachments || false,
+          bodyIndexed: false,
+          pending: false
+        }));
+
+        let queuedOutbox = [];
+        if (this.selectedFolder().toUpperCase() === 'OUTBOX') {
+          queuedOutbox = await db.messages
+            .where('[account+folder]')
+            .equals([account, 'Outbox'])
+            .toArray();
+          queuedOutbox = queuedOutbox.map((msg) => ({
+            ...msg,
+            pending: true,
+            date: this.formatDate(msg.date || Date.now()),
+            from: msg.from || this.email() || 'You',
+            is_unread: false
+          }));
+        }
+
+        this.messages([...queuedOutbox, ...mappedList]);
+        // persist to cache (list only)
+        await db.messages.where('[account+folder]').equals([account, this.selectedFolder()]).delete();
+        await db.messages.bulkAdd(
+          this.messages().map((msg) => ({
+            ...msg,
+            account,
+            updatedAt: Date.now(),
+            bodyIndexed: false
           }))
         );
-        // persist to cache (list only)
-        await db.messages
-          .where('folder')
-          .equals(this.selectedFolder())
-          .delete();
-        await db.messages.bulkAdd(
-          this.messages().map((msg) => ({ ...msg, updatedAt: Date.now() }))
-        );
-        this.rebuildSearchIndex(this.messages());
+        await this.rebuildSearchIndex(this.messages());
+        await this.refreshIndexStats();
 
         // Group messages into conversations if threading is enabled
         if (this.threadingEnabled()) {
@@ -435,6 +637,26 @@ export class MailboxView {
         }
         this.selectedMessage(this.messages()[0] || null);
         if (this.selectedMessage()) await this.loadMessage(this.selectedMessage());
+      }
+      // If Outbox and no remote items, still show queued locals
+      if (this.selectedFolder().toUpperCase() === 'OUTBOX' && this.messages().length === 0) {
+        const queuedOutbox = await db.messages
+          .where('[account+folder]')
+          .equals([account, 'Outbox'])
+          .toArray();
+        if (queuedOutbox?.length) {
+          this.messages(
+            queuedOutbox.map((msg) => ({
+              ...msg,
+              pending: true,
+              date: this.formatDate(msg.date || Date.now()),
+              from: msg.from || this.email() || 'You',
+              is_unread: false
+            }))
+          );
+          await this.rebuildSearchIndex(this.messages());
+          this.selectedMessage(this.messages()[0] || null);
+        }
       }
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
@@ -461,6 +683,7 @@ export class MailboxView {
       return;
     }
 
+    const account = this.getAccountKey();
     this.messageLoading(true);
       this.messageBody('');
       this.attachments([]);
@@ -468,10 +691,36 @@ export class MailboxView {
 
     try {
       // try cached body first
-      const cached = await db.messages.get(message.id);
-      if (cached?.body) {
-        this.messageBody(sanitizeHtml(cached.body));
-        this.attachments(sanitizeAttachments(cached.attachments));
+      const cachedContent = await db.messageBodies
+        .where('[account+id]')
+        .equals([account, message.id])
+        .first();
+      const cacheAge = cachedContent?.updatedAt ? Date.now() - cachedContent.updatedAt : Infinity;
+      const cacheMaxAge = 24 * 60 * 60 * 1000; // 24 hours for message content
+      const hasFreshCache = cachedContent?.body && cacheAge < cacheMaxAge;
+
+      if (cachedContent?.body) {
+        console.log('Loading message content from cache:', message.id);
+        console.log('Cached body length:', cachedContent.body?.length);
+        console.log('Cached attachments count:', cachedContent.attachments?.length);
+        console.log('Cache age:', Math.round(cacheAge / 1000), 'seconds');
+        const hydratedBody = applyInlineAttachments(
+          cachedContent.body,
+          cachedContent.attachments || []
+        );
+        this.messageBody(sanitizeHtml(hydratedBody));
+        this.attachments(sanitizeAttachments(cachedContent.attachments));
+
+        // If cache is fresh, skip network request
+        if (hasFreshCache) {
+          console.log('Using fresh cached content, skipping network request');
+          this.messageLoading(false);
+          return;
+        } else {
+          console.log('Cache is stale, fetching fresh data in background');
+        }
+      } else {
+        console.log('No cached body for message:', message.id);
       }
 
       const detailRes = await Remote.request(
@@ -489,29 +738,31 @@ export class MailboxView {
       message.flags = detailFlags;
       message.is_unread = isUnread;
       const detailAttachments = result?.nodemailer?.attachments || result?.attachments || [];
-      const attachments = (detailAttachments || []).map((att) => ({
+      const attachments = sanitizeAttachments((detailAttachments || []).map((att) => ({
         name: att.name || att.filename,
         filename: att.filename,
         size: att.size,
         contentId: att.cid || att.contentId,
-        // TODO: prefer API-provided download URL or cid mapping when available.
-        href: bufferToDataUrl(att),
+        href: att.url || bufferToDataUrl(att), // prefer API-provided URLs over data URLs
         contentType: att.contentType || att.mimeType || att.type,
-        content: att.content
-      }));
-      this.attachments(sanitizeAttachments(attachments));
+        content: att.url ? undefined : att.content
+      })));
+      this.attachments(attachments);
 
+      const serverText =
+        result?.Plain ||
+        result?.text ||
+        result?.body ||
+        result?.preview ||
+        result?.nodemailer?.text ||
+        result?.nodemailer?.preview;
       const rawBody =
         result?.html ||
         result?.Html ||
         result?.textAsHtml ||
-        result?.text ||
-        result?.Plain ||
-        result?.body ||
-        result?.preview ||
         result?.nodemailer?.html ||
         result?.nodemailer?.textAsHtml ||
-        result?.nodemailer?.text ||
+        serverText ||
         message.snippet ||
         '';
       const pgpPayload = this.detectPgpPayload(result, attachments);
@@ -522,16 +773,10 @@ export class MailboxView {
           this.pgpStatus('Decrypted with saved key');
           const parsed = await this.parseWithPostalMime(decrypted, attachments);
           if (parsed) {
+            const parsedAttachments = sanitizeAttachments(parsed.attachments);
             this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(parsed.body)}</div>`);
-            this.attachments(sanitizeAttachments(parsed.attachments));
-            await db.messages.put({
-              ...(cached || message),
-              id: message.id,
-              folder: message.folder,
-              body: parsed.body,
-              attachments: sanitizeAttachments(parsed.attachments),
-              updatedAt: Date.now()
-            });
+            this.attachments(parsedAttachments);
+            await this.cacheMessageContent(message, parsed.body, parsedAttachments, parsed.rawBody);
           } else {
             this.messageBody(sanitizeHtml(this.normalizeDecrypted(decrypted)));
           }
@@ -545,19 +790,26 @@ export class MailboxView {
         this.pgpStatus('');
         const parsed = await this.parseWithPostalMime(rawBody, attachments);
         if (parsed) {
+          const parsedAttachments = sanitizeAttachments(parsed.attachments);
           this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(parsed.body)}</div>`);
-          this.attachments(sanitizeAttachments(parsed.attachments));
-          await db.messages.put({
-            ...(cached || message),
-            id: message.id,
-            folder: message.folder,
-            body: parsed.body,
-            attachments: sanitizeAttachments(parsed.attachments),
-            updatedAt: Date.now()
-          });
+          this.attachments(parsedAttachments);
+          await this.cacheMessageContent(
+            message,
+            parsed.body,
+            parsedAttachments,
+            parsed.rawBody,
+            parsed.textContent
+          );
         } else {
           const inlinedBody = applyInlineAttachments(rawBody, attachments);
           this.messageBody(`<div class="fe-message-canvas">${sanitizeHtml(inlinedBody)}</div>`);
+          await this.cacheMessageContent(
+            message,
+            inlinedBody,
+            attachments,
+            rawBody,
+            serverText || extractTextContent(inlinedBody || rawBody)
+          );
         }
       }
       // sync the selected message observable with updated flags/unread state
@@ -569,9 +821,16 @@ export class MailboxView {
       }
       this.error(error?.message || 'Unable to load message.');
       if (!this.messageBody()) {
-        const cachedBody = await db.messages.get(message?.id);
+        const cachedBody = await db.messageBodies
+          .where('[account+id]')
+          .equals([account, message?.id])
+          .first();
         if (cachedBody?.body) {
-          this.messageBody(sanitizeHtml(cachedBody.body));
+          const hydratedBody = applyInlineAttachments(
+            cachedBody.body,
+            cachedBody.attachments || []
+          );
+          this.messageBody(sanitizeHtml(hydratedBody));
           this.attachments(sanitizeAttachments(cachedBody.attachments));
         } else {
           this.messageBody(sanitizeHtml(message.snippet || ''));
@@ -602,29 +861,34 @@ export class MailboxView {
 
     if (config.useMockWebmail) return;
 
+    const account = this.getAccountKey();
+    const payload = {
+      id: message.id,
+      folder: message.folder,
+      flags: Array.from(newFlags)
+    };
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    if (isOffline) {
+      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      this.toasts?.show?.('Change queued (offline)', 'info');
+      await this.refreshSyncCounts();
+      return;
+    }
+
     try {
       await Remote.request(
         'Message',
-        {
-          id: message.id,
-          folder: message.folder,
-          flags: Array.from(newFlags)
-        },
+        payload,
         { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
       );
     } catch (error) {
-      // revert on failure
-      if (hasSeen) newFlags.add('\\Seen');
-      else newFlags.delete('\\Seen');
-      message.flags = Array.from(newFlags);
-      message.is_unread = !newIsUnread;
-      this.messages.valueHasMutated?.();
-      this.selectedMessage(Object.assign({}, message));
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      this.error(error?.message || 'Unable to update message flags.');
+      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      this.toasts?.show?.('Change queued to sync later', 'info');
+      await this.refreshSyncCounts();
     }
     this.actionMenuOpen(false);
   }
@@ -665,27 +929,84 @@ export class MailboxView {
     return `<pre style="white-space:pre-wrap">${decrypted}</pre>`;
   }
 
-  rebuildSearchIndex(list = []) {
+  async rebuildSearchIndex(list = []) {
     try {
-      this.searchIndex = new FlexSearch.Document({
-        document: {
-          id: 'id',
-          index: ['subject', 'from', 'snippet']
-        },
-        tokenize: 'forward',
-        context: true
+      const account = this.getAccountKey();
+      const bodies = await db.messageBodies
+        .where('[account+folder]')
+        .equals([account, this.selectedFolder()])
+        .toArray();
+      const bodyMap = new Map((bodies || []).map((b) => [b.id, b]));
+      const enriched = (list || []).map((m) => {
+        const body = bodyMap.get(m.id);
+        return {
+          ...m,
+          body: body?.body,
+          textContent: body?.textContent
+        };
       });
-      (list || []).forEach((m) => {
-        this.searchIndex.add({
-          id: m.id,
-          subject: m.subject || '',
-          from: m.from || '',
-          snippet: m.snippet || ''
-        });
-      });
+      await this.searchService.reset(enriched);
+      this.indexCount(this.searchService.entries.length || 0);
+      await this.refreshIndexStats();
     } catch (error) {
       console.warn('search index build failed', error);
-      this.searchIndex = null;
+    }
+  }
+
+  async cacheMessageContent(
+    message,
+    renderedBody,
+    attachments = [],
+    rawBodyForCache,
+    textContent = ''
+  ) {
+    if (!message?.id || !renderedBody) return;
+    const account = this.getAccountKey();
+    const safeAttachments = serializeAttachmentsForCache(attachments);
+    const bodyForCache = stripInlineDataUrls(rawBodyForCache || renderedBody);
+    const normalizedText = textContent || extractTextContent(renderedBody);
+    const record = {
+      id: message.id,
+      account,
+      folder: message.folder,
+      body: bodyForCache,
+      textContent: normalizedText,
+      attachments: safeAttachments,
+      updatedAt: Date.now()
+    };
+
+    console.log(
+      'Saving message content to cache - body length:',
+      bodyForCache?.length,
+      'attachments:',
+      safeAttachments.length
+    );
+
+    try {
+      await db.messageBodies.put(record);
+      console.log('Successfully cached message content:', message.id);
+      await this.refreshIndexStats();
+    } catch (err) {
+      console.error('Failed to cache message content:', message.id, err);
+      if (err.name === 'QuotaExceededError') {
+        console.warn('Quota exceeded, caching without attachments for message:', message.id);
+        await db.messageBodies.put({
+          id: message.id,
+          account,
+          folder: message.folder,
+          body: bodyForCache,
+          textContent: normalizedText,
+          attachments: [],
+          updatedAt: Date.now()
+        });
+      }
+    }
+
+    // Mark message as bodyIndexed for search visibility
+    try {
+      await db.messages.update(message.id, { bodyIndexed: true });
+    } catch {
+      // ignore
     }
   }
 
@@ -713,7 +1034,12 @@ export class MailboxView {
         email.html ||
         (email.text ? `<pre style="white-space:pre-wrap">${email.text}</pre>` : raw);
       const inlined = applyInlineAttachments(body, merged);
-      return { body: inlined, attachments: merged };
+      return {
+        body: inlined,
+        rawBody: body,
+        attachments: merged,
+        textContent: email.text || extractTextContent(body)
+      };
     } catch (error) {
       console.warn('postal-mime parse failed', error);
       return null;
@@ -806,25 +1132,40 @@ export class MailboxView {
 
   async deleteMessage(message) {
     if (!message?.id) return;
+    const account = this.getAccountKey();
+    const payload = { id: message.id, folder: message.folder };
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+
+    // Optimistic remove
+    this.messages.remove((m) => m.id === message.id);
+    this.selectedMessage(null);
+    this.messageBody('');
+    this.attachments([]);
+    this.updateUnreadCountFromList();
+    this.toasts?.show('Message removed', 'info');
+
+    if (isOffline) {
+      await enqueueSync('delete', { account, resource: 'message', folder: message.folder, data: payload });
+      this.toasts?.show?.('Delete queued (offline)', 'info');
+      await this.refreshSyncCounts();
+      return;
+    }
+
     try {
       await Remote.request(
         'MessageDelete',
         {},
         { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
       );
-      this.messages.remove((m) => m.id === message.id);
-      this.selectedMessage(null);
-      this.messageBody('');
-      this.attachments([]);
-      this.updateUnreadCountFromList();
       this.toasts?.show('Message deleted', 'success');
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      this.error(error?.message || 'Unable to delete message.');
-      this.toasts?.show(this.error(), 'error');
+      await enqueueSync('delete', { account, resource: 'message', folder: message.folder, data: payload });
+      this.toasts?.show?.('Delete queued to sync later', 'info');
+      await this.refreshSyncCounts();
     }
     this.actionMenuOpen(false);
   }
@@ -833,22 +1174,37 @@ export class MailboxView {
     if (!message?.id) return;
     const target = targetOverride || this.moveTarget();
     if (!target || target === message.folder) return;
+    const account = this.getAccountKey();
+    const payload = { id: message.id, from: message.folder, target };
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    const originalFolder = message.folder;
+
+    // Optimistic UI: switch folder and refresh
+    this.selectedFolder(target);
+    this.page(1);
+    await this.loadMessages();
+
+    if (isOffline) {
+      await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
+      this.toasts?.show?.('Move queued (offline)', 'info');
+      await this.refreshSyncCounts();
+      return;
+    }
+
     try {
       await Remote.request(
         'MessageUpdate',
         { folder: target },
         { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
       );
-      // Navigate to the target folder and refresh to stay in sync
-      this.selectedFolder(target);
-      this.page(1);
-      await this.loadMessages();
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      this.error(error?.message || 'Unable to move message.');
+      await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
+      this.toasts?.show?.('Move queued to sync later', 'info');
+      await this.refreshSyncCounts();
     }
     this.actionMenuOpen(false);
   }
@@ -959,8 +1315,7 @@ export class MailboxView {
             c.email ||
             '';
           if (!email) return null;
-          const name = c.full_name || c.FullName || c.name || '';
-          return name ? `${name} <${email}>` : email;
+          return email;
         })
         .filter(Boolean);
       this.contacts(mapped);
@@ -989,6 +1344,17 @@ export class MailboxView {
       }
     } catch (error) {
       // non-blocking
+    }
+
+    // Local storage estimate (IndexedDB/cache)
+    try {
+      if (navigator?.storage?.estimate) {
+        const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+        this.localUsage(usage);
+        this.localQuota(quota);
+      }
+    } catch (error) {
+      // ignore
     }
   }
 
@@ -1035,6 +1401,15 @@ export class MailboxView {
       .forEach((f) => ordered.push({ ...f, icon: f.icon || 'folder' }));
 
     return ordered;
+  }
+
+  folderCount(folder) {
+    if (!folder) return 0;
+    const path = (folder.path || '').toUpperCase();
+    if (path === 'OUTBOX') {
+      return Math.max(folder.count || 0, this.syncPending());
+    }
+    return folder.count || 0;
   }
 
   toggleThreading() {

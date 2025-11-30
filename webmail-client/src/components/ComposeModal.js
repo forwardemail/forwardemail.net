@@ -8,7 +8,13 @@ import Underline from '@tiptap/extension-underline';
 import { Remote } from '../utils/remote';
 import { Local } from '../utils/storage';
 import { sanitizeHtml } from '../utils/sanitize';
+import { enqueueSync } from '../utils/sync-queue';
+import { db } from '../utils/db';
 import 'emoji-picker-element';
+
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10MB per file
+const MAX_TOTAL_ATTACHMENTS = 25 * 1024 * 1024; // 25MB total
+const BLOCKED_TYPES = ['application/x-msdownload', 'application/x-msdos-program', 'application/x-msdos-windows', 'application/x-ms-installer', 'application/x-msi', 'application/x-exe', 'application/x-dosexec'];
 
 export class ComposeModal {
   constructor() {
@@ -20,12 +26,14 @@ export class ComposeModal {
     this.bccVisible = ko.observable(false);
     this.subject = ko.observable('');
     this.body = ko.observable('');
+    this.draftId = ko.observable(null);
     this.sending = ko.observable(false);
     this.error = ko.observable('');
     this.success = ko.observable('');
     this.editorView = null;
     this.linkTarget = ko.observable('');
     this.attachments = ko.observableArray([]);
+    this.attachmentError = ko.observable('');
     this.isPlainText = ko.observable(false);
     this.toList = ko.observableArray([]);
     this.ccList = ko.observableArray([]);
@@ -58,6 +66,7 @@ export class ComposeModal {
     this.body('');
     this.error('');
     this.success('');
+    this.attachmentError('');
     this.sending(false);
     this.attachments([]);
     this.isPlainText(Local.get('compose_plain_default') === '1');
@@ -209,26 +218,57 @@ export class ComposeModal {
         : {})
     };
 
+    const account = this.getAccountKey();
+    const localId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `local-${Date.now()}`;
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+
+    const queueSend = async () => {
+      await this.saveOutboxMessage(localId, payload);
+      await enqueueSync('send', {
+        account,
+        resource: 'message',
+        folder: 'Outbox',
+        data: { payload, localId }
+      });
+      if (this.mailboxView?.refreshSyncCounts) await this.mailboxView.refreshSyncCounts();
+      this.success('Message queued for send');
+      if (this.toasts) this.toasts.show('Message queued for send', 'info');
+      this.sending(false);
+      setTimeout(() => this.close(), 500);
+    };
+
+    if (isOffline) {
+      queueSend();
+      return false;
+    }
+
     // Use alias basic auth (same as reading) for outbound send
     Remote.request('Emails', payload, { method: 'POST' })
       .then(() => {
-      this.success('Message queued.');
-      this.sending(false);
-      if (this.toasts) this.toasts.show('Message queued', 'success');
-      setTimeout(() => {
-        this.close();
-      }, 800);
-    })
-    .catch((error) => {
-      this.error(error?.message || 'Unable to send message.');
-      if (this.toasts) this.toasts.show(this.error(), 'error');
-      this.sending(false);
-    });
+        this.success('Message sent.');
+        this.sending(false);
+        if (this.toasts) this.toasts.show('Message sent', 'success');
+        setTimeout(() => {
+          this.close();
+        }, 800);
+      })
+      .catch(async (error) => {
+        if (error?.status === 401 || error?.status === 403) {
+          this.error(error?.message || 'Unable to send message.');
+          if (this.toasts) this.toasts.show(this.error(), 'error');
+          this.sending(false);
+          return;
+        }
+        await queueSend();
+      });
     return false;
   };
 
   parseRecipients(value) {
-    return (value || '')
+    const input = value || '';
+    const matches = input.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi);
+    if (matches && matches.length) return matches.map((m) => m.trim());
+    return input
       .split(/[,;\s]+/)
       .map((v) => v.trim())
       .filter(Boolean);
@@ -268,22 +308,7 @@ export class ComposeModal {
   onFilesSelected = (_, event) => {
     const files = Array.from(event?.target?.files || []);
     if (!files.length) return;
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result;
-        if (typeof result === 'string') {
-          const base64 = result.split(',')[1] || '';
-          this.attachments.push({
-            name: file.name,
-            size: file.size,
-            contentType: file.type || 'application/octet-stream',
-            content: base64
-          });
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+    this.addFiles(files);
     // reset input so same file can be re-selected
     event.target.value = '';
   };
@@ -308,6 +333,40 @@ export class ComposeModal {
     return false;
   };
 
+  addFiles(files = []) {
+    if (!files.length) return;
+    let totalSize = this.attachments().reduce((sum, att) => sum + (att.size || 0), 0);
+    for (const file of files) {
+      if (BLOCKED_TYPES.includes(file.type)) {
+        this.attachmentError(`Blocked file type: ${file.name}`);
+        continue;
+      }
+      if (file.size > MAX_ATTACHMENT_SIZE) {
+        this.attachmentError(`File too large (max 10MB): ${file.name}`);
+        continue;
+      }
+      if (totalSize + file.size > MAX_TOTAL_ATTACHMENTS) {
+        this.attachmentError('Total attachment size exceeds 25MB');
+        break;
+      }
+      totalSize += file.size;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === 'string') {
+          const base64 = result.split(',')[1] || '';
+          this.attachments.push({
+            name: file.name,
+            size: file.size,
+            contentType: file.type || 'application/octet-stream',
+            content: base64
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   insertEmoji = (emoji) => {
     if (!emoji) return;
     if (this.editorView) {
@@ -325,4 +384,43 @@ export class ComposeModal {
     }
     return true;
   };
+
+  getAccountKey() {
+    return Local.get('email') || 'default';
+  }
+
+  async saveOutboxMessage(localId, payload) {
+    const account = this.getAccountKey();
+    const now = Date.now();
+    const snippet = (payload.text || payload.html || '').slice(0, 140);
+    const messageRecord = {
+      id: localId,
+      account,
+      folder: 'Outbox',
+      from: payload.from,
+      subject: payload.subject || '(No subject)',
+      snippet,
+      date: now,
+      flags: [],
+      is_unread: false,
+      has_attachment: Array.isArray(payload.attachments) && payload.attachments.length > 0,
+      bodyIndexed: false,
+      updatedAt: now
+    };
+    const bodyRecord = {
+      id: localId,
+      account,
+      folder: 'Outbox',
+      body: payload.html || payload.text || '',
+      textContent: payload.text || '',
+      attachments: payload.attachments || [],
+      updatedAt: now
+    };
+    try {
+      await db.messages.put(messageRecord);
+      await db.messageBodies.put(bodyRecord);
+    } catch (err) {
+      console.warn('Failed to cache outbox message', err);
+    }
+  }
 }

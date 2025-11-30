@@ -79,16 +79,31 @@ viewModel.mailboxView.passphraseModal = viewModel.pgpPassphraseModal;
 viewModel.calendarView.mailboxView = viewModel.mailboxView;
 viewModel.calendarView.toasts = viewModel.toasts;
 viewModel.contactsView.toasts = viewModel.toasts;
+viewModel.composeModal.mailboxView = viewModel.mailboxView;
 
 // Share storage observables between mailbox and settings
 viewModel.settingsModal.storageUsed = viewModel.mailboxView.storageUsed;
 viewModel.settingsModal.storageTotal = viewModel.mailboxView.storageTotal;
+viewModel.settingsModal.localUsage = viewModel.mailboxView.localUsage;
+viewModel.settingsModal.localQuota = viewModel.mailboxView.localQuota;
+viewModel.settingsModal.indexCount = viewModel.mailboxView.indexCount;
+viewModel.settingsModal.indexSize = viewModel.mailboxView.indexSize;
+viewModel.settingsModal.syncPending = viewModel.mailboxView.syncPending;
+viewModel.settingsModal.bodyIndexingEnabled = viewModel.mailboxView.bodyIndexingEnabled;
+viewModel.settingsModal.rebuildIndex = viewModel.mailboxView.rebuildSearchFromCache.bind(
+  viewModel.mailboxView
+);
+viewModel.settingsModal.toggleBodyIndexing = viewModel.mailboxView.toggleBodyIndexing.bind(
+  viewModel.mailboxView
+);
+viewModel.settingsModal.toasts = viewModel.toasts;
 
 viewModel.route.subscribe((route) => {
   const mailboxMode =
     route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts';
   document.body.classList.toggle('mailbox-mode', mailboxMode);
   if (route !== 'mailbox') viewModel.composeModal.close();
+  if (route === 'mailbox') viewModel.mailboxView.load();
   if (route === 'settings') viewModel.settingsModal.open();
   if (route === 'calendar') viewModel.calendarView.load();
   if (route === 'contacts') viewModel.contactsView.load();

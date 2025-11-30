@@ -568,6 +568,10 @@
         border-color: var(--color-border);
       }
 
+      body.light-mode .fe-button:not(.ghost) {
+        color: #ffffff;
+      }
+
       body.light-mode .fe-button.ghost {
         background: var(--color-panel);
         color: var(--color-text);
@@ -591,7 +595,7 @@
       }
 
       .fe-settings-save {
-        color: #0f172a;
+        color: #ffffff;
       }
 
       .fe-signout {
@@ -1195,6 +1199,16 @@
           width: 100%;
         }
 
+        .fe-messages {
+          height: auto;
+          min-height: calc(100vh - 250px);
+          display: flex !important;
+        }
+
+        .fe-folders.fe-folders-open ~ * .fe-messages {
+          pointer-events: none;
+        }
+
         .fe-reader {
           display: none;
         }
@@ -1211,6 +1225,16 @@
           height: auto;
           max-height: none;
           overflow: visible;
+        }
+
+        /* Hide calendar when modal is open on mobile */
+        .fe-modal-backdrop + .fe-calendar-shell,
+        .fe-calendar-shell:has(~ .fe-modal-backdrop[style*="display: block"]) {
+          visibility: hidden;
+        }
+
+        body:has(.fe-modal-backdrop[style*="display: block"]) .fe-calendar-shell {
+          visibility: hidden;
         }
       }
 
@@ -1261,6 +1285,12 @@
         border: 1px solid rgba(0, 175, 248, 0.3);
       }
 
+      .fe-badge.fe-badge-outline {
+        background: transparent;
+        border: 1px solid rgba(0, 175, 248, 0.5);
+        color: var(--color-text);
+      }
+
       .fe-chip {
         padding: 4px 8px;
         border-radius: 999px;
@@ -1281,6 +1311,11 @@
         background: #e5e7eb;
         color: var(--color-text);
         border-color: var(--color-border);
+      }
+
+      body.light-mode .fe-badge.fe-badge-outline {
+        background: transparent;
+        border-color: var(--color-border-strong, #cbd5e1);
       }
 
       body.light-mode .fe-chip.ghost {
@@ -1653,6 +1688,109 @@
         border-color: rgba(0, 175, 248, 0.3);
       }
 
+      /* Time picker styles */
+      .fe-time-picker-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 8px 0;
+      }
+
+      .fe-time-picker-field {
+        flex: 1;
+        position: relative;
+      }
+
+      .fe-time-separator {
+        color: var(--color-text-muted, #6b7280);
+        font-size: 16px;
+        font-weight: 500;
+        user-select: none;
+      }
+
+      .fe-time-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 4px;
+        max-height: 240px;
+        overflow-y: auto;
+        background: var(--color-bg, white);
+        border: 1px solid var(--color-border, #e5e7eb);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .fe-time-option {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.15s ease;
+      }
+
+      .fe-time-option:hover {
+        background: rgba(0, 175, 248, 0.1);
+      }
+
+      .fe-time-option:active {
+        background: rgba(0, 175, 248, 0.2);
+      }
+
+      /* Dark mode support for time picker */
+      @media (prefers-color-scheme: dark) {
+        .fe-time-dropdown {
+          background: var(--color-bg-dark, #1f2937);
+          border-color: var(--color-border-dark, #374151);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      /* Coming soon settings - read-only style */
+      .fe-settings-card.coming-soon {
+        opacity: 0.5;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .fe-coming-soon-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-muted);
+        background: rgba(156, 163, 175, 0.15);
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      body.light-mode .fe-coming-soon-badge {
+        background: rgba(107, 114, 128, 0.15);
+        color: #6b7280;
+      }
+
+      /* Date input calendar picker styling */
+      input[type="date"] {
+        color-scheme: dark;
+      }
+
+      body.light-mode input[type="date"] {
+        color-scheme: light;
+      }
+
+      /* Style the calendar dropdown for dark mode */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+      }
+
+      body.light-mode input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0);
+      }
+
       .fe-empty {
         border: 1px dashed var(--color-border);
         border-radius: 10px;
@@ -1941,6 +2079,15 @@
         flex-wrap: wrap;
       }
 
+      .fe-dropzone {
+        border: 1px dashed var(--color-border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 13px;
+        color: var(--color-text-secondary);
+        cursor: pointer;
+      }
+
       .fe-attachment-chips {
         display: flex;
         align-items: center;
@@ -2208,30 +2355,22 @@
       <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'mailbox', with: mailboxView">
         <div class="fe-mailbox-header">
           <button class="fe-nav-toggle" type="button" aria-label="Toggle sidebar" data-bind="click: toggleSidebar">☰</button>
-          <div class="fe-mailbox-header-right">
-            <div class="fe-search-group" style="flex:1; justify-content:flex-start;">
-              <input
-                type="search"
-                class="fe-search"
-                placeholder="Search mail"
-                data-bind="value: query, valueUpdate: 'afterkeydown', event: { input: function(_, e){ onSearch(e.target.value); } }"
-              />
-            </div>
-            <div class="fe-toolbar-actions">
-              <button
-                class="fe-button ghost fe-icon-btn"
-                type="button"
-                title="Toggle conversation view"
-                aria-label="Toggle conversation view"
-                data-bind="click: toggleThreading, css: { 'fe-active': threadingEnabled }"
-              >
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              </button>
-              <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ navigate('/contacts'); }">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-              </button>
-              <button class="fe-button ghost fe-icon-btn" type="button" title="Calendar" aria-label="Calendar" data-bind="click: function(){ navigate('/calendar'); }">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+            <div class="fe-mailbox-header-right">
+              <div class="fe-search-group" style="flex:1; justify-content:flex-start;">
+                <input
+                  type="search"
+                  class="fe-search"
+                  placeholder="Search mail"
+                  data-bind="value: query, valueUpdate: 'afterkeydown', event: { input: function(_, e){ onSearch(e.target.value); } }"
+                />
+              </div>
+              <div class="fe-toolbar-actions">
+                <span class="fe-badge fe-badge-outline" data-bind="visible: syncPending() > 0, text: syncPending() + ' queued'"></span>
+                <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ navigate('/contacts'); }">
+                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                </button>
+                <button class="fe-button ghost fe-icon-btn" type="button" title="Calendar" aria-label="Calendar" data-bind="click: function(){ navigate('/calendar'); }">
+                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
               </button>
               <button class="fe-button ghost fe-icon-btn fe-settings-btn" type="button" title="Settings" aria-label="Settings" data-bind="click: function(){ navigate('/mailbox/settings'); }">
                 <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.91 3V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26.97 1.54h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /></svg>
@@ -2280,7 +2419,7 @@
                 <span class="fe-folder-icon" data-bind="css: 'fe-icon-' + (icon || 'folder')"></span>
                 <span data-bind="text: name || path"></span>
               </span>
-              <span class="fe-badge" data-bind="text: count"></span>
+              <span class="fe-badge" data-bind="text: $parent.folderCount($data)"></span>
             </li>
           </ul>
           <div class="fe-storage" data-bind="visible: storageTotal() > 0">
@@ -2331,7 +2470,10 @@
               class="fe-message"
               data-bind="click: $parent.selectMessage, css: { active: $parent.selectedMessage() && $parent.selectedMessage().id === id }"
             >
-            <div class="fe-message-subject" data-bind="text: subject"></div>
+            <div class="fe-message-subject">
+              <span data-bind="text: subject"></span>
+              <span class="fe-badge fe-badge-outline" data-bind="visible: pending">Pending</span>
+            </div>
             <div class="fe-message-top">
               <span class="fe-message-from" data-bind="text: from"></span>
               <span class="fe-message-date" data-bind="text: date"></span>
@@ -2529,7 +2671,39 @@
             <!-- General -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'general'">
               <div class="fe-settings-card">
-                <h3>Language</h3>
+                <h3>Search &amp; storage</h3>
+                <label class="fe-settings-row">
+                  <input
+                    type="checkbox"
+                    data-bind="checked: bodyIndexingEnabled, click: toggleBodyIndexing"
+                  />
+                  <span>Include message bodies in search (uses more local storage)</span>
+                </label>
+                <div class="fe-settings-meta" data-bind="text: 'Indexed messages: ' + (indexCount() || 0)"></div>
+                <div class="fe-settings-meta" data-bind="visible: indexSize() > 0">
+                  Index size ~
+                  <span data-bind="text: (Math.round(indexSize() / 1024 / 1024 * 10) / 10) + ' MB'"></span>
+                </div>
+                <div class="fe-settings-meta" data-bind="text: 'Queued actions: ' + (syncPending() || 0)"></div>
+                <div class="fe-settings-meta">
+                  Local cache:&nbsp;
+                  <span data-bind="text: localUsage() ? (Math.round(localUsage() / 1024 / 1024 * 10) / 10) + ' MB' : '—'"></span>
+                  <span data-bind="visible: localQuota()">/</span>
+                  <span data-bind="visible: localQuota, text: localQuota() ? (Math.round(localQuota() / 1024 / 1024 * 10) / 10) + ' MB' : ''"></span>
+                </div>
+                <div class="fe-settings-note" style="margin-top:8px;">
+                  <span data-bind="text: bodyIndexingEnabled() ? 'Body search uses more local storage but gives better results.' : 'Disable body search to reduce cache size.'"></span>
+                </div>
+                <div class="fe-settings-actions" style="margin-top:12px;">
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: openRebuildConfirm"
+                  >Rebuild index</button>
+                </div>
+              </div>
+              <div class="fe-settings-card coming-soon">
+                <h3>Language<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <select class="fe-input">
                   <option>English (US)</option>
                   <option>English (UK)</option>
@@ -2538,49 +2712,55 @@
                   <option>Français</option>
                 </select>
               </div>
-              <div class="fe-settings-card">
-                <h3>Messages per page</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Messages per page<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <select class="fe-input">
                   <option>20</option>
                   <option>50</option>
                   <option>100</option>
                 </select>
               </div>
-              <div class="fe-settings-card">
-                <h3>External images</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>External images<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row">
                   <input type="checkbox" checked />
                   Block external images by default
                 </label>
                 <div class="fe-settings-note">External images can be used to track when you open emails.</div>
               </div>
-              <div class="fe-settings-card">
-                <h3>Attachment reminder</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Attachment reminder<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row">
                   <input type="checkbox" checked />
                   Warn me when I mention an attachment but don't attach anything
                 </label>
               </div>
-              <div class="fe-settings-card">
-                <h3>Writing assistance</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Writing assistance<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" checked /> Enable spell check</label>
                 <label class="fe-settings-row"><input type="checkbox" /> Enable grammar suggestions</label>
                 <label class="fe-settings-row"><input type="checkbox" /> Enable auto-correct</label>
               </div>
-              <div class="fe-settings-card">
-                <h3>AI Writing Assistant</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>AI Writing Assistant<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" /> Enable AI writing suggestions</label>
               </div>
-              <div class="fe-settings-card">
-                <h3>Reading pane</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Reading pane<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" checked /> Show reading pane</label>
               </div>
               <div class="fe-settings-card">
                 <h3>Conversation threading</h3>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Group messages by conversation</label>
+                <label class="fe-settings-row">
+                  <input type="checkbox" data-bind="checked: $root.mailboxView.threadingEnabled" />
+                  <span>Group messages into conversations</span>
+                </label>
+                <div class="fe-settings-note">
+                  Messages in the same thread will be grouped together, similar to Gmail. Recommended for most users.
+                </div>
               </div>
-              <div class="fe-settings-card">
-                <h3>Notifications</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Notifications<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" checked /> Enable desktop notifications for new messages</label>
                 <label class="fe-settings-row"><input type="checkbox" /> Play sound for new messages</label>
               </div>
@@ -2632,32 +2812,42 @@
                   <label><input type="radio" name="theme" value="dark" data-bind="checked: theme" /> Dark</label>
                 </div>
               </div>
-              <div class="fe-settings-card">
-                <h3>Display density</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Display density<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="radio" name="density" /> Compact</label>
                 <label class="fe-settings-row"><input type="radio" name="density" checked /> Normal</label>
                 <label class="fe-settings-row"><input type="radio" name="density" /> Comfortable</label>
               </div>
-              <div class="fe-settings-card">
-                <h3>Text direction</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Text direction<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="radio" name="dir" checked /> Left to right (LTR)</label>
                 <label class="fe-settings-row"><input type="radio" name="dir" /> Right to left (RTL)</label>
               </div>
-              <div class="fe-settings-card">
-                <h3>Sidebar</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Sidebar<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" /> Collapse sidebar by default</label>
               </div>
-              <div class="fe-settings-card">
-                <h3>Avatar style</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Avatar style<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="radio" name="avatar" checked /> Circle</label>
                 <label class="fe-settings-row"><input type="radio" name="avatar" /> Square</label>
+              </div>
+              <div class="fe-settings-card">
+                <h3>Conversations</h3>
+                <label class="fe-settings-row">
+                  <input type="checkbox" data-bind="checked: $root.mailboxView.threadingEnabled" />
+                  <span>Group messages into conversations</span>
+                </label>
+                <div class="fe-settings-note" style="margin-top: 8px;">
+                  Messages in the same thread will be grouped together, similar to Gmail. Recommended for most users.
+                </div>
               </div>
             </div>
 
             <!-- Security & Privacy -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'security'">
-              <div class="fe-settings-card">
-                <h3>Privacy</h3>
+              <div class="fe-settings-card coming-soon">
+                <h3>Privacy<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="checkbox" checked /> Block tracking pixels and links</label>
                 <label class="fe-settings-row"><input type="checkbox" checked /> Block external images by default</label>
               </div>
@@ -2713,9 +2903,9 @@
 
             <!-- Filters -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'filters'">
-              <div class="fe-settings-card">
-                <h3>Filters</h3>
-                <div class="fe-settings-note">Create rules to automatically label, move, or forward mail. (Planned)</div>
+              <div class="fe-settings-card coming-soon">
+                <h3>Filters<span class="fe-coming-soon-badge">Coming soon</span></h3>
+                <div class="fe-settings-note">Create rules to automatically label, move, or forward mail.</div>
                 <div class="fe-settings-actions">
                   <button class="fe-button ghost" type="button">Add filter</button>
                 </div>
@@ -2790,9 +2980,6 @@
           <div data-bind="with: selectedDraft">
             <div class="fe-contacts-detail-grid">
               <div class="fe-contacts-detail-col">
-                <div class="fe-reader-subject" data-bind="text: name || 'Contact'"></div>
-                <div class="fe-reader-from" data-bind="text: email"></div>
-
                 <!-- Contact fields -->
                 <label class="fe-settings-row">Name
                   <input class="fe-input" type="text" data-bind="textInput: name, disable: !$parent.isEditing()" />
@@ -2857,6 +3044,27 @@
           <div class="fe-modal-actions">
             <button class="fe-button ghost" type="button" data-bind="click: cancelDelete">Cancel</button>
             <button class="fe-button fe-danger" type="button" data-bind="click: function(){ deleteContact(confirmTarget); }">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'settings' && settingsModal.rebuildConfirmVisible()">
+      <div class="fe-modal" data-bind="with: settingsModal">
+        <div class="fe-modal-header">
+          <h2>Rebuild search index</h2>
+          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: closeRebuildConfirm">✕</button>
+        </div>
+        <div class="fe-modal-body">
+          <div class="fe-alert warning">
+            <p style="margin:0 0 0.5rem 0;"><strong>This will clear and rebuild the local search index.</strong></p>
+            <p style="margin:0;">Messages will be re-indexed from cached data
+              <span data-bind="text: bodyIndexingEnabled() ? '(including bodies; more space)' : '(subject/from/snippet only)'"></span>.
+              This may take a moment and uses local storage.</p>
+          </div>
+          <div class="fe-modal-actions">
+            <button class="fe-button ghost" type="button" data-bind="click: closeRebuildConfirm">Cancel</button>
+            <button class="fe-button" type="button" data-bind="click: confirmRebuildIndex, enable: !rebuildingIndex(), text: rebuildingIndex() ? 'Rebuilding…' : 'Rebuild now'"></button>
           </div>
         </div>
       </div>
@@ -2943,36 +3151,46 @@
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Plain text" title="Plain text toggle" data-bind="click: togglePlainText, css: { active: isPlainText }">TXT</button>
               <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Emoji" title="Emoji" data-bind="click: toggleEmoji">😊</button>
             </div>
-            <div class="fe-rich" data-placeholder="Message"></div>
-            <div class="fe-emoji-picker" data-bind="visible: showEmoji">
-              <emoji-picker></emoji-picker>
+          <div class="fe-rich" data-placeholder="Message"></div>
+          <div class="fe-emoji-picker" data-bind="visible: showEmoji">
+            <emoji-picker></emoji-picker>
+          </div>
+        </div>
+
+        <div class="fe-attachments-compose">
+          <input
+            type="file"
+            multiple
+            class="fe-attach-input"
+            style="display: none;"
+            data-bind="event: { change: onFilesSelected }"
+          />
+          <button class="fe-button ghost" type="button" data-bind="click: triggerFilePicker">
+            <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.18a1 1 0 0 1-1.41-1.41l8.49-8.48" /></svg>
+            <span>Attach</span>
+          </button>
+          <div class="fe-dropzone"
+            data-bind="
+              event: {
+                dragover: function(_, e){ e.preventDefault(); e.stopPropagation(); },
+                dragenter: function(_, e){ e.preventDefault(); e.stopPropagation(); },
+                drop: function(_, e){ e.preventDefault(); e.stopPropagation(); $root.composeModal.addFiles(Array.from(e.dataTransfer.files || [])); }
+              }">
+            Drag & drop files
+          </div>
+          <div class="fe-attachment-chips" data-bind="foreach: attachments">
+            <div class="fe-chip ghost fe-attachment-chip">
+              <span data-bind="text: name"></span>
+              <span class="fe-attachment-chip-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></span>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove attachment" title="Remove" data-bind="click: $parent.removeAttachment">✕</button>
             </div>
           </div>
+        </div>
+        <div class="fe-alert error" data-bind="visible: attachmentError, text: attachmentError"></div>
 
-            <div class="fe-attachments-compose">
-              <input
-                type="file"
-                multiple
-                class="fe-attach-input"
-                style="display: none;"
-                data-bind="event: { change: onFilesSelected }"
-              />
-            <button class="fe-button ghost" type="button" data-bind="click: triggerFilePicker">
-              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.18a1 1 0 0 1-1.41-1.41l8.49-8.48" /></svg>
-              <span>Attach</span>
-            </button>
-              <div class="fe-attachment-chips" data-bind="foreach: attachments">
-                <div class="fe-chip ghost fe-attachment-chip">
-                  <span data-bind="text: name"></span>
-                  <span class="fe-attachment-chip-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></span>
-                  <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove attachment" title="Remove" data-bind="click: $parent.removeAttachment">✕</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="fe-alert error" data-bind="visible: error, text: error"></div>
-          <div class="fe-alert error" data-bind="visible: recipientError, text: recipientError"></div>
-          <div class="fe-alert success" data-bind="visible: success, text: success"></div>
+        <div class="fe-alert error" data-bind="visible: error, text: error"></div>
+        <div class="fe-alert error" data-bind="visible: recipientError, text: recipientError"></div>
+        <div class="fe-alert success" data-bind="visible: success, text: success"></div>
 
           <div class="fe-modal-actions">
             <button class="fe-button ghost" type="button" data-bind="click: close">Cancel</button>
@@ -3019,15 +3237,44 @@
       <div class="fe-modal" data-bind="with: calendarView">
         <div class="fe-modal-header">
           <h2>New Event</h2>
-          <button class="fe-button ghost" type="button" data-bind="click: function(){ newEventModal(false); }">Close</button>
+          <button class="fe-button ghost fe-icon-btn" type="button" data-bind="click: function(){ newEventModal(false); }">X</button>
         </div>
         <div class="fe-modal-body">
           <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: newEventTitle" />
-          <input class="fe-input" type="datetime-local" placeholder="Start" data-bind="value: newEventStart" />
-          <div class="fe-recipient-row">
-            <input class="fe-input" type="number" min="5" step="5" placeholder="Duration (minutes)" data-bind="value: newEventDuration" />
-            <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: newEventNotify" />
+
+          <!-- Date picker -->
+          <input class="fe-input" type="date" placeholder="Date" data-bind="value: newEventDate" />
+
+          <!-- Time picker row -->
+          <div class="fe-time-picker-row">
+            <div class="fe-time-picker-field">
+              <input
+                class="fe-input"
+                type="time"
+                placeholder="Start time"
+                data-bind="value: newEventStartTime, event: { focus: function() { showStartTimePicker(true); showEndTimePicker(false); } }"
+              />
+              <div class="fe-time-dropdown" data-bind="visible: showStartTimePicker, foreach: timeOptions">
+                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectStartTime($data); }"></div>
+              </div>
+            </div>
+
+            <span class="fe-time-separator">-</span>
+
+            <div class="fe-time-picker-field">
+              <input
+                class="fe-input"
+                type="time"
+                placeholder="End time"
+                data-bind="value: newEventEndTime, event: { focus: function() { showEndTimePicker(true); showStartTimePicker(false); } }"
+              />
+              <div class="fe-time-dropdown" data-bind="visible: showEndTimePicker, foreach: timeOptions">
+                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEndTime($data); }"></div>
+              </div>
+            </div>
           </div>
+
+          <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: newEventNotify" />
           <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: newEventDescription"></textarea>
           <div class="fe-alert error" data-bind="visible: error, text: error" style="display:none;"></div>
         </div>
@@ -3042,15 +3289,43 @@
       <div class="fe-modal" data-bind="with: calendarView">
         <div class="fe-modal-header">
           <h2>Edit Event</h2>
-          <button class="fe-button ghost" type="button" data-bind="click: cancelEditEvent">Close</button>
+          <button class="fe-button ghost fe-icon-btn" type="button" data-bind="click: cancelEditEvent">X</button>
         </div>
         <div class="fe-modal-body">
           <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: editEventTitle" />
-          <input class="fe-input" type="datetime-local" placeholder="Start" data-bind="value: editEventStart" />
-          <div class="fe-recipient-row">
-            <input class="fe-input" type="number" min="5" step="5" placeholder="Duration (minutes)" data-bind="value: editEventDuration" />
-            <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: editEventNotify" />
+
+          <!-- Date picker -->
+          <input class="fe-input" type="date" placeholder="Date" data-bind="value: editEventDate" />
+
+          <!-- Time picker row -->
+          <div class="fe-time-picker-row">
+            <div class="fe-time-picker-field">
+              <input
+                class="fe-input"
+                type="time"
+                placeholder="Start time"
+                data-bind="value: editEventStartTime, event: { focus: function() { showEditStartTimePicker(true); showEditEndTimePicker(false); } }"
+              />
+              <div class="fe-time-dropdown" data-bind="visible: showEditStartTimePicker, foreach: timeOptions">
+                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEditStartTime($data); }"></div>
+              </div>
+            </div>
+
+            <span class="fe-time-separator">-</span>
+
+            <div class="fe-time-picker-field">
+              <input
+                class="fe-input"
+                type="time"
+                placeholder="End time"
+                data-bind="value: editEventEndTime, event: { focus: function() { showEditEndTimePicker(true); showEditStartTimePicker(false); } }"
+              />
+              <div class="fe-time-dropdown" data-bind="visible: showEditEndTimePicker, foreach: timeOptions">
+                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEditEndTime($data); }"></div>
+              </div>
+            </div>
           </div>
+
           <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: editEventDescription"></textarea>
           <div class="fe-alert error" data-bind="visible: error, text: error" style="display:none;"></div>
 

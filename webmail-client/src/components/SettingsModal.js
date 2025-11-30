@@ -9,6 +9,14 @@ export class SettingsModal {
     this.section = ko.observable('general');
     this.composePlainDefault = ko.observable(Local.get('compose_plain_default') === '1');
     this.aliasEmail = ko.observable(this.getAliasEmail());
+    this.bodyIndexingEnabled = ko.observable(Local.get('search_body_index') !== '0');
+    this.indexCount = ko.observable(0);
+    this.indexSize = ko.observable(0);
+    this.syncPending = ko.observable(0);
+    this.localUsage = ko.observable(0);
+    this.localQuota = ko.observable(0);
+    this.rebuildingIndex = ko.observable(false);
+    this.rebuildConfirmVisible = ko.observable(false);
     this.pgpKeys = ko.observableArray([]);
     this.keyFormVisible = ko.observable(false);
     this.editingKeyName = ko.observable('');
@@ -17,6 +25,9 @@ export class SettingsModal {
     this.error = ko.observable('');
     this.success = ko.observable('');
     this.applyTheme = () => {};
+    this.rebuildIndex = () => {};
+    this.toggleBodyIndexing = () => {};
+    this.toasts = null;
     // Storage observables will be shared from MailboxView in main.js
     this.storageUsed = null;
     this.storageTotal = null;
@@ -45,6 +56,7 @@ export class SettingsModal {
     this.apiKey(Local.get('api_key') || '');
     this.theme(Local.get('theme') || 'system');
     this.composePlainDefault(Local.get('compose_plain_default') === '1');
+    this.bodyIndexingEnabled(Local.get('search_body_index') !== '0');
     this.aliasEmail(this.getAliasEmail());
     try {
       const storedKeys = Local.get('pgp_keys');
@@ -133,5 +145,31 @@ export class SettingsModal {
   signOut = () => {
     Local.clear();
     window.location.href = '/';
+  };
+
+  openRebuildConfirm = () => {
+    this.error('');
+    this.success('');
+    this.rebuildConfirmVisible(true);
+  };
+
+  closeRebuildConfirm = () => {
+    this.rebuildConfirmVisible(false);
+  };
+
+  confirmRebuildIndex = async () => {
+    if (this.rebuildingIndex()) return;
+    this.rebuildingIndex(true);
+    try {
+      await this.rebuildIndex();
+      this.success('Search index rebuilt.');
+      this.toasts?.show?.('Search index rebuilt', 'success');
+    } catch (err) {
+      this.error(err?.message || 'Failed to rebuild index.');
+      this.toasts?.show?.(this.error(), 'error');
+    } finally {
+      this.rebuildingIndex(false);
+      this.closeRebuildConfirm();
+    }
   };
 }
