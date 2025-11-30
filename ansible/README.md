@@ -66,6 +66,7 @@ ansible/
 
 > [!IMPORTANT]
 > Before deploying any services, ensure you have:
+>
 > - [Ansible](https://github.com/ansible/ansible) 2.9+ installed
 > - SSH access to target servers
 > - Required environment variables configured
@@ -124,6 +125,7 @@ ansible-playbook ansible/playbooks/mail.yml -i hosts.yml
 **[MongoDB & Redis/Valkey Deployment Guide](docs/README_MONGO_REDIS.md)**
 
 Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and [Valkey](https://github.com/valkey-io/valkey) (Redis fork) with:
+
 - ✅ SSL/TLS encryption
 - ✅ UFW firewall configuration
 - ✅ Automated backups to Cloudflare R2
@@ -138,6 +140,7 @@ Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and 
 **[Mail Server Deployment Guide](docs/MAIL_DEPLOYMENT.md)**
 
 Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
+
 - 📧 SMTP server configuration (ports 25, 587, 465, 2525, 2587, 2465, 2455, 2555)
 - 📬 IMAP server setup (ports 993, 2993)
 - 📮 POP3 server setup (ports 995, 2995)
@@ -156,6 +159,7 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 **[Security Monitoring Guide](docs/MONITORING.md)**
 
 Comprehensive automated monitoring with email notifications for:
+
 - 📊 **System Resource Monitoring** - CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds
 - 🔐 **SSH Security Monitoring** - ALL SSH activity (successful/failed logins, logged in users, commands)
 - 🔌 **USB Device Monitoring** - Unknown device detection with whitelisting
@@ -166,6 +170,7 @@ Comprehensive automated monitoring with email notifications for:
 - 🔒 **SSL Certificate Monitoring** - Certificate expiration tracking for WEB_URL
 
 **Features**:
+
 - ⏱️ Periodic monitoring via [systemd](https://github.com/systemd/systemd) timers
 - 📧 HTML-formatted email alerts
 - 🚦 Intelligent rate limiting
@@ -182,6 +187,7 @@ Comprehensive automated monitoring with email notifications for:
 Complete testing procedures for **all 18 monitoring systems** across the infrastructure:
 
 **Security Playbook (8 systems)**:
+
 1. System Resource Monitor
 2. SSH Security Monitor (Enhanced - logs ALL SSH activity)
 3. USB Device Monitor
@@ -190,26 +196,26 @@ Complete testing procedures for **all 18 monitoring systems** across the infrast
 6. Package Installation Monitor
 7. Open Ports Monitor
 8. SSL Certificate Monitor
+9. **Node Playbook (1 system)**:
+   - [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
+10. **MongoDB Playbook (3 systems)**:
+    - [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
+    - MongoDB UFW Whitelist Update Monitoring
+    - MongoDB Backup Monitoring
+11. **Redis Playbook (4 systems)**:
 
-**Node Playbook (1 system)**:
-9. [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
+- [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
+- Redis UFW Whitelist Update Monitoring
+- Redis Backup Monitoring
+- Redis Command Usage Monitoring
 
-**MongoDB Playbook (3 systems)**:
-10. [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
-11. MongoDB UFW Whitelist Update Monitoring
-12. MongoDB Backup Monitoring
+12. **Mail & DNS Playbooks (2 systems)**:
 
-**Redis Playbook (4 systems)**:
-13. [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
-14. Redis UFW Whitelist Update Monitoring
-15. Redis Backup Monitoring
-16. Redis Command Usage Monitoring
-
-**Mail & DNS Playbooks (2 systems)**:
-17. Mail Service Failure Notifications
-18. [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
+- Mail Service Failure Notifications
+- [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
 
 **Each system includes**:
+
 - ✅ Purpose and description
 - ✅ Files deployed
 - ✅ Testing commands
@@ -229,6 +235,7 @@ Complete testing procedures for **all 18 monitoring systems** across the infrast
 **[MongoDB Operations Guide](docs/MONGODB_OPERATIONS_GUIDE.md)**
 
 Comprehensive operational procedures including:
+
 - 🔄 Backup and restore procedures
 - 📊 Monitoring and health checks
 - 🔍 Query optimization
@@ -244,6 +251,7 @@ Comprehensive operational procedures including:
 **[Service User Audit](docs/SERVICE_USER_AUDIT.md)**
 
 Documentation of service users and their permissions:
+
 - 👤 User roles and responsibilities
 - 🔑 Permission matrices
 - 📁 File ownership guidelines
@@ -258,6 +266,7 @@ Documentation of service users and their permissions:
 **[MongoDB Performance Tuning Guide](docs/MONGODB_PERFORMANCE_TUNING.md)**
 
 Optimize [MongoDB](https://github.com/mongodb/mongo) for production workloads:
+
 - 🎯 WiredTiger cache configuration
 - 💾 Memory allocation strategies
 - 🔄 Connection pool tuning
@@ -273,6 +282,7 @@ Optimize [MongoDB](https://github.com/mongodb/mongo) for production workloads:
 **[Redis Performance Tuning Guide](docs/REDIS_PERFORMANCE_TUNING.md)**
 
 Maximize [Redis](https://github.com/redis/redis)/[Valkey](https://github.com/valkey-io/valkey) performance:
+
 - 🚀 Memory optimization
 - ⚡ I/O threading configuration
 - 🔄 Persistence strategies
@@ -287,6 +297,7 @@ Maximize [Redis](https://github.com/redis/redis)/[Valkey](https://github.com/val
 **[Disaster Recovery Guide](docs/DISASTER_RECOVERY.md)**
 
 Complete disaster recovery procedures:
+
 - 💾 Backup strategies and schedules
 - 🔄 Restore procedures
 - 🚨 Incident response workflows
@@ -299,11 +310,11 @@ Complete disaster recovery procedures:
 
 ### Backup Schedule
 
-| Service | Frequency | Retention | Storage |
-|---------|-----------|-----------|---------|
-| MongoDB | Every 6 hours | 30 days | Cloudflare R2 |
-| Redis/Valkey | Every 6 hours | 30 days | Cloudflare R2 |
-| System configs | Daily | 90 days | Cloudflare R2 |
+| Service        | Frequency     | Retention | Storage       |
+| -------------- | ------------- | --------- | ------------- |
+| MongoDB        | Every 6 hours | 30 days   | Cloudflare R2 |
+| Redis/Valkey   | Every 6 hours | 30 days   | Cloudflare R2 |
+| System configs | Daily         | 90 days   | Cloudflare R2 |
 
 > [!NOTE]
 > Backups older than 7 days are consolidated to one per day to save storage space.
@@ -333,6 +344,7 @@ All critical system events are monitored and reported via email:
 ### Rate Limiting
 
 Email alerts are rate-limited to prevent flooding:
+
 - **Limit**: 10 emails per hour per service (varies by alert type)
 - **Tracking**: Lockfile-based in `/var/lock/` and JSON-based in `/var/lib/email-rate-limits/`
 - **Logging**: All rate limit events logged to syslog and service logs
@@ -436,8 +448,7 @@ sudo journalctl -u <service-name> -n 50
 - [`trfore/ansible-role-mongodb-install`](https://github.com/trfore/ansible-role-mongodb-install) v3.0.5 - MongoDB installation
 - [`hifis.toolkit`](https://github.com/hifis-net/ansible-collection-toolkit) collection v6.2.2 - System hardening and unattended upgrades
 
-> [!NOTE]
-> [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
+> [!NOTE] > [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
 
 ---
 
