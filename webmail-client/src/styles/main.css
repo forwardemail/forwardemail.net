@@ -3,58 +3,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fe-toast-stack {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 9999;
-}
-
-.fe-toast {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #0f172a;
-  color: #e5e7eb;
-  border: 1px solid #1f2937;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.fe-toast.success {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #bbf7d0;
-}
-
-.fe-toast.error {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fecdd3;
-}
-
-body.light-mode .fe-toast {
-  background: #ffffff;
-  color: #0f172a;
-  border-color: #e5e7eb;
-}
-
-body.light-mode .fe-toast.success {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.2);
-  color: #065f46;
-}
-
-body.light-mode .fe-toast.error {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.2);
-  color: #991b1b;
-}
-
 .fe-stars canvas {
   position: absolute;
   inset: 0;

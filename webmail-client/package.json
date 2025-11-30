@@ -21,6 +21,11 @@
     "postal-mime": "^2.6.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "@preact/signals": "^2.5.1",
+    "@schedule-x/event-modal": "^3.4.2",
     "@tiptap/core": "^2.6.6",
     "@tiptap/extension-highlight": "^2.6.6",
     "@tiptap/extension-link": "^2.6.6",
@@ -28,9 +33,12 @@
     "@tiptap/extension-text-style": "^2.6.6",
     "@tiptap/extension-underline": "^2.6.6",
     "@tiptap/starter-kit": "^2.6.6",
+    "@tiptap/vue-3": "^3.11.1",
+    "@vitejs/plugin-vue": "^6.0.2",
     "dompurify": "^3.1.6",
     "vite": "^5.0.0",
     "vite-plugin-pwa": "^0.17.0",
+    "vue": "^3.5.25",
     "workbox-cli": "^7.0.0"
   }
 }

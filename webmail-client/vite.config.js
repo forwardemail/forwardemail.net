@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   root: '.',
@@ -14,6 +15,7 @@ export default defineConfig({
     }
   },
   plugins: [
+    vue(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['fonts/**/*', 'img/**/*', 'icons/**/*'],
