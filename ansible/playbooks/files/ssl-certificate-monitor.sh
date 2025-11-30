@@ -12,6 +12,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/ssl-certificate-monitor.log"
 LOCK_DIR="/var/lock"
@@ -201,7 +202,7 @@ send_certificate_alert() {
             ;;
     esac
 
-    local subject_line="$icon SSL Certificate Alert: $domain - $severity"
+    local subject_line="[${severity}] SSL Certificate: $domain - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: $color;'>$icon SSL Certificate Monitor</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>

@@ -11,6 +11,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/package-monitor.log"
 PACKAGE_STATE_FILE="/var/lib/package-monitor/package-state.txt"
@@ -148,7 +149,7 @@ send_package_alert() {
         severity="WARNING"
     fi
 
-    local subject="📦 Package Changes Detected on $HOSTNAME - $severity"
+    local subject="[${severity}] Package Changes - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: $color;'>📦 Package Installation Monitor</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>

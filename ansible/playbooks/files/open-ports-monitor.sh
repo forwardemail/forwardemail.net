@@ -11,6 +11,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/open-ports-monitor.log"
 PORTS_STATE_FILE="/var/lib/open-ports-monitor/ports-state.txt"
@@ -174,7 +175,7 @@ send_port_alert() {
         severity="WARNING"
     fi
 
-    local subject="🔌 Open Ports Changed on $HOSTNAME - $severity"
+    local subject="[${severity}] Open Ports Changed - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: $color;'>🔌 Open Ports Monitor</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>

@@ -10,6 +10,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/lynis-audit-monitor.log"
 LYNIS_LOG="/var/log/lynis.log"
@@ -170,7 +171,7 @@ send_audit_report() {
         severity="INFO"
     fi
 
-    local subject="🔒 Lynis Security Audit Report for $HOSTNAME - $severity"
+    local subject="[${severity}] Lynis Security Audit - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: $color;'>🔒 Lynis System Security Audit</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>

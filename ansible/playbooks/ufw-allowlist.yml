@@ -1,0 +1,252 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# ============================================================================
+# UFW IP Allowlist Management Playbook
+# ============================================================================
+# This is a reusable playbook for managing UFW IP allowlists across services.
+# It fetches IPs from https://forwardemail.net/ips/v4.txt and manages UFW rules.
+#
+# Features:
+# - Automatic IP allowlist updates from central source
+# - Orphaned rule cleanup (from old port configurations)
+# - Email notifications for changes
+# - Retry logic for network failures
+# - Rate-limited email reporting
+# - Systemd timer-based automation (every 10 minutes)
+#
+# Usage:
+#   This playbook is imported by service-specific playbooks (redis.yml, mongo.yml, sqlite.yml)
+#   and uses variables passed from the parent playbook:
+#     - service_name: Display name (e.g., "Redis", "MongoDB", "SQLite")
+#     - service_port_var: Environment variable name for port (e.g., "REDIS_PORT")
+#     - service_port_default: Default port if env var not set (e.g., "6380")
+#     - service_identifier: Short identifier for files (e.g., "redis", "mongo", "sqlite")
+#     - ufw_comment: Comment for UFW rules (e.g., "Auto-whitelist Redis TLS")
+# ============================================================================
+
+- hosts: "{{ target_hosts }}"
+  name: "UFW IP Allowlist Management for {{ service_name }}"
+  become: true
+  become_user: root
+  tasks:
+    # ============================================================================
+    # UFW BASIC CONFIGURATION
+    # ============================================================================
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
+    # ============================================================================
+    # UFW ALLOWLIST UPDATE SCRIPT
+    # ============================================================================
+    # Install UFW allowlist update script
+    # Note: Initial IP allowlist will be populated when the script runs for the first time
+    - name: "Create UFW allowlist update script for {{ service_name }}"
+      copy:
+        dest: "/usr/local/bin/update-{{ service_identifier }}-ufw-whitelist.sh"
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Configuration
+          SERVICE_PORT="${{ service_port_var }:-{{ service_port_default }}}"
+          IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
+          COMMENT="{{ ufw_comment }}"
+          SERVICE_NAME="{{ service_name }}"
+          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
+
+          echo "[$(date -Iseconds)] Fetching IP whitelist..."
+
+          # Fetch with retries (3 attempts, 10 second timeout each)
+          for attempt in {1..3}; do
+            NEW_IPS=$(curl -s --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+
+            if [ -n "$NEW_IPS" ]; then
+              echo "[$(date -Iseconds)] Successfully fetched $(echo "$NEW_IPS" | wc -l) IPs"
+              break
+            fi
+
+            echo "[$(date -Iseconds)] Fetch attempt $attempt failed, retrying..."
+            sleep 5
+          done
+
+          if [ -z "$NEW_IPS" ]; then
+            echo "[$(date -Iseconds)] ERROR: Failed to fetch IP list after 3 attempts"
+            echo "[$(date -Iseconds)] Keeping existing UFW rules unchanged"
+            exit 0  # Exit gracefully - don't break existing rules
+          fi
+
+          # Get current IPs from UFW for the CORRECT port
+          CURRENT_IPS=$(ufw status | grep "${SERVICE_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+
+          # Find orphaned rules with the comment but WRONG port (from old deploys)
+          ORPHANED_RULES=$(ufw status numbered | grep "$COMMENT" | grep -v "${SERVICE_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+
+          # Remove orphaned rules first (delete from highest to lowest)
+          ORPHANED_COUNT=0
+          if [ -n "$ORPHANED_RULES" ]; then
+            echo "[$(date -Iseconds)] Found orphaned rules with wrong port - cleaning up..."
+            for rule_num in $ORPHANED_RULES; do
+              echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+              ORPHANED_COUNT=$((ORPHANED_COUNT + 1))
+            done
+            echo "[$(date -Iseconds)] Removed $ORPHANED_COUNT orphaned rules"
+          fi
+
+          # Calculate diff (only for correct port)
+          TO_ADD=$(comm -13 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
+          TO_REMOVE=$(comm -23 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
+
+          # Check if changes needed
+          if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ] && [ $ORPHANED_COUNT -eq 0 ]; then
+            echo "[$(date -Iseconds)] No changes needed - sending summary email"
+            CHANGES_MADE=false
+          else
+            echo "[$(date -Iseconds)] Changes detected - updating UFW rules..."
+            CHANGES_MADE=true
+          fi
+
+          # Apply changes if needed
+          REMOVED_COUNT=0
+          ADDED_COUNT=0
+
+          if [ "$CHANGES_MADE" = true ]; then
+            # Remove old IPs (delete from highest rule number to lowest)
+            if [ -n "$TO_REMOVE" ]; then
+              for ip in $TO_REMOVE; do
+                RULE_NUMS=$(ufw status numbered | grep "${SERVICE_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+                for rule_num in $RULE_NUMS; do
+                  echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
+                  REMOVED_COUNT=$((REMOVED_COUNT + 1))
+                done
+              done
+            fi
+
+            # Add new IPs
+            if [ -n "$TO_ADD" ]; then
+              for ip in $TO_ADD; do
+                ufw allow from "$ip" to any port "$SERVICE_PORT" proto tcp comment "$COMMENT" > /dev/null 2>&1
+                ADDED_COUNT=$((ADDED_COUNT + 1))
+              done
+            fi
+
+            # Note: No UFW reload needed - rules are applied immediately
+            # Reloading would cause brief connection drops
+          fi
+
+          # Build email report
+          TOTAL_IPS=$(echo "$NEW_IPS" | wc -l)
+          ADDED_LIST=$(echo "$TO_ADD" | sed 's/^/  - /' | head -20)
+          REMOVED_LIST=$(echo "$TO_REMOVE" | sed 's/^/  - /' | head -20)
+
+          if [ $(echo "$TO_ADD" | wc -l) -gt 20 ]; then
+            ADDED_LIST="$ADDED_LIST\n  ... and $(($(echo "$TO_ADD" | wc -l) - 20)) more"
+          fi
+
+          if [ $(echo "$TO_REMOVE" | wc -l) -gt 20 ]; then
+            REMOVED_LIST="$REMOVED_LIST\n  ... and $(($(echo "$TO_REMOVE" | wc -l) - 20)) more"
+          fi
+
+          # Build status message
+          if [ "$CHANGES_MADE" = true ]; then
+            STATUS="✓ Changes Applied"
+          else
+            STATUS="✓ No Changes Needed"
+          fi
+
+          REPORT="UFW Whitelist Status for $SERVICE_NAME
+          Timestamp: $(date -Iseconds)
+          Status: $STATUS
+
+          Added IPs ($ADDED_COUNT):
+          $ADDED_LIST
+
+          Removed IPs ($REMOVED_COUNT):
+          $REMOVED_LIST
+
+          Orphaned Rules Cleaned ($ORPHANED_COUNT):
+            Rules with wrong port (from old deploys)
+
+          Summary:
+            - Total added: $ADDED_COUNT
+            - Total removed: $REMOVED_COUNT
+            - Orphaned cleaned: $ORPHANED_COUNT
+            - Current total: $TOTAL_IPS IPs whitelisted
+
+          Server: $(hostname)
+          Port: $SERVICE_PORT/tcp
+
+          View logs: sudo journalctl -u {{ service_identifier }}-ufw-whitelist-update.service -n 50"
+
+          # Send email report (always, even if no changes)
+          if [ "$CHANGES_MADE" = true ]; then
+            SUBJECT="[UFW] Whitelist Updated: $SERVICE_NAME (Port $SERVICE_PORT)"
+          else
+            SUBJECT="[UFW] Whitelist Status: $SERVICE_NAME (Port $SERVICE_PORT) - No Changes"
+          fi
+
+          /usr/local/bin/send-rate-limited-email.sh \
+            "ufw-whitelist-{{ service_identifier }}" \
+            "$SUBJECT" \
+            "$REPORT"
+
+          echo "[$(date -Iseconds)] UFW whitelist updated (added: $ADDED_COUNT, removed: $REMOVED_COUNT)"
+
+    # ============================================================================
+    # SYSTEMD SERVICE AND TIMER
+    # ============================================================================
+    # Create systemd timer for UFW allowlist updates
+    - name: "Create UFW allowlist update systemd service for {{ service_name }}"
+      copy:
+        dest: "/etc/systemd/system/{{ service_identifier }}-ufw-whitelist-update.service"
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=Update {{ service_name }} UFW IP Whitelist
+          OnFailure=failure-notification@%n.service
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=no
+          ExecStart=/usr/local/bin/update-{{ service_identifier }}-ufw-whitelist.sh
+
+    - name: "Create UFW allowlist update systemd timer for {{ service_name }}"
+      copy:
+        dest: "/etc/systemd/system/{{ service_identifier }}-ufw-whitelist-update.timer"
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=Update {{ service_name }} UFW IP Whitelist Every 10 Minutes
+
+          [Timer]
+          OnBootSec=5min
+          OnUnitActiveSec=10min
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: "Enable and start UFW allowlist update timer for {{ service_name }}"
+      systemd:
+        daemon_reload: true
+        name: "{{ service_identifier }}-ufw-whitelist-update.timer"
+        enabled: true
+        state: started

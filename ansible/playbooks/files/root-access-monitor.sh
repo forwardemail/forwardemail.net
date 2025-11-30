@@ -11,6 +11,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 AUTH_LOG="/var/log/auth.log"
 SUDO_LOG="/var/log/sudo.log"
@@ -167,7 +168,7 @@ send_sudo_alert() {
     local command="$2"
     local timestamp="$3"
 
-    local subject="[WARNING] Sudo Usage Detected: $user on $HOSTNAME"
+    local subject="[WARNING] Sudo Usage: $user - $HOSTNAME ($HOST_IP)"
 
     local authorized="No"
     if is_authorized_sudo_user "$user"; then
@@ -242,7 +243,7 @@ send_sudo_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject"
+        /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject" "$body"
         log_message "Sudo alert sent for user: $user"
     else
         echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
@@ -255,7 +256,7 @@ send_su_alert() {
     local user="$1"
     local details="$2"
 
-    local subject="[WARNING] Su to Root Detected: $user on $HOSTNAME"
+    local subject="[WARNING] Su to Root: $user - $HOSTNAME ($HOST_IP)"
 
     local authorized="No"
     if is_authorized_root_user "$user"; then
@@ -333,7 +334,7 @@ send_su_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject"
+        /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject" "$body"
         log_message "Su to root alert sent for user: $user"
     else
         echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"

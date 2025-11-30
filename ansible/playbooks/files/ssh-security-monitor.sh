@@ -12,6 +12,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 LOG_FILE="/var/log/auth.log"
 MONITOR_LOG="/var/log/ssh-security-monitor.log"
@@ -299,7 +300,7 @@ send_root_access_alert() {
     local method="$3"
     local timestamp="$4"
 
-    local subject="🚨 CRITICAL: Root SSH Access Detected on $HOSTNAME"
+    local subject="[CRITICAL] Root SSH Access: user $user from $ip - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: #d9534f;'>🚨 Root SSH Access Alert</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>
@@ -333,7 +334,7 @@ send_failed_login_alert() {
     local count="$2"
     local failed_logs="$3"
 
-    local subject="⚠️ WARNING: Multiple Failed SSH Login Attempts on $HOSTNAME"
+    local subject="[WARNING] Failed SSH Logins: $count attempts from $ip - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: #f0ad4e;'>⚠️ Failed SSH Login Alert</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>
@@ -377,7 +378,7 @@ send_activity_summary() {
         return
     fi
 
-    local subject="📊 SSH Activity Summary for $HOSTNAME"
+    local subject="[INFO] SSH Activity Summary - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2>📊 SSH Activity Report</h2>
 <p><strong>Server:</strong> $HOSTNAME</p>

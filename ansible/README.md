@@ -14,6 +14,7 @@ ansible/
 │   ├── MONITORING_TESTING.md   # Comprehensive monitoring testing guide
 │   ├── README_MONGO_REDIS.md   # MongoDB & Redis/Valkey deployment
 │   ├── MAIL_DEPLOYMENT.md      # Mail server deployment guide
+│   ├── UFW_ALLOWLIST.md        # UFW IP allowlist management guide
 │   ├── MONGODB_OPERATIONS_GUIDE.md
 │   ├── MONGODB_PERFORMANCE_TUNING.md
 │   ├── REDIS_PERFORMANCE_TUNING.md
@@ -22,6 +23,7 @@ ansible/
 ├── playbooks/                   # Ansible playbooks
 │   ├── security.yml            # Security baseline & monitoring
 │   ├── node.yml                # Node.js & PM2 deployment
+│   ├── ufw-allowlist.yml       # Reusable UFW IP allowlist management
 │   ├── mongo.yml               # MongoDB deployment
 │   ├── redis.yml               # Redis/Valkey deployment
 │   ├── bree.yml                # Bree job scheduler
@@ -54,6 +56,7 @@ ansible/
 
 * [Getting Started](#getting-started)
 * [Deployment Guides](#deployment-guides)
+* [UFW IP Allowlist Management](#ufw-ip-allowlist-management)
 * [Monitoring & Alerting](#monitoring--alerting)
 * [Operations & Maintenance](#operations--maintenance)
 * [Performance Tuning](#performance-tuning)
@@ -161,6 +164,56 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 
 > \[!WARNING]
 > Mail servers require proper DNS configuration (MX, SPF, DKIM, DMARC) before deployment.
+
+---
+
+
+## 🔥 UFW IP Allowlist Management
+
+**[UFW IP Allowlist Management Guide](docs/UFW_ALLOWLIST.md)**
+
+Reusable [UFW](https://github.com/ufw/ufw) (Uncomplicated Firewall) IP allowlist management system for database and service security:
+
+* 🔒 **Automated IP allowlist updates** - Fetches approved IPs from central source
+* 🧹 **Orphaned rule cleanup** - Removes outdated rules from previous deployments
+* 📧 **Email notifications** - Alerts for all changes with detailed reports
+* 🔄 **Retry logic** - Network failure resilience (3 attempts, 10s timeout)
+* ⏱️ **Systemd timer automation** - Updates every 10 minutes
+* 🛡️ **Safety features** - Graceful failure handling, no connection drops
+
+**Integrated Services**:
+
+* 🔴 **Redis/Valkey** - Port 6380 (TLS)
+* 🍃 **MongoDB** - Port 27017
+* 🗄️ **SQLite** - Port 3456
+
+**Architecture**:
+
+```yaml
+# Reusable playbook with service-specific variables
+- name: Import UFW allowlist playbook for Redis
+  import_playbook: ufw-allowlist.yml
+  vars:
+    target_hosts: redis
+    service_name: Redis
+    service_port_var: REDIS_PORT
+    service_port_default: "6380"
+    service_identifier: redis
+    ufw_comment: "Auto-whitelist Redis TLS"
+```
+
+**Benefits**:
+
+* ✅ **Single source of truth** - One playbook for all services
+* ✅ **Easy maintenance** - Update once, applies everywhere
+* ✅ **Consistency guaranteed** - Same logic across all services
+* ✅ **Extensible** - Easy to add new services
+
+> \[!TIP]
+> The UFW allowlist system is automatically integrated into `mongo.yml`, `redis.yml`, and `sqlite.yml` playbooks.
+
+> \[!NOTE]
+> IP allowlists are fetched from `https://forwardemail.net/ips/v4.txt` and validated before application.
 
 ---
 

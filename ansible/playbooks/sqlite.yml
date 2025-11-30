@@ -8,6 +8,15 @@
   import_playbook: node.yml
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
+- name: Import UFW allowlist playbook for SQLite
+  import_playbook: ufw-allowlist.yml
+  vars:
+    target_hosts: sqlite
+    service_name: SQLite
+    service_port_var: SQLITE_PORT
+    service_port_default: "3456"
+    service_identifier: sqlite
+    ufw_comment: "Auto-whitelist SQLite"
 
 - hosts: sqlite
   name: Hostname
@@ -29,27 +38,8 @@
       ufw:
         state: reloaded
   tasks:
-    # ufw
-    - name: Enable ufw
-      ufw:
-        state: enabled
-        policy: deny
-        direction: incoming
-    - name: Limit ufw ssh
-      ufw:
-        rule: limit
-        port: 22
-        proto: tcp
-    - name: Allow ssh
-      ufw:
-        rule: allow
-        port: 22
-        proto: tcp
-    #- name: Allow websocket port
-    #  ufw:
-    #    rule: allow
-    #    port: "{{ lookup('env', 'SQLITE_PORT') }}"
-    #    proto: tcp
+    # UFW Configuration - Using reusable playbook
+    # See ufw-allowlist.yml for implementation details
     #
     # modify ufw setup
     # https://github.com/Oefenweb/ansible-ufw/issues/21

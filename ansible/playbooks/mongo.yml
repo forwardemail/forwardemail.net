@@ -6,6 +6,15 @@
   import_playbook: security.yml
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
+- name: Import UFW allowlist playbook for MongoDB
+  import_playbook: ufw-allowlist.yml
+  vars:
+    target_hosts: mongo
+    service_name: MongoDB
+    service_port_var: MONGO_PORT
+    service_port_default: "27017"
+    service_identifier: mongo
+    ufw_comment: "Auto-whitelist MongoDB"
 
 - hosts: mongo
   name: Certificate Paths
@@ -355,219 +364,10 @@
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
               CAFile: /etc/mongodb/ssl/ca.pem
 
-    # UFW Configuration
-    - name: Enable ufw
-      ufw:
-        state: enabled
-        policy: deny
-        direction: incoming
+    # UFW Configuration - Using reusable playbook
+    # See ufw-allowlist.yml for implementation details
 
-    - name: Limit ufw ssh
-      ufw:
-        rule: limit
-        port: 22
-        proto: tcp
-
-    - name: Allow ssh
-      ufw:
-        rule: allow
-        port: 22
-        proto: tcp
-
-    # Install UFW whitelist update script
-    # Note: Initial IP whitelist will be populated when the script runs for the first time
-    - name: Create UFW whitelist update script
-      copy:
-        dest: /usr/local/bin/update-mongo-ufw-whitelist.sh
-        mode: "0755"
-        content: |
-          #!/bin/bash
-          set -e
-
-          # Configuration
-          MONGO_PORT="${MONGO_PORT:-27017}"
-          IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
-          COMMENT="Auto-whitelist MongoDB"
-          SERVICE_NAME="MongoDB"
-          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
-
-          echo "[$(date -Iseconds)] Fetching IP whitelist..."
-          
-          # Fetch with retries (3 attempts, 10 second timeout each)
-          for attempt in {1..3}; do
-            NEW_IPS=$(curl -s --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
-            
-            if [ -n "$NEW_IPS" ]; then
-              echo "[$(date -Iseconds)] Successfully fetched $(echo "$NEW_IPS" | wc -l) IPs"
-              break
-            fi
-            
-            echo "[$(date -Iseconds)] Fetch attempt $attempt failed, retrying..."
-            sleep 5
-          done
-
-          if [ -z "$NEW_IPS" ]; then
-            echo "[$(date -Iseconds)] ERROR: Failed to fetch IP list after 3 attempts"
-            echo "[$(date -Iseconds)] Keeping existing UFW rules unchanged"
-            exit 0  # Exit gracefully - don't break existing rules
-          fi
-
-          # Get current IPs from UFW for the CORRECT port
-          CURRENT_IPS=$(ufw status | grep "${MONGO_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
-
-          # Find orphaned rules with the comment but WRONG port (from old deploys)
-          ORPHANED_RULES=$(ufw status numbered | grep "$COMMENT" | grep -v "${MONGO_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
-
-          # Remove orphaned rules first (delete from highest to lowest)
-          ORPHANED_COUNT=0
-          if [ -n "$ORPHANED_RULES" ]; then
-            echo "[$(date -Iseconds)] Found orphaned rules with wrong port - cleaning up..."
-            for rule_num in $ORPHANED_RULES; do
-              echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
-              ORPHANED_COUNT=$((ORPHANED_COUNT + 1))
-            done
-            echo "[$(date -Iseconds)] Removed $ORPHANED_COUNT orphaned rules"
-          fi
-
-          # Calculate diff (only for correct port)
-          TO_ADD=$(comm -13 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
-          TO_REMOVE=$(comm -23 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
-
-          # Check if changes needed
-          if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ] && [ $ORPHANED_COUNT -eq 0 ]; then
-            echo "[$(date -Iseconds)] No changes needed - sending summary email"
-            CHANGES_MADE=false
-          else
-            echo "[$(date -Iseconds)] Changes detected - updating UFW rules..."
-            CHANGES_MADE=true
-          fi
-
-          # Apply changes if needed
-          REMOVED_COUNT=0
-          ADDED_COUNT=0
-          
-          if [ "$CHANGES_MADE" = true ]; then
-            # Remove old IPs (delete from highest rule number to lowest)
-            if [ -n "$TO_REMOVE" ]; then
-              for ip in $TO_REMOVE; do
-                RULE_NUMS=$(ufw status numbered | grep "${MONGO_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
-                for rule_num in $RULE_NUMS; do
-                  echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
-                  REMOVED_COUNT=$((REMOVED_COUNT + 1))
-                done
-              done
-            fi
-
-            # Add new IPs
-            if [ -n "$TO_ADD" ]; then
-              for ip in $TO_ADD; do
-                ufw allow from "$ip" to any port "$MONGO_PORT" proto tcp comment "$COMMENT" > /dev/null 2>&1
-                ADDED_COUNT=$((ADDED_COUNT + 1))
-              done
-            fi
-
-            # Note: No UFW reload needed - rules are applied immediately
-            # Reloading would cause brief connection drops
-          fi
-
-          # Build email report
-          TOTAL_IPS=$(echo "$NEW_IPS" | wc -l)
-          ADDED_LIST=$(echo "$TO_ADD" | sed 's/^/  - /' | head -20)
-          REMOVED_LIST=$(echo "$TO_REMOVE" | sed 's/^/  - /' | head -20)
-          
-          if [ $(echo "$TO_ADD" | wc -l) -gt 20 ]; then
-            ADDED_LIST="$ADDED_LIST\n  ... and $(($(echo "$TO_ADD" | wc -l) - 20)) more"
-          fi
-          
-          if [ $(echo "$TO_REMOVE" | wc -l) -gt 20 ]; then
-            REMOVED_LIST="$REMOVED_LIST\n  ... and $(($(echo "$TO_REMOVE" | wc -l) - 20)) more"
-          fi
-
-          # Build status message
-          if [ "$CHANGES_MADE" = true ]; then
-            STATUS="✓ Changes Applied"
-          else
-            STATUS="✓ No Changes Needed"
-          fi
-
-          REPORT="UFW Whitelist Status for $SERVICE_NAME
-          Timestamp: $(date -Iseconds)
-          Status: $STATUS
-          
-          Added IPs ($ADDED_COUNT):
-          $ADDED_LIST
-          
-          Removed IPs ($REMOVED_COUNT):
-          $REMOVED_LIST
-          
-          Orphaned Rules Cleaned ($ORPHANED_COUNT):
-            Rules with wrong port (from old deploys)
-          
-          Summary:
-            - Total added: $ADDED_COUNT
-            - Total removed: $REMOVED_COUNT
-            - Orphaned cleaned: $ORPHANED_COUNT
-            - Current total: $TOTAL_IPS IPs whitelisted
-          
-          Server: $(hostname)
-          Port: $MONGO_PORT/tcp
-          
-          View logs: sudo journalctl -u mongo-ufw-whitelist-update.service -n 50"
-
-          # Send email report (always, even if no changes)
-          if [ "$CHANGES_MADE" = true ]; then
-            SUBJECT="[UFW] Whitelist Updated: $SERVICE_NAME (Port $MONGO_PORT)"
-          else
-            SUBJECT="[UFW] Whitelist Status: $SERVICE_NAME (Port $MONGO_PORT) - No Changes"
-          fi
-          
-          /usr/local/bin/send-rate-limited-email.sh \
-            "ufw-whitelist-mongo" \
-            "$SUBJECT" \
-            "$REPORT"
-
-          echo "[$(date -Iseconds)] UFW whitelist updated (added: $ADDED_COUNT, removed: $REMOVED_COUNT)"
-
-    # Create systemd timer for UFW whitelist updates
-    - name: Create UFW whitelist update systemd service
-      copy:
-        dest: /etc/systemd/system/mongo-ufw-whitelist-update.service
-        content: |
-          # WARNING: This file is managed by Ansible
-          # Manual changes will be overwritten on next deployment
-          [Unit]
-          Description=Update MongoDB UFW IP Whitelist
-          OnFailure=failure-notification@%n.service
-
-          [Service]
-          Type=oneshot
-          RemainAfterExit=no
-          ExecStart=/usr/local/bin/update-mongo-ufw-whitelist.sh
-
-    - name: Create UFW whitelist update systemd timer
-      copy:
-        dest: /etc/systemd/system/mongo-ufw-whitelist-update.timer
-        content: |
-          # WARNING: This file is managed by Ansible
-          # Manual changes will be overwritten on next deployment
-          [Unit]
-          Description=Update MongoDB UFW IP Whitelist Every 10 Minutes
-
-          [Timer]
-          OnBootSec=5min
-          OnUnitActiveSec=10min
-
-          [Install]
-          WantedBy=timers.target
-
-    - name: Enable and start UFW whitelist update timer
-      systemd:
-        daemon_reload: true
-        name: mongo-ufw-whitelist-update.timer
-        enabled: true
-        state: started
-
-       # Install AWS CLI and GPG dependencies
+    # Install AWS CLI and GPG dependencies
     - name: Install AWS CLI and GPG dependencies
       apt:
         name:
@@ -870,35 +670,32 @@
     # POST-DEPLOYMENT INSTRUCTIONS
     # ============================================================================
     - name: Display manual restart instructions
-      shell: |
-        cat << 'EOF'
-        
-        ╔════════════════════════════════════════════════════════════════════════╗
-        ║                                                                        ║
-        ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
-        ║                                                                        ║
-        ║  MongoDB configuration has been updated but the service was NOT       ║
-        ║  automatically restarted to prevent disruption.                       ║
-        ║                                                                        ║
-        ║  To apply the new configuration, you must MANUALLY restart MongoDB:   ║
-        ║                                                                        ║
-        ║    sudo systemctl restart mongod                                      ║
-        ║                                                                        ║
-        ║  ⚠️  WARNING: This will:                                              ║
-        ║    • Disconnect all active MongoDB connections                        ║
-        ║    • Cause brief service interruption                                 ║
-        ║    • May take time if large datasets need to be flushed               ║
-        ║                                                                        ║
-        ║  💡 RECOMMENDATION:                                                   ║
-        ║    • Schedule restart during low-traffic period                       ║
-        ║    • Notify team before restarting                                    ║
-        ║    • Monitor logs: sudo journalctl -u mongod -f                       ║
-        ║                                                                        ║
-        ║  To verify MongoDB is running after restart:                          ║
-        ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
-        ║            --host localhost:27017 --eval "db.adminCommand('ping')"   ║
-        ║                                                                        ║
-        ╚════════════════════════════════════════════════════════════════════════╝
-        
-EOF
-          
+      debug:
+        msg: |
+
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+          ║                                                                        ║
+          ║  MongoDB configuration has been updated but the service was NOT       ║
+          ║  automatically restarted to prevent disruption.                       ║
+          ║                                                                        ║
+          ║  To apply the new configuration, you must MANUALLY restart MongoDB:   ║
+          ║                                                                        ║
+          ║    sudo systemctl restart mongod                                      ║
+          ║                                                                        ║
+          ║  ⚠️  WARNING: This will:                                              ║
+          ║    • Disconnect all active MongoDB connections                        ║
+          ║    • Cause brief service interruption                                 ║
+          ║    • May take time if large datasets need to be flushed               ║
+          ║                                                                        ║
+          ║  💡 RECOMMENDATION:                                                   ║
+          ║    • Schedule restart during low-traffic period                       ║
+          ║    • Notify team before restarting                                    ║
+          ║    • Monitor logs: sudo journalctl -u mongod -f                       ║
+          ║                                                                        ║
+          ║  To verify MongoDB is running after restart:                          ║
+          ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
+          ║            --host localhost:27017 --eval "db.adminCommand('ping')"   ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝

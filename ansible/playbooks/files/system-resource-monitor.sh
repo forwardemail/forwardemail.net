@@ -11,6 +11,7 @@ set -euo pipefail
 
 # Configuration
 HOSTNAME="$(hostname)"
+HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 LOCK_DIR="/var/lock"
 LOCK_DURATION=3600  # 1 hour between alerts for same threshold
@@ -164,7 +165,7 @@ send_alert() {
     fi
 
     # Build subject
-    local subject="[${alert_level}] ${resource^^} Usage ${current_value}% (Threshold: ${threshold}%): $HOSTNAME"
+    local subject="[${alert_level}] ${resource^^} Usage: ${current_value}% (threshold ${threshold}%) - $HOSTNAME ($HOST_IP)"
 
     # Get system information
     local top_cpu_processes=$(get_top_cpu_processes)
@@ -274,7 +275,7 @@ send_alert() {
 
     # Send email using rate-limited email script
     if [ -x /usr/local/bin/send-rate-limited-email.sh ]; then
-        echo "$body" | /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject"
+        /usr/local/bin/send-rate-limited-email.sh "resource-monitor-${resource}-${threshold}" "$subject" "$body"
         log_message "Alert sent: ${resource} ${current_value}% (threshold: ${threshold}%)"
     else
         # Fallback to sendmail
