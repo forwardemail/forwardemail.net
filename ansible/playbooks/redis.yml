@@ -346,12 +346,6 @@
         group: valkey
         mode: "0400"
 
-    - name: Ensure Valkey is stopped before configuration
-      service:
-        name: valkey-server
-        state: stopped
-      ignore_errors: yes
-
     # Calculate dynamic resource limits
     - name: Get total system memory in MB
       shell: free -m | awk '/^Mem:/{print $2}'
@@ -1095,31 +1089,34 @@
     # POST-DEPLOYMENT INSTRUCTIONS
     # ============================================================================
     - name: Display manual restart instructions
-      debug:
-        msg: |
+      shell: |
+        cat << 'EOF'
 
-          ╔════════════════════════════════════════════════════════════════════════╗
-          ║                                                                        ║
-          ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
-          ║                                                                        ║
-          ║  Valkey configuration has been updated but the service was NOT        ║
-          ║  automatically restarted to prevent disruption.                       ║
-          ║                                                                        ║
-          ║  To apply the new configuration, you must MANUALLY restart Valkey:    ║
-          ║                                                                        ║
-          ║    sudo systemctl restart valkey-server                               ║
-          ║                                                                        ║
-          ║  ⚠️  WARNING: This will:                                              ║
-          ║    • Disconnect all active Redis connections                          ║
-          ║    • Trigger BGSAVE if data has changed (may take 2-3 minutes)        ║
-          ║    • Cause brief service interruption                                 ║
-          ║                                                                        ║
-          ║  💡 RECOMMENDATION:                                                   ║
-          ║    • Schedule restart during low-traffic period                       ║
-          ║    • Notify team before restarting                                    ║
-          ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
-          ║                                                                        ║
-          ║  To verify Valkey is running after restart:                           ║
-          ║    redis-cli -p 6380 --tls -a "$REDIS_PASSWORD" PING                 ║
-          ║                                                                        ║
-          ╚════════════════════════════════════════════════════════════════════════╝
+        ╔════════════════════════════════════════════════════════════════════════╗
+        ║                                                                        ║
+        ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+        ║                                                                        ║
+        ║  Valkey configuration has been updated but the service was NOT        ║
+        ║  automatically restarted to prevent disruption.                       ║
+        ║                                                                        ║
+        ║  To apply the new configuration, you must MANUALLY restart Valkey:    ║
+        ║                                                                        ║
+        ║    sudo systemctl restart valkey-server                               ║
+        ║                                                                        ║
+        ║  ⚠️  WARNING: This will:                                              ║
+        ║    • Disconnect all active Redis connections                          ║
+        ║    • Trigger BGSAVE if data has changed (may take 2-3 minutes)        ║
+        ║    • Cause brief service interruption                                 ║
+        ║                                                                        ║
+        ║  💡 RECOMMENDATION:                                                   ║
+        ║    • Schedule restart during low-traffic period                       ║
+        ║    • Notify team before restarting                                    ║
+        ║    • Monitor logs: sudo journalctl -u valkey-server -f               ║
+        ║                                                                        ║
+        ║  To verify Valkey is running after restart:                           ║
+        ║    redis-cli -p 6380 --tls -a "$REDIS_PASSWORD" PING                 ║
+        ║                                                                        ║
+        ╚════════════════════════════════════════════════════════════════════════╝
+
+        EOF
+      changed_when: false

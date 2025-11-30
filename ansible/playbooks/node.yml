@@ -302,3 +302,162 @@
     - name: Reload systemd daemon for pm2-deploy override
       systemd:
         daemon_reload: yes
+
+
+    # ============================================================================
+    # PM2 HEALTH MONITORING
+    # ============================================================================
+    - name: Install jq for PM2 health monitoring
+      apt:
+        name: jq
+        state: present
+        update_cache: no
+
+    - name: Create PM2 health check script
+      copy:
+        dest: /usr/local/bin/pm2-health-check.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          set -e
+
+          # PM2 Health Check Script
+          # Checks: uptime, errors, stopped processes, and drift from saved state
+
+          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
+          ALERT_NEEDED=0
+          ALERT_MESSAGE=""
+
+          echo "[$(date -Iseconds)] Starting PM2 health check..."
+
+          # Check if PM2 is installed
+          if ! command -v pm2 &> /dev/null; then
+            echo "[$(date -Iseconds)] ERROR: PM2 is not installed"
+            exit 1
+          fi
+
+          # Get PM2 process list in JSON format
+          PM2_JSON=$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 jlist' 2>/dev/null || echo "[]")
+
+          # Check if any processes exist
+          PROCESS_COUNT=$(echo "$PM2_JSON" | jq '. | length')
+
+          if [ "$PROCESS_COUNT" -eq 0 ]; then
+            ALERT_NEEDED=1
+            ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  NO PM2 PROCESSES DETECTED\n"
+            echo "[$(date -Iseconds)] ERROR: No PM2 processes detected"
+          fi
+
+          # Check each process for errors, stopped status, and uptime
+          if [ "$PROCESS_COUNT" -gt 0 ]; then
+            echo "[$(date -Iseconds)] Found $PROCESS_COUNT PM2 process(es)"
+            
+            ERRORED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "errored") | .name' | tr '\n' ', ' | sed 's/,$//')
+            STOPPED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "stopped") | .name' | tr '\n' ', ' | sed 's/,$//')
+            
+            if [ -n "$ERRORED_PROCESSES" ]; then
+              ALERT_NEEDED=1
+              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  ERRORED PROCESSES: $ERRORED_PROCESSES\n"
+              echo "[$(date -Iseconds)] ERROR: Processes in errored state: $ERRORED_PROCESSES"
+            fi
+            
+            if [ -n "$STOPPED_PROCESSES" ]; then
+              ALERT_NEEDED=1
+              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  STOPPED PROCESSES: $STOPPED_PROCESSES\n"
+              echo "[$(date -Iseconds)] ERROR: Processes in stopped state: $STOPPED_PROCESSES"
+            fi
+            
+            # Display uptime for all processes
+            echo "$PM2_JSON" | jq -r '.[] | "\(.name): \(.pm2_env.status) (uptime: \(.pm2_env.pm_uptime | tonumber / 1000 | floor) seconds)"'
+          fi
+
+          # Check if saved process list differs from current
+          if [ -f /home/deploy/.pm2/dump.pm2 ]; then
+            SAVED_PROCESSES=$(cat /home/deploy/.pm2/dump.pm2 | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
+            CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
+            
+            if [ "$SAVED_PROCESSES" != "$CURRENT_PROCESSES" ]; then
+              ALERT_NEEDED=1
+              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  PROCESS LIST DRIFT DETECTED\n"
+              ALERT_MESSAGE="${ALERT_MESSAGE}Saved:   $SAVED_PROCESSES\n"
+              ALERT_MESSAGE="${ALERT_MESSAGE}Current: $CURRENT_PROCESSES\n"
+              echo "[$(date -Iseconds)] WARNING: Process list differs from saved state"
+              echo "  Saved:   $SAVED_PROCESSES"
+              echo "  Current: $CURRENT_PROCESSES"
+            fi
+          else
+            echo "[$(date -Iseconds)] WARNING: No saved PM2 state found (/home/deploy/.pm2/dump.pm2)"
+            echo "  Run 'pm2 save' to create baseline"
+          fi
+
+          # Send alert email if needed
+          if [ "$ALERT_NEEDED" -eq 1 ]; then
+            echo "[$(date -Iseconds)] Sending alert email to $POSTFIX_RCPTS"
+            
+            EMAIL_BODY="PM2 Health Check Alert - $(hostname)\n"
+            EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
+            EMAIL_BODY="${EMAIL_BODY}\n${ALERT_MESSAGE}\n"
+            EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
+            EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list')\n"
+            
+            echo -e "$EMAIL_BODY" | mail -s "[ALERT] PM2 Health Check Failed on $(hostname)" "$POSTFIX_RCPTS" || \
+              echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            
+            exit 1
+          else
+            echo "[$(date -Iseconds)] ✓ All PM2 processes healthy"
+            exit 0
+          fi
+
+    - name: Create PM2 health check systemd service
+      copy:
+        dest: /etc/systemd/system/pm2-health-check.service
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=PM2 Health Check
+          After=pm2-deploy.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/bin/pm2-health-check.sh
+          StandardOutput=journal
+          StandardError=journal
+          SyslogIdentifier=pm2-health-check
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create PM2 health check systemd timer
+      copy:
+        dest: /etc/systemd/system/pm2-health-check.timer
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          [Unit]
+          Description=PM2 Health Check Timer (every 10 minutes)
+
+          [Timer]
+          OnBootSec=5min
+          OnUnitActiveSec=10min
+          AccuracySec=1min
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon for PM2 health check
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start PM2 health check timer
+      systemd:
+        name: pm2-health-check.timer
+        enabled: yes
+        state: started

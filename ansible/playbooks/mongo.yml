@@ -670,32 +670,35 @@
     # POST-DEPLOYMENT INSTRUCTIONS
     # ============================================================================
     - name: Display manual restart instructions
-      debug:
-        msg: |
+      shell: |
+        cat << 'EOF'
 
-          ╔════════════════════════════════════════════════════════════════════════╗
-          ║                                                                        ║
-          ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
-          ║                                                                        ║
-          ║  MongoDB configuration has been updated but the service was NOT       ║
-          ║  automatically restarted to prevent disruption.                       ║
-          ║                                                                        ║
-          ║  To apply the new configuration, you must MANUALLY restart MongoDB:   ║
-          ║                                                                        ║
-          ║    sudo systemctl restart mongod                                      ║
-          ║                                                                        ║
-          ║  ⚠️  WARNING: This will:                                              ║
-          ║    • Disconnect all active MongoDB connections                        ║
-          ║    • Cause brief service interruption                                 ║
-          ║    • May take time if large datasets need to be flushed               ║
-          ║                                                                        ║
-          ║  💡 RECOMMENDATION:                                                   ║
-          ║    • Schedule restart during low-traffic period                       ║
-          ║    • Notify team before restarting                                    ║
-          ║    • Monitor logs: sudo journalctl -u mongod -f                       ║
-          ║                                                                        ║
-          ║  To verify MongoDB is running after restart:                          ║
-          ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
-          ║            --host localhost:27017 --eval "db.adminCommand('ping')"   ║
-          ║                                                                        ║
-          ╚════════════════════════════════════════════════════════════════════════╝
+        ╔════════════════════════════════════════════════════════════════════════╗
+        ║                                                                        ║
+        ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+        ║                                                                        ║
+        ║  MongoDB configuration has been updated but the service was NOT       ║
+        ║  automatically restarted to prevent disruption.                       ║
+        ║                                                                        ║
+        ║  To apply the new configuration, you must MANUALLY restart MongoDB:   ║
+        ║                                                                        ║
+        ║    sudo systemctl restart mongod                                      ║
+        ║                                                                        ║
+        ║  ⚠️  WARNING: This will:                                              ║
+        ║    • Disconnect all active MongoDB connections                        ║
+        ║    • Cause brief service interruption                                 ║
+        ║    • May take time if large datasets need to be flushed               ║
+        ║                                                                        ║
+        ║  💡 RECOMMENDATION:                                                   ║
+        ║    • Schedule restart during low-traffic period                       ║
+        ║    • Notify team before restarting                                    ║
+        ║    • Monitor logs: sudo journalctl -u mongod -f                       ║
+        ║                                                                        ║
+        ║  To verify MongoDB is running after restart:                          ║
+        ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
+        ║            --host localhost:27017 --eval "db.adminCommand('ping')"   ║
+        ║                                                                        ║
+        ╚════════════════════════════════════════════════════════════════════════╝
+
+        EOF
+      changed_when: false

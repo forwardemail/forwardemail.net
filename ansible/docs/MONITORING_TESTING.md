@@ -1386,7 +1386,7 @@ sudo journalctl -u failure-notification@test.service -n 20
 * [ ] Test emails are delivered
 * [ ] Mail logs show successful delivery
 * [ ] Rate limiting works (prevents spam)
-* [ ] <<<<failure-notification@.service>>>> template works
+* [ ] `failure-notification@.service` template works
 * [ ] All monitoring services can send emails
 
 ---

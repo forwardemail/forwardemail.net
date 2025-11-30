@@ -66,23 +66,23 @@
           set -e
 
           # Configuration
-          SERVICE_PORT="${{ service_port_var }:-{{ service_port_default }}}"
+          SERVICE_PORT="${{ '{' }}{{ service_port_var }}:-{{ service_port_default }}{{ '}' }}"
           IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
           COMMENT="{{ ufw_comment }}"
           SERVICE_NAME="{{ service_name }}"
-          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
+          POSTFIX_RCPTS="${{ '{' }}POSTFIX_RCPTS:-security@forwardemail.net{{ '}' }}"
 
           echo "[$(date -Iseconds)] Fetching IP whitelist..."
-
+          
           # Fetch with retries (3 attempts, 10 second timeout each)
           for attempt in {1..3}; do
             NEW_IPS=$(curl -s --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
-
+            
             if [ -n "$NEW_IPS" ]; then
               echo "[$(date -Iseconds)] Successfully fetched $(echo "$NEW_IPS" | wc -l) IPs"
               break
             fi
-
+            
             echo "[$(date -Iseconds)] Fetch attempt $attempt failed, retrying..."
             sleep 5
           done
@@ -126,7 +126,7 @@
           # Apply changes if needed
           REMOVED_COUNT=0
           ADDED_COUNT=0
-
+          
           if [ "$CHANGES_MADE" = true ]; then
             # Remove old IPs (delete from highest rule number to lowest)
             if [ -n "$TO_REMOVE" ]; then
@@ -155,11 +155,11 @@
           TOTAL_IPS=$(echo "$NEW_IPS" | wc -l)
           ADDED_LIST=$(echo "$TO_ADD" | sed 's/^/  - /' | head -20)
           REMOVED_LIST=$(echo "$TO_REMOVE" | sed 's/^/  - /' | head -20)
-
+          
           if [ $(echo "$TO_ADD" | wc -l) -gt 20 ]; then
             ADDED_LIST="$ADDED_LIST\n  ... and $(($(echo "$TO_ADD" | wc -l) - 20)) more"
           fi
-
+          
           if [ $(echo "$TO_REMOVE" | wc -l) -gt 20 ]; then
             REMOVED_LIST="$REMOVED_LIST\n  ... and $(($(echo "$TO_REMOVE" | wc -l) - 20)) more"
           fi
@@ -174,25 +174,25 @@
           REPORT="UFW Whitelist Status for $SERVICE_NAME
           Timestamp: $(date -Iseconds)
           Status: $STATUS
-
+          
           Added IPs ($ADDED_COUNT):
           $ADDED_LIST
-
+          
           Removed IPs ($REMOVED_COUNT):
           $REMOVED_LIST
-
+          
           Orphaned Rules Cleaned ($ORPHANED_COUNT):
             Rules with wrong port (from old deploys)
-
+          
           Summary:
             - Total added: $ADDED_COUNT
             - Total removed: $REMOVED_COUNT
             - Orphaned cleaned: $ORPHANED_COUNT
             - Current total: $TOTAL_IPS IPs whitelisted
-
+          
           Server: $(hostname)
           Port: $SERVICE_PORT/tcp
-
+          
           View logs: sudo journalctl -u {{ service_identifier }}-ufw-whitelist-update.service -n 50"
 
           # Send email report (always, even if no changes)
@@ -201,7 +201,7 @@
           else
             SUBJECT="[UFW] Whitelist Status: $SERVICE_NAME (Port $SERVICE_PORT) - No Changes"
           fi
-
+          
           /usr/local/bin/send-rate-limited-email.sh \
             "ufw-whitelist-{{ service_identifier }}" \
             "$SUBJECT" \

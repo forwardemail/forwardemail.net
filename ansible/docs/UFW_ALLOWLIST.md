@@ -1,24 +1,29 @@
 # UFW IP Allowlist Management - Reusable Playbook
 
+
 ## Overview
 
 The **`ufw-allowlist.yml`** playbook provides a reusable, centralized solution for managing UFW IP allowlists across multiple services (Redis, MongoDB, SQLite). It automates the process of fetching approved IPs from a central source and maintaining UFW firewall rules.
 
+
 ## Features
 
 ### Core Functionality
-- **Automatic IP allowlist updates** from `https://forwardemail.net/ips/v4.txt`
-- **Orphaned rule cleanup** - Removes rules with outdated ports from previous deployments
-- **Email notifications** for all changes (or status reports when no changes occur)
-- **Retry logic** for network failures (3 attempts with 10-second timeout)
-- **Rate-limited email reporting** to prevent notification spam
-- **Systemd timer-based automation** - Updates every 10 minutes
+
+* **Automatic IP allowlist updates** from `https://forwardemail.net/ips/v4.txt`
+* **Orphaned rule cleanup** - Removes rules with outdated ports from previous deployments
+* **Email notifications** for all changes (or status reports when no changes occur)
+* **Retry logic** for network failures (3 attempts with 10-second timeout)
+* **Rate-limited email reporting** to prevent notification spam
+* **Systemd timer-based automation** - Updates every 10 minutes
 
 ### Safety Features
-- **Graceful failure handling** - Preserves existing rules if IP fetch fails
-- **No UFW reload** - Rules applied immediately without connection drops
-- **Diff-based updates** - Only adds/removes IPs that have changed
-- **Detailed logging** - All operations logged with timestamps
+
+* **Graceful failure handling** - Preserves existing rules if IP fetch fails
+* **No UFW reload** - Rules applied immediately without connection drops
+* **Diff-based updates** - Only adds/removes IPs that have changed
+* **Detailed logging** - All operations logged with timestamps
+
 
 ## Architecture
 
@@ -48,61 +53,71 @@ Each service-specific playbook imports `ufw-allowlist.yml` with custom variables
     ufw_comment: "Auto-whitelist Redis TLS"
 ```
 
+
 ## Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `target_hosts` | Ansible host group to target | `redis`, `mongo`, `sqlite` |
-| `service_name` | Display name for the service | `Redis`, `MongoDB`, `SQLite` |
-| `service_port_var` | Environment variable name for port | `REDIS_PORT`, `MONGO_PORT`, `SQLITE_PORT` |
-| `service_port_default` | Default port if env var not set | `6380`, `27017`, `3456` |
-| `service_identifier` | Short identifier for files/scripts | `redis`, `mongo`, `sqlite` |
-| `ufw_comment` | Comment for UFW rules | `Auto-whitelist Redis TLS` |
+| Variable               | Description                        | Example                                   |
+| ---------------------- | ---------------------------------- | ----------------------------------------- |
+| `target_hosts`         | Ansible host group to target       | `redis`, `mongo`, `sqlite`                |
+| `service_name`         | Display name for the service       | `Redis`, `MongoDB`, `SQLite`              |
+| `service_port_var`     | Environment variable name for port | `REDIS_PORT`, `MONGO_PORT`, `SQLITE_PORT` |
+| `service_port_default` | Default port if env var not set    | `6380`, `27017`, `3456`                   |
+| `service_identifier`   | Short identifier for files/scripts | `redis`, `mongo`, `sqlite`                |
+| `ufw_comment`          | Comment for UFW rules              | `Auto-whitelist Redis TLS`                |
+
 
 ## Generated Components
 
 For each service, the playbook creates:
 
 ### 1. Update Script
-- **Location**: `/usr/local/bin/update-{service_identifier}-ufw-whitelist.sh`
-- **Purpose**: Fetches IPs and updates UFW rules
-- **Features**:
-  - Retry logic (3 attempts)
-  - Orphaned rule cleanup
-  - Diff calculation
-  - Email reporting
+
+* **Location**: `/usr/local/bin/update-{service_identifier}-ufw-whitelist.sh`
+* **Purpose**: Fetches IPs and updates UFW rules
+* **Features**:
+  * Retry logic (3 attempts)
+  * Orphaned rule cleanup
+  * Diff calculation
+  * Email reporting
 
 ### 2. Systemd Service
-- **Location**: `/etc/systemd/system/{service_identifier}-ufw-whitelist-update.service`
-- **Type**: `oneshot`
-- **Failure handling**: Triggers `failure-notification@%n.service`
+
+* **Location**: `/etc/systemd/system/{service_identifier}-ufw-whitelist-update.service`
+* **Type**: `oneshot`
+* **Failure handling**: Triggers `failure-notification@%n.service`
 
 ### 3. Systemd Timer
-- **Location**: `/etc/systemd/system/{service_identifier}-ufw-whitelist-update.timer`
-- **Schedule**: 
-  - Initial run: 5 minutes after boot
-  - Recurring: Every 10 minutes
+
+* **Location**: `/etc/systemd/system/{service_identifier}-ufw-whitelist-update.timer`
+* **Schedule**:
+  * Initial run: 5 minutes after boot
+  * Recurring: Every 10 minutes
+
 
 ## Email Notifications
 
 ### Email Subject Format
-- **Changes detected**: `[UFW] Whitelist Updated: {service_name} (Port {port})`
-- **No changes**: `[UFW] Whitelist Status: {service_name} (Port {port}) - No Changes`
+
+* **Changes detected**: `[UFW] Whitelist Updated: {service_name} (Port {port})`
+* **No changes**: `[UFW] Whitelist Status: {service_name} (Port {port}) - No Changes`
 
 ### Email Content
-- Timestamp
-- Status (Changes Applied / No Changes Needed)
-- Added IPs (first 20, with count if more)
-- Removed IPs (first 20, with count if more)
-- Orphaned rules cleaned
-- Summary statistics
-- Server hostname
-- Port number
-- Log viewing command
+
+* Timestamp
+* Status (Changes Applied / No Changes Needed)
+* Added IPs (first 20, with count if more)
+* Removed IPs (first 20, with count if more)
+* Orphaned rules cleaned
+* Summary statistics
+* Server hostname
+* Port number
+* Log viewing command
+
 
 ## Usage Examples
 
 ### For Redis
+
 ```yaml
 - name: Import UFW allowlist playbook for Redis
   import_playbook: ufw-allowlist.yml
@@ -116,6 +131,7 @@ For each service, the playbook creates:
 ```
 
 ### For MongoDB
+
 ```yaml
 - name: Import UFW allowlist playbook for MongoDB
   import_playbook: ufw-allowlist.yml
@@ -129,6 +145,7 @@ For each service, the playbook creates:
 ```
 
 ### For SQLite
+
 ```yaml
 - name: Import UFW allowlist playbook for SQLite
   import_playbook: ufw-allowlist.yml
@@ -141,9 +158,11 @@ For each service, the playbook creates:
     ufw_comment: "Auto-whitelist SQLite"
 ```
 
+
 ## Operational Commands
 
 ### View Timer Status
+
 ```bash
 # Check if timer is active
 sudo systemctl status redis-ufw-whitelist-update.timer
@@ -153,6 +172,7 @@ sudo systemctl list-timers
 ```
 
 ### View Logs
+
 ```bash
 # View recent logs
 sudo journalctl -u redis-ufw-whitelist-update.service -n 50
@@ -162,6 +182,7 @@ sudo journalctl -u redis-ufw-whitelist-update.service -f
 ```
 
 ### Manual Execution
+
 ```bash
 # Run update script manually
 sudo /usr/local/bin/update-redis-ufw-whitelist.sh
@@ -171,6 +192,7 @@ sudo systemctl start redis-ufw-whitelist-update.service
 ```
 
 ### View Current UFW Rules
+
 ```bash
 # List all UFW rules
 sudo ufw status numbered
@@ -179,9 +201,11 @@ sudo ufw status numbered
 sudo ufw status | grep "Auto-whitelist Redis TLS"
 ```
 
+
 ## Troubleshooting
 
 ### Issue: Timer not running
+
 ```bash
 # Check timer status
 sudo systemctl status redis-ufw-whitelist-update.timer
@@ -191,6 +215,7 @@ sudo systemctl enable --now redis-ufw-whitelist-update.timer
 ```
 
 ### Issue: IP fetch failures
+
 ```bash
 # Test IP list URL manually
 curl -s https://forwardemail.net/ips/v4.txt?comments=false
@@ -200,15 +225,18 @@ sudo journalctl -u redis-ufw-whitelist-update.service -n 100
 ```
 
 ### Issue: Orphaned rules
+
 The script automatically detects and removes orphaned rules (rules with the correct comment but wrong port from old deployments). Check logs for cleanup activity:
 
 ```bash
 sudo journalctl -u redis-ufw-whitelist-update.service | grep "orphaned"
 ```
 
+
 ## Migration Notes
 
 ### From Old Implementation
+
 If migrating from the old inline UFW configuration:
 
 1. **Existing rules are preserved** - The script detects current IPs and only modifies what's changed
@@ -216,9 +244,12 @@ If migrating from the old inline UFW configuration:
 3. **No manual intervention required** - First run will sync to current IP list
 
 ### Environment Variables
+
 Ensure the following environment variables are set:
-- `REDIS_PORT` / `MONGO_PORT` / `SQLITE_PORT` - Service port number
-- `POSTFIX_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
+
+* `REDIS_PORT` / `MONGO_PORT` / `SQLITE_PORT` - Service port number
+* `POSTFIX_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
+
 
 ## Security Considerations
 
@@ -227,26 +258,31 @@ Ensure the following environment variables are set:
 3. **Failure Mode**: If IP fetch fails after 3 attempts, existing rules are preserved unchanged
 4. **No Reload**: UFW rules are applied immediately without reload to prevent connection drops
 
+
 ## Benefits of Reusable Approach
 
 ### Before (Inline Implementation)
-- **Duplicated code** across redis.yml, mongo.yml, sqlite.yml
-- **Maintenance burden** - Changes needed in 3+ places
-- **Inconsistency risk** - Different implementations could diverge
-- **Harder to test** - Logic embedded in each playbook
+
+* **Duplicated code** across redis.yml, mongo.yml, sqlite.yml
+* **Maintenance burden** - Changes needed in 3+ places
+* **Inconsistency risk** - Different implementations could diverge
+* **Harder to test** - Logic embedded in each playbook
 
 ### After (Reusable Playbook)
-- **Single source of truth** - One playbook for all services
-- **Easy maintenance** - Update once, applies everywhere
-- **Consistency guaranteed** - Same logic for all services
-- **Testable** - Playbook can be tested independently
-- **Extensible** - Easy to add new services
+
+* **Single source of truth** - One playbook for all services
+* **Easy maintenance** - Update once, applies everywhere
+* **Consistency guaranteed** - Same logic for all services
+* **Testable** - Playbook can be tested independently
+* **Extensible** - Easy to add new services
+
 
 ## Adding New Services
 
 To add UFW allowlist management to a new service:
 
 1. Import the playbook in your service's playbook:
+
 ```yaml
 - name: Import UFW allowlist playbook for NewService
   import_playbook: ufw-allowlist.yml
@@ -260,13 +296,14 @@ To add UFW allowlist management to a new service:
 ```
 
 2. Ensure environment variable is set:
+
 ```bash
 export NEWSERVICE_PORT=9999
 ```
 
 3. Run the playbook - UFW rules will be automatically configured!
 
+
 ## License
 
-Copyright (c) Forward Email LLC  
-SPDX-License-Identifier: BUSL-1.1
+[(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)

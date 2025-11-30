@@ -12,6 +12,7 @@ ansible/
 ├── docs/                        # Documentation guides
 │   ├── MONITORING.md           # Security monitoring system guide
 │   ├── MONITORING_TESTING.md   # Comprehensive monitoring testing guide
+│   ├── PM2_MONITORING.md       # PM2 health monitoring guide
 │   ├── README_MONGO_REDIS.md   # MongoDB & Redis/Valkey deployment
 │   ├── MAIL_DEPLOYMENT.md      # Mail server deployment guide
 │   ├── UFW_ALLOWLIST.md        # UFW IP allowlist management guide
@@ -245,6 +246,34 @@ Comprehensive automated monitoring with email notifications for:
 
 > \[!NOTE]
 > All monitoring integrates with the existing Postfix SMTP relay and notification infrastructure.
+
+### PM2 Health Monitoring
+
+**[PM2 Monitoring Guide](docs/PM2_MONITORING.md)**
+
+Automated PM2 process health monitoring for Node.js deployments:
+
+* ✅ **Process Status Checks** - Detects errored or stopped processes
+* ⏱️ **Uptime Tracking** - Reports uptime for all PM2 processes
+* 🔍 **Process List Drift Detection** - Alerts if processes differ from saved state
+* 📊 **No Process Detection** - Alerts if PM2 has no running processes
+* 📧 **Email Alerts** - Sends detailed reports on any issues
+* ⏰ **Systemd Timer** - Runs every 10 minutes automatically
+
+**Manual health check:**
+
+```bash
+sudo /usr/local/bin/pm2-health-check.sh
+```
+
+**View logs:**
+
+```bash
+sudo journalctl -u pm2-health-check.service -f
+```
+
+> \[!TIP]
+> Run `pm2 save` after deploying processes to establish a baseline for drift detection.
 
 ### Comprehensive Monitoring Testing
 
