@@ -526,25 +526,52 @@ export class MailboxView {
       return;
     }
 
-    this.loading(true);
-    this.error('');
-    this.messageBody('');
-    this.selectedMessage(null);
-    this.messages([]);
     const account = this.getAccountKey();
 
+    // Check cache first
     let cached = [];
+    let hasCache = false;
     try {
-      // seed from cache for instant UI
       cached = await db.messages
         .where('[account+folder]')
         .equals([account, this.selectedFolder()])
         .toArray();
-      if (cached?.length) {
-        this.messages(cached);
-        await this.rebuildSearchIndex(cached);
-        this.selectedMessage(cached[0] || null);
+
+      // Sort by date descending (newest first) to match API behavior
+      cached.sort((a, b) => {
+        const dateA = new Date(a.date || 0).getTime();
+        const dateB = new Date(b.date || 0).getTime();
+        return dateB - dateA;
+      });
+
+      hasCache = cached?.length > 0;
+    } catch (err) {
+      console.warn('Failed to load cached messages', err);
+    }
+
+    // Only show loading if we don't have cache for the current page
+    const currentPage = this.page();
+    const startIdx = (currentPage - 1) * this.limit;
+    const endIdx = startIdx + this.limit;
+    const cachedPage = cached.slice(startIdx, endIdx);
+    const hasCacheForPage = cachedPage.length > 0;
+
+    if (!hasCacheForPage) {
+      this.loading(true);
+      this.error('');
+      this.messageBody('');
+      this.selectedMessage(null);
+      this.messages([]);
+    } else {
+      // Display cached page immediately
+      this.messages(cachedPage);
+      await this.rebuildSearchIndex(cached); // Rebuild index with all cached messages
+      if (!this.selectedMessage() || this.selectedMessage()?.folder !== this.selectedFolder()) {
+        this.selectedMessage(cachedPage[0] || null);
       }
+    }
+
+    try {
 
       const messagesRes = await Remote.request('MessageList', {
         folder: this.selectedFolder(),
@@ -606,14 +633,13 @@ export class MailboxView {
         }
 
         this.messages([...queuedOutbox, ...mappedList]);
-        // persist to cache (list only)
-        await db.messages.where('[account+folder]').equals([account, this.selectedFolder()]).delete();
-        await db.messages.bulkAdd(
-          this.messages().map((msg) => ({
+        // persist to cache (merge/upsert instead of delete-all to preserve pagination cache)
+        await db.messages.bulkPut(
+          mappedList.map((msg) => ({
             ...msg,
             account,
             updatedAt: Date.now(),
-            bodyIndexed: false
+            bodyIndexed: msg.bodyIndexed || false
           }))
         );
         await this.rebuildSearchIndex(this.messages());
@@ -629,8 +655,14 @@ export class MailboxView {
         } else {
           this.updateUnreadCountFromList();
         }
-        this.selectedMessage(this.messages()[0] || null);
-        if (this.selectedMessage()) await this.loadMessage(this.selectedMessage());
+        // Only update selected message if we don't have cache for this page or if current selection is invalid
+        if (!hasCacheForPage || !this.selectedMessage()) {
+          this.selectedMessage(this.messages()[0] || null);
+        }
+        // Load message content for selected message if needed
+        if (this.selectedMessage() && !this.messageBody()) {
+          await this.loadMessage(this.selectedMessage());
+        }
       }
       // If Outbox and no remote items, still show queued locals
       if (this.selectedFolder().toUpperCase() === 'OUTBOX' && this.messages().length === 0) {
@@ -678,10 +710,6 @@ export class MailboxView {
     }
 
     const account = this.getAccountKey();
-    this.messageLoading(true);
-      this.messageBody('');
-      this.attachments([]);
-      this.pgpStatus('');
 
     try {
       // try cached body first
@@ -692,8 +720,17 @@ export class MailboxView {
       const cacheAge = cachedContent?.updatedAt ? Date.now() - cachedContent.updatedAt : Infinity;
       const cacheMaxAge = 24 * 60 * 60 * 1000; // 24 hours for message content
       const hasFreshCache = cachedContent?.body && cacheAge < cacheMaxAge;
+      const hasAnyCache = cachedContent?.body;
 
-      if (cachedContent?.body) {
+      // Only show loading if we don't have any cache
+      if (!hasAnyCache) {
+        this.messageLoading(true);
+        this.messageBody('');
+        this.attachments([]);
+        this.pgpStatus('');
+      }
+
+      if (hasAnyCache) {
         console.log('Loading message content from cache:', message.id);
         console.log('Cached body length:', cachedContent.body?.length);
         console.log('Cached attachments count:', cachedContent.attachments?.length);
@@ -712,6 +749,7 @@ export class MailboxView {
           return;
         } else {
           console.log('Cache is stale, fetching fresh data in background');
+          // Don't show loading spinner since we have cache displayed
         }
       } else {
         console.log('No cached body for message:', message.id);
