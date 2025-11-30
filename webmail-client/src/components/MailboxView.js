@@ -212,15 +212,9 @@ export class MailboxView {
     this.selectedConversation = ko.observable(null);
     this.expandedConversations = ko.observable(new Set()); // Track which conversations are expanded
 
-    // Subscribe to threading changes to auto-update conversations
+    // Subscribe to threading changes to save preference
     this.threadingEnabled.subscribe((enabled) => {
       Local.set('threading_enabled', enabled ? 'true' : 'false');
-      if (enabled && this.messages().length > 0) {
-        const conversations = groupIntoConversations(this.messages());
-        this.conversations(conversations);
-      } else {
-        this.conversations([]);
-      }
     });
     this.accountMenuOpen = ko.observable(false);
     this.mobileReader = ko.observable(false);
@@ -255,6 +249,14 @@ export class MailboxView {
       if (!q) return list;
       return this.searchService ? this.searchService.search(q, list) : list;
     });
+
+    // Computed conversations that respects filters
+    this.filteredConversations = ko.pureComputed(() => {
+      if (!this.threadingEnabled()) return [];
+      const filtered = this.filteredMessages();
+      return groupIntoConversations(filtered);
+    });
+
     this.availableMoveTargets = ko.pureComputed(() =>
       this.folders().filter((f) => f.path !== this.selectedFolder())
     );
@@ -616,14 +618,6 @@ export class MailboxView {
         );
         await this.rebuildSearchIndex(this.messages());
         await this.refreshIndexStats();
-
-        // Group messages into conversations if threading is enabled
-        if (this.threadingEnabled()) {
-          const conversations = groupIntoConversations(this.messages());
-          this.conversations(conversations);
-        } else {
-          this.conversations([]);
-        }
 
         const unreadFromResponse =
           messagesRes?.Result?.Unread ||
@@ -1415,15 +1409,6 @@ export class MailboxView {
   toggleThreading() {
     const newValue = !this.threadingEnabled();
     this.threadingEnabled(newValue);
-    Local.set('threading_enabled', newValue ? 'true' : 'false');
-
-    // Re-group messages
-    if (newValue) {
-      const conversations = groupIntoConversations(this.messages());
-      this.conversations(conversations);
-    } else {
-      this.conversations([]);
-    }
 
     this.toasts?.show(
       newValue ? 'Conversation view enabled' : 'Conversation view disabled',

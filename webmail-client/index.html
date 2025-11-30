@@ -86,6 +86,16 @@
         pointer-events: none;
       }
 
+      /* Keep stars visible on login page even in light mode */
+      body:not(.mailbox-mode) .fe-stars {
+        display: block;
+      }
+
+      /* Hide stars in mailbox mode (they would be distracting) */
+      body.mailbox-mode .fe-stars {
+        display: none;
+      }
+
       .fe-login-wrapper {
         position: relative;
         z-index: 1;
@@ -139,6 +149,15 @@
       .fe-title span {
         font-size: 14px;
         color: #9ca3af;
+      }
+
+      body.light-mode:not(.mailbox-mode) {
+        background: #f8fafc;
+      }
+
+      body.light-mode .fe-login-wrapper {
+        background: #ffffff;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
       }
 
       body.light-mode .fe-title h1 {
@@ -2484,8 +2503,8 @@
           <!-- /ko -->
 
           <!-- Conversation view (threading enabled) -->
-          <!-- ko if: !loading() && threadingEnabled() && conversations().length -->
-          <ul class="fe-conversation-list" data-bind="foreach: conversations">
+          <!-- ko if: !loading() && threadingEnabled() && filteredConversations().length -->
+          <ul class="fe-conversation-list" data-bind="foreach: filteredConversations">
             <li class="fe-conversation-item" data-bind="
               click: function() { $parent.selectConversation($data); },
               css: {
@@ -2533,7 +2552,7 @@
           <!-- /ko -->
 
           <!-- Empty state -->
-          <!-- ko if: !loading() && !filteredMessages().length && !conversations().length -->
+          <!-- ko if: !loading() && !filteredMessages().length && !filteredConversations().length -->
           <div class="fe-empty">No messages in this folder yet.</div>
           <!-- /ko -->
 

@@ -114,9 +114,11 @@ function applyTheme(pref) {
   const prefersDark =
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.body.classList.remove('light-mode', 'dark-mode');
-  if (theme === 'light') document.body.classList.add('light-mode');
-  else if (theme === 'dark' || (theme === 'system' && prefersDark))
+  if (theme === 'light' || (theme === 'system' && !prefersDark)) {
+    document.body.classList.add('light-mode');
+  } else if (theme === 'dark' || (theme === 'system' && prefersDark)) {
     document.body.classList.add('dark-mode');
+  }
 }
 
 function initStarfield() {
