@@ -25,20 +25,33 @@
         has_numa: "{{ (numa_node_count.stdout | default('0') | int) > 1 }}"
       when: is_amd_ryzen
 
+    # Check if NUMA balancing is available
+    - name: Check if vm.numa_balancing exists
+      stat:
+        path: /proc/sys/vm/numa_balancing
+      register: numa_balancing_exists
+      when: is_amd_ryzen
+
     # AMD Ryzen NUMA optimizations
-    - name: Configure AMD Ryzen NUMA sysctl parameters
+    - name: Configure vm.zone_reclaim_mode
       sysctl:
-        name: "{{ item.name }}"
-        value: "{{ item.value }}"
+        name: vm.zone_reclaim_mode
+        value: '0'
         state: present
         reload: yes
         sysctl_file: /etc/sysctl.d/99-amd-ryzen-numa.conf
-      loop:
-        # Critical: Prevent zone reclaim (causes severe performance issues)
-        - { name: "vm.zone_reclaim_mode", value: "0" }
-        # Disable automatic NUMA balancing for single-process databases
-        - { name: "vm.numa_balancing", value: "0" }
       when: is_amd_ryzen
+
+    - name: Configure vm.numa_balancing (if available)
+      sysctl:
+        name: vm.numa_balancing
+        value: '0'
+        state: present
+        reload: yes
+        sysctl_file: /etc/sysctl.d/99-amd-ryzen-numa.conf
+      when: 
+        - is_amd_ryzen
+        - numa_balancing_exists.stat.exists | default(false)
 
     # Transparent Huge Pages (THP) configuration for databases
     - name: Disable Transparent Huge Pages for {{ service_name }}
@@ -90,7 +103,7 @@
           ║                                                                        ║
           ║  {% if is_amd_ryzen %}Optimizations Applied:                                                  ║
           ║  ✅ vm.zone_reclaim_mode=0 (prevent memory reclaim issues)            ║
-          ║  ✅ vm.numa_balancing=0 (disable auto NUMA balancing)                 ║
+          ║  {% if numa_balancing_exists.stat.exists | default(false) %}✅ vm.numa_balancing=0 (disable auto NUMA balancing)                 ║{% else %}⚠️  vm.numa_balancing not available (single-socket/VM)                   ║{% endif %}
           ║  {% if disable_thp | default(false) %}✅ Transparent Huge Pages disabled ({{ service_name }})                  ║{% endif %}
           ║                                                                        ║
           ║  Benefits:                                                            ║

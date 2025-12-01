@@ -240,7 +240,7 @@
         mode: '0755'
 
     - name: Run portscan protection script
-      shell: /tmp/portscan-protection.sh -i
+      shell: bash /tmp/portscan-protection.sh -i
       register: port_scan
       failed_when: port_scan.rc != 1
 

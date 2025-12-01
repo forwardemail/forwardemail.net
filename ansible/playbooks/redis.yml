@@ -260,26 +260,26 @@
     - name: Download Valkey 8.0.1 source
       get_url:
         url: https://github.com/valkey-io/valkey/archive/refs/tags/8.0.1.tar.gz
-        dest: /tmp/valkey-8.0.1.tar.gz
+        dest: /var/tmp/valkey-8.0.1.tar.gz
         checksum: sha256:1e1d6dfbed2f932a87afbc7402be050a73974a9b19a9116897e537a6638e5e1d
 
     - name: Extract Valkey source
       unarchive:
-        src: /tmp/valkey-8.0.1.tar.gz
-        dest: /tmp/
+        src: /var/tmp/valkey-8.0.1.tar.gz
+        dest: /var/tmp/
         remote_src: yes
-        creates: /tmp/valkey-8.0.1
+        creates: /var/tmp/valkey-8.0.1
 
     - name: Compile Valkey
       shell: |
-        cd /tmp/valkey-8.0.1
+        cd /var/tmp/valkey-8.0.1
         make BUILD_TLS=yes
       args:
-        creates: /tmp/valkey-8.0.1/src/valkey-server
+        creates: /var/tmp/valkey-8.0.1/src/valkey-server
 
     - name: Install Valkey binaries
       shell: |
-        cd /tmp/valkey-8.0.1
+        cd /var/tmp/valkey-8.0.1
         make install PREFIX=/usr
       args:
         creates: /usr/bin/valkey-server

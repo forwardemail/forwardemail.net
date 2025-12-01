@@ -14,7 +14,7 @@
     service_port_var: MONGO_PORT
     service_port_default: "27017"
     service_identifier: mongo
-    ufw_comment: "Auto-whitelist MongoDB TLS"
+    ufw_comment: "Auto-whitelist MongoDB"
 
 - name: Import high-traffic sysctl tuning for MongoDB
   import_playbook: sysctl-high-traffic.yml
@@ -387,19 +387,31 @@
     - name: Create MongoDB admin user
       shell: |
         mongosh --quiet admin --eval '
-          db.createUser({
-            user: "{{ lookup('env', 'MONGO_USER') }}",
-            pwd: "{{ lookup('env', 'MONGO_PASSWORD') }}",
-            roles: [
-              { role: "root", db: "admin" },
-              { role: "userAdminAnyDatabase", db: "admin" },
-              { role: "dbAdminAnyDatabase", db: "admin" },
-              { role: "readWriteAnyDatabase", db: "admin" }
-            ]
-          })
+          try {
+            db.createUser({
+              user: "{{ lookup('env', 'MONGO_USER') }}",
+              pwd: "{{ lookup('env', 'MONGO_PASSWORD') }}",
+              roles: [
+                { role: "root", db: "admin" },
+                { role: "userAdminAnyDatabase", db: "admin" },
+                { role: "dbAdminAnyDatabase", db: "admin" },
+                { role: "readWriteAnyDatabase", db: "admin" }
+              ]
+            });
+            print("User created successfully");
+          } catch (e) {
+            if (e.code === 51003) {
+              print("User already exists");
+            } else {
+              throw e;
+            }
+          }
         '
       when: admin_user_check.stdout | int == 0
       no_log: true
+      register: create_user_result
+      failed_when: create_user_result.rc != 0 and 'User already exists' not in create_user_result.stdout
+      changed_when: "'User created successfully' in create_user_result.stdout"
 
     - name: Enable MongoDB authentication in mongod.conf
       blockinfile:

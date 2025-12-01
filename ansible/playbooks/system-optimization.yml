@@ -30,7 +30,7 @@
           ║                                                                        ║
           ║                    💾 TMPFS /tmp CONFIGURATION                        ║
           ║                                                                        ║
-          ║  {% if tmp_tmpfs_check.rc == 0 %}✅ /tmp is already mounted as tmpfs (RAM-based storage)           ║{% else %}✅ /tmp configured as tmpfs in /etc/fstab                           ║
+          {% if tmp_tmpfs_check.rc == 0 %}║  ✅ /tmp is already mounted as tmpfs (RAM-based storage)           ║{% else %}║  ✅ /tmp configured as tmpfs in /etc/fstab                           ║
           ║     Will be mounted on next reboot or run: sudo mount -a          ║{% endif %}
           ║                                                                        ║
           ║  Benefits:                                                            ║
@@ -66,7 +66,7 @@
           ║                                                                        ║
           ║                    🔒 /dev/shm HARDENING                              ║
           ║                                                                        ║
-          ║  {% if devshm_noexec_check.rc == 0 %}✅ /dev/shm already hardened with noexec                          ║{% else %}✅ /dev/shm hardened with noexec and size limit                   ║{% endif %}
+          {% if devshm_noexec_check.rc == 0 %}║  ✅ /dev/shm already hardened with noexec                          ║{% else %}║  ✅ /dev/shm hardened with noexec and size limit                   ║{% endif %}
           ║                                                                        ║
           ║  Security benefits:                                                   ║
           ║  • Prevents malware execution from /dev/shm (common attack vector)    ║
@@ -127,7 +127,12 @@
 
     - name: Remove conflicting options and add optimizations
       set_fact:
-        optimized_opts: "{{ (current_opts_list | default(['defaults'])) | reject('in', ['relatime', 'atime']) | list + (['noatime'] if not has_noatime else []) + (['nodiratime'] if not has_nodiratime else []) + (['discard'] if not has_discard else []) | unique | join(',') }}"
+        optimized_opts: |
+          {%- set filtered = (current_opts_list | default(['defaults'])) | reject('in', ['relatime', 'atime']) | list -%}
+          {%- set with_noatime = filtered + (['noatime'] if not has_noatime else []) -%}
+          {%- set with_nodiratime = with_noatime + (['nodiratime'] if not has_nodiratime else []) -%}
+          {%- set with_discard = with_nodiratime + (['discard'] if not has_discard else []) -%}
+          {{ with_discard | unique | join(',') }}
       when: needs_optimization and fstab_root_entry.rc == 0
 
     - name: Backup /etc/fstab before modification
@@ -151,7 +156,7 @@
         PASS=$(echo "$CURRENT_LINE" | awk '{print $6}')
         
         # Build new line with optimized options
-        NEW_LINE="$DEVICE $MOUNTPOINT $FSTYPE {{ optimized_opts }} $DUMP $PASS"
+        NEW_LINE="$DEVICE $MOUNTPOINT $FSTYPE {{ optimized_opts | trim }} $DUMP $PASS"
         
         # Use sed to replace the line in-place
         sed -i.bak "/^\s*[^#].*\s\+\/\s\+/c\\$NEW_LINE" /etc/fstab
@@ -161,7 +166,7 @@
 
     - name: Remount root filesystem with optimized options
       shell: |
-        mount -o remount,{{ optimized_opts }} /
+        mount -o remount,{{ optimized_opts | trim }} /
       when: needs_optimization and fstab_root_entry.rc == 0
       register: remount_result
       changed_when: true
@@ -173,40 +178,31 @@
       changed_when: false
       when: needs_optimization
 
-    - name: Display root filesystem optimization status
-      shell: |
-        cat << 'MOUNT_STATUS'
-        ╔════════════════════════════════════════════════════════════════════════╗
-        ║                                                                        ║
-        ║              📁 ROOT FILESYSTEM MOUNT OPTIMIZATION                    ║
-        ║                                                                        ║
-        ║  Device: {{ root_device_result.stdout }}
-        ║  Filesystem: {{ root_fstype_result.stdout }}
-        ║  {% if needs_optimization %}Before: {{ root_mount_options_result.stdout }}
-        ║  After:  {{ verify_mount_options.stdout | default('N/A') }}{% else %}Current: {{ root_mount_options_result.stdout }}{% endif %}
-        ║                                                                        ║
-        ║  {% if needs_optimization %}✅ Optimizations Applied:                                              ║
-        ║  {% if not has_noatime %}  • noatime added - Disables file access time updates                ║{% endif %}
-        ║  {% if not has_nodiratime %}  • nodiratime added - Disables directory access time updates       ║{% endif %}
-        ║  {% if not has_discard %}  • discard added - Enables TRIM for SSD longevity                 ║{% endif %}
-        ║                                                                        ║
-        ║  Changes:                                                             ║
-        ║  • /etc/fstab updated (backup: /etc/fstab.backup)                     ║
-        ║  • Root filesystem remounted with new options                         ║
-        ║  • Changes persist across reboots                                     ║{% else %}✅ All mount options already optimized - no changes needed            ║{% endif %}
-        ║                                                                        ║
-        ║  Benefits:                                                            ║
-        ║  • Reduced I/O overhead (no access time updates)                      ║
-        ║  • Extended SSD lifespan (TRIM support)                               ║
-        ║  • Improved filesystem performance                                    ║
-        ║                                                                        ║
-        ╚════════════════════════════════════════════════════════════════════════╝
-        MOUNT_STATUS
-      args:
-        executable: /bin/bash
-      register: mount_status_output
-      changed_when: false
-
     - name: Show mount optimization status
       debug:
-        msg: "{{ mount_status_output.stdout_lines }}"
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║              📁 ROOT FILESYSTEM MOUNT OPTIMIZATION                    ║
+          ║                                                                        ║
+          ║  Device: {{ root_device_result.stdout }}
+          ║  Filesystem: {{ root_fstype_result.stdout }}
+          {% if needs_optimization %}║  Before: {{ root_mount_options_result.stdout }}
+          ║  After:  {{ verify_mount_options.stdout | default('N/A') }}{% else %}║  Current: {{ root_mount_options_result.stdout }}{% endif %}
+          ║                                                                        ║
+          {% if needs_optimization %}║  ✅ Optimizations Applied:                                              ║
+          {% if not has_noatime %}║    • noatime added - Disables file access time updates                ║{% endif %}
+          {% if not has_nodiratime %}║    • nodiratime added - Disables directory access time updates       ║{% endif %}
+          {% if not has_discard %}║    • discard added - Enables TRIM for SSD longevity                 ║{% endif %}
+          ║                                                                        ║
+          ║  Changes:                                                             ║
+          ║  • /etc/fstab updated (backup: /etc/fstab.backup)                     ║
+          ║  • Root filesystem remounted with new options                         ║
+          ║  • Changes persist across reboots                                     ║{% else %}║  ✅ All mount options already optimized - no changes needed            ║{% endif %}
+          ║                                                                        ║
+          ║  Benefits:                                                            ║
+          ║  • Reduced I/O overhead (no access time updates)                      ║
+          ║  • Extended SSD lifespan (TRIM support)                               ║
+          ║  • Improved filesystem performance                                    ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝

@@ -29,8 +29,9 @@
         tcp_mem_min: "{{ (total_mem_kb.stdout | int * 0.25 / 4) | int }}"
         tcp_mem_pressure: "{{ (total_mem_kb.stdout | int * 0.50 / 4) | int }}"
         tcp_mem_max: "{{ (total_mem_kb.stdout | int * 0.75 / 4) | int }}"
-        # Buffer sizes: Use 256MB max (kernel limit), or 10% of RAM if less
-        max_buffer_size: "{{ [268435456, (total_mem_kb.stdout | int * 1024 * 0.10) | int] | min }}"
+        # Buffer sizes: Use 16MB max (safe kernel limit), or 5% of RAM if less
+        # Conservative values to avoid "Invalid argument" errors on different kernels
+        max_buffer_size: "{{ [16777216, (total_mem_kb.stdout | int * 1024 * 0.05) | int] | min }}"
         # min_free_kbytes: 1% of total RAM (minimum 64MB, maximum 512MB)
         min_free_kb: "{{ [65536, [524288, (total_mem_kb.stdout | int * 0.01) | int] | min] | max }}"
 
@@ -69,10 +70,10 @@
         - { name: 'net.ipv4.ip_local_port_range', value: '10000 65535' }  # Expand ephemeral port range
         
         # Network - TCP Buffer Tuning (Auto-scaled based on RAM)
-        - { name: 'net.core.rmem_max', value: "{{ max_buffer_size }}" }  # Auto-scaled: 75% of RAM
-        - { name: 'net.core.wmem_max', value: "{{ max_buffer_size }}" }  # Auto-scaled: 75% of RAM
-        - { name: 'net.ipv4.tcp_rmem', value: "4096 87380 {{ (max_buffer_size | int / 2) | int }}" }  # TCP read buffer (min, default, max)
-        - { name: 'net.ipv4.tcp_wmem', value: "4096 65536 {{ (max_buffer_size | int / 2) | int }}" }  # TCP write buffer (min, default, max)
+        - { name: 'net.core.rmem_max', value: "{{ max_buffer_size }}" }  # Auto-scaled: max 16MB
+        - { name: 'net.core.wmem_max', value: "{{ max_buffer_size }}" }  # Auto-scaled: max 16MB
+        - { name: 'net.ipv4.tcp_rmem', value: "4096 87380 {{ max_buffer_size }}" }  # TCP read buffer (min, default, max)
+        - { name: 'net.ipv4.tcp_wmem', value: "4096 65536 {{ max_buffer_size }}" }  # TCP write buffer (min, default, max)
         - { name: 'net.ipv4.tcp_mem', value: "{{ tcp_mem_min }} {{ tcp_mem_pressure }} {{ tcp_mem_max }}" }  # Auto-scaled: 25%, 50%, 75% of RAM
         
         # Network - TCP Performance
@@ -91,5 +92,5 @@
         msg: |
           Auto-scaled sysctl values based on {{ (total_mem_kb.stdout | int / 1024 / 1024) | round(2) }}GB RAM:
           - tcp_mem: {{ tcp_mem_min }} {{ tcp_mem_pressure }} {{ tcp_mem_max }} (pages)
-          - rmem_max/wmem_max: {{ (max_buffer_size | int / 1024 / 1024) | round(0) }}MB (capped at 256MB)
+          - rmem_max/wmem_max: {{ (max_buffer_size | int / 1024 / 1024) | round(0) }}MB (capped at 16MB)
           - min_free_kbytes: {{ (min_free_kb | int / 1024) | round(0) }}MB
