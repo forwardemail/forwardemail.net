@@ -494,7 +494,7 @@ export class MailboxView {
 
       this.folders(mappedFolders);
       await db.folders.where('account').equals(account).delete();
-      await db.folders.bulkAdd(
+      await db.folders.bulkPut(
         mappedFolders.map((f) => ({
           ...f,
           account,
@@ -539,8 +539,18 @@ export class MailboxView {
 
       // Sort by date descending (newest first) to match API behavior
       cached.sort((a, b) => {
-        const dateA = new Date(a.date || 0).getTime();
-        const dateB = new Date(b.date || 0).getTime();
+        const dateA =
+          typeof a.dateMs === 'number'
+            ? a.dateMs
+            : typeof a.updatedAt === 'number'
+            ? a.updatedAt
+            : new Date(a.date || 0).getTime();
+        const dateB =
+          typeof b.dateMs === 'number'
+            ? b.dateMs
+            : typeof b.updatedAt === 'number'
+            ? b.updatedAt
+            : new Date(b.date || 0).getTime();
         return dateB - dateA;
       });
 
@@ -586,36 +596,41 @@ export class MailboxView {
       this.hasNextPage(Array.isArray(list) && list.length >= this.limit);
 
       if (Array.isArray(list) && list.length > 0) {
-        const mappedList = list.map((m) => ({
-          id: m.Uid || m.id || m.uid,
-          account,
-          folder: m.folder_path || m.folder || m.path || this.selectedFolder(),
-          from:
-            m.From?.Display ||
-            m.From?.Email ||
-            m.from?.text ||
-            m.from ||
-            m.sender ||
-            (m.nodemailer?.from && m.nodemailer.from.text) ||
-            'Unknown',
-          subject: m.Subject || m.subject || '(No subject)',
-          snippet:
-            m.Plain?.slice?.(0, 140) ||
-            m.snippet ||
-            m.preview ||
-            m.textAsHtml ||
-            m.text ||
-            (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
-            '',
-          date: this.formatDate(
-            m.Date || m.date || m.header_date || m.internal_date || ''
-          ),
-          flags: normalizeFlags(m.flags),
-          is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
-          has_attachment: m.has_attachment || m.hasAttachments || false,
-          bodyIndexed: false,
-          pending: false
-        }));
+        const mappedList = list.map((m) => {
+          const rawDate = m.Date || m.date || m.header_date || m.internal_date || m.received_at;
+          const parsedDate = new Date(rawDate || Date.now());
+          const dateMs = Number.isFinite(parsedDate.getTime()) ? parsedDate.getTime() : Date.now();
+
+          return {
+            id: m.Uid || m.id || m.uid,
+            account,
+            folder: m.folder_path || m.folder || m.path || this.selectedFolder(),
+            dateMs,
+            from:
+              m.From?.Display ||
+              m.From?.Email ||
+              m.from?.text ||
+              m.from ||
+              m.sender ||
+              (m.nodemailer?.from && m.nodemailer.from.text) ||
+              'Unknown',
+            subject: m.Subject || m.subject || '(No subject)',
+            snippet:
+              m.Plain?.slice?.(0, 140) ||
+              m.snippet ||
+              m.preview ||
+              m.textAsHtml ||
+              m.text ||
+              (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
+              '',
+            date: this.formatDate(rawDate || dateMs),
+            flags: normalizeFlags(m.flags),
+            is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
+            has_attachment: m.has_attachment || m.hasAttachments || false,
+            bodyIndexed: false,
+            pending: false
+          };
+        });
 
         let queuedOutbox = [];
         if (this.selectedFolder().toUpperCase() === 'OUTBOX') {
@@ -626,6 +641,7 @@ export class MailboxView {
           queuedOutbox = queuedOutbox.map((msg) => ({
             ...msg,
             pending: true,
+            dateMs: msg.dateMs || Date.now(),
             date: this.formatDate(msg.date || Date.now()),
             from: msg.from || this.email() || 'You',
             is_unread: false
@@ -633,7 +649,11 @@ export class MailboxView {
         }
 
         this.messages([...queuedOutbox, ...mappedList]);
-        // persist to cache (merge/upsert instead of delete-all to preserve pagination cache)
+        // refresh cache for this folder with latest data
+        await db.messages
+          .where('[account+folder]')
+          .equals([account, this.selectedFolder()])
+          .delete();
         await db.messages.bulkPut(
           mappedList.map((msg) => ({
             ...msg,
@@ -872,6 +892,55 @@ export class MailboxView {
     } finally {
       this.messageLoading(false);
       this.actionMenuOpen(false);
+
+      // Auto-mark as read after loading message
+      if (message && message.is_unread) {
+        setTimeout(() => {
+          this.markAsRead(message);
+        }, 500); // Small delay to ensure message is displayed
+      }
+    }
+  }
+
+  async markAsRead(message) {
+    if (!message || !message.is_unread) return;
+    const currentFlags = normalizeFlags(message.flags);
+    const newFlags = new Set(currentFlags);
+    newFlags.add('\\Seen');
+
+    // Optimistic update
+    message.flags = Array.from(newFlags);
+    message.is_unread = false;
+    this.messages.valueHasMutated?.();
+    this.selectedMessage(Object.assign({}, message));
+
+    if (config.useMockWebmail) return;
+
+    const account = this.getAccountKey();
+    const payload = {
+      id: message.id,
+      folder: message.folder,
+      flags: Array.from(newFlags)
+    };
+
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    if (isOffline) {
+      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      return;
+    }
+
+    try {
+      await Remote.request(
+        'Message',
+        payload,
+        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}` }
+      );
+    } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
+      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
     }
   }
 
@@ -911,7 +980,7 @@ export class MailboxView {
       await Remote.request(
         'Message',
         payload,
-        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}` }
       );
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
@@ -1162,11 +1231,32 @@ export class MailboxView {
     return null;
   }
 
-  async deleteMessage(message) {
+  getArchiveFolderPath() {
+    const archiveFolder = this.folders().find(
+      (f) => (f.path || '').toLowerCase() === 'archive' || (f.name || '').toLowerCase() === 'archive'
+    );
+    return archiveFolder?.path || 'Archive';
+  }
+
+  async archiveMessage(message) {
+    if (!message?.id) return;
+    const target = this.getArchiveFolderPath();
+    if (!target) {
+      this.toasts?.show?.('Archive folder not found', 'error');
+      return;
+    }
+    const result = await this.moveMessage(message, target, { stayInFolder: true });
+    if (result?.success) {
+      this.toasts?.show?.('Message archived', 'success');
+    }
+  }
+
+  async deleteMessage(message, options = {}) {
     if (!message?.id) return;
     const account = this.getAccountKey();
     const payload = { id: message.id, folder: message.folder };
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    const permanent = Boolean(options.permanent);
 
     // Optimistic remove
     this.messages.remove((m) => m.id === message.id);
@@ -1174,53 +1264,80 @@ export class MailboxView {
     this.messageBody('');
     this.attachments([]);
     this.updateUnreadCountFromList();
-    this.toasts?.show('Message removed', 'info');
 
     if (isOffline) {
-      await enqueueSync('delete', { account, resource: 'message', folder: message.folder, data: payload });
-      this.toasts?.show?.('Delete queued (offline)', 'info');
+      await enqueueSync('delete', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: { ...payload, permanent }
+      });
+      this.toasts?.show?.(permanent ? 'Permanent delete queued (offline)' : 'Delete queued (offline)', 'info');
       await this.refreshSyncCounts();
       return;
     }
 
     try {
+      let path = `/v1/messages/${encodeURIComponent(message.id)}`;
+      if (permanent) path += '?permanent=1';
       await Remote.request(
         'MessageDelete',
         {},
-        { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+        { method: 'DELETE', pathOverride: path }
       );
-      this.toasts?.show('Message deleted', 'success');
+      this.toasts?.show(permanent ? 'Message permanently deleted' : 'Message deleted', 'success');
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      await enqueueSync('delete', { account, resource: 'message', folder: message.folder, data: payload });
-      this.toasts?.show?.('Delete queued to sync later', 'info');
+      await enqueueSync('delete', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: { ...payload, permanent }
+      });
+      this.toasts?.show?.(
+        permanent ? 'Permanent delete queued to sync later' : 'Delete queued to sync later',
+        'info'
+      );
       await this.refreshSyncCounts();
     }
     this.actionMenuOpen(false);
   }
 
-  async moveMessage(message, targetOverride) {
+  async moveMessage(message, targetOverride, options = {}) {
     if (!message?.id) return;
+    const stayInFolder = Boolean(options.stayInFolder);
     const target = targetOverride || this.moveTarget();
-    if (!target || target === message.folder) return;
+    if (!target || target === message.folder) return { success: false, queued: false };
     const account = this.getAccountKey();
     const payload = { id: message.id, from: message.folder, target };
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
     const originalFolder = message.folder;
+    const result = { success: false, queued: false };
 
-    // Optimistic UI: switch folder and refresh
-    this.selectedFolder(target);
-    this.page(1);
-    await this.loadMessages();
+    // Optimistic UI: either keep current folder (remove message) or switch to target
+    if (stayInFolder) {
+      this.messages.remove((m) => m.id === message.id);
+      if (this.selectedMessage()?.id === message.id) {
+        this.selectedMessage(null);
+        this.messageBody('');
+        this.attachments([]);
+      }
+      this.updateUnreadCountFromList();
+    } else {
+      this.selectedFolder(target);
+      this.page(1);
+      await this.loadMessages();
+    }
 
     if (isOffline) {
       await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
       this.toasts?.show?.('Move queued (offline)', 'info');
       await this.refreshSyncCounts();
-      return;
+      result.queued = true;
+      return result;
     }
 
     try {
@@ -1229,16 +1346,19 @@ export class MailboxView {
         { folder: target },
         { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
       );
+      result.success = true;
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
-        return;
+        return result;
       }
       await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
       this.toasts?.show?.('Move queued to sync later', 'info');
       await this.refreshSyncCounts();
+      result.queued = true;
     }
     this.actionMenuOpen(false);
+    return result;
   }
 
   nextPage = () => {

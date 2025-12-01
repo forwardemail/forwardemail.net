@@ -9,6 +9,7 @@ import { ContactsView } from './components/ContactsView';
 import { Toasts } from './components/Toast';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
+import { keyboardShortcuts, showKeyboardShortcutsHelp } from './utils/keyboard-shortcuts';
 import './styles/main.css';
 
 function detectRoute() {
@@ -74,6 +75,7 @@ viewModel.calendarView.navigate = viewModel.navigate;
 viewModel.contactsView.navigate = viewModel.navigate;
 
 viewModel.toasts = new Toasts();
+viewModel.mailboxView.toasts = viewModel.toasts;
 viewModel.mailboxView.composeModal = viewModel.composeModal;
 viewModel.mailboxView.passphraseModal = viewModel.pgpPassphraseModal;
 viewModel.calendarView.mailboxView = viewModel.mailboxView;
@@ -103,11 +105,271 @@ viewModel.route.subscribe((route) => {
     route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts';
   document.body.classList.toggle('mailbox-mode', mailboxMode);
   if (route !== 'mailbox') viewModel.composeModal.close();
+  if (route !== 'settings') {
+    viewModel.settingsModal.cancelEditShortcut();
+    keyboardShortcuts.stopCapture();
+    viewModel.settingsModal.visible(false);
+  }
   if (route === 'mailbox') viewModel.mailboxView.load();
   if (route === 'settings') viewModel.settingsModal.open();
   if (route === 'calendar') viewModel.calendarView.load();
   if (route === 'contacts') viewModel.contactsView.load();
 });
+
+function initKeyboardShortcuts() {
+  // Update context based on route
+  viewModel.route.subscribe((route) => {
+    if (route === 'mailbox') {
+      keyboardShortcuts.setContext('list');
+    } else if (route === 'settings') {
+      keyboardShortcuts.setContext('settings');
+    } else if (route === 'calendar') {
+      keyboardShortcuts.setContext('calendar');
+    } else if (route === 'contacts') {
+      keyboardShortcuts.setContext('contacts');
+    } else {
+      keyboardShortcuts.setContext('default');
+    }
+  });
+
+  // Set initial context
+  const route = viewModel.route();
+  if (route === 'mailbox') keyboardShortcuts.setContext('list');
+
+  // Register handlers
+  // Common / message-level
+  keyboardShortcuts.on('new-message', () => {
+    if (viewModel.route() === 'mailbox') {
+      viewModel.composeModal.open();
+    }
+  });
+
+  keyboardShortcuts.on('reply', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.composeModal.reply(msg);
+    }
+  });
+
+  keyboardShortcuts.on('reply-all', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.composeModal.replyAll(msg);
+    }
+  });
+
+  keyboardShortcuts.on('reply-list', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.composeModal.replyAll(msg);
+    }
+  });
+
+  keyboardShortcuts.on('forward', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.composeModal.forward(msg);
+    }
+  });
+
+  keyboardShortcuts.on('edit-as-new', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.composeModal.forward(msg);
+    }
+  });
+
+  keyboardShortcuts.on('open-message', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg && viewModel.route() === 'mailbox') {
+      viewModel.mailboxView.selectMessage(msg);
+    }
+  });
+
+  keyboardShortcuts.on('save-draft', () => {
+    if (viewModel.composeModal.visible()) {
+      viewModel.composeModal.saveDraft?.();
+    } else {
+      viewModel.mailboxView.toasts?.show?.('Save draft is available while composing', 'info');
+    }
+  });
+
+  keyboardShortcuts.on('print', () => {
+    window.print();
+  });
+
+  keyboardShortcuts.on('send-now', () => {
+    if (viewModel.composeModal.visible()) {
+      viewModel.composeModal.send();
+    }
+  });
+
+  keyboardShortcuts.on('send-later', () => {
+    viewModel.mailboxView.toasts?.show?.('Send later not yet implemented', 'info');
+  });
+
+  // Receiving / navigation
+  keyboardShortcuts.on('refresh', () => {
+    if (viewModel.route() === 'mailbox') {
+      viewModel.mailboxView.loadMessages();
+    }
+  });
+
+  keyboardShortcuts.on('refresh-all', () => {
+    viewModel.mailboxView.loadMessages();
+  });
+
+  const zoomToast = (msg) => viewModel.mailboxView.toasts?.show?.(msg, 'info');
+  keyboardShortcuts.on('zoom-in', () => zoomToast('Zoom in not yet implemented'));
+  keyboardShortcuts.on('zoom-out', () => zoomToast('Zoom out not yet implemented'));
+  keyboardShortcuts.on('zoom-reset', () => zoomToast('Zoom reset not yet implemented'));
+
+  keyboardShortcuts.on('expand-thread', () => {
+    viewModel.mailboxView.toasts?.show?.('Expand thread not yet implemented', 'info');
+  });
+  keyboardShortcuts.on('collapse-thread', () => {
+    viewModel.mailboxView.toasts?.show?.('Collapse thread not yet implemented', 'info');
+  });
+  keyboardShortcuts.on('toggle-pane', () => {
+    viewModel.mailboxView.toasts?.show?.('Toggle message pane not yet implemented', 'info');
+  });
+  keyboardShortcuts.on('switch-pane', () => {
+    viewModel.mailboxView.toasts?.show?.('Switch pane focus not yet implemented', 'info');
+  });
+
+  // Managing / marking / tags
+  keyboardShortcuts.on('toggle-read', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.mailboxView.toggleRead(msg);
+    }
+  });
+
+  keyboardShortcuts.on('mark-thread-read', () => {
+    viewModel.mailboxView.toasts?.show?.('Mark thread read not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('mark-folder-read', () => {
+    viewModel.mailboxView.toasts?.show?.('Mark folder read not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('mark-date-read', () => {
+    viewModel.mailboxView.toasts?.show?.('Mark as read by date not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('mark-junk', () => {
+    viewModel.mailboxView.toasts?.show?.('Mark as junk not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('mark-not-junk', () => {
+    viewModel.mailboxView.toasts?.show?.('Mark as not junk not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('star', () => {
+    viewModel.mailboxView.toasts?.show?.('Star not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('archive', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.mailboxView.archiveMessage(msg);
+    }
+  });
+
+  keyboardShortcuts.on('delete', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.mailboxView.deleteMessage(msg, { permanent: false });
+    }
+  });
+
+  keyboardShortcuts.on('delete-permanent', () => {
+    const msg = viewModel.mailboxView.selectedMessage();
+    if (msg) {
+      viewModel.mailboxView.deleteMessage(msg, { permanent: true });
+    }
+  });
+
+  keyboardShortcuts.on('move-copy', () => {
+    viewModel.mailboxView.toasts?.show?.('Move / copy not yet implemented', 'info');
+  });
+
+  for (let i = 1; i <= 9; i++) {
+    keyboardShortcuts.on(`tag-${i}`, () => {
+      viewModel.mailboxView.toasts?.show?.(`Tag ${i} not yet implemented`, 'info');
+    });
+  }
+
+  keyboardShortcuts.on('clear-tags', () => {
+    viewModel.mailboxView.toasts?.show?.('Clear tags not yet implemented', 'info');
+  });
+
+  // Search
+  keyboardShortcuts.on('quick-filter', () => {
+    const searchInput = document.querySelector('.fe-search');
+    if (searchInput) {
+      searchInput.focus();
+    }
+  });
+
+  keyboardShortcuts.on('find-in-message', () => {
+    const searchInput = document.querySelector('.fe-search');
+    if (searchInput) {
+      searchInput.focus();
+    }
+  });
+
+  keyboardShortcuts.on('advanced-search', () => {
+    viewModel.mailboxView.toasts?.show?.('Advanced search not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('quick-filter-advanced', () => {
+    const searchInput = document.querySelector('.fe-search');
+    if (searchInput) {
+      searchInput.focus();
+    }
+  });
+
+  // Help
+  keyboardShortcuts.on('help', () => {
+    showShortcutsHelp();
+  });
+
+  // Other
+  keyboardShortcuts.on('view-source', () => {
+    viewModel.mailboxView.toasts?.show?.('View source not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('undo', () => {
+    viewModel.mailboxView.toasts?.show?.('Undo not yet implemented', 'info');
+  });
+
+  keyboardShortcuts.on('redo', () => {
+    viewModel.mailboxView.toasts?.show?.('Redo not yet implemented', 'info');
+  });
+}
+
+function showShortcutsHelp() {
+  const shortcuts = showKeyboardShortcutsHelp();
+
+  // Create modal HTML
+  let html = '<div class="fe-shortcuts-help"><h2>Keyboard Shortcuts</h2>';
+
+  for (const [category, items] of Object.entries(shortcuts)) {
+    if (items.length === 0) continue;
+    html += `<h3>${category}</h3><table class="fe-shortcuts-table">`;
+    items.forEach(item => {
+      html += `<tr><td class="fe-shortcut-key">${item.key}</td><td>${item.label}</td></tr>`;
+    });
+    html += '</table>';
+  }
+
+  html += '</div>';
+
+  // Show in modal (you'll need to create a modal for this)
+  viewModel.mailboxView.toasts?.show?.('Press ? to see keyboard shortcuts', 'info');
+  console.log('Keyboard shortcuts:', shortcuts);
+}
 
 function applyTheme(pref) {
   const theme = pref || Local.get('theme') || 'system';
@@ -166,6 +428,7 @@ function bootstrap() {
   if (route === 'calendar') viewModel.calendarView.load();
   if (route === 'contacts') viewModel.contactsView.load();
   initStarfield();
+  initKeyboardShortcuts();
 
   // Mark as ready to show - use class for better performance
   root.classList.add('ready');

@@ -95,4 +95,26 @@ db.version(3)
     }
   });
 
+// v4: Fix primary keys to use [account+path] to prevent conflicts between accounts
+db.version(4)
+  .stores({
+    accounts: 'id,email,createdAt,updatedAt',
+    folders: '[account+path],account,path,parentPath,unread_count,specialUse,updatedAt',
+    messages:
+      '[account+id],id,folder,account,[account+folder],from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt,bodyIndexed',
+    messageContent: null, // Delete legacy store
+    messageBodies:
+      '[account+id],account,id,[account+folder],folder,body,textContent,attachments,updatedAt',
+    drafts: '[account+id],id,account,folder,updatedAt',
+    searchIndex: '[account+key],key,account,updatedAt',
+    indexMeta: '[account+key],key,account,updatedAt',
+    syncQueue: '++queueId,account,action,resource,folder,status,createdAt',
+    meta: 'key,updatedAt'
+  })
+  .upgrade(async (tx) => {
+    // No data migration needed - Dexie will handle the reindexing
+    // The compound keys [account+path] and [account+id] will be created automatically
+    console.log('Upgraded to v4: account-scoped primary keys');
+  });
+
 export { db };

@@ -1,5 +1,6 @@
 import ko from 'knockout';
 import { Local } from '../utils/storage';
+import { keyboardShortcuts } from '../utils/keyboard-shortcuts';
 
 export class SettingsModal {
   constructor() {
@@ -32,6 +33,14 @@ export class SettingsModal {
     this.storageUsed = null;
     this.storageTotal = null;
 
+    // Keyboard shortcuts
+    this.isMac = ko.observable(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+    this.shortcutsList = ko.observableArray([]);
+    this.editingShortcut = ko.observable(null);
+    this.editingShortcutKey = ko.observable('');
+    this.shortcutEditVisible = ko.observable(false);
+    this.capturedKeys = ko.observable('');
+
     this.loadFromStorage();
   }
 
@@ -43,6 +52,7 @@ export class SettingsModal {
 
   open = () => {
     this.loadFromStorage();
+    this.loadShortcuts();
     this.visible(true);
   };
 
@@ -73,6 +83,7 @@ export class SettingsModal {
 
   close = () => {
     this.visible(false);
+    keyboardShortcuts.stopCapture();
   };
 
   save = () => {
@@ -171,5 +182,125 @@ export class SettingsModal {
       this.rebuildingIndex(false);
       this.closeRebuildConfirm();
     }
+  };
+
+  /**
+   * Format keyboard shortcut key for OS-specific display
+   */
+  formatKey = (key) => {
+    return keyboardShortcuts.formatKey(key);
+  };
+
+  /**
+   * Load keyboard shortcuts list
+   */
+  loadShortcuts = () => {
+    const shortcuts = keyboardShortcuts.getShortcutsList();
+    this.shortcutsList(shortcuts);
+  };
+
+  /**
+   * Check if a shortcut is being edited
+   */
+  isEditingShortcut = (shortcut) => {
+    const editing = this.editingShortcut();
+    return editing && editing.originalKey === shortcut.originalKey;
+  };
+
+  /**
+   * Start editing a keyboard shortcut
+   */
+  editShortcut = (shortcut) => {
+    this.editingShortcut(shortcut);
+    this.editingShortcutKey(shortcut.key);
+    this.capturedKeys('');
+    keyboardShortcuts.startCapture(this.onShortcutCaptured);
+  };
+
+  /**
+   * Cancel editing a shortcut
+   */
+  cancelEditShortcut = () => {
+    this.editingShortcut(null);
+    this.editingShortcutKey('');
+    this.capturedKeys('');
+    keyboardShortcuts.stopCapture();
+  };
+
+  /**
+   * Save edited shortcut
+   */
+  saveEditedShortcut = () => {
+    const shortcut = this.editingShortcut();
+    let newKey = (this.capturedKeys() || '').trim().toLowerCase();
+
+    if (!shortcut || !newKey) {
+      this.error('Please enter a valid keyboard shortcut.');
+      return;
+    }
+
+    // Normalize the key format (remove extra spaces around +)
+    newKey = newKey.replace(/\s*\+\s*/g, '+');
+    newKey = keyboardShortcuts.normalizeShortcut(newKey);
+    if (!newKey) {
+      this.error('Please enter a valid keyboard shortcut.');
+      return;
+    }
+
+    try {
+      // Update the shortcut in the keyboard shortcuts manager
+      keyboardShortcuts.updateShortcut(shortcut.originalKey, newKey);
+
+      // Reload the shortcuts list
+      this.loadShortcuts();
+
+      this.success(`Shortcut updated: ${shortcut.label}`);
+      this.toasts?.show?.('Shortcut updated', 'success');
+      this.cancelEditShortcut();
+    } catch (err) {
+      this.error(err?.message || 'Failed to update shortcut.');
+      this.toasts?.show?.(this.error(), 'error');
+    }
+  };
+
+  /**
+   * Clear captured keys when input changes
+   */
+  onShortcutInputChange = (value) => {
+    // Normalize the input to lowercase and trim
+    const normalized = value.toLowerCase().trim();
+    this.capturedKeys(normalized);
+  };
+
+  /**
+   * Re-arm keyboard shortcut capture when the input is focused or clicked
+   */
+  startShortcutCapture = () => {
+    if (!this.editingShortcut()) return;
+    keyboardShortcuts.startCapture(this.onShortcutCaptured);
+  };
+
+  /**
+   * Reset keyboard shortcuts to defaults
+   */
+  resetShortcuts = () => {
+    this.error('');
+    this.success('');
+    try {
+      keyboardShortcuts.resetToDefaults();
+      this.loadShortcuts();
+      this.success('Keyboard shortcuts reset to defaults.');
+      this.toasts?.show?.('Keyboard shortcuts reset to defaults', 'success');
+    } catch (err) {
+      this.error(err?.message || 'Failed to reset shortcuts.');
+      this.toasts?.show?.(this.error(), 'error');
+    }
+  };
+
+  /**
+   * Begin capturing a shortcut while editing
+   */
+  onShortcutCaptured = (combo) => {
+    this.capturedKeys(combo);
   };
 }

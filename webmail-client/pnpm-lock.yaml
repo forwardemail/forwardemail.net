@@ -63,6 +63,9 @@ importers:
       dompurify:
         specifier: ^3.1.6
         version: 3.3.0
+      hotkeys-js:
+        specifier: 4.0.0-beta.7
+        version: 4.0.0-beta.7
       vite:
         specifier: ^5.0.0
         version: 5.4.21(terser@5.44.1)
@@ -1662,6 +1665,9 @@ packages:
 
   hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
+
+  hotkeys-js@4.0.0-beta.7:
+    resolution: {integrity: sha512-mP3wFr733DydlwbnxOjNP/U75bKxw+Bp2i2jqw+OiME2DecyE0Eqzb+spkrV4xCkw5USYIJfKznSwKqaPMG0sw==}
 
   html-to-text@9.0.5:
     resolution: {integrity: sha512-qY60FjREgVZL03vJU6IfMV4GDjGBIoOyvuFdpBDIX9yTlDw0TjxVBQp+P8NvpdIXNJvfWBTNul7fsAQJq2FNpg==}
@@ -4569,6 +4575,8 @@ snapshots:
   he@1.2.0: {}
 
   hosted-git-info@2.8.9: {}
+
+  hotkeys-js@4.0.0-beta.7: {}
 
   html-to-text@9.0.5:
     dependencies:

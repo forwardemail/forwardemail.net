@@ -344,18 +344,24 @@
         display: flex;
         flex-direction: column;
         gap: 18px;
+        flex: 1;
+        overflow: hidden;
       }
 
       .fe-settings-layout {
         display: grid;
         grid-template-columns: 240px 1fr;
         gap: 16px;
+        flex: 1;
+        overflow: hidden;
       }
 
       .fe-settings-content {
         display: flex;
         flex-direction: column;
         gap: 16px;
+        overflow-y: auto;
+        padding-right: 8px;
       }
 
       .fe-settings-sidebar {
@@ -2618,6 +2624,10 @@
                       <span data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"></span>
                     </button>
                     <div class="fe-menu-divider"></div>
+                    <button type="button" data-bind="click: function(){ $parent.archiveMessage($data); }">
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path><rect x="3" y="3" width="18" height="5" rx="2"></rect><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+                      <span>Archive</span>
+                    </button>
                     <button type="button" data-bind="click: function(){ $parent.deleteMessage($data); }">
                       <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                       <span>Delete</span>
@@ -2681,6 +2691,7 @@
               <a href="javascript:void(0)" data-bind="css: { active: section() === 'general' }, click: function(){ setSection('general'); }">General</a>
               <a href="javascript:void(0)" data-bind="css: { active: section() === 'accounts' }, click: function(){ setSection('accounts'); }">Accounts</a>
               <a href="javascript:void(0)" data-bind="css: { active: section() === 'appearance' }, click: function(){ setSection('appearance'); }">Appearance</a>
+              <a href="javascript:void(0)" data-bind="css: { active: section() === 'shortcuts' }, click: function(){ setSection('shortcuts'); }">Keyboard Shortcuts</a>
               <a href="javascript:void(0)" data-bind="css: { active: section() === 'security' }, click: function(){ setSection('security'); }">Security &amp; Privacy</a>
               <a href="javascript:void(0)" data-bind="css: { active: section() === 'filters' }, click: function(){ setSection('filters'); }">Filters</a>
             </nav>
@@ -2915,6 +2926,68 @@
                   </button>
                   <button class="fe-button ghost" type="button" data-bind="click: open">
                     Reload settings
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Keyboard Shortcuts -->
+            <div class="fe-settings-grid" data-bind="visible: section() === 'shortcuts'">
+              <div class="fe-settings-card">
+                <h3>Keyboard Shortcuts</h3>
+                <div class="fe-settings-note" style="margin-bottom: 16px;">
+                  Navigate and control your email efficiently with keyboard shortcuts. Click edit to customize any shortcut.
+                  <span data-bind="text: isMac() ? ' On Mac, ⌘ (cmd) is used instead of ctrl.' : ' On Windows/Linux, ctrl is the primary modifier key.'"></span>
+                </div>
+
+                <!-- Shortcuts List (inline editing like PGP keys) -->
+                <div class="fe-key-list" data-bind="foreach: shortcutsList">
+                  <!-- View Mode -->
+                  <div class="fe-key-row" data-bind="visible: !$parent.isEditingShortcut($data)">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                      <span style="font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 13px; background: rgba(0, 175, 248, 0.1); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0, 175, 248, 0.2); min-width: 120px; display: inline-block;" data-bind="text: key"></span>
+                      <span class="fe-key-name" data-bind="text: label"></span>
+                    </div>
+                    <div class="fe-key-actions">
+                      <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Edit" title="Edit" data-bind="click: $parent.editShortcut">✎</button>
+                    </div>
+                  </div>
+
+                  <!-- Edit Mode -->
+                  <div class="fe-key-form" data-bind="visible: $parent.isEditingShortcut($data)" style="display: none;">
+                    <div class="fe-settings-note" style="margin-bottom: 12px;">
+                      Action: <strong data-bind="text: label"></strong>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                      <div>
+                        <label style="font-weight: 600; font-size: 13px; display: block; margin-bottom: 6px;">Current shortcut:</label>
+                        <div style="padding: 8px 12px; font-family: 'SF Mono', monospace; background: rgba(0, 175, 248, 0.1); border-radius: 4px; border: 1px solid rgba(0, 175, 248, 0.2);" data-bind="text: key"></div>
+                      </div>
+                      <div>
+                        <label style="font-weight: 600; font-size: 13px; display: block; margin-bottom: 6px;">New shortcut:</label>
+                        <input
+                          class="fe-input"
+                          type="text"
+                          placeholder="Click then press the new keys"
+                          data-bind="textInput: $parent.capturedKeys, attr: {'data-shortcut-capture': true, readonly: true}, event: { focus: $parent.startShortcutCapture, click: $parent.startShortcutCapture }"
+                          style="width: 100%; font-family: 'SF Mono', monospace;"
+                        />
+                        <div class="fe-settings-note" style="margin-top: 6px; font-size: 12px;">
+                          Click the field and press your shortcut (e.g., <span data-bind="text: $parent.isMac() ? 'cmd + r' : 'ctrl + r'"></span>, shift + a, j, escape). Cmd/Ctrl keys are normalized automatically.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="fe-settings-actions" style="margin-top: 12px;">
+                      <button class="fe-button ghost" type="button" data-bind="click: $parent.cancelEditShortcut">Cancel</button>
+                      <button class="fe-button" type="button" data-bind="click: $parent.saveEditedShortcut, enable: $parent.capturedKeys">Save</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="fe-settings-actions" style="margin-top: 24px;">
+                  <button class="fe-button ghost" type="button" data-bind="click: resetShortcuts">
+                    Reset all to defaults
                   </button>
                 </div>
               </div>
