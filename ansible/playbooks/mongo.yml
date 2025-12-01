@@ -14,7 +14,24 @@
     service_port_var: MONGO_PORT
     service_port_default: "27017"
     service_identifier: mongo
-    ufw_comment: "Auto-whitelist MongoDB"
+    ufw_comment: "Auto-whitelist MongoDB TLS"
+
+- name: Import high-traffic sysctl tuning for MongoDB
+  import_playbook: sysctl-high-traffic.yml
+  vars:
+    target_hosts: mongo
+    service_name: MongoDB
+    sysctl_file_name: mongodb
+
+- name: Import I/O and filesystem tuning for MongoDB
+  import_playbook: io-filesystem-tuning.yml
+  vars:
+    target_hosts: mongo
+    service_name: MongoDB
+    service_identifier: mongo
+    data_directory: /var/lib/mongodb
+    read_ahead_kb: 16
+
 
 - hosts: mongo
   name: Certificate Paths
@@ -124,22 +141,17 @@
     # See post-deployment instructions for manual restart procedure
   tasks:
     # MongoDB-specific sysctl optimizations
-    # Note: THP, ulimits, and base sysctl settings are inherited from security.yml
+    # Note: Common high-traffic settings imported from sysctl-high-traffic.yml
+    # These are MongoDB-specific additions
     - name: Configure MongoDB-specific sysctl parameters
       ansible.builtin.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
         state: present
         reload: true
-        sysctl_file: /etc/sysctl.d/99-mongodb.conf
+        sysctl_file: /etc/sysctl.d/99-mongodb-specific.conf
       loop:
-        - { name: 'vm.dirty_background_ratio', value: '10' }
-        - { name: 'vm.dirty_ratio', value: '20' }
-        - { name: 'net.core.somaxconn', value: '4096' }
-        - { name: 'net.ipv4.tcp_max_syn_backlog', value: '4096' }
-        - { name: 'net.ipv4.tcp_fin_timeout', value: '30' }
-        - { name: 'net.ipv4.tcp_keepalive_intvl', value: '30' }
-        - { name: 'net.ipv4.tcp_keepalive_time', value: '120' }
+        - { name: 'vm.max_map_count', value: '262144' }  # Required for MongoDB WiredTiger storage engine
 
     # Configure swap for MongoDB stability
     # MongoDB requires swap to prevent OOM crashes during high memory usage
@@ -363,6 +375,77 @@
               mode: requireTLS
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
               CAFile: /etc/mongodb/ssl/ca.pem
+
+    # Create admin user if authentication is not yet enabled
+    - name: Check if admin user exists
+      shell: |
+        mongosh --quiet --eval "db.adminCommand('listUsers').users.length" admin 2>/dev/null || echo "0"
+      register: admin_user_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create MongoDB admin user
+      shell: |
+        mongosh --quiet admin --eval '
+          db.createUser({
+            user: "{{ lookup('env', 'MONGO_USER') }}",
+            pwd: "{{ lookup('env', 'MONGO_PASSWORD') }}",
+            roles: [
+              { role: "root", db: "admin" },
+              { role: "userAdminAnyDatabase", db: "admin" },
+              { role: "dbAdminAnyDatabase", db: "admin" },
+              { role: "readWriteAnyDatabase", db: "admin" }
+            ]
+          })
+        '
+      when: admin_user_check.stdout | int == 0
+      no_log: true
+
+    - name: Enable MongoDB authentication in mongod.conf
+      blockinfile:
+        path: /etc/mongod.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - SECURITY"
+        block: |
+          security:
+            authorization: enabled
+
+    - name: Configure MongoDB connection limits
+      blockinfile:
+        path: /etc/mongod.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - NET CONFIG"
+        block: |
+          net:
+            maxIncomingConnections: 65536
+            port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
+
+    # Disable mongosh telemetry globally
+    - name: Create mongosh config directory
+      file:
+        path: /home/{{ item }}/.mongodb/mongosh
+        state: directory
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0755'
+      loop:
+        - root
+        - deploy
+      ignore_errors: true
+
+    - name: Disable mongosh telemetry for all users
+      copy:
+        dest: /home/{{ item }}/.mongodb/mongosh/config
+        content: |
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+      loop:
+        - root
+        - deploy
+      ignore_errors: true
 
     # UFW Configuration - Using reusable playbook
     # See ufw-allowlist.yml for implementation details
@@ -638,7 +721,7 @@
           Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
           Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
-          Environment="POSTFIX_RCPTS={{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net', true) }}"
+          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 

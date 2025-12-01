@@ -47,10 +47,10 @@ The monitoring script performs the following checks every 10 minutes:
 
 ### Email Recipients
 
-Set the `POSTFIX_RCPTS` environment variable to configure alert recipients:
+Set the `MSMTP_RCPTS` environment variable to configure alert recipients:
 
 ```bash
-export POSTFIX_RCPTS="devops@example.com,security@example.com"
+export MSMTP_RCPTS="devops@example.com,security@example.com"
 ```
 
 Default: `security@forwardemail.net`

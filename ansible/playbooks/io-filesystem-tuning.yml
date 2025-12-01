@@ -1,0 +1,110 @@
+---
+- name: "I/O and Filesystem Tuning for {{ service_name }}"
+  hosts: "{{ target_hosts }}"
+  become: true
+  become_user: root
+  tasks:
+    # Detect block device for data directory
+    - name: "Get block device for {{ data_directory }}"
+      shell: |
+        df "{{ data_directory }}" | tail -1 | awk '{print $1}' | sed 's/[0-9]*$//'
+      register: block_device_result
+      changed_when: false
+
+    - name: Set block device fact
+      set_fact:
+        block_device: "{{ block_device_result.stdout }}"
+
+    - name: "Get device name without /dev/ prefix"
+      set_fact:
+        device_name: "{{ block_device | regex_replace('^/dev/', '') }}"
+
+    # Detect if device is multi-queue (NVMe, modern SSD)
+    - name: "Check if {{ device_name }} is multi-queue device"
+      stat:
+        path: "/sys/block/{{ device_name }}/mq"
+      register: mq_check
+
+    # Set appropriate I/O scheduler based on device type
+    - name: "Set I/O scheduler fact"
+      set_fact:
+        io_scheduler: "{{ 'mq-deadline' if mq_check.stat.exists else 'deadline' }}"
+
+    - name: "Configure I/O scheduler to {{ io_scheduler }} for {{ device_name }}"
+      shell: |
+        echo "{{ io_scheduler }}" > /sys/block/{{ device_name }}/queue/scheduler
+      args:
+        executable: /bin/bash
+      register: scheduler_result
+      changed_when: scheduler_result.rc == 0
+      failed_when: false
+
+    - name: "Make I/O scheduler persistent via udev rule"
+      copy:
+        dest: "/etc/udev/rules.d/60-{{ service_identifier }}-scheduler.rules"
+        content: |
+          # Set I/O scheduler for {{ service_name }} data device
+          ACTION=="add|change", KERNEL=="{{ device_name }}", ATTR{queue/scheduler}="{{ io_scheduler }}"
+        mode: "0644"
+
+    # Configure read-ahead for database workloads
+    - name: "Set read-ahead to {{ read_ahead_kb }}KB for {{ device_name }}"
+      shell: |
+        blockdev --setra {{ read_ahead_kb * 2 }} {{ block_device }}
+      args:
+        executable: /bin/bash
+      register: readahead_result
+      changed_when: readahead_result.rc == 0
+
+    - name: "Make read-ahead persistent via udev rule"
+      copy:
+        dest: "/etc/udev/rules.d/60-{{ service_identifier }}-readahead.rules"
+        content: |
+          # Set read-ahead for {{ service_name }} data device
+          ACTION=="add|change", KERNEL=="{{ device_name }}", ATTR{bdi/read_ahead_kb}="{{ read_ahead_kb }}"
+        mode: "0644"
+
+    # Check filesystem mount options
+    - name: "Get current mount options for {{ data_directory }}"
+      shell: |
+        mount | grep "{{ block_device }}" | awk '{print $6}' | tr -d '()'
+      register: mount_options_result
+      changed_when: false
+
+    - name: "Check filesystem mount options"
+      set_fact:
+        has_noatime: "{{ 'noatime' in mount_options_result.stdout or 'relatime' in mount_options_result.stdout }}"
+        has_nodiratime: "{{ 'nodiratime' in mount_options_result.stdout }}"
+        has_discard: "{{ 'discard' in mount_options_result.stdout }}"
+
+    - name: "Display filesystem mount options recommendation"
+      debug:
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                    📁 FILESYSTEM MOUNT OPTIONS                        ║
+          ║                                                                        ║
+          ║  Current: {{ mount_options_result.stdout }}
+          ║                                                                        ║
+          ║  {% if has_noatime %}✅{% else %}⚠️{% endif %} noatime     - Disable file access time updates
+          ║  {% if has_nodiratime %}✅{% else %}⚠️{% endif %} nodiratime  - Disable directory access time updates
+          ║  {% if has_discard %}✅{% else %}⚠️{% endif %} discard     - Enable TRIM for SSD longevity
+          ║                                                                        ║
+          ║  {% if not (has_noatime and has_nodiratime and has_discard) %}RECOMMENDED: Update /etc/fstab with optimal mount options:         ║
+          ║                                                                        ║
+          ║  {{ block_device }} {{ data_directory }} <fstype> noatime,nodiratime,discard 0 0
+          ║                                                                        ║
+          ║  Then remount: sudo mount -o remount {{ data_directory }}
+          ║                                                                        ║{% else %}All recommended mount options are enabled!                           ║{% endif %}
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝
+      when: true
+
+    # Reload udev rules
+    - name: Reload udev rules
+      command: udevadm control --reload-rules
+      changed_when: false
+
+    - name: Trigger udev rules
+      command: udevadm trigger
+      changed_when: false

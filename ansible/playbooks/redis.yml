@@ -16,6 +16,23 @@
     service_identifier: redis
     ufw_comment: "Auto-whitelist Redis TLS"
 
+- name: Import high-traffic sysctl tuning for Redis
+  import_playbook: sysctl-high-traffic.yml
+  vars:
+    target_hosts: redis
+    service_name: Redis
+    sysctl_file_name: redis
+
+- name: Import I/O and filesystem tuning for Redis
+  import_playbook: io-filesystem-tuning.yml
+  vars:
+    target_hosts: redis
+    service_name: Redis
+    service_identifier: redis
+    data_directory: /var/lib/valkey
+    read_ahead_kb: 16
+
+
 - hosts: redis
   name: Certificate Paths
   vars_prompt:
@@ -126,18 +143,17 @@
     # See post-deployment instructions for manual restart procedure
   tasks:
     # Redis-specific sysctl optimizations
-    # Note: THP, ulimits, and base sysctl settings are inherited from security.yml
+    # Note: Common high-traffic settings imported from sysctl-high-traffic.yml
+    # This is Redis-specific addition
     - name: Configure Redis-specific sysctl parameters
       ansible.builtin.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
         state: present
         reload: true
-        sysctl_file: /etc/sysctl.d/99-redis.conf
+        sysctl_file: /etc/sysctl.d/99-redis-specific.conf
       loop:
-        - { name: 'vm.overcommit_memory', value: '1' }
-        - { name: 'net.core.somaxconn', value: '65536' }
-        - { name: 'net.ipv4.tcp_max_syn_backlog', value: '65536' }
+        - { name: 'vm.overcommit_memory', value: '1' }  # Required for Redis background saves
 
     # Configure swap for Redis stability
     # Redis official docs: "swap file size is equal to amount of memory on your system"
@@ -573,7 +589,7 @@
           # Performance Optimizations
           tcp-backlog 65536
           tcp-keepalive 0
-          maxclients 10000
+          maxclients 65536
 
     - name: Ensure Valkey is enabled and started
       service:
@@ -927,7 +943,7 @@
           Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
           Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') or '/var/lib/valkey' }}"
-          Environment="POSTFIX_RCPTS={{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net', true) }}"
+          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/backup-redis.sh
           ExecStartPost=/usr/local/bin/cleanup-redis-backups.sh
 
@@ -1060,7 +1076,7 @@
           Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
           Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default(lookup('env', 'REDIS_PORT'), true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
-          Environment="POSTFIX_RCPTS={{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net', true) }}"
+          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/monitor-redis-commands.sh
 
     # Create systemd timer for Redis command monitoring (every hour)

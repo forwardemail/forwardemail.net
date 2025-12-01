@@ -53,7 +53,7 @@ This guide provides complete testing procedures for all **18 monitoring systems*
 
 **Security Playbook (security.yml) - 8 systems**
 
-* System Resource Monitor (CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds)
+* System Resource Monitor (CPU/Memory/Disk at 75%, 80%, 90%, 95%, 100% thresholds)
 * SSH Security Monitor (Enhanced - logs ALL SSH activity: successful/failed logins, logged in users, commands)
 * USB Device Monitor (Unknown device detection with whitelisting)
 * Root Access Monitor (Sudo, su, and direct root login tracking)
@@ -110,7 +110,7 @@ ssh devops@<server-hostname>
 Ensure these are set (usually configured via Ansible):
 
 ```bash
-echo $POSTFIX_RCPTS  # Should show email recipient(s)
+echo $MSMTP_RCPTS  # Should show email recipient(s)
 ```
 
 ---
@@ -120,7 +120,7 @@ echo $POSTFIX_RCPTS  # Should show email recipient(s)
 
 ### 1. System Resource Monitor
 
-**Purpose**: Monitors CPU and memory usage at 75%, 80%, 90%, 95%, 100% thresholds
+**Purpose**: Monitors CPU, memory, and disk usage at 75%, 80%, 90%, 95%, 100% thresholds
 
 **Files Deployed**:
 
@@ -148,7 +148,7 @@ sudo systemctl start system-resource-monitor.service
 # 4. Check the log output
 sudo tail -f /var/log/system-resource-monitor.log
 
-# Expected: Shows timestamp, CPU%, Memory%, and status
+# Expected: Shows timestamp, CPU%, Memory%, Disk%, and status
 
 # 5. Check service status
 sudo systemctl status system-resource-monitor.service
@@ -183,7 +183,7 @@ sudo journalctl -u system-resource-monitor.service -n 20
 * [ ] Timer is active and enabled
 * [ ] Service executes without errors
 * [ ] Log file is being written to
-* [ ] High CPU/memory triggers email alert
+* [ ] High CPU/memory/disk triggers email alert
 * [ ] Rate limiting prevents alert spam
 
 ---
@@ -1347,13 +1347,15 @@ sudo systemctl status unbound.service
 ### Testing Email Delivery
 
 ```bash
-# 1. Check Postfix is running
-sudo systemctl status postfix
+# 1. Check msmtp is configured
+# Check msmtp configuration
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log
 
 # Expected: Active: active (running)
 
 # 2. Test email sending directly
-echo "Test email body" | mail -s "Test Subject" $POSTFIX_RCPTS
+echo "Test email body" | mail -s "Test Subject" $MSMTP_RCPTS
 
 # 3. Check mail queue
 mailq
@@ -1382,7 +1384,7 @@ sudo journalctl -u failure-notification@test.service -n 20
 
 ### Validation Checklist
 
-* [ ] Postfix is running
+* [ ] msmtp is configured
 * [ ] Test emails are delivered
 * [ ] Mail logs show successful delivery
 * [ ] Rate limiting works (prevents spam)
@@ -1431,8 +1433,10 @@ sudo bash -x /usr/local/bin/<script-name>.sh
 #### 3. No Email Alerts
 
 ```bash
-# Check Postfix status
-sudo systemctl status postfix
+# Check msmtp configuration
+# Check msmtp configuration
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log
 
 # Check mail queue
 mailq
@@ -1441,10 +1445,10 @@ mailq
 sudo tail -f /var/log/mail.log
 
 # Check environment variables
-echo $POSTFIX_RCPTS
+echo $MSMTP_RCPTS
 
 # Test email sending
-echo "Test" | mail -s "Test" $POSTFIX_RCPTS
+echo "Test" | mail -s "Test" $MSMTP_RCPTS
 
 # Check rate limiting lockfiles
 ls -la /var/lock/*-monitor-*.lock
@@ -1526,7 +1530,9 @@ echo -e "\n=== UNBOUND MONITORING ==="
 sudo systemctl status unbound.service
 
 echo -e "\n=== EMAIL INFRASTRUCTURE ==="
-sudo systemctl status postfix.service
+# Check msmtp configuration
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log.service
 
 echo -e "\n=== ALL TIMERS ==="
 sudo systemctl list-timers | grep -E "monitor|backup|update.*ufw"

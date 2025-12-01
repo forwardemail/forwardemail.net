@@ -246,7 +246,7 @@ send_sudo_alert() {
         /usr/local/bin/send-rate-limited-email.sh "root-sudo-${user}" "$subject" "$body"
         log_message "Sudo alert sent for user: $user"
     else
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
+        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
         log_message "Sudo alert sent via sendmail for user: $user"
     fi
 }
@@ -337,7 +337,7 @@ send_su_alert() {
         /usr/local/bin/send-rate-limited-email.sh "root-su-${user}" "$subject" "$body"
         log_message "Su to root alert sent for user: $user"
     else
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
+        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
         log_message "Su to root alert sent via sendmail for user: $user"
     fi
 }

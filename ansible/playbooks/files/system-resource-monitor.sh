@@ -3,7 +3,7 @@
 # Copyright (c) Forward Email LLC
 # SPDX-License-Identifier: BUSL-1.1
 #
-# Monitors CPU and memory usage with multiple threshold levels
+# Monitors CPU, memory, and disk usage with multiple threshold levels
 # Sends email alerts via rate-limited email system
 # Usage: Executed by systemd timer every 5 minutes
 
@@ -110,6 +110,21 @@ get_memory_usage() {
     echo "$mem_usage"
 }
 
+# Get disk usage percentage for root filesystem
+get_disk_usage_percentage() {
+    local disk_usage
+    
+    # Get disk usage percentage for root filesystem
+    disk_usage=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
+    
+    # Validate the result
+    if ! [[ "$disk_usage" =~ ^[0-9]+$ ]] || [ "$disk_usage" -lt 0 ] || [ "$disk_usage" -gt 100 ]; then
+        disk_usage=0
+    fi
+    
+    echo "$disk_usage"
+}
+
 # Get top processes by CPU
 get_top_cpu_processes() {
     ps aux --sort=-%cpu | head -11 | tail -10 | awk '{printf "%-10s %5s%% %5s %s\n", $1, $3, $4, substr($0, index($0,$11))}'
@@ -177,6 +192,7 @@ send_alert() {
     local uptime_info=$(get_uptime)
     local cpu_current=$(get_cpu_usage)
     local mem_current=$(get_memory_usage)
+    local disk_current=$(get_disk_usage_percentage)
 
     # Determine color based on severity
     local color
@@ -221,14 +237,14 @@ send_alert() {
             <p><strong>Severity Level:</strong> ${severity}</p>
         </div>
 
-        <div class=\"metric\">
-            <div class=\"metric-title\">Current System Status</div>
+           <div class="metric">
+            <div class="metric-title">Current System Status</div>
             <p><strong>CPU Usage:</strong> ${cpu_current}%</p>
             <p><strong>Memory Usage:</strong> ${mem_current}%</p>
+            <p><strong>Disk Usage (/):</strong> ${disk_current}% (${disk_usage})</p>
             <p><strong>Load Averages:</strong>${load_averages}</p>
             <p><strong>Uptime:</strong> ${uptime_info}</p>
-            <p><strong>Disk Usage:</strong> ${disk_usage}</p>
-        </div>
+        </div>>
 
         <div class=\"metric\">
             <div class=\"metric-title\">Memory Details</div>
@@ -279,7 +295,7 @@ send_alert() {
         log_message "Alert sent: ${resource} ${current_value}% (threshold: ${threshold}%)"
     else
         # Fallback to sendmail
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
+        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
         log_message "Alert sent via sendmail: ${resource} ${current_value}% (threshold: ${threshold}%)"
     fi
 }
@@ -288,11 +304,12 @@ send_alert() {
 main() {
     log_message "Starting resource monitoring check"
 
-    # Get current CPU and memory usage
+    # Get current CPU, memory, and disk usage
     cpu_usage=$(get_cpu_usage)
     mem_usage=$(get_memory_usage)
+    disk_usage=$(get_disk_usage_percentage)
 
-    log_message "Current usage - CPU: ${cpu_usage}%, Memory: ${mem_usage}%"
+    log_message "Current usage - CPU: ${cpu_usage}%, Memory: ${mem_usage}%, Disk: ${disk_usage}%"
 
     # Check CPU thresholds (from highest to lowest)
     for threshold in 100 95 90 80 75; do
@@ -311,6 +328,17 @@ main() {
             log_message "Memory threshold ${threshold}% exceeded (current: ${mem_usage}%)"
             if should_send_alert "memory" "$threshold"; then
                 send_alert "memory" "$mem_usage" "$threshold"
+            fi
+            break  # Only alert for the highest threshold exceeded
+        fi
+    done
+
+    # Check disk thresholds (from highest to lowest)
+    for threshold in 100 95 90 80 75; do
+        if [ "$disk_usage" -ge "$threshold" ]; then
+            log_message "Disk threshold ${threshold}% exceeded (current: ${disk_usage}%)"
+            if should_send_alert "disk" "$threshold"; then
+                send_alert "disk" "$disk_usage" "$threshold"
             fi
             break  # Only alert for the highest threshold exceeded
         fi

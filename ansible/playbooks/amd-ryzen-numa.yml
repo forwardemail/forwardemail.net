@@ -1,0 +1,103 @@
+---
+- name: "AMD Ryzen NUMA Optimization"
+  hosts: "{{ target_hosts }}"
+  become: true
+  become_user: root
+  tasks:
+    # Detect CPU vendor and model
+    - name: Detect CPU information
+      shell: 'grep -m1 "model name" /proc/cpuinfo | cut -d: -f2 | xargs'
+      register: cpu_model
+      changed_when: false
+
+    - name: Check if AMD Ryzen processor
+      set_fact:
+        is_amd_ryzen: "{{ 'AMD Ryzen' in cpu_model.stdout or 'AMD EPYC' in cpu_model.stdout }}"
+
+    - name: Get NUMA node count
+      shell: numactl --hardware 2>/dev/null | grep "available:" | awk '{print $2}' || echo "0"
+      register: numa_node_count
+      changed_when: false
+      when: is_amd_ryzen
+
+    - name: Set NUMA optimization facts
+      set_fact:
+        has_numa: "{{ (numa_node_count.stdout | default('0') | int) > 1 }}"
+      when: is_amd_ryzen
+
+    # AMD Ryzen NUMA optimizations
+    - name: Configure AMD Ryzen NUMA sysctl parameters
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+        sysctl_file: /etc/sysctl.d/99-amd-ryzen-numa.conf
+      loop:
+        # Critical: Prevent zone reclaim (causes severe performance issues)
+        - { name: "vm.zone_reclaim_mode", value: "0" }
+        # Disable automatic NUMA balancing for single-process databases
+        - { name: "vm.numa_balancing", value: "0" }
+      when: is_amd_ryzen
+
+    # Transparent Huge Pages (THP) configuration for databases
+    - name: Disable Transparent Huge Pages for {{ service_name }}
+      shell: |
+        echo never > /sys/kernel/mm/transparent_hugepage/enabled
+        echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      when: 
+        - is_amd_ryzen
+        - disable_thp | default(false)
+
+    - name: Make THP disable persistent via rc.local
+      lineinfile:
+        path: /etc/rc.local
+        create: yes
+        mode: '0755'
+        insertbefore: '^exit 0'
+        line: |
+          # Disable Transparent Huge Pages for {{ service_name }}
+          echo never > /sys/kernel/mm/transparent_hugepage/enabled
+          echo never > /sys/kernel/mm/transparent_hugepage/defrag
+      when:
+        - is_amd_ryzen
+        - disable_thp | default(false)
+
+    - name: Ensure rc.local is executable and has shebang
+      blockinfile:
+        path: /etc/rc.local
+        create: yes
+        mode: '0755'
+        insertbefore: BOF
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - rc.local header"
+        block: |
+          #!/bin/bash
+      when:
+        - is_amd_ryzen
+        - disable_thp | default(false)
+
+    - name: Display AMD Ryzen NUMA optimization status
+      debug:
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║              ⚡ AMD RYZEN NUMA OPTIMIZATION                           ║
+          ║                                                                        ║
+          ║  CPU: {{ cpu_model.stdout }}
+          ║  AMD Ryzen Detected: {% if is_amd_ryzen %}✅ Yes{% else %}❌ No{% endif %}
+          ║  {% if is_amd_ryzen %}NUMA Nodes: {{ numa_node_count.stdout | default('N/A') }}
+          ║  NUMA Topology: {% if has_numa | default(false) %}Multi-node{% else %}Single-node{% endif %}{% endif %}
+          ║                                                                        ║
+          ║  {% if is_amd_ryzen %}Optimizations Applied:                                                  ║
+          ║  ✅ vm.zone_reclaim_mode=0 (prevent memory reclaim issues)            ║
+          ║  ✅ vm.numa_balancing=0 (disable auto NUMA balancing)                 ║
+          ║  {% if disable_thp | default(false) %}✅ Transparent Huge Pages disabled ({{ service_name }})                  ║{% endif %}
+          ║                                                                        ║
+          ║  Benefits:                                                            ║
+          ║  • Prevents severe performance degradation from zone reclaim          ║
+          ║  • Avoids unnecessary page migrations for single-process workloads    ║
+          ║  {% if disable_thp | default(false) %}• Eliminates THP-related latency spikes for databases              ║{% endif %}
+          ║  • Optimized for AMD Ryzen CCX (Core Complex) architecture            ║{% else %}No AMD Ryzen processor detected - optimizations skipped                 ║{% endif %}
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝
+      when: true

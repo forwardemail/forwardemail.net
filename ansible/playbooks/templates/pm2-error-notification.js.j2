@@ -15,9 +15,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration from environment variables
-const POSTFIX_USERNAME = process.env.POSTFIX_USERNAME || 'mailerdaemon@forwardemail.net';
-const POSTFIX_PASSWORD = process.env.POSTFIX_PASSWORD;
-const POSTFIX_RCPTS = (process.env.POSTFIX_RCPTS || 'security@forwardemail.net').split(',').map(e => e.trim());
+const MSMTP_USERNAME = process.env.MSMTP_USERNAME || 'mailerdaemon@forwardemail.net';
+const MSMTP_PASSWORD = process.env.MSMTP_PASSWORD;
+const MSMTP_RCPTS = (process.env.MSMTP_RCPTS || 'security@forwardemail.net').split(',').map(e => e.trim());
 const SMTP_HOST = process.env.SMTP_HOST || 'smtp.forwardemail.net';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
 
@@ -32,8 +32,8 @@ const transporter = nodemailer.createTransporter({
   port: SMTP_PORT,
   secure: true,
   auth: {
-    user: POSTFIX_USERNAME,
-    pass: POSTFIX_PASSWORD
+    user: MSMTP_USERNAME,
+    pass: MSMTP_PASSWORD
   }
 });
 
@@ -130,8 +130,8 @@ This is an automated alert from PM2 error monitoring.
 
   try {
     await transporter.sendMail({
-      from: POSTFIX_USERNAME,
-      to: POSTFIX_RCPTS,
+      from: MSMTP_USERNAME,
+      to: MSMTP_RCPTS,
       subject,
       text
     });

@@ -13,18 +13,29 @@ ansible/
 │   ├── MONITORING.md           # Security monitoring system guide
 │   ├── MONITORING_TESTING.md   # Comprehensive monitoring testing guide
 │   ├── PM2_MONITORING.md       # PM2 health monitoring guide
+│   ├── SYSTEM_OPTIMIZATION.md  # System-wide optimization (tmpfs, mount options)
+│   ├── AMD_RYZEN_NUMA.md       # AMD Ryzen NUMA optimization guide
+│   ├── SYSCTL_HIGH_TRAFFIC.md  # High-traffic server kernel tuning guide
+│   ├── IO_FILESYSTEM_TUNING.md # I/O scheduler and filesystem optimization guide
+│   ├── UFW_ALLOWLIST.md        # UFW IP allowlist management guide
+│   ├── REMOVE_POSTFIX.md       # Postfix removal guide (cleanup tool)
 │   ├── README_MONGO_REDIS.md   # MongoDB & Redis/Valkey deployment
 │   ├── MAIL_DEPLOYMENT.md      # Mail server deployment guide
-│   ├── UFW_ALLOWLIST.md        # UFW IP allowlist management guide
 │   ├── MONGODB_OPERATIONS_GUIDE.md
 │   ├── MONGODB_PERFORMANCE_TUNING.md
 │   ├── REDIS_PERFORMANCE_TUNING.md
 │   ├── DISASTER_RECOVERY.md
 │   └── SERVICE_USER_AUDIT.md
 ├── playbooks/                   # Ansible playbooks
-│   ├── security.yml            # Security baseline & monitoring
+│   ├── security.yml            # Security baseline & monitoring (uses msmtp)
 │   ├── node.yml                # Node.js & PM2 deployment
+│   ├── chrony-timesync.yml     # Reusable time synchronization (chrony)
+│   ├── system-optimization.yml # Reusable system-wide optimization (tmpfs, mount options)
+│   ├── amd-ryzen-numa.yml      # Reusable AMD Ryzen NUMA optimization
+│   ├── sysctl-high-traffic.yml # Reusable high-traffic server kernel tuning
+│   ├── io-filesystem-tuning.yml # Reusable I/O scheduler and filesystem optimization
 │   ├── ufw-allowlist.yml       # Reusable UFW IP allowlist management
+│   ├── remove-postfix.yml      # Remove Postfix from servers (cleanup tool)
 │   ├── mongo.yml               # MongoDB deployment
 │   ├── redis.yml               # Redis/Valkey deployment
 │   ├── bree.yml                # Bree job scheduler
@@ -57,7 +68,10 @@ ansible/
 
 * [Getting Started](#getting-started)
 * [Deployment Guides](#deployment-guides)
+* [System-Wide Optimization](#system-wide-optimization)
+* [AMD Ryzen NUMA Optimization](#amd-ryzen-numa-optimization)
 * [UFW IP Allowlist Management](#ufw-ip-allowlist-management)
+* [High-Traffic Server Kernel Tuning](#high-traffic-server-kernel-tuning)
 * [Monitoring & Alerting](#monitoring--alerting)
 * [Operations & Maintenance](#operations--maintenance)
 * [Performance Tuning](#performance-tuning)
@@ -99,15 +113,18 @@ pip install ansible
 Configure these environment variables before deployment:
 
 ```bash
-# Email notifications
-export POSTFIX_USERNAME=mailerdaemon@forwardemail.net
-export POSTFIX_PASSWORD=<secure_password>
-export POSTFIX_RCPTS=security@forwardemail.net
+# Email notifications (used by msmtp - lightweight SMTP client)
+export MSMTP_USERNAME=mailerdaemon@forwardemail.net
+export MSMTP_PASSWORD=<secure_password>
+export MSMTP_RCPTS=security@forwardemail.net
 
 # SMTP configuration (optional, defaults provided)
 export SMTP_HOST=smtp.forwardemail.net
 export SMTP_PORT=465
 ```
+
+> \[!NOTE]
+> **msmtp replaces Postfix**: We use msmtp (lightweight SMTP client) instead of Postfix for sending email notifications. msmtp doesn't run as a daemon, has no listening ports, and is more secure for send-only use cases.
 
 ### Quick Start
 
@@ -169,11 +186,63 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 ---
 
 
+## 🔧 System-Wide Optimization
+
+**[System Optimization Guide](docs/SYSTEM_OPTIMIZATION.md)**
+
+Automated system-wide optimizations applied to ALL servers via `security.yml`:
+
+* 🚀 **tmpfs /tmp**: RAM-based temporary storage (2GB, auto-configured)
+* 💾 **Mount options**: noatime, nodiratime, discard (TRIM for SSDs)
+* 🔄 **Automated fstab editing**: Automatically updates /etc/fstab and remounts
+* 🛡️ **LUKS/LVM support**: Works with all device formats (UUID, /dev/disk/by-id/, dm-uuid, etc.)
+* ✅ **Idempotent**: Safe to run multiple times
+
+**Imported by**: `security.yml` (applies to all servers)
+
+**Benefits**:
+
+* ⚡ Faster temporary file operations
+* 📉 Reduced SSD wear (noatime, nodiratime)
+* 🔄 Extended SSD lifespan (TRIM support)
+* 🧹 Automatic /tmp cleanup on reboot
+
+> \[!NOTE]
+> All filesystem changes are **fully automated** - no manual intervention required.
+
+---
+
+
+## 🔥 AMD Ryzen NUMA Optimization
+
+**[AMD Ryzen NUMA Optimization Guide](docs/AMD_RYZEN_NUMA.md)**
+
+Critical NUMA optimizations for AMD Ryzen/EPYC processors with **automatic CPU detection**:
+
+* 🎯 **zone\_reclaim\_mode=0**: Prevents 10-100x tail latency spikes
+* ⚖️ **numa\_balancing=0**: Reduces latency variance by 20-50%
+* 🚫 **THP disabled**: Eliminates 10-100ms THP-related stalls
+* 🔍 **Auto-detection**: Only applies if AMD Ryzen/EPYC detected
+
+**Imported by**: `security.yml` (applies to all servers with auto-detection)
+
+**Performance Impact**:
+
+* **10-100x** reduction in tail latency
+* **20-50%** reduction in latency variance
+* **Elimination** of THP-related latency spikes
+
+> \[!IMPORTANT]
+> These optimizations are **critical for database servers** (MongoDB, Redis) running on AMD hardware.
+
+---
+
+
 ## 🔥 UFW IP Allowlist Management
 
-**[UFW IP Allowlist Management Guide](docs/UFW_ALLOWLIST.md)**
+**[UFW Allowlist Management Guide](docs/UFW_ALLOWLIST.md)**
 
-Reusable [UFW](https://github.com/ufw/ufw) (Uncomplicated Firewall) IP allowlist management system for database and service security:
+Reusable [UFW](https://help.ubuntu.com/community/UFW) (Uncomplicated Firewall) IP allowlist management system for database and service security:
 
 * 🔒 **Automated IP allowlist updates** - Fetches approved IPs from central source
 * 🧹 **Orphaned rule cleanup** - Removes outdated rules from previous deployments
@@ -219,399 +288,262 @@ Reusable [UFW](https://github.com/ufw/ufw) (Uncomplicated Firewall) IP allowlist
 ---
 
 
+## ⚡ High-Traffic Server Kernel Tuning
+
+**[High-Traffic Server Kernel Tuning Guide](docs/SYSCTL_HIGH_TRAFFIC.md)**
+
+Kernel parameter optimizations for high-traffic servers (databases, APIs, mail servers):
+
+* 🌐 **BBR congestion control**: Modern TCP congestion control algorithm
+* 📊 **Auto-scaled buffers**: Automatically scales based on available RAM (256MB cap)
+* 🔌 **Connection tracking**: Optimized for high connection counts
+* 🚀 **TCP optimizations**: Fast open, window scaling, timestamps
+
+**Integrated into**: `mongo.yml`, `redis.yml`, `sqlite.yml`
+
+**Benefits**:
+
+* 📈 Better throughput under load
+* 📉 Lower latency
+* 🔄 Improved connection handling
+
+---
+
+
 ## 🔔 Monitoring & Alerting
 
 ### Security Monitoring System
 
-**[Security Monitoring Guide](docs/MONITORING.md)**
+**[Security Monitoring System Guide](docs/MONITORING.md)**
 
 Comprehensive automated monitoring with email notifications for:
 
-* 📊 **System Resource Monitoring** - CPU/Memory at 75%, 80%, 90%, 95%, 100% thresholds
+* 📊 **System Resource Monitoring** - CPU/Memory/Disk at 75%, 80%, 90%, 95%, 100% thresholds
 * 🔐 **SSH Security Monitoring** - ALL SSH activity (successful/failed logins, logged in users, commands)
 * 🔌 **USB Device Monitoring** - Unknown device detection with whitelisting
 * 👤 **Root Access Monitoring** - Sudo, su, and direct root login tracking
 * 🔍 **[Lynis](https://github.com/CISOfy/lynis) System Audit** - Daily security audits with hardening index
 * 📦 **Package Installation Monitoring** - Track package installations, upgrades, removals
-* 🌐 **Open Ports Monitoring** - Monitor network ports and detect changes
-* 🔒 **SSL Certificate Monitoring** - Certificate expiration tracking for WEB\_URL
+* 🔓 **Open Ports Monitoring** - Detect unexpected listening services
+* 📜 **SSL Certificate Monitoring** - Expiration alerts (30/14/7 days before expiry)
 
 **Features**:
 
-* ⏱️ Periodic monitoring via [systemd](https://github.com/systemd/systemd) timers
-* 📧 HTML-formatted email alerts
-* 🚦 Intelligent rate limiting
-* 🎯 Whitelist-based filtering
-* 🔒 Security hardened services
+* ⏱️ **Systemd timers** - Reliable periodic execution
+* 📧 **Email alerts** - Detailed notifications via msmtp (lightweight SMTP client)
+* 🔒 **Whitelisting** - Authorized IPs, users, devices, sudo users
+* 🚦 **Rate limiting** - Intelligent alert throttling to prevent flooding
+* 📝 **Comprehensive logs** - All events logged to `/var/log/*-monitor.log`
 
 > \[!NOTE]
-> All monitoring integrates with the existing Postfix SMTP relay and notification infrastructure.
+> All monitoring integrates with msmtp (lightweight SMTP client) for email notifications.
+
+**Testing Guide**: See [MONITORING\_TESTING.md](docs/MONITORING_TESTING.md) for comprehensive testing procedures.
 
 ### PM2 Health Monitoring
 
-**[PM2 Monitoring Guide](docs/PM2_MONITORING.md)**
+**[PM2 Health Monitoring Guide](docs/PM2_MONITORING.md)**
 
-Automated PM2 process health monitoring for Node.js deployments:
+Automated PM2 process health monitoring for Node.js applications:
 
-* ✅ **Process Status Checks** - Detects errored or stopped processes
-* ⏱️ **Uptime Tracking** - Reports uptime for all PM2 processes
-* 🔍 **Process List Drift Detection** - Alerts if processes differ from saved state
-* 📊 **No Process Detection** - Alerts if PM2 has no running processes
-* 📧 **Email Alerts** - Sends detailed reports on any issues
-* ⏰ **Systemd Timer** - Runs every 10 minutes automatically
+* ✅ **Uptime checks** - Detects processes with < 90% uptime
+* 🔴 **Errored process detection** - Alerts on errored or stopped processes
+* ⏰ **Drift detection** - Identifies processes with excessive restarts
+* 📧 **Email notifications** - Detailed alerts with process status via msmtp
+* ⏱️ **Scheduled checks** - Runs every 20 minutes via cron
 
-**Manual health check:**
+**Integrated into**: `node.yml`
 
-```bash
-sudo /usr/local/bin/pm2-health-check.sh
-```
+**Environment Variables**:
 
-**View logs:**
-
-```bash
-sudo journalctl -u pm2-health-check.service -f
-```
+* `MSMTP_RCPTS` - Email recipients for alerts
 
 > \[!TIP]
-> Run `pm2 save` after deploying processes to establish a baseline for drift detection.
-
-### Comprehensive Monitoring Testing
-
-**[Monitoring Testing Guide](docs/MONITORING_TESTING.md)**
-
-Complete testing procedures for **all 18 monitoring systems** across the infrastructure:
-
-**Security Playbook (8 systems)**:
-
-1. System Resource Monitor
-2. SSH Security Monitor (Enhanced - logs ALL SSH activity)
-3. USB Device Monitor
-4. Root Access Monitor
-5. [Lynis](https://github.com/CISOfy/lynis) System Audit Monitor
-6. Package Installation Monitor
-7. Open Ports Monitor
-8. SSL Certificate Monitor
-
-**Node Playbook (1 system)**:
-9\. [PM2](https://github.com/Unitech/pm2) Service Failure Notifications
-
-**MongoDB Playbook (3 systems)**:
-10\. [MongoDB](https://github.com/mongodb/mongo) Service Failure Notifications
-11\. MongoDB UFW Whitelist Update Monitoring
-12\. MongoDB Backup Monitoring
-
-**Redis Playbook (4 systems)**:
-13\. [Valkey](https://github.com/valkey-io/valkey)/Redis Service Failure Notifications
-14\. Redis UFW Whitelist Update Monitoring
-15\. Redis Backup Monitoring
-16\. Redis Command Usage Monitoring
-
-**Mail & DNS Playbooks (2 systems)**:
-17\. Mail Service Failure Notifications
-18\. [Unbound](https://github.com/NLnetLabs/unbound) DNS Service Failure Notifications
-
-**Each system includes**:
-
-* ✅ Purpose and description
-* ✅ Files deployed
-* ✅ Testing commands
-* ✅ Alert trigger tests
-* ✅ Validation checklists
-* ✅ Troubleshooting procedures
-
-> \[!TIP]
-> Use this guide to verify all monitoring systems after deployment or infrastructure changes.
+> Configure `MSMTP_RCPTS` environment variable to receive alerts.
 
 ---
 
 
-## 🔧 Operations & Maintenance
+## 🛠️ Operations & Maintenance
 
 ### MongoDB Operations
 
 **[MongoDB Operations Guide](docs/MONGODB_OPERATIONS_GUIDE.md)**
 
-Comprehensive operational procedures including:
+Complete MongoDB operations manual:
 
-* 🔄 Backup and restore procedures
-* 📊 Monitoring and health checks
-* 🔍 Query optimization
-* 🗄️ Index management
-* 📈 Capacity planning
-* 🚨 Troubleshooting common issues
+* 🔧 Version management (LOCKED to v6.0.18)
+* 💾 Backup and restore procedures
+* 🔄 Replica set management
+* 📊 Performance monitoring
+* 🐛 Troubleshooting
 
-> \[!NOTE]
-> This guide covers day-to-day [MongoDB](https://github.com/mongodb/mongo) administration tasks.
+### Disaster Recovery
 
-### Service User Management
+**[Disaster Recovery Guide](docs/DISASTER_RECOVERY.md)**
 
-**[Service User Audit](docs/SERVICE_USER_AUDIT.md)**
+Comprehensive disaster recovery procedures:
 
-Documentation of service users and their permissions:
-
-* 👤 User roles and responsibilities
-* 🔑 Permission matrices
-* 📁 File ownership guidelines
-* 🔒 Security considerations
+* 💾 Backup strategies
+* 🔄 Restore procedures
+* 🚨 Emergency response
+* 📋 Recovery checklists
 
 ---
 
 
-## ⚡ Performance Tuning
+## 🚀 Performance Tuning
 
 ### MongoDB Performance
 
 **[MongoDB Performance Tuning Guide](docs/MONGODB_PERFORMANCE_TUNING.md)**
 
-Optimize [MongoDB](https://github.com/mongodb/mongo) for production workloads:
+Optimize MongoDB for production workloads:
 
-* 🎯 WiredTiger cache configuration
-* 💾 Memory allocation strategies
-* 🔄 Connection pool tuning
-* 📊 Query performance optimization
-* 🗂️ Index strategies
-* 💿 Storage engine tuning
+* 📊 Index optimization
+* 💾 WiredTiger configuration
+* 🔄 Connection pooling
+* 📈 Query optimization
 
-> \[!TIP]
-> Apply these optimizations after initial deployment and load testing.
-
-### Redis/Valkey Performance
+### Redis Performance
 
 **[Redis Performance Tuning Guide](docs/REDIS_PERFORMANCE_TUNING.md)**
 
-Maximize [Redis](https://github.com/redis/redis)/[Valkey](https://github.com/valkey-io/valkey) performance:
+Optimize Redis/Valkey for high-performance caching:
 
-* 🚀 Memory optimization
-* ⚡ I/O threading configuration
-* 🔄 Persistence strategies
-* 📈 Monitoring and metrics
-* 🎯 Eviction policies
-* 🔧 Kernel parameter tuning
-
----
-
-
-## 🆘 Disaster Recovery
-
-**[Disaster Recovery Guide](docs/DISASTER_RECOVERY.md)**
-
-Complete disaster recovery procedures:
-
-* 💾 Backup strategies and schedules
-* 🔄 Restore procedures
-* 🚨 Incident response workflows
-* 📋 Recovery checklists
-* 🧪 Testing procedures
-* 📞 Escalation paths
-
-> \[!CAUTION]
-> Review and test disaster recovery procedures regularly. Don't wait for an actual disaster!
-
-### Backup Schedule
-
-| Service        | Frequency     | Retention | Storage       |
-| -------------- | ------------- | --------- | ------------- |
-| MongoDB        | Every 6 hours | 30 days   | Cloudflare R2 |
-| Redis/Valkey   | Every 6 hours | 30 days   | Cloudflare R2 |
-| System configs | Daily         | 90 days   | Cloudflare R2 |
-
-> \[!NOTE]
-> Backups older than 7 days are consolidated to one per day to save storage space.
+* 💾 Memory management
+* 🔄 Persistence configuration
+* 📊 Monitoring and metrics
+* ⚡ Performance best practices
 
 ---
 
 
 ## 🔒 Security & Auditing
 
-### Email Alerting System
+### Service User Audit
 
-All critical system events are monitored and reported via email:
+**[Service User Audit Guide](docs/SERVICE_USER_AUDIT.md)**
 
-* 🚫 **[fail2ban](https://github.com/fail2ban/fail2ban)** - IP ban notifications
-* 📦 **unattended-upgrades** - System update alerts
-* 💾 **MongoDB backups** - Backup failure alerts
-* 💾 **Redis backups** - Backup failure alerts
-* 🔴 **[PM2](https://github.com/Unitech/pm2) errors** - Application crash notifications
-* ⚠️ **[systemd](https://github.com/systemd/systemd) failures** - Service failure alerts
-* 📊 **Resource monitoring** - CPU/Memory threshold alerts
-* 🔐 **SSH security** - Failed login and root access alerts
-* 🔌 **USB devices** - Unknown device detection alerts
-* 👤 **Root access** - Privilege escalation alerts
+Security audit procedures for service accounts:
 
-> \[!IMPORTANT]
-> Configure `POSTFIX_RCPTS` environment variable to receive alerts.
-
-### Rate Limiting
-
-Email alerts are rate-limited to prevent flooding:
-
-* **Limit**: 10 emails per hour per service (varies by alert type)
-* **Tracking**: Lockfile-based in `/var/lock/` and JSON-based in `/var/lib/email-rate-limits/`
-* **Logging**: All rate limit events logged to syslog and service logs
+* 👤 User permission audits
+* 🔐 SSH key management
+* 📝 Access logging
+* 🛡️ Security hardening
 
 ---
 
 
-## 🔧 Common Commands
+## 💻 Common Commands
 
-### Check Monitoring Status
+### Deployment
 
 ```bash
-# View all monitoring timers
-sudo systemctl list-timers | grep -E "monitor|backup|update.*ufw"
+# Deploy security baseline (includes system optimization and AMD Ryzen NUMA)
+ansible-playbook ansible/playbooks/security.yml -i hosts.yml
 
-# Check specific monitoring service
+# Deploy all database optimizations
+ansible-playbook ansible/playbooks/mongo.yml -i hosts.yml
+ansible-playbook ansible/playbooks/redis.yml -i hosts.yml
+
+# Deploy Node.js with PM2 monitoring
+ansible-playbook ansible/playbooks/node.yml -i hosts.yml
+```
+
+### Monitoring
+
+```bash
+# Check monitoring service status
 sudo systemctl status system-resource-monitor.timer
 sudo systemctl status ssh-security-monitor.timer
 
 # View monitoring logs
 sudo tail -f /var/log/system-resource-monitor.log
 sudo tail -f /var/log/ssh-security-monitor.log
-```
 
-### Manually Trigger Monitoring
-
-```bash
-# Trigger resource monitoring
+# Manually trigger monitoring check
 sudo systemctl start system-resource-monitor.service
-
-# Trigger SSH security check
-sudo systemctl start ssh-security-monitor.service
-
-# Trigger USB device check
-sudo systemctl start usb-device-monitor.service
-
-# Trigger root access check
-sudo systemctl start root-access-monitor.service
 ```
 
-### View Service Status
+### Mail Services
 
 ```bash
-# Check PM2 status
-sudo systemctl status pm2-deploy.service
+# Check msmtp configuration (no service - it's a command-line tool)
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log
 
+# Test email delivery
+echo "Test email" | sendmail your-email@example.com
+
+# Check msmtp logs
+sudo tail -f /var/log/msmtp.log
+```
+
+### Database Services
+
+```bash
 # Check MongoDB status
-sudo systemctl status mongod.service
+sudo systemctl status mongod
 
 # Check Redis/Valkey status
-sudo systemctl status valkey-server.service
+sudo systemctl status valkey
 
-# Check mail services
-sudo systemctl status postfix.service
+# View database logs
+sudo journalctl -u mongod -f
+sudo journalctl -u valkey -f
 ```
 
-### Check Logs
+### System Optimization
 
 ```bash
-# Application logs
-sudo tail -f /var/log/pm2/app-out.log
-sudo tail -f /var/log/pm2/app-error.log
+# Verify tmpfs /tmp is mounted
+mount | grep /tmp
 
-# Database logs
-sudo tail -f /var/log/mongodb/mongod.log
-sudo tail -f /var/log/redis/redis-server.log
+# Check mount options
+mount | grep "on / "
 
-# Monitoring logs
-sudo tail -f /var/log/*monitor*.log
-
-# Mail logs
-sudo tail -f /var/log/mail.log
-
-# System logs
-sudo journalctl -u <service-name> -n 50
+# Verify AMD Ryzen NUMA settings (if applicable)
+cat /proc/sys/vm/zone_reclaim_mode  # Should be 0
+cat /proc/sys/kernel/numa_balancing  # Should be 0
+cat /sys/kernel/mm/transparent_hugepage/enabled  # Should be [never]
 ```
 
 ---
 
 
-## 🔗 Related Resources
+## 🧹 Cleanup & Maintenance
 
-### External Documentation
+### Remove Postfix (if previously installed)
 
-* [Ansible Documentation](https://docs.ansible.com/)
-* [Ansible GitHub](https://github.com/ansible/ansible)
-* [MongoDB Official Documentation](https://docs.mongodb.com/)
-* [MongoDB GitHub](https://github.com/mongodb/mongo)
-* [Redis Documentation](https://redis.io/documentation)
-* [Redis GitHub](https://github.com/redis/redis)
-* [Valkey Documentation](https://valkey.io/docs/)
-* [Valkey GitHub](https://github.com/valkey-io/valkey)
-* [PM2 Documentation](https://pm2.keymetrics.io/docs/)
-* [PM2 GitHub](https://github.com/Unitech/pm2)
-* [systemd Documentation](https://www.freedesktop.org/wiki/Software/systemd/)
-* [systemd GitHub](https://github.com/systemd/systemd)
-* [fail2ban GitHub](https://github.com/fail2ban/fail2ban)
-* [Unbound Documentation](https://nlnetlabs.nl/documentation/unbound/)
-* [Unbound GitHub](https://github.com/NLnetLabs/unbound)
+**[Postfix Removal Guide](docs/REMOVE_POSTFIX.md)**
 
-### Ansible Collections Used
+If you previously ran playbooks that installed Postfix, use the removal playbook:
 
-* [`hifis.toolkit`](https://github.com/hifis-net/ansible-collection-toolkit) collection v6.2.2 - System hardening and unattended upgrades
+```bash
+# Remove from all non-mail servers
+ansible-playbook ansible/playbooks/remove-postfix.yml \
+  -i hosts.yml \
+  -e "target_hosts=all" \
+  --limit '!mx1:!mx2:!smtp:!imap:!mail'
 
-> \[!NOTE]
-> **MongoDB and Valkey use custom installations** (no external roles):
->
-> * **MongoDB**: Installed directly from official MongoDB APT repository
-> * **Valkey**: Compiled from source (GitHub releases)
->
-> This approach eliminates dependencies on third-party roles and provides full control over configuration.
-
-> \[!NOTE]
-> [Valkey](https://github.com/valkey-io/valkey) (Redis fork) is installed directly via APT packages without using Galaxy roles for maximum control and compatibility.
-
----
-
-
-## 📝 Document Conventions
-
-Throughout this documentation, you'll see these GitHub-style alerts:
-
-> \[!NOTE]
-> General information and helpful context
-
-> \[!TIP]
-> Suggestions and best practices
-
-> \[!IMPORTANT]
-> Critical information that must be followed
+# Or remove from specific server groups
+ansible-playbook ansible/playbooks/remove-postfix.yml \
+  -i hosts.yml \
+  -e "target_hosts=http:redis:bree:mongo:sqlite"
+```
 
 > \[!WARNING]
-> Potential issues or risks to be aware of
-
-> \[!CAUTION]
-> Dangerous operations that could cause data loss or downtime
+> Do NOT run on actual mail servers (MX, SMTP, IMAP) that legitimately need Postfix.
 
 ---
 
 
-## 🤝 Contributing
+## 📚 Related Resources
 
-When adding new documentation:
-
-1. Use GitHub-style markdown alerts for important information
-2. Include practical examples and commands
-3. Add cross-references to related documents
-4. Keep this table of contents updated
-5. Test all commands before documenting them
-6. Add GitHub links for all mentioned tools and libraries
-7. Place all documentation files in the `docs/` directory
-
-When making infrastructure changes:
-
-1. Test playbooks in a staging environment first
-2. Update relevant documentation in `docs/`
-3. Follow existing patterns and conventions
-4. Document all environment variables and configuration
-
----
-
-
-## 📧 Support
-
-For questions or issues:
-
-1. Check the relevant guide in the `docs/` directory
-2. Review the troubleshooting sections
-3. Check application logs: `/var/log/pm2/`, `/var/log/mongodb/`, `/var/log/redis/`, `/var/log/*monitor*.log`
-4. Contact the infrastructure team
+* [Forward Email Documentation](https://forwardemail.net/)
+* [Ansible Documentation](https://docs.ansible.com/)
+* [MongoDB Documentation](https://docs.mongodb.com/)
+* [Valkey Documentation](https://valkey.io/)
+* [Ubuntu Server Guide](https://ubuntu.com/server/docs)
+* [Systemd Documentation](https://www.freedesktop.org/software/systemd/man/)

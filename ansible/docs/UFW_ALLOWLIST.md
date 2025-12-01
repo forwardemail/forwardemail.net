@@ -248,7 +248,7 @@ If migrating from the old inline UFW configuration:
 Ensure the following environment variables are set:
 
 * `REDIS_PORT` / `MONGO_PORT` / `SQLITE_PORT` - Service port number
-* `POSTFIX_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
+* `MSMTP_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
 
 
 ## Security Considerations

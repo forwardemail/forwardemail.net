@@ -1,0 +1,60 @@
+---
+# Remove Postfix from servers where it shouldn't be running
+# This fixes the issue where security.yml installed Postfix on all servers
+
+- name: "Remove Postfix from Non-Mail Servers"
+  hosts: "{{ target_hosts }}"
+  become: true
+  become_user: root
+  tasks:
+    - name: Stop Postfix service
+      systemd:
+        name: postfix
+        state: stopped
+        enabled: no
+      failed_when: false
+      register: postfix_stop
+
+    - name: Remove Postfix package
+      apt:
+        name:
+          - postfix
+          - postfix-pcre
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Remove Postfix configuration directory
+      file:
+        path: /etc/postfix
+        state: absent
+
+    - name: Remove Postfix spool directory
+      file:
+        path: /var/spool/postfix
+        state: absent
+
+    - name: Remove Postfix mail queue
+      file:
+        path: /var/mail
+        state: absent
+      when: false  # Keep /var/mail as it might be used by other services
+
+    - name: Display removal status
+      debug:
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                  📧 POSTFIX REMOVAL COMPLETE                          ║
+          ║                                                                        ║
+          ║  {% if postfix_stop.changed %}✅ Postfix service stopped and disabled                              ║{% else %}⚠️  Postfix service was not running                                  ║{% endif %}
+          ║  ✅ Postfix package removed                                           ║
+          ║  ✅ Postfix configuration removed (/etc/postfix)                      ║
+          ║  ✅ Postfix spool directory removed (/var/spool/postfix)              ║
+          ║                                                                        ║
+          ║  Server: {{ inventory_hostname }}
+          ║                                                                        ║
+          ║  Note: This server should NOT be running Postfix.                     ║
+          ║        Mail relay functionality has been removed.                     ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝

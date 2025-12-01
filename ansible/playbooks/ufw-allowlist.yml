@@ -66,11 +66,11 @@
           set -e
 
           # Configuration
-          SERVICE_PORT="${{ '{' }}{{ service_port_var }}:-{{ service_port_default }}{{ '}' }}"
+          SERVICE_PORT="{{ lookup('env', service_port_var) | default(service_port_default, true) }}"
           IP_LIST_URL="https://forwardemail.net/ips/v4.txt?comments=false"
           COMMENT="{{ ufw_comment }}"
           SERVICE_NAME="{{ service_name }}"
-          POSTFIX_RCPTS="${{ '{' }}POSTFIX_RCPTS:-security@forwardemail.net{{ '}' }}"
+          MSMTP_RCPTS="${{ '{' }}MSMTP_RCPTS:-security@forwardemail.net{{ '}' }}"
 
           echo "[$(date -Iseconds)] Fetching IP whitelist..."
           

@@ -10,7 +10,7 @@ This monitoring system provides comprehensive automated email notifications for 
 
 ### 1. System Resource Monitoring
 
-Monitors CPU and memory usage with multiple threshold levels:
+Monitors CPU, memory, and disk usage with multiple threshold levels:
 
 * **75%** - Warning level (first alert)
 * **80%** - Elevated warning
@@ -22,12 +22,12 @@ Monitors CPU and memory usage with multiple threshold levels:
 
 **Alert Content**:
 
-* Current CPU/Memory percentages
+* Current CPU/Memory/Disk percentages
 * Threshold exceeded
 * Top 10 processes by CPU usage
 * Top 10 processes by memory usage
 * System uptime and load averages
-* Available disk space
+* Disk usage details (used, available, percentage)
 * Memory breakdown (used, free, cached, swap)
 * Actionable recommendations
 
@@ -114,11 +114,11 @@ ansible-playbook -i hosts.yml playbooks/security.yml
 
 ### Email Notifications
 
-Email notifications use the existing Postfix SMTP relay configuration. Ensure these environment variables are set:
+Email notifications use the msmtp (lightweight SMTP client) configuration. Ensure these environment variables are set:
 
-* `POSTFIX_USERNAME` - SMTP username
-* `POSTFIX_PASSWORD` - SMTP password
-* `POSTFIX_RCPTS` - Alert recipients (comma-separated)
+* `MSMTP_USERNAME` - SMTP username
+* `MSMTP_PASSWORD` - SMTP password
+* `MSMTP_RCPTS` - Alert recipients (comma-separated)
 * `SMTP_HOST` - SMTP server (default: smtp.forwardemail.net)
 * `SMTP_PORT` - SMTP port (default: 465)
 
@@ -302,10 +302,12 @@ sudo tail -f /var/log/root-access-monitor.log
 
 ### Test Email Notifications
 
-1. Ensure Postfix is configured and running:
+1. Ensure msmtp is configured:
 
 ```bash
-sudo systemctl status postfix
+# Check msmtp configuration
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log
 ```
 
 2. Test email delivery:
@@ -314,7 +316,7 @@ sudo systemctl status postfix
 echo "Test email body" | mail -s "Test Subject" your-email@example.com
 ```
 
-3. Check Postfix logs:
+3. Check msmtp logs:
 
 ```bash
 sudo tail -f /var/log/mail.log
@@ -406,13 +408,15 @@ sudo systemctl status system-resource-monitor.service
 sudo journalctl -u system-resource-monitor.service -n 50
 ```
 
-4. Verify Postfix is running:
+4. Verify msmtp is configured:
 
 ```bash
-sudo systemctl status postfix
+# Check msmtp configuration
+cat /etc/msmtprc
+sudo tail /var/log/msmtp.log
 ```
 
-5. Check Postfix logs:
+5. Check msmtp logs:
 
 ```bash
 sudo tail -f /var/log/mail.log

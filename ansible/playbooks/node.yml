@@ -324,7 +324,7 @@
           # PM2 Health Check Script
           # Checks: uptime, errors, stopped processes, and drift from saved state
 
-          POSTFIX_RCPTS="${POSTFIX_RCPTS:-security@forwardemail.net}"
+          MSMTP_RCPTS="${MSMTP_RCPTS:-security@forwardemail.net}"
           ALERT_NEEDED=0
           ALERT_MESSAGE=""
 
@@ -392,7 +392,7 @@
 
           # Send alert email if needed
           if [ "$ALERT_NEEDED" -eq 1 ]; then
-            echo "[$(date -Iseconds)] Sending alert email to $POSTFIX_RCPTS"
+            echo "[$(date -Iseconds)] Sending alert email to $MSMTP_RCPTS"
             
             EMAIL_BODY="PM2 Health Check Alert - $(hostname)\n"
             EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
@@ -400,7 +400,7 @@
             EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
             EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list')\n"
             
-            echo -e "$EMAIL_BODY" | mail -s "[ALERT] PM2 Health Check Failed on $(hostname)" "$POSTFIX_RCPTS" || \
+            echo -e "$EMAIL_BODY" | mail -s "[ALERT] PM2 Health Check Failed on $(hostname)" "$MSMTP_RCPTS" || \
               echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
             
             exit 1

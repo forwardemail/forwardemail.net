@@ -18,6 +18,23 @@
     service_identifier: sqlite
     ufw_comment: "Auto-whitelist SQLite"
 
+- name: Import high-traffic sysctl tuning for SQLite
+  import_playbook: sysctl-high-traffic.yml
+  vars:
+    target_hosts: sqlite
+    service_name: SQLite
+    sysctl_file_name: sqlite
+
+- name: Import I/O and filesystem tuning for SQLite
+  import_playbook: io-filesystem-tuning.yml
+  vars:
+    target_hosts: sqlite
+    service_name: SQLite
+    service_identifier: sqlite
+    data_directory: /home/deploy/sqlite
+    read_ahead_kb: 16
+
+
 - hosts: sqlite
   name: Hostname
   become: true
@@ -51,3 +68,18 @@
         owner: root
         mode: "0644"
       notify: Reload UFW
+
+    # SQLite-Specific Kernel Optimizations for WAL Mode
+    - name: Configure SQLite-specific sysctl parameters for WAL mode
+      ansible.builtin.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+        sysctl_file: /etc/sysctl.d/99-sqlite-wal.conf
+      loop:
+        # SQLite WAL mode benefits from these I/O optimizations
+        - { name: 'vm.swappiness', value: '0' }  # Disable swapping for SQLite (override high-traffic default)
+        - { name: 'vm.max_map_count', value: '262144' }  # Required for mmap() in WAL mode
+        - { name: 'vm.vfs_cache_pressure', value: '50' }  # Prefer keeping inode/dentry cache for SQLite files
+        - { name: 'vm.min_free_kbytes', value: '65536' }  # Reserve 64MB for emergency allocations

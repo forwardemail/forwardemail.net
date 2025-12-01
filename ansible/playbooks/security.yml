@@ -5,6 +5,16 @@
 - name: Import Unbound DNS caching playbook
   import_playbook: unbound.yml
 
+- name: Import System Optimization playbook
+  import_playbook: system-optimization.yml
+
+- name: Import AMD Ryzen NUMA Optimization playbook
+  import_playbook: amd-ryzen-numa.yml
+  vars:
+    target_hosts: all
+    service_name: "System"
+    disable_thp: false
+
 - hosts: all
   name: Security
   become: true
@@ -17,10 +27,7 @@
       service:
         name: ssh
         state: restarted
-    - name: Restart Postfix
-      service:
-        name: postfix
-        state: restarted
+
     - name: Reload auditd rules
       command: augenrules --load
       changed_when: false
@@ -217,9 +224,8 @@
           - nasm
           - ripgrep
           - redis-tools
-          - mailutils
-          - postfix
-          - libsasl2-modules
+          - msmtp
+          - msmtp-mta
         update_cache: true
 
     # prevents port scanning
@@ -243,89 +249,46 @@
         path: /tmp/portscan-protection.sh
         state: absent
 
-    # Configure Postfix for SMTP relay (sendmail)
-    # This allows system services to send email alerts
-    - name: Set Postfix to use SMTP relay
-      debconf:
-        name: postfix
-        question: postfix/main_mailer_type
-        value: 'Internet Site'
-        vtype: string
-
-    - name: Remove duplicate Postfix entries outside Ansible managed block
-      shell: |
-        # Remove relayhost and smtp_tls_security_level lines that are NOT within Ansible managed blocks
-        if [ -f /etc/postfix/main.cf ]; then
-          # Create a backup
-          cp /etc/postfix/main.cf /etc/postfix/main.cf.bak
-          
-          # Use awk to remove duplicates outside managed blocks
-          awk '
-            /^# BEGIN ANSIBLE MANAGED BLOCK/ { in_block=1 }
-            /^# END ANSIBLE MANAGED BLOCK/ { in_block=0; print; next }
-            in_block { print; next }
-            !/^relayhost\s*=/ && !/^smtp_tls_security_level\s*=/ { print }
-          ' /etc/postfix/main.cf.bak > /etc/postfix/main.cf
-          
-          # Check if file changed
-          if ! diff -q /etc/postfix/main.cf.bak /etc/postfix/main.cf > /dev/null; then
-            echo "changed"
-          fi
-        fi
-      register: postfix_cleanup
-      changed_when: "'changed' in postfix_cleanup.stdout"
-      notify: Restart Postfix
-
-    - name: Configure Postfix main.cf for SMTP relay
-      blockinfile:
-        path: /etc/postfix/main.cf
-        create: yes
-        block: |
-          # SMTP relay configuration for email alerts
-          relayhost = [{{ lookup('env', 'SMTP_HOST') | default('smtp.forwardemail.net') }}]:{{ lookup('env', 'SMTP_PORT') | default('465') }}
-          smtp_use_tls = yes
-          smtp_sasl_auth_enable = yes
-          smtp_sasl_security_options = noanonymous
-          smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-          smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-          smtp_tls_wrappermode = yes
-          smtp_tls_security_level = encrypt
-          
-          # Set sender address
-          sender_canonical_maps = regexp:/etc/postfix/sender_canonical
-        marker: "# {mark} ANSIBLE MANAGED BLOCK - SMTP RELAY"
-      notify: Restart Postfix
-
-    - name: Create SASL password file
+    # Configure msmtp for SMTP relay (lightweight sendmail replacement)
+    # This allows system services to send email alerts without running a mail server daemon
+    - name: Configure msmtp for SMTP relay
       copy:
-        dest: /etc/postfix/sasl_passwd
+        dest: /etc/msmtprc
         content: |
-          [{{ lookup('env', 'SMTP_HOST') | default('smtp.forwardemail.net') }}]:{{ lookup('env', 'SMTP_PORT') | default('465') }} {{ lookup('env', 'POSTFIX_USERNAME') }}:{{ lookup('env', 'POSTFIX_PASSWORD') }}
+          # msmtp configuration for system email alerts
+          # Set default values for all accounts
+          defaults
+          auth           on
+          tls            on
+          tls_trust_file /etc/ssl/certs/ca-certificates.crt
+          logfile        /var/log/msmtp.log
+          
+          # SMTP account configuration
+          account        default
+          host           {{ lookup('env', 'SMTP_HOST') | default('smtp.forwardemail.net') }}
+          port           {{ lookup('env', 'SMTP_PORT') | default('465') }}
+          from           {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}
+          user           {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}
+          password       {{ lookup('env', 'MSMTP_PASSWORD') }}
+          tls_starttls   off
         mode: '0600'
         owner: root
         group: root
       no_log: true
-      notify: Restart Postfix
 
-    - name: Hash SASL password file
-      command: postmap /etc/postfix/sasl_passwd
-      notify: Restart Postfix
-
-    - name: Create sender canonical map
-      copy:
-        dest: /etc/postfix/sender_canonical
-        content: |
-          /^.*$/ {{ lookup('env', 'POSTFIX_USERNAME') }}
-        mode: '0644'
+    - name: Create msmtp log file
+      file:
+        path: /var/log/msmtp.log
+        state: touch
+        mode: '0600'
         owner: root
         group: root
-      notify: Restart Postfix
 
-    - name: Ensure Postfix is enabled and started
-      systemd:
-        name: postfix
-        enabled: yes
-        state: started
+    - name: Set msmtp as default sendmail
+      alternatives:
+        name: mta
+        path: /usr/bin/msmtp
+      failed_when: false
 
     # Configure systemd failure notifications
     # Deploy rate-limited email script
@@ -1344,8 +1307,8 @@
       fail2ban_dbpurgeage: 365d
       fail2ban_findtime: 365d
       # Email notifications for bans
-      fail2ban_destemail: "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
-      fail2ban_sender: "{{ lookup('env', 'POSTFIX_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
+      fail2ban_destemail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
+      fail2ban_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       fail2ban_action: "%(action_mwl)s"  # mail with logs
       fail2ban_mta: sendmail
 
@@ -1358,8 +1321,8 @@
     - role: hifis.toolkit.unattended_upgrades
       unattended_automatic_reboot_time: "02:00"
       # Email notifications for updates
-      unattended_mail: "{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
-      unattended_mail_sender: "{{ lookup('env', 'POSTFIX_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
+      unattended_mail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
+      unattended_mail_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       unattended_mail_report: "on-change"  # Send email only when packages are upgraded or errors occur
       unattended_automatic_reboot: true
       unattended_automatic_reboot_with_users: false

@@ -1,0 +1,178 @@
+---
+- name: "System-Wide Optimization for All Servers"
+  hosts: "{{ target_hosts | default('all') }}"
+  become: true
+  become_user: root
+  tasks:
+    # Configure tmpfs for /tmp (RAM-based temporary storage)
+    - name: Check if /tmp is already mounted as tmpfs
+      shell: mount | grep 'tmpfs on /tmp'
+      register: tmp_tmpfs_check
+      changed_when: false
+      failed_when: false
+
+    - name: Add tmpfs entry for /tmp to /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^tmpfs\s+/tmp'
+        line: 'tmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G 0 0'
+        state: present
+      when: tmp_tmpfs_check.rc != 0
+
+    - name: Mount /tmp as tmpfs
+      mount:
+        path: /tmp
+        src: tmpfs
+        fstype: tmpfs
+        opts: defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G
+        state: mounted
+      when: tmp_tmpfs_check.rc != 0
+
+    - name: Display tmpfs configuration
+      debug:
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                    💾 TMPFS /tmp CONFIGURATION                        ║
+          ║                                                                        ║
+          ║  {% if tmp_tmpfs_check.rc == 0 %}✅ /tmp is already mounted as tmpfs (RAM-based storage)           ║{% else %}✅ /tmp configured as tmpfs (RAM-based storage)                     ║{% endif %}
+          ║                                                                        ║
+          ║  Benefits:                                                            ║
+          ║  • Reduces SSD wear by offloading temporary files to RAM              ║
+          ║  • Improves performance for temporary file operations                 ║
+          ║  • Enhanced security (cleared on reboot)                              ║
+          ║  • Size limited to 2GB to prevent RAM exhaustion                      ║
+          ║                                                                        ║
+          ║  Mount options: noatime,nosuid,nodev,noexec,mode=1777,size=2G         ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝
+
+    # Optimize root filesystem mount options
+    - name: Get root filesystem device
+      shell: df / | tail -1 | awk '{print $1}'
+      register: root_device_result
+      changed_when: false
+
+    - name: Get current mount options for root filesystem
+      shell: |
+        mount | grep "{{ root_device_result.stdout }}" | awk '{print $6}' | tr -d '()'
+      register: root_mount_options_result
+      changed_when: false
+
+    - name: Get root filesystem type
+      shell: |
+        df -T / | tail -1 | awk '{print $2}'
+      register: root_fstype_result
+      changed_when: false
+
+    - name: Check root filesystem mount options
+      set_fact:
+        has_noatime: "{{ 'noatime' in root_mount_options_result.stdout }}"
+        has_nodiratime: "{{ 'nodiratime' in root_mount_options_result.stdout }}"
+        has_discard: "{{ 'discard' in root_mount_options_result.stdout }}"
+        needs_optimization: "{{ 'noatime' not in root_mount_options_result.stdout or 'nodiratime' not in root_mount_options_result.stdout or 'discard' not in root_mount_options_result.stdout }}"
+
+    - name: Get fstab entry for root filesystem
+      shell: |
+        grep -E '\s+/\s+' /etc/fstab | grep -v '^#' | head -1
+      register: fstab_root_entry
+      changed_when: false
+      failed_when: false
+
+    - name: Extract current mount options from fstab
+      shell: |
+        echo "{{ fstab_root_entry.stdout }}" | awk '{print $4}'
+      register: fstab_opts_result
+      changed_when: false
+      when: fstab_root_entry.rc == 0 and fstab_root_entry.stdout != ""
+
+    - name: Build optimized mount options
+      set_fact:
+        current_opts_list: "{{ (fstab_opts_result.stdout | default('defaults')).split(',') }}"
+      when: needs_optimization and fstab_root_entry.rc == 0
+
+    - name: Remove conflicting options and add optimizations
+      set_fact:
+        optimized_opts: "{{ (current_opts_list | default(['defaults'])) | reject('in', ['relatime', 'atime']) | list + (['noatime'] if not has_noatime else []) + (['nodiratime'] if not has_nodiratime else []) + (['discard'] if not has_discard else []) | unique | join(',') }}"
+      when: needs_optimization and fstab_root_entry.rc == 0
+
+    - name: Backup /etc/fstab before modification
+      copy:
+        src: /etc/fstab
+        dest: /etc/fstab.backup
+        remote_src: yes
+        mode: '0644'
+      when: needs_optimization and fstab_root_entry.rc == 0
+
+    - name: Update root filesystem mount options in /etc/fstab
+      shell: |
+        # Get the current fstab line for root filesystem
+        CURRENT_LINE=$(grep -E '\s+/\s+' /etc/fstab | grep -v '^#' | head -1)
+        
+        # Extract components
+        DEVICE=$(echo "$CURRENT_LINE" | awk '{print $1}')
+        MOUNTPOINT=$(echo "$CURRENT_LINE" | awk '{print $2}')
+        FSTYPE=$(echo "$CURRENT_LINE" | awk '{print $3}')
+        DUMP=$(echo "$CURRENT_LINE" | awk '{print $5}')
+        PASS=$(echo "$CURRENT_LINE" | awk '{print $6}')
+        
+        # Build new line with optimized options
+        NEW_LINE="$DEVICE $MOUNTPOINT $FSTYPE {{ optimized_opts }} $DUMP $PASS"
+        
+        # Use sed to replace the line in-place
+        sed -i.bak "/^\s*[^#].*\s\+\/\s\+/c\\$NEW_LINE" /etc/fstab
+      when: needs_optimization and fstab_root_entry.rc == 0
+      register: fstab_update_result
+      changed_when: true
+
+    - name: Remount root filesystem with optimized options
+      shell: |
+        mount -o remount,{{ optimized_opts }} /
+      when: needs_optimization and fstab_root_entry.rc == 0
+      register: remount_result
+      changed_when: true
+
+    - name: Verify root filesystem remount
+      shell: |
+        mount | grep "{{ root_device_result.stdout }}" | awk '{print $6}' | tr -d '()'
+      register: verify_mount_options
+      changed_when: false
+      when: needs_optimization
+
+    - name: Display root filesystem optimization status
+      shell: |
+        cat << 'MOUNT_STATUS'
+        ╔════════════════════════════════════════════════════════════════════════╗
+        ║                                                                        ║
+        ║              📁 ROOT FILESYSTEM MOUNT OPTIMIZATION                    ║
+        ║                                                                        ║
+        ║  Device: {{ root_device_result.stdout }}
+        ║  Filesystem: {{ root_fstype_result.stdout }}
+        ║  {% if needs_optimization %}Before: {{ root_mount_options_result.stdout }}
+        ║  After:  {{ verify_mount_options.stdout | default('N/A') }}{% else %}Current: {{ root_mount_options_result.stdout }}{% endif %}
+        ║                                                                        ║
+        ║  {% if needs_optimization %}✅ Optimizations Applied:                                              ║
+        ║  {% if not has_noatime %}  • noatime added - Disables file access time updates                ║{% endif %}
+        ║  {% if not has_nodiratime %}  • nodiratime added - Disables directory access time updates       ║{% endif %}
+        ║  {% if not has_discard %}  • discard added - Enables TRIM for SSD longevity                 ║{% endif %}
+        ║                                                                        ║
+        ║  Changes:                                                             ║
+        ║  • /etc/fstab updated (backup: /etc/fstab.backup)                     ║
+        ║  • Root filesystem remounted with new options                         ║
+        ║  • Changes persist across reboots                                     ║{% else %}✅ All mount options already optimized - no changes needed            ║{% endif %}
+        ║                                                                        ║
+        ║  Benefits:                                                            ║
+        ║  • Reduced I/O overhead (no access time updates)                      ║
+        ║  • Extended SSD lifespan (TRIM support)                               ║
+        ║  • Improved filesystem performance                                    ║
+        ║                                                                        ║
+        ╚════════════════════════════════════════════════════════════════════════╝
+        MOUNT_STATUS
+      args:
+        executable: /bin/bash
+      register: mount_status_output
+      changed_when: false
+
+    - name: Show mount optimization status
+      debug:
+        msg: "{{ mount_status_output.stdout_lines }}"

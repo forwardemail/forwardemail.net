@@ -5,7 +5,7 @@
 SERVICE_NAME="$1"
 SUBJECT="$2"
 BODY="$3"
-RECIPIENTS="{{ lookup('env', 'POSTFIX_RCPTS') | default('security@forwardemail.net') }}"
+RECIPIENTS="{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
 
 # Rate limiting configuration
 RATE_LIMIT_DIR="/var/lib/email-rate-limits"

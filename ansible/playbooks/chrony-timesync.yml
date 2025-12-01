@@ -1,0 +1,112 @@
+---
+# Chrony Time Synchronization Playbook
+# Ensures accurate time synchronization across all servers
+#
+# Usage:
+#   - name: Import chrony time synchronization
+#     import_playbook: chrony-timesync.yml
+#     vars:
+#       target_hosts: all  # or specific host group
+
+- hosts: "{{ target_hosts }}"
+  name: "Configure Chrony Time Synchronization"
+  become: true
+  become_user: root
+  tasks:
+    - name: Install chrony
+      apt:
+        name: chrony
+        state: present
+        update_cache: yes
+
+    - name: Stop and disable systemd-timesyncd (conflicts with chrony)
+      systemd:
+        name: systemd-timesyncd
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Configure chrony with reliable NTP servers
+      copy:
+        dest: /etc/chrony/chrony.conf
+        content: |
+          # Use Cloudflare NTP (primary) - https://www.cloudflare.com/time/
+          server time.cloudflare.com iburst prefer
+          
+          # Use Google NTP (fallback) - https://developers.google.com/time
+          server time.google.com iburst
+          server time2.google.com iburst
+          server time3.google.com iburst
+          server time4.google.com iburst
+          
+          # Use time sources from DHCP
+          sourcedir /run/chrony-dhcp
+          
+          # Use NTP sources found in /etc/chrony/sources.d
+          sourcedir /etc/chrony/sources.d
+          
+          # Record the rate at which the system clock gains/losses time
+          driftfile /var/lib/chrony/chrony.drift
+          
+          # Allow the system clock to be stepped in the first three updates
+          # if its offset is larger than 1 second
+          makestep 1.0 3
+          
+          # Enable kernel synchronization of the real-time clock (RTC)
+          rtcsync
+          
+          # Enable hardware timestamping on all interfaces that support it
+          #hwtimestamp *
+          
+          # Increase the minimum number of selectable sources required to adjust
+          # the system clock
+          #minsources 2
+          
+          # Allow NTP client access from local network
+          #allow 192.168.0.0/16
+          
+          # Serve time even if not synchronized to a time source
+          #local stratum 10
+          
+          # Specify file containing keys for NTP authentication
+          keyfile /etc/chrony/chrony.keys
+          
+          # Get TAI-UTC offset and leap seconds from the system tz database
+          leapsectz right/UTC
+          
+          # Specify directory for log files
+          logdir /var/log/chrony
+          
+          # Select which information is logged
+          #log measurements statistics tracking
+        mode: '0644'
+        owner: root
+        group: root
+      notify: Restart chrony
+
+    - name: Enable and start chrony service
+      systemd:
+        name: chrony
+        state: started
+        enabled: yes
+
+    - name: Wait for chrony to synchronize
+      shell: chronyc waitsync 30 0.1
+      register: chrony_sync
+      failed_when: false
+      changed_when: false
+
+    - name: Display chrony synchronization status
+      shell: chronyc tracking
+      register: chrony_status
+      changed_when: false
+
+    - name: Show chrony tracking information
+      debug:
+        msg: "{{ chrony_status.stdout_lines }}"
+
+  handlers:
+    - name: Restart chrony
+      systemd:
+        name: chrony
+        state: restarted
