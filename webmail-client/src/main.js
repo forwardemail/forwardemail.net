@@ -117,6 +117,12 @@ viewModel.route.subscribe((route) => {
 });
 
 function initKeyboardShortcuts() {
+  // Only enable shortcuts on mailbox route
+  viewModel.route.subscribe((route) => {
+    keyboardShortcuts.setEnabled(route === 'mailbox');
+  });
+  keyboardShortcuts.setEnabled(viewModel.route() === 'mailbox');
+
   // Update context based on route
   viewModel.route.subscribe((route) => {
     if (route === 'mailbox') {
@@ -148,6 +154,8 @@ function initKeyboardShortcuts() {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
       viewModel.composeModal.reply(msg);
+    } else {
+      viewModel.mailboxView.toasts?.show?.('Select a message to reply', 'info');
     }
   });
 
@@ -155,6 +163,8 @@ function initKeyboardShortcuts() {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
       viewModel.composeModal.replyAll(msg);
+    } else {
+      viewModel.mailboxView.toasts?.show?.('Select a message to reply all', 'info');
     }
   });
 
@@ -162,6 +172,8 @@ function initKeyboardShortcuts() {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
       viewModel.composeModal.replyAll(msg);
+    } else {
+      viewModel.mailboxView.toasts?.show?.('Select a message to reply', 'info');
     }
   });
 
@@ -176,13 +188,6 @@ function initKeyboardShortcuts() {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
       viewModel.composeModal.forward(msg);
-    }
-  });
-
-  keyboardShortcuts.on('open-message', () => {
-    const msg = viewModel.mailboxView.selectedMessage();
-    if (msg && viewModel.route() === 'mailbox') {
-      viewModel.mailboxView.selectMessage(msg);
     }
   });
 
@@ -204,10 +209,6 @@ function initKeyboardShortcuts() {
     }
   });
 
-  keyboardShortcuts.on('send-later', () => {
-    viewModel.mailboxView.toasts?.show?.('Send later not yet implemented', 'info');
-  });
-
   // Receiving / navigation
   keyboardShortcuts.on('refresh', () => {
     if (viewModel.route() === 'mailbox') {
@@ -219,22 +220,11 @@ function initKeyboardShortcuts() {
     viewModel.mailboxView.loadMessages();
   });
 
-  const zoomToast = (msg) => viewModel.mailboxView.toasts?.show?.(msg, 'info');
-  keyboardShortcuts.on('zoom-in', () => zoomToast('Zoom in not yet implemented'));
-  keyboardShortcuts.on('zoom-out', () => zoomToast('Zoom out not yet implemented'));
-  keyboardShortcuts.on('zoom-reset', () => zoomToast('Zoom reset not yet implemented'));
-
   keyboardShortcuts.on('expand-thread', () => {
     viewModel.mailboxView.toasts?.show?.('Expand thread not yet implemented', 'info');
   });
   keyboardShortcuts.on('collapse-thread', () => {
     viewModel.mailboxView.toasts?.show?.('Collapse thread not yet implemented', 'info');
-  });
-  keyboardShortcuts.on('toggle-pane', () => {
-    viewModel.mailboxView.toasts?.show?.('Toggle message pane not yet implemented', 'info');
-  });
-  keyboardShortcuts.on('switch-pane', () => {
-    viewModel.mailboxView.toasts?.show?.('Switch pane focus not yet implemented', 'info');
   });
 
   // Managing / marking / tags
@@ -294,16 +284,6 @@ function initKeyboardShortcuts() {
     viewModel.mailboxView.toasts?.show?.('Move / copy not yet implemented', 'info');
   });
 
-  for (let i = 1; i <= 9; i++) {
-    keyboardShortcuts.on(`tag-${i}`, () => {
-      viewModel.mailboxView.toasts?.show?.(`Tag ${i} not yet implemented`, 'info');
-    });
-  }
-
-  keyboardShortcuts.on('clear-tags', () => {
-    viewModel.mailboxView.toasts?.show?.('Clear tags not yet implemented', 'info');
-  });
-
   // Search
   keyboardShortcuts.on('quick-filter', () => {
     const searchInput = document.querySelector('.fe-search');
@@ -333,15 +313,6 @@ function initKeyboardShortcuts() {
   // Help
   keyboardShortcuts.on('help', () => {
     showShortcutsHelp();
-  });
-
-  // Other
-  keyboardShortcuts.on('view-source', () => {
-    viewModel.mailboxView.toasts?.show?.('View source not yet implemented', 'info');
-  });
-
-  keyboardShortcuts.on('undo', () => {
-    viewModel.mailboxView.toasts?.show?.('Undo not yet implemented', 'info');
   });
 
   keyboardShortcuts.on('redo', () => {

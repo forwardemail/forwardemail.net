@@ -206,6 +206,13 @@ export class MailboxView {
     this.searchTimer = null;
     this.sidebarOpen = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
     this.isDesktop = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
+    this.contextMenuVisible = ko.observable(false);
+    this.contextMenuX = ko.observable(0);
+    this.contextMenuY = ko.observable(0);
+    this.contextMenuMessage = ko.observable(null);
+    this.availableLabels = ko.observableArray([]);
+    this.contextMenuFlipX = ko.observable(false);
+    this.contextMenuFlipY = ko.observable(false);
     // Threading
     this.threadingEnabled = ko.observable(Local.get('threading_enabled') !== 'false'); // enabled by default
     this.conversations = ko.observableArray([]);
@@ -266,6 +273,12 @@ export class MailboxView {
       const firstOther = this.availableMoveTargets()[0];
       if (firstOther) this.moveTarget(firstOther.path);
       this.actionMenuOpen(false);
+      // placeholder labels list; replace with real label fetch when available
+      this.availableLabels([
+        { id: 'label-important', name: 'Important' },
+        { id: 'label-personal', name: 'Personal' },
+        { id: 'label-work', name: 'Work' }
+      ]);
     });
   }
 
@@ -1377,6 +1390,106 @@ export class MailboxView {
     this.actionMenuOpen(!this.actionMenuOpen());
   };
 
+  handleMessageClick = (message, event) => {
+    if (!message) return;
+    if (event?.ctrlKey || event?.metaKey) {
+      this.openContextMenu(message, event);
+      return;
+    }
+    this.selectMessage(message);
+  };
+
+  openContextMenu = (message, event) => {
+    if (!message) return;
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    this.selectedMessage(message);
+    this.contextMenuMessage(message);
+    this.contextMenuVisible(true);
+    this.contextMenuFlipX(false);
+    this.contextMenuFlipY(false);
+    document.addEventListener('click', this.closeContextMenuOnce, { once: true });
+
+    // Defer positioning until menu is in DOM
+    setTimeout(() => {
+      const menuEl = document.querySelector('.fe-context-menu');
+      if (!menuEl) return;
+      const rect = menuEl.getBoundingClientRect();
+      const margin = 12;
+      let left = event?.clientX || 0;
+      let top = event?.clientY || 0;
+      let flipX = false;
+      let flipY = false;
+
+      if (left + rect.width + 200 > window.innerWidth - margin) {
+        left = Math.max(margin, window.innerWidth - rect.width - margin);
+        flipX = true;
+      }
+
+      if (top + rect.height > window.innerHeight - margin) {
+        top = Math.max(margin, window.innerHeight - rect.height - margin);
+        flipY = true;
+      }
+
+      this.contextMenuX(left);
+      this.contextMenuY(top);
+      this.contextMenuFlipX(flipX);
+      this.contextMenuFlipY(flipY);
+    }, 0);
+  };
+
+  closeContextMenu = () => {
+    this.contextMenuVisible(false);
+    this.contextMenuMessage(null);
+  };
+
+  closeContextMenuOnce = (e) => {
+    if (e?.target?.closest && e.target.closest('.fe-context-menu')) return;
+    this.closeContextMenu();
+  };
+
+  contextArchive = () => {
+    const msg = this.contextMenuMessage();
+    if (!msg) return;
+    this.archiveMessage(msg);
+    this.closeContextMenu();
+  };
+
+  contextDelete = (permanent = false) => {
+    const msg = this.contextMenuMessage();
+    if (!msg) return;
+    this.deleteMessage(msg, { permanent });
+    this.closeContextMenu();
+  };
+
+  contextToggleRead = () => {
+    const msg = this.contextMenuMessage();
+    if (!msg) return;
+    this.toggleRead(msg);
+    this.closeContextMenu();
+  };
+
+  contextMoveTo = (target) => {
+    const msg = this.contextMenuMessage();
+    if (!msg || !target) {
+      this.closeContextMenu();
+      return;
+    }
+    this.moveMessage(msg, target, { stayInFolder: true });
+    this.closeContextMenu();
+  };
+
+  contextLabel = (labelId) => {
+    const msg = this.contextMenuMessage();
+    if (!msg || !labelId) {
+      this.closeContextMenu();
+      return;
+    }
+    // Placeholder: tie into labels API when available
+    this.toasts?.show?.('Labeling not yet implemented', 'info');
+    this.closeContextMenu();
+  };
+
   replyTo(message) {
     if (!this.composeModal || !message) return;
     this.composeModal.open();
@@ -1524,34 +1637,97 @@ export class MailboxView {
         f.total_unread ||
         f.Count ||
         0,
-      specialUse: f.special_use || f.SpecialUse
+      specialUse: f.special_use || f.SpecialUse,
+      icon: f.icon
     }));
 
-    const map = new Map();
-    parsed.forEach((f) => {
-      if (!f.path) return;
-      map.set(f.path.toLowerCase(), f);
+    // Build a node map keyed by lowercase path
+    const nodes = new Map();
+    const ensureNode = (path, source = {}) => {
+      if (!path) return null;
+      const key = path.toLowerCase();
+      if (!nodes.has(key)) {
+        nodes.set(key, {
+          path,
+          name: path.split('/').pop() || path,
+          count: 0,
+          icon: 'folder',
+          children: []
+        });
+      }
+      const node = nodes.get(key);
+      Object.assign(node, source, { icon: source.icon || node.icon || 'folder' });
+      return node;
+    };
+
+    // Seed default folders
+    this.defaultFolders.forEach((def) => {
+      ensureNode(def.path, { ...def, children: [] });
     });
+
+    // Add/merge API folders
+    parsed.forEach((f) => {
+      ensureNode(f.path, { ...f, children: [] });
+      const parts = f.path.split('/').filter(Boolean);
+      // Ensure parent nodes exist for subfolders
+      for (let i = 1; i < parts.length; i++) {
+        const parentPath = parts.slice(0, i).join('/');
+        ensureNode(parentPath, { path: parentPath, name: parts[i - 1] });
+      }
+    });
+
+    // Reset children and wire parent -> child relationships
+    nodes.forEach((node) => {
+      node.children = [];
+    });
+    nodes.forEach((node) => {
+      const idx = node.path.lastIndexOf('/');
+      if (idx === -1) return; // root
+      const parentPath = node.path.slice(0, idx);
+      const parent = ensureNode(parentPath);
+      if (parent && !parent.children.find((c) => c.path.toLowerCase() === node.path.toLowerCase())) {
+        parent.children.push(node);
+      }
+    });
+
+    // Helper to sort children alphabetically
+    const sortChildren = (list) =>
+      list.sort((a, b) => (a.name || a.path).localeCompare(b.name || b.path));
+
+    // Collect roots in default order, then remaining roots sorted
+    const rootSet = new Set();
+    const roots = [];
+    // Keep defaults in the defined order
+    this.defaultFolders.forEach((def) => {
+      const node = nodes.get(def.path.toLowerCase());
+      if (node) {
+        roots.push(node);
+        rootSet.add(def.path.toLowerCase());
+      }
+    });
+
+    // Append remaining roots alphabetically
+    const extraRoots = [];
+    nodes.forEach((node, key) => {
+      if (!node.path.includes('/') && !rootSet.has(key)) {
+        extraRoots.push(node);
+      }
+    });
+    extraRoots.sort((a, b) => (a.name || a.path).localeCompare(b.name || b.path));
+    extraRoots.forEach((node) => roots.push(node));
+
+    const flatten = (node, level = 0, acc = []) => {
+      acc.push({
+        ...node,
+        level,
+        displayName: node.name
+      });
+      sortChildren(node.children).forEach((child) => flatten(child, level + 1, acc));
+      return acc;
+    };
 
     const ordered = [];
-    this.defaultFolders.forEach((def) => {
-      const found = map.get(def.path.toLowerCase());
-      const merged = {
-        ...def,
-        ...(found || {}),
-        icon: def.icon || found?.icon || 'folder',
-        count: found?.count || 0
-      };
-      ordered.push(merged);
-    });
-
-    const extras = parsed.filter(
-      (f) => !this.defaultFolders.some((d) => d.path.toLowerCase() === (f.path || '').toLowerCase())
-    );
-    extras
-      .sort((a, b) => (a.name || a.path || '').localeCompare(b.name || b.path || ''))
-      .forEach((f) => ordered.push({ ...f, icon: f.icon || 'folder' }));
-
+    roots.forEach((root) => flatten(root, 0, ordered));
     return ordered;
   }
 

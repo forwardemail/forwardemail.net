@@ -19,24 +19,15 @@ const DEFAULT_SHORTCUTS = {
   'ctrl+shift+l': { action: 'reply-list', label: 'Reply to list' },
   'ctrl+l': { action: 'forward', label: 'Forward message' },
   'ctrl+e': { action: 'edit-as-new', label: 'Edit message as new' },
-  'ctrl+o': { action: 'open-message', label: 'Open message' },
-  'enter': { action: 'open-message', label: 'Open message' },
   'ctrl+s': { action: 'save-draft', label: 'Save draft' },
   'ctrl+p': { action: 'print', label: 'Print message or draft' },
-  'ctrl+enter': { action: 'send-now', label: 'Send message now', context: 'compose' },
-  'ctrl+shift+enter': { action: 'send-later', label: 'Send message later', context: 'compose' },
 
   // Receiving / Reading / Navigation
   'f5': { action: 'refresh', label: 'Get new messages (current account)' },
   'shift+f5': { action: 'refresh-all', label: 'Get new messages (all accounts)' },
   'ctrl+shift+y': { action: 'refresh-all', label: 'Get new messages (all accounts)' },
-  'ctrl+=': { action: 'zoom-in', label: 'Zoom in' },
-  'ctrl+-': { action: 'zoom-out', label: 'Zoom out' },
-  'ctrl+0': { action: 'zoom-reset', label: 'Reset Zoom' },
   'arrowright': { action: 'expand-thread', label: 'Expand collapsed thread' },
   'arrowleft': { action: 'collapse-thread', label: 'Collapse thread' },
-  'f8': { action: 'toggle-pane', label: 'Toggle Message Pane' },
-  'f6': { action: 'switch-pane', label: 'Switch focus panes' },
 
   // Managing / Marking / Deleting / Tagging
   'm': { action: 'toggle-read', label: 'Mark message read/unread' },
@@ -50,16 +41,6 @@ const DEFAULT_SHORTCUTS = {
   'delete': { action: 'delete', label: 'Delete message' },
   'shift+delete': { action: 'delete-permanent', label: 'Delete bypassing Trash' },
   'ctrl+alt+m': { action: 'move-copy', label: 'Move / copy to folder' },
-  '1': { action: 'tag-1', label: 'Toggle Tag 1' },
-  '2': { action: 'tag-2', label: 'Toggle Tag 2' },
-  '3': { action: 'tag-3', label: 'Toggle Tag 3' },
-  '4': { action: 'tag-4', label: 'Toggle Tag 4' },
-  '5': { action: 'tag-5', label: 'Toggle Tag 5' },
-  '6': { action: 'tag-6', label: 'Toggle Tag 6' },
-  '7': { action: 'tag-7', label: 'Toggle Tag 7' },
-  '8': { action: 'tag-8', label: 'Toggle Tag 8' },
-  '9': { action: 'tag-9', label: 'Toggle Tag 9' },
-  '0': { action: 'clear-tags', label: 'Remove all tags' },
 
   // Search & Filter
   'ctrl+k': { action: 'quick-filter', label: 'Quick Filter / folder search' },
@@ -68,8 +49,6 @@ const DEFAULT_SHORTCUTS = {
   'ctrl+shift+k': { action: 'quick-filter-advanced', label: 'Quick-filter messages in folder' },
 
   // Other useful
-  'ctrl+u': { action: 'view-source', label: 'View message source' },
-  'ctrl+z': { action: 'undo', label: 'Undo' },
   'ctrl+y': { action: 'redo', label: 'Redo' },
   '?': { action: 'help', label: 'Show keyboard shortcuts' }
 };
@@ -485,7 +464,7 @@ export function showKeyboardShortcutsHelp() {
 
   shortcuts.forEach(shortcut => {
     if (
-      ['new-message', 'reply', 'reply-all', 'reply-list', 'forward', 'edit-as-new', 'open-message', 'save-draft', 'print', 'send-now', 'send-later'].includes(shortcut.action)
+      ['new-message', 'reply', 'reply-all', 'reply-list', 'forward', 'edit-as-new', 'save-draft', 'print'].includes(shortcut.action)
     ) {
       grouped['Common & Message'].push(shortcut);
       return;

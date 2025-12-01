@@ -36,10 +36,6 @@ export class SettingsModal {
     // Keyboard shortcuts
     this.isMac = ko.observable(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
     this.shortcutsList = ko.observableArray([]);
-    this.editingShortcut = ko.observable(null);
-    this.editingShortcutKey = ko.observable('');
-    this.shortcutEditVisible = ko.observable(false);
-    this.capturedKeys = ko.observable('');
 
     this.loadFromStorage();
   }
@@ -200,87 +196,6 @@ export class SettingsModal {
   };
 
   /**
-   * Check if a shortcut is being edited
-   */
-  isEditingShortcut = (shortcut) => {
-    const editing = this.editingShortcut();
-    return editing && editing.originalKey === shortcut.originalKey;
-  };
-
-  /**
-   * Start editing a keyboard shortcut
-   */
-  editShortcut = (shortcut) => {
-    this.editingShortcut(shortcut);
-    this.editingShortcutKey(shortcut.key);
-    this.capturedKeys('');
-    keyboardShortcuts.startCapture(this.onShortcutCaptured);
-  };
-
-  /**
-   * Cancel editing a shortcut
-   */
-  cancelEditShortcut = () => {
-    this.editingShortcut(null);
-    this.editingShortcutKey('');
-    this.capturedKeys('');
-    keyboardShortcuts.stopCapture();
-  };
-
-  /**
-   * Save edited shortcut
-   */
-  saveEditedShortcut = () => {
-    const shortcut = this.editingShortcut();
-    let newKey = (this.capturedKeys() || '').trim().toLowerCase();
-
-    if (!shortcut || !newKey) {
-      this.error('Please enter a valid keyboard shortcut.');
-      return;
-    }
-
-    // Normalize the key format (remove extra spaces around +)
-    newKey = newKey.replace(/\s*\+\s*/g, '+');
-    newKey = keyboardShortcuts.normalizeShortcut(newKey);
-    if (!newKey) {
-      this.error('Please enter a valid keyboard shortcut.');
-      return;
-    }
-
-    try {
-      // Update the shortcut in the keyboard shortcuts manager
-      keyboardShortcuts.updateShortcut(shortcut.originalKey, newKey);
-
-      // Reload the shortcuts list
-      this.loadShortcuts();
-
-      this.success(`Shortcut updated: ${shortcut.label}`);
-      this.toasts?.show?.('Shortcut updated', 'success');
-      this.cancelEditShortcut();
-    } catch (err) {
-      this.error(err?.message || 'Failed to update shortcut.');
-      this.toasts?.show?.(this.error(), 'error');
-    }
-  };
-
-  /**
-   * Clear captured keys when input changes
-   */
-  onShortcutInputChange = (value) => {
-    // Normalize the input to lowercase and trim
-    const normalized = value.toLowerCase().trim();
-    this.capturedKeys(normalized);
-  };
-
-  /**
-   * Re-arm keyboard shortcut capture when the input is focused or clicked
-   */
-  startShortcutCapture = () => {
-    if (!this.editingShortcut()) return;
-    keyboardShortcuts.startCapture(this.onShortcutCaptured);
-  };
-
-  /**
    * Reset keyboard shortcuts to defaults
    */
   resetShortcuts = () => {
@@ -297,10 +212,4 @@ export class SettingsModal {
     }
   };
 
-  /**
-   * Begin capturing a shortcut while editing
-   */
-  onShortcutCaptured = (combo) => {
-    this.capturedKeys(combo);
-  };
 }
