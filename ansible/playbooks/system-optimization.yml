@@ -19,14 +19,9 @@
         state: present
       when: tmp_tmpfs_check.rc != 0
 
-    - name: Mount /tmp as tmpfs
-      mount:
-        path: /tmp
-        src: tmpfs
-        fstype: tmpfs
-        opts: defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G
-        state: mounted
-      when: tmp_tmpfs_check.rc != 0
+    # Note: We don't mount tmpfs immediately to avoid interfering with Ansible's /tmp usage
+    # The tmpfs will be mounted on next reboot via /etc/fstab
+    # To mount immediately after playbook completes, run: sudo mount -a
 
     - name: Display tmpfs configuration
       debug:
@@ -35,7 +30,8 @@
           ║                                                                        ║
           ║                    💾 TMPFS /tmp CONFIGURATION                        ║
           ║                                                                        ║
-          ║  {% if tmp_tmpfs_check.rc == 0 %}✅ /tmp is already mounted as tmpfs (RAM-based storage)           ║{% else %}✅ /tmp configured as tmpfs (RAM-based storage)                     ║{% endif %}
+          ║  {% if tmp_tmpfs_check.rc == 0 %}✅ /tmp is already mounted as tmpfs (RAM-based storage)           ║{% else %}✅ /tmp configured as tmpfs in /etc/fstab                           ║
+          ║     Will be mounted on next reboot or run: sudo mount -a          ║{% endif %}
           ║                                                                        ║
           ║  Benefits:                                                            ║
           ║  • Reduces SSD wear by offloading temporary files to RAM              ║
