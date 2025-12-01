@@ -43,6 +43,44 @@
           ║                                                                        ║
           ╚════════════════════════════════════════════════════════════════════════╝
 
+    # Harden /dev/shm to prevent execution (common attack vector)
+    - name: Check current /dev/shm mount options
+      shell: mount | grep '/dev/shm' | grep -o 'noexec'
+      register: devshm_noexec_check
+      changed_when: false
+      failed_when: false
+
+    - name: Harden /dev/shm with noexec and size limit
+      mount:
+        path: /dev/shm
+        src: tmpfs
+        fstype: tmpfs
+        opts: defaults,nosuid,nodev,noexec,size=1G
+        state: remounted
+      when: devshm_noexec_check.rc != 0
+
+    - name: Display /dev/shm hardening status
+      debug:
+        msg: |
+          ╔════════════════════════════════════════════════════════════════════════╗
+          ║                                                                        ║
+          ║                    🔒 /dev/shm HARDENING                              ║
+          ║                                                                        ║
+          ║  {% if devshm_noexec_check.rc == 0 %}✅ /dev/shm already hardened with noexec                          ║{% else %}✅ /dev/shm hardened with noexec and size limit                   ║{% endif %}
+          ║                                                                        ║
+          ║  Security benefits:                                                   ║
+          ║  • Prevents malware execution from /dev/shm (common attack vector)    ║
+          ║  • Blocks cryptominers and rootkits using /dev/shm                    ║
+          ║  • Size limited to 1GB (sufficient for legitimate shared memory)      ║
+          ║  • Maintains POSIX shared memory functionality (PostgreSQL, Chrome)   ║
+          ║                                                                        ║
+          ║  Mount options: nosuid,nodev,noexec,size=1G                           ║
+          ║                                                                        ║
+          ║  Note: Applications using shared memory (mmap) still work normally    ║
+          ║        Only direct execution is blocked for security                  ║
+          ║                                                                        ║
+          ╚════════════════════════════════════════════════════════════════════════╝
+
     # Optimize root filesystem mount options
     - name: Get root filesystem device
       shell: df / | tail -1 | awk '{print $1}'
