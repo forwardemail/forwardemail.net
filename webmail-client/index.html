@@ -1417,13 +1417,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px;
+        padding: 0 5px;
         border-radius: 10px;
         color: #e5e7eb;
         cursor: pointer;
         border: 1px solid transparent;
         transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
-        font-size: 14px;
+        font-size: 12px;
       }
 
       .fe-folder-label {
@@ -1508,16 +1508,16 @@
       }
 
       .fe-message {
-        padding: 12px;
+        padding: 10px;
         border-radius: 10px;
         background: var(--color-panel);
         border: 1px solid var(--color-border);
         cursor: pointer;
         transition: border-color 0.2s ease, background 0.2s ease;
-        min-height: 78px;
+        min-height: 66px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 4px;
         width: 100%;
       }
 
@@ -1528,9 +1528,9 @@
 
       .fe-message-subject {
         color: var(--color-text);
-        margin: 0 0 2px;
+        margin: 0 0 1px;
         font-weight: 600;
-        font-size: 15px;
+        font-size: 14px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -1548,9 +1548,9 @@
 
       .fe-message-snippet {
         color: var(--color-muted);
-        font-size: 13px;
-        line-height: 1.4;
-        max-height: 3.6em;
+        font-size: 12px;
+        line-height: 1.3;
+        max-height: 3em;
         overflow: hidden;
       }
 
@@ -1561,7 +1561,7 @@
         color: var(--color-muted);
         font-size: 12px;
         min-width: 0;
-        gap: 8px;
+        gap: 6px;
       }
 
       .fe-message-date {
@@ -1583,7 +1583,7 @@
       }
 
       .fe-conversation-item {
-        padding: 12px;
+        padding: 5px;
         border-radius: 10px;
         background: var(--color-panel);
         border: 1px solid var(--color-border);
@@ -1591,7 +1591,7 @@
         transition: border-color 0.2s ease, background 0.2s ease;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 5px;
       }
 
       .fe-conversation-item:hover {
@@ -1625,7 +1625,7 @@
 
       .fe-conversation-from {
         color: var(--color-muted);
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
@@ -1656,7 +1656,7 @@
 
       .fe-conversation-subject {
         color: var(--color-text);
-        font-size: 15px;
+        font-size: 12px;
         font-weight: 600;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1665,7 +1665,7 @@
 
       .fe-conversation-preview {
         color: var(--color-muted);
-        font-size: 13px;
+        font-size: 12px;
         line-height: 1.4;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1927,6 +1927,16 @@
 
       .fe-action-menu-panel button:hover {
         background: rgba(255, 255, 255, 0.04);
+      }
+
+      .fe-action-menu-panel button.active {
+        background: rgba(0, 175, 248, 0.15);
+        color: var(--brand-primary);
+        font-weight: 600;
+      }
+
+      .fe-action-menu-panel button.active:hover {
+        background: rgba(0, 175, 248, 0.2);
       }
 
       body.light-mode .fe-action-menu-panel {
@@ -2474,14 +2484,32 @@
               <span aria-hidden="true">▾</span>
             </button>
             <div class="fe-action-menu-panel" data-bind="visible: accountMenuOpen" style="min-width: 100%; width: 100%; left: 0; right: auto;">
+              <!-- Account list -->
+              <!-- ko if: accounts().length > 1 -->
+              <div style="padding: 8px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); opacity: 0.7;">Accounts</div>
+              <!-- ko foreach: accounts -->
+              <button type="button" data-bind="click: function() { $parent.switchAccount($data); }, css: { 'active': email === $parent.email() }">
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+                <span data-bind="text: email"></span>
+                <!-- ko if: email === $parent.email() -->
+                <svg style="margin-left: auto; width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <!-- /ko -->
+              </button>
+              <!-- /ko -->
+              <div class="fe-menu-divider"></div>
+              <!-- /ko -->
+
+              <!-- Add account -->
               <button type="button" data-bind="click: addAccount">
                 <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 <span>Add account</span>
               </button>
+
+              <!-- Sign out current account -->
               <div class="fe-menu-divider"></div>
               <button type="button" class="fe-menu-danger" data-bind="click: signOut">
                 <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                <span>Sign out</span>
+                <span>Sign out <span data-bind="text: email"></span></span>
               </button>
             </div>
           </div>
@@ -2570,6 +2598,9 @@
                 'active': $parent.selectedConversation() && $parent.selectedConversation().id === id
               }">
 
+              <!-- Subject first -->
+              <div class="fe-conversation-subject" data-bind="text: displaySubject"></div>
+
               <!-- Conversation header -->
               <div class="fe-conversation-header">
                 <div class="fe-conversation-meta">
@@ -2578,14 +2609,11 @@
                   <span class="fe-conversation-count" data-bind="text: messageCount"></span>
                   <!-- /ko -->
                   <!-- ko if: hasAttachment -->
-                  <svg class="fe-icon-sm" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px; opacity: 0.6;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                  <svg class="fe-icon-sm" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px; opacity: 0.6;"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                   <!-- /ko -->
                 </div>
                 <span class="fe-conversation-date" data-bind="text: latestDate ? $parent.formatDate(latestDate) : ''"></span>
               </div>
-
-              <!-- Subject -->
-              <div class="fe-conversation-subject" data-bind="text: displaySubject"></div>
 
               <!-- Preview -->
               <div class="fe-conversation-preview" data-bind="text: $parent.getConversationPreview($data)"></div>
@@ -2815,6 +2843,8 @@
                   />
                   <span>Include message bodies in search (uses more local storage)</span>
                 </label>
+                <div class="fe-settings-meta" data-bind="text: 'Database version: ' + (databaseVersion() || '—')"></div>
+                <div class="fe-settings-meta" data-bind="text: 'Total records: ' + (databaseRecordCount() || 0)"></div>
                 <div class="fe-settings-meta" data-bind="text: 'Indexed messages: ' + (indexCount() || 0)"></div>
                 <div class="fe-settings-meta" data-bind="visible: indexSize() > 0">
                   Index size ~
@@ -2836,6 +2866,19 @@
                     type="button"
                     data-bind="click: openRebuildConfirm"
                   >Rebuild index</button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: clearCacheData"
+                    title="Clear all cached data (keeps database structure)"
+                  >Clear cache</button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: resetDatabaseFull"
+                    title="Reset entire database (for troubleshooting)"
+                    style="color: var(--color-danger, #dc3545);"
+                  >Reset database</button>
                 </div>
               </div>
               <div class="fe-settings-card coming-soon">

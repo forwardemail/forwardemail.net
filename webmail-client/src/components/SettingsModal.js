@@ -1,6 +1,7 @@
 import ko from 'knockout';
 import { Local } from '../utils/storage';
 import { keyboardShortcuts } from '../utils/keyboard-shortcuts';
+import { resetDatabase, clearCache, getDatabaseInfo, CURRENT_SCHEMA_VERSION } from '../utils/db';
 
 export class SettingsModal {
   constructor() {
@@ -19,6 +20,8 @@ export class SettingsModal {
     this.rebuildingIndex = ko.observable(false);
     this.rebuildConfirmVisible = ko.observable(false);
     this.pgpKeys = ko.observableArray([]);
+    this.databaseVersion = ko.observable(CURRENT_SCHEMA_VERSION);
+    this.databaseRecordCount = ko.observable(0);
     this.keyFormVisible = ko.observable(false);
     this.editingKeyName = ko.observable('');
     this.editingKeyValue = ko.observable('');
@@ -46,9 +49,10 @@ export class SettingsModal {
     return Local.get('email') || aliasAuth || '';
   }
 
-  open = () => {
+  open = async () => {
     this.loadFromStorage();
     this.loadShortcuts();
+    await this.loadDatabaseInfo();
     this.visible(true);
   };
 
@@ -75,6 +79,20 @@ export class SettingsModal {
     this.editingKeyValue('');
     this.editingIndex(-1);
     this.section(this.section() || 'general');
+  }
+
+  async loadDatabaseInfo() {
+    try {
+      const info = await getDatabaseInfo();
+      if (info) {
+        this.databaseVersion(info.version);
+        // Calculate total record count across all tables
+        const totalRecords = Object.values(info.counts || {}).reduce((sum, count) => sum + count, 0);
+        this.databaseRecordCount(totalRecords);
+      }
+    } catch (err) {
+      console.warn('Failed to load database info:', err);
+    }
   }
 
   close = () => {
@@ -208,6 +226,56 @@ export class SettingsModal {
       this.toasts?.show?.('Keyboard shortcuts reset to defaults', 'success');
     } catch (err) {
       this.error(err?.message || 'Failed to reset shortcuts.');
+      this.toasts?.show?.(this.error(), 'error');
+    }
+  };
+
+  /**
+   * Clear cached data (keeps database structure)
+   */
+  clearCacheData = async () => {
+    this.error('');
+    this.success('');
+    const confirmed = window.confirm(
+      'This will clear all cached emails, folders, and search indexes. You will need to reload your mailbox. Continue?'
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await clearCache();
+      if (result) {
+        this.success('Cache cleared successfully. Please reload the page.');
+        this.toasts?.show?.('Cache cleared. Please reload the page.', 'success');
+      } else {
+        throw new Error('Failed to clear cache');
+      }
+    } catch (err) {
+      this.error(err?.message || 'Failed to clear cache.');
+      this.toasts?.show?.(this.error(), 'error');
+    }
+  };
+
+  /**
+   * Reset entire database (deletes and recreates)
+   */
+  resetDatabaseFull = async () => {
+    this.error('');
+    this.success('');
+    const confirmed = window.confirm(
+      'WARNING: This will permanently delete all local data including cached emails, settings, and search indexes. This action cannot be undone. Continue?'
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await resetDatabase();
+      if (result) {
+        this.success('Database reset successfully. Please reload the page.');
+        this.toasts?.show?.('Database reset. Please reload the page.', 'success');
+      } else {
+        throw new Error('Failed to reset database');
+      }
+    } catch (err) {
+      this.error(err?.message || 'Failed to reset database.');
       this.toasts?.show?.(this.error(), 'error');
     }
   };

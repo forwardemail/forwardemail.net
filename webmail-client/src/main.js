@@ -106,8 +106,6 @@ viewModel.route.subscribe((route) => {
   document.body.classList.toggle('mailbox-mode', mailboxMode);
   if (route !== 'mailbox') viewModel.composeModal.close();
   if (route !== 'settings') {
-    viewModel.settingsModal.cancelEditShortcut();
-    keyboardShortcuts.stopCapture();
     viewModel.settingsModal.visible(false);
   }
   if (route === 'mailbox') viewModel.mailboxView.load();
@@ -153,7 +151,7 @@ function initKeyboardShortcuts() {
   keyboardShortcuts.on('reply', () => {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
-      viewModel.composeModal.reply(msg);
+      viewModel.mailboxView.replyTo(msg);
     } else {
       viewModel.mailboxView.toasts?.show?.('Select a message to reply', 'info');
     }
@@ -162,7 +160,7 @@ function initKeyboardShortcuts() {
   keyboardShortcuts.on('reply-all', () => {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
-      viewModel.composeModal.replyAll(msg);
+      viewModel.mailboxView.replyTo(msg);
     } else {
       viewModel.mailboxView.toasts?.show?.('Select a message to reply all', 'info');
     }
@@ -171,7 +169,7 @@ function initKeyboardShortcuts() {
   keyboardShortcuts.on('reply-list', () => {
     const msg = viewModel.mailboxView.selectedMessage();
     if (msg) {
-      viewModel.composeModal.replyAll(msg);
+      viewModel.mailboxView.replyTo(msg);
     } else {
       viewModel.mailboxView.toasts?.show?.('Select a message to reply', 'info');
     }

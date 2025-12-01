@@ -1,5 +1,5 @@
 import ko from 'knockout';
-import { Local } from '../utils/storage';
+import { Local, Accounts } from '../utils/storage';
 import { Remote } from '../utils/remote';
 import { config } from '../config';
 import { sanitizeHtml } from '../utils/sanitize';
@@ -224,6 +224,7 @@ export class MailboxView {
       Local.set('threading_enabled', enabled ? 'true' : 'false');
     });
     this.accountMenuOpen = ko.observable(false);
+    this.accounts = ko.observableArray([]);
     this.mobileReader = ko.observable(false);
     this.handleResize = () => {
       if (typeof window === 'undefined') return;
@@ -280,6 +281,15 @@ export class MailboxView {
         { id: 'label-work', name: 'Work' }
       ]);
     });
+
+    // Initialize multi-account system
+    Accounts.init();
+    this.loadAccounts();
+  }
+
+  loadAccounts() {
+    const allAccounts = Accounts.getAll();
+    this.accounts(allAccounts);
   }
 
   getAccountKey() {
@@ -328,9 +338,23 @@ export class MailboxView {
     return format(date, 'MMM d, yyyy p');
   }
 
-  signOut = () => {
-    Local.clear();
-    window.location.href = '/';
+  signOut = async () => {
+    const currentEmail = this.email();
+    const allAccounts = Accounts.getAll();
+
+    // Remove current account and its cache
+    await Accounts.remove(currentEmail, true);
+
+    // Check if there are other accounts
+    const remainingAccounts = Accounts.getAll();
+
+    if (remainingAccounts.length > 0) {
+      // Switch to another account
+      window.location.reload();
+    } else {
+      // No accounts left, go to login
+      window.location.href = '/';
+    }
   };
 
   initListeners() {
@@ -439,9 +463,20 @@ export class MailboxView {
   };
 
   addAccount = () => {
-    // Placeholder: redirect to login to add another account
+    // Redirect to login to add another account
     this.accountMenuOpen(false);
     window.location.href = '/';
+  };
+
+  switchAccount = (account) => {
+    if (!account || !account.email) return;
+
+    // Set the new active account
+    Accounts.setActive(account.email);
+
+    // Close menu and reload to switch context
+    this.accountMenuOpen(false);
+    window.location.reload();
   };
 
   backToList = () => {
@@ -639,7 +674,7 @@ export class MailboxView {
             date: this.formatDate(rawDate || dateMs),
             flags: normalizeFlags(m.flags),
             is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
-            has_attachment: m.has_attachment || m.hasAttachments || false,
+            has_attachment: Boolean(m.has_attachment || m.hasAttachments),
             bodyIndexed: false,
             pending: false
           };

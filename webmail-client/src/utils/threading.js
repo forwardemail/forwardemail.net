@@ -199,7 +199,7 @@ export function groupIntoConversations(messages) {
     }
 
     // Track attachments
-    if (message.has_attachment) {
+    if (message.has_attachment === true || message.has_attachment === 1 || message.has_attachment === '1') {
       conversation.hasAttachment = true;
     }
 

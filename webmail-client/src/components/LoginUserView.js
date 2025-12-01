@@ -1,6 +1,6 @@
 import ko from 'knockout';
 import { Remote } from '../utils/remote';
-import { Local } from '../utils/storage';
+import { Local, Accounts } from '../utils/storage';
 
 export class LoginUserView {
   constructor() {
@@ -44,6 +44,18 @@ export class LoginUserView {
           return;
         }
 
+        // Initialize multi-account system FIRST (before setting Local storage)
+        Accounts.init();
+
+        // Add this account to the multi-account system
+        Accounts.add(email, {
+          aliasAuth: `${email}:${password}`
+        });
+
+        // Set as active account
+        Accounts.setActive(email);
+
+        // Set Local storage values (for backwards compatibility)
         Local.set('signMe', this.signMe() ? '1' : '0');
         Local.set('email', email);
         Local.set('alias_auth', `${email}:${password}`);
