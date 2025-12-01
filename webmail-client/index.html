@@ -361,7 +361,7 @@
         flex-direction: column;
         gap: 16px;
         overflow-y: auto;
-        padding-right: 8px;
+        padding: 0 8px 18px 0;
       }
 
       .fe-settings-sidebar {
@@ -388,18 +388,30 @@
         gap: 8px;
       }
 
-      .fe-settings-nav a {
+      .fe-settings-nav button {
         color: #cbd5e1;
-        text-decoration: none;
-        padding: 8px 10px;
-        border-radius: 8px;
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 10px;
         border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 600;
+        transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        width: 100%;
+        white-space: nowrap;
       }
 
-      .fe-settings-nav a.active {
-        background: rgba(0, 175, 248, 0.12);
+      .fe-settings-nav button:hover {
+        border-color: rgba(0, 175, 248, 0.25);
+        background: rgba(0, 175, 248, 0.08);
+      }
+
+      .fe-settings-nav button.active {
+        background: linear-gradient(135deg, rgba(0, 175, 248, 0.22), rgba(0, 42, 144, 0.25));
         color: #e5e7eb;
-        border-color: rgba(0, 175, 248, 0.3);
+        border-color: rgba(0, 175, 248, 0.35);
+        box-shadow: 0 8px 24px rgba(0, 175, 248, 0.12);
       }
 
       body.light-mode .fe-settings-layout {
@@ -415,14 +427,16 @@
         color: #0f172a;
       }
 
-      body.light-mode .fe-settings-nav a {
+      body.light-mode .fe-settings-nav button {
         color: #1f2937;
+        background: transparent;
       }
 
-      body.light-mode .fe-settings-nav a.active {
+      body.light-mode .fe-settings-nav button.active {
         background: #e5e7eb;
         border-color: #d1d5db;
         color: #0f172a;
+        box-shadow: none;
       }
 
       .fe-settings-grid {
@@ -467,6 +481,95 @@
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+      }
+
+      .fe-settings-footer {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        padding: 12px 4px 8px;
+        margin-top: 8px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+        background: linear-gradient(180deg, rgba(11, 18, 32, 0), rgba(11, 18, 32, 0.7) 35%, rgba(11, 18, 32, 0.9));
+        border-top: 1px solid var(--color-border);
+        backdrop-filter: blur(6px);
+        z-index: 1;
+      }
+
+      body.light-mode .fe-settings-footer {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.82) 40%, rgba(255, 255, 255, 0.96));
+        border-color: #e5e7eb;
+      }
+
+      @media (max-width: 768px) {
+        .fe-settings-shell {
+          gap: 10px;
+        }
+
+        .fe-settings-layout {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .fe-settings-sidebar {
+          position: sticky;
+          top: 0;
+          z-index: 3;
+          border-radius: 12px;
+          background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+          padding: 10px;
+        }
+
+        .fe-settings-nav {
+          flex-direction: row;
+          overflow-x: auto;
+          padding-bottom: 6px;
+          gap: 8px;
+          scrollbar-width: thin;
+        }
+
+        .fe-settings-nav button {
+          width: auto;
+          flex-shrink: 0;
+        }
+
+        .fe-settings-content {
+          padding-right: 0;
+        }
+
+        .fe-settings-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .fe-settings-footer {
+          position: sticky;
+          bottom: 0;
+          left: 0;
+          padding: 12px 0 10px;
+        }
+
+        body.light-mode .fe-settings-sidebar {
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.94));
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+      }
+
+      .fe-settings-actions button {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        min-height: auto;
+        border-radius: 8px;
+      }
+
+      .fe-settings-actions button.fe-button:not(.ghost) {
+        min-width: 120px;
       }
 
       .fe-settings-meta {
@@ -779,6 +882,25 @@
       }
 
       body.light-mode .fe-nav-toggle {
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .fe-reader-backbtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid #1f2937;
+        background: #0f172a;
+        color: #e5e7eb;
+        cursor: pointer;
+      }
+
+      body.light-mode .fe-reader-backbtn {
         background: #f1f5f9;
         border-color: #e2e8f0;
         color: #0f172a;
@@ -1235,6 +1357,10 @@
         }
 
         .fe-reader {
+          padding: 0;
+          border: none;
+          border-radius: 0;
+          background: var(--color-panel);
           display: none;
         }
 
@@ -1243,7 +1369,56 @@
         }
 
         .mobile-reader .fe-reader {
-          display: block;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          position: fixed;
+          inset: 64px 0 0 0;
+          background: var(--color-panel);
+          border-radius: 0;
+          border: none;
+          padding: 0 0 24px;
+          overflow-y: auto;
+          z-index: 40;
+        }
+
+        .mobile-reader .fe-reader > *:not(.fe-reader-backbar) {
+          padding: 0 16px;
+        }
+
+        .mobile-reader .fe-reader-subject {
+          padding-top: 6px;
+        }
+
+        .fe-reader-backbar {
+          display: flex;
+          position: sticky;
+          top: 0;
+          padding: 12px 14px;
+          background: linear-gradient(180deg, rgba(11, 18, 32, 0.95), rgba(11, 18, 32, 0.85));
+          border-bottom: 1px solid var(--color-border);
+          z-index: 10;
+        }
+
+        body.light-mode .fe-reader-backbar {
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
+          border-color: #e5e7eb;
+        }
+
+        .mobile-reader .fe-mailbox-shell {
+          position: relative;
+        }
+
+        .mobile-reader .fe-mailbox-header {
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          background: var(--color-panel);
+          margin-bottom: 0;
+        }
+
+        body.light-mode .mobile-reader .fe-mailbox-header {
+          background: #ffffff;
         }
 
         .fe-mailbox-shell {
@@ -1260,6 +1435,10 @@
 
         body:has(.fe-modal-backdrop[style*="display: block"]) .fe-calendar-shell {
           visibility: hidden;
+        }
+
+        .mobile-reader .fe-nav-toggle {
+          display: none;
         }
       }
 
@@ -1603,9 +1782,70 @@
         background: rgba(0, 175, 248, 0.08);
       }
 
+      .fe-conversation-item.fe-unread {
+        background: rgba(0, 175, 248, 0.06);
+        border-color: rgba(0, 175, 248, 0.2);
+      }
+
+      .fe-conversation-item.fe-unread:hover {
+        background: rgba(0, 175, 248, 0.1);
+      }
+
+      .fe-conversation-item.fe-unread.active {
+        border-color: rgba(0, 175, 248, 0.5);
+        background: rgba(0, 175, 248, 0.12);
+      }
+
       .fe-conversation-item.fe-unread .fe-conversation-subject,
       .fe-conversation-item.fe-unread .fe-conversation-from {
         font-weight: 700;
+        color: var(--color-text);
+      }
+
+      .fe-conversation-item.fe-unread .fe-conversation-subject {
+        color: #ffffff;
+      }
+
+      /* Light mode unread styling */
+      body.light-mode .fe-conversation-item.fe-unread {
+        background: rgba(0, 175, 248, 0.08);
+        border-color: rgba(0, 175, 248, 0.3);
+      }
+
+      body.light-mode .fe-conversation-item.fe-unread:hover {
+        background: rgba(0, 175, 248, 0.12);
+      }
+
+      body.light-mode .fe-conversation-item.fe-unread.active {
+        border-color: rgba(0, 175, 248, 0.6);
+        background: rgba(0, 175, 248, 0.15);
+      }
+
+      body.light-mode .fe-conversation-item.fe-unread .fe-conversation-subject {
+        color: #0f172a;
+        font-weight: 700;
+      }
+
+      body.light-mode .fe-conversation-item.fe-unread .fe-conversation-from {
+        color: #1f2937;
+        font-weight: 700;
+      }
+
+      /* Unread indicator dot */
+      .fe-unread-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--brand-primary);
+        margin-right: 8px;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px rgba(0, 175, 248, 0.6);
+      }
+
+      body.light-mode .fe-unread-dot {
+        background: #0096d6;
+        box-shadow: 0 0 6px rgba(0, 150, 214, 0.4);
       }
 
       .fe-conversation-header {
@@ -1661,6 +1901,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
       }
 
       .fe-conversation-preview {
@@ -1878,6 +2120,19 @@
         display: flex;
         align-items: center;
         gap: 10px;
+      }
+
+      .fe-reader-backbar {
+        display: none;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .fe-reader-backbar .fe-button {
+        justify-content: flex-start;
+        gap: 8px;
+        font-weight: 700;
+        min-width: 0;
       }
 
       .fe-action-menu {
@@ -2439,7 +2694,8 @@
 
       <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'mailbox', with: mailboxView">
         <div class="fe-mailbox-header">
-          <button class="fe-nav-toggle" type="button" aria-label="Toggle sidebar" data-bind="click: toggleSidebar">☰</button>
+          <button class="fe-nav-toggle" type="button" aria-label="Toggle sidebar" data-bind="click: toggleSidebar, visible: !mobileReader() || isDesktop() || sidebarOpen()">☰</button>
+          <button class="fe-reader-backbtn" type="button" aria-label="Back to list" data-bind="click: backToList, visible: mobileReader">←</button>
             <div class="fe-mailbox-header-right">
               <div class="fe-search-group" style="flex:1; justify-content:flex-start;">
                 <input
@@ -2599,7 +2855,12 @@
               }">
 
               <!-- Subject first -->
-              <div class="fe-conversation-subject" data-bind="text: displaySubject"></div>
+              <div class="fe-conversation-subject">
+                <!-- ko if: hasUnread -->
+                <span class="fe-unread-dot" title="Unread"></span>
+                <!-- /ko -->
+                <span data-bind="text: displaySubject"></span>
+              </div>
 
               <!-- Conversation header -->
               <div class="fe-conversation-header">
@@ -2714,7 +2975,7 @@
 
           <!-- ko if: !messageLoading() && selectedMessage() -->
           <div data-bind="with: selectedMessage">
-            <div class="fe-reader-actions" data-bind="visible: !$parent.isDesktop()">
+            <div class="fe-reader-backbar" data-bind="visible: $parent.mobileReader() || !$parent.isDesktop()">
               <button class="fe-button ghost" type="button" data-bind="click: $parent.backToList">← Back</button>
             </div>
             <div class="fe-reader-subject" data-bind="text: subject"></div>
@@ -2822,12 +3083,12 @@
               <span>Settings</span>
             </div>
             <nav class="fe-settings-nav">
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'general' }, click: function(){ setSection('general'); }">General</a>
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'accounts' }, click: function(){ setSection('accounts'); }">Accounts</a>
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'appearance' }, click: function(){ setSection('appearance'); }">Appearance</a>
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'shortcuts' }, click: function(){ setSection('shortcuts'); }">Keyboard Shortcuts</a>
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'security' }, click: function(){ setSection('security'); }">Security &amp; Privacy</a>
-              <a href="javascript:void(0)" data-bind="css: { active: section() === 'filters' }, click: function(){ setSection('filters'); }">Filters</a>
+              <button type="button" data-bind="css: { active: section() === 'general' }, click: function(){ setSection('general'); }">General</button>
+              <button type="button" data-bind="css: { active: section() === 'accounts' }, click: function(){ setSection('accounts'); }">Accounts</button>
+              <button type="button" data-bind="css: { active: section() === 'appearance' }, click: function(){ setSection('appearance'); }">Appearance</button>
+              <button type="button" data-bind="css: { active: section() === 'shortcuts' }, click: function(){ setSection('shortcuts'); }">Keyboard Shortcuts</button>
+              <button type="button" data-bind="css: { active: section() === 'security' }, click: function(){ setSection('security'); }">Security &amp; Privacy</button>
+              <button type="button" data-bind="css: { active: section() === 'filters' }, click: function(){ setSection('filters'); }">Filters</button>
             </nav>
           </aside>
 
@@ -3114,6 +3375,11 @@
 
             <div class="fe-alert error" data-bind="visible: error, text: error"></div>
             <div class="fe-alert success" data-bind="visible: success, text: success"></div>
+
+            <div class="fe-settings-footer" data-bind="visible: shouldShowActions">
+              <button class="fe-button ghost" type="button" data-bind="click: resetSectionChanges">Cancel</button>
+              <button class="fe-button" type="button" data-bind="click: save">Save changes</button>
+            </div>
           </div>
         </div>
       </div>

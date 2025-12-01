@@ -35,6 +35,7 @@ export class SettingsModal {
     // Storage observables will be shared from MailboxView in main.js
     this.storageUsed = null;
     this.storageTotal = null;
+    this.shouldShowActions = ko.pureComputed(() => this.section() !== 'shortcuts');
 
     // Keyboard shortcuts
     this.isMac = ko.observable(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
@@ -113,6 +114,12 @@ export class SettingsModal {
     } catch (error) {
       this.error(error?.message || 'Unable to save settings.');
     }
+  };
+
+  resetSectionChanges = () => {
+    const currentSection = this.section();
+    this.loadFromStorage();
+    this.section(currentSection || 'general');
   };
 
   openNewKey = () => {

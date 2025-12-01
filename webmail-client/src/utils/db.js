@@ -147,7 +147,6 @@ export async function clearCache() {
       db.indexMeta.clear(),
       db.syncQueue.clear()
     ]);
-    console.log('Cache cleared successfully');
     return true;
   } catch (error) {
     console.error('Failed to clear cache:', error);
@@ -210,7 +209,6 @@ export async function verifyDatabaseIntegrity() {
       }
     }
 
-    console.log('Database integrity check:', results);
     return results;
   } catch (error) {
     console.error('Database integrity check failed:', error);

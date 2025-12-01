@@ -1816,6 +1816,10 @@ export class MailboxView {
       const latestMessage = conversation.messages[conversation.messages.length - 1];
       this.selectedMessage(latestMessage);
       this.loadMessage(latestMessage);
+      if (typeof window !== 'undefined' && window.innerWidth <= 820) {
+        this.mobileReader(true);
+        this.sidebarOpen(false);
+      }
     }
   }
 
