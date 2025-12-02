@@ -15,7 +15,7 @@
       lineinfile:
         path: /etc/fstab
         regexp: '^tmpfs\s+/tmp'
-        line: 'tmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G 0 0'
+        line: 'tmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,mode=1777,size=2G 0 0'
         state: present
       when: tmp_tmpfs_check.rc != 0
 
@@ -39,7 +39,7 @@
           ║  • Enhanced security (cleared on reboot)                              ║
           ║  • Size limited to 2GB to prevent RAM exhaustion                      ║
           ║                                                                        ║
-          ║  Mount options: noatime,nosuid,nodev,noexec,mode=1777,size=2G         ║
+          ║  Mount options: noatime,nosuid,nodev,mode=1777,size=2G                ║
           ║                                                                        ║
           ╚════════════════════════════════════════════════════════════════════════╝
 

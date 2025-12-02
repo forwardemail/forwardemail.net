@@ -112,6 +112,7 @@ exports.setupApiServer = async (t) => {
   t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
   t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
   t.context.api = request.agent(api.server);
+  t.context._api = api;
   t.context.resolver = sqlite.resolver;
 };
 
@@ -224,6 +225,20 @@ exports.teardownApiServer = async (t) => {
   if (t.context.sqlite) {
     try {
       await t.context.sqlite.close();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+
+  // close API server
+  if (t.context._api && t.context._api.server) {
+    try {
+      await new Promise((resolve, reject) => {
+        t.context._api.server.close((err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
     } catch (err) {
       logger.debug(err);
     }

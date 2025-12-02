@@ -36,6 +36,18 @@
         name: rsyslog
         state: restarted
   tasks:
+    # Ensure netplan is installed and protected from removal
+    - name: Ensure netplan is installed
+      apt:
+        name: netplan.io
+        state: present
+        update_cache: no
+
+    - name: Hold netplan package to prevent removal
+      dpkg_selections:
+        name: netplan.io
+        selection: hold
+
     - name: Delete Digital Ocean Networking Configuration
       ansible.builtin.file:
         state: absent
@@ -137,12 +149,20 @@
 
     # Disable Apport Service
     # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-service-apport-disabled/#ansible-playbook
+    - name: Check if apport service exists
+      stat:
+        path: /lib/systemd/system/apport.service
+      register: apport_service
+
     - name: Disable service apport
       systemd:
         name: apport.service
         enabled: 'no'
         state: stopped
         masked: 'yes'
+      when: apport_service.stat.exists
+      register: apport_disable
+      failed_when: false
     # NOTE: this does not seem necessary since apport.socket does not exist
     #- name: Disable socket apport
     #  systemd:

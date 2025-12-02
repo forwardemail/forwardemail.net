@@ -192,7 +192,7 @@ Step-by-step guide for deploying SMTP, IMAP, POP3, and other mail services:
 
 Automated system-wide optimizations applied to ALL servers via `security.yml`:
 
-* 🚀 **tmpfs /tmp**: RAM-based temporary storage (2GB, noexec, auto-configured)
+* 🚀 **tmpfs /tmp**: RAM-based temporary storage (2GB, auto-configured)
 * 🔒 **/dev/shm hardening**: Secured with noexec (1GB limit, blocks malware execution)
 * 💾 **Mount options**: noatime, nodiratime, discard (TRIM for SSDs)
 * 🔄 **Automated fstab editing**: Automatically updates /etc/fstab and remounts
@@ -204,7 +204,7 @@ Automated system-wide optimizations applied to ALL servers via `security.yml`:
 **Benefits**:
 
 * ⚡ Faster temporary file operations
-* 🔒 Enhanced security (noexec on /tmp and /dev/shm blocks malware)
+* 🔒 Enhanced security (noexec on /dev/shm blocks malware)
 * 📉 Reduced SSD wear (noatime, nodiratime)
 * 🔄 Extended SSD lifespan (TRIM support)
 * 🧹 Automatic /tmp cleanup on reboot

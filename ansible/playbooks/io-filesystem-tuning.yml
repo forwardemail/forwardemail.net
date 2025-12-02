@@ -1,43 +1,100 @@
 ---
+# I/O and Filesystem Tuning Playbook
+# Optimizes I/O scheduler and filesystem settings for database workloads
+
 - name: "I/O and Filesystem Tuning for {{ service_name }}"
-  hosts: "{{ target_hosts }}"
+  hosts: all
   become: true
-  become_user: root
   tasks:
+    - name: "Check if {{ data_directory }} exists"
+      stat:
+        path: "{{ data_directory }}"
+      register: data_dir_check
+
+    - name: "Skip I/O tuning if {{ data_directory }} does not exist"
+      debug:
+        msg: "Skipping I/O tuning - {{ data_directory }} does not exist yet"
+      when: not data_dir_check.stat.exists
+
+    # Copy device detection script
+    # Remove old script to force update
+    - name: Remove old device detection script
+      file:
+        path: /usr/local/bin/detect-block-device.sh
+        state: absent
+      when: data_dir_check.stat.exists
+
+    - name: Copy device detection script
+      copy:
+        src: files/detect-block-device.sh
+        dest: /usr/local/bin/detect-block-device.sh
+        mode: '0755'
+        owner: root
+        group: root
+      when: data_dir_check.stat.exists
+
     # Detect block device for data directory
     - name: "Get block device for {{ data_directory }}"
-      shell: |
-        df "{{ data_directory }}" | tail -1 | awk '{print $1}' | sed 's/[0-9]*$//'
+      command: /usr/local/bin/detect-block-device.sh "{{ data_directory }}"
       register: block_device_result
       changed_when: false
+      failed_when: block_device_result.rc != 0
+      when: data_dir_check.stat.exists
 
-    - name: Set block device fact
-      set_fact:
-        block_device: "{{ block_device_result.stdout }}"
+    - name: Validate device name is not empty
+      fail:
+        msg: "Device detection returned empty string for {{ data_directory }}"
+      when: data_dir_check.stat.exists and block_device_result.stdout | trim == ''
 
-    - name: "Get device name without /dev/ prefix"
+    - name: Debug device detection result
+      debug:
+        msg: |
+          Device detection for {{ data_directory }}:
+          Raw output: '{{ block_device_result.stdout }}'
+          Trimmed: '{{ block_device_result.stdout | trim }}'
+          Will use: /dev/{{ block_device_result.stdout | trim }}
+      when: data_dir_check.stat.exists
+
+    - name: Set block device facts
       set_fact:
-        device_name: "{{ block_device | regex_replace('^/dev/', '') }}"
+        device_name: "{{ block_device_result.stdout | trim }}"
+        block_device: "/dev/{{ block_device_result.stdout | trim }}"
+      when: data_dir_check.stat.exists
+
+    - name: Verify block device exists and is a block device
+      stat:
+        path: "{{ block_device }}"
+      register: block_device_check
+      when: data_dir_check.stat.exists
+
+    - name: Fail if block device is invalid
+      fail:
+        msg: |
+          Block device '{{ block_device }}' does not exist or is not a block device.
+          Device detection may have failed. Check the debug output above.
+      when: data_dir_check.stat.exists and (not block_device_check.stat.exists or not block_device_check.stat.isblk)
 
     # Detect if device is multi-queue (NVMe, modern SSD)
-    - name: "Check if {{ device_name }} is multi-queue device"
+    - name: Check if device is multi-queue
       stat:
         path: "/sys/block/{{ device_name }}/mq"
       register: mq_check
+      when: data_dir_check.stat.exists
 
-    # Set appropriate I/O scheduler based on device type
-    - name: "Set I/O scheduler fact"
+    # Set I/O scheduler variable based on device type
+    - name: Set I/O scheduler based on device type
       set_fact:
-        io_scheduler: "{{ 'mq-deadline' if mq_check.stat.exists else 'deadline' }}"
+        io_scheduler: "{{ 'none' if mq_check.stat.exists else 'deadline' }}"
+      when: data_dir_check.stat.exists
 
-    - name: "Configure I/O scheduler to {{ io_scheduler }} for {{ device_name }}"
+    # Set I/O scheduler based on device type
+    - name: Set I/O scheduler for device
       shell: |
         echo "{{ io_scheduler }}" > /sys/block/{{ device_name }}/queue/scheduler
-      args:
-        executable: /bin/bash
       register: scheduler_result
       changed_when: scheduler_result.rc == 0
       failed_when: false
+      when: data_dir_check.stat.exists
 
     - name: "Make I/O scheduler persistent via udev rule"
       copy:
@@ -46,15 +103,15 @@
           # Set I/O scheduler for {{ service_name }} data device
           ACTION=="add|change", KERNEL=="{{ device_name }}", ATTR{queue/scheduler}="{{ io_scheduler }}"
         mode: "0644"
+      when: data_dir_check.stat.exists
 
-    # Configure read-ahead for database workloads
-    - name: "Set read-ahead to {{ read_ahead_kb }}KB for {{ device_name }}"
+    # Set read-ahead for database workloads
+    - name: Set read-ahead for device
       shell: |
         blockdev --setra {{ read_ahead_kb * 2 }} {{ block_device }}
-      args:
-        executable: /bin/bash
       register: readahead_result
       changed_when: readahead_result.rc == 0
+      when: data_dir_check.stat.exists
 
     - name: "Make read-ahead persistent via udev rule"
       copy:
@@ -63,6 +120,7 @@
           # Set read-ahead for {{ service_name }} data device
           ACTION=="add|change", KERNEL=="{{ device_name }}", ATTR{bdi/read_ahead_kb}="{{ read_ahead_kb }}"
         mode: "0644"
+      when: data_dir_check.stat.exists
 
     # Check filesystem mount options
     - name: "Get current mount options for {{ data_directory }}"
@@ -70,41 +128,46 @@
         mount | grep "{{ block_device }}" | awk '{print $6}' | tr -d '()'
       register: mount_options_result
       changed_when: false
+      when: data_dir_check.stat.exists
 
     - name: "Check filesystem mount options"
       set_fact:
         has_noatime: "{{ 'noatime' in mount_options_result.stdout or 'relatime' in mount_options_result.stdout }}"
         has_nodiratime: "{{ 'nodiratime' in mount_options_result.stdout }}"
         has_discard: "{{ 'discard' in mount_options_result.stdout }}"
+      when: data_dir_check.stat.exists
 
     - name: "Display filesystem mount options recommendation"
       debug:
         msg: |
           ╔════════════════════════════════════════════════════════════════════════╗
           ║                                                                        ║
-          ║                    📁 FILESYSTEM MOUNT OPTIONS                        ║
+          ║  📁 Filesystem Mount Options for {{ data_directory }}                 ║
           ║                                                                        ║
-          ║  Current: {{ mount_options_result.stdout }}
+          ╠════════════════════════════════════════════════════════════════════════╣
+          {% if not has_noatime or not has_nodiratime %}║                                                                        ║
+          ║  ⚠️  RECOMMENDED: Add these mount options to /etc/fstab:              ║
+          ║                                                                        ║{% if not has_noatime %}
+          ║  • noatime    - Disable access time updates (improves performance)    ║{% endif %}{% if not has_nodiratime %}
+          ║  • nodiratime - Disable directory access time updates                 ║{% endif %}{% if not has_discard %}
+          ║  • discard    - Enable TRIM for SSDs (if using SSD)                   ║{% endif %}
           ║                                                                        ║
-          ║  {% if has_noatime %}✅{% else %}⚠️{% endif %} noatime     - Disable file access time updates
-          ║  {% if has_nodiratime %}✅{% else %}⚠️{% endif %} nodiratime  - Disable directory access time updates
-          ║  {% if has_discard %}✅{% else %}⚠️{% endif %} discard     - Enable TRIM for SSD longevity
-          ║                                                                        ║
-          ║  {% if not (has_noatime and has_nodiratime and has_discard) %}RECOMMENDED: Update /etc/fstab with optimal mount options:         ║
-          ║                                                                        ║
-          ║  {{ block_device }} {{ data_directory }} <fstype> noatime,nodiratime,discard 0 0
+          ║  Example fstab entry:                                                  ║
+          ║  {{ block_device }} {{ data_directory }} ext4 defaults,noatime,nodiratime{% if not has_discard %},discard{% endif %} 0 2
           ║                                                                        ║
           ║  Then remount: sudo mount -o remount {{ data_directory }}
           ║                                                                        ║{% else %}All recommended mount options are enabled!                           ║{% endif %}
           ║                                                                        ║
           ╚════════════════════════════════════════════════════════════════════════╝
-      when: true
+      when: data_dir_check.stat.exists
 
     # Reload udev rules
     - name: Reload udev rules
       command: udevadm control --reload-rules
+      when: data_dir_check.stat.exists
       changed_when: false
 
     - name: Trigger udev rules
       command: udevadm trigger
+      when: data_dir_check.stat.exists
       changed_when: false

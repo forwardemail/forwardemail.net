@@ -258,6 +258,18 @@ let jobs = [
     name: 'check-suspicious-emails',
     interval: '6h',
     timeout: 0
+  },
+  // cleanup expired Redis sessions
+  {
+    name: 'cleanup-expired-sessions',
+    interval: '1h',
+    timeout: 0
+  },
+  // monitor Redis keys without TTL
+  {
+    name: 'monitor-redis-ttl',
+    interval: '6h',
+    timeout: 0
   }
 ];
 

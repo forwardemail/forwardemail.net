@@ -327,6 +327,20 @@ class SQLite {
     this.subscriber.unsubscribe('sqlite_auth_response');
     clearInterval(this.wsInterval);
 
+    // destroy worker pool
+    if (this.piscina) {
+      await this.piscina.destroy();
+    }
+
+    // clear notifier timers
+    if (this.server.notifier && this.server.notifier.publishTimers) {
+      for (const data of this.server.notifier.publishTimers.values()) {
+        if (data.timeout) clearTimeout(data.timeout);
+      }
+
+      this.server.notifier.publishTimers.clear();
+    }
+
     // close websocket connections
     // if (this.wss && this.wss.clients) {
     //   for (const ws of this.wss.clients) {

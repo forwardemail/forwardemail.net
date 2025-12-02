@@ -12,6 +12,7 @@ const Boom = require('@hapi/boom');
 const Cabin = require('cabin');
 const dayjs = require('dayjs-with-plugins');
 const ipaddr = require('ipaddr.js');
+const isbot = require('isbot');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -430,6 +431,49 @@ module.exports = (redis) => ({
     });
   },
   hookBeforeRoutes(app) {
+    // prevent bots from creating sessions
+    app.use((ctx, next) => {
+      // skip session for bots to prevent unnecessary Redis storage
+      const isBot = isbot(ctx.get('User-Agent'));
+
+      if (isBot) {
+        ctx.sessionSave = false;
+
+        // Wrap ctx.session with a Proxy that prevents any writes
+        // This ensures code throughout the app can't accidentally create bot sessions
+        const originalDescriptor = Object.getOwnPropertyDescriptor(
+          Object.getPrototypeOf(ctx),
+          'session'
+        );
+
+        if (originalDescriptor && originalDescriptor.get) {
+          const originalGetter = originalDescriptor.get;
+
+          Object.defineProperty(ctx, 'session', {
+            get() {
+              const session = originalGetter.call(this);
+              if (!session) return session;
+
+              // Return a Proxy that silently ignores all writes
+              return new Proxy(session, {
+                set() {
+                  return true; // Silently ignore
+                },
+                deleteProperty() {
+                  return true; // Silently ignore
+                }
+              });
+            },
+            set() {
+              // Ignore session assignment for bots
+            }
+          });
+        }
+      }
+
+      return next();
+    });
+
     // remove nonce used in headers for helmet compatibility (old req/res approach)
     app.use((ctx, next) => {
       if (ctx.method === 'GET') ctx.remove('X-CSP-Nonce');

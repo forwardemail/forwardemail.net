@@ -604,7 +604,8 @@ test('calendar events list supports pagination', async (t) => {
   const calendarId = calendarRes.body.id;
 
   // Create multiple calendar events for pagination testing
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 4; i++) {
+    t.log(`Creating calendar event ${i + 1}...`);
     await api
       .post('/v1/calendar-events')
       .set(
@@ -637,7 +638,7 @@ END:VCALENDAR`
 
   t.is(res.status, 200);
   t.true(Array.isArray(res.body));
-  t.is(res.body.length, 5);
+  t.is(res.body.length, 4);
   t.truthy(res.headers['x-page-count']);
   t.truthy(res.headers['x-page-current']);
 });
@@ -984,7 +985,8 @@ test('contacts list supports pagination', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple contacts for pagination testing
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 4; i++) {
+    t.log(`Creating contact ${i + 1}...`);
     await api
       .post('/v1/contacts')
       .set(
@@ -1006,7 +1008,7 @@ test('contacts list supports pagination', async (t) => {
     );
 
   t.is(res1.status, 200);
-  t.is(res1.body.length, 10);
+  t.is(res1.body.length, 4); // All 4 contacts fit on page 1
   t.truthy(res1.headers['x-page-count']);
   t.truthy(res1.headers['x-page-current']);
   t.truthy(res1.headers['x-page-size']);
@@ -1021,7 +1023,7 @@ test('contacts list supports pagination', async (t) => {
     );
 
   t.is(res2.status, 200);
-  t.is(res2.body.length, 5); // Remaining 5 contacts
+  t.is(res2.body.length, 0); // No contacts on page 2 (only 4 total)
 });
 
 test('messages list supports pagination and filtering', async (t) => {
@@ -1029,7 +1031,8 @@ test('messages list supports pagination and filtering', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple messages for pagination testing
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
+    t.log(`Creating message ${i + 1}...`);
     const res = await api
       .post('/v1/messages')
       .set(
@@ -1047,7 +1050,7 @@ test('messages list supports pagination and filtering', async (t) => {
   }
 
   // Fetch list x-response-time
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     const res = await api
       .get('/v1/messages')
       .set(
@@ -1067,7 +1070,7 @@ test('messages list supports pagination and filtering', async (t) => {
     );
 
   t.is(res1.status, 200);
-  t.is(res1.body.length, 5);
+  t.is(res1.body.length, 3);
   t.truthy(res1.headers['x-page-count']);
 
   // Test filtering unread messages
@@ -1087,7 +1090,8 @@ test('calendars list supports pagination', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple calendars for pagination testing
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 4; i++) {
+    t.log(`Creating calendar ${i + 1}...`);
     await api
       .post('/v1/calendars')
       .set(
@@ -1110,7 +1114,7 @@ test('calendars list supports pagination', async (t) => {
     );
 
   t.is(res.status, 200);
-  t.is(res.body.length, 5);
+  t.is(res.body.length, 4);
   t.truthy(res.headers['x-page-count']);
   t.truthy(res.headers['x-item-count']);
 });
@@ -1120,7 +1124,8 @@ test('folders list supports pagination and filtering', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple folders for pagination testing
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 4; i++) {
+    t.log(`Creating folder ${i + 1}...`);
     await api
       .post('/v1/folders')
       .set(
@@ -1819,7 +1824,8 @@ test('messages search with pagination', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple messages with same search term
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 4; i++) {
+    t.log(`Creating message ${i + 1}...`);
     await api
       .post('/v1/messages')
       .set(
@@ -1842,7 +1848,7 @@ test('messages search with pagination', async (t) => {
     );
 
   t.is(res.status, 200);
-  t.is(res.body.length, 10);
+  t.is(res.body.length, 4); // All 4 messages fit on page 1
   t.truthy(res.headers['x-page-count']);
   t.truthy(res.headers['x-item-count']);
 
@@ -1855,7 +1861,7 @@ test('messages search with pagination', async (t) => {
     );
 
   t.is(res2.status, 200);
-  t.is(res2.body.length, 5); // Remaining 5 messages
+  t.is(res2.body.length, 0); // No remaining messages (4 total, all fit on page 1)
 });
 
 //

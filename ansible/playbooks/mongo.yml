@@ -242,16 +242,37 @@
     # - https://revisit.tech/blog/mongodb-8-0-performanace-is-36-percent-higher-but-there-is-a-catch/
     # - https://dev.to/manoj_from_revisit_dot_tech/mongodb-80-performance-is-36-higher-nope-its-not--35jk
     
+    - name: Remove old MongoDB GPG keys
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/share/keyrings/mongodb-server-6.0.gpg
+        - /etc/apt/trusted.gpg.d/mongodb-server-6.0.gpg
+
     - name: Add MongoDB GPG key
       apt_key:
         url: https://www.mongodb.org/static/pgp/server-6.0.asc
         state: present
+      register: gpg_key_added
+
+    - name: Remove old MongoDB repository file
+      file:
+        path: /etc/apt/sources.list.d/mongodb-org-6.0.list
+        state: absent
 
     - name: Add MongoDB repository
       apt_repository:
         repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 multiverse"
         state: present
         filename: mongodb-org-6.0
+        update_cache: yes
+      register: repo_added
+
+    - name: Update apt cache after repository changes
+      apt:
+        update_cache: yes
+      when: gpg_key_added.changed or repo_added.changed
 
     - name: Install MongoDB 6.0.18
       apt:
@@ -275,6 +296,22 @@
         - mongodb-org-mongos
         - mongodb-org-tools
 
+    - name: Ensure mongodb group exists
+      group:
+        name: mongodb
+        system: yes
+        state: present
+
+    - name: Ensure mongodb user exists
+      user:
+        name: mongodb
+        group: mongodb
+        system: yes
+        shell: /usr/sbin/nologin
+        home: /var/lib/mongodb
+        createhome: no
+        state: present
+
     - name: Ensure MongoDB data directory exists
       file:
         path: /var/lib/mongodb
@@ -291,12 +328,25 @@
         group: mongodb
         mode: '0755'
 
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Check if mongod service file exists
+      stat:
+        path: /lib/systemd/system/mongod.service
+      register: mongod_service_file
+
+    - name: Fail if mongod service file is missing
+      fail:
+        msg: "MongoDB service file not found. Package installation may have failed."
+      when: not mongod_service_file.stat.exists
+
     - name: Enable and start mongod service
       systemd:
         name: mongod
         enabled: yes
         state: started
-        daemon_reload: yes
 
     # Add failure notification to mongod service
     - name: Create mongod service override directory
@@ -384,34 +434,50 @@
       changed_when: false
       failed_when: false
 
+    - name: Copy MongoDB user creation Python script
+      copy:
+        src: files/create_mongo_user.py
+        dest: /tmp/create_mongo_user.py
+        mode: '0700'
+      no_log: true
+
+    - name: Create MongoDB user creation script using Python
+      shell: |
+        export MONGO_USER='{{ lookup('env', 'MONGO_USER') }}'
+        export MONGO_PASS='{{ lookup('env', 'MONGO_PASS') }}'
+        python3 /tmp/create_mongo_user.py
+      register: script_creation
+      failed_when: false
+      no_log: true
+
+    - name: Check Python script result
+      fail:
+        msg: "Failed to create MongoDB user creation script"
+      when: script_creation.rc != 0
+
     - name: Create MongoDB admin user
       shell: |
-        mongosh --quiet admin --eval '
-          try {
-            db.createUser({
-              user: "{{ lookup('env', 'MONGO_USER') }}",
-              pwd: "{{ lookup('env', 'MONGO_PASSWORD') }}",
-              roles: [
-                { role: "root", db: "admin" },
-                { role: "userAdminAnyDatabase", db: "admin" },
-                { role: "dbAdminAnyDatabase", db: "admin" },
-                { role: "readWriteAnyDatabase", db: "admin" }
-              ]
-            });
-            print("User created successfully");
-          } catch (e) {
-            if (e.code === 51003) {
-              print("User already exists");
-            } else {
-              throw e;
-            }
-          }
-        '
-      when: admin_user_check.stdout | int == 0
-      no_log: true
+        mongosh --quiet admin --file /tmp/create_mongo_user.js
       register: create_user_result
-      failed_when: create_user_result.rc != 0 and 'User already exists' not in create_user_result.stdout
-      changed_when: "'User created successfully' in create_user_result.stdout"
+      failed_when: false
+      no_log: true
+
+    - name: Remove temporary MongoDB scripts
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/create_mongo_user.py
+        - /tmp/create_mongo_user.js
+      no_log: true
+
+    - name: Check MongoDB user creation result
+      fail:
+        msg: "Failed to create MongoDB admin user"
+      when: >
+        create_user_result.rc != 0 and
+        'User already exists' not in create_user_result.stdout and
+        'User created successfully' not in create_user_result.stdout
 
     - name: Enable MongoDB authentication in mongod.conf
       blockinfile:

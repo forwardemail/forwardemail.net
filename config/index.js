@@ -781,7 +781,7 @@ const config = {
   ),
 
   fingerprintPrefix: 'f',
-  fingerprintTTL: ms('7d'),
+  fingerprintTTL: ms('1d'),
 
   denylist: new Set(
     _.isArray(env.DENYLIST)

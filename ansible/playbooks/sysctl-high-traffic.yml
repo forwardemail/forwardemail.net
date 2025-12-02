@@ -40,7 +40,7 @@
         name: "{{ item.name }}"
         value: "{{ item.value }}"
         state: present
-        reload: true
+        reload: false
         sysctl_file: "/etc/sysctl.d/99-{{ sysctl_file_name }}.conf"
       loop:
         # Memory Management
@@ -86,6 +86,12 @@
         # File System
         - { name: 'fs.file-max', value: '2097152' }  # Max open file descriptors system-wide
         - { name: 'fs.nr_open', value: '2097152' }  # Max open file descriptors per process
+
+    # Reload sysctl after all values are written to file
+    # This ensures rmem_max/wmem_max are applied before tcp_rmem/tcp_wmem
+    - name: "Reload sysctl to apply {{ service_name }} settings"
+      shell: sysctl -p /etc/sysctl.d/99-{{ sysctl_file_name }}.conf
+      changed_when: true
 
     - name: Display auto-scaled memory values
       debug:
