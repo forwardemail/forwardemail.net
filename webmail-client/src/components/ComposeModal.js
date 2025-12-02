@@ -43,6 +43,19 @@ export class ComposeModal {
     this.showEmoji = ko.observable(false);
     this.emojiPickerEl = null;
     this.emojiHandler = null;
+    this.fromAddress = ko.observable('');
+    this.focusedField = ko.observable('to');
+    this.suggestionOpen = ko.observable(false);
+    this.filteredContacts = ko.pureComputed(() => {
+      const field = this.focusedField();
+      const options = this.contactOptions() || [];
+      if (!field || typeof this[field] !== 'function') return options.slice(0, 6);
+      const query = (this[field]() || '').toLowerCase();
+      const filtered = query
+        ? options.filter((email) => email && email.toLowerCase().includes(query))
+        : options;
+      return filtered.slice(0, 6);
+    });
   }
 
   open = () => {
@@ -60,6 +73,7 @@ export class ComposeModal {
     this.to('');
     this.cc('');
     this.bcc('');
+    this.updateFromAddress();
     this.ccVisible(false);
     this.bccVisible(false);
     this.subject('');
@@ -71,6 +85,8 @@ export class ComposeModal {
     this.attachments([]);
     this.isPlainText(Local.get('compose_plain_default') === '1');
     this.recipientError('');
+    this.suggestionOpen(false);
+    this.focusedField('to');
     if (this.editorView) this.editorView.commands.setContent('');
     this.toList([]);
     this.ccList([]);
@@ -288,10 +304,15 @@ export class ComposeModal {
   addRecipient(field, value) {
     const list = this[`${field}List`];
     const textField = this[field];
+    if (!list || !textField) return;
     const val = (value || textField()).trim();
     if (!val) return;
     const parts = this.parseRecipients(val);
-    list(list().concat(parts));
+    const existing = new Set(list());
+    parts.forEach((p) => {
+      if (p && !existing.has(p)) existing.add(p);
+    });
+    list(Array.from(existing));
     textField('');
   }
 
@@ -326,6 +347,44 @@ export class ComposeModal {
 
   setContacts = (list) => {
     if (Array.isArray(list)) this.contactOptions(list);
+  };
+
+  updateFromAddress() {
+    const aliasAuth = Local.get('alias_auth') || '';
+    const aliasEmail = aliasAuth.includes(':') ? aliasAuth.split(':')[0] : aliasAuth;
+    this.fromAddress(aliasEmail || Local.get('email') || '');
+  }
+
+  onRecipientFocus = (field) => {
+    this.focusedField(field);
+    this.suggestionOpen(true);
+  };
+
+  onRecipientInput = (field) => {
+    this.focusedField(field);
+    this.suggestionOpen(true);
+  };
+
+  handleRecipientBlur = () => {
+    setTimeout(() => this.suggestionOpen(false), 120);
+    return true;
+  };
+
+  handleRecipientKeydown = (field, event) => {
+    if (event.key === 'Enter' || event.key === 'Tab' || event.key === ',') {
+      event.preventDefault();
+      this.addRecipient(field);
+      this.suggestionOpen(false);
+      return false;
+    }
+    return true;
+  };
+
+  selectSuggestion = (email) => {
+    if (!email) return;
+    const field = this.focusedField();
+    this.addRecipient(field, email);
+    this.suggestionOpen(false);
   };
 
   toggleEmoji = () => {

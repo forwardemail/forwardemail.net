@@ -10,6 +10,7 @@ import { Toasts } from './components/Toast';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
 import { keyboardShortcuts, showKeyboardShortcutsHelp } from './utils/keyboard-shortcuts';
+import { i18n } from './utils/i18n';
 import './styles/main.css';
 
 function detectRoute() {
@@ -364,9 +365,12 @@ function initStarfield() {
   return () => disposers.forEach((dispose) => dispose && dispose());
 }
 
-function bootstrap() {
+async function bootstrap() {
   const root = document.getElementById('rl-app');
   if (!root) return;
+
+  // Initialize i18n first
+  await i18n.init();
 
   let route = viewModel.route();
 

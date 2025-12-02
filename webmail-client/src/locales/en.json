@@ -1,0 +1,169 @@
+{
+  "app": {
+    "title": "Forward Email Webmail",
+    "loading": "Loading..."
+  },
+  "folders": {
+    "inbox": "Inbox",
+    "drafts": "Drafts",
+    "sent": "Sent Mail",
+    "archive": "Archive",
+    "spam": "Spam",
+    "trash": "Trash",
+    "outbox": "Outbox"
+  },
+  "actions": {
+    "compose": "Compose",
+    "reply": "Reply",
+    "replyAll": "Reply All",
+    "forward": "Forward",
+    "archive": "Archive",
+    "delete": "Delete",
+    "move": "Move",
+    "moveTo": "Move to…",
+    "labelAs": "Label as…",
+    "markRead": "Mark read",
+    "markUnread": "Mark unread",
+    "refresh": "Refresh",
+    "search": "Search",
+    "filters": "Filters",
+    "prev": "Prev",
+    "next": "Next",
+    "selectAll": "Select visible conversations",
+    "clearFilters": "Clear filters",
+    "signOut": "Sign Out",
+    "settings": "Settings",
+    "addAccount": "Add Account",
+    "switchAccount": "Switch Account",
+    "downloadOriginal": "Download .eml",
+    "toggleSidebar": "Toggle sidebar",
+    "backToList": "Back to list"
+  },
+  "filters": {
+    "unreadOnly": "Unread only",
+    "withAttachments": "With attachments"
+  },
+  "messages": {
+    "noSubject": "(No subject)",
+    "noMessages": "No messages in this folder yet.",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "subject": "Subject",
+    "preview": "Preview",
+    "pending": "Pending",
+    "conversationCount": "{count} messages",
+    "selectedCount": "{count} conversation(s) selected"
+  },
+  "compose": {
+    "title": "Compose Email",
+    "to": "To",
+    "cc": "Cc",
+    "bcc": "Bcc",
+    "subject": "Subject",
+    "send": "Send",
+    "discard": "Discard",
+    "saveDraft": "Save Draft",
+    "attachments": "Attachments",
+    "addAttachment": "Add Attachment",
+    "removeAttachment": "Remove",
+    "formatting": "Formatting"
+  },
+  "bulk": {
+    "archiveSelected": "Archive selected",
+    "deleteSelected": "Delete selected",
+    "moveSelected": "Move selected",
+    "archived": "Archived {count} conversation(s)",
+    "deleted": "Deleted {count} conversation(s)",
+    "moved": "Moved {count} conversation(s)",
+    "pickFolder": "Pick a folder to move conversations"
+  },
+  "contextMenu": {
+    "archive": "Archive",
+    "delete": "Delete",
+    "permanentDelete": "Delete permanently",
+    "reply": "Reply",
+    "forward": "Forward",
+    "markRead": "Mark read",
+    "markUnread": "Mark unread",
+    "moveTo": "Move to…",
+    "labelAs": "Label as…"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "appearance": "Appearance",
+    "language": "Language",
+    "threading": "Conversation view",
+    "threadingEnabled": "Conversation view enabled",
+    "threadingDisabled": "Conversation view disabled",
+    "bodyIndexing": "Search message content",
+    "bodyIndexingEnabled": "Message content search enabled",
+    "bodyIndexingDisabled": "Message content search disabled",
+    "storage": "Storage",
+    "storageUsed": "Storage used",
+    "localCache": "Local cache",
+    "indexedMessages": "Indexed messages",
+    "syncPending": "Pending sync",
+    "rebuildIndex": "Rebuild search index"
+  },
+  "errors": {
+    "loadMailbox": "Unable to load mailbox.",
+    "loadMessages": "Unable to load messages.",
+    "loadMessage": "Unable to load message.",
+    "sendMessage": "Failed to send message.",
+    "deleteMessage": "Failed to delete message.",
+    "moveMessage": "Failed to move message.",
+    "archiveMessage": "Failed to archive message.",
+    "downloadOriginal": "Unable to download original.",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "Your session has expired. Please sign in again.",
+    "unknown": "An unexpected error occurred."
+  },
+  "notifications": {
+    "messageSent": "Message sent successfully",
+    "draftSaved": "Draft saved",
+    "messageArchived": "Message archived",
+    "messageDeleted": "Message deleted",
+    "messageMoved": "Message moved",
+    "offline": "You are offline. Changes will sync when you reconnect.",
+    "changeQueued": "Change queued (offline)",
+    "changeQueuedSync": "Change queued to sync later",
+    "deleteQueued": "Delete queued (offline)",
+    "deleteQueuedSync": "Delete queued to sync later",
+    "permanentDeleteQueued": "Permanent delete queued (offline)",
+    "permanentDeleteQueuedSync": "Permanent delete queued to sync later",
+    "moveQueued": "Move queued (offline)",
+    "moveQueuedSync": "Move queued to sync later",
+    "labelingNotImplemented": "Labeling not yet implemented",
+    "archiveFolderNotFound": "Archive folder not found"
+  },
+  "pgp": {
+    "encrypted": "Encrypted – attempting decrypt…",
+    "decrypted": "Decrypted with saved key",
+    "unableToDecrypt": "PGP encrypted – unable to decrypt with current keys"
+  },
+  "storage": {
+    "bytes": "{size} B",
+    "kilobytes": "{size} KB",
+    "megabytes": "{size} MB",
+    "gigabytes": "{size} GB"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count}d ago",
+    "weeksAgo": "{count}w ago",
+    "monthsAgo": "{count}mo ago"
+  },
+  "pagination": {
+    "page": "Page {page}",
+    "prev": "Prev",
+    "next": "Next"
+  },
+  "labels": {
+    "important": "Important",
+    "personal": "Personal",
+    "work": "Work"
+  }
+}

@@ -10,6 +10,7 @@ import { db } from '../utils/db';
 import { SearchService, SEARCH_INDEX_KEY } from '../utils/search-service';
 import { enqueueSync, replaySyncQueue } from '../utils/sync-queue';
 import { groupIntoConversations, deduplicateMessages, buildConversationTree, flattenConversationTree } from '../utils/threading';
+import { i18n } from '../utils/i18n';
 
 function bufferToDataUrl(attachment) {
   try {
@@ -106,6 +107,10 @@ function sanitizeAttachments(list) {
     // strip PGP armor/control parts
     if (/\.asc$/i.test(name)) return false;
     if (/application\/pgp-encrypted/i.test(mime)) return false;
+    // Skip inline images (attachments with contentId are typically inline)
+    if (att.contentId || att.cid) return false;
+    // Skip image/* content types without a meaningful filename (likely inline)
+    if (/^image\//i.test(mime) && (!name || name.toLowerCase() === 'attachment' || name.toLowerCase() === 'image')) return false;
     const size = att.size ?? (att.content ? att.content.length : 0);
     // Skip tiny placeholder attachments (e.g., "Version: 1" blocks)
     if (!att.href && size <= 24) return false;
@@ -166,6 +171,9 @@ const normalizeFlags = (flags) => {
 
 export class MailboxView {
   constructor() {
+    // i18n helper
+    this.t = (key, params) => i18n.t(key, params);
+
     this.email = ko.observable(Local.get('email') || '');
     this.folders = ko.observableArray([]);
     this.selectedFolder = ko.observable('');
@@ -216,12 +224,23 @@ export class MailboxView {
     // Threading
     this.threadingEnabled = ko.observable(Local.get('threading_enabled') !== 'false'); // enabled by default
     this.conversations = ko.observableArray([]);
+    this.conversationCache = new Map();
     this.selectedConversation = ko.observable(null);
     this.expandedConversations = ko.observable(new Set()); // Track which conversations are expanded
+    this.selectedConversationIds = ko.observableArray([]);
+    this.bulkMoveOpen = ko.observable(false);
+    this.selectedConversationCount = ko.pureComputed(() => this.selectedConversationIds().length);
+    this.allVisibleConversationsSelected = ko.pureComputed(() => {
+      const visible = this.filteredConversations();
+      if (!visible.length) return false;
+      const selected = this.selectedConversationIds();
+      return visible.every((c) => selected.includes(c.id));
+    });
 
     // Subscribe to threading changes to save preference
     this.threadingEnabled.subscribe((enabled) => {
       Local.set('threading_enabled', enabled ? 'true' : 'false');
+      this.selectedConversationIds([]);
     });
     this.accountMenuOpen = ko.observable(false);
     this.accounts = ko.observableArray([]);
@@ -262,7 +281,17 @@ export class MailboxView {
     this.filteredConversations = ko.pureComputed(() => {
       if (!this.threadingEnabled()) return [];
       const filtered = this.filteredMessages();
-      return groupIntoConversations(filtered);
+      const prevCache = this.conversationCache || new Map();
+      const nextCache = new Map();
+      const grouped = groupIntoConversations(filtered);
+      const stable = grouped.map((conv) => {
+        const existing = prevCache.get(conv.id);
+        const merged = existing ? Object.assign(existing, conv) : conv;
+        nextCache.set(conv.id, merged);
+        return merged;
+      });
+      this.conversationCache = nextCache;
+      return stable;
     });
 
     this.availableMoveTargets = ko.pureComputed(() =>
@@ -273,6 +302,8 @@ export class MailboxView {
     this.selectedFolder.subscribe(() => {
       const firstOther = this.availableMoveTargets()[0];
       if (firstOther) this.moveTarget(firstOther.path);
+      this.selectedConversationIds([]);
+      this.bulkMoveOpen(false);
       this.actionMenuOpen(false);
       // placeholder labels list; replace with real label fetch when available
       this.availableLabels([
@@ -696,19 +727,32 @@ export class MailboxView {
           }));
         }
 
+        // Check cache BEFORE deleting to preserve corrected has_attachment values
+        const cachedMessages = await db.messages
+          .where('[account+folder]')
+          .equals([account, this.selectedFolder()])
+          .toArray();
+        const cachedById = new Map(cachedMessages.map(m => [m.id, m]));
+
         this.messages([...queuedOutbox, ...mappedList]);
         // refresh cache for this folder with latest data
         await db.messages
           .where('[account+folder]')
           .equals([account, this.selectedFolder()])
           .delete();
+
         await db.messages.bulkPut(
-          mappedList.map((msg) => ({
-            ...msg,
-            account,
-            updatedAt: Date.now(),
-            bodyIndexed: msg.bodyIndexed || false
-          }))
+          mappedList.map((msg) => {
+            const cached = cachedById.get(msg.id);
+            return {
+              ...msg,
+              account,
+              updatedAt: Date.now(),
+              bodyIndexed: msg.bodyIndexed || false,
+              // Preserve corrected has_attachment from cache if available
+              has_attachment: cached?.has_attachment !== undefined ? cached.has_attachment : msg.has_attachment
+            };
+          })
         );
         await this.rebuildSearchIndex(this.messages());
         await this.refreshIndexStats();
@@ -838,7 +882,8 @@ export class MailboxView {
       message.flags = detailFlags;
       message.is_unread = isUnread;
       const detailAttachments = result?.nodemailer?.attachments || result?.attachments || [];
-      const attachments = sanitizeAttachments((detailAttachments || []).map((att) => ({
+      console.log('Raw attachments from API:', detailAttachments.length, detailAttachments);
+      const mappedAttachments = (detailAttachments || []).map((att) => ({
         name: att.name || att.filename,
         filename: att.filename,
         size: att.size,
@@ -846,7 +891,10 @@ export class MailboxView {
         href: att.url || bufferToDataUrl(att), // prefer API-provided URLs over data URLs
         contentType: att.contentType || att.mimeType || att.type,
         content: att.url ? undefined : att.content
-      })));
+      }));
+      console.log('Mapped attachments:', mappedAttachments);
+      const attachments = sanitizeAttachments(mappedAttachments);
+      console.log('Sanitized attachments:', attachments.length, attachments);
       this.attachments(attachments);
 
       const serverText =
@@ -912,6 +960,22 @@ export class MailboxView {
           );
         }
       }
+
+      // Update has_attachment based on sanitized attachments
+      const actualHasAttachment = this.attachments().length > 0;
+      if (message.has_attachment !== actualHasAttachment) {
+        message.has_attachment = actualHasAttachment;
+        // Update in IndexedDB cache
+        try {
+          const account = this.getAccountKey();
+          await db.messages.update(message.id, { has_attachment: actualHasAttachment });
+        } catch (err) {
+          console.warn('Failed to update has_attachment in cache', err);
+        }
+        // Trigger UI update
+        this.messages.valueHasMutated?.();
+      }
+
       // sync the selected message observable with updated flags/unread state
       this.selectedMessage(Object.assign({}, message));
     } catch (error) {
@@ -1504,13 +1568,13 @@ export class MailboxView {
     this.closeContextMenu();
   };
 
-  contextMoveTo = (target) => {
+  contextMoveTo = async (target) => {
     const msg = this.contextMenuMessage();
     if (!msg || !target) {
       this.closeContextMenu();
       return;
     }
-    this.moveMessage(msg, target, { stayInFolder: true });
+    await this.moveMessage(msg, target, { stayInFolder: true });
     this.closeContextMenu();
   };
 
@@ -1802,6 +1866,128 @@ export class MailboxView {
   isConversationExpanded(conversationId) {
     return this.expandedConversations().has(conversationId);
   }
+
+  isConversationSelected(conversationId) {
+    return this.selectedConversationIds().includes(conversationId);
+  }
+
+  toggleConversationSelection(conversation, event) {
+    if (event) event.stopPropagation?.();
+    if (!conversation?.id) return;
+    const current = this.selectedConversationIds();
+    const idx = current.indexOf(conversation.id);
+    if (idx >= 0) {
+      // Remove from array
+      current.splice(idx, 1);
+      this.selectedConversationIds(current);
+    } else {
+      // Add to array
+      current.push(conversation.id);
+      this.selectedConversationIds(current);
+    }
+  }
+
+  clearSelectedConversations = () => {
+    this.selectedConversationIds([]);
+    this.bulkMoveOpen(false);
+  };
+
+  selectAllVisibleConversations = () => {
+    const visible = this.filteredConversations();
+    if (!visible.length) return;
+    if (this.allVisibleConversationsSelected()) {
+      this.selectedConversationIds([]);
+      return;
+    }
+    const next = visible.map((c) => c.id);
+    this.selectedConversationIds(next);
+  };
+
+  getSelectedConversations() {
+    const ids = this.selectedConversationIds();
+    if (!ids.length) return [];
+    const byId = new Map(this.filteredConversations().map((c) => [c.id, c]));
+    const fallback = this.conversations() || [];
+    const selected = [];
+    ids.forEach((id) => {
+      const match = byId.get(id) || fallback.find((c) => c.id === id);
+      if (match) selected.push(match);
+    });
+    return selected;
+  }
+
+  getSelectedMessagesFromConversations() {
+    const selected = this.getSelectedConversations();
+    const seen = new Set();
+    return selected.flatMap((conv) => (conv.messages || []))
+      .filter((msg) => {
+        if (!msg?.id || seen.has(msg.id)) return false;
+        seen.add(msg.id);
+        return true;
+      });
+  }
+
+  async bulkArchiveSelected() {
+    const messages = this.getSelectedMessagesFromConversations();
+    if (!messages.length) return;
+    for (const msg of messages) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.archiveMessage(msg);
+    }
+    const count = this.selectedConversationCount();
+    this.toasts?.show?.(
+      `Archived ${count} conversation${count === 1 ? '' : 's'}`,
+      'success'
+    );
+    this.clearSelectedConversations();
+    this.bulkMoveOpen(false);
+  }
+
+  async bulkDeleteSelected() {
+    const messages = this.getSelectedMessagesFromConversations();
+    if (!messages.length) return;
+    for (const msg of messages) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.deleteMessage(msg);
+    }
+    const count = this.selectedConversationCount();
+    this.toasts?.show?.(
+      `Deleted ${count} conversation${count === 1 ? '' : 's'}`,
+      'success'
+    );
+    this.clearSelectedConversations();
+    this.bulkMoveOpen(false);
+  }
+
+  async bulkMoveSelected() {
+    const target = this.moveTarget();
+    const messages = this.getSelectedMessagesFromConversations();
+    if (!messages.length || !target) {
+      this.toasts?.show?.('Pick a folder to move conversations', 'info');
+      return;
+    }
+    for (const msg of messages) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.moveMessage(msg, target, { stayInFolder: true });
+    }
+    const count = this.selectedConversationCount();
+    this.toasts?.show?.(
+      `Moved ${count} conversation${count === 1 ? '' : 's'}`,
+      'success'
+    );
+    this.clearSelectedConversations();
+    this.bulkMoveOpen(false);
+  }
+
+  bulkMoveTo(path) {
+    if (!path) return;
+    this.moveTarget(path);
+    this.bulkMoveSelected();
+  }
+
+  toggleBulkMove = () => {
+    this.bulkMoveOpen(!this.bulkMoveOpen());
+  };
 
   selectConversation(conversation) {
     this.selectedConversation(conversation);
