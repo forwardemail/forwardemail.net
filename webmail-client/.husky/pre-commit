@@ -1,0 +1,5 @@
+#!/bin/sh
+
+command -v pnpm >/dev/null 2>&1 || { echo "pnpm is required for git hooks"; exit 1; }
+
+pnpm lint-staged

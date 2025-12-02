@@ -45,7 +45,7 @@ export const Local = {
       console.error('localStorage.clear failed:', error);
       return false;
     }
-  }
+  },
 };
 
 /**
@@ -85,7 +85,7 @@ export const Accounts = {
   setActive(email) {
     try {
       const accounts = this.getAll();
-      const account = accounts.find(a => a.email === email);
+      const account = accounts.find((a) => a.email === email);
 
       if (!account) {
         return false;
@@ -112,14 +112,14 @@ export const Accounts = {
   add(email, credentials = {}) {
     try {
       const accounts = this.getAll();
-      const existingIndex = accounts.findIndex(a => a.email === email);
+      const existingIndex = accounts.findIndex((a) => a.email === email);
 
       const accountData = {
         email,
         apiKey: credentials.apiKey || credentials.api_key || null,
         aliasAuth: credentials.aliasAuth || credentials.alias_auth || null,
         addedAt: existingIndex >= 0 ? accounts[existingIndex].addedAt : Date.now(),
-        lastActive: Date.now()
+        lastActive: Date.now(),
       };
 
       if (existingIndex >= 0) {
@@ -146,7 +146,7 @@ export const Accounts = {
   async remove(email, clearCache = true) {
     try {
       const accounts = this.getAll();
-      const filtered = accounts.filter(a => a.email !== email);
+      const filtered = accounts.filter((a) => a.email !== email);
 
       if (filtered.length === accounts.length) {
         console.warn('Account not found:', email);
@@ -194,7 +194,7 @@ export const Accounts = {
    */
   exists(email) {
     const accounts = this.getAll();
-    return accounts.some(a => a.email === email);
+    return accounts.some((a) => a.email === email);
   },
 
   /**
@@ -211,7 +211,7 @@ export const Accounts = {
         // Migrate from old system
         this.add(email, {
           apiKey: Local.get('api_key'),
-          aliasAuth: Local.get('alias_auth')
+          aliasAuth: Local.get('alias_auth'),
         });
 
         this.setActive(email);
@@ -222,5 +222,5 @@ export const Accounts = {
       console.error('Failed to initialize accounts:', error);
       return false;
     }
-  }
+  },
 };

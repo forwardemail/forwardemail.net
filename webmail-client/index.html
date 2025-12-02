@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -42,9 +42,9 @@
         margin: 0;
         min-height: 100vh;
         font-family: var(--brand-font);
-        background: radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.1) 0, transparent 25%),
-          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.18) 0, transparent 30%),
-          #02060f;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.1) 0, transparent 25%),
+          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.18) 0, transparent 30%), #02060f;
         color: var(--color-text);
         display: flex;
         align-items: center;
@@ -123,7 +123,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 0 1px rgba(0, 175, 248, 0.35), 0 12px 30px rgba(0, 0, 0, 0.4);
+        box-shadow:
+          0 0 0 1px rgba(0, 175, 248, 0.35),
+          0 12px 30px rgba(0, 0, 0, 0.4);
       }
 
       .fe-logo img {
@@ -191,7 +193,9 @@
         background: #0f172a;
         color: #e5e7eb;
         font-size: 16px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       .LoginView input[type='email']:focus,
@@ -252,7 +256,10 @@
         font-size: 16px;
         font-weight: 700;
         cursor: pointer;
-        transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.2s ease,
+          filter 0.2s ease;
         box-shadow: 0 12px 30px rgba(0, 175, 248, 0.35);
       }
 
@@ -397,7 +404,10 @@
         background: transparent;
         cursor: pointer;
         font-weight: 600;
-        transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
         width: 100%;
         white-space: nowrap;
       }
@@ -464,7 +474,7 @@
 
       .fe-settings-row {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
         flex-wrap: wrap;
       }
@@ -475,6 +485,25 @@
         gap: 8px;
         font-size: 14px;
         color: var(--color-text);
+      }
+
+      /* For settings rows with nested divs (radio/checkbox with title and description) */
+      .fe-settings-row > input[type='radio'],
+      .fe-settings-row > input[type='checkbox'] {
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .fe-settings-row > div {
+        flex: 1;
+      }
+
+      .fe-settings-row > div > div:first-child {
+        margin-bottom: 4px;
+      }
+
+      .fe-settings-row > div > div:first-child strong {
+        font-weight: 500;
       }
 
       .fe-settings-actions {
@@ -494,14 +523,24 @@
         align-items: center;
         flex-wrap: wrap;
         width: 100%;
-        background: linear-gradient(180deg, rgba(11, 18, 32, 0), rgba(11, 18, 32, 0.7) 35%, rgba(11, 18, 32, 0.9));
+        background: linear-gradient(
+          180deg,
+          rgba(11, 18, 32, 0),
+          rgba(11, 18, 32, 0.7) 35%,
+          rgba(11, 18, 32, 0.9)
+        );
         border-top: 1px solid var(--color-border);
         backdrop-filter: blur(6px);
         z-index: 1;
       }
 
       body.light-mode .fe-settings-footer {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.82) 40%, rgba(255, 255, 255, 0.96));
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.82) 40%,
+          rgba(255, 255, 255, 0.96)
+        );
         border-color: #e5e7eb;
       }
 
@@ -651,9 +690,9 @@
       }
 
       body.light-mode {
-        background: radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.08) 0, transparent 25%),
-          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.12) 0, transparent 30%),
-          #f5f7fb;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(0, 175, 248, 0.08) 0, transparent 25%),
+          radial-gradient(circle at 80% 0%, rgba(0, 42, 144, 0.12) 0, transparent 30%), #f5f7fb;
         color: #0f172a;
         --color-bg: #ffffff;
         --color-panel: #ffffff;
@@ -794,7 +833,9 @@
         border: 1px solid var(--color-border);
         background: var(--color-panel);
         color: var(--color-text);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       .fe-field:focus {
@@ -853,7 +894,6 @@
         align-items: center;
         gap: 0;
       }
-
 
       @media (max-width: 1024px) {
         .fe-search-group {
@@ -997,7 +1037,9 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        transition: border-color 0.2s ease, background 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
       }
 
       .fe-contact-row.active {
@@ -1081,7 +1123,9 @@
         font-weight: 700;
         color: #0b1220;
         cursor: pointer;
-        transition: transform 0.1s ease, box-shadow 0.2s ease;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.2s ease;
         min-height: 40px;
       }
 
@@ -1099,7 +1143,9 @@
         background: var(--color-panel);
         color: var(--color-text);
         border-color: var(--color-border);
-        transition: filter 0.15s ease, transform 0.1s ease;
+        transition:
+          filter 0.15s ease,
+          transform 0.1s ease;
       }
 
       .fe-button.ghost.active {
@@ -1138,7 +1184,9 @@
 
       .fe-folders {
         transform: translateX(-105%);
-        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
       }
 
       .fe-folders.fe-folders-open {
@@ -1211,7 +1259,9 @@
         color: #e5e7eb;
         text-decoration: none;
         border: 1px solid transparent;
-        transition: border-color 0.2s ease, background 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
       }
 
       .fe-nav-link:hover {
@@ -1429,11 +1479,11 @@
 
         /* Hide calendar when modal is open on mobile */
         .fe-modal-backdrop + .fe-calendar-shell,
-        .fe-calendar-shell:has(~ .fe-modal-backdrop[style*="display: block"]) {
+        .fe-calendar-shell:has(~ .fe-modal-backdrop[style*='display: block']) {
           visibility: hidden;
         }
 
-        body:has(.fe-modal-backdrop[style*="display: block"]) .fe-calendar-shell {
+        body:has(.fe-modal-backdrop[style*='display: block']) .fe-calendar-shell {
           visibility: hidden;
         }
 
@@ -1540,7 +1590,9 @@
         border: 1px solid var(--color-border);
         background: var(--color-panel);
         color: var(--color-text);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       .fe-search:focus,
@@ -1601,7 +1653,10 @@
         color: #e5e7eb;
         cursor: pointer;
         border: 1px solid transparent;
-        transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease,
+          background 0.2s ease;
         font-size: 12px;
       }
 
@@ -1692,7 +1747,9 @@
         background: var(--color-panel);
         border: 1px solid var(--color-border);
         cursor: pointer;
-        transition: border-color 0.2s ease, background 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
         min-height: 66px;
         display: flex;
         flex-direction: column;
@@ -1801,7 +1858,9 @@
         background: var(--color-panel);
         border: 1px solid var(--color-border);
         cursor: pointer;
-        transition: border-color 0.2s ease, background 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
         display: flex;
         flex-direction: column;
         gap: 5px;
@@ -2098,21 +2157,21 @@
       }
 
       /* Date input calendar picker styling */
-      input[type="date"] {
+      input[type='date'] {
         color-scheme: dark;
       }
 
-      body.light-mode input[type="date"] {
+      body.light-mode input[type='date'] {
         color-scheme: light;
       }
 
       /* Style the calendar dropdown for dark mode */
-      input[type="date"]::-webkit-calendar-picker-indicator {
+      input[type='date']::-webkit-calendar-picker-indicator {
         filter: invert(1);
         cursor: pointer;
       }
 
-      body.light-mode input[type="date"]::-webkit-calendar-picker-indicator {
+      body.light-mode input[type='date']::-webkit-calendar-picker-indicator {
         filter: invert(0);
       }
 
@@ -2733,7 +2792,9 @@
         font-weight: 600;
         color: var(--color-text);
         cursor: pointer;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
       .fe-signout:hover {
@@ -2807,7 +2868,7 @@
       <canvas id="stars2"></canvas>
       <canvas id="stars3"></canvas>
     </div>
-    <div class="fe-login-wrapper" style="display: none;" data-bind="visible: route() === 'login'">
+    <div class="fe-login-wrapper" style="display: none" data-bind="visible: route() === 'login'">
       <div class="LoginView" data-bind="with: loginUserView">
         <div class="fe-login-header">
           <div class="fe-logo" aria-hidden="true">
@@ -2849,71 +2910,205 @@
           <div class="alert alert-danger" data-bind="visible: submitError, text: submitError"></div>
         </form>
 
-        <div class="fe-footer" style="display:flex; flex-direction:column; gap:4px; align-items:center; text-align:center;">
-          <span>Don't have an account?
-            <a class="fe-signup-link" href="https://forwardemail.net" target="_blank" rel="noopener noreferrer">Sign up</a>
+        <div
+          class="fe-footer"
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            text-align: center;
+          "
+        >
+          <span
+            >Don't have an account?
+            <a
+              class="fe-signup-link"
+              href="https://forwardemail.net"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Sign up</a
+            >
           </span>
         </div>
       </div>
     </div>
 
-      <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'mailbox', with: mailboxView">
-        <div class="fe-mailbox-header">
-          <button class="fe-nav-toggle" type="button" aria-label="Toggle sidebar" data-bind="click: toggleSidebar, visible: !mobileReader() || isDesktop() || sidebarOpen()">☰</button>
-          <button class="fe-reader-backbtn" type="button" aria-label="Back to list" data-bind="click: backToList, visible: mobileReader">←</button>
-            <div class="fe-mailbox-header-right">
-              <div class="fe-search-group" style="flex:1; justify-content:flex-start;">
-                <input
-                  type="search"
-                  class="fe-search"
-                  placeholder="Search mail"
-                  data-bind="value: query, valueUpdate: 'afterkeydown', event: { input: function(_, e){ onSearch(e.target.value); } }"
+    <div
+      class="fe-mailbox-wrapper"
+      style="display: none"
+      data-bind="visible: route() === 'mailbox', with: mailboxView"
+    >
+      <div class="fe-mailbox-header">
+        <button
+          class="fe-nav-toggle"
+          type="button"
+          aria-label="Toggle sidebar"
+          data-bind="click: toggleSidebar, visible: !mobileReader() || isDesktop() || sidebarOpen()"
+        >
+          ☰
+        </button>
+        <button
+          class="fe-reader-backbtn"
+          type="button"
+          aria-label="Back to list"
+          data-bind="click: backToList, visible: mobileReader"
+        >
+          ←
+        </button>
+        <div class="fe-mailbox-header-right">
+          <div
+            class="fe-search-group"
+            style="flex: 1; justify-content: flex-start; position: relative"
+          >
+            <input
+              type="search"
+              class="fe-search"
+              data-bind="attr: { placeholder: searchMode() === 'all' ? 'Search all folders' : 'Search mail' }, value: query, valueUpdate: 'afterkeydown', event: { input: function(_, e){ onSearch(e.target.value); } }"
+            />
+            <span
+              class="fe-badge fe-badge-outline"
+              style="
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 10px;
+                padding: 2px 6px;
+              "
+              data-bind="visible: searchMode() === 'all', text: loadingCrossFolderSearch() ? 'Searching...' : (crossFolderResults().length + ' results')"
+            ></span>
+          </div>
+          <div class="fe-toolbar-actions">
+            <span
+              class="fe-badge fe-badge-outline"
+              data-bind="visible: syncPending() > 0, text: syncPending() + ' queued'"
+            ></span>
+            <button
+              class="fe-button ghost fe-icon-btn"
+              type="button"
+              title="Contacts"
+              aria-label="Contacts"
+              data-bind="click: function(){ navigate('/contacts'); }"
+            >
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+            <button
+              class="fe-button ghost fe-icon-btn"
+              type="button"
+              title="Calendar"
+              aria-label="Calendar"
+              data-bind="click: function(){ navigate('/calendar'); }"
+            >
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            </button>
+            <button
+              class="fe-button ghost fe-icon-btn fe-settings-btn"
+              type="button"
+              title="Settings"
+              aria-label="Settings"
+              data-bind="click: function(){ navigate('/mailbox/settings'); }"
+            >
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.91 3V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26.97 1.54h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
                 />
-              </div>
-              <div class="fe-toolbar-actions">
-                <span class="fe-badge fe-badge-outline" data-bind="visible: syncPending() > 0, text: syncPending() + ' queued'"></span>
-                <button class="fe-button ghost fe-icon-btn" type="button" title="Contacts" aria-label="Contacts" data-bind="click: function(){ navigate('/contacts'); }">
-                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                </button>
-                <button class="fe-button ghost fe-icon-btn" type="button" title="Calendar" aria-label="Calendar" data-bind="click: function(){ navigate('/calendar'); }">
-                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-              </button>
-              <button class="fe-button ghost fe-icon-btn fe-settings-btn" type="button" title="Settings" aria-label="Settings" data-bind="click: function(){ navigate('/mailbox/settings'); }">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10.91 3V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26.97 1.54h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /></svg>
-              </button>
-            </div>
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
 
       <!-- ko if: error -->
       <div class="fe-alert error" data-bind="text: error"></div>
       <!-- /ko -->
 
-      <div class="fe-sidebar-backdrop" data-bind="css: { visible: sidebarOpen() }, click: toggleSidebar"></div>
+      <div
+        class="fe-sidebar-backdrop"
+        data-bind="css: { visible: sidebarOpen() }, click: toggleSidebar"
+      ></div>
 
-      <div class="fe-mailbox-shell" data-bind="css: { 'fe-shell-collapsed': !sidebarOpen(), 'mobile-reader': mobileReader() }">
-        <aside class="fe-folders" data-bind="css: { 'fe-folders-open': sidebarOpen }, visible: sidebarOpen">
+      <div
+        class="fe-mailbox-shell"
+        data-bind="css: { 'fe-shell-collapsed': !sidebarOpen(), 'mobile-reader': mobileReader() }"
+      >
+        <aside
+          class="fe-folders"
+          data-bind="css: { 'fe-folders-open': sidebarOpen }, visible: sidebarOpen"
+        >
           <div class="fe-folder-actions">
-            <button class="fe-button fe-compose" type="button" data-bind="click: $root.composeModal.open">
-              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+            <button
+              class="fe-button fe-compose"
+              type="button"
+              data-bind="click: $root.composeModal.open"
+            >
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+              </svg>
               <span>Compose</span>
             </button>
           </div>
-          <div class="fe-account-actions fe-dropdown" style="position:relative;">
-            <button class="fe-button ghost" type="button" style="justify-content: space-between;" data-bind="click: toggleAccountMenu">
+          <div class="fe-account-actions fe-dropdown" style="position: relative">
+            <button
+              class="fe-button ghost"
+              type="button"
+              style="justify-content: space-between"
+              data-bind="click: toggleAccountMenu"
+            >
               <span data-bind="text: currentAccount"></span>
               <span aria-hidden="true">▾</span>
             </button>
-            <div class="fe-action-menu-panel" data-bind="visible: accountMenuOpen" style="min-width: 100%; width: 100%; left: 0; right: auto;">
+            <div
+              class="fe-action-menu-panel"
+              data-bind="visible: accountMenuOpen"
+              style="min-width: 100%; width: 100%; left: 0; right: auto"
+            >
               <!-- Account list -->
               <!-- ko if: accounts().length > 1 -->
-              <div style="padding: 8px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); opacity: 0.7;">Accounts</div>
+              <div
+                style="
+                  padding: 8px 12px;
+                  font-size: 11px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  color: var(--color-text-secondary);
+                  opacity: 0.7;
+                "
+              >
+                Accounts
+              </div>
               <!-- ko foreach: accounts -->
-              <button type="button" data-bind="click: function() { $parent.switchAccount($data); }, css: { 'active': email === $parent.email() }">
-                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+              <button
+                type="button"
+                data-bind="click: function() { $parent.switchAccount($data); }, css: { 'active': email === $parent.email() }"
+              >
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path
+                    d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"
+                  ></path>
+                </svg>
                 <span data-bind="text: email"></span>
                 <!-- ko if: email === $parent.email() -->
-                <svg style="margin-left: auto; width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg
+                  style="margin-left: auto; width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
                 <!-- /ko -->
               </button>
               <!-- /ko -->
@@ -2922,14 +3117,21 @@
 
               <!-- Add account -->
               <button type="button" data-bind="click: addAccount">
-                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
                 <span>Add account</span>
               </button>
 
               <!-- Sign out current account -->
               <div class="fe-menu-divider"></div>
               <button type="button" class="fe-menu-danger" data-bind="click: signOut">
-                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
                 <span>Sign out <span data-bind="text: email"></span></span>
               </button>
             </div>
@@ -2939,8 +3141,14 @@
               class="fe-folder"
               data-bind="click: $parent.selectFolder.bind(null, path), css: { active: $parent.selectedFolder() === path }"
             >
-              <span class="fe-folder-label" data-bind="style: { paddingLeft: (level || 0) * 12 + 'px' }">
-                <span class="fe-folder-icon" data-bind="css: 'fe-icon-' + (icon || 'folder')"></span>
+              <span
+                class="fe-folder-label"
+                data-bind="style: { paddingLeft: (level || 0) * 12 + 'px' }"
+              >
+                <span
+                  class="fe-folder-icon"
+                  data-bind="css: 'fe-icon-' + (icon || 'folder')"
+                ></span>
                 <span data-bind="text: name || path"></span>
               </span>
               <span class="fe-badge" data-bind="text: $parent.folderCount($data)"></span>
@@ -2949,58 +3157,147 @@
           <div class="fe-storage" data-bind="visible: storageTotal() > 0">
             <div class="fe-storage-header">
               <small>Storage</small>
-              <small data-bind="text: Math.round((storageUsed() / storageTotal()) * 100) + '%'"></small>
+              <small
+                data-bind="text: Math.round((storageUsed() / storageTotal()) * 100) + '%'"
+              ></small>
             </div>
             <div class="fe-storage-bar">
-              <div class="fe-storage-fill" data-bind="style: { width: Math.min(100, Math.round((storageUsed() / storageTotal()) * 100)) + '%' }"></div>
+              <div
+                class="fe-storage-fill"
+                data-bind="style: { width: Math.min(100, Math.round((storageUsed() / storageTotal()) * 100)) + '%' }"
+              ></div>
             </div>
-            <small class="fe-storage-caption" data-bind="text: Math.round(storageUsed()/1024/1024) + ' MB of ' + Math.round(storageTotal()/1024/1024/1024) + ' GB'"></small>
+            <small
+              class="fe-storage-caption"
+              data-bind="text: Math.round(storageUsed()/1024/1024) + ' MB of ' + Math.round(storageTotal()/1024/1024/1024) + ' GB'"
+            ></small>
           </div>
-
         </aside>
 
         <section class="fe-messages">
           <div class="fe-section-header">
             <span data-bind="text: selectedFolder"></span>
             <div class="fe-list-actions">
-              <button class="fe-button ghost fe-icon-btn fe-select-toggle" type="button" title="Select visible conversations" aria-label="Select visible conversations" data-bind="visible: threadingEnabled, click: selectAllVisibleConversations, css: { active: allVisibleConversationsSelected }, enable: threadingEnabled() && filteredConversations().length">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><polyline points="9 12 11 14 15 10"></polyline></svg>
+              <button
+                class="fe-button ghost fe-icon-btn fe-select-toggle"
+                type="button"
+                title="Select visible conversations"
+                aria-label="Select visible conversations"
+                data-bind="visible: threadingEnabled, click: selectAllVisibleConversations, css: { active: allVisibleConversationsSelected }, enable: threadingEnabled() && filteredConversations().length"
+              >
+                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                  <polyline points="9 12 11 14 15 10"></polyline>
+                </svg>
               </button>
-              <button class="fe-button ghost fe-icon-btn" type="button" title="Refresh" aria-label="Refresh" data-bind="click: loadMessages">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10" /><path d="M20.49 15a9 9 0 0 1-14.13 3.36L1 14" /></svg>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                title="Refresh"
+                aria-label="Refresh"
+                data-bind="click: loadMessages"
+              >
+                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <polyline points="23 4 23 10 17 10" />
+                  <polyline points="1 20 1 14 7 14" />
+                  <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10" />
+                  <path d="M20.49 15a9 9 0 0 1-14.13 3.36L1 14" />
+                </svg>
               </button>
               <div class="fe-dropdown">
-                <button class="fe-button ghost fe-icon-btn" type="button" title="Filters" aria-label="Filters" data-bind="click: toggleFilters">
-                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><polygon points="3 4 21 4 14 12 14 19 10 21 10 12 3 4" /></svg>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  title="Filters"
+                  aria-label="Filters"
+                  data-bind="click: toggleFilters"
+                >
+                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points="3 4 21 4 14 12 14 19 10 21 10 12 3 4" />
+                  </svg>
                 </button>
                 <div class="fe-action-menu-panel fe-menu-right" data-bind="visible: showFilters">
                   <label class="fe-settings-row">
                     <input type="checkbox" data-bind="checked: unreadOnly" /> Unread only
                   </label>
                   <label class="fe-settings-row">
-                    <input type="checkbox" data-bind="checked: hasAttachmentsOnly" /> With attachments
+                    <input type="checkbox" data-bind="checked: hasAttachmentsOnly" /> With
+                    attachments
                   </label>
-                  <button class="fe-button ghost" type="button" data-bind="click: function(){ unreadOnly(false); hasAttachmentsOnly(false); showFilters(false); }">Clear filters</button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function(){ unreadOnly(false); hasAttachmentsOnly(false); showFilters(false); }"
+                  >
+                    Clear filters
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="fe-bulk-bar" data-bind="visible: threadingEnabled() && selectedConversationCount()">
+          <div
+            class="fe-bulk-bar"
+            data-bind="visible: threadingEnabled() && selectedConversationCount()"
+          >
             <div class="fe-bulk-count fe-badge">
               <span data-bind="text: selectedConversationCount"></span>
             </div>
             <div class="fe-bulk-actions">
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Archive selected" title="Archive selected" data-bind="click: bulkArchiveSelected">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path><rect x="3" y="3" width="18" height="5" rx="2"></rect><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Archive selected"
+                title="Archive selected"
+                data-bind="click: bulkArchiveSelected, visible: selectedFolder().toLowerCase() !== 'archive'"
+              >
+                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"
+                  ></path>
+                  <rect x="3" y="3" width="18" height="5" rx="2"></rect>
+                  <line x1="9" y1="12" x2="15" y2="12"></line>
+                </svg>
               </button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Delete selected" title="Delete selected" data-bind="click: bulkDeleteSelected">
-                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Delete selected"
+                title="Delete selected"
+                data-bind="click: bulkDeleteSelected"
+              >
+                <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  ></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
               </button>
               <div class="fe-dropdown fe-bulk-move" title="Move selected">
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Move selected" title="Move selected" data-bind="click: toggleBulkMove">➡</button>
-                <div class="fe-action-menu-panel" data-bind="visible: bulkMoveOpen, foreach: availableMoveTargets">
-                  <button type="button" data-bind="text: name || path, click: function(){ $parent.bulkMoveTo(path); }"></button>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  aria-label="Move selected"
+                  title="Move selected"
+                  data-bind="click: toggleBulkMove"
+                >
+                  ➡
+                </button>
+                <div
+                  class="fe-action-menu-panel"
+                  data-bind="visible: bulkMoveOpen, foreach: availableMoveTargets"
+                >
+                  <button
+                    type="button"
+                    data-bind="text: name || path, click: function(){ $parent.bulkMoveTo(path); }"
+                  ></button>
                 </div>
               </div>
             </div>
@@ -3017,14 +3314,14 @@
               class="fe-message"
               data-bind="click: function(data, e){ $parent.handleMessageClick(data, e); }, event: { contextmenu: function(data, e){ $parent.openContextMenu(data, e); } }, css: { active: $parent.selectedMessage() && $parent.selectedMessage().id === id }"
             >
-            <div class="fe-message-subject">
-              <span data-bind="text: subject"></span>
-              <span class="fe-badge fe-badge-outline" data-bind="visible: pending">Pending</span>
-            </div>
-            <div class="fe-message-top">
-              <span class="fe-message-from" data-bind="text: from"></span>
-              <span class="fe-message-date" data-bind="text: date"></span>
-            </div>
+              <div class="fe-message-subject">
+                <span data-bind="text: subject"></span>
+                <span class="fe-badge fe-badge-outline" data-bind="visible: pending">Pending</span>
+              </div>
+              <div class="fe-message-top">
+                <span class="fe-message-from" data-bind="text: from"></span>
+                <span class="fe-message-date" data-bind="text: date"></span>
+              </div>
               <div class="fe-message-snippet" data-bind="text: snippet"></div>
             </li>
           </ul>
@@ -3032,18 +3329,23 @@
 
           <!-- Conversation view (threading enabled) -->
           <!-- ko if: !loading() && threadingEnabled() && filteredConversations().length -->
-          <ul class="fe-conversation-list" data-bind="foreach: { data: filteredConversations, as: 'conversation' }">
-            <li class="fe-conversation-item" data-bind="
+          <ul
+            class="fe-conversation-list"
+            data-bind="foreach: { data: filteredConversations, as: 'conversation' }"
+          >
+            <li
+              class="fe-conversation-item"
+              data-bind="
               click: function() { $parent.selectConversation(conversation); },
               event: { contextmenu: function(conv, e){ var msg = conversation.messages && conversation.messages[0]; $parent.openContextMenu(msg || conversation, e); } },
               css: {
                 'fe-unread': conversation.hasUnread,
                 'fe-expanded': $parent.isConversationExpanded(conversation.id),
                 'active': $parent.selectedConversation() && $parent.selectedConversation().id === conversation.id
-              }">
-
+              }"
+            >
               <div class="fe-conversation-row">
-                <div class="fe-conversation-check" onclick="event.stopPropagation();">
+                <div class="fe-conversation-check" onclick="event.stopPropagation()">
                   <input
                     type="checkbox"
                     class="fe-conversation-checkbox"
@@ -3066,27 +3368,56 @@
                   <!-- Conversation header -->
                   <div class="fe-conversation-header">
                     <div class="fe-conversation-meta">
-                      <span class="fe-conversation-from" data-bind="text: conversation.latestFrom"></span>
+                      <span
+                        class="fe-conversation-from"
+                        data-bind="text: conversation.latestFrom"
+                      ></span>
                       <!-- ko if: conversation.messageCount > 1 -->
-                      <span class="fe-conversation-count" data-bind="text: conversation.messageCount"></span>
+                      <span
+                        class="fe-conversation-count"
+                        data-bind="text: conversation.messageCount"
+                      ></span>
                       <!-- /ko -->
                       <!-- ko if: conversation.hasAttachment -->
-                      <svg class="fe-icon-sm" viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px; opacity: 0.6;"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                      <svg
+                        class="fe-icon-sm"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        style="width: 14px; height: 14px; opacity: 0.6"
+                      >
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+                        ></path>
+                      </svg>
                       <!-- /ko -->
                     </div>
-                    <span class="fe-conversation-date" data-bind="text: conversation.latestDate ? $parent.formatDate(conversation.latestDate) : ''"></span>
+                    <span
+                      class="fe-conversation-date"
+                      data-bind="text: conversation.latestDate ? $parent.formatDate(conversation.latestDate) : ''"
+                    ></span>
                   </div>
 
                   <!-- Preview -->
-                  <div class="fe-conversation-preview" data-bind="text: $parent.getConversationPreview(conversation)"></div>
+                  <div
+                    class="fe-conversation-preview"
+                    data-bind="text: $parent.getConversationPreview(conversation)"
+                  ></div>
 
                   <!-- Expanded message list -->
                   <!-- ko if: $parent.isConversationExpanded(conversation.id) && conversation.messages.length > 1 -->
                   <div class="fe-conversation-messages" data-bind="foreach: conversation.messages">
-                    <div class="fe-conversation-message" data-bind="
+                    <div
+                      class="fe-conversation-message"
+                      data-bind="
                       click: function(msg, e) { e.stopPropagation(); $parents[1].selectMessage(msg); },
                       event: { contextmenu: function(msg, e){ e.stopPropagation(); $parents[1].openContextMenu(msg, e); } },
-                      css: { 'fe-unread': is_unread, 'active': $parents[1].selectedMessage() && $parents[1].selectedMessage().id === id }">
+                      css: { 'fe-unread': is_unread, 'active': $parents[1].selectedMessage() && $parents[1].selectedMessage().id === id }"
+                    >
                       <div class="fe-message-top">
                         <span class="fe-message-from" data-bind="text: from"></span>
                         <span class="fe-message-date" data-bind="text: date"></span>
@@ -3107,33 +3438,69 @@
           <!-- /ko -->
 
           <!-- Context menu -->
-          <div class="fe-context-menu fe-action-menu-panel" data-bind="visible: contextMenuVisible, style: { top: contextMenuY() + 'px', left: contextMenuX() + 'px' }, css: { 'fe-flip-x': contextMenuFlipX, 'fe-flip-y': contextMenuFlipY }">
+          <div
+            class="fe-context-menu fe-action-menu-panel"
+            data-bind="visible: contextMenuVisible, style: { top: contextMenuY() + 'px', left: contextMenuX() + 'px' }, css: { 'fe-flip-x': contextMenuFlipX, 'fe-flip-y': contextMenuFlipY }"
+          >
             <button type="button" data-bind="click: contextToggleRead">
-              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-              <span data-bind="text: contextMenuMessage() && contextMenuMessage().is_unread ? 'Mark read' : 'Mark unread'"></span>
+              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span
+                data-bind="text: contextMenuMessage() && contextMenuMessage().is_unread ? 'Mark read' : 'Mark unread'"
+              ></span>
             </button>
             <div class="fe-menu-divider"></div>
-            <button type="button" data-bind="click: function(){ replyTo(contextMenuMessage()); closeContextMenu(); }">
-              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
+            <button
+              type="button"
+              data-bind="click: function(){ replyTo(contextMenuMessage()); closeContextMenu(); }"
+            >
+              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="9 17 4 12 9 7"></polyline>
+                <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+              </svg>
               <span>Reply</span>
             </button>
-            <button type="button" data-bind="click: function(){ forwardMessage(contextMenuMessage()); closeContextMenu(); }">
-              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 17 20 12 15 7"></polyline><path d="M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>
+            <button
+              type="button"
+              data-bind="click: function(){ forwardMessage(contextMenuMessage()); closeContextMenu(); }"
+            >
+              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="15 17 20 12 15 7"></polyline>
+                <path d="M4 18v-2a4 4 0 0 1 4-4h12"></path>
+              </svg>
               <span>Forward</span>
             </button>
             <div class="fe-menu-divider"></div>
             <button type="button" data-bind="click: contextArchive">
-              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path><rect x="3" y="3" width="18" height="5" rx="2"></rect><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
+                <rect x="3" y="3" width="18" height="5" rx="2"></rect>
+                <line x1="9" y1="12" x2="15" y2="12"></line>
+              </svg>
               <span>Archive</span>
             </button>
             <button type="button" data-bind="click: contextDelete">
-              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path
+                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                ></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
               <span>Delete</span>
             </button>
             <div class="fe-context-subitem">
               <button type="button">
-                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 3 21 8 16 13"></polyline><line x1="4" y1="8" x2="21" y2="8"></line><line x1="4" y1="16" x2="13" y2="16"></line><line x1="4" y1="12" x2="9" y2="12"></line></svg>
-                <span style="flex:1; text-align:left;">Move to…</span>
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <polyline points="16 3 21 8 16 13"></polyline>
+                  <line x1="4" y1="8" x2="21" y2="8"></line>
+                  <line x1="4" y1="16" x2="13" y2="16"></line>
+                  <line x1="4" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span style="flex: 1; text-align: left">Move to…</span>
                 <span aria-hidden="true">›</span>
               </button>
               <div class="fe-context-submenu fe-action-menu-panel">
@@ -3146,8 +3513,13 @@
             </div>
             <div class="fe-context-subitem">
               <button type="button">
-                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7a2 2 0 0 1 2-2h7.586a2 2 0 0 1 1.414.586l6.414 6.414a2 2 0 0 1 0 2.828l-5.172 5.172a2 2 0 0 1-2.828 0L2.586 10.414A2 2 0 0 1 2 9V7Z"></path><path d="M5 6h.01"></path></svg>
-                <span style="flex:1; text-align:left;">Label as…</span>
+                <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M2 7a2 2 0 0 1 2-2h7.586a2 2 0 0 1 1.414.586l6.414 6.414a2 2 0 0 1 0 2.828l-5.172 5.172a2 2 0 0 1-2.828 0L2.586 10.414A2 2 0 0 1 2 9V7Z"
+                  ></path>
+                  <path d="M5 6h.01"></path>
+                </svg>
+                <span style="flex: 1; text-align: left">Label as…</span>
                 <span aria-hidden="true">›</span>
               </button>
               <div class="fe-context-submenu fe-action-menu-panel">
@@ -3161,11 +3533,19 @@
           </div>
 
           <div class="fe-pagination fe-pagination-bottom">
-            <button type="button" class="fe-button ghost" data-bind="click: prevPage, enable: page() > 1">
+            <button
+              type="button"
+              class="fe-button ghost"
+              data-bind="click: prevPage, enable: page() > 1"
+            >
               Prev
             </button>
             <span class="fe-page-label" data-bind="text: 'Page ' + page()"></span>
-            <button type="button" class="fe-button ghost" data-bind="click: nextPage, enable: hasNextPage">
+            <button
+              type="button"
+              class="fe-button ghost"
+              data-bind="click: nextPage, enable: hasNextPage"
+            >
               Next
             </button>
           </div>
@@ -3178,8 +3558,13 @@
 
           <!-- ko if: !messageLoading() && selectedMessage() -->
           <div data-bind="with: selectedMessage">
-            <div class="fe-reader-backbar" data-bind="visible: $parent.mobileReader() || !$parent.isDesktop()">
-              <button class="fe-button ghost" type="button" data-bind="click: $parent.backToList">← Back</button>
+            <div
+              class="fe-reader-backbar"
+              data-bind="visible: $parent.mobileReader() || !$parent.isDesktop()"
+            >
+              <button class="fe-button ghost" type="button" data-bind="click: $parent.backToList">
+                ← Back
+              </button>
             </div>
             <div class="fe-reader-subject" data-bind="text: subject"></div>
             <div class="fe-section-header">
@@ -3188,18 +3573,27 @@
                 <div class="fe-reader-date" data-bind="text: date"></div>
               </div>
               <div class="fe-reader-actions">
-                  <div class="fe-chip ghost" data-bind="text: folder"></div>
-                  <div class="fe-chip ghost" data-bind="visible: $parent.pgpStatus" style="display:none;">Decrypted</div>
-                  <button
-                    type="button"
-                    class="fe-button ghost fe-icon-btn"
-                    aria-label="Reply"
-                    title="Reply"
-                    data-bind="click: function(){ $parent.replyTo($data); }"
-                  >
-                    <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
-                  </button>
-                  <div class="fe-action-menu" data-bind="css: { open: $parent.actionMenuOpen }">
+                <div class="fe-chip ghost" data-bind="text: folder"></div>
+                <div
+                  class="fe-chip ghost"
+                  data-bind="visible: $parent.pgpStatus"
+                  style="display: none"
+                >
+                  Decrypted
+                </div>
+                <button
+                  type="button"
+                  class="fe-button ghost fe-icon-btn"
+                  aria-label="Reply"
+                  title="Reply"
+                  data-bind="click: function(){ $parent.replyTo($data); }"
+                >
+                  <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <polyline points="9 17 4 12 9 7"></polyline>
+                    <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                  </svg>
+                </button>
+                <div class="fe-action-menu" data-bind="css: { open: $parent.actionMenuOpen }">
                   <button
                     type="button"
                     class="fe-button ghost fe-icon-btn"
@@ -3210,28 +3604,67 @@
                   </button>
                   <div class="fe-action-menu-panel" data-bind="visible: $parent.actionMenuOpen">
                     <button type="button" data-bind="click: function(){ $parent.replyTo($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <polyline points="9 17 4 12 9 7"></polyline>
+                        <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                      </svg>
                       <span>Reply</span>
                     </button>
-                    <button type="button" data-bind="click: function(){ $parent.forwardMessage($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 17 20 12 15 7"></polyline><path d="M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>
+                    <button
+                      type="button"
+                      data-bind="click: function(){ $parent.forwardMessage($data); }"
+                    >
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <polyline points="15 17 20 12 15 7"></polyline>
+                        <path d="M4 18v-2a4 4 0 0 1 4-4h12"></path>
+                      </svg>
                       <span>Forward</span>
                     </button>
-                    <button type="button" data-bind="click: function(){ $parent.toggleRead($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <button
+                      type="button"
+                      data-bind="click: function(){ $parent.toggleRead($data); }"
+                    >
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
                       <span data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"></span>
                     </button>
                     <div class="fe-menu-divider"></div>
-                    <button type="button" data-bind="click: function(){ $parent.archiveMessage($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path><rect x="3" y="3" width="18" height="5" rx="2"></rect><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+                    <button
+                      type="button"
+                      data-bind="click: function(){ $parent.archiveMessage($data); }"
+                    >
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21 8v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
+                        <rect x="3" y="3" width="18" height="5" rx="2"></rect>
+                        <line x1="9" y1="12" x2="15" y2="12"></line>
+                      </svg>
                       <span>Archive</span>
                     </button>
-                    <button type="button" data-bind="click: function(){ $parent.deleteMessage($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    <button
+                      type="button"
+                      data-bind="click: function(){ $parent.deleteMessage($data); }"
+                    >
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path
+                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        ></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
                       <span>Delete</span>
                     </button>
-                    <button type="button" data-bind="click: function(){ $parent.downloadOriginal($data); }">
-                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <button
+                      type="button"
+                      data-bind="click: function(){ $parent.downloadOriginal($data); }"
+                    >
+                      <svg class="fe-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
                       <span>Download original</span>
                     </button>
                   </div>
@@ -3246,8 +3679,14 @@
               <ul class="fe-attachment-list" data-bind="foreach: $parent.attachments">
                 <li class="fe-attachment">
                   <div class="fe-attachment-meta">
-                    <div class="fe-attachment-name" data-bind="text: name || filename || 'Attachment'"></div>
-                    <div class="fe-attachment-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></div>
+                    <div
+                      class="fe-attachment-name"
+                      data-bind="text: name || filename || 'Attachment'"
+                    ></div>
+                    <div
+                      class="fe-attachment-size"
+                      data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"
+                    ></div>
                   </div>
                   <a
                     class="fe-button ghost"
@@ -3267,12 +3706,23 @@
           <!-- /ko -->
         </section>
       </div>
-
     </div>
 
-    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'settings', with: settingsModal">
+    <div
+      class="fe-mailbox-wrapper"
+      style="display: none"
+      data-bind="visible: route() === 'settings', with: settingsModal"
+    >
       <div class="fe-mailbox-header">
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
+        <button
+          class="fe-button ghost fe-icon-btn"
+          type="button"
+          aria-label="Back"
+          title="Back"
+          data-bind="click: function(){ navigate('/mailbox'); }"
+        >
+          ←
+        </button>
         <div class="fe-title-left">
           <h1>Settings</h1>
           <span data-bind="text: aliasEmail"></span>
@@ -3286,12 +3736,48 @@
               <span>Settings</span>
             </div>
             <nav class="fe-settings-nav">
-              <button type="button" data-bind="css: { active: section() === 'general' }, click: function(){ setSection('general'); }">General</button>
-              <button type="button" data-bind="css: { active: section() === 'accounts' }, click: function(){ setSection('accounts'); }">Accounts</button>
-              <button type="button" data-bind="css: { active: section() === 'appearance' }, click: function(){ setSection('appearance'); }">Appearance</button>
-              <button type="button" data-bind="css: { active: section() === 'shortcuts' }, click: function(){ setSection('shortcuts'); }">Keyboard Shortcuts</button>
-              <button type="button" data-bind="css: { active: section() === 'security' }, click: function(){ setSection('security'); }">Security &amp; Privacy</button>
-              <button type="button" data-bind="css: { active: section() === 'filters' }, click: function(){ setSection('filters'); }">Filters</button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'general' }, click: function(){ setSection('general'); }"
+              >
+                General
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'accounts' }, click: function(){ setSection('accounts'); }"
+              >
+                Accounts
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'appearance' }, click: function(){ setSection('appearance'); }"
+              >
+                Appearance
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'search' }, click: function(){ setSection('search'); }"
+              >
+                Search &amp; Indexing
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'shortcuts' }, click: function(){ setSection('shortcuts'); }, visible: $root.mailboxView.isDesktop()"
+              >
+                Keyboard Shortcuts
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'security' }, click: function(){ setSection('security'); }"
+              >
+                Security &amp; Privacy
+              </button>
+              <button
+                type="button"
+                data-bind="css: { active: section() === 'filters' }, click: function(){ setSection('filters'); }"
+              >
+                Filters
+              </button>
             </nav>
           </aside>
 
@@ -3299,50 +3785,47 @@
             <!-- General -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'general'">
               <div class="fe-settings-card">
-                <h3>Search &amp; storage</h3>
-                <label class="fe-settings-row">
-                  <input
-                    type="checkbox"
-                    data-bind="checked: bodyIndexingEnabled, click: toggleBodyIndexing"
-                  />
-                  <span>Include message bodies in search (uses more local storage)</span>
-                </label>
-                <div class="fe-settings-meta" data-bind="text: 'Database version: ' + (databaseVersion() || '—')"></div>
-                <div class="fe-settings-meta" data-bind="text: 'Total records: ' + (databaseRecordCount() || 0)"></div>
-                <div class="fe-settings-meta" data-bind="text: 'Indexed messages: ' + (indexCount() || 0)"></div>
-                <div class="fe-settings-meta" data-bind="visible: indexSize() > 0">
-                  Index size ~
-                  <span data-bind="text: (Math.round(indexSize() / 1024 / 1024 * 10) / 10) + ' MB'"></span>
-                </div>
-                <div class="fe-settings-meta" data-bind="text: 'Queued actions: ' + (syncPending() || 0)"></div>
+                <h3>Storage</h3>
+                <div
+                  class="fe-settings-meta"
+                  data-bind="text: 'Database version: ' + (databaseVersion() || '—')"
+                ></div>
+                <div
+                  class="fe-settings-meta"
+                  data-bind="text: 'Total records: ' + (databaseRecordCount() || 0)"
+                ></div>
+                <div
+                  class="fe-settings-meta"
+                  data-bind="text: 'Queued actions: ' + (syncPending() || 0)"
+                ></div>
                 <div class="fe-settings-meta">
                   Local cache:&nbsp;
-                  <span data-bind="text: localUsage() ? (Math.round(localUsage() / 1024 / 1024 * 10) / 10) + ' MB' : '—'"></span>
+                  <span
+                    data-bind="text: localUsage() ? (Math.round(localUsage() / 1024 / 1024 * 10) / 10) + ' MB' : '—'"
+                  ></span>
                   <span data-bind="visible: localQuota()">/</span>
-                  <span data-bind="visible: localQuota, text: localQuota() ? (Math.round(localQuota() / 1024 / 1024 * 10) / 10) + ' MB' : ''"></span>
+                  <span
+                    data-bind="visible: localQuota, text: localQuota() ? (Math.round(localQuota() / 1024 / 1024 * 10) / 10) + ' MB' : ''"
+                  ></span>
                 </div>
-                <div class="fe-settings-note" style="margin-top:8px;">
-                  <span data-bind="text: bodyIndexingEnabled() ? 'Body search uses more local storage but gives better results.' : 'Disable body search to reduce cache size.'"></span>
-                </div>
-                <div class="fe-settings-actions" style="margin-top:12px;">
-                  <button
-                    class="fe-button ghost"
-                    type="button"
-                    data-bind="click: openRebuildConfirm"
-                  >Rebuild index</button>
+                <div class="fe-settings-actions" style="margin-top: 12px">
                   <button
                     class="fe-button ghost"
                     type="button"
                     data-bind="click: clearCacheData"
                     title="Clear all cached data (keeps database structure)"
-                  >Clear cache</button>
+                  >
+                    Clear cache
+                  </button>
                   <button
                     class="fe-button ghost"
                     type="button"
                     data-bind="click: resetDatabaseFull"
                     title="Reset entire database (for troubleshooting)"
-                    style="color: var(--color-danger, #dc3545);"
-                  >Reset database</button>
+                    style="color: var(--color-danger, #dc3545)"
+                  >
+                    Reset database
+                  </button>
                 </div>
               </div>
               <div class="fe-settings-card coming-soon">
@@ -3369,7 +3852,9 @@
                   <input type="checkbox" checked />
                   Block external images by default
                 </label>
-                <div class="fe-settings-note">External images can be used to track when you open emails.</div>
+                <div class="fe-settings-note">
+                  External images can be used to track when you open emails.
+                </div>
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Attachment reminder<span class="fe-coming-soon-badge">Coming soon</span></h3>
@@ -3380,17 +3865,25 @@
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Writing assistance<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Enable spell check</label>
-                <label class="fe-settings-row"><input type="checkbox" /> Enable grammar suggestions</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" checked /> Enable spell check</label
+                >
+                <label class="fe-settings-row"
+                  ><input type="checkbox" /> Enable grammar suggestions</label
+                >
                 <label class="fe-settings-row"><input type="checkbox" /> Enable auto-correct</label>
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>AI Writing Assistant<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" /> Enable AI writing suggestions</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" /> Enable AI writing suggestions</label
+                >
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Reading pane<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Show reading pane</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" checked /> Show reading pane</label
+                >
               </div>
               <div class="fe-settings-card">
                 <h3>Conversation threading</h3>
@@ -3399,13 +3892,19 @@
                   <span>Group messages into conversations</span>
                 </label>
                 <div class="fe-settings-note">
-                  Messages in the same thread will be grouped together, similar to Gmail. Recommended for most users.
+                  Messages in the same thread will be grouped together, similar to Gmail.
+                  Recommended for most users.
                 </div>
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Notifications<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Enable desktop notifications for new messages</label>
-                <label class="fe-settings-row"><input type="checkbox" /> Play sound for new messages</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" checked /> Enable desktop notifications for new
+                  messages</label
+                >
+                <label class="fe-settings-row"
+                  ><input type="checkbox" /> Play sound for new messages</label
+                >
               </div>
             </div>
 
@@ -3413,29 +3912,49 @@
             <div class="fe-settings-grid" data-bind="visible: section() === 'accounts'">
               <div class="fe-settings-card" data-bind="visible: storageTotal() > 0">
                 <h3>Storage</h3>
-                <div class="fe-storage" style="margin:0;">
+                <div class="fe-storage" style="margin: 0">
                   <div class="fe-storage-header">
                     <small>Storage</small>
-                    <small data-bind="text: Math.round((storageUsed() / storageTotal()) * 100) + '%'"></small>
+                    <small
+                      data-bind="text: Math.round((storageUsed() / storageTotal()) * 100) + '%'"
+                    ></small>
                   </div>
                   <div class="fe-storage-bar">
-                    <div class="fe-storage-fill" data-bind="style: { width: Math.min(100, Math.round((storageUsed() / storageTotal()) * 100)) + '%' }"></div>
+                    <div
+                      class="fe-storage-fill"
+                      data-bind="style: { width: Math.min(100, Math.round((storageUsed() / storageTotal()) * 100)) + '%' }"
+                    ></div>
                   </div>
-                  <small class="fe-storage-caption" data-bind="text: Math.round(storageUsed()/1024/1024) + ' MB of ' + Math.round(storageTotal()/1024/1024/1024) + ' GB'"></small>
+                  <small
+                    class="fe-storage-caption"
+                    data-bind="text: Math.round(storageUsed()/1024/1024) + ' MB of ' + Math.round(storageTotal()/1024/1024/1024) + ' GB'"
+                  ></small>
                 </div>
-                <div class="fe-settings-actions" style="margin-top:10px;">
+                <div class="fe-settings-actions" style="margin-top: 10px">
                   <button class="fe-button ghost" type="button">Increase storage</button>
                 </div>
               </div>
               <div class="fe-settings-card">
                 <h3>Your accounts</h3>
                 <div class="fe-settings-note">Manage linked mailboxes and identities.</div>
-                <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+                <ul
+                  style="
+                    list-style: none;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                  "
+                >
                   <li class="fe-key-row">
                     <span class="fe-key-name" data-bind="text: aliasEmail"></span>
                     <div class="fe-key-actions">
-                      <button class="fe-button ghost fe-icon-btn" type="button" title="Edit">✎</button>
-                      <button class="fe-button ghost fe-icon-btn" type="button" title="Remove">✕</button>
+                      <button class="fe-button ghost fe-icon-btn" type="button" title="Edit">
+                        ✎
+                      </button>
+                      <button class="fe-button ghost fe-icon-btn" type="button" title="Remove">
+                        ✕
+                      </button>
                     </div>
                   </li>
                 </ul>
@@ -3450,29 +3969,50 @@
               <div class="fe-settings-card">
                 <h3>Theme</h3>
                 <div class="fe-settings-row">
-                  <label><input type="radio" name="theme" value="system" data-bind="checked: theme" /> Auto (follow system)</label>
-                  <label><input type="radio" name="theme" value="light" data-bind="checked: theme" /> Light</label>
-                  <label><input type="radio" name="theme" value="dark" data-bind="checked: theme" /> Dark</label>
+                  <label
+                    ><input type="radio" name="theme" value="system" data-bind="checked: theme" />
+                    Auto (follow system)</label
+                  >
+                  <label
+                    ><input type="radio" name="theme" value="light" data-bind="checked: theme" />
+                    Light</label
+                  >
+                  <label
+                    ><input type="radio" name="theme" value="dark" data-bind="checked: theme" />
+                    Dark</label
+                  >
                 </div>
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Display density<span class="fe-coming-soon-badge">Coming soon</span></h3>
                 <label class="fe-settings-row"><input type="radio" name="density" /> Compact</label>
-                <label class="fe-settings-row"><input type="radio" name="density" checked /> Normal</label>
-                <label class="fe-settings-row"><input type="radio" name="density" /> Comfortable</label>
+                <label class="fe-settings-row"
+                  ><input type="radio" name="density" checked /> Normal</label
+                >
+                <label class="fe-settings-row"
+                  ><input type="radio" name="density" /> Comfortable</label
+                >
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Text direction<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="radio" name="dir" checked /> Left to right (LTR)</label>
-                <label class="fe-settings-row"><input type="radio" name="dir" /> Right to left (RTL)</label>
+                <label class="fe-settings-row"
+                  ><input type="radio" name="dir" checked /> Left to right (LTR)</label
+                >
+                <label class="fe-settings-row"
+                  ><input type="radio" name="dir" /> Right to left (RTL)</label
+                >
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Sidebar<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" /> Collapse sidebar by default</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" /> Collapse sidebar by default</label
+                >
               </div>
               <div class="fe-settings-card coming-soon">
                 <h3>Avatar style<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="radio" name="avatar" checked /> Circle</label>
+                <label class="fe-settings-row"
+                  ><input type="radio" name="avatar" checked /> Circle</label
+                >
                 <label class="fe-settings-row"><input type="radio" name="avatar" /> Square</label>
               </div>
               <div class="fe-settings-card">
@@ -3481,8 +4021,9 @@
                   <input type="checkbox" data-bind="checked: $root.mailboxView.threadingEnabled" />
                   <span>Group messages into conversations</span>
                 </label>
-                <div class="fe-settings-note" style="margin-top: 8px;">
-                  Messages in the same thread will be grouped together, similar to Gmail. Recommended for most users.
+                <div class="fe-settings-note" style="margin-top: 8px">
+                  Messages in the same thread will be grouped together, similar to Gmail.
+                  Recommended for most users.
                 </div>
               </div>
             </div>
@@ -3491,24 +4032,46 @@
             <div class="fe-settings-grid" data-bind="visible: section() === 'security'">
               <div class="fe-settings-card coming-soon">
                 <h3>Privacy<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Block tracking pixels and links</label>
-                <label class="fe-settings-row"><input type="checkbox" checked /> Block external images by default</label>
+                <label class="fe-settings-row"
+                  ><input type="checkbox" checked /> Block tracking pixels and links</label
+                >
+                <label class="fe-settings-row"
+                  ><input type="checkbox" checked /> Block external images by default</label
+                >
               </div>
               <div class="fe-settings-card">
                 <h3>PGP encryption</h3>
                 <div class="fe-settings-meta">
                   Signed in as <strong data-bind="text: aliasEmail"></strong>
                 </div>
-                <div class="fe-settings-row" style="justify-content: space-between;">
-                  <div class="fe-settings-note" style="margin:0;">PGP encryption keys</div>
-                  <button class="fe-button ghost" type="button" data-bind="click: openNewKey">Add key</button>
+                <div class="fe-settings-row" style="justify-content: space-between">
+                  <div class="fe-settings-note" style="margin: 0">PGP encryption keys</div>
+                  <button class="fe-button ghost" type="button" data-bind="click: openNewKey">
+                    Add key
+                  </button>
                 </div>
                 <div class="fe-key-list" data-bind="foreach: pgpKeys">
                   <div class="fe-key-row">
                     <span class="fe-key-name" data-bind="text: name || 'Key'"></span>
                     <div class="fe-key-actions">
-                      <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Edit" title="Edit" data-bind="click: $parent.editKey">✎</button>
-                      <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeKey">✕</button>
+                      <button
+                        class="fe-button ghost fe-icon-btn"
+                        type="button"
+                        aria-label="Edit"
+                        title="Edit"
+                        data-bind="click: $parent.editKey"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        class="fe-button ghost fe-icon-btn"
+                        type="button"
+                        aria-label="Remove"
+                        title="Remove"
+                        data-bind="click: $parent.removeKey"
+                      >
+                        ✕
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -3526,11 +4089,16 @@
                     data-bind="textInput: editingKeyValue"
                   ></textarea>
                   <div class="fe-settings-actions">
-                    <button class="fe-button ghost" type="button" data-bind="click: cancelKeyForm">Cancel</button>
-                    <button class="fe-button" type="button" data-bind="click: saveKey">Save key</button>
+                    <button class="fe-button ghost" type="button" data-bind="click: cancelKeyForm">
+                      Cancel
+                    </button>
+                    <button class="fe-button" type="button" data-bind="click: saveKey">
+                      Save key
+                    </button>
                   </div>
                   <div class="fe-settings-note">
-                    Stored locally only. Used to decrypt PGP-encrypted messages (decrypt flow to be added).
+                    Stored locally only. Used to decrypt PGP-encrypted messages (decrypt flow to be
+                    added).
                   </div>
                 </div>
                 <div class="fe-settings-actions">
@@ -3544,20 +4112,425 @@
               </div>
             </div>
 
+            <!-- Search & Indexing -->
+            <div class="fe-settings-grid" data-bind="visible: section() === 'search'">
+              <div class="fe-settings-card">
+                <h3>Search Mode</h3>
+                <div class="fe-settings-note" style="margin-bottom: 12px">
+                  Choose how search works in your mailbox.
+                </div>
+                <label class="fe-settings-row">
+                  <input
+                    type="radio"
+                    name="searchMode"
+                    value="current"
+                    data-bind="checked: $root.mailboxView.searchMode"
+                  />
+                  <div>
+                    <div><strong>Current folder only (Default)</strong></div>
+                    <div class="fe-settings-note">
+                      Fast and lightweight. Searches only within messages loaded in the current
+                      folder.
+                    </div>
+                  </div>
+                </label>
+                <label class="fe-settings-row">
+                  <input
+                    type="radio"
+                    name="searchMode"
+                    value="all"
+                    data-bind="checked: $root.mailboxView.searchMode"
+                  />
+                  <div>
+                    <div><strong>Search all folders</strong></div>
+                    <div class="fe-settings-note">
+                      Search across all indexed messages. Requires full indexing to be completed
+                      first.
+                    </div>
+                  </div>
+                </label>
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    background: rgba(255, 193, 7, 0.1);
+                    border-left: 3px solid #ffc107;
+                    border-radius: 4px;
+                  "
+                >
+                  <strong>⚠️ Performance Note:</strong>
+                  <ul style="margin: 4px 0 0 0; padding-left: 20px">
+                    <li>All-folder search may be slower with large mailboxes (10,000+ messages)</li>
+                    <li>Results load in the background without disrupting your workflow</li>
+                    <li>First search after login may take a few seconds while the index loads</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="fe-settings-card">
+                <h3>Indexing Limits</h3>
+                <div class="fe-settings-note" style="margin-bottom: 16px">
+                  Configure how many messages to index. Higher limits use more storage. Defaults:
+                  1,000 messages, 90 days, headers only (~50 MB).
+                </div>
+
+                <div style="margin-bottom: 16px">
+                  <label style="display: block; margin-bottom: 6px; font-weight: 500"
+                    >Max messages to index</label
+                  >
+                  <input
+                    type="number"
+                    class="fe-input"
+                    min="100"
+                    max="50000"
+                    step="100"
+                    data-bind="value: $root.mailboxView.maxIndexMessages"
+                    style="width: 180px"
+                  />
+                  <div class="fe-settings-note" style="margin-top: 4px">
+                    Range: 100 - 50,000 messages. More messages = more storage used.
+                  </div>
+                </div>
+
+                <div style="margin-bottom: 16px">
+                  <label style="display: block; margin-bottom: 6px; font-weight: 500"
+                    >Max message age (days)</label
+                  >
+                  <input
+                    type="number"
+                    class="fe-input"
+                    min="7"
+                    max="730"
+                    step="1"
+                    data-bind="value: $root.mailboxView.maxIndexAgeDays"
+                    style="width: 180px"
+                  />
+                  <div class="fe-settings-note" style="margin-top: 4px">
+                    Range: 7 - 730 days (2 years). Only recent messages are indexed.
+                  </div>
+                </div>
+
+                <label class="fe-settings-row">
+                  <input
+                    type="checkbox"
+                    data-bind="checked: $root.mailboxView.bodyIndexingEnabled"
+                  />
+                  <div>
+                    <div><strong>Include message bodies in search</strong></div>
+                    <div class="fe-settings-note">
+                      Searches full message content including PGP encrypted messages. Uses
+                      significantly more storage (~10x).
+                    </div>
+                  </div>
+                </label>
+
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    background: rgba(34, 197, 94, 0.1);
+                    border-left: 3px solid #22c55e;
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: bodyIndexingEnabled()"
+                >
+                  <strong>✓ PGP Encryption Support</strong>
+                  <div style="margin-top: 4px">
+                    Encrypted messages will be automatically decrypted and indexed using your stored
+                    PGP keys.
+                  </div>
+                </div>
+
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    background: rgba(59, 130, 246, 0.1);
+                    border-left: 3px solid #3b82f6;
+                    border-radius: 4px;
+                  "
+                >
+                  <strong>💡 Recommended Settings:</strong>
+                  <ul style="margin: 4px 0 0 0; padding-left: 20px">
+                    <li>
+                      <strong>Mobile/Low storage:</strong> 500 messages, 30 days, bodies off (~25
+                      MB)
+                    </li>
+                    <li>
+                      <strong>Standard:</strong> 1,000 messages, 90 days, bodies off (~50 MB) -
+                      Default
+                    </li>
+                    <li>
+                      <strong>Power users:</strong> 5,000 messages, 365 days, bodies on (~500 MB - 2
+                      GB)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="fe-settings-card">
+                <h3>Storage Management</h3>
+                <label class="fe-settings-row">
+                  <input
+                    type="checkbox"
+                    data-bind="checked: $root.mailboxView.autoCleanupEnabled"
+                  />
+                  <div>
+                    <div><strong>Automatic cleanup</strong></div>
+                    <div class="fe-settings-note">
+                      Automatically remove old cached messages when storage usage exceeds 70%
+                    </div>
+                  </div>
+                </label>
+
+                <!-- Storage warning -->
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    border-left: 3px solid #ffc107;
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: $root.mailboxView.storageWarningLevel() === 'warning', style: { background: 'rgba(255,193,7,0.1)' }"
+                >
+                  <strong>⚠️ Storage Usage High (70-85%)</strong>
+                  <div style="margin-top: 4px">
+                    Consider enabling auto-cleanup or reducing your indexing limits.
+                  </div>
+                </div>
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    border-left: 3px solid #ef4444;
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: $root.mailboxView.storageWarningLevel() === 'critical', style: { background: 'rgba(239,68,68,0.1)' }"
+                >
+                  <strong>🚨 Storage Critically Low (>85%)</strong>
+                  <div style="margin-top: 4px">
+                    Your browser storage is almost full. Reduce indexing limits or clear cached
+                    data.
+                  </div>
+                </div>
+
+                <div class="fe-settings-actions" style="margin-top: 12px">
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function() { $root.mailboxView.performAutoCleanup(); }"
+                  >
+                    Clean up old data now
+                  </button>
+                </div>
+              </div>
+
+              <div class="fe-settings-card">
+                <h3>Index Status</h3>
+                <div
+                  class="fe-settings-meta"
+                  data-bind="text: 'Indexed messages: ' + (indexCount() || 0) + ' of ' + ($root.mailboxView.maxIndexMessages() || 1000) + ' max'"
+                ></div>
+                <div
+                  class="fe-settings-meta"
+                  data-bind="text: 'Message age limit: ' + ($root.mailboxView.maxIndexAgeDays() || 90) + ' days'"
+                ></div>
+                <div class="fe-settings-meta" data-bind="visible: indexSize() > 0">
+                  Index size:
+                  <span
+                    data-bind="text: (Math.round(indexSize() / 1024 / 1024 * 10) / 10) + ' MB'"
+                  ></span>
+                </div>
+                <div class="fe-settings-meta" style="margin-bottom: 12px">
+                  <strong>Indexing mode:</strong>
+                  <span data-bind="visible: bodyIndexingEnabled()"
+                    >Full content (body + headers + PGP decryption)</span
+                  >
+                  <span data-bind="visible: !bodyIndexingEnabled()"
+                    >Headers only (subject, from, to, snippet)</span
+                  >
+                </div>
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 8px;
+                    padding: 8px;
+                    background: rgba(34, 197, 94, 0.1);
+                    border-left: 3px solid #22c55e;
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: bodyIndexingEnabled() && ($root.mailboxView.pgpKeys?.length > 0)"
+                >
+                  <strong>✓ PGP Support Active</strong>
+                  <div style="margin-top: 4px">
+                    <span data-bind="text: $root.mailboxView.pgpKeys?.length || 0"></span> PGP
+                    key(s) loaded. Encrypted messages will be decrypted and indexed.
+                  </div>
+                </div>
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 8px;
+                    padding: 8px;
+                    background: rgba(255, 193, 7, 0.1);
+                    border-left: 3px solid #ffc107;
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: bodyIndexingEnabled() && (!$root.mailboxView.pgpKeys || $root.mailboxView.pgpKeys.length === 0)"
+                >
+                  <strong>⚠️ No PGP Keys</strong>
+                  <div style="margin-top: 4px">
+                    Body indexing is enabled, but no PGP keys are configured. Encrypted messages
+                    will be indexed as-is (encrypted).
+                    <a
+                      href="#"
+                      data-bind="click: function(){ setSection('security'); }"
+                      style="color: var(--color-accent); text-decoration: underline"
+                      >Add PGP keys →</a
+                    >
+                  </div>
+                </div>
+
+                <!-- Indexing Progress -->
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 8px;
+                    padding: 12px;
+                    background: var(--color-bg, #1a1a1a);
+                    border-radius: 4px;
+                  "
+                  data-bind="visible: $root.mailboxView.isIndexing()"
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <span style="font-weight: 500">⏳ Indexing in progress...</span>
+                    <span
+                      data-bind="text: $root.mailboxView.indexingProgress() + '%'"
+                      style="font-weight: bold; color: var(--color-accent)"
+                    ></span>
+                  </div>
+                  <div
+                    style="
+                      height: 6px;
+                      background: rgba(255, 255, 255, 0.1);
+                      border-radius: 3px;
+                      overflow: hidden;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <div
+                      style="height: 100%; background: var(--color-accent); transition: width 0.3s"
+                      data-bind="style: { width: $root.mailboxView.indexingProgress() + '%' }"
+                    ></div>
+                  </div>
+                  <div
+                    class="fe-settings-meta"
+                    data-bind="text: 'Current folder: ' + $root.mailboxView.indexingFolder()"
+                  ></div>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    style="margin-top: 8px"
+                    data-bind="click: function() { $root.mailboxView.stopBackgroundIndexing(); }"
+                  >
+                    Stop indexing
+                  </button>
+                </div>
+
+                <div
+                  class="fe-settings-note"
+                  style="
+                    margin-top: 12px;
+                    padding: 8px;
+                    background: rgba(59, 130, 246, 0.1);
+                    border-left: 3px solid #3b82f6;
+                    border-radius: 4px;
+                  "
+                >
+                  <strong>ℹ️ About Indexing:</strong>
+                  <ul style="margin: 4px 0 0 0; padding-left: 20px">
+                    <li>Indexing runs in the background and won't block the UI</li>
+                    <li>You can continue reading and composing emails while indexing</li>
+                    <li>The index is stored locally and persists across sessions</li>
+                    <li>Encrypted messages are decrypted during indexing if keys are available</li>
+                  </ul>
+                </div>
+
+                <div class="fe-settings-actions" style="margin-top: 12px">
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: openRebuildConfirm"
+                  >
+                    Quick rebuild (current folder)
+                  </button>
+                  <button
+                    class="fe-button primary"
+                    type="button"
+                    data-bind="click: function() { $root.mailboxView.rebuildFullSearchIndex(); }, enable: !$root.mailboxView.isIndexing()"
+                    title="Index all messages in all folders with body content"
+                  >
+                    Index all folders
+                  </button>
+                </div>
+              </div>
+
+              <div class="fe-settings-card coming-soon">
+                <h3>Saved Searches<span class="fe-coming-soon-badge">Coming soon</span></h3>
+                <div class="fe-settings-note" style="margin-bottom: 12px">
+                  Save frequently used search queries for quick access.
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <!-- Placeholder for saved searches list -->
+                  <div class="fe-settings-meta">No saved searches yet</div>
+                </div>
+                <div class="fe-settings-actions" style="margin-top: 12px">
+                  <button class="fe-button ghost" type="button" disabled>+ Add saved search</button>
+                </div>
+              </div>
+            </div>
+
             <!-- Keyboard Shortcuts -->
             <div class="fe-settings-grid" data-bind="visible: section() === 'shortcuts'">
               <div class="fe-settings-card">
                 <h3>Keyboard Shortcuts</h3>
-                <div class="fe-settings-note" style="margin-bottom: 16px;">
-                  Navigate and control your email efficiently with keyboard shortcuts. Click edit to customize any shortcut.
-                  <span data-bind="text: isMac() ? ' On Mac, ⌘ (cmd) is used instead of ctrl.' : ' On Windows/Linux, ctrl is the primary modifier key.'"></span>
+                <div class="fe-settings-note" style="margin-bottom: 16px">
+                  Navigate and control your email efficiently with keyboard shortcuts. Click edit to
+                  customize any shortcut.
+                  <span
+                    data-bind="text: isMac() ? ' On Mac, ⌘ (cmd) is used instead of ctrl.' : ' On Windows/Linux, ctrl is the primary modifier key.'"
+                  ></span>
                 </div>
 
                 <!-- Shortcuts List (view-only) -->
                 <div class="fe-key-list" data-bind="foreach: shortcutsList">
                   <div class="fe-key-row">
-                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                      <span style="font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 13px; background: rgba(0, 175, 248, 0.1); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(0, 175, 248, 0.2); min-width: 120px; display: inline-block;" data-bind="text: key"></span>
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1">
+                      <span
+                        style="
+                          font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+                          font-size: 13px;
+                          background: rgba(0, 175, 248, 0.1);
+                          padding: 4px 8px;
+                          border-radius: 4px;
+                          border: 1px solid rgba(0, 175, 248, 0.2);
+                          min-width: 120px;
+                          display: inline-block;
+                        "
+                        data-bind="text: key"
+                      ></span>
                       <span class="fe-key-name" data-bind="text: label"></span>
                     </div>
                   </div>
@@ -3569,7 +4542,9 @@
             <div class="fe-settings-grid" data-bind="visible: section() === 'filters'">
               <div class="fe-settings-card coming-soon">
                 <h3>Filters<span class="fe-coming-soon-badge">Coming soon</span></h3>
-                <div class="fe-settings-note">Create rules to automatically label, move, or forward mail.</div>
+                <div class="fe-settings-note">
+                  Create rules to automatically label, move, or forward mail.
+                </div>
                 <div class="fe-settings-actions">
                   <button class="fe-button ghost" type="button">Add filter</button>
                 </div>
@@ -3580,7 +4555,9 @@
             <div class="fe-alert success" data-bind="visible: success, text: success"></div>
 
             <div class="fe-settings-footer" data-bind="visible: shouldShowActions">
-              <button class="fe-button ghost" type="button" data-bind="click: resetSectionChanges">Cancel</button>
+              <button class="fe-button ghost" type="button" data-bind="click: resetSectionChanges">
+                Cancel
+              </button>
               <button class="fe-button" type="button" data-bind="click: save">Save changes</button>
             </div>
           </div>
@@ -3588,47 +4565,87 @@
       </div>
     </div>
 
-    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'calendar', with: calendarView">
+    <div
+      class="fe-mailbox-wrapper"
+      style="display: none"
+      data-bind="visible: route() === 'calendar', with: calendarView"
+    >
       <div class="fe-mailbox-header">
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
+        <button
+          class="fe-button ghost fe-icon-btn"
+          type="button"
+          aria-label="Back"
+          title="Back"
+          data-bind="click: function(){ navigate('/mailbox'); }"
+        >
+          ←
+        </button>
         <div class="fe-title-left">
           <h1>Calendar</h1>
           <span data-bind="text: email"></span>
         </div>
       </div>
 
-        <div class="fe-calendar-shell">
-          <div class="fe-section-header">
-            <span>Schedule</span>
-          </div>
-        <div id="sx-calendar" style="min-height: calc(100vh - 140px);"></div>
+      <div class="fe-calendar-shell">
+        <div class="fe-section-header">
+          <span>Schedule</span>
+        </div>
+        <div id="sx-calendar" style="min-height: calc(100vh - 140px)"></div>
       </div>
     </div>
 
-    <div class="fe-mailbox-wrapper" style="display: none;" data-bind="visible: route() === 'contacts', with: contactsView">
+    <div
+      class="fe-mailbox-wrapper"
+      style="display: none"
+      data-bind="visible: route() === 'contacts', with: contactsView"
+    >
       <div class="fe-mailbox-header">
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Back" title="Back" data-bind="click: function(){ navigate('/mailbox'); }">←</button>
+        <button
+          class="fe-button ghost fe-icon-btn"
+          type="button"
+          aria-label="Back"
+          title="Back"
+          data-bind="click: function(){ navigate('/mailbox'); }"
+        >
+          ←
+        </button>
         <div class="fe-title-left">
           <h1>Contacts</h1>
           <span data-bind="text: email"></span>
         </div>
       </div>
 
-        <div class="fe-contacts-shell">
-          <div class="fe-contacts-list">
-            <div class="fe-contacts-list-header">
-              <input type="search" class="fe-search" placeholder="Search contacts" data-bind="textInput: query" />
-            <button class="fe-button ghost fe-icon-btn" type="button" title="New contact" aria-label="New contact" data-bind="click: startNewContact">＋</button>
-            </div>
-            <!-- ko if: loading -->
-            <div class="fe-empty">Loading contacts…</div>
-            <!-- /ko -->
-            <!-- ko if: error -->
+      <div class="fe-contacts-shell">
+        <div class="fe-contacts-list">
+          <div class="fe-contacts-list-header">
+            <input
+              type="search"
+              class="fe-search"
+              placeholder="Search contacts"
+              data-bind="textInput: query"
+            />
+            <button
+              class="fe-button ghost fe-icon-btn"
+              type="button"
+              title="New contact"
+              aria-label="New contact"
+              data-bind="click: startNewContact"
+            >
+              ＋
+            </button>
+          </div>
+          <!-- ko if: loading -->
+          <div class="fe-empty">Loading contacts…</div>
+          <!-- /ko -->
+          <!-- ko if: error -->
           <div class="fe-alert error" data-bind="text: error"></div>
           <!-- /ko -->
           <!-- ko if: !loading() && filteredContacts().length -->
           <ul class="fe-contacts-items" data-bind="foreach: filteredContacts">
-            <li class="fe-contact-row" data-bind="click: $parent.selectContact, css: { active: $parent.selectedContact() && $parent.selectedContact().id === id }">
+            <li
+              class="fe-contact-row"
+              data-bind="click: $parent.selectContact, css: { active: $parent.selectedContact() && $parent.selectedContact().id === id }"
+            >
               <div class="fe-contact-name" data-bind="text: name || email || 'Unknown'"></div>
               <div class="fe-contact-email" data-bind="text: email"></div>
             </li>
@@ -3645,110 +4662,265 @@
             <div class="fe-contacts-detail-grid">
               <div class="fe-contacts-detail-col">
                 <!-- Contact fields -->
-                <label class="fe-settings-row">Name
-                  <input class="fe-input" type="text" data-bind="textInput: name, disable: !$parent.isEditing()" />
+                <label class="fe-settings-row"
+                  >Name
+                  <input
+                    class="fe-input"
+                    type="text"
+                    data-bind="textInput: name, disable: !$parent.isEditing()"
+                  />
                 </label>
-                <label class="fe-settings-row">Primary email
-                  <input class="fe-input" type="email" data-bind="textInput: email, disable: !$parent.isEditing()" />
+                <label class="fe-settings-row"
+                  >Primary email
+                  <input
+                    class="fe-input"
+                    type="email"
+                    data-bind="textInput: email, disable: !$parent.isEditing()"
+                  />
                 </label>
-                <label class="fe-settings-row">Phone
-                  <input class="fe-input" type="text" data-bind="textInput: phone, disable: !$parent.isEditing()" />
+                <label class="fe-settings-row"
+                  >Phone
+                  <input
+                    class="fe-input"
+                    type="text"
+                    data-bind="textInput: phone, disable: !$parent.isEditing()"
+                  />
                 </label>
 
-                <label class="fe-settings-row">Birthday
-                  <input class="fe-input" type="date" data-bind="value: birthday, disable: !$parent.isEditing()" />
+                <label class="fe-settings-row"
+                  >Birthday
+                  <input
+                    class="fe-input"
+                    type="date"
+                    data-bind="value: birthday, disable: !$parent.isEditing()"
+                  />
                 </label>
 
-                <label class="fe-settings-row">Mailing address
-                  <textarea class="fe-textarea" rows="3" data-bind="textInput: address, disable: !$parent.isEditing()"></textarea>
+                <label class="fe-settings-row"
+                  >Mailing address
+                  <textarea
+                    class="fe-textarea"
+                    rows="3"
+                    data-bind="textInput: address, disable: !$parent.isEditing()"
+                  ></textarea>
                 </label>
-
               </div>
 
               <div class="fe-contacts-detail-col">
-                <label class="fe-settings-row">Notes
-                  <textarea class="fe-textarea" rows="5" data-bind="textInput: notes, disable: !$parent.isEditing()"></textarea>
+                <label class="fe-settings-row"
+                  >Notes
+                  <textarea
+                    class="fe-textarea"
+                    rows="5"
+                    data-bind="textInput: notes, disable: !$parent.isEditing()"
+                  ></textarea>
                 </label>
                 <div class="fe-contact-actions">
                   <!-- View mode -->
                   <!-- ko if: !$parent.isEditing() -->
-                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.startMail($data); }">Send email</button>
-                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.addEvent($data); }">Add event</button>
-                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.viewEmails($data); }">Search emails</button>
-                  <button class="fe-button ghost" type="button" data-bind="click: function(){ $parent.openEdit($data); }">Edit</button>
-                  <button class="fe-button fe-danger" type="button" data-bind="click: function(){ $parent.openDeleteConfirm($data); }">Delete</button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function(){ $parent.startMail($data); }"
+                  >
+                    Send email
+                  </button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function(){ $parent.addEvent($data); }"
+                  >
+                    Add event
+                  </button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function(){ $parent.viewEmails($data); }"
+                  >
+                    Search emails
+                  </button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: function(){ $parent.openEdit($data); }"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="fe-button fe-danger"
+                    type="button"
+                    data-bind="click: function(){ $parent.openDeleteConfirm($data); }"
+                  >
+                    Delete
+                  </button>
                   <!-- /ko -->
                 </div>
                 <!-- Edit mode -->
                 <!-- ko if: $parent.isEditing -->
                 <div class="fe-contact-actions">
-                  <button class="fe-button ghost" type="button" data-bind="click: $parent.cancelEdit">Cancel</button>
-                  <button class="fe-button" type="button" data-bind="click: function(){ $parent.saveContactInline(); }">Save</button>
+                  <button
+                    class="fe-button ghost"
+                    type="button"
+                    data-bind="click: $parent.cancelEdit"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="fe-button"
+                    type="button"
+                    data-bind="click: function(){ $parent.saveContactInline(); }"
+                  >
+                    Save
+                  </button>
                 </div>
                 <!-- /ko -->
               </div>
             </div>
           </div>
           <!-- /ko -->
-            <!-- ko if: !selectedContact() && !loading() -->
-            <div class="fe-empty">Select a contact to view details.</div>
+          <!-- ko if: !selectedContact() && !loading() -->
+          <div class="fe-empty">Select a contact to view details.</div>
           <!-- /ko -->
         </div>
       </div>
     </div>
 
-    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'contacts' && contactsView.confirmVisible()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'contacts' && contactsView.confirmVisible()"
+    >
       <div class="fe-modal" data-bind="with: contactsView">
         <div class="fe-modal-header">
           <h2>Delete contact</h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: cancelDelete">✕</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            aria-label="Close"
+            title="Close"
+            data-bind="click: cancelDelete"
+          >
+            ✕
+          </button>
         </div>
         <div class="fe-modal-body">
           <div class="fe-alert error">Are you sure you want to delete this contact?</div>
           <div class="fe-modal-actions">
-            <button class="fe-button ghost" type="button" data-bind="click: cancelDelete">Cancel</button>
-            <button class="fe-button fe-danger" type="button" data-bind="click: function(){ deleteContact(confirmTarget); }">Delete</button>
+            <button class="fe-button ghost" type="button" data-bind="click: cancelDelete">
+              Cancel
+            </button>
+            <button
+              class="fe-button fe-danger"
+              type="button"
+              data-bind="click: function(){ deleteContact(confirmTarget); }"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'settings' && settingsModal.rebuildConfirmVisible()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'settings' && settingsModal.rebuildConfirmVisible()"
+    >
       <div class="fe-modal" data-bind="with: settingsModal">
         <div class="fe-modal-header">
           <h2>Rebuild search index</h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: closeRebuildConfirm">✕</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            aria-label="Close"
+            title="Close"
+            data-bind="click: closeRebuildConfirm"
+          >
+            ✕
+          </button>
         </div>
         <div class="fe-modal-body">
           <div class="fe-alert warning">
-            <p style="margin:0 0 0.5rem 0;"><strong>This will clear and rebuild the local search index.</strong></p>
-            <p style="margin:0;">Messages will be re-indexed from cached data
-              <span data-bind="text: bodyIndexingEnabled() ? '(including bodies; more space)' : '(subject/from/snippet only)'"></span>.
-              This may take a moment and uses local storage.</p>
+            <p style="margin: 0 0 0.5rem 0">
+              <strong>This will clear and rebuild the local search index.</strong>
+            </p>
+            <p style="margin: 0">
+              Messages will be re-indexed from cached data
+              <span
+                data-bind="text: bodyIndexingEnabled() ? '(including bodies; more space)' : '(subject/from/snippet only)'"
+              ></span
+              >. This may take a moment and uses local storage.
+            </p>
           </div>
           <div class="fe-modal-actions">
-            <button class="fe-button ghost" type="button" data-bind="click: closeRebuildConfirm">Cancel</button>
-            <button class="fe-button" type="button" data-bind="click: confirmRebuildIndex, enable: !rebuildingIndex(), text: rebuildingIndex() ? 'Rebuilding…' : 'Rebuild now'"></button>
+            <button class="fe-button ghost" type="button" data-bind="click: closeRebuildConfirm">
+              Cancel
+            </button>
+            <button
+              class="fe-button"
+              type="button"
+              data-bind="click: confirmRebuildIndex, enable: !rebuildingIndex(), text: rebuildingIndex() ? 'Rebuilding…' : 'Rebuild now'"
+            ></button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="fe-modal-backdrop" style="display:none;" data-bind="visible: route() === 'contacts' && contactsView.modalVisible()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'contacts' && contactsView.modalVisible()"
+    >
       <div class="fe-modal" data-bind="with: contactsView">
         <div class="fe-modal-header">
           <h2 data-bind="text: modalMode() === 'edit' ? 'Edit contact' : 'New contact'"></h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: cancelEdit">✕</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            aria-label="Close"
+            title="Close"
+            data-bind="click: cancelEdit"
+          >
+            ✕
+          </button>
         </div>
         <div class="fe-modal-body">
-          <input class="fe-input" type="text" placeholder="Full name" data-bind="textInput: modalName" />
-          <input class="fe-input" type="email" placeholder="Email" data-bind="textInput: modalEmail" />
-          <input class="fe-input" type="text" placeholder="Phone" data-bind="textInput: modalPhone" />
-          <textarea class="fe-textarea" placeholder="Notes" rows="3" data-bind="textInput: modalNotes"></textarea>
+          <input
+            class="fe-input"
+            type="text"
+            placeholder="Full name"
+            data-bind="textInput: modalName"
+          />
+          <input
+            class="fe-input"
+            type="email"
+            placeholder="Email"
+            data-bind="textInput: modalEmail"
+          />
+          <input
+            class="fe-input"
+            type="text"
+            placeholder="Phone"
+            data-bind="textInput: modalPhone"
+          />
+          <textarea
+            class="fe-textarea"
+            placeholder="Notes"
+            rows="3"
+            data-bind="textInput: modalNotes"
+          ></textarea>
           <div class="fe-alert error" data-bind="visible: modalError, text: modalError"></div>
           <div class="fe-modal-actions">
-            <button class="fe-button ghost" type="button" data-bind="click: closeModal">Cancel</button>
-            <button class="fe-button" type="button" data-bind="click: saveContactInline, disable: modalSaving">Save</button>
+            <button class="fe-button ghost" type="button" data-bind="click: closeModal">
+              Cancel
+            </button>
+            <button
+              class="fe-button"
+              type="button"
+              data-bind="click: saveContactInline, disable: modalSaving"
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>
@@ -3760,11 +4932,23 @@
       </div>
     </noscript>
 
-    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'mailbox' && composeModal.visible()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'mailbox' && composeModal.visible()"
+    >
       <div class="fe-modal" data-bind="with: composeModal">
         <div class="fe-modal-header">
           <h2>Compose</h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Close" title="Close" data-bind="click: close">✕</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            aria-label="Close"
+            title="Close"
+            data-bind="click: close"
+          >
+            ✕
+          </button>
         </div>
         <div class="fe-modal-body">
           <div class="fe-compose-meta">
@@ -3779,36 +4963,90 @@
           <div class="fe-recipient-row">
             <div class="fe-recipient-field">
               <div class="fe-compose-label">To</div>
-              <input class="fe-input" type="email" placeholder="Add recipient" data-bind="textInput: to, event: { focus: function(){ onRecipientFocus('to'); }, input: function(){ onRecipientInput('to'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('to', e); } }" />
-              <div class="fe-contact-suggestions" data-bind="visible: suggestionOpen() && focusedField() === 'to' && filteredContacts().length, foreach: filteredContacts">
-                <div class="fe-contact-suggestion" data-bind="text: $data, click: $parent.selectSuggestion"></div>
+              <input
+                class="fe-input"
+                type="email"
+                placeholder="Add recipient"
+                data-bind="textInput: to, event: { focus: function(){ onRecipientFocus('to'); }, input: function(){ onRecipientInput('to'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('to', e); } }"
+              />
+              <div
+                class="fe-contact-suggestions"
+                data-bind="visible: suggestionOpen() && focusedField() === 'to' && filteredContacts().length, foreach: filteredContacts"
+              >
+                <div
+                  class="fe-contact-suggestion"
+                  data-bind="text: $data, click: $parent.selectSuggestion"
+                ></div>
               </div>
             </div>
             <div class="fe-chip-row" data-bind="foreach: toList">
               <div class="fe-chip ghost fe-recipient-chip">
                 <span data-bind="text: $data"></span>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'to', $data)">✕</button>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  aria-label="Remove"
+                  title="Remove"
+                  data-bind="click: $parent.removeRecipient.bind($parent, 'to', $data)"
+                >
+                  ✕
+                </button>
               </div>
             </div>
           </div>
 
           <div class="fe-compose-actions fe-recipient-actions">
-            <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add CC" title="Add CC" data-bind="click: showCc, visible: !ccVisible()">CC</button>
-            <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add BCC" title="Add BCC" data-bind="click: showBcc, visible: !bccVisible()">BCC</button>
+            <button
+              class="fe-button ghost fe-icon-btn"
+              type="button"
+              aria-label="Add CC"
+              title="Add CC"
+              data-bind="click: showCc, visible: !ccVisible()"
+            >
+              CC
+            </button>
+            <button
+              class="fe-button ghost fe-icon-btn"
+              type="button"
+              aria-label="Add BCC"
+              title="Add BCC"
+              data-bind="click: showBcc, visible: !bccVisible()"
+            >
+              BCC
+            </button>
           </div>
 
           <div class="fe-recipient-row" data-bind="visible: ccVisible">
             <div class="fe-recipient-field">
               <div class="fe-compose-label">Cc</div>
-              <input class="fe-input" type="email" placeholder="Add Cc" data-bind="textInput: cc, event: { focus: function(){ onRecipientFocus('cc'); }, input: function(){ onRecipientInput('cc'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('cc', e); } }" />
-              <div class="fe-contact-suggestions" data-bind="visible: suggestionOpen() && focusedField() === 'cc' && filteredContacts().length, foreach: filteredContacts">
-                <div class="fe-contact-suggestion" data-bind="text: $data, click: $parent.selectSuggestion"></div>
+              <input
+                class="fe-input"
+                type="email"
+                placeholder="Add Cc"
+                data-bind="textInput: cc, event: { focus: function(){ onRecipientFocus('cc'); }, input: function(){ onRecipientInput('cc'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('cc', e); } }"
+              />
+              <div
+                class="fe-contact-suggestions"
+                data-bind="visible: suggestionOpen() && focusedField() === 'cc' && filteredContacts().length, foreach: filteredContacts"
+              >
+                <div
+                  class="fe-contact-suggestion"
+                  data-bind="text: $data, click: $parent.selectSuggestion"
+                ></div>
               </div>
             </div>
             <div class="fe-chip-row" data-bind="foreach: ccList">
               <div class="fe-chip ghost fe-recipient-chip">
                 <span data-bind="text: $data"></span>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'cc', $data)">✕</button>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  aria-label="Remove"
+                  title="Remove"
+                  data-bind="click: $parent.removeRecipient.bind($parent, 'cc', $data)"
+                >
+                  ✕
+                </button>
               </div>
             </div>
           </div>
@@ -3816,96 +5054,250 @@
           <div class="fe-recipient-row" data-bind="visible: bccVisible">
             <div class="fe-recipient-field">
               <div class="fe-compose-label">Bcc</div>
-              <input class="fe-input" type="email" placeholder="Add Bcc" data-bind="textInput: bcc, event: { focus: function(){ onRecipientFocus('bcc'); }, input: function(){ onRecipientInput('bcc'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('bcc', e); } }" />
-              <div class="fe-contact-suggestions" data-bind="visible: suggestionOpen() && focusedField() === 'bcc' && filteredContacts().length, foreach: filteredContacts">
-                <div class="fe-contact-suggestion" data-bind="text: $data, click: $parent.selectSuggestion"></div>
+              <input
+                class="fe-input"
+                type="email"
+                placeholder="Add Bcc"
+                data-bind="textInput: bcc, event: { focus: function(){ onRecipientFocus('bcc'); }, input: function(){ onRecipientInput('bcc'); }, blur: handleRecipientBlur, keydown: function(_,e){ return handleRecipientKeydown('bcc', e); } }"
+              />
+              <div
+                class="fe-contact-suggestions"
+                data-bind="visible: suggestionOpen() && focusedField() === 'bcc' && filteredContacts().length, foreach: filteredContacts"
+              >
+                <div
+                  class="fe-contact-suggestion"
+                  data-bind="text: $data, click: $parent.selectSuggestion"
+                ></div>
               </div>
             </div>
             <div class="fe-chip-row" data-bind="foreach: bccList">
               <div class="fe-chip ghost fe-recipient-chip">
                 <span data-bind="text: $data"></span>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove" title="Remove" data-bind="click: $parent.removeRecipient.bind($parent, 'bcc', $data)">✕</button>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  aria-label="Remove"
+                  title="Remove"
+                  data-bind="click: $parent.removeRecipient.bind($parent, 'bcc', $data)"
+                >
+                  ✕
+                </button>
               </div>
             </div>
           </div>
-          <input class="fe-input" type="text" placeholder="Subject" data-bind="textInput: subject" />
-
-            <div class="fe-editor">
-              <div class="fe-editor-toolbar">
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Bold" title="Bold" data-bind="click: toggleBold">B</button>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Italic" title="Italic" data-bind="click: toggleItalic"><em>I</em></button>
-                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Underline" title="Underline" data-bind="click: toggleUnderline"><u>U</u></button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Strikethrough" title="Strikethrough" data-bind="click: toggleStrike"><s>S</s></button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Bulleted list" title="Bulleted list" data-bind="click: toggleBullet">•</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Numbered list" title="Numbered list" data-bind="click: toggleOrdered">1.</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Quote" title="Quote" data-bind="click: toggleQuote">❝</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Code block" title="Code block" data-bind="click: toggleCode">&lt;/&gt;</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Link" title="Link" data-bind="click: setLink">🔗</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Clear formatting" title="Clear formatting" data-bind="click: clearFormatting">✕</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Plain text" title="Plain text toggle" data-bind="click: togglePlainText, css: { active: isPlainText }">TXT</button>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Emoji" title="Emoji" data-bind="click: toggleEmoji">😊</button>
-            </div>
-          <div class="fe-rich" data-placeholder="Message"></div>
-          <div class="fe-emoji-picker" data-bind="visible: showEmoji">
-            <emoji-picker></emoji-picker>
-          </div>
-        </div>
-
-        <div class="fe-attachments-compose">
           <input
-            type="file"
-            multiple
-            class="fe-attach-input"
-            style="display: none;"
-            data-bind="event: { change: onFilesSelected }"
+            class="fe-input"
+            type="text"
+            placeholder="Subject"
+            data-bind="textInput: subject"
           />
-          <button class="fe-button ghost" type="button" data-bind="click: triggerFilePicker">
-            <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.18a1 1 0 0 1-1.41-1.41l8.49-8.48" /></svg>
-            <span>Attach</span>
-          </button>
-          <div class="fe-dropzone"
-            data-bind="
+
+          <div class="fe-editor">
+            <div class="fe-editor-toolbar">
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Bold"
+                title="Bold"
+                data-bind="click: toggleBold"
+              >
+                B
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Italic"
+                title="Italic"
+                data-bind="click: toggleItalic"
+              >
+                <em>I</em>
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Underline"
+                title="Underline"
+                data-bind="click: toggleUnderline"
+              >
+                <u>U</u>
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Strikethrough"
+                title="Strikethrough"
+                data-bind="click: toggleStrike"
+              >
+                <s>S</s>
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Bulleted list"
+                title="Bulleted list"
+                data-bind="click: toggleBullet"
+              >
+                •
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Numbered list"
+                title="Numbered list"
+                data-bind="click: toggleOrdered"
+              >
+                1.
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Quote"
+                title="Quote"
+                data-bind="click: toggleQuote"
+              >
+                ❝
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Code block"
+                title="Code block"
+                data-bind="click: toggleCode"
+              >
+                &lt;/&gt;
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Link"
+                title="Link"
+                data-bind="click: setLink"
+              >
+                🔗
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Clear formatting"
+                title="Clear formatting"
+                data-bind="click: clearFormatting"
+              >
+                ✕
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Plain text"
+                title="Plain text toggle"
+                data-bind="click: togglePlainText, css: { active: isPlainText }"
+              >
+                TXT
+              </button>
+              <button
+                class="fe-button ghost fe-icon-btn"
+                type="button"
+                aria-label="Emoji"
+                title="Emoji"
+                data-bind="click: toggleEmoji"
+              >
+                😊
+              </button>
+            </div>
+            <div class="fe-rich" data-placeholder="Message"></div>
+            <div class="fe-emoji-picker" data-bind="visible: showEmoji">
+              <emoji-picker></emoji-picker>
+            </div>
+          </div>
+
+          <div class="fe-attachments-compose">
+            <input
+              type="file"
+              multiple
+              class="fe-attach-input"
+              style="display: none"
+              data-bind="event: { change: onFilesSelected }"
+            />
+            <button class="fe-button ghost" type="button" data-bind="click: triggerFilePicker">
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.18a1 1 0 0 1-1.41-1.41l8.49-8.48"
+                />
+              </svg>
+              <span>Attach</span>
+            </button>
+            <div
+              class="fe-dropzone"
+              data-bind="
               event: {
                 dragover: function(_, e){ e.preventDefault(); e.stopPropagation(); },
                 dragenter: function(_, e){ e.preventDefault(); e.stopPropagation(); },
                 drop: function(_, e){ e.preventDefault(); e.stopPropagation(); $root.composeModal.addFiles(Array.from(e.dataTransfer.files || [])); }
-              }">
-            Drag & drop files
-          </div>
-          <div class="fe-attachment-chips" data-bind="foreach: attachments">
-            <div class="fe-chip ghost fe-attachment-chip">
-              <span data-bind="text: name"></span>
-              <span class="fe-attachment-chip-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></span>
-              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove attachment" title="Remove" data-bind="click: $parent.removeAttachment">✕</button>
+              }"
+            >
+              Drag & drop files
+            </div>
+            <div class="fe-attachment-chips" data-bind="foreach: attachments">
+              <div class="fe-chip ghost fe-attachment-chip">
+                <span data-bind="text: name"></span>
+                <span
+                  class="fe-attachment-chip-size"
+                  data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"
+                ></span>
+                <button
+                  class="fe-button ghost fe-icon-btn"
+                  type="button"
+                  aria-label="Remove attachment"
+                  title="Remove"
+                  data-bind="click: $parent.removeAttachment"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="fe-alert error" data-bind="visible: attachmentError, text: attachmentError"></div>
+          <div
+            class="fe-alert error"
+            data-bind="visible: attachmentError, text: attachmentError"
+          ></div>
 
-        <div class="fe-alert error" data-bind="visible: error, text: error"></div>
-        <div class="fe-alert error" data-bind="visible: recipientError, text: recipientError"></div>
-        <div class="fe-alert success" data-bind="visible: success, text: success"></div>
+          <div class="fe-alert error" data-bind="visible: error, text: error"></div>
+          <div
+            class="fe-alert error"
+            data-bind="visible: recipientError, text: recipientError"
+          ></div>
+          <div class="fe-alert success" data-bind="visible: success, text: success"></div>
 
           <div class="fe-modal-actions">
             <button class="fe-button ghost" type="button" data-bind="click: close">Cancel</button>
             <button class="fe-button" type="button" data-bind="click: send, disable: sending">
-              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-              <span data-bind="text: sending() ? 'Sending…' : 'Send'" style="margin-left:6px;"></span>
+              <svg class="fe-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              <span
+                data-bind="text: sending() ? 'Sending…' : 'Send'"
+                style="margin-left: 6px"
+              ></span>
             </button>
           </div>
         </div>
       </div>
-
     </div>
 
-    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: pgpPassphraseModal.visible">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: pgpPassphraseModal.visible"
+    >
       <div class="fe-modal" data-bind="with: pgpPassphraseModal">
         <div class="fe-modal-header">
           <h2>Enter passphrase</h2>
           <button class="fe-button ghost" type="button" data-bind="click: cancel">Close</button>
         </div>
         <div class="fe-modal-body">
-          <div class="fe-settings-note">Needed to unlock key: <strong data-bind="text: keyName"></strong></div>
+          <div class="fe-settings-note">
+            Needed to unlock key: <strong data-bind="text: keyName"></strong>
+          </div>
           <input
             class="fe-input"
             type="password"
@@ -3924,14 +5316,29 @@
       </div>
     </div>
 
-    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'calendar' && calendarView.newEventModal()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'calendar' && calendarView.newEventModal()"
+    >
       <div class="fe-modal" data-bind="with: calendarView">
         <div class="fe-modal-header">
           <h2>New Event</h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" data-bind="click: function(){ newEventModal(false); }">X</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            data-bind="click: function(){ newEventModal(false); }"
+          >
+            X
+          </button>
         </div>
         <div class="fe-modal-body">
-          <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: newEventTitle" />
+          <input
+            class="fe-input"
+            type="text"
+            placeholder="Title"
+            data-bind="textInput: newEventTitle"
+          />
 
           <!-- Date picker -->
           <input class="fe-input" type="date" placeholder="Date" data-bind="value: newEventDate" />
@@ -3945,8 +5352,14 @@
                 placeholder="Start time"
                 data-bind="value: newEventStartTime, event: { focus: function() { showStartTimePicker(true); showEndTimePicker(false); } }"
               />
-              <div class="fe-time-dropdown" data-bind="visible: showStartTimePicker, foreach: timeOptions">
-                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectStartTime($data); }"></div>
+              <div
+                class="fe-time-dropdown"
+                data-bind="visible: showStartTimePicker, foreach: timeOptions"
+              >
+                <div
+                  class="fe-time-option"
+                  data-bind="text: display, click: function() { $parent.selectStartTime($data); }"
+                ></div>
               </div>
             </div>
 
@@ -3959,31 +5372,74 @@
                 placeholder="End time"
                 data-bind="value: newEventEndTime, event: { focus: function() { showEndTimePicker(true); showStartTimePicker(false); } }"
               />
-              <div class="fe-time-dropdown" data-bind="visible: showEndTimePicker, foreach: timeOptions">
-                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEndTime($data); }"></div>
+              <div
+                class="fe-time-dropdown"
+                data-bind="visible: showEndTimePicker, foreach: timeOptions"
+              >
+                <div
+                  class="fe-time-option"
+                  data-bind="text: display, click: function() { $parent.selectEndTime($data); }"
+                ></div>
               </div>
             </div>
           </div>
 
-          <input class="fe-input" type="number" min="0" step="5" placeholder="Notify before (minutes)" data-bind="value: newEventNotify" />
-          <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: newEventDescription"></textarea>
-          <div class="fe-alert error" data-bind="visible: error, text: error" style="display:none;"></div>
+          <input
+            class="fe-input"
+            type="number"
+            min="0"
+            step="5"
+            placeholder="Notify before (minutes)"
+            data-bind="value: newEventNotify"
+          />
+          <textarea
+            class="fe-textarea"
+            rows="3"
+            placeholder="Description"
+            data-bind="textInput: newEventDescription"
+          ></textarea>
+          <div
+            class="fe-alert error"
+            data-bind="visible: error, text: error"
+            style="display: none"
+          ></div>
         </div>
         <div class="fe-modal-actions">
-          <button class="fe-button ghost" type="button" data-bind="click: function(){ newEventModal(false); }">Cancel</button>
+          <button
+            class="fe-button ghost"
+            type="button"
+            data-bind="click: function(){ newEventModal(false); }"
+          >
+            Cancel
+          </button>
           <button class="fe-button" type="button" data-bind="click: saveNewEvent">Save</button>
         </div>
       </div>
     </div>
 
-    <div class="fe-modal-backdrop" style="display: none;" data-bind="visible: route() === 'calendar' && calendarView.editEventModal()">
+    <div
+      class="fe-modal-backdrop"
+      style="display: none"
+      data-bind="visible: route() === 'calendar' && calendarView.editEventModal()"
+    >
       <div class="fe-modal" data-bind="with: calendarView">
         <div class="fe-modal-header">
           <h2>Edit Event</h2>
-          <button class="fe-button ghost fe-icon-btn" type="button" data-bind="click: cancelEditEvent">X</button>
+          <button
+            class="fe-button ghost fe-icon-btn"
+            type="button"
+            data-bind="click: cancelEditEvent"
+          >
+            X
+          </button>
         </div>
         <div class="fe-modal-body">
-          <input class="fe-input" type="text" placeholder="Title" data-bind="textInput: editEventTitle" />
+          <input
+            class="fe-input"
+            type="text"
+            placeholder="Title"
+            data-bind="textInput: editEventTitle"
+          />
 
           <!-- Date picker -->
           <input class="fe-input" type="date" placeholder="Date" data-bind="value: editEventDate" />
@@ -3997,8 +5453,14 @@
                 placeholder="Start time"
                 data-bind="value: editEventStartTime, event: { focus: function() { showEditStartTimePicker(true); showEditEndTimePicker(false); } }"
               />
-              <div class="fe-time-dropdown" data-bind="visible: showEditStartTimePicker, foreach: timeOptions">
-                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEditStartTime($data); }"></div>
+              <div
+                class="fe-time-dropdown"
+                data-bind="visible: showEditStartTimePicker, foreach: timeOptions"
+              >
+                <div
+                  class="fe-time-option"
+                  data-bind="text: display, click: function() { $parent.selectEditStartTime($data); }"
+                ></div>
               </div>
             </div>
 
@@ -4011,29 +5473,72 @@
                 placeholder="End time"
                 data-bind="value: editEventEndTime, event: { focus: function() { showEditEndTimePicker(true); showEditStartTimePicker(false); } }"
               />
-              <div class="fe-time-dropdown" data-bind="visible: showEditEndTimePicker, foreach: timeOptions">
-                <div class="fe-time-option" data-bind="text: display, click: function() { $parent.selectEditEndTime($data); }"></div>
+              <div
+                class="fe-time-dropdown"
+                data-bind="visible: showEditEndTimePicker, foreach: timeOptions"
+              >
+                <div
+                  class="fe-time-option"
+                  data-bind="text: display, click: function() { $parent.selectEditEndTime($data); }"
+                ></div>
               </div>
             </div>
           </div>
 
-          <textarea class="fe-textarea" rows="3" placeholder="Description" data-bind="textInput: editEventDescription"></textarea>
-          <div class="fe-alert error" data-bind="visible: error, text: error" style="display:none;"></div>
+          <textarea
+            class="fe-textarea"
+            rows="3"
+            placeholder="Description"
+            data-bind="textInput: editEventDescription"
+          ></textarea>
+          <div
+            class="fe-alert error"
+            data-bind="visible: error, text: error"
+            style="display: none"
+          ></div>
 
           <!-- Delete Confirmation -->
-          <div class="fe-alert warning" data-bind="visible: showDeleteConfirm" style="display:none; margin-top: 1rem;">
-            <p style="margin: 0 0 0.5rem 0;"><strong>Are you sure you want to delete this event?</strong></p>
-            <div style="display: flex; gap: 0.5rem;">
-              <button class="fe-button fe-danger" type="button" data-bind="click: confirmDeleteEvent">Yes, Delete</button>
-              <button class="fe-button ghost" type="button" data-bind="click: cancelDeleteEvent">Cancel</button>
+          <div
+            class="fe-alert warning"
+            data-bind="visible: showDeleteConfirm"
+            style="display: none; margin-top: 1rem"
+          >
+            <p style="margin: 0 0 0.5rem 0">
+              <strong>Are you sure you want to delete this event?</strong>
+            </p>
+            <div style="display: flex; gap: 0.5rem">
+              <button
+                class="fe-button fe-danger"
+                type="button"
+                data-bind="click: confirmDeleteEvent"
+              >
+                Yes, Delete
+              </button>
+              <button class="fe-button ghost" type="button" data-bind="click: cancelDeleteEvent">
+                Cancel
+              </button>
             </div>
           </div>
         </div>
         <div class="fe-modal-actions">
-          <button class="fe-button fe-danger" type="button" data-bind="click: promptDeleteEvent, visible: !showDeleteConfirm()">Delete</button>
-          <div style="flex: 1;"></div>
-          <button class="fe-button ghost" type="button" data-bind="click: cancelEditEvent">Cancel</button>
-          <button class="fe-button" type="button" data-bind="click: updateEvent, visible: !showDeleteConfirm()">Update</button>
+          <button
+            class="fe-button fe-danger"
+            type="button"
+            data-bind="click: promptDeleteEvent, visible: !showDeleteConfirm()"
+          >
+            Delete
+          </button>
+          <div style="flex: 1"></div>
+          <button class="fe-button ghost" type="button" data-bind="click: cancelEditEvent">
+            Cancel
+          </button>
+          <button
+            class="fe-button"
+            type="button"
+            data-bind="click: updateEvent, visible: !showDeleteConfirm()"
+          >
+            Update
+          </button>
         </div>
       </div>
     </div>
@@ -4041,7 +5546,14 @@
     <div class="fe-toast-stack" data-bind="foreach: toasts.items">
       <div class="fe-toast" data-bind="css: type">
         <span data-bind="text: message"></span>
-        <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Dismiss" data-bind="click: $parent.toasts.dismiss.bind($parent.toasts, id)">✕</button>
+        <button
+          class="fe-button ghost fe-icon-btn"
+          type="button"
+          aria-label="Dismiss"
+          data-bind="click: $parent.toasts.dismiss.bind($parent.toasts, id)"
+        >
+          ✕
+        </button>
       </div>
     </div>
 

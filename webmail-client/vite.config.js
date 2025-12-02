@@ -9,9 +9,9 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: './index.html'
-      }
-    }
+        main: './index.html',
+      },
+    },
   },
   plugins: [
     VitePWA({
@@ -19,7 +19,7 @@ export default defineConfig({
       includeAssets: ['fonts/**/*', 'img/**/*', 'icons/**/*'],
       manifest: false,
       devOptions: {
-        enabled: true
+        enabled: true,
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,woff,woff2,png,svg,webp}'],
@@ -32,12 +32,12 @@ export default defineConfig({
               cacheName: 'api-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 300
-              }
-            }
-          }
-        ]
-      }
-    })
-  ]
+                maxAgeSeconds: 300,
+              },
+            },
+          },
+        ],
+      },
+    }),
+  ],
 });

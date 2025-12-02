@@ -4,7 +4,7 @@ function createStar(width, height, maxRadius, baseSpeed) {
     y: Math.random() * height,
     radius: Math.random() * (maxRadius - 0.2) + 0.2,
     opacity: Math.random(),
-    velocity: baseSpeed + Math.random() * baseSpeed
+    velocity: baseSpeed + Math.random() * baseSpeed,
   };
 }
 
@@ -30,7 +30,7 @@ export function createStarfield(canvasId, options = {}) {
   window.addEventListener('resize', resize);
 
   const stars = Array.from({ length: starCount }, () =>
-    createStar(width, height, maxRadius, baseSpeed)
+    createStar(width, height, maxRadius, baseSpeed),
   );
 
   function draw() {

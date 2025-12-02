@@ -7,9 +7,10 @@ import * as openpgp from 'openpgp';
 import PostalMime from 'postal-mime';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { db } from '../utils/db';
-import { SearchService, SEARCH_INDEX_KEY } from '../utils/search-service';
+import { SearchService, SavedSearchService, SEARCH_INDEX_KEY } from '../utils/search-service';
+import { IndexingWorker } from '../utils/indexing-worker';
 import { enqueueSync, replaySyncQueue } from '../utils/sync-queue';
-import { groupIntoConversations, deduplicateMessages, buildConversationTree, flattenConversationTree } from '../utils/threading';
+import { groupIntoConversations } from '../utils/threading';
 import { i18n } from '../utils/i18n';
 
 function bufferToDataUrl(attachment) {
@@ -110,7 +111,11 @@ function sanitizeAttachments(list) {
     // Skip inline images (attachments with contentId are typically inline)
     if (att.contentId || att.cid) return false;
     // Skip image/* content types without a meaningful filename (likely inline)
-    if (/^image\//i.test(mime) && (!name || name.toLowerCase() === 'attachment' || name.toLowerCase() === 'image')) return false;
+    if (
+      /^image\//i.test(mime) &&
+      (!name || name.toLowerCase() === 'attachment' || name.toLowerCase() === 'image')
+    )
+      return false;
     const size = att.size ?? (att.content ? att.content.length : 0);
     // Skip tiny placeholder attachments (e.g., "Version: 1" blocks)
     if (!att.href && size <= 24) return false;
@@ -147,7 +152,7 @@ function serializeAttachmentsForCache(list) {
       size: att.size,
       contentId: att.contentId,
       contentType: att.contentType,
-      href: hrefIsDataUrl ? undefined : att.href // drop data URLs before writing to IndexedDB
+      href: hrefIsDataUrl ? undefined : att.href, // drop data URLs before writing to IndexedDB
     };
   });
 }
@@ -200,9 +205,81 @@ export class MailboxView {
     this.bodyIndexingEnabled = ko.observable(includeBody);
     this.searchService = new SearchService({
       includeBody,
-      account: this.email() || 'default'
+      account: this.email() || 'default',
     });
+    this.savedSearchService = new SavedSearchService(this.email() || 'default');
     this.searchIndexLoaded = false;
+    this.indexingWorker = null;
+    this.isIndexing = ko.observable(false);
+    this.indexingProgress = ko.observable(0);
+    this.indexingFolder = ko.observable('');
+    this.savedSearches = ko.observableArray([]);
+    this.searchMode = ko.observable(Local.get('search_mode') || 'current');
+    this.crossFolderResults = ko.observableArray([]);
+    this.loadingCrossFolderSearch = ko.observable(false);
+
+    // Indexing policies
+    this.indexingPolicy = ko.observable(Local.get('indexing_policy') || 'CUSTOM');
+    this.maxIndexMessages = ko.observable(parseInt(Local.get('max_index_messages')) || 1000);
+    this.maxIndexAgeDays = ko.observable(parseInt(Local.get('max_index_age_days')) || 90);
+    this.autoCleanupEnabled = ko.observable(Local.get('auto_cleanup_enabled') !== '0');
+    this.storageWarningLevel = ko.observable('ok'); // 'ok', 'warning', 'critical'
+
+    // Subscribe to search mode changes
+    this.searchMode.subscribe((mode) => {
+      Local.set('search_mode', mode);
+      console.log('Search mode changed to:', mode);
+      // Trigger search if we have a query and switched to "all" mode
+      if (mode === 'all' && this.query()) {
+        this.performCrossFolderSearch(this.query());
+      } else if (mode === 'current') {
+        this.crossFolderResults([]);
+      }
+    });
+
+    // Subscribe to query changes to trigger cross-folder search
+    this.query.subscribe((q) => {
+      if (this.searchMode() === 'all' && q) {
+        // Debounce the search
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => {
+          this.performCrossFolderSearch(q);
+        }, 300);
+      } else {
+        this.crossFolderResults([]);
+      }
+    });
+
+    // Subscribe to indexing policy changes
+    this.indexingPolicy.subscribe((policy) => {
+      Local.set('indexing_policy', policy);
+      this.applyIndexingPolicy(policy);
+    });
+
+    this.maxIndexMessages.subscribe((value) => {
+      Local.set('max_index_messages', value.toString());
+    });
+
+    this.maxIndexAgeDays.subscribe((value) => {
+      Local.set('max_index_age_days', value.toString());
+    });
+
+    this.autoCleanupEnabled.subscribe((value) => {
+      Local.set('auto_cleanup_enabled', value ? '1' : '0');
+    });
+
+    // Subscribe to body indexing changes
+    this.bodyIndexingEnabled.subscribe((value) => {
+      Local.set('search_body_index', value ? '1' : '0');
+
+      // Recreate search service with new setting
+      this.searchService = new SearchService({
+        includeBody: value,
+        account: this.getAccountKey(),
+      });
+
+      console.log('Body indexing', value ? 'enabled' : 'disabled');
+    });
     this.toasts = null;
     this.storageUsed = ko.observable(0);
     this.storageTotal = ko.observable(0);
@@ -212,7 +289,9 @@ export class MailboxView {
     this.indexSize = ko.observable(0);
     this.syncPending = ko.observable(0);
     this.searchTimer = null;
-    this.sidebarOpen = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
+    this.sidebarOpen = ko.observable(
+      typeof window !== 'undefined' ? window.innerWidth > 820 : true,
+    );
     this.isDesktop = ko.observable(typeof window !== 'undefined' ? window.innerWidth > 820 : true);
     this.contextMenuVisible = ko.observable(false);
     this.contextMenuX = ko.observable(0);
@@ -264,17 +343,39 @@ export class MailboxView {
       { path: 'Archive', name: 'Archive', icon: 'archive' },
       { path: 'Spam', name: 'Spam', icon: 'spam' },
       { path: 'Trash', name: 'Trash', icon: 'trash' },
-      { path: 'Outbox', name: 'Outbox', icon: 'outbox' }
+      { path: 'Outbox', name: 'Outbox', icon: 'outbox' },
     ];
 
     this.filteredMessages = ko.pureComputed(() => {
       const folder = this.selectedFolder();
       const q = (this.query() || '').trim();
+      const mode = this.searchMode();
+
+      // Cross-folder search mode
+      if (mode === 'all' && q) {
+        // Return cross-folder results when in "all" mode with a query
+        return this.crossFolderResults();
+      }
+
+      // Default: current folder only
       let list = this.messages().filter((msg) => msg.folder === folder);
       if (this.unreadOnly()) list = list.filter((m) => m.is_unread);
       if (this.hasAttachmentsOnly()) list = list.filter((m) => m.has_attachment);
       if (!q) return list;
-      return this.searchService ? this.searchService.search(q, list) : list;
+
+      // Search within current folder's loaded messages
+      const results = this.searchService ? this.searchService.search(q, list) : list;
+
+      if (q && results.length === 0 && this.searchService && mode === 'current') {
+        console.log(
+          'No search results in current messages. Index has',
+          this.searchService.entries.length,
+          'entries',
+        );
+        console.log('Searching for:', q, 'in', list.length, 'messages');
+      }
+
+      return results;
     });
 
     // Computed conversations that respects filters
@@ -295,7 +396,7 @@ export class MailboxView {
     });
 
     this.availableMoveTargets = ko.pureComputed(() =>
-      this.folders().filter((f) => f.path !== this.selectedFolder())
+      this.folders().filter((f) => f.path !== this.selectedFolder()),
     );
     this.unreadCounts = {};
 
@@ -309,7 +410,7 @@ export class MailboxView {
       this.availableLabels([
         { id: 'label-important', name: 'Important' },
         { id: 'label-personal', name: 'Personal' },
-        { id: 'label-work', name: 'Work' }
+        { id: 'label-work', name: 'Work' },
       ]);
     });
 
@@ -337,8 +438,8 @@ export class MailboxView {
     this.unreadCounts[key] = typeof count === 'number' ? count : 0;
     this.folders(
       this.folders().map((f) =>
-        f.path?.toLowerCase() === key ? { ...f, count: this.unreadCounts[key] } : f
-      )
+        f.path?.toLowerCase() === key ? { ...f, count: this.unreadCounts[key] } : f,
+      ),
     );
   }
 
@@ -371,7 +472,6 @@ export class MailboxView {
 
   signOut = async () => {
     const currentEmail = this.email();
-    const allAccounts = Accounts.getAll();
 
     // Remove current account and its cache
     await Accounts.remove(currentEmail, true);
@@ -422,7 +522,7 @@ export class MailboxView {
     // Rebuild service and index with current messages
     this.searchService = new SearchService({
       includeBody: value,
-      account: this.getAccountKey()
+      account: this.getAccountKey(),
     });
     await this.rebuildSearchIndex(this.messages());
   }
@@ -443,21 +543,21 @@ export class MailboxView {
             {
               id: data.id,
               folder: data.folder,
-              flags: data.flags
+              flags: data.flags,
             },
-            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` },
           );
         } else if (action === 'move') {
           await Remote.request(
             'MessageUpdate',
             { folder: data.target },
-            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+            { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` },
           );
         } else if (action === 'delete') {
           await Remote.request(
             'MessageDelete',
             {},
-            { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` }
+            { method: 'DELETE', pathOverride: `/v1/messages/${encodeURIComponent(data.id)}` },
           );
         } else if (action === 'send') {
           await Remote.request('Emails', data.payload, { method: 'POST' });
@@ -546,6 +646,17 @@ export class MailboxView {
     const account = this.getAccountKey();
 
     try {
+      // Check storage quota on load
+      await this.checkStorageQuota();
+
+      // Auto-cleanup if needed
+      if (this.autoCleanupEnabled()) {
+        const quota = await this.checkStorageQuota();
+        if (quota.percentUsed >= 70) {
+          await this.performAutoCleanup();
+        }
+      }
+
       await this.refreshSyncCounts();
       await this.processSyncQueue();
       if (!this.searchIndexLoaded) {
@@ -577,8 +688,8 @@ export class MailboxView {
         mappedFolders.map((f) => ({
           ...f,
           account,
-          updatedAt: Date.now()
-        }))
+          updatedAt: Date.now(),
+        })),
       );
 
       if (!this.selectedFolder() && mappedFolders.length > 0) {
@@ -609,7 +720,6 @@ export class MailboxView {
 
     // Check cache first
     let cached = [];
-    let hasCache = false;
     try {
       cached = await db.messages
         .where('[account+folder]')
@@ -622,18 +732,16 @@ export class MailboxView {
           typeof a.dateMs === 'number'
             ? a.dateMs
             : typeof a.updatedAt === 'number'
-            ? a.updatedAt
-            : new Date(a.date || 0).getTime();
+              ? a.updatedAt
+              : new Date(a.date || 0).getTime();
         const dateB =
           typeof b.dateMs === 'number'
             ? b.dateMs
             : typeof b.updatedAt === 'number'
-            ? b.updatedAt
-            : new Date(b.date || 0).getTime();
+              ? b.updatedAt
+              : new Date(b.date || 0).getTime();
         return dateB - dateA;
       });
-
-      hasCache = cached?.length > 0;
     } catch (err) {
       console.warn('Failed to load cached messages', err);
     }
@@ -661,14 +769,13 @@ export class MailboxView {
     }
 
     try {
-
       const messagesRes = await Remote.request('MessageList', {
         folder: this.selectedFolder(),
         page: this.page(),
         limit: this.limit,
         ...(this.query() ? { search: this.query() } : {}),
         ...(this.unreadOnly() ? { is_unread: true } : {}),
-        ...(this.hasAttachmentsOnly() ? { has_attachment: true } : {})
+        ...(this.hasAttachmentsOnly() ? { has_attachment: true } : {}),
       });
 
       const list = messagesRes?.Result?.List || messagesRes?.Result || messagesRes || [];
@@ -700,16 +807,25 @@ export class MailboxView {
               m.preview ||
               m.textAsHtml ||
               m.text ||
-              (m.nodemailer?.textAsHtml || m.nodemailer?.text) ||
+              m.nodemailer?.textAsHtml ||
+              m.nodemailer?.text ||
               '',
             date: this.formatDate(rawDate || dateMs),
             flags: normalizeFlags(m.flags),
             is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
             has_attachment: Boolean(m.has_attachment || m.hasAttachments),
             bodyIndexed: false,
-            pending: false
+            pending: false,
           };
         });
+
+        const existingIndexIds =
+          this.searchIndexLoaded && this.searchService?.entries?.length
+            ? new Set(this.searchService.entries.map((e) => e.id))
+            : null;
+        const newMessagesForIndex = existingIndexIds
+          ? mappedList.filter((msg) => !existingIndexIds.has(msg.id))
+          : [];
 
         let queuedOutbox = [];
         if (this.selectedFolder().toUpperCase() === 'OUTBOX') {
@@ -723,7 +839,7 @@ export class MailboxView {
             dateMs: msg.dateMs || Date.now(),
             date: this.formatDate(msg.date || Date.now()),
             from: msg.from || this.email() || 'You',
-            is_unread: false
+            is_unread: false,
           }));
         }
 
@@ -732,7 +848,7 @@ export class MailboxView {
           .where('[account+folder]')
           .equals([account, this.selectedFolder()])
           .toArray();
-        const cachedById = new Map(cachedMessages.map(m => [m.id, m]));
+        const cachedById = new Map(cachedMessages.map((m) => [m.id, m]));
 
         this.messages([...queuedOutbox, ...mappedList]);
         // refresh cache for this folder with latest data
@@ -750,10 +866,14 @@ export class MailboxView {
               updatedAt: Date.now(),
               bodyIndexed: msg.bodyIndexed || false,
               // Preserve corrected has_attachment from cache if available
-              has_attachment: cached?.has_attachment !== undefined ? cached.has_attachment : msg.has_attachment
+              has_attachment:
+                cached?.has_attachment !== undefined ? cached.has_attachment : msg.has_attachment,
             };
-          })
+          }),
         );
+        if (newMessagesForIndex.length) {
+          await this.addNewMessagesToGlobalIndex(newMessagesForIndex);
+        }
         await this.rebuildSearchIndex(this.messages());
         await this.refreshIndexStats();
 
@@ -789,8 +909,8 @@ export class MailboxView {
               pending: true,
               date: this.formatDate(msg.date || Date.now()),
               from: msg.from || this.email() || 'You',
-              is_unread: false
-            }))
+              is_unread: false,
+            })),
           );
           await this.rebuildSearchIndex(this.messages());
           this.selectedMessage(this.messages()[0] || null);
@@ -849,7 +969,7 @@ export class MailboxView {
         console.log('Cache age:', Math.round(cacheAge / 1000), 'seconds');
         const hydratedBody = applyInlineAttachments(
           cachedContent.body,
-          cachedContent.attachments || []
+          cachedContent.attachments || [],
         );
         this.messageBody(sanitizeHtml(hydratedBody));
         this.attachments(sanitizeAttachments(cachedContent.attachments));
@@ -871,9 +991,9 @@ export class MailboxView {
         'Message',
         {
           id: message.id,
-          folder: message.folder
+          folder: message.folder,
         },
-        { pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+        { pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` },
       );
 
       const result = detailRes?.Result || detailRes;
@@ -890,7 +1010,7 @@ export class MailboxView {
         contentId: att.cid || att.contentId,
         href: att.url || bufferToDataUrl(att), // prefer API-provided URLs over data URLs
         contentType: att.contentType || att.mimeType || att.type,
-        content: att.url ? undefined : att.content
+        content: att.url ? undefined : att.content,
       }));
       console.log('Mapped attachments:', mappedAttachments);
       const attachments = sanitizeAttachments(mappedAttachments);
@@ -930,9 +1050,7 @@ export class MailboxView {
           }
         } else {
           this.pgpStatus('PGP encrypted – unable to decrypt with current keys');
-          this.messageBody(
-            `<pre style="white-space:pre-wrap">${sanitizeHtml(pgpPayload)}</pre>`
-          );
+          this.messageBody(`<pre style="white-space:pre-wrap">${sanitizeHtml(pgpPayload)}</pre>`);
         }
       } else {
         this.pgpStatus('');
@@ -946,7 +1064,7 @@ export class MailboxView {
             parsed.body,
             parsedAttachments,
             parsed.rawBody,
-            parsed.textContent
+            parsed.textContent,
           );
         } else {
           const inlinedBody = applyInlineAttachments(rawBody, attachments);
@@ -956,7 +1074,7 @@ export class MailboxView {
             inlinedBody,
             attachments,
             rawBody,
-            serverText || extractTextContent(inlinedBody || rawBody)
+            serverText || extractTextContent(inlinedBody || rawBody),
           );
         }
       }
@@ -967,7 +1085,6 @@ export class MailboxView {
         message.has_attachment = actualHasAttachment;
         // Update in IndexedDB cache
         try {
-          const account = this.getAccountKey();
           await db.messages.update(message.id, { has_attachment: actualHasAttachment });
         } catch (err) {
           console.warn('Failed to update has_attachment in cache', err);
@@ -992,7 +1109,7 @@ export class MailboxView {
         if (cachedBody?.body) {
           const hydratedBody = applyInlineAttachments(
             cachedBody.body,
-            cachedBody.attachments || []
+            cachedBody.attachments || [],
           );
           this.messageBody(sanitizeHtml(hydratedBody));
           this.attachments(sanitizeAttachments(cachedBody.attachments));
@@ -1032,27 +1149,36 @@ export class MailboxView {
     const payload = {
       id: message.id,
       folder: message.folder,
-      flags: Array.from(newFlags)
+      flags: Array.from(newFlags),
     };
 
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
     if (isOffline) {
-      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      await enqueueSync('updateFlags', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: payload,
+      });
       return;
     }
 
     try {
-      await Remote.request(
-        'Message',
-        payload,
-        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}` }
-      );
+      await Remote.request('Message', payload, {
+        method: 'PUT',
+        pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}`,
+      });
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      await enqueueSync('updateFlags', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: payload,
+      });
     }
   }
 
@@ -1078,28 +1204,37 @@ export class MailboxView {
     const payload = {
       id: message.id,
       folder: message.folder,
-      flags: Array.from(newFlags)
+      flags: Array.from(newFlags),
     };
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
     if (isOffline) {
-      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      await enqueueSync('updateFlags', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: payload,
+      });
       this.toasts?.show?.('Change queued (offline)', 'info');
       await this.refreshSyncCounts();
       return;
     }
 
     try {
-      await Remote.request(
-        'Message',
-        payload,
-        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}` }
-      );
+      await Remote.request('Message', payload, {
+        method: 'PUT',
+        pathOverride: `/v1/messages/${encodeURIComponent(message.id)}?folder=${encodeURIComponent(message.folder)}`,
+      });
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
         window.location.href = '/';
         return;
       }
-      await enqueueSync('updateFlags', { account, resource: 'message', folder: message.folder, data: payload });
+      await enqueueSync('updateFlags', {
+        account,
+        resource: 'message',
+        folder: message.folder,
+        data: payload,
+      });
       this.toasts?.show?.('Change queued to sync later', 'info');
       await this.refreshSyncCounts();
     }
@@ -1145,9 +1280,10 @@ export class MailboxView {
   async rebuildSearchIndex(list = []) {
     try {
       const account = this.getAccountKey();
+      const folder = this.selectedFolder() || '';
       const bodies = await db.messageBodies
         .where('[account+folder]')
-        .equals([account, this.selectedFolder()])
+        .equals([account, folder])
         .toArray();
       const bodyMap = new Map((bodies || []).map((b) => [b.id, b]));
       const enriched = (list || []).map((m) => {
@@ -1155,14 +1291,89 @@ export class MailboxView {
         return {
           ...m,
           body: body?.body,
-          textContent: body?.textContent
+          textContent: body?.textContent,
         };
       });
-      await this.searchService.reset(enriched);
+      const preserved =
+        this.searchIndexLoaded && this.searchService?.entries?.length
+          ? this.searchService.entries.filter((entry) => entry.folder !== folder)
+          : [];
+      const combined = preserved.length ? [...preserved, ...enriched] : enriched;
+      await this.searchService.reset(combined);
       this.indexCount(this.searchService.entries.length || 0);
       await this.refreshIndexStats();
     } catch (error) {
       console.warn('search index build failed', error);
+    }
+  }
+
+  async addNewMessagesToGlobalIndex(messages = []) {
+    if (
+      !this.searchIndexLoaded ||
+      !this.searchService ||
+      !Array.isArray(messages) ||
+      !messages.length
+    ) {
+      return;
+    }
+
+    try {
+      const account = this.getAccountKey();
+      const cutoffDate = Date.now() - this.maxIndexAgeDays() * 24 * 60 * 60 * 1000;
+      const maxEntries = this.maxIndexMessages();
+      const existingEntries = this.searchService.entries || [];
+      const existingIds = new Set(existingEntries.map((e) => e.id));
+      const remainingSlots = Math.max(0, maxEntries - existingEntries.length);
+      if (!remainingSlots) return;
+
+      let bodyMap = new Map();
+      if (this.searchService.includeBody) {
+        try {
+          const bodies = await db.messageBodies
+            .where('[account+folder]')
+            .equals([account, this.selectedFolder()])
+            .toArray();
+          bodyMap = new Map((bodies || []).map((b) => [b.id, b]));
+        } catch (err) {
+          console.warn('Failed to load cached bodies for indexing', err);
+        }
+      }
+
+      const toAdd = [];
+      for (const msg of messages) {
+        if (!msg?.id || existingIds.has(msg.id)) continue;
+
+        const dateMs =
+          typeof msg.dateMs === 'number'
+            ? msg.dateMs
+            : new Date(msg.date || msg.internalDate || msg.received_at || Date.now()).getTime();
+
+        if (!Number.isFinite(dateMs) || dateMs < cutoffDate) continue;
+        if (toAdd.length >= remainingSlots) break;
+
+        const body = bodyMap.get(msg.id);
+        toAdd.push({
+          id: msg.id,
+          folder: msg.folder,
+          subject: msg.subject || '',
+          from: msg.from || '',
+          to: msg.to || '',
+          cc: msg.cc || '',
+          snippet: msg.snippet || '',
+          date: msg.date || msg.dateMs || '',
+          body: body?.body,
+          textContent: body?.textContent,
+        });
+        existingIds.add(msg.id);
+      }
+
+      if (!toAdd.length) return;
+
+      await this.searchService.addAndPersist(toAdd);
+      this.indexCount(this.searchService.entries.length || 0);
+      this.indexSize(this.searchService.sizeBytes || 0);
+    } catch (error) {
+      console.warn('Failed to add new messages to global index', error);
     }
   }
 
@@ -1171,7 +1382,7 @@ export class MailboxView {
     renderedBody,
     attachments = [],
     rawBodyForCache,
-    textContent = ''
+    textContent = '',
   ) {
     if (!message?.id || !renderedBody) return;
     const account = this.getAccountKey();
@@ -1185,14 +1396,14 @@ export class MailboxView {
       body: bodyForCache,
       textContent: normalizedText,
       attachments: safeAttachments,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     };
 
     console.log(
       'Saving message content to cache - body length:',
       bodyForCache?.length,
       'attachments:',
-      safeAttachments.length
+      safeAttachments.length,
     );
 
     try {
@@ -1210,7 +1421,7 @@ export class MailboxView {
           body: bodyForCache,
           textContent: normalizedText,
           attachments: [],
-          updatedAt: Date.now()
+          updatedAt: Date.now(),
         });
       }
     }
@@ -1236,22 +1447,21 @@ export class MailboxView {
           contentId: att.contentId || undefined,
           href: bufferToDataUrl({
             content: att.content,
-            contentType: att.mimeType || att.contentType || 'application/octet-stream'
+            contentType: att.mimeType || att.contentType || 'application/octet-stream',
           }),
-          contentType: att.mimeType || att.contentType || 'application/octet-stream'
+          contentType: att.mimeType || att.contentType || 'application/octet-stream',
         })) || [];
       const merged = [...existingAttachments, ...attachments].filter(
-        (att) => !/\.asc$/i.test(att.filename || att.name || '')
+        (att) => !/\.asc$/i.test(att.filename || att.name || ''),
       );
       const body =
-        email.html ||
-        (email.text ? `<pre style="white-space:pre-wrap">${email.text}</pre>` : raw);
+        email.html || (email.text ? `<pre style="white-space:pre-wrap">${email.text}</pre>` : raw);
       const inlined = applyInlineAttachments(body, merged);
       return {
         body: inlined,
         rawBody: body,
         attachments: merged,
-        textContent: email.text || extractTextContent(body)
+        textContent: email.text || extractTextContent(body),
       };
     } catch (error) {
       console.warn('postal-mime parse failed', error);
@@ -1320,14 +1530,14 @@ export class MailboxView {
           if (!passphrase) continue;
           unlocked = await openpgp.decryptKey({
             privateKey,
-            passphrase
+            passphrase,
           });
           this.cachePassphrase(key.name, passphrase, false);
         }
         const message = await openpgp.readMessage({ armoredMessage: armored });
-        const { data, signatures } = await openpgp.decrypt({
+        const { data } = await openpgp.decrypt({
           message,
-          decryptionKeys: unlocked
+          decryptionKeys: unlocked,
         });
         // future: verify signatures if needed (signatures array)
         return data;
@@ -1339,13 +1549,14 @@ export class MailboxView {
     return null;
   }
 
-  async parseWithMailparser(rawString) {
+  async parseWithMailparser() {
     return null;
   }
 
   getArchiveFolderPath() {
     const archiveFolder = this.folders().find(
-      (f) => (f.path || '').toLowerCase() === 'archive' || (f.name || '').toLowerCase() === 'archive'
+      (f) =>
+        (f.path || '').toLowerCase() === 'archive' || (f.name || '').toLowerCase() === 'archive',
     );
     return archiveFolder?.path || 'Archive';
   }
@@ -1382,9 +1593,12 @@ export class MailboxView {
         account,
         resource: 'message',
         folder: message.folder,
-        data: { ...payload, permanent }
+        data: { ...payload, permanent },
       });
-      this.toasts?.show?.(permanent ? 'Permanent delete queued (offline)' : 'Delete queued (offline)', 'info');
+      this.toasts?.show?.(
+        permanent ? 'Permanent delete queued (offline)' : 'Delete queued (offline)',
+        'info',
+      );
       await this.refreshSyncCounts();
       return;
     }
@@ -1392,11 +1606,7 @@ export class MailboxView {
     try {
       let path = `/v1/messages/${encodeURIComponent(message.id)}`;
       if (permanent) path += '?permanent=1';
-      await Remote.request(
-        'MessageDelete',
-        {},
-        { method: 'DELETE', pathOverride: path }
-      );
+      await Remote.request('MessageDelete', {}, { method: 'DELETE', pathOverride: path });
       this.toasts?.show(permanent ? 'Message permanently deleted' : 'Message deleted', 'success');
     } catch (error) {
       if (error?.status === 401 || error?.status === 403) {
@@ -1407,11 +1617,11 @@ export class MailboxView {
         account,
         resource: 'message',
         folder: message.folder,
-        data: { ...payload, permanent }
+        data: { ...payload, permanent },
       });
       this.toasts?.show?.(
         permanent ? 'Permanent delete queued to sync later' : 'Delete queued to sync later',
-        'info'
+        'info',
       );
       await this.refreshSyncCounts();
     }
@@ -1445,7 +1655,12 @@ export class MailboxView {
     }
 
     if (isOffline) {
-      await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
+      await enqueueSync('move', {
+        account,
+        resource: 'message',
+        folder: originalFolder,
+        data: payload,
+      });
       this.toasts?.show?.('Move queued (offline)', 'info');
       await this.refreshSyncCounts();
       result.queued = true;
@@ -1456,7 +1671,7 @@ export class MailboxView {
       await Remote.request(
         'MessageUpdate',
         { folder: target },
-        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` }
+        { method: 'PUT', pathOverride: `/v1/messages/${encodeURIComponent(message.id)}` },
       );
       result.success = true;
     } catch (error) {
@@ -1464,7 +1679,12 @@ export class MailboxView {
         window.location.href = '/';
         return result;
       }
-      await enqueueSync('move', { account, resource: 'message', folder: originalFolder, data: payload });
+      await enqueueSync('move', {
+        account,
+        resource: 'message',
+        folder: originalFolder,
+        data: payload,
+      });
       this.toasts?.show?.('Move queued to sync later', 'info');
       await this.refreshSyncCounts();
       result.queued = true;
@@ -1599,7 +1819,7 @@ export class MailboxView {
     this.composeModal.subject(`Re: ${message.subject || ''}`);
     if (this.composeModal.editorView) {
       this.composeModal.editorView.commands.setContent(
-        `<p><br></p><blockquote>${this.messageBody()}</blockquote>`
+        `<p><br></p><blockquote>${this.messageBody()}</blockquote>`,
       );
     }
     if (this.composeModal.focusEditorStart) this.composeModal.focusEditorStart();
@@ -1611,9 +1831,7 @@ export class MailboxView {
     this.composeModal.open();
     this.composeModal.subject(`Fwd: ${message.subject || ''}`);
     if (this.composeModal.editorView) {
-      this.composeModal.editorView.commands.setContent(
-        `<p><br></p><hr>${this.messageBody()}`
-      );
+      this.composeModal.editorView.commands.setContent(`<p><br></p><hr>${this.messageBody()}`);
     }
     if (this.composeModal.focusEditorStart) this.composeModal.focusEditorStart();
     this.actionMenuOpen(false);
@@ -1624,11 +1842,9 @@ export class MailboxView {
     try {
       const aliasAuth = Local.get('alias_auth');
       if (!aliasAuth) throw new Error('Missing auth');
-      const url = `${config.apiBase}/v1/messages/${encodeURIComponent(
-        message.id
-      )}?eml=true`;
+      const url = `${config.apiBase}/v1/messages/${encodeURIComponent(message.id)}?eml=true`;
       const res = await fetch(url, {
-        headers: { Authorization: `Basic ${btoa(aliasAuth)}` }
+        headers: { Authorization: `Basic ${btoa(aliasAuth)}` },
       });
       if (!res.ok) throw new Error('Download failed');
       const text = await res.text();
@@ -1674,10 +1890,7 @@ export class MailboxView {
       const mapped = (list || [])
         .map((c) => {
           const email =
-            (c.emails && c.emails[0]?.value) ||
-            (c.Emails && c.Emails[0]?.value) ||
-            c.email ||
-            '';
+            (c.emails && c.emails[0]?.value) || (c.Emails && c.Emails[0]?.value) || c.email || '';
           if (!email) return null;
           return email;
         })
@@ -1706,7 +1919,7 @@ export class MailboxView {
         this.storageUsed(used);
         this.storageTotal(total);
       }
-    } catch (error) {
+    } catch {
       // non-blocking
     }
 
@@ -1717,7 +1930,7 @@ export class MailboxView {
         this.localUsage(usage);
         this.localQuota(quota);
       }
-    } catch (error) {
+    } catch {
       // ignore
     }
   }
@@ -1737,7 +1950,7 @@ export class MailboxView {
         f.Count ||
         0,
       specialUse: f.special_use || f.SpecialUse,
-      icon: f.icon
+      icon: f.icon,
     }));
 
     // Build a node map keyed by lowercase path
@@ -1751,7 +1964,7 @@ export class MailboxView {
           name: path.split('/').pop() || path,
           count: 0,
           icon: 'folder',
-          children: []
+          children: [],
         });
       }
       const node = nodes.get(key);
@@ -1784,7 +1997,10 @@ export class MailboxView {
       if (idx === -1) return; // root
       const parentPath = node.path.slice(0, idx);
       const parent = ensureNode(parentPath);
-      if (parent && !parent.children.find((c) => c.path.toLowerCase() === node.path.toLowerCase())) {
+      if (
+        parent &&
+        !parent.children.find((c) => c.path.toLowerCase() === node.path.toLowerCase())
+      ) {
         parent.children.push(node);
       }
     });
@@ -1819,7 +2035,7 @@ export class MailboxView {
       acc.push({
         ...node,
         level,
-        displayName: node.name
+        displayName: node.name,
       });
       sortChildren(node.children).forEach((child) => flatten(child, level + 1, acc));
       return acc;
@@ -1845,7 +2061,7 @@ export class MailboxView {
 
     this.toasts?.show(
       newValue ? 'Conversation view enabled' : 'Conversation view disabled',
-      'success'
+      'success',
     );
   }
 
@@ -1919,7 +2135,8 @@ export class MailboxView {
   getSelectedMessagesFromConversations() {
     const selected = this.getSelectedConversations();
     const seen = new Set();
-    return selected.flatMap((conv) => (conv.messages || []))
+    return selected
+      .flatMap((conv) => conv.messages || [])
       .filter((msg) => {
         if (!msg?.id || seen.has(msg.id)) return false;
         seen.add(msg.id);
@@ -1931,14 +2148,10 @@ export class MailboxView {
     const messages = this.getSelectedMessagesFromConversations();
     if (!messages.length) return;
     for (const msg of messages) {
-      // eslint-disable-next-line no-await-in-loop
       await this.archiveMessage(msg);
     }
     const count = this.selectedConversationCount();
-    this.toasts?.show?.(
-      `Archived ${count} conversation${count === 1 ? '' : 's'}`,
-      'success'
-    );
+    this.toasts?.show?.(`Archived ${count} conversation${count === 1 ? '' : 's'}`, 'success');
     this.clearSelectedConversations();
     this.bulkMoveOpen(false);
   }
@@ -1947,14 +2160,10 @@ export class MailboxView {
     const messages = this.getSelectedMessagesFromConversations();
     if (!messages.length) return;
     for (const msg of messages) {
-      // eslint-disable-next-line no-await-in-loop
       await this.deleteMessage(msg);
     }
     const count = this.selectedConversationCount();
-    this.toasts?.show?.(
-      `Deleted ${count} conversation${count === 1 ? '' : 's'}`,
-      'success'
-    );
+    this.toasts?.show?.(`Deleted ${count} conversation${count === 1 ? '' : 's'}`, 'success');
     this.clearSelectedConversations();
     this.bulkMoveOpen(false);
   }
@@ -1967,14 +2176,10 @@ export class MailboxView {
       return;
     }
     for (const msg of messages) {
-      // eslint-disable-next-line no-await-in-loop
       await this.moveMessage(msg, target, { stayInFolder: true });
     }
     const count = this.selectedConversationCount();
-    this.toasts?.show?.(
-      `Moved ${count} conversation${count === 1 ? '' : 's'}`,
-      'success'
-    );
+    this.toasts?.show?.(`Moved ${count} conversation${count === 1 ? '' : 's'}`, 'success');
     this.clearSelectedConversations();
     this.bulkMoveOpen(false);
   }
@@ -2024,7 +2229,7 @@ export class MailboxView {
       { name: 'Sent Mail', path: 'Sent Mail', count: 12 },
       { name: 'Drafts', path: 'Drafts', count: 1 },
       { name: 'Archive', path: 'Archive', count: 22 },
-      { name: 'Trash', path: 'Trash', count: 0 }
+      { name: 'Trash', path: 'Trash', count: 0 },
     ];
 
     const mockMessages = [
@@ -2034,7 +2239,7 @@ export class MailboxView {
         from: 'team@forwardemail.net',
         subject: 'Welcome to ForwardEmail Webmail',
         snippet: 'Thanks for trying the new experience. The full mailbox UI is on the way.',
-        date: 'Today'
+        date: 'Today',
       },
       {
         id: 'msg-2',
@@ -2042,7 +2247,7 @@ export class MailboxView {
         from: 'security@forwardemail.net',
         subject: 'Security tips',
         snippet: 'Remember to enable 2FA on your account and keep recovery codes safe.',
-        date: 'Yesterday'
+        date: 'Yesterday',
       },
       {
         id: 'msg-3',
@@ -2050,8 +2255,8 @@ export class MailboxView {
         from: 'status@forwardemail.net',
         subject: 'System status',
         snippet: 'All systems operational. Subscribe to status updates for alerts.',
-        date: '2d ago'
-      }
+        date: '2d ago',
+      },
     ];
 
     this.folders(this.buildFolderList(mockFolders));
@@ -2059,5 +2264,343 @@ export class MailboxView {
     this.messages(mockMessages);
     this.selectedMessage(mockMessages[0]);
     this.messageBody(sanitizeHtml(mockMessages[0]?.snippet || ''));
+  }
+
+  // Enhanced search indexing methods
+  async startBackgroundIndexing(folders = null) {
+    if (this.isIndexing()) {
+      console.warn('Indexing already in progress');
+      return;
+    }
+
+    const foldersToIndex = folders || this.folders().filter((f) => f.path);
+    if (!foldersToIndex.length) {
+      console.warn('No folders available for indexing. Folders:', this.folders());
+      this.toasts?.show?.('No folders to index. Please wait for folders to load.', 'info');
+      return;
+    }
+
+    console.log('Starting indexing for', foldersToIndex.length, 'folders');
+
+    this.loadPgpKeys();
+
+    this.indexingWorker = new IndexingWorker(this.searchService, {
+      includeBody: this.bodyIndexingEnabled(),
+      account: this.getAccountKey(),
+      pgpKeys: this.pgpKeys,
+      passphraseCache: this.passphraseCache,
+      maxMessages: this.maxIndexMessages(),
+      maxAgeDays: this.maxIndexAgeDays(),
+      onProgress: (event) => {
+        if (event.type === 'progress') {
+          this.indexingProgress(Math.round((event.indexed / event.total) * 100));
+          this.indexingFolder(event.folder || '');
+        } else if (event.type === 'complete') {
+          this.isIndexing(false);
+          this.indexingProgress(100);
+          this.indexCount(this.searchService.entries.length);
+          this.indexSize(this.searchService.sizeBytes);
+          this.toasts?.show?.(`Indexed ${event.indexed} messages`, 'success');
+        } else if (event.type === 'error') {
+          this.isIndexing(false);
+          this.toasts?.show?.(`Indexing error: ${event.error}`, 'error');
+        }
+      },
+    });
+
+    this.isIndexing(true);
+    this.indexingProgress(0);
+
+    try {
+      await this.indexingWorker.indexAllFolders(foldersToIndex);
+    } catch (error) {
+      console.error('Background indexing failed:', error);
+      this.toasts?.show?.('Indexing failed', 'error');
+      this.isIndexing(false);
+    }
+  }
+
+  stopBackgroundIndexing() {
+    if (this.indexingWorker) {
+      this.indexingWorker.stop();
+      this.isIndexing(false);
+      this.indexingProgress(0);
+      this.toasts?.show?.('Indexing stopped', 'info');
+    }
+  }
+
+  async rebuildFullSearchIndex() {
+    console.log('rebuildFullSearchIndex called');
+
+    // Clear existing index
+    await this.searchService.reset([]);
+    this.searchIndexLoaded = false;
+    this.indexCount(0);
+    this.indexSize(0);
+
+    // Clear cached bodies if body indexing is disabled
+    if (!this.bodyIndexingEnabled()) {
+      try {
+        await db.messageBodies.where('account').equals(this.getAccountKey()).delete();
+      } catch (err) {
+        console.warn('Failed to clear message bodies:', err);
+      }
+    }
+
+    // Start fresh indexing
+    await this.startBackgroundIndexing();
+  }
+
+  async loadSavedSearches() {
+    try {
+      const searches = await this.savedSearchService.getAll();
+      this.savedSearches(searches || []);
+    } catch (error) {
+      console.error('Failed to load saved searches:', error);
+    }
+  }
+
+  async saveCurrentSearch(name) {
+    const query = this.query();
+    if (!query || !name) {
+      this.toasts?.show?.('Please enter a search query and name', 'error');
+      return;
+    }
+
+    try {
+      await this.savedSearchService.save(name, query, {
+        folder: this.selectedFolder(),
+        crossFolder: false,
+      });
+      await this.loadSavedSearches();
+      this.toasts?.show?.(`Search "${name}" saved`, 'success');
+    } catch (error) {
+      console.error('Failed to save search:', error);
+      this.toasts?.show?.('Failed to save search', 'error');
+    }
+  }
+
+  async loadSavedSearch(savedSearch) {
+    if (!savedSearch) return;
+
+    this.query(savedSearch.query);
+    if (savedSearch.folder && !savedSearch.crossFolder) {
+      this.selectedFolder(savedSearch.folder);
+    }
+  }
+
+  async deleteSavedSearch(savedSearch) {
+    if (!savedSearch?.name) return;
+
+    try {
+      await this.savedSearchService.delete(savedSearch.name);
+      await this.loadSavedSearches();
+      this.toasts?.show?.(`Search "${savedSearch.name}" deleted`, 'success');
+    } catch (error) {
+      console.error('Failed to delete saved search:', error);
+      this.toasts?.show?.('Failed to delete search', 'error');
+    }
+  }
+
+  // Indexing policy presets
+  getIndexingPolicies() {
+    return {
+      LIGHT: {
+        maxMessages: 1000,
+        maxAgeDays: 30,
+        includeBody: false,
+        description: 'Fast & lightweight - indexes last 1,000 messages (30 days)',
+        estimatedStorage: '~50 MB',
+      },
+      STANDARD: {
+        maxMessages: 5000,
+        maxAgeDays: 90,
+        includeBody: false,
+        description: 'Balanced - indexes last 5,000 messages (90 days)',
+        estimatedStorage: '~200 MB',
+      },
+      POWER: {
+        maxMessages: 20000,
+        maxAgeDays: 365,
+        includeBody: true,
+        description: 'Maximum search - indexes last 20,000 messages (1 year) with body content',
+        estimatedStorage: '~1-2 GB',
+      },
+      CUSTOM: {
+        maxMessages: this.maxIndexMessages(),
+        maxAgeDays: this.maxIndexAgeDays(),
+        includeBody: this.bodyIndexingEnabled(),
+        description: 'Custom settings',
+        estimatedStorage: 'Varies',
+      },
+    };
+  }
+
+  applyIndexingPolicy(policy) {
+    const policies = this.getIndexingPolicies();
+    const selected = policies[policy];
+
+    if (!selected || policy === 'CUSTOM') return;
+
+    this.maxIndexMessages(selected.maxMessages);
+    this.maxIndexAgeDays(selected.maxAgeDays);
+
+    if (selected.includeBody !== this.bodyIndexingEnabled()) {
+      this.toggleBodyIndexing(selected.includeBody);
+    }
+
+    console.log('Applied indexing policy:', policy, selected);
+  }
+
+  async checkStorageQuota() {
+    if (!navigator.storage?.estimate) {
+      return { usage: 0, quota: 0, percentUsed: 0, available: 0, supported: false };
+    }
+
+    try {
+      const estimate = await navigator.storage.estimate();
+      const usage = estimate.usage || 0;
+      const quota = estimate.quota || 0;
+      const percentUsed = quota > 0 ? (usage / quota) * 100 : 0;
+
+      // Update warning level
+      if (percentUsed >= 95) {
+        this.storageWarningLevel('critical');
+      } else if (percentUsed >= 85) {
+        this.storageWarningLevel('critical');
+      } else if (percentUsed >= 70) {
+        this.storageWarningLevel('warning');
+      } else {
+        this.storageWarningLevel('ok');
+      }
+
+      return {
+        usage,
+        quota,
+        percentUsed,
+        available: quota - usage,
+        supported: true,
+      };
+    } catch (error) {
+      console.error('Failed to check storage quota:', error);
+      return { usage: 0, quota: 0, percentUsed: 0, available: 0, supported: false };
+    }
+  }
+
+  async performAutoCleanup() {
+    if (!this.autoCleanupEnabled()) {
+      console.log('Auto-cleanup disabled');
+      return;
+    }
+
+    const quota = await this.checkStorageQuota();
+
+    if (!quota.supported) {
+      console.log('Storage API not supported, skipping cleanup');
+      return;
+    }
+
+    if (quota.percentUsed < 70) {
+      console.log('Storage usage OK, no cleanup needed');
+      return;
+    }
+
+    console.log('Storage usage high, performing cleanup:', quota.percentUsed + '%');
+
+    try {
+      const account = this.getAccountKey();
+      const cutoffDate = Date.now() - this.maxIndexAgeDays() * 24 * 60 * 60 * 1000;
+
+      // Clean up old message bodies
+      const deletedBodies = await db.messageBodies
+        .where('account')
+        .equals(account)
+        .and((body) => body.updatedAt < cutoffDate)
+        .delete();
+
+      console.log('Cleaned up', deletedBodies, 'old message bodies');
+
+      // Clean up old cached messages beyond the limit
+      const allMessages = await db.messages
+        .where('account')
+        .equals(account)
+        .reverse()
+        .sortBy('date');
+
+      if (allMessages.length > this.maxIndexMessages()) {
+        const toDelete = allMessages.slice(this.maxIndexMessages());
+        await db.messages.bulkDelete(toDelete.map((m) => [account, m.id]));
+        console.log('Cleaned up', toDelete.length, 'old cached messages');
+      }
+
+      // Rebuild search index with current limits
+      await this.rebuildFullSearchIndex();
+
+      this.toasts?.show?.('Cleaned up old cached data to free storage', 'success');
+    } catch (error) {
+      console.error('Auto-cleanup failed:', error);
+      this.toasts?.show?.('Failed to clean up storage', 'error');
+    }
+  }
+
+  async performCrossFolderSearch(query) {
+    if (!query || !query.trim()) {
+      this.crossFolderResults([]);
+      return;
+    }
+
+    console.log('Performing cross-folder search for:', query);
+    this.loadingCrossFolderSearch(true);
+
+    try {
+      // Use searchAllFolders which returns results with folder info
+      const indexResults = await this.searchService.searchAllFolders(query, 100);
+
+      if (!indexResults || indexResults.length === 0) {
+        console.log('No results found in index');
+        this.crossFolderResults([]);
+        this.loadingCrossFolderSearch(false);
+        return;
+      }
+
+      console.log('Found', indexResults.length, 'results in index');
+
+      // Load message details from IndexedDB in the background
+      const account = this.getAccountKey();
+      const messageIds = indexResults.map((r) => r.id);
+
+      // Batch fetch from IndexedDB
+      const cachedMessages = await db.messages
+        .where('[account+id]')
+        .anyOf(messageIds.map((id) => [account, id]))
+        .toArray();
+
+      const messageMap = new Map(cachedMessages.map((m) => [m.id, m]));
+
+      // Merge index results with cached message data
+      const results = indexResults.map((indexResult) => {
+        const cached = messageMap.get(indexResult.id);
+        return (
+          cached || {
+            id: indexResult.id,
+            folder: indexResult.folder,
+            subject: indexResult.subject,
+            from: indexResult.from,
+            date: indexResult.date,
+            snippet: '...',
+            _searchOnly: true, // Mark as search-only result
+          }
+        );
+      });
+
+      this.crossFolderResults(results);
+      console.log('Cross-folder search complete:', results.length, 'results');
+    } catch (error) {
+      console.error('Cross-folder search failed:', error);
+      this.toasts?.show?.('Search failed', 'error');
+      this.crossFolderResults([]);
+    } finally {
+      this.loadingCrossFolderSearch(false);
+    }
   }
 }

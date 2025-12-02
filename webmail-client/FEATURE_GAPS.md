@@ -9,6 +9,7 @@ This document tracks the implementation status of features defined in `/webmail-
 ## ✅ Already Implemented
 
 ### Core Infrastructure
+
 - ✅ **HTML Sanitization** - DOMPurify v3.1.6 (`src/utils/sanitize.js`)
 - ✅ **IndexedDB with Dexie** - v4.2.1 with account-scoped primary keys (`src/utils/db.js`)
 - ✅ **Service Worker & PWA** - vite-plugin-pwa v0.17.0 with offline support
@@ -20,6 +21,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - ✅ **Contact Autocomplete** - In ComposeModal with contactOptions
 
 ### Email Features
+
 - ✅ **Basic Authentication** - Alias username + password
 - ✅ **Folder Management** - List, create, rename, delete folders
 - ✅ **Message List** - Display messages with pagination
@@ -34,6 +36,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - ✅ **Cache-First Strategy** - Display cached messages immediately
 
 ### UI/UX
+
 - ✅ **Light/Dark Mode** - Theme switching with system preference detection
 - ✅ **Responsive Design** - Mobile, tablet, desktop breakpoints
 - ✅ **Hamburger Menu** - Mobile navigation
@@ -42,6 +45,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - ✅ **Read/Unread Styling** - Visual distinction with font-weight and opacity
 
 ### Calendar & Contacts
+
 - ✅ **Basic Calendar** - Schedule-X v1.63.1 integration
 - ✅ **Event Creation** - Create, edit, delete events via custom modal
 - ✅ **Basic Contacts** - List, create, edit, delete contacts
@@ -53,17 +57,20 @@ This document tracks the implementation status of features defined in `/webmail-
 ## ⚠️ Partially Implemented / Needs Enhancement
 
 ### Composer
+
 - ⚠️ **Auto-save Drafts** - Need to verify if implemented and working correctly
 - ⚠️ **Email Signatures** - Settings UI exists but needs integration with composer
 - ⚠️ **Cc/Bcc Fields** - Implemented but could be enhanced with better autocomplete
 - ⚠️ **Attachment Reminder** - Need multi-language keyword detection (spec: 40+ languages)
 
 ### Search
+
 - ⚠️ **PGP Encrypted Message Search** - FlexSearch exists but needs to index decrypted content
 - ⚠️ **Search Operators** - Need `from:`, `to:`, `subject:`, `has:attachment`, `is:unread`, etc.
 - ⚠️ **Saved Searches** - Not implemented
 
 ### Calendar
+
 - ⚠️ **CalDAV Integration** - Basic Schedule-X but no sync with Forward Email API
 - ⚠️ **Recurring Events** - Not implemented
 - ⚠️ **Event Reminders/Notifications** - Removed from modal, needs re-implementation
@@ -71,6 +78,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - ⚠️ **.ics Import/Export** - Not implemented
 
 ### Contacts
+
 - ⚠️ **CardDAV Integration** - No sync with Forward Email API
 - ⚠️ **Contact Groups/Tags** - Not implemented
 - ⚠️ **Contact Photos** - Not implemented
@@ -79,6 +87,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - ⚠️ **Merge Duplicates** - Not implemented
 
 ### Security
+
 - ⚠️ **External Image Blocking** - Need "Ask before loading" with whitelist
 - ⚠️ **Tracking Pixel Detection** - Not implemented
 - ⚠️ **Link Safety Checks** - Not implemented (no SpamScanner integration yet)
@@ -88,6 +97,7 @@ This document tracks the implementation status of features defined in `/webmail-
 ## ❌ High Priority Missing Features
 
 ### Security & Privacy (Critical)
+
 1. **SpamScanner Integration** - Client-side phishing/malware detection
    - Phishing detection (IDN homograph, confusables, suspicious links)
    - Virus scanning (ClamAV integration via API)
@@ -110,6 +120,7 @@ This document tracks the implementation status of features defined in `/webmail-
    - Using libsodium.js (not yet installed)
 
 ### Core Email Features (MVP)
+
 5. **Keyboard Shortcuts**
    - Extensive shortcuts (c=compose, r=reply, a=reply-all, etc.)
    - Customizable shortcuts
@@ -151,6 +162,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Reorder folders (if supported by API)
 
 ### Composer Enhancements
+
 11. **Markdown Support**
     - Compose in Markdown with live preview
     - GitHub-flavored Markdown (GFM)
@@ -180,6 +192,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Display priority in message list
 
 ### UI/UX Improvements
+
 17. **Virtual Scrolling**
     - Render only visible messages in list
     - Use tanstack-virtual for performance
@@ -233,6 +246,7 @@ This document tracks the implementation status of features defined in `/webmail-
 ## ❌ Medium Priority Missing Features
 
 ### Advanced Email
+
 26. **Unified Inbox**
     - Aggregate messages from all accounts
     - Filter by account
@@ -276,6 +290,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Appear alongside regular folders
 
 ### Import/Export
+
 33. **Import Functionality**
     - Import .eml files
     - Import .mbox files
@@ -292,6 +307,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Export all data (GDPR compliance)
 
 ### Accessibility
+
 35. **WCAG 2.1 Level AA Compliance**
     - Semantic HTML with proper ARIA labels
     - Keyboard navigation for all functionality
@@ -308,6 +324,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Disable animations when enabled
 
 ### Internationalization
+
 38. **Multi-Language Support**
     - Full UI translation (40+ languages matching SnappyMail)
     - Language auto-detection from browser
@@ -326,6 +343,7 @@ This document tracks the implementation status of features defined in `/webmail-
 ## ❌ Lower Priority / Future Enhancements
 
 ### Advanced Features
+
 40. **LLM Integration**
     - User-configurable LLM endpoint (OpenAI, Anthropic, local)
     - Smart compose suggestions
@@ -369,6 +387,7 @@ This document tracks the implementation status of features defined in `/webmail-
     - Due dates and reminders
 
 ### Testing & Quality
+
 47. **Comprehensive Test Suite**
     - Unit tests (Vitest) - 80%+ coverage
     - Integration tests
@@ -390,6 +409,7 @@ This document tracks the implementation status of features defined in `/webmail-
 ## 📊 Priority Matrix
 
 ### Must Have (MVP) - Do First
+
 1. SpamScanner integration (security critical)
 2. External image blocking with whitelist
 3. Keyboard shortcuts
@@ -402,6 +422,7 @@ This document tracks the implementation status of features defined in `/webmail-
 10. Desktop notifications
 
 ### Should Have - Do Soon
+
 11. Filters & rules
 12. Labels/tags system
 13. Send later (scheduled sending)
@@ -414,6 +435,7 @@ This document tracks the implementation status of features defined in `/webmail-
 20. Unified inbox
 
 ### Could Have - Do Later
+
 21. Vacation responder
 22. Sieve filtering
 23. Mailto handler
@@ -426,6 +448,7 @@ This document tracks the implementation status of features defined in `/webmail-
 30. RTL support
 
 ### Won't Have (Yet) - Future
+
 31. LLM integration
 32. Grammar/spelling (LanguageTool)
 33. Tabs
@@ -438,27 +461,32 @@ This document tracks the implementation status of features defined in `/webmail-
 ## 🔧 Technical Debt & Improvements Needed
 
 ### Code Quality
+
 - **Vue Migration**: Currently using Knockout.js, spec recommends React/Vue/Svelte
   - Vue migration is partially done (components created but not in use)
   - Need to fully switch from `index.html` (Knockout) to Vue version
 
 ### Search Enhancements
+
 - **PGP Encrypted Message Indexing**: FlexSearch needs to index decrypted content
 - **Search Operators**: Implement `from:`, `to:`, `subject:`, `is:`, `has:`, `before:`, `after:`, `size:`
 - **Search-as-you-type**: Debounced search with instant results
 
 ### Attachment Improvements
+
 - **Thumbnail Generation**: For document previews
 - **Virus Scanning**: Via SpamScanner API before download
 - **Download All as ZIP**: Bulk download feature
 - **Dangerous File Type Warnings**: Based on 195+ executable extensions
 
 ### Contact Autocomplete
+
 - **Better Matching**: Fuzzy search, recently used, frequent contacts
 - **Contact Suggestions**: Auto-add from sent/received emails
 - **Visual Improvements**: Better dropdown styling with avatars
 
 ### Calendar Gaps
+
 - **Recurring Events**: Daily, weekly, monthly, yearly with exceptions
 - **Event Reminders**: Notification before event (5/10/15/30 min, 1 hour, 1 day)
 - **Meeting Invites**: Send .ics attachments, RSVP functionality
@@ -466,6 +494,7 @@ This document tracks the implementation status of features defined in `/webmail-
 - **Timezone Support**: Display in user timezone with conversion
 
 ### Settings Enhancements
+
 - **More Granular Controls**: Message read delay, check mail interval, messages per page
 - **Default Compose Format**: HTML vs Plain Text
 - **Auto-signature Based on Recipient**: Domain-based signature selection

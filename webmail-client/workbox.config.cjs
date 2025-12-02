@@ -11,9 +11,9 @@ module.exports = {
         cacheName: 'images',
         expiration: {
           maxEntries: 60,
-          maxAgeSeconds: 30 * 24 * 60 * 60
-        }
-      }
+          maxAgeSeconds: 30 * 24 * 60 * 60,
+        },
+      },
     },
     {
       urlPattern: /\/icons\/.*\.(?:png|svg|ico)$/i,
@@ -22,9 +22,9 @@ module.exports = {
         cacheName: 'app-icons',
         expiration: {
           maxEntries: 20,
-          maxAgeSeconds: 365 * 24 * 60 * 60
-        }
-      }
-    }
-  ]
+          maxAgeSeconds: 365 * 24 * 60 * 60,
+        },
+      },
+    },
+  ],
 };

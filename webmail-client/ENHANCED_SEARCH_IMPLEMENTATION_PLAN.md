@@ -11,6 +11,7 @@ This document outlines a comprehensive plan to enhance the webmail client's sear
 ### 1.1 Existing Implementation
 
 **Search Capabilities:**
+
 - ✅ Uses FlexSearch library (already included as dependency)
 - ✅ Indexes: `subject`, `from`, `snippet` fields only
 - ✅ Indexes only the current page of messages (20 messages at a time)
@@ -18,6 +19,7 @@ This document outlines a comprehensive plan to enhance the webmail client's sear
 - ✅ Basic Dexie (IndexedDB) caching for message metadata
 
 **Current Limitations:**
+
 - ❌ No full-text search of email body content
 - ❌ No cross-folder/mailbox search
 - ❌ No search across all pages (only current page)
@@ -26,27 +28,30 @@ This document outlines a comprehensive plan to enhance the webmail client's sear
 - ❌ No index management or storage monitoring
 
 **Current Storage:**
+
 ```javascript
 // db.js (Dexie schema)
-messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt'
+messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt';
 ```
 
 **Current Search Index:**
+
 ```javascript
 // MailboxView.js
 this.searchIndex = new FlexSearch.Document({
   document: {
     id: 'id',
-    index: ['subject', 'from', 'snippet']
+    index: ['subject', 'from', 'snippet'],
   },
   tokenize: 'forward',
-  context: true
+  context: true,
 });
 ```
 
 ### 1.2 Browser Storage Constraints
 
 **IndexedDB (via Dexie):**
+
 - **Quota**: Typically 50% of available disk space (varies by browser)
 - **Chrome/Edge**: ~60% of available disk space per origin
 - **Firefox**: ~50% of available disk space per origin
@@ -55,10 +60,12 @@ this.searchIndex = new FlexSearch.Document({
 - **Performance**: Excellent for large datasets (async, non-blocking)
 
 **Storage API Quotas:**
+
 - Can request `navigator.storage.estimate()` for current usage
 - Can request `navigator.storage.persist()` for persistent storage (prevents eviction)
 
 **Typical User Constraints:**
+
 - Average email: 10-50 KB (text only), 100-500 KB (with HTML/images)
 - 10,000 emails ≈ 100-500 MB raw storage
 - FlexSearch index ≈ 20-40% of original text size
@@ -79,7 +86,8 @@ db.version(2).stores({
   folders: 'path,name,count,specialUse,updatedAt',
 
   // Enhanced messages table
-  messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt,bodyIndexed',
+  messages:
+    'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt,bodyIndexed',
 
   // NEW: Full message bodies (optional, user-configurable)
   messageBodies: 'id,folder,body,textContent,updatedAt',
@@ -91,11 +99,12 @@ db.version(2).stores({
   indexMeta: 'key,value,updatedAt',
 
   // Existing
-  meta: 'key,value'
+  meta: 'key,value',
 });
 ```
 
 **Storage Keys for indexMeta:**
+
 - `index_version`: Current index version number
 - `index_size_bytes`: Approximate index size
 - `indexed_message_count`: Total messages indexed
@@ -116,20 +125,20 @@ export const SEARCH_PRESETS = {
   MINIMAL: {
     // Current implementation - fast, low storage
     fields: ['subject', 'from', 'snippet'],
-    estimatedSizeMultiplier: 0.15 // ~15% of text size
+    estimatedSizeMultiplier: 0.15, // ~15% of text size
   },
 
   STANDARD: {
     // Recommended default - balanced
     fields: ['subject', 'from', 'snippet', 'to', 'cc'],
-    estimatedSizeMultiplier: 0.20
+    estimatedSizeMultiplier: 0.2,
   },
 
   FULL: {
     // Maximum search capability - high storage
     fields: ['subject', 'from', 'to', 'cc', 'snippet', 'bodyText'],
-    estimatedSizeMultiplier: 0.35
-  }
+    estimatedSizeMultiplier: 0.35,
+  },
 };
 
 class SearchIndexService {
@@ -145,28 +154,28 @@ class SearchIndexService {
       document: {
         id: 'id',
         index: config.fields,
-        store: ['folder', 'subject', 'from', 'date'] // For result display
+        store: ['folder', 'subject', 'from', 'date'], // For result display
       },
       tokenize: 'forward',
       context: {
         resolution: 9,
         depth: 3,
-        bidirectional: true
+        bidirectional: true,
       },
       // Optimize for search quality
       encoder: 'balance',
       resolution: 9,
       // Enable stemming and case-insensitive
       stemmer: {
-        'en': {
+        en: {
           // Common email terms
-          'email': 'email',
-          'mail': 'mail',
-          'meeting': 'meet',
-          'invoice': 'invoice'
-        }
+          email: 'email',
+          mail: 'mail',
+          meeting: 'meet',
+          invoice: 'invoice',
+        },
       },
-      filter: (value) => value.toLowerCase()
+      filter: (value) => value.toLowerCase(),
     });
   }
 
@@ -179,7 +188,7 @@ class SearchIndexService {
       await db.searchIndex.put({
         key: `chunk_${i}`,
         data: exported[i],
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
     }
   }
@@ -229,7 +238,6 @@ class IndexingWorker {
       // Persist the index after completion
       await this.searchService.persistIndex();
       await this.updateIndexMetadata();
-
     } finally {
       this.isIndexing(false);
     }
@@ -244,7 +252,7 @@ class IndexingWorker {
       const messagesRes = await Remote.request('MessageList', {
         folder: folderPath,
         page: page,
-        limit: 100 // Larger batch for background indexing
+        limit: 100, // Larger batch for background indexing
       });
 
       const messages = messagesRes?.Result?.List || [];
@@ -256,7 +264,7 @@ class IndexingWorker {
       page++;
 
       // Small delay to prevent blocking UI
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 
@@ -272,7 +280,7 @@ class IndexingWorker {
         to: msg.To?.Email || msg.to || '',
         cc: msg.Cc?.Email || msg.cc || '',
         snippet: msg.snippet || msg.preview || '',
-        date: msg.date
+        date: msg.date,
       };
 
       // If full-text indexing enabled, fetch body
@@ -299,9 +307,10 @@ class IndexingWorker {
       }
 
       // Fetch from API
-      const detail = await Remote.request('Message',
+      const detail = await Remote.request(
+        'Message',
         { id: messageId, folder },
-        { pathOverride: `/v1/messages/${encodeURIComponent(messageId)}` }
+        { pathOverride: `/v1/messages/${encodeURIComponent(messageId)}` },
       );
 
       const result = detail?.Result || detail;
@@ -317,7 +326,7 @@ class IndexingWorker {
         folder,
         body: html || text,
         textContent,
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
 
       return textContent;
@@ -354,22 +363,22 @@ class IndexingWorker {
     await db.indexMeta.put({
       key: 'index_version',
       value: 2,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
     await db.indexMeta.put({
       key: 'indexed_message_count',
       value: this.indexed(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
     await db.indexMeta.put({
       key: 'index_size_bytes',
       value: estimate?.usage || 0,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
     await db.indexMeta.put({
       key: 'last_index_update',
       value: new Date().toISOString(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
   }
 }
@@ -462,9 +471,11 @@ Advanced Search Panel:
 ## 4. Implementation Phases
 
 ### Phase 1: Foundation (Week 1-2)
+
 **Goal**: Set up enhanced storage and index persistence
 
 **Tasks:**
+
 1. ✅ Update Dexie schema to v2 with new tables
 2. ✅ Create SearchIndexService class
 3. ✅ Implement index export/import functionality
@@ -472,11 +483,13 @@ Advanced Search Panel:
 5. ✅ Create migration from v1 to v2 schema
 
 **Deliverables:**
+
 - `utils/db.js` - Updated schema
 - `utils/searchService.js` - Search service
 - `utils/storageMonitor.js` - Storage tracking
 
 **Testing:**
+
 - Verify index persists across sessions
 - Test with 1K, 5K, 10K messages
 - Measure storage usage accurately
@@ -484,9 +497,11 @@ Advanced Search Panel:
 ---
 
 ### Phase 2: Background Indexing (Week 3-4)
+
 **Goal**: Implement progressive, background indexing
 
 **Tasks:**
+
 1. ✅ Create IndexingWorker class
 2. ✅ Implement batch processing (50-100 msgs/batch)
 3. ✅ Add pause/resume capability
@@ -495,10 +510,12 @@ Advanced Search Panel:
 6. ✅ Add error handling and retry logic
 
 **Deliverables:**
+
 - `utils/indexingWorker.js` - Background worker
 - `components/IndexingProgress.js` - Progress UI
 
 **Testing:**
+
 - Test with slow network conditions
 - Verify no UI blocking during indexing
 - Test pause/resume functionality
@@ -507,9 +524,11 @@ Advanced Search Panel:
 ---
 
 ### Phase 3: Search Enhancement (Week 5-6)
+
 **Goal**: Enhance search UI and cross-folder search
 
 **Tasks:**
+
 1. ✅ Update search bar with folder selector
 2. ✅ Implement cross-folder search
 3. ✅ Add search result highlighting
@@ -518,11 +537,13 @@ Advanced Search Panel:
 6. ✅ Optimize search result rendering
 
 **Deliverables:**
+
 - Updated `MailboxView.js` with enhanced search
 - New `SearchResultsView.js` component
 - Search history persistence
 
 **Testing:**
+
 - Test search across all folders
 - Verify result relevance ranking
 - Test with complex queries
@@ -531,9 +552,11 @@ Advanced Search Panel:
 ---
 
 ### Phase 4: Settings & Management (Week 7-8)
+
 **Goal**: User-configurable settings and index management
 
 **Tasks:**
+
 1. ✅ Create Search Settings panel in Settings modal
 2. ✅ Implement indexing level presets (Minimal/Standard/Full)
 3. ✅ Add storage usage visualization
@@ -543,11 +566,13 @@ Advanced Search Panel:
 7. ✅ Add "Clear Index" with confirmation
 
 **Deliverables:**
+
 - Updated `SettingsModal.js` with search section
 - `components/StorageUsageChart.js`
 - Index management utilities
 
 **Testing:**
+
 - Test all preset configurations
 - Verify storage cleanup works correctly
 - Test index export/import
@@ -556,9 +581,11 @@ Advanced Search Panel:
 ---
 
 ### Phase 5: Full-Text Body Search (Week 9-10)
+
 **Goal**: Optional full-text search of email bodies
 
 **Tasks:**
+
 1. ✅ Implement HTML → text extraction
 2. ✅ Create messageBodies table caching
 3. ✅ Add body text to search index (opt-in)
@@ -567,11 +594,13 @@ Advanced Search Panel:
 6. ✅ Optimize body text storage (compression?)
 
 **Deliverables:**
+
 - Body text extraction utility
 - Enhanced search with body content
 - Result snippet generation
 
 **Testing:**
+
 - Test HTML parsing accuracy
 - Verify search relevance with body content
 - Test storage impact (measure real usage)
@@ -580,9 +609,11 @@ Advanced Search Panel:
 ---
 
 ### Phase 6: Performance Optimization (Week 11-12)
+
 **Goal**: Optimize for production use
 
 **Tasks:**
+
 1. ✅ Implement search result pagination
 2. ✅ Add virtual scrolling for large results
 3. ✅ Optimize FlexSearch config for best performance
@@ -592,11 +623,13 @@ Advanced Search Panel:
 7. ✅ Add telemetry for search performance
 
 **Deliverables:**
+
 - Optimized search performance (<100ms typical)
 - Reduced memory footprint
 - Performance monitoring dashboard
 
 **Testing:**
+
 - Benchmark with 10K, 50K, 100K messages
 - Test on low-end devices
 - Measure search latency
@@ -609,18 +642,21 @@ Advanced Search Panel:
 ### 5.1 Performance Optimization
 
 **Search Performance:**
+
 - Target: <100ms for typical queries
 - FlexSearch is highly optimized (C-based, compiled to WASM in some builds)
 - Use result pagination (show 50 results, load more on scroll)
 - Implement query debouncing (300ms delay)
 
 **Indexing Performance:**
+
 - Use requestIdleCallback() for background indexing
 - Batch operations (50-100 messages per batch)
 - Implement progressive enhancement (index critical fields first)
 - Pause indexing during user interaction
 
 **Memory Management:**
+
 - FlexSearch keeps index in memory for speed
 - For very large indexes (>50K messages), consider:
   - Lazy loading index chunks
@@ -630,6 +666,7 @@ Advanced Search Panel:
 ### 5.2 Storage Management
 
 **Quota Handling:**
+
 ```javascript
 async function checkStorageQuota() {
   if (!navigator.storage?.estimate) {
@@ -641,7 +678,7 @@ async function checkStorageQuota() {
     usage: estimate.usage,
     quota: estimate.quota,
     percentUsed: (estimate.usage / estimate.quota) * 100,
-    available: estimate.quota - estimate.usage
+    available: estimate.quota - estimate.usage,
   };
 }
 
@@ -656,13 +693,14 @@ async function requestPersistentStorage() {
 ```
 
 **Auto-Cleanup Strategy:**
+
 ```javascript
 class StorageManager {
   async cleanup(options = {}) {
     const {
       maxAge = 90 * 24 * 60 * 60 * 1000, // 90 days
       maxSize = 500 * 1024 * 1024, // 500 MB
-      keepRecent = 1000 // Always keep 1000 most recent
+      keepRecent = 1000, // Always keep 1000 most recent
     } = options;
 
     const now = Date.now();
@@ -688,6 +726,7 @@ class StorageManager {
 ### 5.3 Search Relevance
 
 **Result Ranking:**
+
 ```javascript
 // Enhanced search with relevance scoring
 async search(query, options = {}) {
@@ -738,6 +777,7 @@ calculateScore(doc, field, query) {
 ### 5.4 Incremental Updates
 
 **Real-time Index Updates:**
+
 ```javascript
 class IndexUpdateService {
   async onNewMessage(message) {
@@ -749,7 +789,7 @@ class IndexUpdateService {
     await db.indexMeta.put({
       key: 'indexed_message_count',
       value: (meta?.value || 0) + 1,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
   }
 
@@ -792,11 +832,12 @@ export async function migrateToV2() {
   const newDb = new Dexie('webmail-cache');
   newDb.version(2).stores({
     folders: 'path,name,count,specialUse,updatedAt',
-    messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt,bodyIndexed',
+    messages:
+      'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt,bodyIndexed',
     messageBodies: 'id,folder,body,textContent,updatedAt',
     searchIndex: 'key,data,updatedAt',
     indexMeta: 'key,value,updatedAt',
-    meta: 'key,value'
+    meta: 'key,value',
   });
 
   await newDb.open();
@@ -823,6 +864,7 @@ export async function migrateToV2() {
 ### 7.1 Unit Tests
 
 **Key Test Cases:**
+
 - ✅ FlexSearch index creation and persistence
 - ✅ Storage quota monitoring accuracy
 - ✅ Search result relevance ranking
@@ -833,6 +875,7 @@ export async function migrateToV2() {
 ### 7.2 Integration Tests
 
 **Key Scenarios:**
+
 - ✅ Full indexing workflow (10K messages)
 - ✅ Cross-folder search accuracy
 - ✅ Real-time index updates on new mail
@@ -842,12 +885,14 @@ export async function migrateToV2() {
 ### 7.3 Performance Tests
 
 **Benchmarks:**
+
 - Index build time: <5 min for 10K messages
 - Search latency: <100ms for typical query
 - Memory usage: <200MB for 10K message index
 - Storage usage: Match estimates (±10%)
 
 **Load Testing:**
+
 - 1K, 5K, 10K, 50K, 100K messages
 - Concurrent searches
 - Background indexing during active use
@@ -855,6 +900,7 @@ export async function migrateToV2() {
 ### 7.4 User Acceptance Testing
 
 **Key Flows:**
+
 - First-time setup and initial indexing
 - Changing indexing level (minimal → full)
 - Search across all folders
@@ -870,6 +916,7 @@ export async function migrateToV2() {
 **Risk**: User runs out of IndexedDB quota
 
 **Mitigation**:
+
 - Implement proactive monitoring (warn at 80%, 90%)
 - Auto-cleanup of old cached bodies
 - Allow user to choose storage limits
@@ -881,6 +928,7 @@ export async function migrateToV2() {
 **Risk**: Search becomes slow with large indexes
 
 **Mitigation**:
+
 - Implement result pagination
 - Use virtual scrolling for results
 - Lazy load index chunks for huge mailboxes
@@ -892,6 +940,7 @@ export async function migrateToV2() {
 **Risk**: Background indexing drains battery
 
 **Mitigation**:
+
 - Use requestIdleCallback for indexing
 - Pause indexing on battery-powered devices
 - Implement "index while charging" option
@@ -903,6 +952,7 @@ export async function migrateToV2() {
 **Risk**: Index out of sync with server
 
 **Mitigation**:
+
 - Implement incremental sync mechanism
 - Add "last synced" timestamp per folder
 - Periodic full index rebuild (weekly/monthly)
@@ -940,6 +990,7 @@ export async function migrateToV2() {
 ### Phase 7+ (Post-MVP)
 
 **Advanced Features:**
+
 1. **Machine Learning Relevance**: Use TF-IDF or similar for better ranking
 2. **Fuzzy Search**: Typo tolerance (e.g., "meetting" → "meeting")
 3. **Natural Language Queries**: "emails from John last week"
@@ -952,6 +1003,7 @@ export async function migrateToV2() {
 10. **Server-side Sync**: Hybrid approach (client + server search)
 
 **Infrastructure:**
+
 1. **Web Worker**: Move indexing to dedicated worker thread
 2. **WASM**: Use WebAssembly build of FlexSearch for 2-3x speed boost
 3. **Compression**: Use LZ-string to compress cached bodies (50% size reduction)
@@ -962,12 +1014,14 @@ export async function migrateToV2() {
 ## 11. Implementation Checklist
 
 ### Pre-Implementation
+
 - [ ] Review plan with team
 - [ ] Get approval for storage quotas
 - [ ] Set up performance monitoring
 - [ ] Create test datasets (1K, 10K, 50K messages)
 
 ### Phase 1: Foundation
+
 - [ ] Update Dexie schema to v2
 - [ ] Create SearchIndexService
 - [ ] Implement index persistence
@@ -975,6 +1029,7 @@ export async function migrateToV2() {
 - [ ] Write unit tests
 
 ### Phase 2: Background Indexing
+
 - [ ] Create IndexingWorker
 - [ ] Implement batch processing
 - [ ] Add pause/resume
@@ -982,6 +1037,7 @@ export async function migrateToV2() {
 - [ ] Test on large mailboxes
 
 ### Phase 3: Search Enhancement
+
 - [ ] Update search UI
 - [ ] Implement cross-folder search
 - [ ] Add result highlighting
@@ -989,6 +1045,7 @@ export async function migrateToV2() {
 - [ ] Test search accuracy
 
 ### Phase 4: Settings & Management
+
 - [ ] Create settings panel
 - [ ] Add storage usage chart
 - [ ] Implement index rebuild
@@ -996,6 +1053,7 @@ export async function migrateToV2() {
 - [ ] Test quota scenarios
 
 ### Phase 5: Full-Text Body Search
+
 - [ ] Implement text extraction
 - [ ] Create body caching
 - [ ] Add body to index (opt-in)
@@ -1003,6 +1061,7 @@ export async function migrateToV2() {
 - [ ] Measure storage impact
 
 ### Phase 6: Performance Optimization
+
 - [ ] Optimize search latency
 - [ ] Add result pagination
 - [ ] Implement virtual scrolling
@@ -1010,6 +1069,7 @@ export async function migrateToV2() {
 - [ ] Profile memory usage
 
 ### Post-Implementation
+
 - [ ] User documentation
 - [ ] Migration guide (v1 → v2)
 - [ ] Performance monitoring setup
@@ -1022,17 +1082,20 @@ export async function migrateToV2() {
 ## 12. Resource Requirements
 
 ### Development Time
+
 - **Total Estimated**: 10-12 weeks (2.5-3 months)
 - **Developers**: 1-2 full-time engineers
 - **Designer**: 0.5 FTE for UI/UX
 - **QA**: 0.5 FTE for testing
 
 ### Infrastructure
+
 - **Browser Support**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
 - **Dependencies**: FlexSearch, Dexie (already included)
 - **Additional Libraries**: None required (using existing)
 
 ### Documentation
+
 - [ ] User guide for search settings
 - [ ] Migration FAQ
 - [ ] Storage management best practices
@@ -1056,6 +1119,7 @@ This implementation plan provides a comprehensive roadmap for enhancing the webm
 The phased approach allows for incremental delivery and testing, minimizing risk while delivering value early. The architecture is designed for scalability, performance, and user control.
 
 **Recommended Next Steps:**
+
 1. Review and approve this plan
 2. Create detailed technical specifications for Phase 1
 3. Set up test environment with sample datasets

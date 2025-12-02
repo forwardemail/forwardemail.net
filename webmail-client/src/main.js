@@ -29,7 +29,7 @@ const viewModel = {
   settingsModal: new SettingsModal(),
   pgpPassphraseModal: new PassphraseModal(),
   calendarView: new CalendarView(),
-  contactsView: new ContactsView()
+  contactsView: new ContactsView(),
 };
 
 // Forward declaration for handleHashActions
@@ -45,13 +45,21 @@ viewModel.navigate = (path) => {
   }
 
   // Check auth for protected routes
-  const targetRoute = path.startsWith('/mailbox/settings') ? 'settings' :
-                      path.startsWith('/mailbox') ? 'mailbox' :
-                      path.startsWith('/calendar') ? 'calendar' :
-                      path.startsWith('/contacts') ? 'contacts' : 'login';
+  const targetRoute = path.startsWith('/mailbox/settings')
+    ? 'settings'
+    : path.startsWith('/mailbox')
+      ? 'mailbox'
+      : path.startsWith('/calendar')
+        ? 'calendar'
+        : path.startsWith('/contacts')
+          ? 'contacts'
+          : 'login';
 
   if (
-    (targetRoute === 'mailbox' || targetRoute === 'settings' || targetRoute === 'calendar' || targetRoute === 'contacts') &&
+    (targetRoute === 'mailbox' ||
+      targetRoute === 'settings' ||
+      targetRoute === 'calendar' ||
+      targetRoute === 'contacts') &&
     !Local.get('authToken') &&
     !Local.get('alias_auth')
   ) {
@@ -93,11 +101,15 @@ viewModel.settingsModal.indexCount = viewModel.mailboxView.indexCount;
 viewModel.settingsModal.indexSize = viewModel.mailboxView.indexSize;
 viewModel.settingsModal.syncPending = viewModel.mailboxView.syncPending;
 viewModel.settingsModal.bodyIndexingEnabled = viewModel.mailboxView.bodyIndexingEnabled;
-viewModel.settingsModal.rebuildIndex = viewModel.mailboxView.rebuildSearchFromCache.bind(
-  viewModel.mailboxView
-);
+viewModel.settingsModal.rebuildIndex = viewModel.mailboxView.rebuildFullSearchIndex
+  ? viewModel.mailboxView.rebuildFullSearchIndex.bind(viewModel.mailboxView)
+  : viewModel.mailboxView.rebuildSearchFromCache
+    ? viewModel.mailboxView.rebuildSearchFromCache.bind(viewModel.mailboxView)
+    : async () => {
+        console.warn('rebuildIndex not available');
+      };
 viewModel.settingsModal.toggleBodyIndexing = viewModel.mailboxView.toggleBodyIndexing.bind(
-  viewModel.mailboxView
+  viewModel.mailboxView,
 );
 viewModel.settingsModal.toasts = viewModel.toasts;
 
@@ -322,20 +334,6 @@ function initKeyboardShortcuts() {
 function showShortcutsHelp() {
   const shortcuts = showKeyboardShortcutsHelp();
 
-  // Create modal HTML
-  let html = '<div class="fe-shortcuts-help"><h2>Keyboard Shortcuts</h2>';
-
-  for (const [category, items] of Object.entries(shortcuts)) {
-    if (items.length === 0) continue;
-    html += `<h3>${category}</h3><table class="fe-shortcuts-table">`;
-    items.forEach(item => {
-      html += `<tr><td class="fe-shortcut-key">${item.key}</td><td>${item.label}</td></tr>`;
-    });
-    html += '</table>';
-  }
-
-  html += '</div>';
-
   // Show in modal (you'll need to create a modal for this)
   viewModel.mailboxView.toasts?.show?.('Press ? to see keyboard shortcuts', 'info');
   console.log('Keyboard shortcuts:', shortcuts);
@@ -357,7 +355,7 @@ function initStarfield() {
   const layers = [
     { id: 'stars', starCount: 180, speed: 0.15, maxRadius: 1.2 },
     { id: 'stars2', starCount: 120, speed: 0.08, maxRadius: 1.4 },
-    { id: 'stars3', starCount: 80, speed: 0.04, maxRadius: 1.6 }
+    { id: 'stars3', starCount: 80, speed: 0.04, maxRadius: 1.6 },
   ];
 
   const disposers = layers.map((layer) => createStarfield(layer.id, layer));
@@ -388,7 +386,7 @@ async function bootstrap() {
 
   document.body.classList.toggle(
     'mailbox-mode',
-    route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts'
+    route === 'mailbox' || route === 'settings' || route === 'calendar' || route === 'contacts',
   );
 
   viewModel.settingsModal.applyTheme = applyTheme;
@@ -426,7 +424,7 @@ window.addEventListener('popstate', () => {
 });
 
 // Handle hash-based compose deep link (e.g., /mailbox#compose=user@example.com)
-handleHashActions = function() {
+handleHashActions = function () {
   const hash = window.location.hash || '';
   if (hash.startsWith('#compose=')) {
     const addr = decodeURIComponent(hash.replace('#compose=', ''));
@@ -474,7 +472,7 @@ handleHashActions = function() {
   }
   // clear hash to avoid repeat
   history.replaceState({}, '', window.location.pathname);
-}
+};
 
 window.addEventListener('hashchange', handleHashActions);
 handleHashActions();

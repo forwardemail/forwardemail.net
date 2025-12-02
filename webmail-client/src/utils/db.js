@@ -8,19 +8,17 @@ export const CURRENT_SCHEMA_VERSION = 4;
 // v1: basic folders/messages/meta
 db.version(1).stores({
   folders: 'path,name,count,specialUse,updatedAt',
-  messages:
-    'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt',
-  meta: 'key,value'
+  messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt',
+  meta: 'key,value',
 });
 
 // v2: split message bodies/attachments into dedicated store
 db.version(2)
   .stores({
     folders: 'path,name,count,specialUse,updatedAt',
-    messages:
-      'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt',
+    messages: 'id,folder,from,subject,snippet,date,flags,is_unread,has_attachment,modseq,updatedAt',
     meta: 'key,value',
-    messageContent: 'id,updatedAt'
+    messageContent: 'id,updatedAt',
   })
   .upgrade(async (tx) => {
     const messages = tx.table('messages');
@@ -46,7 +44,7 @@ db.version(3)
     searchIndex: 'key,account,[account+key],updatedAt',
     indexMeta: 'key,account,[account+key],updatedAt',
     syncQueue: '++queueId,account,action,resource,folder,status,createdAt',
-    meta: 'key,updatedAt'
+    meta: 'key,updatedAt',
   })
   .upgrade(async (tx) => {
     const defaultAccount = 'default';
@@ -59,9 +57,7 @@ db.version(3)
         folder.account = folder.account || defaultAccount;
         folder.parentPath = folder.parentPath || '';
         folder.unread_count =
-          typeof folder.unread_count === 'number'
-            ? folder.unread_count
-            : folder.count ?? 0;
+          typeof folder.unread_count === 'number' ? folder.unread_count : (folder.count ?? 0);
       });
 
     // Add account + bodyIndexed flag to messages
@@ -87,7 +83,7 @@ db.version(3)
             body: rec.body,
             textContent: rec.textContent || '',
             attachments: rec.attachments || [],
-            updatedAt: rec.updatedAt || Date.now()
+            updatedAt: rec.updatedAt || Date.now(),
           });
         }
         await legacy.clear();
@@ -112,9 +108,9 @@ db.version(4)
     searchIndex: '[account+key],key,account,updatedAt',
     indexMeta: '[account+key],key,account,updatedAt',
     syncQueue: '++queueId,account,action,resource,folder,status,createdAt',
-    meta: 'key,updatedAt'
+    meta: 'key,updatedAt',
   })
-  .upgrade(async (tx) => {
+  .upgrade(async () => {
     // No data migration needed - Dexie will handle the reindexing
     // The compound keys [account+path] and [account+id] will be created automatically
   });
@@ -145,7 +141,7 @@ export async function clearCache() {
       db.messageBodies.clear(),
       db.searchIndex.clear(),
       db.indexMeta.clear(),
-      db.syncQueue.clear()
+      db.syncQueue.clear(),
     ]);
     return true;
   } catch (error) {
@@ -163,11 +159,11 @@ export async function getDatabaseInfo() {
       version: db.verno,
       name: db.name,
       isOpen: db.isOpen(),
-      tables: db.tables.map(t => ({
+      tables: db.tables.map((t) => ({
         name: t.name,
         schema: t.schema.primKey?.keyPath || t.schema.primKey?.name,
-        indexes: t.schema.indexes?.map(idx => idx.name) || []
-      }))
+        indexes: t.schema.indexes?.map((idx) => idx.name) || [],
+      })),
     };
 
     // Get record counts
@@ -175,7 +171,7 @@ export async function getDatabaseInfo() {
     for (const table of db.tables) {
       try {
         counts[table.name] = await table.count();
-      } catch (err) {
+      } catch {
         counts[table.name] = 0;
       }
     }

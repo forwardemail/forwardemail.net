@@ -49,7 +49,10 @@ class I18n {
 
       return true;
     } catch (error) {
-      console.warn(`Failed to load locale "${locale}", falling back to "${this.fallbackLocale}"`, error);
+      console.warn(
+        `Failed to load locale "${locale}", falling back to "${this.fallbackLocale}"`,
+        error,
+      );
 
       // Fall back to English if requested locale fails
       if (locale !== this.fallbackLocale) {
@@ -70,7 +73,7 @@ class I18n {
     try {
       const module = await import(`../locales/${locale}.json`);
       return module.default || module;
-    } catch (error) {
+    } catch {
       throw new Error(`Locale "${locale}" not found`);
     }
   }
@@ -131,7 +134,7 @@ class I18n {
   onChange(callback) {
     this.changeListeners.push(callback);
     return () => {
-      this.changeListeners = this.changeListeners.filter(cb => cb !== callback);
+      this.changeListeners = this.changeListeners.filter((cb) => cb !== callback);
     };
   }
 
@@ -139,7 +142,7 @@ class I18n {
    * Notify all listeners of locale change
    */
   notifyChange() {
-    this.changeListeners.forEach(callback => {
+    this.changeListeners.forEach((callback) => {
       try {
         callback(this.currentLocale);
       } catch (error) {
@@ -186,7 +189,7 @@ export const i18n = new I18n();
 // Knockout binding handler for i18n
 if (typeof window !== 'undefined' && window.ko) {
   window.ko.bindingHandlers.i18n = {
-    update: function(element, valueAccessor) {
+    update: function (element, valueAccessor) {
       const options = window.ko.unwrap(valueAccessor());
       let key, params;
 
@@ -205,24 +208,24 @@ if (typeof window !== 'undefined' && window.ko) {
       }
 
       element.textContent = i18n.t(key, unwrappedParams);
-    }
+    },
   };
 
   // Text binding that supports i18n
   window.ko.bindingHandlers.i18nText = {
-    update: function(element, valueAccessor) {
+    update: function (element, valueAccessor) {
       const value = window.ko.unwrap(valueAccessor());
       element.textContent = i18n.t(value);
-    }
+    },
   };
 
   // Attribute binding that supports i18n
   window.ko.bindingHandlers.i18nAttr = {
-    update: function(element, valueAccessor) {
+    update: function (element, valueAccessor) {
       const value = window.ko.unwrap(valueAccessor());
       for (const [attr, key] of Object.entries(value)) {
         element.setAttribute(attr, i18n.t(key));
       }
-    }
+    },
   };
 }

@@ -5,7 +5,7 @@ export function sanitizeHtml(html) {
   try {
     return DOMPurify.sanitize(html, {
       USE_PROFILES: { html: true },
-      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
     });
   } catch (error) {
     console.error('DOMPurify sanitize failed:', error);

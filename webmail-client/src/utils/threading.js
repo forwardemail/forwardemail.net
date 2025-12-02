@@ -19,16 +19,37 @@ export function normalizeSubject(subject) {
 
   // Remove common reply/forward prefixes (case insensitive, localized)
   const prefixes = [
-    'Re:', 'RE:', 're:',
-    'Fwd:', 'FW:', 'Fw:', 'Forward:', 'FWD:', 'fwd:',
-    'AW:', 'Aw:', 'aw:', // German
-    'SV:', 'Sv:', 'sv:', // Swedish
-    'VS:', 'Vs:', 'vs:', // Norwegian
-    'R:', 'RIF:', 'Rif:', // Italian
-    'Enc:', 'ENC:', // Spanish
-    'Antw:', 'ANTW:', // Dutch
-    'TR:', 'Tr:', 'tr:', // Turkish
-    'Ref:', 'REF:', 'ref:' // Reference
+    'Re:',
+    'RE:',
+    're:',
+    'Fwd:',
+    'FW:',
+    'Fw:',
+    'Forward:',
+    'FWD:',
+    'fwd:',
+    'AW:',
+    'Aw:',
+    'aw:', // German
+    'SV:',
+    'Sv:',
+    'sv:', // Swedish
+    'VS:',
+    'Vs:',
+    'vs:', // Norwegian
+    'R:',
+    'RIF:',
+    'Rif:', // Italian
+    'Enc:',
+    'ENC:', // Spanish
+    'Antw:',
+    'ANTW:', // Dutch
+    'TR:',
+    'Tr:',
+    'tr:', // Turkish
+    'Ref:',
+    'REF:',
+    'ref:', // Reference
   ];
 
   let changed = true;
@@ -92,7 +113,7 @@ export function parseReferences(references) {
   const matches = references.match(/<[^>]+>/g);
   if (!matches) return [];
 
-  return matches.map(ref => ref.trim());
+  return matches.map((ref) => ref.trim());
 }
 
 /**
@@ -147,7 +168,7 @@ function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
 
@@ -181,7 +202,7 @@ export function groupIntoConversations(messages) {
         hasUnread: false,
         hasAttachment: false,
         latestDate: null,
-        messageCount: 0
+        messageCount: 0,
       });
     }
 
@@ -199,7 +220,11 @@ export function groupIntoConversations(messages) {
     }
 
     // Track attachments
-    if (message.has_attachment === true || message.has_attachment === 1 || message.has_attachment === '1') {
+    if (
+      message.has_attachment === true ||
+      message.has_attachment === 1 ||
+      message.has_attachment === '1'
+    ) {
       conversation.hasAttachment = true;
     }
 
@@ -222,7 +247,7 @@ export function groupIntoConversations(messages) {
     conversation.participants = Array.from(conversation.participants);
 
     // Get the display subject from the first message with a subject
-    const messageWithSubject = conversation.messages.find(m => m.subject || m.Subject);
+    const messageWithSubject = conversation.messages.find((m) => m.subject || m.Subject);
     if (messageWithSubject) {
       conversation.displaySubject = messageWithSubject.subject || messageWithSubject.Subject;
     } else {
@@ -298,16 +323,18 @@ export function buildConversationTree(messages) {
     const node = {
       message,
       children: [],
-      parent: null
+      parent: null,
     };
 
-    const messageId = message.message_id || message.messageId || message['Message-ID'] || message.id;
+    const messageId =
+      message.message_id || message.messageId || message['Message-ID'] || message.id;
     messageMap.set(messageId, node);
   }
 
   // Second pass: build tree
   for (const message of messages) {
-    const messageId = message.message_id || message.messageId || message['Message-ID'] || message.id;
+    const messageId =
+      message.message_id || message.messageId || message['Message-ID'] || message.id;
     const node = messageMap.get(messageId);
 
     const inReplyTo = message.in_reply_to || message.inReplyTo || message['In-Reply-To'];
@@ -341,7 +368,7 @@ export function flattenConversationTree(tree) {
     flattened.push({
       ...node.message,
       depth,
-      hasChildren: node.children.length > 0
+      hasChildren: node.children.length > 0,
     });
 
     for (const child of node.children) {

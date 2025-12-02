@@ -16,7 +16,7 @@ export async function enqueueSync(action, payload = {}) {
     data: payload.data || {},
     status: DEFAULT_STATUS,
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   };
   const queueId = await db.syncQueue.add(record);
   return { ...record, queueId };

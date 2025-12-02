@@ -7,7 +7,7 @@ export class Toasts {
   }
 
   show(message, type = 'info', timeout = 3000) {
-    const id = this.nextId += 1;
+    const id = (this.nextId += 1);
     this.items.push({ id, message, type });
     if (timeout) {
       setTimeout(() => this.dismiss(id), timeout);

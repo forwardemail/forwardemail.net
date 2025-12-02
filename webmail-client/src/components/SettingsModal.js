@@ -88,7 +88,10 @@ export class SettingsModal {
       if (info) {
         this.databaseVersion(info.version);
         // Calculate total record count across all tables
-        const totalRecords = Object.values(info.counts || {}).reduce((sum, count) => sum + count, 0);
+        const totalRecords = Object.values(info.counts || {}).reduce(
+          (sum, count) => sum + count,
+          0,
+        );
         this.databaseRecordCount(totalRecords);
       }
     } catch (err) {
@@ -205,6 +208,22 @@ export class SettingsModal {
     }
   };
 
+  toggleBodyIndexingOption = async () => {
+    const newValue = !this.bodyIndexingEnabled();
+    this.bodyIndexingEnabled(newValue);
+    Local.set('search_body_index', newValue ? '1' : '0');
+
+    if (this.toggleBodyIndexing) {
+      this.toggleBodyIndexing(newValue);
+    }
+
+    this.success(
+      newValue
+        ? 'Body indexing enabled. Rebuild your search index to apply this change.'
+        : 'Body indexing disabled.',
+    );
+  };
+
   /**
    * Format keyboard shortcut key for OS-specific display
    */
@@ -244,7 +263,7 @@ export class SettingsModal {
     this.error('');
     this.success('');
     const confirmed = window.confirm(
-      'This will clear all cached emails, folders, and search indexes. You will need to reload your mailbox. Continue?'
+      'This will clear all cached emails, folders, and search indexes. You will need to reload your mailbox. Continue?',
     );
     if (!confirmed) return;
 
@@ -269,7 +288,7 @@ export class SettingsModal {
     this.error('');
     this.success('');
     const confirmed = window.confirm(
-      'WARNING: This will permanently delete all local data including cached emails, settings, and search indexes. This action cannot be undone. Continue?'
+      'WARNING: This will permanently delete all local data including cached emails, settings, and search indexes. This action cannot be undone. Continue?',
     );
     if (!confirmed) return;
 
@@ -286,5 +305,4 @@ export class SettingsModal {
       this.toasts?.show?.(this.error(), 'error');
     }
   };
-
 }

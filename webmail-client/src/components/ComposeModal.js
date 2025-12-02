@@ -14,7 +14,15 @@ import 'emoji-picker-element';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10MB per file
 const MAX_TOTAL_ATTACHMENTS = 25 * 1024 * 1024; // 25MB total
-const BLOCKED_TYPES = ['application/x-msdownload', 'application/x-msdos-program', 'application/x-msdos-windows', 'application/x-ms-installer', 'application/x-msi', 'application/x-exe', 'application/x-dosexec'];
+const BLOCKED_TYPES = [
+  'application/x-msdownload',
+  'application/x-msdos-program',
+  'application/x-msdos-windows',
+  'application/x-ms-installer',
+  'application/x-msi',
+  'application/x-exe',
+  'application/x-dosexec',
+];
 
 export class ComposeModal {
   constructor() {
@@ -106,12 +114,12 @@ export class ComposeModal {
         Highlight,
         Link.configure({ openOnClick: false }),
         Placeholder.configure({
-          placeholder: 'Message'
-        })
+          placeholder: 'Message',
+        }),
       ],
       onUpdate: ({ editor }) => {
         this.body(editor.getHTML());
-      }
+      },
     });
     setTimeout(() => {
       try {
@@ -159,7 +167,7 @@ export class ComposeModal {
   toggleOrdered = () => this.command((c) => c.toggleOrderedList());
   toggleQuote = () => this.command((c) => c.toggleBlockquote());
   toggleCode = () => this.command((c) => c.toggleCodeBlock());
- clearFormatting = () => this.command((c) => c.clearNodes().unsetAllMarks());
+  clearFormatting = () => this.command((c) => c.clearNodes().unsetAllMarks());
 
   setLink = () => {
     const url = window.prompt('Enter URL');
@@ -219,7 +227,7 @@ export class ComposeModal {
       html: this.isPlainText() ? undefined : sanitizeHtml(body),
       envelope: {
         from: from || parsedTo[0],
-        to: parsedTo
+        to: parsedTo,
       },
       folder: 'Sent Mail',
       ...(this.attachments().length
@@ -228,14 +236,17 @@ export class ComposeModal {
               filename: att.name,
               content: att.content,
               contentType: att.contentType,
-              encoding: 'base64'
-            }))
+              encoding: 'base64',
+            })),
           }
-        : {})
+        : {}),
     };
 
     const account = this.getAccountKey();
-    const localId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `local-${Date.now()}`;
+    const localId =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `local-${Date.now()}`;
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
 
     const queueSend = async () => {
@@ -244,7 +255,7 @@ export class ComposeModal {
         account,
         resource: 'message',
         folder: 'Outbox',
-        data: { payload, localId }
+        data: { payload, localId },
       });
       if (this.mailboxView?.refreshSyncCounts) await this.mailboxView.refreshSyncCounts();
       this.success('Message queued for send');
@@ -418,7 +429,7 @@ export class ComposeModal {
             name: file.name,
             size: file.size,
             contentType: file.type || 'application/octet-stream',
-            content: base64
+            content: base64,
           });
         }
       };
@@ -464,7 +475,7 @@ export class ComposeModal {
       is_unread: false,
       has_attachment: Array.isArray(payload.attachments) && payload.attachments.length > 0,
       bodyIndexed: false,
-      updatedAt: now
+      updatedAt: now,
     };
     const bodyRecord = {
       id: localId,
@@ -473,7 +484,7 @@ export class ComposeModal {
       body: payload.html || payload.text || '',
       textContent: payload.text || '',
       attachments: payload.attachments || [],
-      updatedAt: now
+      updatedAt: now,
     };
     try {
       await db.messages.put(messageRecord);

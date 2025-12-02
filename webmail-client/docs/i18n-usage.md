@@ -23,11 +23,11 @@ src/
 import { i18n } from '../utils/i18n';
 
 // Simple translation
-const text = i18n.t('messages.noSubject');  // "(No subject)"
+const text = i18n.t('messages.noSubject'); // "(No subject)"
 
 // Translation with parameters
 const count = 5;
-const text = i18n.t('bulk.archived', { count });  // "Archived 5 conversation(s)"
+const text = i18n.t('bulk.archived', { count }); // "Archived 5 conversation(s)"
 
 // In MailboxView or other components with this.t
 this.toasts?.show?.(this.t('notifications.messageSent'), 'success');
@@ -48,7 +48,9 @@ this.toasts?.show?.(this.t('notifications.messageSent'), 'success');
 ### 2. Text with parameters
 
 ```html
-<span data-bind="i18n: { key: 'bulk.archived', params: { count: selectedConversationCount } }"></span>
+<span
+  data-bind="i18n: { key: 'bulk.archived', params: { count: selectedConversationCount } }"
+></span>
 ```
 
 ### 3. Attributes (title, aria-label, etc.)
@@ -128,13 +130,13 @@ The system detects the user's language in this order:
 import { i18n } from '../utils/i18n';
 
 // Set language
-await i18n.setLocale('es');  // Switch to Spanish
+await i18n.setLocale('es'); // Switch to Spanish
 
 // Get current language
-const currentLang = i18n.getLocale();  // 'en'
+const currentLang = i18n.getLocale(); // 'en'
 
 // Get available languages
-const languages = i18n.getAvailableLocales();  // ['en', 'es', 'fr', ...]
+const languages = i18n.getAvailableLocales(); // ['en', 'es', 'fr', ...]
 ```
 
 ## Listening for Language Changes
@@ -151,7 +153,7 @@ i18n.onChange((locale) => {
 ### Format Numbers
 
 ```javascript
-i18n.formatNumber(1234.56);  // "1,234.56" (en) or "1.234,56" (de)
+i18n.formatNumber(1234.56); // "1,234.56" (en) or "1.234,56" (de)
 ```
 
 ### Format Dates
@@ -164,8 +166,8 @@ i18n.formatDate(new Date(), { dateStyle: 'medium' });
 ### Format File Sizes
 
 ```javascript
-i18n.formatFileSize(1024);      // "1.00 KB"
-i18n.formatFileSize(1048576);   // "1.00 MB"
+i18n.formatFileSize(1024); // "1.00 KB"
+i18n.formatFileSize(1048576); // "1.00 MB"
 ```
 
 ## Migration Guide
@@ -173,21 +175,25 @@ i18n.formatFileSize(1048576);   // "1.00 MB"
 To migrate existing hardcoded text to i18n:
 
 ### Before:
+
 ```javascript
 this.toasts?.show?.('Message sent successfully', 'success');
 ```
 
 ### After:
+
 ```javascript
 this.toasts?.show?.(this.t('notifications.messageSent'), 'success');
 ```
 
 ### Before (HTML):
+
 ```html
 <button>Archive</button>
 ```
 
 ### After (HTML):
+
 ```html
 <button data-bind="i18nText: 'actions.archive'"></button>
 ```
@@ -204,13 +210,9 @@ this.toasts?.show?.(this.t('notifications.messageSent'), 'success');
 
 ```javascript
 // Test that all keys exist
-const testKeys = [
-  'messages.noSubject',
-  'actions.archive',
-  'notifications.messageSent'
-];
+const testKeys = ['messages.noSubject', 'actions.archive', 'notifications.messageSent'];
 
-testKeys.forEach(key => {
+testKeys.forEach((key) => {
   const value = i18n.t(key);
   console.assert(value !== key, `Missing translation: ${key}`);
 });

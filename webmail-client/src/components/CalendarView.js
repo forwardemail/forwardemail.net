@@ -6,15 +6,7 @@ import { Local as LocalStore } from '../utils/storage';
 
 // Helper to generate iCalendar (RFC 5545) format
 function generateICalEvent(event) {
-  const {
-    summary,
-    description,
-    location,
-    start,
-    end,
-    uid,
-    reminder
-  } = event;
+  const { summary, description, location, start, end, uid, reminder } = event;
 
   // Format dates to iCal format (YYYYMMDDTHHMMSSZ)
   const formatICalDate = (date) => {
@@ -39,17 +31,25 @@ function generateICalEvent(event) {
     `DTSTAMP:${dtstamp}`,
     `DTSTART:${dtstart}`,
     `DTEND:${dtend}`,
-    `SUMMARY:${summary || 'Untitled Event'}`
+    `SUMMARY:${summary || 'Untitled Event'}`,
   ];
 
   if (description) {
     // Escape special characters in description
-    const escapedDesc = description.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    const escapedDesc = description
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n');
     ical.push(`DESCRIPTION:${escapedDesc}`);
   }
 
   if (location) {
-    const escapedLoc = location.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    const escapedLoc = location
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n');
     ical.push(`LOCATION:${escapedLoc}`);
   }
 
@@ -60,7 +60,7 @@ function generateICalEvent(event) {
       'ACTION:DISPLAY',
       `DESCRIPTION:${summary || 'Event reminder'}`,
       `TRIGGER:-PT${reminder}M`,
-      'END:VALARM'
+      'END:VALARM',
     );
   }
 
@@ -82,9 +82,17 @@ function parseICalEvent(icalString) {
     } else if (line.startsWith('SUMMARY:')) {
       event.summary = line.substring(8);
     } else if (line.startsWith('DESCRIPTION:')) {
-      event.description = line.substring(12).replace(/\\n/g, '\n').replace(/\\,/g, ',').replace(/\\;/g, ';');
+      event.description = line
+        .substring(12)
+        .replace(/\\n/g, '\n')
+        .replace(/\\,/g, ',')
+        .replace(/\\;/g, ';');
     } else if (line.startsWith('LOCATION:')) {
-      event.location = line.substring(9).replace(/\\n/g, '\n').replace(/\\,/g, ',').replace(/\\;/g, ';');
+      event.location = line
+        .substring(9)
+        .replace(/\\n/g, '\n')
+        .replace(/\\,/g, ',')
+        .replace(/\\;/g, ';');
     } else if (line.startsWith('DTSTART:')) {
       const dateStr = line.substring(8);
       event.start = parseICalDate(dateStr);
@@ -178,7 +186,8 @@ export class CalendarView {
           this.selectedCalendar(cached.value[0]);
 
           // Load cached events for instant display
-          const calendarId = cached.value[0].id || cached.value[0].calendar_id || cached.value[0].uid;
+          const calendarId =
+            cached.value[0].id || cached.value[0].calendar_id || cached.value[0].uid;
           if (calendarId) {
             const cachedEvents = await db.meta.get(`calendar_events_${calendarId}`);
             if (cachedEvents?.value) {
@@ -197,7 +206,7 @@ export class CalendarView {
           id: 'default',
           calendar_id: 'default',
           name: 'My Calendar',
-          displayName: 'My Calendar'
+          displayName: 'My Calendar',
         };
         this.calendars([defaultCalendar]);
         this.selectedCalendar(defaultCalendar);
@@ -216,7 +225,7 @@ export class CalendarView {
         id: 'default',
         calendar_id: 'default',
         name: 'My Calendar',
-        displayName: 'My Calendar'
+        displayName: 'My Calendar',
       };
       this.calendars([defaultCalendar]);
       this.selectedCalendar(defaultCalendar);
@@ -240,7 +249,7 @@ export class CalendarView {
       // Fetch events for this calendar using GET /v1/calendar-events
       const res = await Remote.request('CalendarEvents', {
         calendar_id: calendarId,
-        limit: 500
+        limit: 500,
       });
 
       const list = Array.isArray(res) ? res : res?.Result || res?.events || [];
@@ -262,7 +271,7 @@ export class CalendarView {
           description: ev.description || parsedEvent.description || ev.notes || '',
           location: ev.location || parsedEvent.location || '',
           notify: ev.notify || ev.reminder || 0,
-          raw: ev
+          raw: ev,
         };
       });
 
@@ -272,7 +281,7 @@ export class CalendarView {
       await db.meta.put({
         key: `calendar_events_${calendarId}`,
         value: mapped,
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
     } catch (error) {
       console.warn('Failed to fetch calendar events:', error);
@@ -311,7 +320,7 @@ export class CalendarView {
       title: ev.title || ev.summary || ev.name || 'Event',
       start: formatForScheduleX(ev.start || ev.startDate || ev.start_time),
       end: formatForScheduleX(ev.end || ev.endDate || ev.end_time),
-      calendarId: ev.calendarId || ev.calendar_id || 'default'
+      calendarId: ev.calendarId || ev.calendar_id || 'default',
     }));
 
     console.log('Mapped events for calendar:', events);
@@ -369,14 +378,14 @@ export class CalendarView {
             lightColors: {
               main: '#f9d71c',
               container: '#fff5aa',
-              onContainer: '#594800'
+              onContainer: '#594800',
             },
             darkColors: {
               main: '#e5e7eb',
               onContainer: '#0b1220',
-              container: '#0b1220'
-            }
-          }
+              container: '#0b1220',
+            },
+          },
         },
         callbacks: {
           onClickDate: (date) => {
@@ -389,8 +398,8 @@ export class CalendarView {
           },
           onEventClick: (calendarEvent) => {
             this.openEditEventModal(calendarEvent);
-          }
-        }
+          },
+        },
       });
 
       console.log('Calling calendar.render()...');
@@ -507,7 +516,7 @@ export class CalendarView {
         location: '',
         start: startDate.toISOString(),
         end: endDate.toISOString(),
-        reminder: notify
+        reminder: notify,
       });
 
       console.log('Generated iCal data:', icalData);
@@ -515,14 +524,14 @@ export class CalendarView {
       // Create event payload with iCal data
       const payload = {
         calendar_id: calendarId,
-        ical: icalData
+        ical: icalData,
       };
 
       console.log('Event payload:', payload);
 
       // Call API to create event using POST /v1/calendar-events
       const created = await Remote.request('CalendarEventCreate', payload, {
-        method: 'POST'
+        method: 'POST',
       });
 
       console.log('Created event response:', created);
@@ -536,7 +545,7 @@ export class CalendarView {
         calendarId,
         description: this.newEventDescription(),
         notify,
-        raw: created
+        raw: created,
       };
 
       this.events([...this.events(), newEvent]);
@@ -545,7 +554,7 @@ export class CalendarView {
       await db.meta.put({
         key: `calendar_events_${calendarId}`,
         value: this.events(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
 
       this.error('');
@@ -591,7 +600,7 @@ export class CalendarView {
   openEditEventModal(calendarEvent) {
     // Find the full event details from our events array
     const eventId = calendarEvent.id;
-    const fullEvent = this.events().find(ev => (ev.id || ev.uid) === eventId);
+    const fullEvent = this.events().find((ev) => (ev.id || ev.uid) === eventId);
 
     if (!fullEvent) {
       console.warn('Event not found:', eventId);
@@ -672,24 +681,24 @@ export class CalendarView {
         start: startDate.toISOString(),
         end: endDate.toISOString(),
         uid: id,
-        reminder: notify
+        reminder: notify,
       });
 
       // Update event payload with iCal data
       const payload = {
         id,
         calendar_id: calendarId,
-        ical: icalData
+        ical: icalData,
       };
 
       // Call API to update event using PUT /v1/calendar-events/:id
       await Remote.request('CalendarEventUpdate', payload, {
         method: 'PUT',
-        pathOverride: `/v1/calendar-events/${id}`
+        pathOverride: `/v1/calendar-events/${id}`,
       });
 
       // Update event in local list
-      const updatedEvents = this.events().map(ev => {
+      const updatedEvents = this.events().map((ev) => {
         if (ev.id === id) {
           return {
             ...ev,
@@ -697,7 +706,7 @@ export class CalendarView {
             start: startDate.toISOString(),
             end: endDate.toISOString(),
             description: this.editEventDescription(),
-            notify
+            notify,
           };
         }
         return ev;
@@ -709,7 +718,7 @@ export class CalendarView {
       await db.meta.put({
         key: `calendar_events_${calendarId}`,
         value: updatedEvents,
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
 
       this.error('');
@@ -749,22 +758,26 @@ export class CalendarView {
 
     try {
       // Call API to delete event using DELETE /v1/calendar-events/:id
-      await Remote.request('CalendarEventDelete', {
-        calendar_id: calendarId
-      }, {
-        method: 'DELETE',
-        pathOverride: `/v1/calendar-events/${id}`
-      });
+      await Remote.request(
+        'CalendarEventDelete',
+        {
+          calendar_id: calendarId,
+        },
+        {
+          method: 'DELETE',
+          pathOverride: `/v1/calendar-events/${id}`,
+        },
+      );
 
       // Remove event from local list
-      const updatedEvents = this.events().filter(ev => ev.id !== id);
+      const updatedEvents = this.events().filter((ev) => ev.id !== id);
       this.events(updatedEvents);
 
       // Update cache
       await db.meta.put({
         key: `calendar_events_${calendarId}`,
         value: updatedEvents,
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       });
 
       this.error('');
@@ -799,7 +812,7 @@ export class CalendarView {
 
         options.push({
           display: `${displayHour}:${m} ${period}`,
-          value: `${h24}:${m}`
+          value: `${h24}:${m}`,
         });
       }
     }

@@ -120,10 +120,7 @@ export class ContactsView {
           id: c.id || c.contact_id || c.uid || c.Id,
           name: c.full_name || c.name || c.FullName || '',
           email:
-            (c.emails && c.emails[0]?.value) ||
-            (c.Emails && c.Emails[0]?.value) ||
-            c.email ||
-            '',
+            (c.emails && c.emails[0]?.value) || (c.Emails && c.Emails[0]?.value) || c.email || '',
           phone:
             (c.phone_numbers && c.phone_numbers[0]?.value) ||
             (c.Phones && c.Phones[0]?.value) ||
@@ -132,7 +129,7 @@ export class ContactsView {
           address: vcardData.address || '',
           birthday: vcardData.birthday || '',
           notes: vcardData.notes || '',
-          raw: c
+          raw: c,
         };
       });
       this.contacts(mapped);
@@ -209,9 +206,9 @@ export class ContactsView {
       phone: contact.phone || '',
       address: contact.address || '',
       birthday: contact.birthday || '',
-      notes: contact.notes || ''
+      notes: contact.notes || '',
     };
-  };
+  }
 
   async saveContactInline() {
     const draft = this.selectedDraft();
@@ -232,23 +229,22 @@ export class ContactsView {
         phone: draft.phone,
         address: draft.address,
         birthday: draft.birthday,
-        notes: draft.notes
+        notes: draft.notes,
       });
 
       const payload = {
         full_name: name,
         emails: emailPrimary ? [{ value: emailPrimary }] : undefined,
         phone_numbers: draft.phone ? [{ value: draft.phone }] : undefined,
-        content: vCardContent
+        content: vCardContent,
       };
 
       if (draft.id) {
         const id = draft.id;
-        const updated = await Remote.request(
-          'ContactsUpdate',
-          payload,
-          { method: 'PUT', pathOverride: `/v1/contacts/${encodeURIComponent(id)}` }
-        );
+        const updated = await Remote.request('ContactsUpdate', payload, {
+          method: 'PUT',
+          pathOverride: `/v1/contacts/${encodeURIComponent(id)}`,
+        });
 
         // Parse vCard from response to get additional fields
         const vcardData = parseVCard(updated?.content);
@@ -260,9 +256,7 @@ export class ContactsView {
                   ...c,
                   name: updated?.full_name || name,
                   email:
-                    (updated?.emails && updated.emails[0]?.value) ||
-                    updated?.email ||
-                    emailPrimary,
+                    (updated?.emails && updated.emails[0]?.value) || updated?.email || emailPrimary,
                   phone:
                     (updated?.phone_numbers && updated.phone_numbers[0]?.value) ||
                     updated?.phone ||
@@ -270,21 +264,20 @@ export class ContactsView {
                     '',
                   address: vcardData.address || draft.address || '',
                   birthday: vcardData.birthday || draft.birthday || '',
-                  notes: vcardData.notes || draft.notes || ''
+                  notes: vcardData.notes || draft.notes || '',
                 }
-              : c
-          )
+              : c,
+          ),
         );
         const selected = this.contacts().find((c) => c.id === id);
         if (selected) this.selectedContact(selected);
         this.isEditing(false);
         if (this.toasts) this.toasts.show('Contact updated', 'success');
       } else {
-        const created = await Remote.request(
-          'ContactsCreate',
-          payload,
-          { method: 'POST', pathOverride: '/v1/contacts' }
-        );
+        const created = await Remote.request('ContactsCreate', payload, {
+          method: 'POST',
+          pathOverride: '/v1/contacts',
+        });
 
         // Parse vCard from response to get additional fields
         const vcardData = parseVCard(created?.content);
@@ -292,10 +285,7 @@ export class ContactsView {
         const mapped = {
           id: created?.id || created?.contact_id || created?.uid || created?.Id,
           name: created?.full_name || name,
-          email:
-            (created?.emails && created.emails[0]?.value) ||
-            created?.email ||
-            emailPrimary,
+          email: (created?.emails && created.emails[0]?.value) || created?.email || emailPrimary,
           phone:
             (created?.phone_numbers && created.phone_numbers[0]?.value) ||
             created?.phone ||
@@ -304,7 +294,7 @@ export class ContactsView {
           raw: created,
           address: vcardData.address || draft.address || '',
           birthday: vcardData.birthday || draft.birthday || '',
-          notes: vcardData.notes || draft.notes || ''
+          notes: vcardData.notes || draft.notes || '',
         };
         this.contacts([mapped, ...this.contacts()]);
         this.selectedContact(mapped);
@@ -325,7 +315,7 @@ export class ContactsView {
       await Remote.request(
         'ContactsDelete',
         {},
-        { method: 'DELETE', pathOverride: `/v1/contacts/${encodeURIComponent(contact.id)}` }
+        { method: 'DELETE', pathOverride: `/v1/contacts/${encodeURIComponent(contact.id)}` },
       );
       this.contacts(this.contacts().filter((c) => c.id !== contact.id));
       if (this.selectedContact()?.id === contact.id) this.selectedContact(null);

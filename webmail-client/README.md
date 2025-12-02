@@ -9,7 +9,13 @@ cd webmail-client
 pnpm install
 pnpm dev
 pnpm build
+pnpm lint         # eslint:recommended + prettier
+pnpm format       # check formatting
+pnpm format:write # apply prettier formatting
+pnpm prepare      # installs Husky git hooks (runs automatically after install)
 ```
+
+Git hooks: Husky pre-commit runs lint-staged (`prettier --write` + `eslint --fix` on staged files).
 
 You can override the API base in a local `.env`:
 
@@ -17,6 +23,12 @@ You can override the API base in a local `.env`:
 WEBMAIL_API_BASE=https://api.forwardemail.net
 WEBMAIL_MOCK=1    # keep mock data instead of calling API (optional)
 ```
+
+## CI/CD
+
+- Workflow: `.github/workflows/ci.yml` runs `pnpm lint`/`pnpm test` when present, builds the app, and deploys the `dist/` output to R2 on pushes to `main`.
+- Repository/environment variables: `R2_BUCKET` (the Cloudflare R2 bucket name).
+- Secrets: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (S3 API credentials from your R2 namespace).
 
 ## Assets Needed
 

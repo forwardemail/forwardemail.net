@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && workbox generateSW workbox.config.cjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --check",
+    "format:write": "prettier . --write",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@schedule-x/calendar": "^1.63.1",
@@ -28,10 +33,21 @@
     "@tiptap/extension-text-style": "^2.6.6",
     "@tiptap/extension-underline": "^2.6.6",
     "@tiptap/starter-kit": "^2.6.6",
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^14.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "dompurify": "^3.1.6",
     "hotkeys-js": "4.0.0-beta.7",
+    "prettier": "^3.3.3",
     "vite": "^5.0.0",
     "vite-plugin-pwa": "^0.17.0",
     "workbox-cli": "^7.0.0"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx,jsx}": "pnpm exec eslint --max-warnings=0 --fix",
+    "*.{json,css,html,md}": "pnpm exec prettier --write"
   }
 }

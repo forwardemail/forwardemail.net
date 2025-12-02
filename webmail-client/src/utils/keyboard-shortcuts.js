@@ -23,22 +23,22 @@ const DEFAULT_SHORTCUTS = {
   'ctrl+p': { action: 'print', label: 'Print message or draft' },
 
   // Receiving / Reading / Navigation
-  'f5': { action: 'refresh', label: 'Get new messages (current account)' },
+  f5: { action: 'refresh', label: 'Get new messages (current account)' },
   'shift+f5': { action: 'refresh-all', label: 'Get new messages (all accounts)' },
   'ctrl+shift+y': { action: 'refresh-all', label: 'Get new messages (all accounts)' },
-  'arrowright': { action: 'expand-thread', label: 'Expand collapsed thread' },
-  'arrowleft': { action: 'collapse-thread', label: 'Collapse thread' },
+  arrowright: { action: 'expand-thread', label: 'Expand collapsed thread' },
+  arrowleft: { action: 'collapse-thread', label: 'Collapse thread' },
 
   // Managing / Marking / Deleting / Tagging
-  'm': { action: 'toggle-read', label: 'Mark message read/unread' },
-  'r': { action: 'mark-thread-read', label: 'Mark thread as read' },
+  m: { action: 'toggle-read', label: 'Mark message read/unread' },
+  r: { action: 'mark-thread-read', label: 'Mark thread as read' },
   'shift+c': { action: 'mark-folder-read', label: 'Mark all messages read in folder' },
-  'c': { action: 'mark-date-read', label: 'Mark as read by date' },
-  'j': { action: 'mark-junk', label: 'Mark as Junk' },
+  c: { action: 'mark-date-read', label: 'Mark as read by date' },
+  j: { action: 'mark-junk', label: 'Mark as Junk' },
   'shift+j': { action: 'mark-not-junk', label: 'Mark as Not Junk' },
-  's': { action: 'star', label: 'Add / remove star' },
-  'a': { action: 'archive', label: 'Archive message' },
-  'delete': { action: 'delete', label: 'Delete message' },
+  s: { action: 'star', label: 'Add / remove star' },
+  a: { action: 'archive', label: 'Archive message' },
+  delete: { action: 'delete', label: 'Delete message' },
   'shift+delete': { action: 'delete-permanent', label: 'Delete bypassing Trash' },
   'ctrl+alt+m': { action: 'move-copy', label: 'Move / copy to folder' },
 
@@ -50,7 +50,7 @@ const DEFAULT_SHORTCUTS = {
 
   // Other useful
   'ctrl+y': { action: 'redo', label: 'Redo' },
-  '?': { action: 'help', label: 'Show keyboard shortcuts' }
+  '?': { action: 'help', label: 'Show keyboard shortcuts' },
 };
 
 class KeyboardShortcutManager {
@@ -167,11 +167,7 @@ class KeyboardShortcutManager {
     const parts = trimmed
       .split(' ')
       .filter(Boolean)
-      .map((part) =>
-        part
-          .replace(/\s*\+\s*/g, '+')
-          .replace(/\b(meta|cmd|command)\b/g, 'ctrl')
-      );
+      .map((part) => part.replace(/\s*\+\s*/g, '+').replace(/\b(meta|cmd|command)\b/g, 'ctrl'));
     return parts.join(' ');
   }
 
@@ -324,7 +320,7 @@ class KeyboardShortcutManager {
         action: shortcut.action,
         label: shortcut.label,
         context: shortcut.context || 'all',
-        sequence: shortcut.sequence || false
+        sequence: shortcut.sequence || false,
       });
     }
 
@@ -374,7 +370,7 @@ class KeyboardShortcutManager {
     // Check if the new key already exists
     if (normalizedNew !== normalizedOld && this.shortcuts[normalizedNew]) {
       throw new Error(
-        `Shortcut "${normalizedNew}" is already in use for ${this.shortcuts[normalizedNew].label}`
+        `Shortcut "${normalizedNew}" is already in use for ${this.shortcuts[normalizedNew].label}`,
       );
     }
 
@@ -459,19 +455,38 @@ export function showKeyboardShortcutsHelp() {
     'Receiving & Navigation': [],
     'Managing & Tags': [],
     'Search & Filter': [],
-    'Other': []
+    Other: [],
   };
 
-  shortcuts.forEach(shortcut => {
+  shortcuts.forEach((shortcut) => {
     if (
-      ['new-message', 'reply', 'reply-all', 'reply-list', 'forward', 'edit-as-new', 'save-draft', 'print'].includes(shortcut.action)
+      [
+        'new-message',
+        'reply',
+        'reply-all',
+        'reply-list',
+        'forward',
+        'edit-as-new',
+        'save-draft',
+        'print',
+      ].includes(shortcut.action)
     ) {
       grouped['Common & Message'].push(shortcut);
       return;
     }
 
     if (
-      ['refresh', 'refresh-all', 'zoom-in', 'zoom-out', 'zoom-reset', 'expand-thread', 'collapse-thread', 'toggle-pane', 'switch-pane'].includes(shortcut.action)
+      [
+        'refresh',
+        'refresh-all',
+        'zoom-in',
+        'zoom-out',
+        'zoom-reset',
+        'expand-thread',
+        'collapse-thread',
+        'toggle-pane',
+        'switch-pane',
+      ].includes(shortcut.action)
     ) {
       grouped['Receiving & Navigation'].push(shortcut);
       return;
@@ -479,7 +494,9 @@ export function showKeyboardShortcutsHelp() {
 
     if (
       shortcut.action.includes('mark') ||
-      ['toggle-read', 'archive', 'delete', 'delete-permanent', 'star', 'move-copy'].includes(shortcut.action) ||
+      ['toggle-read', 'archive', 'delete', 'delete-permanent', 'star', 'move-copy'].includes(
+        shortcut.action,
+      ) ||
       shortcut.action.startsWith('tag-') ||
       shortcut.action === 'clear-tags'
     ) {

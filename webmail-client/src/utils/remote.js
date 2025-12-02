@@ -14,7 +14,7 @@ export const Remote = {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      ...options.headers
+      ...options.headers,
     };
 
     if (!options.skipAuth && this.shouldAuthorize(action)) {
@@ -84,7 +84,7 @@ export const Remote = {
       CalendarEventUpdate: { path: '/v1/calendar-events', method: 'PUT' },
       CalendarEventDelete: { path: '/v1/calendar-events', method: 'DELETE' },
       Emails: { path: '/v1/emails', method: 'POST' },
-      Account: { path: '/v1/account', method: 'GET' }
+      Account: { path: '/v1/account', method: 'GET' },
     };
 
     const entry = endpoints[action];
@@ -95,5 +95,5 @@ export const Remote = {
   shouldAuthorize(action) {
     if (!action) return true;
     return action !== 'Login';
-  }
+  },
 };

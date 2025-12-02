@@ -12,7 +12,7 @@ export class LoginUserView {
     this.submitErrorAdditional = ko.observable('');
 
     this.submitButtonText = ko.pureComputed(() =>
-      this.submitRequest() ? 'Signing in...' : 'Sign In'
+      this.submitRequest() ? 'Signing in...' : 'Sign In',
     );
   }
 
@@ -36,7 +36,7 @@ export class LoginUserView {
     Remote.request(
       'Folders',
       {},
-      { method: 'GET', skipAuth: true, headers: { Authorization: authHeader } }
+      { method: 'GET', skipAuth: true, headers: { Authorization: authHeader } },
     )
       .then((result) => {
         if (!result) {
@@ -49,7 +49,7 @@ export class LoginUserView {
 
         // Add this account to the multi-account system
         Accounts.add(email, {
-          aliasAuth: `${email}:${password}`
+          aliasAuth: `${email}:${password}`,
         });
 
         // Set as active account
