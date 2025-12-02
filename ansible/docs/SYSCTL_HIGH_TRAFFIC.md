@@ -48,8 +48,8 @@ sudo chronyc sources
 
 All memory-related parameters are automatically calculated based on available system RAM:
 
-* **TCP buffers**: Capped at 256MB (kernel limit), or 10% of RAM if less
-* **TCP memory**: 25% (min), 50% (pressure), 75% (max) of total RAM
+* **TCP buffers**: Capped at 16MB (safe kernel limit), or 5% of RAM if less
+* **TCP memory**: FIXED at 2GB (min), 3GB (pressure), 4GB (max) - prevents OOM on large RAM systems
 * **min\_free\_kbytes**: 1% of RAM (clamped between 64MB-512MB)
 
 This ensures optimal performance across servers with different RAM configurations without manual tuning.
@@ -89,11 +89,11 @@ This ensures optimal performance across servers with different RAM configuration
 
 ### Network - TCP Buffer Tuning (Auto-Scaled)
 
-* **net.core.rmem\_max**: Auto-scaled to 75% of total RAM
-* **net.core.wmem\_max**: Auto-scaled to 75% of total RAM
-* **net.ipv4.tcp\_rmem**: TCP read buffer (min 4KB, default 87KB, max 50% of rmem\_max)
-* **net.ipv4.tcp\_wmem**: TCP write buffer (min 4KB, default 64KB, max 50% of wmem\_max)
-* **net.ipv4.tcp\_mem**: Auto-scaled to 25%, 50%, 75% of total RAM (in 4KB pages)
+* **net.core.rmem\_max**: Auto-scaled (max 16MB or 5% of RAM, whichever is less)
+* **net.core.wmem\_max**: Auto-scaled (max 16MB or 5% of RAM, whichever is less)
+* **net.ipv4.tcp\_rmem**: TCP read buffer (min 4KB, default 87KB, max 16MB)
+* **net.ipv4.tcp\_wmem**: TCP write buffer (min 4KB, default 64KB, max 16MB)
+* **net.ipv4.tcp\_mem**: FIXED at 524288/786432/1048576 pages (2GB/3GB/4GB total)
 * **vm.min\_free\_kbytes**: Auto-scaled to 1% of RAM (minimum 64MB, maximum 512MB)
 
 ### Network - TCP Performance
