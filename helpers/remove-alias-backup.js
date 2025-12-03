@@ -9,7 +9,6 @@ const {
   DeleteObjectCommand
 } = require('@aws-sdk/client-s3');
 const dashify = require('dashify');
-
 const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -36,18 +35,18 @@ const S3 = new S3Client({
  */
 async function removeAliasBackup(alias, options = {}) {
   const { dryRun = false } = options;
-  let aliasObj = alias;
+  let aliasObject = alias;
 
   // If alias is a string (ID), fetch the full alias object
   if (typeof alias === 'string') {
-    aliasObj = await Aliases.findById(alias);
-    if (!aliasObj) {
+    aliasObject = await Aliases.findById(alias);
+    if (!aliasObject) {
       logger.warn('Alias not found for R2 cleanup', { aliasId: alias });
       return [];
     }
   }
 
-  if (!aliasObj || !aliasObj._id || !aliasObj.storage_location) {
+  if (!aliasObject || !aliasObject._id || !aliasObject.storage_location) {
     throw new Error(
       'Valid alias object with _id and storage_location is required'
     );
@@ -55,9 +54,9 @@ async function removeAliasBackup(alias, options = {}) {
 
   // Use the same bucket construction pattern as worker.js
   const bucket = `${config.env}-${dashify(
-    _.camelCase(aliasObj.storage_location)
+    _.camelCase(aliasObject.storage_location)
   )}`;
-  const aliasId = aliasObj._id.toString();
+  const aliasId = aliasObject._id.toString();
   const deletedFiles = [];
 
   try {
@@ -109,7 +108,7 @@ async function removeAliasBackup(alias, options = {}) {
               bucket,
               key,
               aliasId,
-              storageLocation: aliasObj.storage_location,
+              storageLocation: aliasObject.storage_location,
               dryRun
             }
           );
@@ -122,7 +121,7 @@ async function removeAliasBackup(alias, options = {}) {
     logger.error('Error removing alias backup from R2', {
       error: err,
       aliasId,
-      storageLocation: aliasObj.storage_location,
+      storageLocation: aliasObject.storage_location,
       bucket,
       dryRun
     });
@@ -170,18 +169,18 @@ async function removeMultipleAliasBackups(aliases, options = {}) {
  * @returns {Promise<Array>} Array of deleted file keys (or files that would be deleted in dry run)
  */
 async function removeUserAliasBackups(user, options = {}) {
-  let userObj = user;
+  let userObject = user;
 
   // If user is a string (ID), fetch the full user object
   if (typeof user === 'string') {
-    userObj = await Users.findById(user);
-    if (!userObj) {
+    userObject = await Users.findById(user);
+    if (!userObject) {
       logger.warn('User not found for R2 cleanup', { userId: user });
       return [];
     }
   }
 
-  if (!userObj || !userObj._id) {
+  if (!userObject || !userObject._id) {
     throw new Error('Valid user object with _id is required');
   }
 
@@ -190,14 +189,14 @@ async function removeUserAliasBackups(user, options = {}) {
     const domainIds = await Domains.distinct('_id', {
       members: {
         $elemMatch: {
-          user: userObj._id
+          user: userObject._id
         }
       }
     });
 
     if (domainIds.length === 0) {
       logger.info('No domains found for user R2 cleanup', {
-        userId: userObj._id,
+        userId: userObject._id,
         dryRun: options.dryRun
       });
       return [];
@@ -210,7 +209,7 @@ async function removeUserAliasBackups(user, options = {}) {
 
     if (aliases.length === 0) {
       logger.info('No aliases found for user R2 cleanup', {
-        userId: userObj._id,
+        userId: userObject._id,
         dryRun: options.dryRun
       });
       return [];
@@ -221,7 +220,7 @@ async function removeUserAliasBackups(user, options = {}) {
         ? 'Would remove R2 backups for user aliases (dry run)'
         : 'Removing R2 backups for user aliases',
       {
-        userId: userObj._id,
+        userId: userObject._id,
         aliasCount: aliases.length,
         dryRun: options.dryRun
       }
@@ -231,7 +230,7 @@ async function removeUserAliasBackups(user, options = {}) {
   } catch (err) {
     logger.error('Error removing user alias backups from R2', {
       error: err,
-      userId: userObj._id,
+      userId: userObject._id,
       dryRun: options.dryRun
     });
     throw err;
@@ -442,14 +441,15 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
               deletedFiles.push(key);
 
               let reason = 'orphaned';
-              if (bannedUserAliasIds.has(aliasIdToDelete))
+              if (bannedUserAliasIds.has(aliasIdToDelete)) {
                 reason = 'banned user';
-              else if (removedUserAliasIds.has(aliasIdToDelete))
+              } else if (removedUserAliasIds.has(aliasIdToDelete)) {
                 reason = 'removed user';
+              }
 
               logger.info(
                 dryRun
-                  ? `Would delete R2 backup file (dry run)`
+                  ? 'Would delete R2 backup file (dry run)'
                   : 'Deleted R2 backup file',
                 {
                   bucket,

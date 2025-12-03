@@ -444,13 +444,8 @@ const EMAIL_DOMAINS = [
   'zonnet.nl'
 ];
 
-// Escape special characters in domains and join them with '|'
-const domainPattern = EMAIL_DOMAINS.map((domain) =>
-  domain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-).join('|');
-
-// Create the full regex for email validation
-const emailRegex = new RegExp(`^.+@(${domainPattern})$`, 'i');
+// Create a Set for faster domain lookups (case-insensitive)
+const EMAIL_DOMAINS_SET = new Set(EMAIL_DOMAINS.map((d) => d.toLowerCase()));
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -471,57 +466,104 @@ graceful.listen();
 
     const lis = [];
 
-    for (const user of users) {
-      const arr = await Aliases.aggregate([
-        {
-          $match: {
-            user,
-            recipients: emailRegex
-          }
-        },
-        {
-          $group: {
-            _id: '$recipients'
-          }
-        },
-        { $unwind: '$_id' }
-      ])
-        .allowDiskUse(true)
-        .exec();
+    // Process users in batches to avoid memory issues
+    const BATCH_SIZE = 10;
+    for (let i = 0; i < users.length; i += BATCH_SIZE) {
+      const userBatch = users.slice(i, i + BATCH_SIZE);
 
-      const recipients = _.uniq(arr.map((v) => v._id)).filter((v) =>
-        emailRegex.test(v)
+      // Use Promise.all to process batch concurrently
+      const results = await Promise.all(
+        userBatch.map(async (user) => {
+          try {
+            // Optimized aggregation with timeout and better performance
+            const arr = await Aliases.aggregate([
+              {
+                $match: {
+                  user
+                }
+              },
+              {
+                $unwind: '$recipients'
+              },
+              {
+                $group: {
+                  _id: '$recipients'
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  // Extract domain for filtering
+                  domain: {
+                    $toLower: {
+                      $arrayElemAt: [{ $split: ['$_id', '@'] }, 1]
+                    }
+                  }
+                }
+              }
+            ])
+              .allowDiskUse(true)
+              .maxTimeMS(30_000) // 30 second timeout
+              .exec();
+
+            // Filter recipients by checking domain against our set
+            // This is much faster than regex matching in the aggregation
+            const recipients = _.uniq(
+              arr
+                .filter((v) => v.domain && EMAIL_DOMAINS_SET.has(v.domain))
+                .map((v) => v._id)
+            );
+
+            // If it had more than 25 distinct then alert admins
+            if (recipients.length >= 25) {
+              const [u, names] = await Promise.all([
+                Users.findById(user).lean().exec(),
+                Domains.distinct('name', { 'members.user': user })
+              ]);
+
+              return {
+                email: u.email,
+                names,
+                recipients
+              };
+            }
+
+            return null;
+          } catch (err) {
+            // Log individual user errors but continue processing
+            await logger.error(err, { user });
+            return null;
+          }
+        })
       );
 
-      // if it had more than 25 distinct then alert admins
-      if (recipients.length >= 25) {
-        const [u, names] = await Promise.all([
-          Users.findById(user).lean().exec(),
-          Domains.distinct('name', { 'members.user': user })
-        ]);
-        lis.push(
-          `
+      // Build list items from results
+      for (const result of results) {
+        if (result) {
+          lis.push(
+            `
           <li>
             <strong><a href="${
               config.urls.web
-            }/admin/users?q=${encodeURIComponent(u.email)}" target="_blank">${
-            u.email
-          }</a></strong>
+            }/admin/users?q=${encodeURIComponent(
+              result.email
+            )}" target="_blank">${result.email}</a></strong>
             <br />
             <a href="${config.urls.web}/admin/domains?name=${encodeURIComponent(
-            u.email
-          )}" target="_blank">${names.length} domains (e.g. ${names
-            .slice(0, 10)
-            .join(', ')})</a>
+              result.email
+            )}" target="_blank">${
+              result.names.length
+            } domains (e.g. ${result.names.slice(0, 10).join(', ')})</a>
             <br />
             <small>Using ${
-              recipients.length
-            } free account emails (e.g. ${recipients
-            .slice(0, 10)
-            .join(', ')}</small>
+              result.recipients.length
+            } free account emails (e.g. ${result.recipients
+              .slice(0, 10)
+              .join(', ')}</small>
           </li>
         `.trim()
-        );
+          );
+        }
       }
     }
 

@@ -16,7 +16,6 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
-
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -36,11 +35,11 @@ const graceful = new Graceful({
   logger
 });
 
-// store boolean if the job is cancelled
+// Store boolean if the job is cancelled
 let isCancelled = false;
 
-// handle cancellation (this is a very simple example)
-if (parentPort)
+// Handle cancellation (this is a very simple example)
+if (parentPort) {
   parentPort.once('message', (message) => {
     //
     // TODO: once we can manipulate concurrency option to p-map
@@ -51,6 +50,7 @@ if (parentPort)
       isCancelled = true;
     }
   });
+}
 
 graceful.listen();
 
@@ -70,7 +70,9 @@ graceful.listen();
   let dryRun = false;
 
   try {
-    if (isCancelled) return;
+    if (isCancelled) {
+      return;
+    }
 
     // Check for dry run mode from environment variable
     dryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
@@ -90,7 +92,9 @@ graceful.listen();
     }
 
     for (const storageLocation of storageLocations) {
-      if (isCancelled) break;
+      if (isCancelled) {
+        break;
+      }
 
       try {
         logger.info(
@@ -164,8 +168,8 @@ graceful.listen();
 
       if (jobError) {
         subject = dryRun
-          ? `R2 backup cleanup analysis FAILED (DRY RUN)`
-          : `R2 backup cleanup job FAILED`;
+          ? 'R2 backup cleanup analysis FAILED (DRY RUN)'
+          : 'R2 backup cleanup job FAILED';
         message = `<p><strong>ERROR:</strong> The R2 cleanup job encountered an error and may not have completed successfully.</p>
                    <p><strong>Error:</strong> ${jobError.message}</p>`;
       } else {
@@ -173,8 +177,8 @@ graceful.listen();
           ? `R2 backup cleanup analysis (DRY RUN) - ${totalDeletedFiles} files would be removed`
           : `R2 backup cleanup completed - ${totalDeletedFiles} files removed`;
         message = dryRun
-          ? `<p><strong>DRY RUN MODE:</strong> No files were actually deleted. This is a report of what would be cleaned up.</p>`
-          : `<p>R2 backup cleanup has been completed successfully.</p>`;
+          ? '<p><strong>DRY RUN MODE:</strong> No files were actually deleted. This is a report of what would be cleaned up.</p>'
+          : '<p>R2 backup cleanup has been completed successfully.</p>';
       }
 
       await emailHelper({
@@ -234,12 +238,18 @@ graceful.listen();
   }
 })()
   .then(() => {
-    if (parentPort) parentPort.postMessage('done');
-    else process.exit(0);
+    if (parentPort) {
+      parentPort.postMessage('done');
+    } else {
+      process.exit(0);
+    }
   })
   .catch((err) => {
     logger.error(err);
 
-    if (parentPort) parentPort.postMessage('done');
-    else process.exit(1);
+    if (parentPort) {
+      parentPort.postMessage('done');
+    } else {
+      process.exit(1);
+    }
   });

@@ -27,7 +27,6 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const _ = require('#helpers/lodash');
-
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
@@ -52,11 +51,11 @@ const graceful = new Graceful({
   logger
 });
 
-// store boolean if the job is cancelled
+// Store boolean if the job is cancelled
 let isCancelled = false;
 
-// handle cancellation (this is a very simple example)
-if (parentPort)
+// Handle cancellation (this is a very simple example)
+if (parentPort) {
   parentPort.once('message', (message) => {
     //
     // TODO: once we can manipulate concurrency option to p-map
@@ -67,6 +66,7 @@ if (parentPort)
       isCancelled = true;
     }
   });
+}
 
 graceful.listen();
 
@@ -74,6 +74,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
 (async () => {
   await setupMongoose(logger);
+
+  // Check for dry run mode from environment variable (declare at function start)
+  const dryRun = process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
 
   subscriber.subscribe('sqlite_auth_response');
 
@@ -83,9 +86,6 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
   //
   try {
     // Check for dry run mode from environment variable
-    const dryRun =
-      process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
-
     if (dryRun) {
       logger.info(
         'Running R2 cleanup in DRY RUN mode during SQLite cleanup - no files will actually be deleted'
@@ -96,7 +96,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     const storageLocations = await Aliases.distinct('storage_location');
 
     for (const storageLocation of storageLocations) {
-      if (isCancelled) break;
+      if (isCancelled) {
+        break;
+      }
 
       try {
         logger.info(
@@ -124,7 +126,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
   }
 
   try {
-    if (isCancelled) return;
+    if (isCancelled) {
+      return;
+    }
 
     const dirents = await fs.promises.readdir(mountDir, {
       withFileTypes: true
@@ -134,7 +138,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     const filePaths = [];
 
     for (const dirent of dirents) {
-      if (!dirent.isDirectory()) continue;
+      if (!dirent.isDirectory()) {
+        continue;
+      }
 
       const files = await fs.promises.readdir(
         path.join(mountDir, dirent.name),
@@ -143,8 +149,14 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         }
       );
       for (const file of files) {
-        if (!file.isFile()) continue;
-        if (path.extname(file.name) !== '.sqlite') continue;
+        if (!file.isFile()) {
+          continue;
+        }
+
+        if (path.extname(file.name) !== '.sqlite') {
+          continue;
+        }
+
         const basename = path.basename(file.name, path.extname(file.name));
 
         // TODO: automated job to detect files on block storage
@@ -155,14 +167,19 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           continue;
         }
 
-        // if basename does not include ":" it's a safeguard
+        // If basename does not include ":" it's a safeguard
         // (since all backups are in "x:y-backup.sqlite" format)
-        if (!basename.includes(':')) continue;
+        if (!basename.includes(':')) {
+          continue;
+        }
 
         const filePath = path.join(mountDir, dirent.name, file.name);
         try {
           const stat = await fs.promises.stat(filePath);
-          if (!stat.isFile()) continue; // safeguard
+          if (!stat.isFile()) {
+            continue;
+          } // Safeguard
+
           // delete any backups that are 4h+ old
           if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('4h')) {
             await fs.promises.rm(filePath, {
@@ -177,8 +194,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       }
     }
 
-    // email admins of any old files cleaned up
-    if (filePaths.length > 0)
+    // Email admins of any old files cleaned up
+    if (filePaths.length > 0) {
       emailHelper({
         template: 'alert',
         message: {
@@ -193,8 +210,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       })
         .then()
         .catch((err) => logger.error(err));
+    }
 
-    // go through ids and find any
+    // Go through ids and find any
     // that were banned or removed
     if (ids.size > 0) {
       const badIds = await Aliases.distinct('id', {
@@ -209,7 +227,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           }
         ]
       });
-      // email admins (manually remove for now, may automate this in near future once certain)
+      // Email admins (manually remove for now, may automate this in near future once certain)
       if (badIds.length > 0) {
         emailHelper({
           template: 'alert',
@@ -227,194 +245,350 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           .catch((err) => logger.error(err));
       }
 
-      // go through all ids filtered out from bad ones and update storage
+      // Go through all ids filtered out from bad ones and update storage
       for (const badId of badIds) {
         ids.delete(badId);
       }
 
-      // now iterate through all ids and update their sizes and send (or unset) quota alerts
-      await pMapSeries(ids, async (id) => {
-        logger.debug('cleanup', { id });
+      // Track aliases with missing domains for email notification (check regardless of dry run)
+      let orphanedAliases = [];
 
-        // ensure ID is hex string
-        if (!mongoose.isObjectIdOrHexString(id)) return;
-
-        // ensure alias still exists
-        let alias = await Aliases.findOne({ id });
-
-        if (!alias) {
-          logger.debug('alias no longer exists', { id });
-          return;
-        }
-
-        try {
-          // update storage
-          try {
-            await updateStorageUsed(id, client);
-          } catch (err) {
-            logger.fatal(err, { id });
+      // Now iterate through all ids and update their sizes and send (or unset) quota alerts
+      // Skip this entire section in dry run mode since no actual storage changes occurred
+      if (dryRun) {
+        // In dry run mode, still check for orphaned aliases but don't process storage
+        await pMapSeries(ids, async (id) => {
+          // Ensure ID is hex string
+          if (!mongoose.isObjectIdOrHexString(id)) {
+            return;
           }
 
-          // get total storage used for an alias (includes across all relevant domains/aliases)
-          alias = await Aliases.findOne({ id });
+          // Ensure alias still exists
+          const alias = await Aliases.findOne({ id });
+
+          if (!alias) {
+            logger.debug('alias no longer exists (dry run)', { id });
+            return;
+          }
+
+          // Check if the domain still exists
+          const domain = await Domains.findOne({ _id: alias.domain });
+          if (!domain) {
+            logger.warn(
+              'Found alias with missing domain - needs manual cleanup (dry run)',
+              {
+                aliasId: id,
+                domainId: alias.domain,
+                aliasName: alias.name
+              }
+            );
+
+            // Track orphaned aliases for email notification
+            orphanedAliases.push({
+              aliasId: id,
+              domainId: alias.domain,
+              aliasName: alias.name
+            });
+          }
+        });
+
+        logger.info(
+          'Skipping storage updates and user notifications in dry run mode',
+          {
+            totalAliases: ids.size,
+            dryRun: true
+          }
+        );
+      } else {
+        // Normal mode - process storage and send notifications
+        await pMapSeries(ids, async (id) => {
+          logger.debug('cleanup', { id });
+
+          // Ensure ID is hex string
+          if (!mongoose.isObjectIdOrHexString(id)) {
+            return;
+          }
+
+          // Ensure alias still exists
+          let alias = await Aliases.findOne({ id });
 
           if (!alias) {
             logger.debug('alias no longer exists', { id });
             return;
           }
 
-          // if the alias did not have imap or it was not enabled
-          // then we can return early since the check is not useful
-          if (!alias.has_imap || !alias.is_enabled) return;
-
-          const [storageUsed, maxQuotaPerAlias] = await Promise.all([
-            Aliases.getStorageUsed(alias),
-            Domains.getMaxQuota(alias.domain, alias)
-          ]);
-
-          const percentageUsed = Math.round(
-            (storageUsed / maxQuotaPerAlias) * 100
-          );
-
-          // find closest threshold
-          let threshold;
-          for (const percentage of [50, 60, 70, 80, 90, 100]) {
-            if (percentageUsed >= percentage) threshold = percentage;
-          }
-
-          // return early if no threshold found
-          if (!threshold) return;
-
-          // if user already received threshold notification
-          // and the notification was sent within the past 7 days
-          // then we can return early
-          if (
-            _.isPlainObject(alias.storage_thresholds_sent_at) &&
-            alias.storage_thresholds_sent_at[threshold.toString()] &&
-            _.isDate(alias.storage_thresholds_sent_at[threshold.toString()]) &&
-            new Date(
-              alias.storage_thresholds_sent_at[threshold.toString()]
-            ).getTime() >= dayjs().subtract(1, 'week').toDate().getTime()
-          )
-            return;
-
-          if (!_.isPlainObject(alias.storage_thresholds_sent_at))
-            alias.storage_thresholds_sent_at = {};
-
-          const domain = await Domains.findById(alias.domain);
-
-          if (!domain) return;
-
-          // get recipients and the majority favored locale
-          const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
-            domain
-          );
-
-          //
-          // don't send a notification to the alias if the `alias.user` has
-          // already received this threshold notification in past 7d
-          //
-          let cache = await client.get(
-            `threshold:${alias.user.toString()}:${threshold.toString()}`
-          );
-          if (cache) return;
-
-          //
-          // don't send a notification to admins if they've already received
-          // this threshold notification in past 7d
-          //
-          cache = await client.get(
-            `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`
-          );
-          if (cache) return;
-
-          // send the email to the user with threshold notification
-          const subject =
-            config.views.locals.emoji('warning') +
-            ' ' +
-            i18n.translate(
-              'STORAGE_THRESHOLD_SUBJECT',
-              locale,
-              percentageUsed,
-              `${alias.name}@${domain.name}`
+          // Check if the domain still exists before proceeding
+          const domain = await Domains.findOne({ _id: alias.domain });
+          if (!domain) {
+            logger.warn(
+              'Found alias with missing domain - needs manual cleanup',
+              {
+                aliasId: id,
+                domainId: alias.domain,
+                aliasName: alias.name
+              }
             );
 
-          const message = i18n.translate(
-            'STORAGE_THRESHOLD_MESSAGE',
-            locale,
-            percentageUsed,
-            bytes(storageUsed),
-            bytes(maxQuotaPerAlias),
-            `${alias.name}@${domain.name}`,
-            `${config.urls.web}/${locale}/my-account/billing`
-          );
+            // Track orphaned aliases for email notification
+            orphanedAliases.push({
+              aliasId: id,
+              domainId: alias.domain,
+              aliasName: alias.name
+            });
 
-          // mark when the email was successfully sent/queued
-          alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
-          alias.markModified('storage_thresholds_sent_at');
+            return;
+          }
 
-          await alias.save();
+          // Continue with normal processing...
+          try {
+            // Update storage
+            try {
+              await updateStorageUsed(id, client);
+            } catch (err) {
+              logger.fatal(err, { id });
+            }
 
-          // set threshold object for all aliases that belong to this domain with same user
-          await Aliases.updateMany(
-            {
-              user: alias.user,
-              domain: alias.domain
-            },
-            {
-              $set: {
-                storage_thresholds_sent_at: alias.storage_thresholds_sent_at
+            // Get total storage used for an alias (includes across all relevant domains/aliases)
+            alias = await Aliases.findOne({ id });
+
+            if (!alias) {
+              logger.debug('alias no longer exists', { id });
+              return;
+            }
+
+            // Check if the domain still exists before proceeding
+            const domain = await Domains.findOne({ _id: alias.domain });
+            if (!domain) {
+              logger.warn(
+                'Found alias with missing domain - needs manual cleanup',
+                {
+                  aliasId: id,
+                  domainId: alias.domain,
+                  aliasName: alias.name
+                }
+              );
+
+              // Track orphaned aliases for email notification
+              orphanedAliases ||= [];
+              orphanedAliases.push({
+                aliasId: id,
+                domainId: alias.domain,
+                aliasName: alias.name
+              });
+
+              return;
+            }
+
+            // If the alias did not have imap or it was not enabled
+            // then we can return early since the check is not useful
+            if (!alias.has_imap || !alias.is_enabled) {
+              return;
+            }
+
+            const [storageUsed, maxQuotaPerAlias] = await Promise.all([
+              Aliases.getStorageUsed(alias),
+              Domains.getMaxQuota(alias.domain, alias)
+            ]);
+
+            const percentageUsed = Math.round(
+              (storageUsed / maxQuotaPerAlias) * 100
+            );
+
+            // Find closest threshold
+            let threshold;
+            for (const percentage of [50, 60, 70, 80, 90, 100]) {
+              if (percentageUsed >= percentage) {
+                threshold = percentage;
               }
             }
-          );
 
-          await client.set(
-            `threshold:${alias.user.toString()}:${threshold.toString()}`,
-            true,
-            'PX',
-            ms('7d')
-          );
-          await client.set(
-            `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`,
-            true,
-            'PX',
-            ms('7d')
-          );
+            // Return early if no threshold found
+            if (!threshold) {
+              return;
+            }
 
-          // TODO: use email queue so it retries (?)
+            // If user already received threshold notification
+            // and the notification was sent within the past 7 days
+            // then we can return early
+            if (
+              _.isPlainObject(alias.storage_thresholds_sent_at) &&
+              alias.storage_thresholds_sent_at[threshold.toString()] &&
+              _.isDate(
+                alias.storage_thresholds_sent_at[threshold.toString()]
+              ) &&
+              new Date(
+                alias.storage_thresholds_sent_at[threshold.toString()]
+              ).getTime() >= dayjs().subtract(1, 'week').toDate().getTime()
+            ) {
+              return;
+            }
+
+            if (!_.isPlainObject(alias.storage_thresholds_sent_at)) {
+              alias.storage_thresholds_sent_at = {};
+            }
+
+            const domainForLocale = await Domains.findById(alias.domain);
+
+            if (!domainForLocale) {
+              return;
+            }
+
+            // Get recipients and the majority favored locale
+            const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+              domainForLocale
+            );
+
+            //
+            // don't send a notification to the alias if the `alias.user` has
+            // already received this threshold notification in past 7d
+            //
+            let cache = await client.get(
+              `threshold:${alias.user.toString()}:${threshold.toString()}`
+            );
+            if (cache) {
+              return;
+            }
+
+            //
+            // don't send a notification to admins if they've already received
+            // this threshold notification in past 7d
+            //
+            cache = await client.get(
+              `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`
+            );
+            if (cache) {
+              return;
+            }
+
+            // Send the email to the user with threshold notification
+            const subject =
+              config.views.locals.emoji('warning') +
+              ' ' +
+              i18n.translate(
+                'STORAGE_THRESHOLD_SUBJECT',
+                locale,
+                percentageUsed,
+                `${alias.name}@${domain.name}`
+              );
+
+            const message = i18n.translate(
+              'STORAGE_THRESHOLD_MESSAGE',
+              locale,
+              percentageUsed,
+              bytes(storageUsed),
+              bytes(maxQuotaPerAlias),
+              `${alias.name}@${domain.name}`,
+              `${config.urls.web}/${locale}/my-account/billing`
+            );
+
+            // Mark when the email was successfully sent/queued
+            alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
+            alias.markModified('storage_thresholds_sent_at');
+
+            await alias.save();
+
+            // Set threshold object for all aliases that belong to this domain with same user
+            await Aliases.updateMany(
+              {
+                user: alias.user,
+                domain: alias.domain
+              },
+              {
+                $set: {
+                  storage_thresholds_sent_at: alias.storage_thresholds_sent_at
+                }
+              }
+            );
+
+            await client.set(
+              `threshold:${alias.user.toString()}:${threshold.toString()}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+            await client.set(
+              `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+
+            // TODO: use email queue so it retries (?)
+            await emailHelper({
+              template: 'alert',
+              message: {
+                to: `${alias.name}@${domain.name}`,
+                cc: to,
+                // Bcc: config.alertsEmail,
+                subject
+              },
+              locals: {
+                message,
+                locale
+              }
+            });
+          } catch (err) {
+            if (err.message === 'Alias does not exist') {
+              err.isCodeBug = true;
+              err.alias_id = id;
+            }
+
+            logger.error(err);
+            // Commented out as a safeguard
+            // easy way to cleanup non-production environments tmpdir folders
+            // if (
+            //   config.env !== 'production' &&
+            //   err.message === 'Alias does not exist'
+            // ) {
+            //   await fs.promises.rm(
+            //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`),
+            //     { force: true, recursive: true }
+            //   );
+            // }
+          }
+        });
+      }
+
+      // Send email notification for orphaned aliases with missing domains (regardless of dry run)
+      if (orphanedAliases.length > 0) {
+        try {
           await emailHelper({
             template: 'alert',
             message: {
-              to: `${alias.name}@${domain.name}`,
-              cc: to,
-              // bcc: config.alertsEmail,
-              subject
+              to: config.supportEmail,
+              subject: `Found ${orphanedAliases.length} aliases with missing domains - manual cleanup required`
             },
             locals: {
-              message,
-              locale
+              message: `<p><strong>MANUAL CLEANUP REQUIRED:</strong> Found aliases that reference domains that no longer exist.</p>
+                        <p>These aliases should be manually reviewed and deleted:</p>
+                        <ul><li><code class="small">${orphanedAliases
+                          .map(
+                            (a) =>
+                              `Alias ID: ${a.aliasId}, Name: ${a.aliasName}, Missing Domain ID: ${a.domainId}`
+                          )
+                          .join(
+                            '</code></li><li><code class="small">'
+                          )}</code></li></ul>
+                        <p><strong>Total orphaned aliases:</strong> ${
+                          orphanedAliases.length
+                        }</p>
+                        <p><em>These aliases cannot be processed normally and need manual intervention.</em></p>`
             }
           });
-        } catch (err) {
-          if (err.message === 'Alias does not exist') {
-            err.isCodeBug = true;
-            err.alias_id = id;
-          }
 
-          logger.error(err);
-          // commented out as a safeguard
-          // easy way to cleanup non-production environments tmpdir folders
-          // if (
-          //   config.env !== 'production' &&
-          //   err.message === 'Alias does not exist'
-          // ) {
-          //   await fs.promises.rm(
-          //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`),
-          //     { force: true, recursive: true }
-          //   );
-          // }
+          logger.warn(
+            'Sent notification about orphaned aliases with missing domains',
+            {
+              orphanedAliasesCount: orphanedAliases.length
+            }
+          );
+        } catch (err) {
+          logger.error('Failed to send orphaned aliases notification', {
+            emailError: err,
+            orphanedAliasesCount: orphanedAliases.length
+          });
         }
-      });
+      }
     }
   } catch (err) {
     await logger.error(err);
@@ -463,6 +637,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     });
   }
 
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
+  if (parentPort) {
+    parentPort.postMessage('done');
+  } else {
+    process.exit(0);
+  }
 })();
