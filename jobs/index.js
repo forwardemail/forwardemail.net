@@ -108,6 +108,11 @@ let jobs = [
     timeout: 0
   },
   {
+    name: 'cleanup-denylist',
+    interval: '30m',
+    timeout: 0
+  },
+  {
     name: 'check-unknown-payment-methods',
     interval: '1d',
     timeout: 0

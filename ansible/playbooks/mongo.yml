@@ -284,6 +284,94 @@
           - mongodb-org-tools=6.0.18
         state: present
         update_cache: yes
+      register: mongodb_install_result
+
+    # ========================================
+    # PACKAGE STATE VERIFICATION AND REPAIR
+    # ========================================
+
+    - name: Check if mongod binary exists
+      stat:
+        path: /usr/bin/mongod
+      register: mongod_binary
+
+    - name: Check MongoDB package installation state
+      shell: dpkg -l | grep mongodb-org
+      register: mongodb_packages_check
+      changed_when: false
+      failed_when: false
+
+    - name: Display package state
+      debug:
+        msg: |
+          mongod binary exists: {{ mongod_binary.stat.exists }}
+          MongoDB package state:
+          {{ mongodb_packages_check.stdout_lines }}
+
+    # AGGRESSIVE REPAIR - Only if mongod binary is missing
+    - name: Detect broken/half-installed packages (when binary missing)
+      shell: dpkg -l | grep mongodb-org | grep -E '^(hi|iU|iF)'
+      register: broken_packages
+      changed_when: false
+      failed_when: false
+      when: not mongod_binary.stat.exists
+
+    - name: Remove broken MongoDB packages completely
+      shell: |
+        dpkg --remove --force-remove-reinstreq mongodb-org mongodb-org-database mongodb-org-server mongodb-org-mongos mongodb-org-tools 2>/dev/null || true
+        apt-get remove --purge -y mongodb-org* 2>/dev/null || true
+        dpkg --configure -a
+        apt-get install -f -y
+      when:
+        - not mongod_binary.stat.exists
+        - broken_packages.rc == 0
+
+    - name: Clean apt cache after removal
+      apt:
+        autoclean: yes
+        autoremove: yes
+      when:
+        - not mongod_binary.stat.exists
+        - broken_packages.rc == 0
+
+    - name: Reinstall MongoDB packages from scratch
+      apt:
+        name:
+          - mongodb-org=6.0.18
+          - mongodb-org-database=6.0.18
+          - mongodb-org-server=6.0.18
+          - mongodb-org-mongos=6.0.18
+          - mongodb-org-tools=6.0.18
+        state: present
+        update_cache: yes
+      when:
+        - not mongod_binary.stat.exists
+        - broken_packages.rc == 0
+
+    - name: Verify mongod binary exists after repair
+      stat:
+        path: /usr/bin/mongod
+      register: mongod_binary_after_repair
+      when: not mongod_binary.stat.exists
+
+    - name: Fail if mongod binary is still missing after repair
+      fail:
+        msg: |
+          MongoDB binary /usr/bin/mongod is STILL missing after aggressive repair!
+          This indicates a serious package or repository issue.
+          Package states: {{ mongodb_packages_check.stdout_lines }}
+          Please check:
+          1. MongoDB repository is accessible
+          2. No disk space issues
+          3. No AppArmor/SELinux blocking installation
+      when:
+        - not mongod_binary.stat.exists
+        - broken_packages.rc == 0
+        - not mongod_binary_after_repair.stat.exists
+
+    - name: Display successful installation
+      debug:
+        msg: "MongoDB packages successfully installed and verified (mongod binary exists)"
 
     - name: Hold MongoDB packages to prevent accidental upgrades
       dpkg_selections:
@@ -337,16 +425,54 @@
         path: /lib/systemd/system/mongod.service
       register: mongod_service_file
 
-    - name: Fail if mongod service file is missing
-      fail:
-        msg: "MongoDB service file not found. Package installation may have failed."
+    - name: Create mongod service file if missing (after complete purge)
+      copy:
+        dest: /lib/systemd/system/mongod.service
+        content: |
+          [Unit]
+          Description=MongoDB Database Server
+          Documentation=https://docs.mongodb.org/manual
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=forking
+          User=mongodb
+          Group=mongodb
+          RuntimeDirectory=mongodb
+          PIDFile=/var/run/mongodb/mongod.pid
+          ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+          ExecStartPre=/usr/bin/mkdir -p /var/run/mongodb
+          ExecStartPre=/usr/bin/chown mongodb:mongodb /var/run/mongodb
+          ExecStartPre=/usr/bin/chmod 0755 /var/run/mongodb
+          PermissionsStartOnly=true
+          LimitFSIZE=infinity
+          LimitCPU=infinity
+          LimitAS=infinity
+          LimitNOFILE=64000
+          LimitNPROC=64000
+          LimitMEMLOCK=infinity
+          TasksMax=infinity
+          TasksAccounting=false
+          Restart=always
+          RestartSec=10
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+        mode: '0644'
       when: not mongod_service_file.stat.exists
 
-    - name: Enable and start mongod service
+    - name: Reload systemd after creating service file
+      systemd:
+        daemon_reload: yes
+      when: not mongod_service_file.stat.exists
+
+    - name: Enable mongod service (will be started after configuration)
       systemd:
         name: mongod
         enabled: yes
-        state: started
 
     # Add failure notification to mongod service
     - name: Create mongod service override directory
@@ -372,6 +498,104 @@
     - name: Reload systemd daemon for mongod override
       systemd:
         daemon_reload: yes
+
+    # ========================================
+    # STATE DETECTION - Check current MongoDB state
+    # ========================================
+
+    - name: Check if mongod is currently running
+      shell: systemctl is-active mongod
+      register: mongod_running
+      changed_when: false
+      failed_when: false
+
+    - name: Check if admin user already exists
+      shell: |
+        mongosh --quiet --eval "db.adminCommand('listUsers').users.length" admin 2>/dev/null || echo "0"
+      register: admin_user_check
+      changed_when: false
+      failed_when: false
+
+    - name: Set state facts
+      set_fact:
+        mongod_was_running: "{{ mongod_running.stdout == 'active' }}"
+        admin_user_exists: "{{ (admin_user_check.stdout | trim | int) > 0 }}"
+
+    - name: Display current MongoDB state
+      debug:
+        msg: |
+          MongoDB State Detection:
+          - mongod running: {{ mongod_was_running }}
+          - admin user exists: {{ admin_user_exists }}
+
+    # ========================================
+    # WIREDTIGER CACHE CALCULATION
+    # ========================================
+
+    - name: Calculate WiredTiger cache size (50% of RAM - 1GB)
+      set_fact:
+        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.5) | round(1), 0.25] | max }}"
+
+    - name: Display calculated WiredTiger cache size
+      debug:
+        msg: |
+          System RAM: {{ (total_mem_kb.stdout | int / 1024 / 1024) | round(2) }}GB
+          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (50% of RAM - 1GB)
+
+    # ========================================
+    # BASE CONFIGURATION (NO TLS, NO AUTH)
+    # ========================================
+
+    - name: Create base mongod.conf (without TLS/auth for initial setup)
+      copy:
+        dest: /etc/mongod.conf
+        content: |
+          # MongoDB configuration file
+          # This file is managed by Ansible - manual changes may be overwritten
+          # Last updated: {{ ansible_date_time.iso8601 }}
+
+          # Where and how to store data
+          storage:
+            dbPath: /var/lib/mongodb
+            engine: wiredTiger
+            wiredTiger:
+              engineConfig:
+                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                cacheSizeGB: {{ wiredtiger_cache_gb }}
+                journalCompressor: snappy
+                directoryForIndexes: false
+              collectionConfig:
+                blockCompressor: snappy
+              indexConfig:
+                prefixCompression: true
+            journal:
+              enabled: true
+
+          # Where to write logging data
+          systemLog:
+            destination: file
+            logAppend: true
+            path: /var/log/mongodb/mongod.log
+
+          # Network interfaces
+          net:
+            port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
+            bindIp: 0.0.0.0
+            maxIncomingConnections: 65536
+
+          # Process management
+          processManagement:
+            timeZoneInfo: /usr/share/zoneinfo
+            fork: true
+            pidFilePath: /var/run/mongodb/mongod.pid
+
+          # Operation Profiling (log slow operations)
+          operationProfiling:
+            mode: slowOp
+            slowOpThresholdMs: 100
+        owner: root
+        group: root
+        mode: '0644'
 
     # Configure MongoDB for TLS/SSL
     - name: Ensure MongoDB TLS/SSL configuration directory exists
@@ -415,30 +639,33 @@
       args:
         creates: /etc/mongodb/ssl/mongodb.pem
 
-    - name: Configure MongoDB TLS/SSL in mongod.conf
-      blockinfile:
-        path: /etc/mongod.conf
-        marker: "# {mark} ANSIBLE MANAGED BLOCK - TLS/SSL"
-        block: |
-          net:
-            tls:
-              mode: requireTLS
-              certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
-              CAFile: /etc/mongodb/ssl/ca.pem
+    # ========================================
+    # USER CREATION (if needed)
+    # ========================================
 
-    # Create admin user if authentication is not yet enabled
-    - name: Check if admin user exists
-      shell: |
-        mongosh --quiet --eval "db.adminCommand('listUsers').users.length" admin 2>/dev/null || echo "0"
-      register: admin_user_check
-      changed_when: false
-      failed_when: false
+    - name: Start mongod temporarily for user creation (if not running and user doesn't exist)
+      systemd:
+        name: mongod
+        state: started
+      when:
+        - not mongod_was_running
+        - not admin_user_exists
+
+    - name: Wait for mongod to be ready
+      wait_for:
+        port: "{{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
+        delay: 3
+        timeout: 60
+      when:
+        - not mongod_was_running
+        - not admin_user_exists
 
     - name: Copy MongoDB user creation Python script
       copy:
         src: files/create_mongo_user.py
         dest: /tmp/create_mongo_user.py
         mode: '0700'
+      when: not admin_user_exists
       no_log: true
 
     - name: Create MongoDB user creation script using Python
@@ -447,18 +674,22 @@
         export MONGO_PASS='{{ lookup('env', 'MONGO_PASS') }}'
         python3 /tmp/create_mongo_user.py
       register: script_creation
+      when: not admin_user_exists
       failed_when: false
       no_log: true
 
     - name: Check Python script result
       fail:
         msg: "Failed to create MongoDB user creation script"
-      when: script_creation.rc != 0
+      when:
+        - not admin_user_exists
+        - script_creation.rc != 0
 
     - name: Create MongoDB admin user
       shell: |
         mongosh --quiet admin --file /tmp/create_mongo_user.js
       register: create_user_result
+      when: not admin_user_exists
       failed_when: false
       no_log: true
 
@@ -469,32 +700,88 @@
       loop:
         - /tmp/create_mongo_user.py
         - /tmp/create_mongo_user.js
+      when: not admin_user_exists
       no_log: true
 
     - name: Check MongoDB user creation result
       fail:
         msg: "Failed to create MongoDB admin user"
-      when: >
-        create_user_result.rc != 0 and
-        'User already exists' not in create_user_result.stdout and
-        'User created successfully' not in create_user_result.stdout
+      when:
+        - not admin_user_exists
+        - create_user_result.rc != 0
+        - "'User already exists' not in create_user_result.stdout"
+        - "'User created successfully' not in create_user_result.stdout"
 
-    - name: Enable MongoDB authentication in mongod.conf
-      blockinfile:
-        path: /etc/mongod.conf
-        marker: "# {mark} ANSIBLE MANAGED BLOCK - SECURITY"
-        block: |
+    - name: Stop mongod if it was started temporarily
+      systemd:
+        name: mongod
+        state: stopped
+      when:
+        - not mongod_was_running
+        - not admin_user_exists
+
+    # ========================================
+    # FINAL CONFIGURATION (WITH TLS AND AUTH)
+    # ========================================
+
+    - name: Create final mongod.conf with TLS and authentication
+      copy:
+        dest: /etc/mongod.conf
+        content: |
+          # MongoDB configuration file
+          # This file is managed by Ansible - manual changes may be overwritten
+          # Last updated: {{ ansible_date_time.iso8601 }}
+
+          # Where and how to store data
+          storage:
+            dbPath: /var/lib/mongodb
+            engine: wiredTiger
+            wiredTiger:
+              engineConfig:
+                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                cacheSizeGB: {{ wiredtiger_cache_gb }}
+                journalCompressor: snappy
+                directoryForIndexes: false
+              collectionConfig:
+                blockCompressor: snappy
+              indexConfig:
+                prefixCompression: true
+            journal:
+              enabled: true
+
+          # Where to write logging data
+          systemLog:
+            destination: file
+            logAppend: true
+            path: /var/log/mongodb/mongod.log
+
+          # Network interfaces
+          net:
+            port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
+            bindIp: 0.0.0.0
+            maxIncomingConnections: 65536
+            tls:
+              mode: requireTLS
+              certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
+              CAFile: /etc/mongodb/ssl/ca.pem
+
+          # Process management
+          processManagement:
+            timeZoneInfo: /usr/share/zoneinfo
+            fork: true
+            pidFilePath: /var/run/mongodb/mongod.pid
+
+          # Operation Profiling (log slow operations)
+          operationProfiling:
+            mode: slowOp
+            slowOpThresholdMs: 100
+
+          # Security
           security:
             authorization: enabled
-
-    - name: Configure MongoDB connection limits
-      blockinfile:
-        path: /etc/mongod.conf
-        marker: "# {mark} ANSIBLE MANAGED BLOCK - NET CONFIG"
-        block: |
-          net:
-            maxIncomingConnections: 65536
-            port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
+        owner: root
+        group: root
+        mode: '0644'
 
     # Disable mongosh telemetry globally
     - name: Create mongosh config directory
@@ -836,13 +1123,15 @@
 
         ╔════════════════════════════════════════════════════════════════════════╗
         ║                                                                        ║
-        ║                    ⚠️  MANUAL RESTART REQUIRED ⚠️                      ║
+        ║                    ⚠️  MANUAL START/RESTART REQUIRED ⚠️                ║
         ║                                                                        ║
         ║  MongoDB configuration has been updated but the service was NOT       ║
-        ║  automatically restarted to prevent disruption.                       ║
+        ║  automatically started/restarted to prevent disruption.               ║
         ║                                                                        ║
-        ║  To apply the new configuration, you must MANUALLY restart MongoDB:   ║
+        ║  To start MongoDB (first-time install or after purge):                ║
+        ║    sudo systemctl start mongod                                        ║
         ║                                                                        ║
+        ║  To restart MongoDB (if already running):                             ║
         ║    sudo systemctl restart mongod                                      ║
         ║                                                                        ║
         ║  ⚠️  WARNING: This will:                                              ║
