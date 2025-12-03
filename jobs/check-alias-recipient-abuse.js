@@ -19,7 +19,6 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Aliases } = require('#models');
 
@@ -452,8 +451,6 @@ const domainPattern = EMAIL_DOMAINS.map((domain) =>
 
 // Create the full regex for email validation
 const emailRegex = new RegExp(`^.+@(${domainPattern})$`, 'i');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

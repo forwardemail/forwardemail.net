@@ -20,7 +20,6 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const SMTP = require('./smtp-server');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -45,7 +44,6 @@ const graceful = new Graceful({
   logger
 });
 graceful.listen();
-monitorServer();
 
 (async () => {
   try {

@@ -19,9 +19,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
 const config = require('#config');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

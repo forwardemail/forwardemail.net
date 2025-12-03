@@ -19,10 +19,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('#helpers/logger');
 const config = require('#config');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

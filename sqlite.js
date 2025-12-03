@@ -22,7 +22,6 @@ const SQLite = require('./sqlite-server');
 
 const closeDatabase = require('#helpers/close-database');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const imapSharedConfig = sharedConfig('IMAP');
@@ -74,7 +73,6 @@ const graceful = new Graceful({
   ]
 });
 graceful.listen();
-monitorServer();
 
 (async () => {
   try {

@@ -20,9 +20,6 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, UpgradeReminders } = require('#models');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

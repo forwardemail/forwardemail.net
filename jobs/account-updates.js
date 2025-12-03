@@ -24,9 +24,6 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Users = require('#models/users');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

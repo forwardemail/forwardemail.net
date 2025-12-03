@@ -24,9 +24,6 @@ const { ungzip } = require('node-gzip');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

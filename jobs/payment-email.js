@@ -24,9 +24,6 @@ const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { Users, Payments } = require('#models');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

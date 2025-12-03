@@ -28,9 +28,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Aliases } = require('#models');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

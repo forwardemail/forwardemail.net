@@ -26,9 +26,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

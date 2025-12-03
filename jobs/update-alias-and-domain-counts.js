@@ -20,10 +20,7 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

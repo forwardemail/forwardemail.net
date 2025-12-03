@@ -26,12 +26,9 @@ const emailHelper = require('#helpers/email');
 const isAllowlisted = require('#helpers/is-allowlisted');
 const isDenylisted = require('#helpers/is-denylisted');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Users = require('#models/users');
 const Domains = require('#models/domains');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

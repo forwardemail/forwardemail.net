@@ -21,10 +21,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const Users = require('#models/users');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-monitorServer();
 
 // TODO: re-use existing connection from web
 const breeSharedConfig = sharedConfig('BREE');

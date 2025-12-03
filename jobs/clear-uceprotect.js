@@ -16,9 +16,6 @@ const validator = require('@forwardemail/validator');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

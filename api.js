@@ -20,7 +20,6 @@ const Users = require('#models/users');
 const apiConfig = require('#config/api');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const api = new API(
@@ -38,7 +37,6 @@ const graceful = new Graceful({
   logger
 });
 graceful.listen();
-monitorServer();
 
 (async () => {
   try {

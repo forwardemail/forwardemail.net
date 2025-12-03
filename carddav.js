@@ -19,7 +19,6 @@ const Users = require('#models/users');
 const cardDAVConfig = require('#config/carddav');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 (async () => {
@@ -50,7 +49,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
     });
 
     graceful.listen();
-    monitorServer();
 
     await cardDAV.listen(cardDAV.config.port);
     if (process.send) process.send('ready');

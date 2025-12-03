@@ -22,11 +22,8 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const createTangerine = require('#helpers/create-tangerine');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-monitorServer();
 
 // TODO: re-use existing connection from web
 const breeSharedConfig = sharedConfig('BREE');

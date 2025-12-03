@@ -22,9 +22,6 @@ const { Users, Payments } = require('#models');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const config = require('#config');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const concurrency = os.cpus().length;
 const graceful = new Graceful({

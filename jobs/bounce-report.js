@@ -25,9 +25,6 @@ const emailHelper = require('#helpers/email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const logger = require('#helpers/logger');
 const getLogsCsv = require('#helpers/get-logs-csv');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

@@ -34,12 +34,9 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { cleanupOrphanedBackups } = require('#helpers/remove-alias-backup');
 const updateStorageUsed = require('#helpers/update-storage-used');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

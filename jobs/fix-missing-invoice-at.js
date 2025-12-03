@@ -26,9 +26,6 @@ const env = require('#config/env');
 const { Payments } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const graceful = new Graceful({

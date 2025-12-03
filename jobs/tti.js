@@ -35,10 +35,7 @@ const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
-const monitorServer = require('#helpers/monitor-server');
 const TTI = require('#models/tti');
-
-monitorServer();
 
 //
 // every 30s ensure that IMAP connection is established

@@ -35,9 +35,6 @@ const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');

@@ -22,7 +22,6 @@ const IMAP = require('./imap-server');
 
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const imapSharedConfig = sharedConfig('IMAP');
@@ -61,7 +60,6 @@ const graceful = new Graceful({
   ]
 });
 graceful.listen();
-monitorServer();
 
 (async () => {
   try {

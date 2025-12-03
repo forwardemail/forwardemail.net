@@ -24,9 +24,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const Emails = require('#models/emails');
 const Domains = require('#models/emails');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

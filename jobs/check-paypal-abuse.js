@@ -22,12 +22,9 @@ const safeStringify = require('fast-safe-stringify');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Users = require('#models/users');
 const Domains = require('#models/domains');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

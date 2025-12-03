@@ -24,9 +24,6 @@ const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, UpgradeReminders } = require('#models');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');

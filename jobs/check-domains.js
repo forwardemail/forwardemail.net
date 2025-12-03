@@ -25,9 +25,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
 const Domains = require('#models/domains');
 const createTangerine = require('#helpers/create-tangerine');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

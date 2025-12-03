@@ -23,9 +23,6 @@ const config = require('#config');
 
 const Users = require('#models/users');
 const Domains = require('#models/domains');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

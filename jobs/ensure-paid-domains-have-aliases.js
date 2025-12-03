@@ -20,9 +20,6 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Aliases } = require('#models');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 

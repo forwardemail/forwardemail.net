@@ -34,11 +34,8 @@ const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
-
-monitorServer();
 
 // <https://github.com/nodejs/undici/issues/583>
 const client = new RetryClient(config.urls.web, {

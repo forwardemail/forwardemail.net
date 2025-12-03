@@ -15,9 +15,6 @@ const I18N = require('@ladjs/i18n');
 const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 //
 // NOTE: we want our own instance of i18n that does not auto reload files

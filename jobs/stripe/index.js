@@ -28,9 +28,6 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const concurrency = os.cpus().length;

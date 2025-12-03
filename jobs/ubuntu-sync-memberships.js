@@ -28,9 +28,6 @@ const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

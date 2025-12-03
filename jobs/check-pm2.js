@@ -28,7 +28,6 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const monitorServer = require('#helpers/monitor-server');
 
 const IP_ADDRESS = ip.address();
 
@@ -59,11 +58,7 @@ function isProcessRunning(pid) {
 (async () => {
   let lockAcquired = false;
   let pm2Connected = false;
-  let monitorInterval = null;
-
   try {
-    // Start monitoring only after we're sure we'll proceed
-    monitorInterval = monitorServer();
     // Try to acquire lock
     try {
       // Check if lock file exists
@@ -95,8 +90,6 @@ function isProcessRunning(pid) {
               await logger.info(
                 `Another instance (PID ${lockPid}) is already running, exiting gracefully`
               );
-              // Clear monitor interval before exiting
-              if (monitorInterval) clearInterval(monitorInterval);
               if (parentPort) parentPort.postMessage('done');
               else process.exit(0);
             }
@@ -125,8 +118,6 @@ function isProcessRunning(pid) {
         await logger.info(
           'Another instance is already running (race condition), exiting gracefully'
         );
-        // Clear monitor interval before exiting
-        if (monitorInterval) clearInterval(monitorInterval);
         if (parentPort) parentPort.postMessage('done');
         else process.exit(0);
       }
@@ -259,9 +250,6 @@ function isProcessRunning(pid) {
       }
     });
   } finally {
-    // Clear monitor interval
-    if (monitorInterval) clearInterval(monitorInterval);
-
     // Always disconnect PM2 if connected
     if (pm2Connected) {
       await new Promise((resolve) => {

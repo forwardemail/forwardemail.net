@@ -20,7 +20,6 @@ const POP3 = require('./pop3-server');
 
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const pop3SharedConfig = sharedConfig('POP3');
@@ -53,7 +52,6 @@ const graceful = new Graceful({
   ]
 });
 graceful.listen();
-monitorServer();
 
 (async () => {
   try {

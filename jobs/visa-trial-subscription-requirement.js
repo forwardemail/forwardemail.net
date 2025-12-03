@@ -32,9 +32,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments, Domains } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
-const monitorServer = require('#helpers/monitor-server');
-
-monitorServer();
 
 const { PAYPAL_MAPPING, PAYPAL_PLAN_MAPPING } = config.payments;
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);

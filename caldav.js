@@ -26,7 +26,6 @@ const Users = require('#models/users');
 const calDAVConfig = require('#config/caldav');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 (async () => {
@@ -162,7 +161,6 @@ const setupMongoose = require('#helpers/setup-mongoose');
       ]
     });
     graceful.listen();
-    monitorServer();
     await calDAV.listen(calDAV.config.port);
     if (process.send) process.send('ready');
     const { port } = calDAV.server.address();
