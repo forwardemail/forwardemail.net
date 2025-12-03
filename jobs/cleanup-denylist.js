@@ -28,8 +28,6 @@ const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const monitorServer = require('#helpers/monitor-server');
 
-const entries = [...config.allowlist];
-
 monitorServer();
 
 const graceful = new Graceful({
@@ -39,6 +37,12 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// List of entries to remove from denylist
+// Combines allowlist and truth sources
+//
+const entries = [...config.allowlist, ...config.truthSources];
 
 //
 // Configuration
@@ -59,6 +63,33 @@ function keyMatchesEntries(key) {
     const entryLower = entry.toLowerCase();
     // Match pattern: denylist:*{entry}*
     if (keyLower.includes(entryLower)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+//
+// Check if a key matches any truth source
+// Truth sources are domains like gmail.com, outlook.com, etc.
+// Keys like denylist:spammer@gmail.com should be flagged but not deleted
+//
+function keyMatchesTruthSource(key) {
+  const keyLower = key.toLowerCase();
+  // Remove 'denylist:' prefix
+  const value = keyLower.replace(/^denylist:/, '');
+
+  // Check if the value contains any truth source
+  for (const truthSource of config.truthSources) {
+    const truthSourceLower = truthSource.toLowerCase();
+    // Match if the value contains the truth source as a domain
+    // e.g., spammer@gmail.com matches gmail.com
+    if (
+      value.includes(`@${truthSourceLower}`) ||
+      value.includes(`.${truthSourceLower}`) ||
+      value === truthSourceLower
+    ) {
       return true;
     }
   }
@@ -121,12 +152,30 @@ function delay(ms) {
     logger.info('Phase 2: Filtering keys that match entries');
     const filterStartTime = Date.now();
 
-    const keysToDelete = allKeys.filter((key) => keyMatchesEntries(key));
+    const keysMatchingEntries = allKeys.filter((key) => keyMatchesEntries(key));
+
+    // Separate keys that match truth sources (don't delete these)
+    const truthSourceKeys = [];
+    const keysToDelete = [];
+
+    for (const key of keysMatchingEntries) {
+      if (keyMatchesTruthSource(key)) {
+        truthSourceKeys.push(key);
+      } else {
+        keysToDelete.push(key);
+      }
+    }
 
     const filterDuration = Date.now() - filterStartTime;
     logger.info(
-      `Phase 2 complete: Found ${keysToDelete.length} keys to delete in ${filterDuration}ms`
+      `Phase 2 complete: Found ${keysMatchingEntries.length} matching keys (${keysToDelete.length} to delete, ${truthSourceKeys.length} truth sources to preserve) in ${filterDuration}ms`
     );
+
+    if (truthSourceKeys.length > 0) {
+      logger.warn(
+        `Found ${truthSourceKeys.length} keys matching truth sources - these will NOT be deleted`
+      );
+    }
 
     //
     // Phase 3: Delete keys in batches
@@ -142,6 +191,7 @@ function delay(ms) {
       let deletedCount = 0;
       let errorCount = 0;
       const errors = [];
+      const deletedKeys = [];
 
       // Process in chunks
       for (let i = 0; i < keysToDelete.length; i += options.deleteChunkSize) {
@@ -153,6 +203,7 @@ function delay(ms) {
             try {
               await client.del(key);
               deletedCount++;
+              deletedKeys.push(key);
             } catch (err) {
               errorCount++;
               errors.push({ key, error: err.message });
@@ -208,40 +259,80 @@ function delay(ms) {
       logger.info('Denylist cleanup summary:', summary);
 
       // Email report to security@forwardemail.net
+      const deletedKeysHtml =
+        deletedKeys.length > 0
+          ? `
+<h3>Deleted Keys (${deletedKeys.length})</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr><th>#</th><th>Key</th></tr>
+  ${deletedKeys
+    .map((key, index) => `<tr><td>${index + 1}</td><td>${key}</td></tr>`)
+    .join('\n  ')}
+</table>
+        `.trim()
+          : '';
+
+      const truthSourceKeysHtml =
+        truthSourceKeys.length > 0
+          ? `
+<h3>⚠️ Truth Source Matches - NOT DELETED (${truthSourceKeys.length})</h3>
+<p><strong>These keys match truth sources (e.g., gmail.com, outlook.com) and were preserved for manual review.</strong></p>
+<p>Truth sources may contain legitimate spammers that should remain on the denylist.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr><th>#</th><th>Key</th></tr>
+  ${truthSourceKeys
+    .map((key, index) => `<tr><td>${index + 1}</td><td>${key}</td></tr>`)
+    .join('\n  ')}
+</table>
+        `.trim()
+          : '';
+
+      const errorsHtml =
+        errorCount > 0 && errors.length <= 100
+          ? `
+<h3>Errors (${errorCount})</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr><th>#</th><th>Key</th><th>Error</th></tr>
+  ${errors
+    .map(
+      (e, index) =>
+        `<tr><td>${index + 1}</td><td>${e.key}</td><td>${e.error}</td></tr>`
+    )
+    .join('\n  ')}
+</table>
+        `.trim()
+          : errorCount > 100
+          ? `<p><em>Note: ${errorCount} errors occurred (too many to display)</em></p>`
+          : '';
+
       const summaryHtml = `
 <h2>Denylist Cleanup Report</h2>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Metric</th><th>Value</th></tr>
   <tr><td>Total denylist keys scanned</td><td>${allKeys.length}</td></tr>
-  <tr><td>Keys matching entries</td><td>${keysToDelete.length}</td></tr>
+  <tr><td>Keys matching entries</td><td>${keysMatchingEntries.length}</td></tr>
   <tr><td>Keys deleted</td><td>${deletedCount}</td></tr>
+  <tr><td>Truth source matches (preserved)</td><td>${truthSourceKeys.length}</td></tr>
   <tr><td>Errors</td><td>${errorCount}</td></tr>
   <tr><td>Scan duration</td><td>${scanDuration}ms</td></tr>
   <tr><td>Filter duration</td><td>${filterDuration}ms</td></tr>
   <tr><td>Delete duration</td><td>${deleteDuration}ms</td></tr>
   <tr><td>Total duration</td><td>${totalDuration}ms</td></tr>
 </table>
-${
-  errorCount > 0 && errors.length <= 10
-    ? `<h3>Errors</h3><ul>${errors
-        .map((e) => `<li>${e.key}: ${e.error}</li>`)
-        .join('')}</ul>`
-    : ''
-}
-${
-  errorCount > 10
-    ? `<p><em>Note: Only showing first 10 errors out of ${errorCount} total</em></p>`
-    : ''
-}
+${deletedKeysHtml}
+${truthSourceKeysHtml}
+${errorsHtml}
       `.trim();
 
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.supportEmail,
+          to: 'security@forwardemail.net',
           subject: `Denylist Cleanup: ${deletedCount} keys deleted${
-            errorCount > 0 ? ` (${errorCount} errors)` : ''
-          }`
+            truthSourceKeys.length > 0
+              ? `, ${truthSourceKeys.length} truth sources preserved`
+              : ''
+          }${errorCount > 0 ? ` (${errorCount} errors)` : ''}`
         },
         locals: {
           message: summaryHtml

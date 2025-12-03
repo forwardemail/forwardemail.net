@@ -13,6 +13,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const { Domains, Users } = require('#models');
+// const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
 
@@ -181,6 +182,19 @@ async function update(ctx) {
 async function remove(ctx) {
   const user = await Users.findById(ctx.params.id);
   if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+
+  // NOTE: currently commented out until we're certain this works well
+  // Clean up R2 backup files for all aliases belonging to this user
+  // try {
+  //   await removeUserAliasBackups(user);
+  // } catch (err) {
+  //   // Log error but don't fail the user ban/removal
+  //   ctx.logger.error('Failed to remove R2 backup files for user', {
+  //     error: err,
+  //     userId: user._id
+  //   });
+  // }
+
   // instead of removing the user entirely we just ban them
   user[config.userFields.isBanned] = true;
   await user.save();

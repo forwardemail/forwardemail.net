@@ -7,6 +7,7 @@ const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 
 const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
+// const { removeMultipleAliasBackups } = require('#helpers/remove-alias-backup');
 const config = require('#config');
 const { Domains, Aliases } = require('#models');
 
@@ -20,10 +21,31 @@ async function removeDomain(ctx, next) {
   //
   await abusePreventionByUserId(ctx);
 
+  // Get all aliases for this domain before deletion
+  // const aliases = await Aliases.find({
+  //   domain: ctx.state.domain._id
+  // });
+
   // remove all aliases
   await Aliases.deleteMany({
     domain: ctx.state.domain._id
   });
+
+  // NOTE: currently commented out until we're certain this works well
+  // Clean up R2 backup files for all aliases in this domain
+  // if (aliases.length > 0) {
+  //   try {
+  //     await removeMultipleAliasBackups(aliases);
+  //   } catch (err) {
+  //     // Log error but don't fail the domain removal
+  //     ctx.logger.error('Failed to remove R2 backup files for domain aliases', {
+  //       error: err,
+  //       domainId: ctx.state.domain._id,
+  //       aliasCount: aliases.length
+  //     });
+  //   }
+  // }
+
   // remove the domain
   await Domains.findByIdAndRemove(ctx.state.domain._id);
   if (!ctx.api)

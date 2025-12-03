@@ -8,6 +8,7 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 
 const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
+// const { removeAliasBackup } = require('#helpers/remove-alias-backup');
 const config = require('#config');
 const { Aliases } = require('#models');
 
@@ -36,6 +37,19 @@ async function removeAlias(ctx, next) {
   // abuse prevention (need to wait at least 5 days if any payments made)
   //
   await abusePreventionByUserId(ctx);
+
+  // NOTE: currently commented out until we're certain this works well
+  // Clean up R2 backup files for this alias before deletion
+  // try {
+  //   await removeAliasBackup(ctx.state.alias);
+  // } catch (err) {
+  //   // Log error but don't fail the alias removal
+  //   ctx.logger.error('Failed to remove R2 backup files', {
+  //     error: err,
+  //     aliasId: ctx.state.alias._id,
+  //     storageLocation: ctx.state.alias.storage_location
+  //   });
+  // }
 
   await Aliases.findByIdAndRemove(ctx.state.alias._id);
   if (!ctx.api)

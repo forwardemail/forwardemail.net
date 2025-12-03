@@ -36,6 +36,7 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
+const { cleanupOrphanedBackups } = require('#helpers/remove-alias-backup');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 monitorServer();
@@ -80,12 +81,50 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
   subscriber.subscribe('sqlite_auth_response');
 
   //
-  // TODO: delete aliases that no longer exist in R2
-  //       - 605249d9559c394835521bbe.sqlite.gz
-  //       - 605249d9559c394835521bbe.sqlite
+  // Clean up orphaned R2 backup files
+  // This addresses the TODO items for deleting aliases that no longer exist in R2
   //
-  // TODO: delete aliases that no longer exist in SQLite
-  //
+  try {
+    // Check for dry run mode from environment variable
+    const dryRun =
+      process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
+
+    if (dryRun) {
+      logger.info(
+        'Running R2 cleanup in DRY RUN mode during SQLite cleanup - no files will actually be deleted'
+      );
+    }
+
+    // Get all distinct storage locations that actually have aliases
+    const storageLocations = await Aliases.distinct('storage_location');
+
+    for (const storageLocation of storageLocations) {
+      if (isCancelled) break;
+
+      try {
+        logger.info(
+          dryRun
+            ? 'Analyzing orphaned R2 backups during SQLite cleanup (dry run)'
+            : 'Cleaning up orphaned R2 backups during SQLite cleanup',
+          {
+            storageLocation,
+            dryRun
+          }
+        );
+        await cleanupOrphanedBackups(storageLocation, { dryRun });
+      } catch (err) {
+        logger.error('Error cleaning up R2 backups during SQLite cleanup', {
+          error: err,
+          storageLocation,
+          dryRun
+        });
+      }
+    }
+  } catch (err) {
+    logger.error('Error in R2 cleanup section of SQLite cleanup job', {
+      error: err
+    });
+  }
 
   try {
     if (isCancelled) return;
@@ -386,7 +425,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.alertsEmail,
+        to: config.supportEmail,
         subject: 'SQLite cleanup had an error'
       },
       locals: {
@@ -396,6 +435,34 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           2
         )}</code></pre>`
       }
+    });
+  }
+
+  // Always send completion notification (success or failure)
+  try {
+    const dryRun =
+      process.env.DRY_RUN === 'true' || process.env.DRY_RUN === '1';
+
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.supportEmail,
+        subject: dryRun
+          ? 'SQLite cleanup analysis completed (DRY RUN)'
+          : 'SQLite cleanup job completed successfully'
+      },
+      locals: {
+        message: dryRun
+          ? `<p><strong>DRY RUN MODE:</strong> SQLite cleanup analysis has been completed. No files were deleted and no user notifications were sent.</p>
+             <p>This job also performed R2 backup cleanup analysis as part of the process.</p>
+             <p><em>To perform actual cleanup, run the job without DRY_RUN environment variable.</em></p>`
+          : `<p>SQLite cleanup job has been completed successfully.</p>
+             <p>This job also performed R2 backup cleanup as part of the process.</p>`
+      }
+    });
+  } catch (err) {
+    logger.error('Failed to send SQLite cleanup completion notification', {
+      emailError: err
     });
   }
 
