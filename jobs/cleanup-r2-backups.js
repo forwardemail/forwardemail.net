@@ -25,13 +25,11 @@ const { cleanupOrphanedBackups } = require('#helpers/remove-alias-backup');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const subscriber = new Redis(breeSharedConfig.redis, logger);
 client.setMaxListeners(0);
-subscriber.setMaxListeners(0);
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  redisClients: [client, subscriber],
+  redisClients: [client],
   logger
 });
 
@@ -56,8 +54,6 @@ graceful.listen();
 
 (async () => {
   await setupMongoose(logger);
-
-  subscriber.subscribe('sqlite_auth_response');
 
   // Initialize variables for email reporting
   const results = [];

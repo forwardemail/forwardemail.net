@@ -23,7 +23,12 @@ const bree = new Bree({
       //
       name: 'cleanup-sqlite',
       interval: '1h',
-      timeout: 0
+      timeout: '30m'
+    },
+    {
+      name: 'jobs/cleanup-r2-backups',
+      timeout: '1h',
+      interval: '1d'
     }
   ]
 });

@@ -9,6 +9,7 @@ const {
   DeleteObjectCommand
 } = require('@aws-sdk/client-s3');
 const dashify = require('dashify');
+
 const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -78,13 +79,16 @@ async function removeAliasBackup(alias, options = {}) {
         // Extract alias ID from filename (remove extensions and suffixes)
         let extractedAliasId = filename;
 
-        // Remove common extensions
-        extractedAliasId = extractedAliasId.replace(/\.(sqlite|zip|gz)$/, '');
+        // Remove common extensions including SQLite WAL/SHM files
+        extractedAliasId = extractedAliasId.replace(
+          /\.(sqlite|sqlite-shm|sqlite-wal|zip|gz)$/,
+          ''
+        );
 
         // Remove backup suffix if present
         extractedAliasId = extractedAliasId.replace(/-backup$/, '');
 
-        // Remove temp suffix if present
+        // Remove temp suffix if present (handles -tmp variants)
         extractedAliasId = extractedAliasId.replace(/-tmp$/, '');
 
         // If the extracted alias ID matches the target alias ID, delete the file
@@ -274,16 +278,19 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
           const key = object.Key;
           const filename = key.split('/').pop() || key;
 
-          // Extract alias ID from filename
+          // Extract alias ID from filename - handle all SQLite file patterns
           let extractedAliasId = filename;
 
-          // Remove common extensions
-          extractedAliasId = extractedAliasId.replace(/\.(sqlite|zip|gz)$/, '');
+          // Remove common extensions including SQLite WAL/SHM files
+          extractedAliasId = extractedAliasId.replace(
+            /\.(sqlite|sqlite-shm|sqlite-wal|zip|gz)$/,
+            ''
+          );
 
           // Remove backup suffix if present
           extractedAliasId = extractedAliasId.replace(/-backup$/, '');
 
-          // Remove temp suffix if present
+          // Remove temp suffix if present (handles -tmp variants)
           extractedAliasId = extractedAliasId.replace(/-tmp$/, '');
 
           // Only add if it looks like a valid ObjectId (24 hex characters)
@@ -418,13 +425,19 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
             const key = object.Key;
             const filename = key.split('/').pop() || key;
 
-            // Extract alias ID from filename
+            // Extract alias ID from filename - handle all SQLite file patterns
             let extractedAliasId = filename;
+
+            // Remove common extensions including SQLite WAL/SHM files
             extractedAliasId = extractedAliasId.replace(
-              /\.(sqlite|zip|gz)$/,
+              /\.(sqlite|sqlite-shm|sqlite-wal|zip|gz)$/,
               ''
             );
+
+            // Remove backup suffix if present
             extractedAliasId = extractedAliasId.replace(/-backup$/, '');
+
+            // Remove temp suffix if present (handles -tmp variants)
             extractedAliasId = extractedAliasId.replace(/-tmp$/, '');
 
             // Only delete if it matches the alias ID to delete

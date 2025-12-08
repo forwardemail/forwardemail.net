@@ -134,14 +134,14 @@
     #    hour: "*"
     #    minute: "*"
     #    job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-recent-access.js > /dev/null 2>&1"
-    - name: Check PM2
-      become: true
-      become_user: deploy
-      cron:
-        name: 'check-pm2'
-        hour: '*'
-        minute: '*/20'
-        job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1'
+    # - name: Check PM2
+    #  become: true
+    #  become_user: deploy
+    #  cron:
+    #    name: 'check-pm2'
+    #    hour: '*'
+    #    minute: '*/20'
+    #    job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1'
     - name: Reload pm2 every 6 hours
       become: true
       become_user: deploy
@@ -219,7 +219,7 @@
         # https://chmodcommand.com/chmod-770/
         mode: '0770'
         recurse: true
-    
+
     - name: Create PM2 log directory
       file:
         path: /var/log/pm2
@@ -227,49 +227,49 @@
         owner: deploy
         group: deploy
         mode: '0755'
-    
+
     - name: Install pm2-logrotate
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 install pm2-logrotate
       args:
         executable: /bin/bash
-    
+
     - name: Configure pm2-logrotate max size
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:max_size 100M
       args:
         executable: /bin/bash
-    
+
     - name: Configure pm2-logrotate retain
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:retain 30
       args:
         executable: /bin/bash
-    
+
     - name: Configure pm2-logrotate compress
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:compress true
       args:
         executable: /bin/bash
-    
+
     - name: Configure pm2-logrotate date format
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:dateFormat YYYY-MM-DD_HH-mm-ss
       args:
         executable: /bin/bash
-    
+
     - name: Configure pm2-logrotate rotation interval
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 set pm2-logrotate:rotateInterval '0 0 * * *'
       args:
         executable: /bin/bash
-    
+
 
     - name: Check that pm2 startup script exists
       stat:
@@ -351,22 +351,22 @@
           # Check each process for errors, stopped status, and uptime
           if [ "$PROCESS_COUNT" -gt 0 ]; then
             echo "[$(date -Iseconds)] Found $PROCESS_COUNT PM2 process(es)"
-            
+
             ERRORED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "errored") | .name' | tr '\n' ', ' | sed 's/,$//')
             STOPPED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "stopped") | .name' | tr '\n' ', ' | sed 's/,$//')
-            
+
             if [ -n "$ERRORED_PROCESSES" ]; then
               ALERT_NEEDED=1
               ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  ERRORED PROCESSES: $ERRORED_PROCESSES\n"
               echo "[$(date -Iseconds)] ERROR: Processes in errored state: $ERRORED_PROCESSES"
             fi
-            
+
             if [ -n "$STOPPED_PROCESSES" ]; then
               ALERT_NEEDED=1
               ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  STOPPED PROCESSES: $STOPPED_PROCESSES\n"
               echo "[$(date -Iseconds)] ERROR: Processes in stopped state: $STOPPED_PROCESSES"
             fi
-            
+
             # Display uptime for all processes
             echo "$PM2_JSON" | jq -r '.[] | "\(.name): \(.pm2_env.status) (uptime: \(.pm2_env.pm_uptime | tonumber / 1000 | floor) seconds)"'
           fi
@@ -375,7 +375,7 @@
           if [ -f /home/deploy/.pm2/dump.pm2 ]; then
             SAVED_PROCESSES=$(cat /home/deploy/.pm2/dump.pm2 | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
             CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
-            
+
             if [ "$SAVED_PROCESSES" != "$CURRENT_PROCESSES" ]; then
               ALERT_NEEDED=1
               ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  PROCESS LIST DRIFT DETECTED\n"
@@ -393,16 +393,16 @@
           # Send alert email if needed
           if [ "$ALERT_NEEDED" -eq 1 ]; then
             echo "[$(date -Iseconds)] Sending alert email to $MSMTP_RCPTS"
-            
+
             EMAIL_BODY="PM2 Health Check Alert - $(hostname)\n"
             EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
             EMAIL_BODY="${EMAIL_BODY}\n${ALERT_MESSAGE}\n"
             EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
             EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list')\n"
-            
+
             echo -e "$EMAIL_BODY" | mail -s "[ALERT] PM2 Health Check Failed on $(hostname)" "$MSMTP_RCPTS" || \
               echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
-            
+
             exit 1
           else
             echo "[$(date -Iseconds)] ✓ All PM2 processes healthy"
