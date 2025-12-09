@@ -9,6 +9,7 @@ require('#config/env');
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 
+const ms = require('ms');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
@@ -44,14 +45,68 @@ const MONITORED_PREFIXES = [
   'whois:'
 ];
 
+// Configuration for TTL setting (resource-friendly)
+const TTL_CONFIG = {
+  batchSize: 50, // Process 50 keys at a time
+  batchDelay: 200, // Wait 200ms between batches
+  scanCount: 100 // Keys per SCAN iteration
+};
+
+// Helper to delay between batches
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+// Set TTL on keys without expiration (non-blocking, resource-friendly)
+async function setTTLOnKeys(keys, prefix) {
+  let setCount = 0;
+  let errorCount = 0;
+
+  // Process in small batches to avoid blocking Redis
+  for (let i = 0; i < keys.length; i += TTL_CONFIG.batchSize) {
+    const batch = keys.slice(i, i + TTL_CONFIG.batchSize);
+
+    // Process batch sequentially to avoid overwhelming Redis
+    for (const key of batch) {
+      try {
+        // Set TTL based on prefix
+        if (prefix === 'f:') {
+          // Fingerprint keys: use PX with config.fingerprintTTL
+          await client.pexpire(key, config.fingerprintTTL);
+          setCount++;
+        } else if (prefix === 'denylist:') {
+          // Denylist keys: use PX with 30 days
+          await client.pexpire(key, ms('30d'));
+          setCount++;
+        }
+        // Add more prefix-specific TTL logic here if needed
+      } catch (err) {
+        errorCount++;
+        logger.error(err, { key, prefix });
+      }
+    }
+
+    // Add delay between batches to prevent resource hogging
+    if (i + TTL_CONFIG.batchSize < keys.length) {
+      await delay(TTL_CONFIG.batchDelay);
+    }
+  }
+
+  return { setCount, errorCount };
+}
+
 (async () => {
   try {
     const keysWithoutTTL = {};
     let totalScanned = 0;
     let totalWithoutTTL = 0;
+    const ttlSetResults = {};
 
     logger.info('starting Redis TTL monitoring');
 
+    // Phase 1: Scan and identify keys without TTL
     for (const prefix of MONITORED_PREFIXES) {
       let cursor = '0';
 
@@ -61,7 +116,7 @@ const MONITORED_PREFIXES = [
           'MATCH',
           `${prefix}*`,
           'COUNT',
-          100
+          TTL_CONFIG.scanCount
         );
         cursor = newCursor;
         totalScanned += keys.length;
@@ -73,21 +128,26 @@ const MONITORED_PREFIXES = [
           if (ttl === -1) {
             totalWithoutTTL++;
 
-            // store sample keys (up to 5 per prefix)
+            // store keys without TTL
             if (!keysWithoutTTL[prefix]) {
               keysWithoutTTL[prefix] = {
                 count: 0,
-                samples: []
+                samples: [],
+                allKeys: []
               };
             }
 
             keysWithoutTTL[prefix].count++;
+            keysWithoutTTL[prefix].allKeys.push(key);
 
             if (keysWithoutTTL[prefix].samples.length < 5) {
               keysWithoutTTL[prefix].samples.push(key);
             }
           }
         }
+
+        // Add small delay between scans to be resource-friendly
+        await delay(50);
       } while (cursor !== '0');
     }
 
@@ -100,28 +160,85 @@ const MONITORED_PREFIXES = [
       }))
     });
 
+    // Phase 2: Set TTL on fingerprint and denylist keys
+    logger.info('starting TTL remediation for fingerprint and denylist keys');
+
+    for (const prefix of ['f:', 'denylist:']) {
+      if (keysWithoutTTL[prefix] && keysWithoutTTL[prefix].allKeys.length > 0) {
+        logger.info(
+          `setting TTL on ${keysWithoutTTL[prefix].allKeys.length} ${prefix} keys`
+        );
+
+        const result = await setTTLOnKeys(
+          keysWithoutTTL[prefix].allKeys,
+          prefix
+        );
+
+        ttlSetResults[prefix] = result;
+
+        logger.info(`completed TTL setting for ${prefix}`, result);
+      }
+    }
+
+    logger.info('completed TTL remediation', ttlSetResults);
+
     // if we found keys without TTL, email admins
     if (totalWithoutTTL > 0) {
-      const message = {
-        to: config.email.message.from,
-        subject: `Redis Keys Without TTL Detected: ${totalWithoutTTL} keys`,
-        text: `Redis TTL monitoring has detected ${totalWithoutTTL} keys without expiration across ${
-          Object.keys(keysWithoutTTL).length
-        } prefixes.
+      const prefixSummary = Object.keys(keysWithoutTTL)
+        .map((prefix) => {
+          const info = keysWithoutTTL[prefix];
+          const ttlResult = ttlSetResults[prefix];
+
+          let line = `- ${prefix} ${info.count} keys`;
+
+          if (ttlResult) {
+            line += ` (${ttlResult.setCount} TTL set${
+              ttlResult.errorCount > 0 ? `, ${ttlResult.errorCount} errors` : ''
+            })`;
+          }
+
+          line += `\n  Sample keys: ${info.samples.join(', ')}`;
+
+          return line;
+        })
+        .join('\n\n');
+
+      const totalTTLSet = Object.values(ttlSetResults).reduce(
+        (sum, r) => sum + r.setCount,
+        0
+      );
+      const totalTTLErrors = Object.values(ttlSetResults).reduce(
+        (sum, r) => sum + r.errorCount,
+        0
+      );
+
+      const messageText = `Redis TTL monitoring has detected ${totalWithoutTTL} keys without expiration across ${
+        Object.keys(keysWithoutTTL).length
+      } prefixes.
 
 Summary by prefix:
-${Object.keys(keysWithoutTTL)
-  .map(
-    (prefix) =>
-      `- ${prefix}: ${
-        keysWithoutTTL[prefix].count
-      } keys\n  Sample keys: ${keysWithoutTTL[prefix].samples.join(', ')}`
-  )
-  .join('\n')}
+
+${prefixSummary}
 
 Total keys scanned: ${totalScanned}
 
-These keys should have TTL set to prevent unbounded Redis memory growth.`
+TTL Remediation:
+- Total keys with TTL set: ${totalTTLSet}
+- Total errors: ${totalTTLErrors}
+
+Fingerprint keys (f:*) were set to ${Math.ceil(
+        config.fingerprintTTL / 1000 / 60 / 60
+      )} hours using PX.
+Denylist keys (denylist:*) were set to 30 days using PX.
+
+These keys should have TTL set to prevent unbounded Redis memory growth.`;
+
+      const message = {
+        to: config.email.message.from,
+        subject: `Redis Keys Without TTL: ${totalWithoutTTL} found${
+          totalTTLSet > 0 ? `, ${totalTTLSet} fixed` : ''
+        }`,
+        text: messageText
       };
 
       try {
@@ -129,7 +246,7 @@ These keys should have TTL set to prevent unbounded Redis memory growth.`
           template: 'alert',
           message,
           locals: {
-            message: message.text
+            message: messageText
           }
         });
         logger.info('sent Redis TTL alert email to admins');
