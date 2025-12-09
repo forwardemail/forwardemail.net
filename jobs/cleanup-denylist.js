@@ -20,8 +20,10 @@ const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -34,6 +36,9 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+// Create Tangerine DNS resolver
+const resolver = createTangerine(client, logger);
 
 //
 // List of entries to remove from denylist
@@ -70,24 +75,69 @@ function keyMatchesEntries(key) {
 //
 // Check if a key matches any truth source
 // Truth sources are domains like gmail.com, outlook.com, etc.
+// For email addresses, we do MX lookup and check the root domain of MX records
 // Keys like denylist:spammer@gmail.com should be flagged but not deleted
 //
-function keyMatchesTruthSource(key) {
+async function keyMatchesTruthSource(key) {
   const keyLower = key.toLowerCase();
   // Remove 'denylist:' prefix
   const value = keyLower.replace(/^denylist:/, '');
 
-  // Check if the value contains any truth source
-  for (const truthSource of config.truthSources) {
-    const truthSourceLower = truthSource.toLowerCase();
-    // Match if the value contains the truth source as a domain
-    // e.g., spammer@gmail.com matches gmail.com
-    if (
-      value.includes(`@${truthSourceLower}`) ||
-      value.includes(`.${truthSourceLower}`) ||
-      value === truthSourceLower
-    ) {
-      return true;
+  // Check if value is an email address
+  const emailMatch = value.match(/@([^@]+)$/);
+
+  if (emailMatch) {
+    // It's an email address - extract domain
+    const domain = emailMatch[1];
+
+    try {
+      // Do MX lookup using Tangerine
+      const mxRecords = await resolver.resolveMx(domain);
+
+      if (mxRecords && mxRecords.length > 0) {
+        // Check root domain of each MX record against truth sources
+        for (const mx of mxRecords) {
+          const mxHostname = mx.exchange || mx;
+          const rootDomain = parseRootDomain(mxHostname);
+
+          // Check if this root domain matches any truth source
+          for (const truthSource of config.truthSources) {
+            const truthSourceLower = truthSource.toLowerCase();
+            if (rootDomain === truthSourceLower) {
+              logger.debug(
+                `Key ${key} matches truth source: MX ${mxHostname} -> root ${rootDomain} matches ${truthSource}`
+              );
+              return true;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      // MX lookup failed - fall back to domain check
+      logger.debug(`MX lookup failed for ${domain}:`, err.message);
+
+      // Fall back to checking if the email domain itself matches truth sources
+      for (const truthSource of config.truthSources) {
+        const truthSourceLower = truthSource.toLowerCase();
+        if (domain === truthSourceLower) {
+          logger.debug(
+            `Key ${key} matches truth source (fallback): domain ${domain} matches ${truthSource}`
+          );
+          return true;
+        }
+      }
+    }
+  } else {
+    // Not an email address - check if it's a domain or contains truth source
+    for (const truthSource of config.truthSources) {
+      const truthSourceLower = truthSource.toLowerCase();
+      // Match if the value contains the truth source as a domain
+      if (
+        value.includes(`.${truthSourceLower}`) ||
+        value === truthSourceLower
+      ) {
+        return true;
+      }
     }
   }
 
@@ -155,13 +205,19 @@ function delay(ms) {
     const truthSourceKeys = [];
     const keysToDelete = [];
 
-    for (const key of keysMatchingEntries) {
-      if (keyMatchesTruthSource(key)) {
-        truthSourceKeys.push(key);
-      } else {
-        keysToDelete.push(key);
-      }
-    }
+    // Process keys with concurrency to speed up MX lookups
+    await pMap(
+      keysMatchingEntries,
+      async (key) => {
+        const matches = await keyMatchesTruthSource(key);
+        if (matches) {
+          truthSourceKeys.push(key);
+        } else {
+          keysToDelete.push(key);
+        }
+      },
+      { concurrency: 10 }
+    );
 
     const filterDuration = Date.now() - filterStartTime;
     logger.info(
@@ -273,7 +329,7 @@ function delay(ms) {
         truthSourceKeys.length > 0
           ? `
 <h3>⚠️ Truth Source Matches - NOT DELETED (${truthSourceKeys.length})</h3>
-<p><strong>These keys match truth sources (e.g., gmail.com, outlook.com) and were preserved for manual review.</strong></p>
+<p><strong>These keys match truth sources via MX lookup (e.g., gmail.com → google.com) and were preserved for manual review.</strong></p>
 <p>Truth sources may contain legitimate spammers that should remain on the denylist.</p>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th></tr>
