@@ -282,7 +282,7 @@
           tls            on
           tls_trust_file /etc/ssl/certs/ca-certificates.crt
           logfile        /var/log/msmtp.log
-          
+
           # SMTP account configuration
           account        default
           host           {{ lookup('env', 'SMTP_HOST') | default('smtp.forwardemail.net') }}
@@ -566,6 +566,20 @@
         group: root
         mode: '0644'
 
+    - name: Populate authorized USB devices from environment variable
+      copy:
+        content: |
+          {% set usb_devices = lookup('env', 'USB_DEVICES_PERMITTED') | default('') %}
+          {% if usb_devices %}
+          {% for device in usb_devices.split(',') %}
+          {{ device.strip() }}
+          {% endfor %}
+          {% endif %}
+        dest: /etc/security-monitor/authorized-usb-devices.conf
+        owner: root
+        group: root
+        mode: '0644'
+
     - name: Deploy root access monitor service
       template:
         src: "{{ playbook_dir }}/templates/root-access-monitor.service.j2"
@@ -727,7 +741,7 @@
     # - /etc/bash.bashrc for all interactive bash shells
     # - /etc/zsh/zshrc for all zsh shells
     # - SSH ForceCommand wrapper for non-interactive SSH commands
-    
+
     - name: Deploy enhanced bash command logging to profile.d (login shells)
       copy:
         src: "{{ playbook_dir }}/files/bash-logging-enhanced.sh"
@@ -735,7 +749,7 @@
         owner: root
         group: root
         mode: '0644'
-    
+
     - name: Deploy enhanced bash command logging to bash.bashrc (all interactive bash)
       blockinfile:
         path: /etc/bash.bashrc
@@ -748,7 +762,7 @@
         owner: root
         group: root
         mode: '0644'
-    
+
     - name: Create zsh configuration directory
       file:
         path: /etc/zsh/zshrc.d
@@ -756,7 +770,7 @@
         owner: root
         group: root
         mode: '0755'
-    
+
     - name: Deploy enhanced zsh command logging configuration
       copy:
         src: "{{ playbook_dir }}/files/bash-logging-enhanced.sh"
@@ -764,7 +778,7 @@
         owner: root
         group: root
         mode: '0644'
-    
+
     - name: Ensure zshrc sources zshrc.d directory
       blockinfile:
         path: /etc/zsh/zshrc

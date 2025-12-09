@@ -476,35 +476,38 @@ graceful.listen();
         userBatch.map(async (user) => {
           try {
             // Optimized aggregation with timeout and better performance
-            const arr = await Aliases.aggregate([
-              {
-                $match: {
-                  user
-                }
-              },
-              {
-                $unwind: '$recipients'
-              },
-              {
-                $group: {
-                  _id: '$recipients'
-                }
-              },
-              {
-                $project: {
-                  _id: 1,
-                  // Extract domain for filtering
-                  domain: {
-                    $toLower: {
-                      $arrayElemAt: [{ $split: ['$_id', '@'] }, 1]
+            const arr = await Aliases.aggregate(
+              [
+                {
+                  $match: {
+                    user
+                  }
+                },
+                {
+                  $unwind: '$recipients'
+                },
+                {
+                  $group: {
+                    _id: '$recipients'
+                  }
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    // Extract domain for filtering
+                    domain: {
+                      $toLower: {
+                        $arrayElemAt: [{ $split: ['$_id', '@'] }, 1]
+                      }
                     }
                   }
                 }
+              ],
+              {
+                allowDiskUse: true,
+                maxTimeMS: 30_000 // 30 second timeout
               }
-            ])
-              .allowDiskUse(true)
-              .maxTimeMS(30_000) // 30 second timeout
-              .exec();
+            ).exec();
 
             // Filter recipients by checking domain against our set
             // This is much faster than regex matching in the aggregation

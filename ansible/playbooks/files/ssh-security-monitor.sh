@@ -369,8 +369,15 @@ send_activity_summary() {
     local failed_count="$2"
     local logged_in_users="$3"
 
+    # Only send report if there were successful logins or other activity besides just failed logins
     if [ "$successful_count" -eq 0 ] && [ "$failed_count" -eq 0 ]; then
         log_message "No SSH activity to report"
+        return
+    fi
+
+    # Don't send report if only failed logins occurred (no successful logins)
+    if [ "$successful_count" -eq 0 ]; then
+        log_message "Only failed logins detected, skipping activity summary"
         return
     fi
 
@@ -431,8 +438,8 @@ main() {
     analyze_recent_commands "$new_entries"
 
     # Count activity for summary
-    local successful_count=$(echo "$new_entries" | grep -cE "sshd.*Accepted" || echo "0")
-    local failed_count=$(echo "$new_entries" | grep -cE "sshd.*(Failed|Invalid)" || echo "0")
+    local successful_count=$(echo "$new_entries" | grep -E "sshd.*Accepted" | wc -l)
+    local failed_count=$(echo "$new_entries" | grep -E "sshd.*(Failed|Invalid)" | wc -l)
     local logged_in_users=$(who)
 
     # Send periodic activity summary
