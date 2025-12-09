@@ -16,7 +16,7 @@ const MAX_AGE = ms('1y') / 1000;
 
 module.exports = (client) => ({
   maxAge: MAX_AGE,
-  hash: (ctx) => `koa-cash:${ctx.request.url}`,
+  hash: (ctx) => `koa-cash:${ctx.request.path}`,
   compression: true,
   setCachedHeader: true,
   async get(key) {
