@@ -209,6 +209,7 @@ async function migrateSchema(instance, db, session, tables) {
     // ensure that all columns exist using mapping for the table
 
     const columnInfo = await inspector.columnInfo(table);
+
     // create mapping of columns by their key for easy lookup
     const columnInfoByKey = _.zipObject(
       columnInfo.map((c) => c.name),
@@ -227,7 +228,21 @@ async function migrateSchema(instance, db, session, tables) {
       if (!column) continue; // safeguard
       // ensure mapping exists, otherwise remove it
       if (tables[table].mapping[key]) continue;
-      db.exec(`ALTER TABLE ${table} DROP COLUMN ${key}`);
+
+      try {
+        // Drop any indexes on this column first
+        db.exec(`DROP INDEX IF EXISTS ${table}_${key}`);
+        db.exec(`ALTER TABLE ${table} DROP COLUMN ${key}`);
+      } catch (err) {
+        // Log but don't throw
+        err.isCodeBug = true;
+        logger.error(err, {
+          table,
+          column: key,
+          session,
+          resolver: instance.resolver
+        });
+      }
     }
 
     //
@@ -240,6 +255,7 @@ async function migrateSchema(instance, db, session, tables) {
     // if we are missing columns, then we need to add them
     //
     const missingColumns = _.difference(expectedColumns, existingColumns);
+
     if (missingColumns.length > 0) {
       for (const key of missingColumns) {
         if (tables[table].mapping[key].alterStatement) {

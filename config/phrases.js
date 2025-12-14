@@ -723,6 +723,10 @@ module.exports = {
     'Your subscription billing cycle was accurately updated',
   BILLING_CYCLE_UPDATED_BODY:
     '<p class="text-center">This is an automated email regarding your subscription.</p><p class="text-center">Your next payment will be on <span class="notranslate">%s</span> instead of <span class="notranslate">%s</span>.</p><p class="text-center">This is most likely due to free credit being awarded to you.</p><p class="text-center"><strong>You do not need to take any action &ndash; thank you!</strong><p class="text-center mb-0"><a href="%s" class="btn btn-md btn-dark notranslate">Manage Billing</a></p>',
+  SUBSCRIPTION_ACTIVATED_SUBJECT:
+    'Your subscription has been successfully activated',
+  SUBSCRIPTION_ACTIVATED_BODY:
+    '<p class="text-center">This is an automated email regarding your subscription.</p><p class="text-center">Your <span class="notranslate">%s</span> plan subscription has been successfully activated.</p><p class="text-center"><strong>You do not need to take any action &ndash; thank you!</strong></p><p class="text-center mb-0"><a href="%s" class="btn btn-md btn-dark">Manage Billing</a></p>',
   INVALID_UPGRADE_KIND: 'Invalid upgrade type specified',
   INVALID_UPGRADE_OPTION: 'Invalid upgrade option specified',
   INVALID_STORAGE_OPTION: 'Invalid storage upgrade option',

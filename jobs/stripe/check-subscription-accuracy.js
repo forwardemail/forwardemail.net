@@ -158,6 +158,143 @@ async function mapper(customer) {
   // lookup when the user's subscription ends
   user = await Users.findById(user._id).lean().exec();
 
+  //
+  // BUG FIX: Check if user is on free plan but has an active/trialing subscription
+  // This handles the edge case where webhook doesn't fire or user doesn't complete redirect
+  //
+  if (user.plan === 'free' && subscriptions.length > 0) {
+    // Determine which subscription to use:
+    // - If there's a trialing subscription, use that (already set above)
+    // - Otherwise use the newest subscription (already sorted by created desc above)
+    // Note: After the conflict resolution above, subscriptions[0] is guaranteed to be
+    // either the trialing subscription or the newest active subscription
+    const subscription = subscriptions[0];
+
+    logger.warn(
+      `User ${user.email} is on free plan but has active/trialing Stripe subscription ${subscription.id}`
+    );
+
+    // Determine the plan from the subscription's price ID
+    let plan = 'free';
+
+    // Check the price ID to determine the plan
+    if (
+      subscription.items &&
+      subscription.items.data &&
+      subscription.items.data.length > 0
+    ) {
+      const priceId = subscription.items.data[0].price.id;
+
+      // Map price IDs to plans (enhanced_protection or team)
+      if (
+        env.STRIPE_PRICE_IDS_ENHANCED_PROTECTION &&
+        env.STRIPE_PRICE_IDS_ENHANCED_PROTECTION.includes(priceId)
+      ) {
+        plan = 'enhanced_protection';
+      } else if (
+        env.STRIPE_PRICE_IDS_TEAM &&
+        env.STRIPE_PRICE_IDS_TEAM.includes(priceId)
+      ) {
+        plan = 'team';
+      }
+    }
+
+    if (plan !== 'free') {
+      // Update user's plan to match their active subscription
+      const userDoc = await Users.findById(user._id);
+      if (!userDoc) throw new Error('User does not exist');
+
+      userDoc.plan = plan;
+
+      // Set planSetAt to the payment intent created date
+      // This mirrors the webhook logic at app/controllers/api/v1/stripe.js:347
+      try {
+        // Get the first invoice for this subscription
+        const invoices = await stripe.invoices.list({
+          limit: 100,
+          customer: customer.id,
+          subscription: subscription.id
+        });
+
+        if (invoices.has_more) {
+          logger.warn('Invoices object has more than 100 items');
+        }
+
+        // Sort by created date (oldest first)
+        const sortedInvoices = _.sortBy(invoices.data, 'created');
+
+        if (sortedInvoices.length > 0 && sortedInvoices[0].payment_intent) {
+          const paymentIntent = await stripe.paymentIntents.retrieve(
+            sortedInvoices[0].payment_intent
+          );
+
+          if (paymentIntent) {
+            userDoc[config.userFields.planSetAt] = dayjs
+              .unix(paymentIntent.created)
+              .toDate();
+            logger.info(
+              `Set planSetAt to ${
+                userDoc[config.userFields.planSetAt]
+              } for user ${userDoc.email}`
+            );
+          }
+        } else {
+          logger.warn(
+            `No payment intent found for subscription ${subscription.id}, cannot set planSetAt`
+          );
+        }
+      } catch (err) {
+        logger.error(err, {
+          user_email: userDoc.email,
+          subscription_id: subscription.id
+        });
+      }
+
+      await userDoc.save();
+
+      logger.info(`Updated user ${user.email} from free plan to ${plan} plan`);
+
+      // Send notification email to user and admin
+      const locale = user[config.lastLocaleField] || i18n.config.defaultLocale;
+      try {
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: user[config.userFields.receiptEmail] || user.email,
+            ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {}),
+            bcc: config.supportEmail,
+            subject: i18n.api.t({
+              phrase: config.i18n.phrases.SUBSCRIPTION_ACTIVATED_SUBJECT,
+              locale
+            })
+          },
+          locals: {
+            message: i18n.api.t(
+              {
+                phrase: config.i18n.phrases.SUBSCRIPTION_ACTIVATED_BODY,
+                locale
+              },
+              i18n.api.t({ phrase: plan.toUpperCase(), locale }),
+              `${config.urls.web}/${locale}/my-account/billing`
+            ),
+            locale
+          }
+        });
+        logger.info(
+          `Sent subscription activation email to ${user.email} and admin`
+        );
+      } catch (err) {
+        logger.error(err, {
+          user_email: user.email,
+          subscription_id: subscription.id
+        });
+      }
+
+      // Refresh user object with updated plan
+      user = await Users.findById(user._id).lean().exec();
+    }
+  }
+
   if (!user) return;
 
   // lookup when the user is supposed to get billed next time

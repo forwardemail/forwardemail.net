@@ -30,6 +30,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const Threads = require('#models/threads');
+const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
@@ -45,21 +46,6 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 const builder = new Builder();
 
 const HOSTNAME = os.hostname();
-
-const REQUIRED_PATHS = [
-  'INBOX',
-  'Drafts',
-  'Sent Mail',
-  //
-  // NOTE: we could use "All Mail" to match existing standards (e.g. instead of "Archive")
-  // <https://github.com/mozilla/releases-comm-central/blob/34d8c5cba2df3154e1c38b376e8c10ca24e4f939/mailnews/imap/src/nsImapMailFolder.cpp#L1171-L1173>
-  //
-  // 'All Mail' but we would need to use labels
-  //
-  'Archive',
-  'Spam',
-  'Trash'
-];
 
 // always ensure `rclone.conf` is an empty file
 // function syncRcloneConfig() {
@@ -617,69 +603,7 @@ async function getDatabase(
     //
     if (!folderCheck) {
       try {
-        await instance.client.set(
-          `folder_check:${session.user.alias_id}`,
-          true,
-          'PX',
-          ms('1d')
-        );
-        const paths = await Mailboxes.distinct(instance, session, 'path', {});
-        const required = [];
-        for (const path of REQUIRED_PATHS) {
-          if (!paths.includes(path)) {
-            required.push(path);
-          }
-        }
-
-        if (required.length > 0) {
-          // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
-          //       (and that would lead to unnecessary recursion)
-          await Promise.all(
-            required.map(async (path) => {
-              try {
-                const count = await Mailboxes.countDocuments(
-                  instance,
-                  session,
-                  {
-                    path
-                  }
-                );
-
-                if (count > 0) {
-                  return;
-                }
-
-                const mailbox = await Mailboxes.create({
-                  // Virtual helper
-                  instance,
-                  session,
-
-                  path,
-                  // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-                  // TODO: support custom alias retention (would get stored on session)
-                  // TODO: if user updates retention then we'd need to update in-memory IMAP connections
-                  // retention: typeof alias.retention === 'number' ? alias.retention : 0
-                  retention: 0
-                });
-
-                instance.server.notifier
-                  .addEntries(instance, session, mailbox, {
-                    command: 'CREATE',
-                    mailbox: mailbox._id,
-                    path
-                  })
-                  .then(() => {
-                    instance.server.notifier.fire(session.user.alias_id);
-                  })
-                  .catch((err) =>
-                    logger.fatal(err, { session, resolver: instance.resolver })
-                  );
-              } catch (err) {
-                logger.fatal(err, { session, resolver: instance.resolver });
-              }
-            })
-          );
-        }
+        await ensureDefaultMailboxes(instance, session);
       } catch (err) {
         logger.fatal(err, { session, resolver: instance.resolver });
       }

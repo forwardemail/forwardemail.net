@@ -23,6 +23,7 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
+const getAllPayPalSubscriptions = require('#helpers/get-all-paypal-subscriptions');
 
 const graceful = new Graceful({
   mongooses: [mongoose]
@@ -106,5 +107,31 @@ async function mapper(id) {
       }
     }
   );
+
+  // get all subscriptions from PayPal API and merge with database results
+  try {
+    const allSubscriptions = await getAllPayPalSubscriptions();
+    // merge subscription IDs from API
+    for (const sub of allSubscriptions) {
+      if (!subscriptionIds.includes(sub.id)) {
+        subscriptionIds.push(sub.id);
+        console.log(
+          `Found subscription ${sub.id} from PayPal API not in database`
+        );
+      }
+    }
+
+    console.log(
+      `Total subscriptions to check: ${subscriptionIds.length} (${
+        allSubscriptions.length
+      } from API, ${
+        subscriptionIds.length - allSubscriptions.length
+      } from database only)`
+    );
+  } catch (err) {
+    console.error('Failed to fetch subscriptions from PayPal API:', err);
+    // Continue with database subscriptions only
+  }
+
   process.exit(0);
 })();

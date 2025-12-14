@@ -324,13 +324,13 @@ async function onMove(mailboxId, update, session, fn) {
       existEntries.push({
         command: 'EXISTS',
         uid: uidNext,
-        unseen: boolean(m.unseen),
+        unseen: !flags.includes('\\Seen'),
         // TODO: set `modseq` equal to modifyIndex + 1 of target mailbox (?)
         idate: new Date(m.idate),
         mailbox: _id,
         message: new mongoose.Types.ObjectId(m._id),
         thread: new mongoose.Types.ObjectId(m.thread),
-        junk: boolean(m.junk)
+        junk: specialUse === '\\Junk'
       });
 
       // increment uid next by one

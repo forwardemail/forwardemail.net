@@ -248,13 +248,20 @@ async function getRecipients(session, scan) {
 
         if (customDenylist.length > 0) {
           let pass = true;
+
+          // Check IP address
           if (customDenylist.includes(session.remoteAddress)) pass = false;
-          else if (
+
+          // Check resolved client hostname
+          if (
+            pass &&
             session.resolvedClientHostname &&
             customDenylist.includes(session.resolvedClientHostname)
           )
             pass = false;
-          else if (session.resolvedRootClientHostname) {
+
+          // Check resolved root client hostname
+          if (pass && session.resolvedRootClientHostname) {
             if (customDenylist.includes(session.resolvedRootClientHostname)) {
               pass = false;
             } else {
@@ -262,13 +269,18 @@ async function getRecipients(session, scan) {
               const tld = getPublicSuffix(session.resolvedRootClientHostname);
               if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
             }
-          } else if (
+          }
+
+          // Check original From address (email)
+          if (
+            pass &&
             session.originalFromAddress &&
             customDenylist.includes(session.originalFromAddress)
           )
             pass = false;
+
+          // Check domain and root domain of From address
           if (pass && session.originalFromAddress) {
-            // check if the domain or root portion of the `session.originalFromAddress` matches
             const domain = session.originalFromAddress.split('@')[1];
             const root = parseRootDomain(domain);
             if (customDenylist.includes(domain)) pass = false;

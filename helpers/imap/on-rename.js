@@ -14,6 +14,7 @@
  */
 
 const IMAPError = require('#helpers/imap-error');
+const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -59,11 +60,21 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
-    if (mailbox.path === 'INBOX')
+    // Protect all required system folders from renaming
+    if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
         {
           imapResponse: 'CANNOT'
+        }
+      );
+
+    // Prevent renaming to the same path (no-op)
+    if (mailbox.path === newPath)
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', session.user.locale),
+        {
+          imapResponse: 'ALREADYEXISTS'
         }
       );
 
@@ -79,35 +90,34 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
-    const renamedMailbox = await Mailboxes.findOneAndUpdate(
-      this,
-      session,
-      {
-        _id: mailbox._id
-      },
-      {
-        $set: {
-          path: newPath
-        }
-      }
-    );
+    //
+    // call save() to ensure that pre-validate hooks get run
+    // (which update specialUse flags on the mailboxes)
+    //
+    mailbox.path = newPath;
 
-    if (!renamedMailbox)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          imapResponse: 'NONEXISTENT'
-        }
-      );
+    // Set db virtual helpers
+    mailbox.instance = this;
+    mailbox.session = session;
+    mailbox.isNew = false;
+
+    await mailbox.save();
 
     // send response
-    fn(null, true, renamedMailbox._id);
+    fn(null, true, mailbox._id);
+
+    // Ensure default mailboxes exist after rename
+    ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     this.server.notifier
       .addEntries(this, session, mailbox, {
         command: 'RENAME',
         mailbox: mailbox._id,
-        path: renamedMailbox.path
+        path: mailbox.path
       })
       .then(() => this.server.notifier.fire(session.user.alias_id))
       .catch((err) =>

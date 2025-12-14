@@ -1249,3 +1249,560 @@ This should get 250 quiet reject, not be caught by catch-all
   await server.close();
   await smtp.close();
 });
+
+test('domain denylist should block email address even when hostname is not denylisted', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+  let smtpError = null;
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString(),
+      // Add specific email to denylist
+      denylist: ['spammer@gmail.com']
+    })
+    .create();
+
+  // Create alias to receive emails
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // Spoof gmail.com hostname resolution
+  const fakeGmailHostname = 'mail-io1-xd48.google.com';
+  map.set(
+    `ptr:${IP_ADDRESS}`,
+    resolver.spoofPacket(IP_ADDRESS, 'PTR', [fakeGmailHostname], true)
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Try to send email from denylisted email address
+  try {
+    await transporter.sendMail({
+      envelope: {
+        from: 'spammer@gmail.com',
+        to: `test@${domain.name}`
+      },
+      raw: `
+To: test@${domain.name}
+From: spammer@gmail.com
+Subject: test denylist
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should be blocked by denylist
+`
+    });
+    t.fail('Should have thrown denylist error');
+  } catch (err) {
+    smtpError = err;
+  }
+
+  // Should get denylist error
+  t.truthy(smtpError);
+  t.regex(smtpError.message, /denylisted/i);
+  t.is(
+    receivedEmails.length,
+    0,
+    'Email from denylisted address should not be received'
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('domain denylist should block domain even when hostname is not denylisted', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+  let smtpError = null;
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString(),
+      // Add domain to denylist
+      denylist: ['spam-domain.com']
+    })
+    .create();
+
+  // Create alias to receive emails
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Try to send email from denylisted domain
+  try {
+    await transporter.sendMail({
+      envelope: {
+        from: 'anyone@spam-domain.com',
+        to: `test@${domain.name}`
+      },
+      raw: `
+To: test@${domain.name}
+From: anyone@spam-domain.com
+Subject: test denylist domain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should be blocked by denylist
+`
+    });
+    t.fail('Should have thrown denylist error');
+  } catch (err) {
+    smtpError = err;
+  }
+
+  // Should get denylist error
+  t.truthy(smtpError);
+  t.regex(smtpError.message, /denylisted/i);
+  t.is(
+    receivedEmails.length,
+    0,
+    'Email from denylisted domain should not be received'
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('domain denylist should allow email when not in denylist', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString(),
+      // Add different email to denylist
+      denylist: ['spammer@gmail.com']
+    })
+    .create();
+
+  // Create alias to receive emails
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Send email from non-denylisted email address
+  await transporter.sendMail({
+    envelope: {
+      from: 'legitimate@gmail.com',
+      to: `test@${domain.name}`
+    },
+    raw: `
+To: test@${domain.name}
+From: legitimate@gmail.com
+Subject: test allowed email
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should be allowed through
+`
+  });
+
+  // Wait a bit for email to be processed
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('10s') });
+
+  // Should receive the email
+  t.is(
+    receivedEmails.length,
+    1,
+    'Email from non-denylisted address should be received'
+  );
+
+  await server.close();
+  await smtp.close();
+});

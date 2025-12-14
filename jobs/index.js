@@ -37,6 +37,16 @@ let jobs = [
     timeout: 0
   },
   {
+    name: 'check-suspicious-domain-signups',
+    interval: '1h',
+    timeout: 0
+  },
+  {
+    name: 'check-denylisted-users',
+    interval: '24h',
+    timeout: 0
+  },
+  {
     name: 'stripe',
     interval: '1.5h',
     timeout: '1.5h',

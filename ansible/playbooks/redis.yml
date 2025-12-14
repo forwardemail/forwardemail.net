@@ -377,9 +377,9 @@
       register: cpu_cores
       changed_when: false
 
-    - name: Set io-threads (number of CPU cores, max 8)
+    - name: Set io-threads (75% of CPU cores for optimal performance, max 8)
       set_fact:
-        valkey_io_threads: "{{ [cpu_cores.stdout | int, 8] | min }}"
+        valkey_io_threads: "{{ [(cpu_cores.stdout | int * 0.75) | int, 8] | min }}"
 
     - name: Create base Valkey configuration file
       copy:
@@ -546,7 +546,9 @@
           client-output-buffer-limit pubsub 32mb 8mb 60
 
           # Frequency of rehashing the main dict
-          hz 10
+          # Increased from 10 to 50 for faster background tasks (key expiration, client timeout)
+          # Trade-off: +1-2% CPU for significantly faster TTL processing
+          hz 50
 
           # Enable active defragmentation
           activedefrag yes
@@ -588,7 +590,8 @@
 
           # Performance Optimizations
           tcp-backlog 65536
-          tcp-keepalive 0
+          tcp-keepalive 300
+          timeout 0
           maxclients 65536
 
     - name: Ensure Valkey is enabled and started

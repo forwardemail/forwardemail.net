@@ -1002,6 +1002,18 @@ async function findOneAndUpdate(
 
       if (update.$set) update.$set = prepareQuery(mapping, update.$set);
 
+      // If update is now empty (e.g., $addToSet had no changes), return early
+      const updateKeys = Object.keys(update);
+      if (
+        updateKeys.length === 0 ||
+        (updateKeys.length === 1 &&
+          updateKeys[0] === '$set' &&
+          Object.keys(update.$set || {}).length === 0)
+      ) {
+        // No actual changes to make, return the appropriate document
+        return options?.returnDocument === 'after' ? beforeDoc : beforeDoc;
+      }
+
       const sql = builder.build({
         type: 'update',
         table,

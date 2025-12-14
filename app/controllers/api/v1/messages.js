@@ -417,32 +417,45 @@ async function list(ctx) {
     });
   }
 
+  // Optimize: Collect all requested headers first, then execute in parallel
+  const requestedHeaders = [];
   for (const header of SMTP_HEADERS) {
-    if (!isSANB(ctx.query[header])) continue;
+    // Skip if header not in query or is subject (handled separately above)
+    if (!isSANB(ctx.query[header]) || header === 'subject') continue;
+    requestedHeaders.push(header);
+  }
 
-    // we already support subject search above
-    if (header === 'subject') continue;
+  // Only execute WSP requests if there are headers to search
+  if (requestedHeaders.length > 0) {
+    // Build all queries in parallel
+    const headerQueries = requestedHeaders.map((header) => {
+      const regex =
+        '(?i)' + // case insensitive (PCRE_CASELESS)
+        _.escapeRegExp(ctx.query[header]);
 
-    const regex =
-      '(?i)' + // case insensitive (PCRE_CASELESS)
-      _.escapeRegExp(ctx.query[header]);
+      const sql = {
+        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
+        values: { p1: header, p2: regex }
+      };
 
-    const sql = {
-      query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
-      values: { p1: header, p2: regex }
-    };
-
-    const ids = await ctx.instance.wsp.request({
-      action: 'stmt',
-      session: { user: ctx.state.session.user },
-      stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+      return ctx.instance.wsp.request({
+        action: 'stmt',
+        session: { user: ctx.state.session.user },
+        stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+      });
     });
 
-    searchConditions.push({
-      _id: {
-        $in: ids.map((id) => id.toString())
-      }
-    });
+    // Execute all queries in parallel
+    const results = await Promise.all(headerQueries);
+
+    // Add all results to search conditions
+    for (const ids of results) {
+      searchConditions.push({
+        _id: {
+          $in: ids.map((id) => id.toString())
+        }
+      });
+    }
   }
 
   // Search in headers

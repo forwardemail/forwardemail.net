@@ -19,6 +19,7 @@ const pify = require('pify');
 const onMove = require('./on-move');
 
 const IMAPError = require('#helpers/imap-error');
+const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
@@ -82,7 +83,8 @@ async function onDelete(path, session, fn) {
         }
       );
 
-    if (mailbox.specialUse || mailbox.path === 'INBOX')
+    // Protect all required system folders from deletion
+    if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
         {
@@ -171,6 +173,13 @@ async function onDelete(path, session, fn) {
     // );
 
     fn(null, true, mailbox);
+
+    // Ensure default mailboxes exist after deletion
+    ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)

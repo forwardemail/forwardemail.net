@@ -47,7 +47,6 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
-
 // dynamically import get-port
 let getPort;
 import('get-port').then((obj) => {
@@ -136,6 +135,7 @@ test.beforeEach(async (t) => {
 
   // spoof session
   t.context.session = {
+    remoteAddress: IP_ADDRESS,
     user: {
       id: alias.id,
       username: `${alias.name}@${domain.name}`,
@@ -2342,4 +2342,676 @@ test('imap_sequence_store_single_message_flag_consistency', async (t) => {
   } finally {
     if (lock) await lock.release();
   }
+});
+
+// Bug fix tests for message deletion and folder rename issues
+
+// NEW TESTS FOR ID-BASED EMAIL CLIENTS-COMPATIBLE IMAP BEHAVIOR
+// These tests verify that:
+// 1. System folders (INBOX/Trash/Junk) cannot be renamed
+// 2. System folders cannot be deleted (even if renamed, protection follows specialUse)
+// 3. Message flags are synchronized properly during MOVE operations
+
+// Test 1: System folders cannot be renamed (ID-based email clients behavior)
+test('system folders cannot be renamed (ID-based email clients behavior)', async (t) => {
+  // Create Trash and Junk folders (INBOX already exists)
+  await t.context.imapFlow.mailboxCreate('Trash');
+  await t.context.imapFlow.mailboxCreate('Junk');
+
+  // Test INBOX
+  const inboxErr = await t.throwsAsync(
+    t.context.imapFlow.mailboxRename('INBOX', 'Inbox2')
+  );
+  t.is(
+    inboxErr.serverResponseCode,
+    'CANNOT',
+    'INBOX rename should return CANNOT (matches ID-based email clients)'
+  );
+
+  // Test Trash
+  const trashErr = await t.throwsAsync(
+    t.context.imapFlow.mailboxRename('Trash', 'Trash2')
+  );
+  t.is(
+    trashErr.serverResponseCode,
+    'CANNOT',
+    'Trash rename should return CANNOT (matches ID-based email clients)'
+  );
+
+  // Test Junk
+  const junkErr = await t.throwsAsync(
+    t.context.imapFlow.mailboxRename('Junk', 'Junk2')
+  );
+  t.is(
+    junkErr.serverResponseCode,
+    'CANNOT',
+    'Junk rename should return CANNOT (matches ID-based email clients)'
+  );
+});
+
+// Test 2: System folders cannot be deleted (ID-based email clients behavior)
+test('system folders cannot be deleted (ID-based email clients behavior)', async (t) => {
+  // Create Trash and Junk folders (INBOX already exists)
+  await t.context.imapFlow.mailboxCreate('Trash');
+  await t.context.imapFlow.mailboxCreate('Junk');
+
+  // Test INBOX
+  const inboxErr = await t.throwsAsync(
+    t.context.imapFlow.mailboxDelete('INBOX')
+  );
+  t.is(
+    inboxErr.serverResponseCode,
+    'CANNOT',
+    'INBOX deletion should return CANNOT (matches ID-based email clients)'
+  );
+
+  // Test Trash
+  const trashErr = await t.throwsAsync(
+    t.context.imapFlow.mailboxDelete('Trash')
+  );
+  t.is(
+    trashErr.serverResponseCode,
+    'CANNOT',
+    'Trash deletion should return CANNOT (matches ID-based email clients)'
+  );
+
+  // Test Junk
+  const junkErr = await t.throwsAsync(t.context.imapFlow.mailboxDelete('Junk'));
+  t.is(
+    junkErr.serverResponseCode,
+    'CANNOT',
+    'Junk deletion should return CANNOT (matches ID-based email clients)'
+  );
+});
+
+// Test 3: Non-system special folders CAN be renamed and deleted
+test('non-system special folders can be renamed and deleted (ID-based email clients behavior)', async (t) => {
+  // Create Sent folder (has specialUse but not protected)
+  await t.context.imapFlow.mailboxCreate('Sent');
+
+  // Should be able to rename Sent
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxRename('Sent', 'Sent2'),
+    'Sent folder should be renameable'
+  );
+
+  // Should be able to delete renamed Sent
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxDelete('Sent2'),
+    'Renamed Sent folder should be deletable'
+  );
+});
+
+// Test 4: Message flags synchronized when moving to Trash (Bug #1 fix)
+test('message flags are synchronized when moving to Trash', async (t) => {
+  // Create a test folder
+  await t.context.imapFlow.mailboxCreate('TestFolder');
+
+  // Append a message to TestFolder with flags
+  const appendResult = await t.context.imapFlow.append(
+    'TestFolder',
+    Buffer.from('Subject: Test\r\n\r\nTest body'),
+    ['\\Seen', '\\Flagged']
+  );
+
+  t.truthy(appendResult.uid, 'Message should be appended successfully');
+
+  // Open TestFolder mailbox before moving
+  await t.context.imapFlow.mailboxOpen('TestFolder');
+
+  // Verify message has correct flags in TestFolder
+  const testFolderStatus = await t.context.imapFlow.status('TestFolder', {
+    messages: true
+  });
+  t.is(testFolderStatus.messages, 1, 'TestFolder should have 1 message');
+
+  // Verify flags are set correctly before moving
+  const messagesBeforeMove = [];
+  for await (const msg of t.context.imapFlow.fetch('1:*', { flags: true })) {
+    messagesBeforeMove.push(msg);
+  }
+
+  t.is(messagesBeforeMove.length, 1, 'Should have 1 message in TestFolder');
+  t.true(
+    messagesBeforeMove[0].flags.has('\\Seen'),
+    'Message should have Seen flag before move'
+  );
+  t.true(
+    messagesBeforeMove[0].flags.has('\\Flagged'),
+    'Message should have Flagged flag before move'
+  );
+
+  // Move message to Trash (mailbox must be open)
+  await t.context.imapFlow.messageMove(`${appendResult.uid}`, 'Trash', {
+    uid: true
+  });
+
+  // Verify message exists in Trash
+  const trashStatus = await t.context.imapFlow.status('Trash', {
+    messages: true
+  });
+  t.is(trashStatus.messages, 1, 'Trash should have 1 message');
+
+  // Select Trash and fetch the message
+  await t.context.imapFlow.mailboxOpen('Trash');
+  const messages = [];
+  for await (const msg of t.context.imapFlow.fetch('1:*', { flags: true })) {
+    messages.push(msg);
+  }
+
+  t.is(messages.length, 1, 'Should fetch 1 message from Trash');
+  t.true(
+    messages[0].flags.has('\\Seen'),
+    'Message should still be marked as Seen'
+  );
+  t.true(
+    messages[0].flags.has('\\Flagged'),
+    'Message should still be marked as Flagged'
+  );
+});
+
+// Test 5: Cannot rename folder to itself (path validation)
+test('cannot rename folder to itself (path validation)', async (t) => {
+  // Create a test folder
+  await t.context.imapFlow.mailboxCreate('TestFolder2');
+
+  // Try to rename to itself
+  const err = await t.throwsAsync(
+    t.context.imapFlow.mailboxRename('TestFolder2', 'TestFolder2')
+  );
+
+  t.is(
+    err.serverResponseCode,
+    'ALREADYEXISTS',
+    'Renaming to same path should return ALREADYEXISTS'
+  );
+});
+
+// ===== MOVE Flag Preservation Tests =====
+// These tests verify that the IMAP MOVE command correctly preserves message flags
+// This addresses the bug where moved messages lose their flags and reappear as unread
+
+test('MOVE preserves unseen flag - unseen message stays unseen', async (t) => {
+  // Create source and destination mailboxes
+  await t.context.imapFlow.mailboxCreate('source-unseen');
+  await t.context.imapFlow.mailboxCreate('dest-unseen');
+
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: ${t.context.alias.name}@${t.context.domain.name}
+From: ${t.context.alias.name}@${t.context.domain.name}
+Subject: test-unseen-move
+Content-Type: text/plain; charset=UTF-8
+
+test message
+`.trim();
+
+  // Append message WITHOUT \\Seen flag (message is unseen)
+  await t.context.imapFlow.append(
+    'source-unseen',
+    Buffer.from(raw),
+    [], // No flags - message is unseen
+    new Date()
+  );
+
+  // Verify message is unseen in source
+  await t.context.imapFlow.mailboxOpen('source-unseen');
+  let status = await t.context.imapFlow.status('source-unseen', {
+    unseen: true
+  });
+  t.is(status.unseen, 1, 'Source mailbox should have 1 unseen message');
+
+  // MOVE message to destination using IMAP protocol
+  await t.context.imapFlow.messageMove('1', 'dest-unseen');
+
+  // Verify message is STILL unseen in destination
+  await t.context.imapFlow.mailboxOpen('dest-unseen');
+  status = await t.context.imapFlow.status('dest-unseen', {
+    unseen: true
+  });
+  t.is(
+    status.unseen,
+    1,
+    'Destination mailbox should have 1 unseen message - flag should be preserved'
+  );
+
+  // Verify source is empty
+  status = await t.context.imapFlow.status('source-unseen', {
+    messages: true
+  });
+  t.is(status.messages, 0, 'Source mailbox should be empty after MOVE');
+});
+
+test('MOVE preserves seen flag - seen message stays seen', async (t) => {
+  // Create source and destination mailboxes
+  await t.context.imapFlow.mailboxCreate('source-seen');
+  await t.context.imapFlow.mailboxCreate('dest-seen');
+
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: ${t.context.alias.name}@${t.context.domain.name}
+From: ${t.context.alias.name}@${t.context.domain.name}
+Subject: test-seen-move
+Content-Type: text/plain; charset=UTF-8
+
+test message
+`.trim();
+
+  // Append message WITH \\Seen flag (message is seen)
+  await t.context.imapFlow.append(
+    'source-seen',
+    Buffer.from(raw),
+    ['\\Seen'], // Message is seen
+    new Date()
+  );
+
+  // Verify message is seen in source (unseen count = 0)
+  await t.context.imapFlow.mailboxOpen('source-seen');
+  let status = await t.context.imapFlow.status('source-seen', {
+    unseen: true
+  });
+  t.is(status.unseen, 0, 'Source mailbox should have 0 unseen messages');
+
+  // MOVE message to destination using IMAP protocol
+  await t.context.imapFlow.messageMove('1', 'dest-seen');
+
+  // Verify message is STILL seen in destination (unseen count = 0)
+  await t.context.imapFlow.mailboxOpen('dest-seen');
+  status = await t.context.imapFlow.status('dest-seen', {
+    unseen: true
+  });
+  t.is(
+    status.unseen,
+    0,
+    'Destination mailbox should have 0 unseen messages - flag should be preserved'
+  );
+});
+
+test('MOVE preserves flagged flag - flagged message stays flagged', async (t) => {
+  // Create source and destination mailboxes
+  await t.context.imapFlow.mailboxCreate('source-flagged');
+  await t.context.imapFlow.mailboxCreate('dest-flagged');
+
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: ${t.context.alias.name}@${t.context.domain.name}
+From: ${t.context.alias.name}@${t.context.domain.name}
+Subject: test-flagged-move
+Content-Type: text/plain; charset=UTF-8
+
+test message
+`.trim();
+
+  // Append message WITH \\Flagged flag
+  await t.context.imapFlow.append(
+    'source-flagged',
+    Buffer.from(raw),
+    ['\\Flagged', '\\Seen'], // Flagged and seen
+    new Date()
+  );
+
+  // Verify message has flagged flag in source
+  await t.context.imapFlow.mailboxOpen('source-flagged');
+  let messages = await t.context.imapFlow.fetchAll('1:*', { flags: true });
+  t.true(
+    messages[0].flags.has('\\Flagged'),
+    'Source message should be flagged'
+  );
+
+  // MOVE message to destination using IMAP protocol
+  await t.context.imapFlow.messageMove('1', 'dest-flagged');
+
+  // Verify message STILL has flagged flag in destination
+  await t.context.imapFlow.mailboxOpen('dest-flagged');
+  messages = await t.context.imapFlow.fetchAll('1:*', { flags: true });
+  t.true(
+    messages[0].flags.has('\\Flagged'),
+    'Destination message should still be flagged'
+  );
+  t.true(
+    messages[0].flags.has('\\Seen'),
+    'Destination message should still be seen'
+  );
+});
+
+test('MOVE preserves draft flag - draft message stays draft', async (t) => {
+  // Create source and destination mailboxes
+  await t.context.imapFlow.mailboxCreate('source-draft');
+  await t.context.imapFlow.mailboxCreate('dest-draft');
+
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+To: ${t.context.alias.name}@${t.context.domain.name}
+From: ${t.context.alias.name}@${t.context.domain.name}
+Subject: test-draft-move
+Content-Type: text/plain; charset=UTF-8
+
+test message
+`.trim();
+
+  // Append message WITH \\Draft flag
+  await t.context.imapFlow.append(
+    'source-draft',
+    Buffer.from(raw),
+    ['\\Draft'], // Draft message
+    new Date()
+  );
+
+  // Verify message has draft flag in source
+  await t.context.imapFlow.mailboxOpen('source-draft');
+  let messages = await t.context.imapFlow.fetchAll('1:*', { flags: true });
+  t.true(messages[0].flags.has('\\Draft'), 'Source message should be draft');
+
+  // MOVE message to destination using IMAP protocol
+  await t.context.imapFlow.messageMove('1', 'dest-draft');
+
+  // Verify message STILL has draft flag in destination
+  await t.context.imapFlow.mailboxOpen('dest-draft');
+  messages = await t.context.imapFlow.fetchAll('1:*', { flags: true });
+  t.true(
+    messages[0].flags.has('\\Draft'),
+    'Destination message should still be draft'
+  );
+});
+
+// ===== APPEND and STORE Handler Comprehensive Tests =====
+
+test('APPEND creates message with correct flags', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with multiple flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Test\r\n\r\nTest body'),
+    ['\\Seen', '\\Flagged']
+  );
+
+  t.true(result.uid > 0, 'Message should have UID');
+
+  // Fetch the message to verify flags
+  await imapFlow.mailboxOpen('INBOX');
+  const message = await imapFlow.fetchOne(String(result.uid), { flags: true });
+  t.true(message.flags.has('\\Seen'), 'Should have \\Seen flag');
+  t.true(message.flags.has('\\Flagged'), 'Should have \\Flagged flag');
+  t.false(message.flags.has('\\Deleted'), 'Should not have \\Deleted flag');
+});
+
+test('APPEND to Drafts folder automatically adds Draft flag', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message to Drafts without Draft flag
+  const result = await imapFlow.append(
+    'Drafts',
+    Buffer.from('Subject: Draft Test\r\n\r\nDraft body'),
+    []
+  );
+
+  t.true(result.uid > 0, 'Message should have UID');
+
+  // Select Drafts mailbox first
+  await imapFlow.mailboxOpen('Drafts');
+
+  // Fetch the message to verify Draft flag was added
+  const message = await imapFlow.fetchOne(String(result.uid), { flags: true });
+
+  t.true(
+    message.flags.has('\\Draft'),
+    'Should automatically have \\Draft flag'
+  );
+});
+
+test('APPEND with no flags creates unseen message', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with no flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Unseen Test\r\n\r\nUnseen body'),
+    []
+  );
+
+  t.true(result.uid > 0, 'Message should have UID');
+
+  // Fetch the message to verify it's unseen
+  await imapFlow.mailboxOpen('INBOX');
+  const message = await imapFlow.fetchOne(String(result.uid), { flags: true });
+
+  t.false(message.flags.has('\\Seen'), 'Should not have \\Seen flag (unseen)');
+});
+
+test('STORE replaces flags correctly', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with initial flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Store Test\r\n\r\nStore body'),
+    ['\\Seen']
+  );
+
+  const uid = String(result.uid);
+
+  // Replace flags with new set
+  await imapFlow.mailboxOpen('INBOX');
+  await imapFlow.messageFlagsSet(uid, ['\\Flagged', '\\Deleted']);
+
+  // Fetch the message to verify flags were replaced
+  const message = await imapFlow.fetchOne(uid, { flags: true });
+  t.false(
+    message.flags.has('\\Seen'),
+    'Should not have \\Seen flag (replaced)'
+  );
+  t.true(message.flags.has('\\Flagged'), 'Should have \\Flagged flag');
+  t.true(message.flags.has('\\Deleted'), 'Should have \\Deleted flag');
+});
+
+test('STORE adds flags correctly', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message without flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Add Flags Test\r\n\r\nAdd flags body'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Add flags
+  await imapFlow.messageFlagsAdd(uid, ['\\Seen', '\\Flagged']);
+
+  // Fetch the message to verify flags were added
+  const message = await imapFlow.fetchOne(uid, { flags: true });
+
+  t.true(message.flags.has('\\Seen'), 'Should have \\Seen flag (added)');
+  t.true(message.flags.has('\\Flagged'), 'Should have \\Flagged flag (added)');
+});
+
+test('STORE removes flags correctly', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with multiple flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Remove Flags Test\r\n\r\nRemove flags body'),
+    ['\\Seen', '\\Flagged']
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Remove one flag
+  await imapFlow.messageFlagsRemove(uid, ['\\Flagged']);
+
+  // Fetch the message to verify flag was removed
+  const message = await imapFlow.fetchOne(uid, { flags: true });
+
+  t.true(message.flags.has('\\Seen'), 'Should still have \\Seen flag');
+  t.false(
+    message.flags.has('\\Flagged'),
+    'Should not have \\Flagged flag (removed)'
+  );
+});
+
+test('STORE marks message as deleted', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Delete Test\r\n\r\nDelete body'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Mark as deleted
+  await imapFlow.messageFlagsAdd(uid, ['\\Deleted']);
+
+  // Fetch the message to verify deleted flag
+  const message = await imapFlow.fetchOne(uid, { flags: true });
+
+  t.true(message.flags.has('\\Deleted'), 'Should have \\Deleted flag');
+});
+
+test('STORE marks message as seen', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append an unseen message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Mark Seen Test\r\n\r\nMark seen body'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Mark as seen
+  await imapFlow.messageFlagsAdd(uid, ['\\Seen']);
+
+  // Fetch the message to verify seen flag
+  const message = await imapFlow.fetchOne(uid, { flags: true });
+
+  t.true(message.flags.has('\\Seen'), 'Should have \\Seen flag');
+});
+
+test('STORE multiple flag operations', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Multiple Ops Test\r\n\r\nMultiple ops body'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Add multiple flags
+  await imapFlow.messageFlagsAdd(uid, ['\\Seen', '\\Flagged']);
+
+  // Verify flags were added
+  let message = await imapFlow.fetchOne(uid, { flags: true });
+  t.true(message.flags.has('\\Seen'), 'Should have \\Seen flag');
+  t.true(message.flags.has('\\Flagged'), 'Should have \\Flagged flag');
+
+  // Remove one flag
+  await imapFlow.messageFlagsRemove(uid, ['\\Seen']);
+
+  // Verify flag was removed
+  message = await imapFlow.fetchOne(uid, { flags: true });
+  t.false(message.flags.has('\\Seen'), 'Should not have \\Seen flag (removed)');
+  t.true(message.flags.has('\\Flagged'), 'Should still have \\Flagged flag');
+
+  // Replace all flags
+  await imapFlow.messageFlagsSet(uid, ['\\Draft']);
+
+  // Verify flags were replaced
+  message = await imapFlow.fetchOne(uid, { flags: true });
+  t.false(
+    message.flags.has('\\Flagged'),
+    'Should not have \\Flagged flag (replaced)'
+  );
+  t.true(message.flags.has('\\Draft'), 'Should have \\Draft flag');
+});
+
+test('COPY preserves flags correctly', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with flags
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Copy Test\r\n\r\nCopy body'),
+    ['\\Seen', '\\Flagged']
+  );
+
+  const uid = String(result.uid);
+
+  // Open INBOX to operate on the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  // Copy to Archive (not Drafts to avoid auto-Draft flag)
+  const copyResult = await imapFlow.messageCopy(uid, 'Archive', { uid: true });
+
+  t.true(copyResult.uidMap.size > 0, 'Should have UID mapping');
+
+  // Get the new UID
+  const newUid = String(copyResult.uidMap.get(Number(uid)));
+
+  // Select Archive mailbox
+  await imapFlow.mailboxOpen('Archive');
+
+  // Fetch the copied message to verify flags were preserved
+  const message = await imapFlow.fetchOne(newUid, { flags: true });
+
+  t.true(message.flags.has('\\Seen'), 'Should preserve \\Seen flag');
+  t.true(message.flags.has('\\Flagged'), 'Should preserve \\Flagged flag');
+});
+
+test('APPEND with Deleted flag makes message searchable=false', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a message with Deleted flag
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Deleted Test\r\n\r\nDeleted body'),
+    ['\\Deleted']
+  );
+
+  t.true(result.uid > 0, 'Message should have UID');
+
+  // Open INBOX to fetch the message
+  await imapFlow.mailboxOpen('INBOX');
+
+  const mailbox = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'INBOX'
+  });
+
+  // Fetch the message from database to verify searchable field
+  const message = await Messages.findOne(t.context.imap, t.context.session, {
+    uid: result.uid,
+    mailbox: mailbox._id
+  });
+  t.log('message', message);
+  t.true(message.flags.includes('\\Deleted'), 'Should have \\Deleted flag');
+  t.is(message.searchable, false, 'Should have searchable=false');
+  t.is(message.undeleted, false, 'Should have undeleted=false');
 });

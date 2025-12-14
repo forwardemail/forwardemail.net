@@ -1,5 +1,12 @@
 # PayPal's 11-Year API Disaster: How We Built Workarounds While They Ignored Developers
 
+> \[!NOTE]
+> **Success! PayPal has finally added the `GET /v1/billing/subscriptions` endpoint.**
+>
+> After we published this post and emailed it to PayPal's executive leadership, their teams implemented the much-needed endpoint to list subscriptions. The change appeared sometime between [June 25, 2025](https://web.archive.org/web/20250625121019/https://developer.paypal.com/docs/api/subscriptions/v1/) and [July 9, 2025](https://web.archive.org/web/20250709102200/https://developer.paypal.com/docs/api/subscriptions/v1/).
+>
+> However, in true PayPal fashion, they never notified us. We only discovered this update on our own in December 2025, months after the feature was silently released.
+
 <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">At Forward Email, we've been dealing with PayPal's broken APIs for over a decade. What started as minor frustrations has turned into a complete disaster that forced us to build our own workarounds, block their phishing templates, and ultimately halt all PayPal payments during a critical account migration.</p>

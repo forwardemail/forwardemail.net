@@ -14786,5 +14786,7 @@
   "Calendar does not exist.": "Calendar does not exist.",
   "Calendar ID is required.": "Calendar ID is required.",
   "Invalid line (no token \";\" or \":\") \"invalid ical data\"": "Invalid line (no token \";\" or \":\") \"invalid ical data\"",
-  "Member does not exist.": "Member does not exist."
+  "Member does not exist.": "Member does not exist.",
+  "Mailbox already exists": "Mailbox already exists",
+  "Mailbox is reserved and cannot be removed": "Mailbox is reserved and cannot be removed"
 }

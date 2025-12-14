@@ -39,6 +39,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const email = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
+const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
@@ -879,6 +880,64 @@ Users.pre('save', async function (next) {
     return next(error);
   }
   */
+
+  // Check if email is denylisted
+  try {
+    await isDenylisted(this.email, client, resolver);
+  } catch (err) {
+    // If isDenylisted throws an error, the email is denylisted
+    if (err.name === 'DenylistError') {
+      // Ban the user immediately
+      this[config.userFields.isBanned] = true;
+
+      // Send admin notification email about the banned user
+      email({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject: `User Banned: Denylisted Email Detected - ${this.email}`
+        },
+        locals: {
+          message: `
+<h3>User Banned Due to Denylisted Email</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr><th>Field</th><th>Value</th></tr>
+  <tr><td>User Email</td><td>${this.email}</td></tr>
+  <tr><td>User ID</td><td>${this._id || 'Not yet assigned'}</td></tr>
+  <tr><td>Denylist Value</td><td>${
+    err.message || 'Email address is denylisted'
+  }</td></tr>
+  <tr><td>Timestamp</td><td>${new Date().toISOString()}</td></tr>
+  <tr><td>Action Taken</td><td>User banned immediately, signup prevented</td></tr>
+</table>
+<p><strong>Reason:</strong> The email address was found in the denylist during signup attempt.</p>
+          `.trim()
+        }
+      })
+        .then(() => {
+          logger.info(`Admin notification sent for banned user: ${this.email}`);
+        })
+        .catch((emailErr) => {
+          logger.error(
+            'Error sending admin notification for banned user:',
+            emailErr
+          );
+        });
+
+      // Create a user-friendly error message
+      const error = Boom.forbidden(
+        i18n.api.t({
+          phrase: config.i18n.phrases.ACCOUNT_BANNED,
+          locale: this[config.lastLocaleField]
+        })
+      );
+      error.no_translate = true;
+      return next(error);
+    }
+
+    // If it's some other error, log it and continue
+    logger.error('Error checking denylist for new user:', err);
+  }
 
   // TODO: prevent user from signing up with one of our global vanity names
   next();

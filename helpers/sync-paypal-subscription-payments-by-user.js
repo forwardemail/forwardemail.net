@@ -15,6 +15,7 @@ const logger = require('./logger');
 const { paypalAgent } = require('./paypal');
 const ThresholdError = require('./threshold-error');
 const getAllPayPalSubscriptionTransactions = require('./get-all-paypal-subscription-transactions');
+const getAllPayPalSubscriptions = require('./get-all-paypal-subscriptions');
 const config = require('#config');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
@@ -25,7 +26,11 @@ const PAYPAL_PLANS = {
   team: Object.values(PAYPAL_PLAN_MAPPING.team)
 };
 
-async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
+async function syncPayPalSubscriptionPaymentsByUser(
+  errorEmails,
+  customer,
+  allSubscriptions = null
+) {
   try {
     logger.info(`Syncing paypal subscription payments for ${customer.email}`);
     // first we need to get the distinct paypal order Ids and validate them all
@@ -44,7 +49,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
     //   ;
     // }
 
-    // get all subscriptions for the user
+    // get all subscriptions for the user from database
     const subscriptionIds = await Payments.distinct(
       config.userFields.paypalSubscriptionID,
       {
@@ -61,6 +66,55 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
       )
     )
       subscriptionIds.push(customer[config.userFields.paypalSubscriptionID]);
+
+    // get all subscriptions from PayPal API and merge with database results
+    // If allSubscriptions was passed from job (Phase 1 or Phase 2), use it to avoid re-fetching
+    // Otherwise fetch from API (fallback for standalone helper usage)
+    if (allSubscriptions) {
+      // Filter subscriptions that belong to this user from pre-fetched list
+      const userSubscriptions = allSubscriptions.filter(
+        (sub) =>
+          sub.subscriber?.payer_id ===
+            customer[config.userFields.paypalPayerID] ||
+          sub.subscriber?.email_address === customer.email
+      );
+      // merge subscription IDs
+      for (const sub of userSubscriptions) {
+        if (!subscriptionIds.includes(sub.id)) {
+          subscriptionIds.push(sub.id);
+          logger.info(
+            `Found subscription ${sub.id} from pre-fetched API list for user ${customer.email}`
+          );
+        }
+      }
+    } else {
+      // Fallback: fetch from API if not provided (standalone helper usage)
+      try {
+        const fetchedSubscriptions = await getAllPayPalSubscriptions();
+        // filter subscriptions that belong to this user
+        const userSubscriptions = fetchedSubscriptions.filter(
+          (sub) =>
+            sub.subscriber?.payer_id ===
+              customer[config.userFields.paypalPayerID] ||
+            sub.subscriber?.email_address === customer.email
+        );
+        // merge subscription IDs
+        for (const sub of userSubscriptions) {
+          if (!subscriptionIds.includes(sub.id)) {
+            subscriptionIds.push(sub.id);
+            logger.info(
+              `Found subscription ${sub.id} from PayPal API for user ${customer.email}`
+            );
+          }
+        }
+      } catch (err) {
+        logger.error(err, {
+          user_email: customer.email,
+          message: 'Failed to fetch subscriptions from PayPal API'
+        });
+        // Continue with database subscriptions only
+      }
+    }
 
     // eslint-disable-next-line no-inner-declarations
     async function subscriptionMapper(subscriptionId) {
@@ -151,18 +205,22 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
               let shouldSave = false;
 
               if (!payment.paypal_transaction_id) {
-                // prevent double tx id save
-                const count = await Payments.countDocuments({
+                // Check if this transaction ID already exists for ANY user
+                // (multiple users can share the same PayPal payer ID)
+                const existingPayment = await Payments.findOne({
                   paypal_transaction_id: transaction.id,
                   _id: {
                     $ne: payment._id
                   }
                 });
 
-                if (count > 0)
-                  throw new Error(
-                    `Capture ID ${transaction.id} was attempting to be duplicated for payment ID ${payment.id}`
+                if (existingPayment) {
+                  // Transaction already exists for another user - skip gracefully
+                  logger.info(
+                    `Transaction ${transaction.id} already exists for user ${existingPayment.user} (payment ${existingPayment.id}), skipping for user ${customer.email} (shared payer ID)`
                   );
+                  return; // Skip this transaction
+                }
 
                 // otherwise set the tx id
                 payment.paypal_transaction_id = transaction.id;
@@ -202,17 +260,21 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
                 );
               }
             } else {
-              // prevent double tx id save
-              const count = await Payments.countDocuments({
+              // Check if this transaction ID already exists for ANY user
+              // (multiple users can share the same PayPal payer ID)
+              const existingPayment = await Payments.findOne({
                 paypal_transaction_id: transaction.id
               });
 
-              if (count > 0)
-                throw new Error(
-                  `Capture ID ${transaction.id} was attempting to be duplicated for customer ${customer.email}`
+              if (existingPayment) {
+                // Transaction already exists for another user - skip gracefully
+                logger.info(
+                  `Transaction ${transaction.id} already exists for user ${existingPayment.user} (payment ${existingPayment.id}), skipping for user ${customer.email} (shared payer ID)`
                 );
+                return; // Skip this transaction
+              }
 
-              // otherwise set the tx id
+              // otherwise create the payment
               const payment = {
                 user: customer._id,
                 method: 'paypal',

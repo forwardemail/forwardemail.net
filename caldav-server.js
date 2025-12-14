@@ -1594,14 +1594,25 @@ class CalDAV extends API {
         synctoken: bumpSyncToken(calendar.synctoken)
       };
 
-      calendar = await Calendars.findByIdAndUpdate(
-        this,
-        ctx.state.session,
-        calendar._id,
-        {
-          $set: update
+      // Filter out undefined/null values to avoid empty UPDATE statements
+      const filteredUpdate = {};
+      for (const key of Object.keys(update)) {
+        if (update[key] !== undefined && update[key] !== null) {
+          filteredUpdate[key] = update[key];
         }
-      );
+      }
+
+      // Only update if there are actual changes
+      if (Object.keys(filteredUpdate).length > 0) {
+        calendar = await Calendars.findByIdAndUpdate(
+          this,
+          ctx.state.session,
+          calendar._id,
+          {
+            $set: filteredUpdate
+          }
+        );
+      }
 
       // create new VEVENTS
       if (vevents.length > 0) {
