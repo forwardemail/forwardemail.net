@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const aliases = require('./aliases');
 const aliasAuth = require('./alias-auth');
+const aliases = require('./aliases');
 const apple = require('./apple');
-const calendars = require('./calendars');
 const calendarEvents = require('./calendar-events');
+const calendars = require('./calendars');
 const contacts = require('./contacts');
 const domains = require('./domains');
+const emails = require('./emails');
 const enforcePaidPlan = require('./enforce-paid-plan');
 const folders = require('./folders');
 const inquiries = require('./inquiries');
@@ -24,18 +25,18 @@ const selfTest = require('./self-test');
 const settings = require('./settings');
 const stripe = require('./stripe');
 const test = require('./test');
-const users = require('./users');
 const upgrade = require('./upgrade');
-const emails = require('./emails');
+const users = require('./users');
 
 module.exports = {
-  aliases,
   aliasAuth,
+  aliases,
   apple,
-  calendars,
   calendarEvents,
+  calendars,
   contacts,
   domains,
+  emails,
   enforcePaidPlan,
   folders,
   inquiries,
@@ -50,7 +51,6 @@ module.exports = {
   settings,
   stripe,
   test,
-  users,
   upgrade,
-  emails
+  users
 };

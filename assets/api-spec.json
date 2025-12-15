@@ -200,6 +200,49 @@
             "type": "string",
             "description": "Locale preference"
           },
+          "settings": {
+            "type": "object",
+            "description": "Alias settings",
+            "properties": {
+              "mail": {
+                "type": "object",
+                "properties": {
+                  "archive_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail archive folder"
+                  },
+                  "sent_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail sent folder"
+                  },
+                  "drafts_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail drafts folder"
+                  }
+                }
+              },
+              "label_settings": {
+                "type": "object",
+                "description": "Alias label map keyed by keyword",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/SettingsLabelUpdate"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "properties": {
+                  "defaults": {
+                    "type": "object",
+                    "description": "Free-form alias defaults such as display_name or signature.",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -224,6 +267,17 @@
           "has_pgp": false,
           "public_key": "",
           "locale": "en",
+          "settings": {
+            "mail": {
+              "archive_folder": null,
+              "sent_folder": null,
+              "drafts_folder": null
+            },
+            "label_settings": {},
+            "aliases": {
+              "defaults": {}
+            }
+          },
           "created_at": "2025-06-04T02:43:52.646Z",
           "updated_at": "2025-06-04T02:43:55.350Z"
         }
@@ -2277,6 +2331,62 @@
           }
         }
       },
+      "SavedSearch": {
+        "type": "object",
+        "description": "Saved search definition stored per alias.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Display name for the saved search"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Search query string to reuse (e.g., \"from:billing\")"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "ShortcutMap": {
+        "type": "object",
+        "description": "Map of actions to keybindings for keyboard shortcuts.",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Keybinding for the action (e.g., \"e\" for archive)"
+        }
+      },
+      "SettingsLabelUpdate": {
+        "type": "object",
+        "description": "Fields allowed when updating a label definition.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable label name shown in the UI"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+            "description": "Hex color used for UI rendering"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Hide the label in the UI while preserving the keyword"
+          },
+          "source": {
+            "type": "string",
+            "description": "Label origin for filtering and migrations",
+            "enum": [
+              "custom",
+              "system",
+              "imported"
+            ]
+          }
+        }
+      },
       "Member": {
         "type": "object",
         "properties": {
@@ -2404,6 +2514,15 @@
         "in": "path",
         "required": true,
         "description": "Message ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "labelKeyword": {
+        "name": "keyword",
+        "in": "path",
+        "required": true,
+        "description": "IMAP keyword used as the label identifier",
         "schema": {
           "type": "string"
         }
@@ -2551,7 +2670,7 @@
           "Account"
         ],
         "summary": "Retrieve account",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used, storage quota, and mailbox settings. This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status.",
+        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used/quota and a nested `settings` object (mail special folders, label settings, and alias defaults). This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status and preferences.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2616,6 +2735,17 @@
                       "has_pgp": false,
                       "public_key": "",
                       "locale": "en",
+                      "settings": {
+                        "mail": {
+                          "archive_folder": null,
+                          "sent_folder": null,
+                          "drafts_folder": null
+                        },
+                        "label_settings": {},
+                        "aliases": {
+                          "defaults": {}
+                        }
+                      },
                       "created_at": "2025-06-04T02:43:52.646Z",
                       "updated_at": "2025-06-04T02:43:55.350Z"
                     }
@@ -2640,11 +2770,14 @@
           "Account"
         ],
         "summary": "Update account",
-        "description": "Update your account information.",
+        "description": "Update your account information.\n\n- **User Account (API Token):** Update user profile fields.\n- **Alias Account (Alias Credentials):** Update alias-scoped settings using the nested `settings` object. Legacy flat fields are accepted for compatibility. The response matches `GET /v1/account`.",
         "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
@@ -2654,6 +2787,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "settings": {
+                    "type": "object",
+                    "description": "Alias settings (alias authentication only)",
+                    "properties": {
+                      "mail": {
+                        "type": "object",
+                        "properties": {
+                          "archive_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail archive folder"
+                          },
+                          "sent_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail sent folder"
+                          },
+                          "drafts_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail drafts folder"
+                          }
+                        }
+                      },
+                      "label_settings": {
+                        "type": "object",
+                        "description": "Alias label map keyed by keyword",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SettingsLabelUpdate"
+                        }
+                      },
+                      "aliases": {
+                        "type": "object",
+                        "properties": {
+                          "defaults": {
+                            "type": "object",
+                            "description": "Free-form alias defaults such as display_name or signature",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  },
                   "display_name": {
                     "type": "string",
                     "description": "Display name"
@@ -2661,6 +2837,16 @@
                   "locale": {
                     "type": "string",
                     "description": "Locale preference"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Updated email address (user authentication only)"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Avatar URL (user authentication only)"
                   }
                 }
               }
@@ -2673,7 +2859,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
                 }
               }
             }
@@ -4318,6 +4511,8 @@
     },
 
 
+
+
     "/v1/logs/download": {
       "get": {
         "summary": "Download logs",
@@ -5916,4 +6111,3 @@
     }
   ]
 }
-
