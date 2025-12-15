@@ -625,6 +625,64 @@ async function listLogs(ctx) {
         return log;
       })
     );
+
+    //
+    // Deduplicate logs by Message-ID ONLY for BCC messages from system domain
+    // to prevent users from guessing how many people were on the BCC chain
+    //
+    const webHostDomain = config.webHost; // e.g., "forwardemail.net"
+    const seen = new Map();
+
+    ctx.state.logs = ctx.state.logs.filter((log) => {
+      // Only deduplicate if MAIL FROM is from system domain
+      const mailFrom = log?.meta?.session?.envelope?.mailFrom?.address;
+      if (!mailFrom) return true; // Keep if no MAIL FROM
+
+      const mailFromDomain = mailFrom.split('@')[1];
+      if (mailFromDomain !== webHostDomain) return true; // Keep if not from system domain
+
+      // Check if user owns the MAIL FROM address (i.e., they are the sender)
+      const username = mailFrom.includes('+')
+        ? mailFrom.slice(0, mailFrom.indexOf('+'))
+        : mailFrom.split('@')[0];
+      const domain = mailFromDomain;
+
+      // Check if user is admin or owns this alias
+      let userOwnsSender = false;
+
+      // Check if user has this alias
+      for (const d of ctx.state.domains) {
+        if (d.name === domain) {
+          if (d.group === 'admin') {
+            // User is admin of sender domain, they own it
+            userOwnsSender = true;
+            break;
+          }
+
+          // Check if user has this specific alias
+          const email = `${username}@${domain}`.toLowerCase();
+          if (
+            nonAdminDomainsToAliases[d.id]?.includes(email) ||
+            nonAdminDomainsToAliases[d.id]?.includes(`*@${domain}`)
+          ) {
+            userOwnsSender = true;
+            break;
+          }
+        }
+      }
+
+      // If user owns the sender address, don't deduplicate (their sent email)
+      if (userOwnsSender) return true;
+
+      // User is BCC'd on a system email, deduplicate by Message-ID
+      const messageId = log?.meta?.session?.headers?.['Message-ID'];
+      if (!messageId) return true; // Keep if no Message-ID
+
+      if (seen.has(messageId)) return false; // Skip duplicates
+
+      seen.set(messageId, true);
+      return true; // Keep first occurrence
+    });
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
