@@ -143,25 +143,26 @@ async function onExpunge(mailboxId, update, session, fn) {
         }
       );
 
-    // let storageUsed = 0;
-
+    // RFC 3501 Section 6.4.3: EXPUNGE Command
+    // "The EXPUNGE command permanently removes all messages that have the
+    // \Deleted flag set from the currently selected mailbox."
     //
-    // NOTE: we return early as a safeguard if the mailbox is not Trash/Junk/Spam
-    //       <https://github.com/nodemailer/wildduck/issues/702>
-    //       (mirrors trashCheck in `helpers/get-database.js`)
-    //
-    // if (
-    //   config.env === 'production' &&
-    //   !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
-    // )
-    //   throw new IMAPError('EXPUNGE_RESERVED', { imapResponse: 'CANNOT' });
+    // RFC 3501 Section 6.4.8: UID Command
+    // "UID EXPUNGE <sequence set> permanently removes all messages that both
+    // have the \Deleted flag set and have a UID that is included in the
+    // specified message set."
 
+    // Query for messages with \Deleted flag
+    // Note: We use the `undeleted` field which is set to 0 when \Deleted flag is present
+    // This is maintained in sync with the flags array by the STORE command
     const condition = {
       mailbox: mailbox._id.toString(),
-      undeleted: 0
+      undeleted: 0 // 0 = has \Deleted flag, 1 = does not have \Deleted flag
     };
 
-    // NOTE: this occurs for UID EXPUNGE command
+    // RFC 3501 Section 6.4.8: UID EXPUNGE
+    // "UID EXPUNGE <sequence set>"
+    // Only expunge messages in the specified UID range
     if (update.isUid) {
       // return early if no messages
       // (we could also do `_id: -1` as a query)
@@ -177,6 +178,15 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     this.logger.debug('expunge query', { condition });
 
+    // RFC 3501 Section 6.4.3: EXPUNGE Response
+    // "The server sends an untagged EXPUNGE response for each message that is
+    // removed. The message sequence number of each successive message in the
+    // mailbox is immediately decremented by 1."
+    //
+    // We use RETURNING clause to get the deleted message details for:
+    // 1. Sending EXPUNGE responses to clients
+    // 2. Cleaning up attachments
+    // 3. Updating storage usage
     const sql = builder.build({
       type: 'remove',
       table: 'Messages',
@@ -190,11 +200,12 @@ async function onExpunge(mailboxId, update, session, fn) {
         'thread',
         'unseen'
       ],
-      // sort required for IMAP UIDPLUS
+      // RFC 3501: EXPUNGE responses must be sent in ascending order
       sort: 'uid'
     });
 
-    // delete messages
+    // RFC 3501 Section 6.4.3: Permanently remove messages
+    // "The EXPUNGE command permanently removes all messages..."
     const messages = session.db.prepare(sql.query).all(sql.values);
 
     // delete attachments
@@ -222,17 +233,30 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     fn(null, true, mailbox, messages);
 
-    // update storage in background
-    updateStorageUsed(session.user.alias_id, this.client)
-      .then()
-      .catch((err) =>
-        this.logger.fatal(err, {
-          mailboxId,
-          update,
-          session,
-          resolver: this.resolver
-        })
-      );
+    try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
+      // Optimize query planner and potentially trigger vacuum
+      session.db.pragma('analysis_limit=400');
+      session.db.pragma('optimize');
+      // update storage in background
+      updateStorageUsed(session.user.alias_id, this.client)
+        .then()
+        .catch((err) =>
+          this.logger.fatal(err, {
+            mailboxId,
+            update,
+            session,
+            resolver: this.resolver
+          })
+        );
+    } catch (err) {
+      this.logger.fatal(err, {
+        mailboxId,
+        update,
+        session,
+        resolver: this.resolver
+      });
+    }
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

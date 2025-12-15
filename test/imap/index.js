@@ -1245,6 +1245,15 @@ ZXhhbXBsZQo=
   t.is(data.path, 'expunge');
   t.is(data.vanished, false);
   t.is(data.seq, 1);
+
+  const count = await Messages.countDocuments(
+    t.context.imap,
+    t.context.session,
+    {
+      mailbox: mailbox._id
+    }
+  );
+  t.is(count, 0);
 });
 
 // NOTE: onLsub is taken care of by onSubscribe and unSubscribe
@@ -3010,8 +3019,353 @@ test('APPEND with Deleted flag makes message searchable=false', async (t) => {
     uid: result.uid,
     mailbox: mailbox._id
   });
-  t.log('message', message);
   t.true(message.flags.includes('\\Deleted'), 'Should have \\Deleted flag');
   t.is(message.searchable, false, 'Should have searchable=false');
   t.is(message.undeleted, false, 'Should have undeleted=false');
+});
+
+// Add these tests to the end of test/imap/index.js
+
+test('STORE +FLAGS (\\Deleted) and EXPUNGE deletes message', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append a test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Test Delete\r\n\r\nBody'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Mark as deleted
+  await imapFlow.messageFlagsAdd(uid, ['\\Deleted'], { uid: true });
+
+  // Get count before EXPUNGE
+  let box = await imapFlow.mailboxOpen('INBOX');
+  const countBefore = box.exists;
+
+  // Set up expunge event listener
+  const expungedMessages = [];
+  const expungeHandler = (data) => {
+    expungedMessages.push(data);
+  };
+
+  imapFlow.on('expunge', expungeHandler);
+
+  try {
+    // EXPUNGE the specific UID
+    await imapFlow.messageDelete(uid, { uid: true });
+
+    // Verify expunge event was fired
+    t.is(expungedMessages.length, 1, 'Should have received 1 expunge event');
+    t.is(expungedMessages[0].path, 'INBOX', 'Expunge should be from INBOX');
+
+    // Verify message was deleted
+    box = await imapFlow.mailboxOpen('INBOX');
+    t.is(box.exists, countBefore - 1, 'Message should be deleted');
+
+    // Verify UID no longer exists
+    const remaining = await imapFlow.fetchAll('1:*', { uid: true });
+    const remainingUids = new Set(remaining.map((m) => String(m.uid)));
+    t.false(remainingUids.has(uid), 'Deleted UID should not exist');
+  } finally {
+    imapFlow.off('expunge', expungeHandler);
+  }
+});
+
+test('STORE updates undeleted field in database', async (t) => {
+  const { imapFlow, imap, session } = t.context;
+
+  // Append a test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Undeleted Test\r\n\r\nBody'),
+    []
+  );
+
+  const uid = String(result.uid);
+
+  // Get mailbox
+  const mailbox = await Mailboxes.findOne(imap, session, { path: 'INBOX' });
+
+  // Check initial state
+  let dbMessage = await Messages.findOne(imap, session, {
+    uid: Number(uid),
+    mailbox: mailbox._id
+  });
+
+  t.is(dbMessage.undeleted, true, 'Should start with undeleted=true');
+  t.false(
+    dbMessage.flags.includes('\\Deleted'),
+    'Should not have \\Deleted flag'
+  );
+
+  // Add \Deleted flag
+  await imapFlow.mailboxOpen('INBOX');
+  await imapFlow.messageFlagsAdd(uid, ['\\Deleted'], { uid: true });
+
+  // Check database was updated
+  dbMessage = await Messages.findOne(imap, session, {
+    uid: Number(uid),
+    mailbox: mailbox._id
+  });
+
+  t.is(dbMessage.undeleted, false, 'Should have undeleted=false after STORE');
+  t.true(dbMessage.flags.includes('\\Deleted'), 'Should have \\Deleted flag');
+
+  // Remove \Deleted flag
+  await imapFlow.messageFlagsRemove(uid, ['\\Deleted'], { uid: true });
+
+  // Check database was updated again
+  dbMessage = await Messages.findOne(imap, session, {
+    uid: Number(uid),
+    mailbox: mailbox._id
+  });
+
+  t.is(
+    dbMessage.undeleted,
+    true,
+    'Should have undeleted=true after removing flag'
+  );
+  t.false(
+    dbMessage.flags.includes('\\Deleted'),
+    'Should not have \\Deleted flag'
+  );
+});
+
+test('UID EXPUNGE only deletes specified message', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Append 3 messages
+  const r1 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Test1\r\n\r\nBody1'),
+    []
+  );
+  const r2 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Test2\r\n\r\nBody2'),
+    []
+  );
+  const r3 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Test3\r\n\r\nBody3'),
+    []
+  );
+
+  const uid1 = String(r1.uid);
+  const uid2 = String(r2.uid);
+  const uid3 = String(r3.uid);
+
+  // Mark all as deleted
+  await imapFlow.mailboxOpen('INBOX');
+  await imapFlow.messageFlagsAdd(uid1, ['\\Deleted'], { uid: true });
+  await imapFlow.messageFlagsAdd(uid2, ['\\Deleted'], { uid: true });
+  await imapFlow.messageFlagsAdd(uid3, ['\\Deleted'], { uid: true });
+
+  // Set up expunge event listener
+  const expungedMessages = [];
+  const expungeHandler = (data) => {
+    expungedMessages.push(data);
+  };
+
+  imapFlow.on('expunge', expungeHandler);
+
+  try {
+    // UID EXPUNGE only message 2
+    await imapFlow.messageDelete(uid2, { uid: true });
+
+    // Verify only 1 expunge event was fired
+    t.is(
+      expungedMessages.length,
+      1,
+      'Should have received exactly 1 expunge event'
+    );
+    t.is(expungedMessages[0].path, 'INBOX', 'Expunge should be from INBOX');
+
+    // Verify only UID 2 was deleted
+    const remaining = await imapFlow.fetchAll('1:*', { uid: true });
+    const remainingUids = new Set(remaining.map((m) => String(m.uid)));
+
+    t.true(remainingUids.has(uid1), 'UID 1 should still exist');
+    t.false(remainingUids.has(uid2), 'UID 2 should be deleted');
+    t.true(remainingUids.has(uid3), 'UID 3 should still exist');
+  } finally {
+    imapFlow.off('expunge', expungeHandler);
+  }
+});
+
+test('EXPUNGE only deletes messages with \\Deleted flag', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Get initial count
+  let box = await imapFlow.mailboxOpen('INBOX');
+  const countBefore = box.exists;
+
+  // Append 3 messages
+  const r1 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Keep1\r\n\r\nBody1'),
+    []
+  );
+  const r2 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Delete\r\n\r\nBody2'),
+    ['\\Deleted'] // Only this one has \Deleted flag
+  );
+  const r3 = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Keep2\r\n\r\nBody3'),
+    []
+  );
+
+  const uid1 = String(r1.uid);
+  const uid2 = String(r2.uid);
+  const uid3 = String(r3.uid);
+
+  // Set up expunge event listener
+  const expungedMessages = [];
+  const expungeHandler = (data) => {
+    expungedMessages.push(data);
+  };
+
+  imapFlow.on('expunge', expungeHandler);
+
+  try {
+    // EXPUNGE - should only delete message 2
+    const expungeResult = await imapFlow.run('EXPUNGE', []);
+    t.true(expungeResult);
+
+    // Verify only 1 expunge event was fired
+    t.is(
+      expungedMessages.length,
+      1,
+      'Should have received exactly 1 expunge event'
+    );
+    t.is(expungedMessages[0].path, 'INBOX', 'Expunge should be from INBOX');
+
+    // Verify only 1 message was deleted
+    await imapFlow.mailboxClose();
+    box = await imapFlow.mailboxOpen('INBOX');
+    t.is(
+      box.exists,
+      countBefore + 2,
+      'Should have 2 new messages (deleted 1 of 3 appended)'
+    );
+
+    // Verify remaining messages
+    const remaining = await imapFlow.fetchAll('1:*', { uid: true });
+    const remainingUids = new Set(remaining.map((m) => String(m.uid)));
+
+    t.true(remainingUids.has(uid1), 'UID 1 (Keep1) should still exist');
+    t.false(remainingUids.has(uid2), 'UID 2 (Delete) should be deleted');
+    t.true(remainingUids.has(uid3), 'UID 3 (Keep2) should still exist');
+  } finally {
+    imapFlow.off('expunge', expungeHandler);
+  }
+});
+
+test('Messages moved to Trash should be permanently deleted on EXPUNGE', async (t) => {
+  const { imapFlow, imap, session } = t.context;
+
+  // Ensure Trash mailbox exists
+  await imapFlow.mailboxCreate('Trash');
+
+  // Append a message to INBOX
+  await imapFlow.mailboxOpen('INBOX');
+  const appendResult = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Delete Me\r\n\r\nThis message should be deleted'),
+    []
+  );
+
+  const originalUid = appendResult.uid;
+
+  // Get INBOX mailbox
+  const inboxMailbox = await Mailboxes.findOne(imap, session, {
+    path: 'INBOX'
+  });
+
+  // Verify message exists in INBOX
+  let inboxMessage = await Messages.findOne(imap, session, {
+    uid: originalUid,
+    mailbox: inboxMailbox._id
+  });
+  t.truthy(inboxMessage, 'Message should exist in INBOX');
+  t.is(inboxMessage.undeleted, true, 'Message should have undeleted=true');
+
+  // Move message to Trash using MOVE command (RFC 6851)
+  await imapFlow.mailboxOpen('INBOX');
+  const moveResult = await imapFlow.messageMove(originalUid, 'Trash', {
+    uid: true
+  });
+  const trashUid = moveResult.uidMap.get(originalUid);
+
+  // Verify message is gone from INBOX
+  inboxMessage = await Messages.findOne(imap, session, {
+    uid: originalUid,
+    mailbox: inboxMailbox._id
+  });
+  t.is(inboxMessage, null, 'Message should be moved from INBOX');
+
+  // Get Trash mailbox
+  const trashMailbox = await Mailboxes.findOne(imap, session, {
+    path: 'Trash'
+  });
+
+  // Verify message exists in Trash
+  let trashMessage = await Messages.findOne(imap, session, {
+    uid: trashUid,
+    mailbox: trashMailbox._id
+  });
+  t.truthy(trashMessage, 'Message should exist in Trash');
+  t.is(
+    trashMessage.undeleted,
+    true,
+    'Trash message should have undeleted=true (no \\Deleted flag yet)'
+  );
+  t.false(
+    trashMessage.flags.includes('\\Deleted'),
+    'Trash message should not have \\Deleted flag after MOVE'
+  );
+
+  // Now delete from Trash: mark as deleted
+  await imapFlow.mailboxOpen('Trash');
+  await imapFlow.messageFlagsAdd(trashUid, ['\\Deleted'], { uid: true });
+
+  // Verify undeleted field is updated
+  trashMessage = await Messages.findOne(imap, session, {
+    uid: trashUid,
+    mailbox: trashMailbox._id
+  });
+  t.is(
+    trashMessage.undeleted,
+    false,
+    'Trash message should have undeleted=false after adding \\Deleted flag'
+  );
+  t.true(
+    trashMessage.flags.includes('\\Deleted'),
+    'Trash message should have \\Deleted flag'
+  );
+
+  // Expunge Trash to permanently delete
+  await imapFlow.mailboxOpen('Trash');
+  const expungeResult = await imapFlow.run('EXPUNGE', []);
+  t.true(expungeResult);
+
+  // Verify message is permanently deleted from Trash
+  trashMessage = await Messages.findOne(imap, session, {
+    uid: trashUid,
+    mailbox: trashMailbox._id
+  });
+  t.is(
+    trashMessage,
+    null,
+    'Message should be permanently deleted from Trash after EXPUNGE'
+  );
+
+  // Verify Trash is empty
+  const trashBox = await imapFlow.mailboxOpen('Trash');
+  t.is(trashBox.exists, 0, 'Trash should be empty');
 });

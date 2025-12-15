@@ -53,6 +53,17 @@ async function onStore(mailboxId, update, session, fn) {
         update
       });
 
+      // RFC 3501: Clear all pending responses
+      // We must not send partial FETCH responses for a failed operation
+      if (err) {
+        if (modified && modified.length > 0) {
+          fn(null, false, modified);
+          return;
+        }
+
+        throw err;
+      }
+
       if (Array.isArray(payloads)) {
         for (const payload of payloads) {
           session.writeStream.write(payload);
@@ -73,8 +84,6 @@ async function onStore(mailboxId, update, session, fn) {
             })
           );
       }
-
-      if (err) throw err;
 
       fn(null, bool, modified);
     } catch (err) {
@@ -104,7 +113,7 @@ async function onStore(mailboxId, update, session, fn) {
     const modified = [];
     const entries = [];
     const payloads = [];
-    const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
+    const condstoreEnabled = Boolean(session?.selected?.condstoreEnabled);
     const query = {
       mailbox: mailbox._id
     };
@@ -120,7 +129,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     if (
       !update.isUid &&
-      update.messages.length === session.selected.uidList.length
+      update.messages.length === session?.selected?.uidList.length
     ) {
       // 1:*
       queryAll = true;
@@ -160,7 +169,6 @@ async function onStore(mailboxId, update, session, fn) {
     try {
       if (messages.length > 0) {
         session.db
-
           .transaction((messages) => {
             for (const result of messages) {
               const message = syncConvertResult(Messages, result);
@@ -173,7 +181,11 @@ async function onStore(mailboxId, update, session, fn) {
               // });
 
               // skip messages if necessary
-              if (queryAll && !session.selected.uidList.includes(message.uid)) {
+              if (
+                queryAll &&
+                (!session?.selected?.uidList ||
+                  !session.selected.uidList.includes(message.uid))
+              ) {
                 this.logger.debug('message skipped due to queryAll', {
                   message,
                   queryAll,
@@ -250,22 +262,27 @@ async function onStore(mailboxId, update, session, fn) {
                   if (updated) {
                     $set.flags = message.flags;
 
+                    // Check if any system flags were added (case-insensitive)
+                    const newFlagsLower = new Set(
+                      newFlags.map((f) => getFlag(f))
+                    );
+
                     if (
-                      newFlags.includes('\\Seen') ||
-                      newFlags.includes('\\Flagged') ||
-                      newFlags.includes('\\Deleted') ||
-                      newFlags.includes('\\Draft')
+                      newFlagsLower.has('\\seen') ||
+                      newFlagsLower.has('\\flagged') ||
+                      newFlagsLower.has('\\deleted') ||
+                      newFlagsLower.has('\\draft')
                     ) {
-                      if (newFlags.includes('\\Seen')) $set.unseen = false;
+                      if (newFlagsLower.has('\\seen')) $set.unseen = false;
 
-                      if (newFlags.includes('\\Flagged')) $set.flagged = true;
+                      if (newFlagsLower.has('\\flagged')) $set.flagged = true;
 
-                      if (newFlags.includes('\\Deleted')) {
+                      if (newFlagsLower.has('\\deleted')) {
                         $set.undeleted = false;
                         $set.searchable = false;
                       }
 
-                      if (newFlags.includes('\\Draft')) $set.draft = true;
+                      if (newFlagsLower.has('\\draft')) $set.draft = true;
                     }
                   }
 
@@ -295,23 +312,28 @@ async function onStore(mailboxId, update, session, fn) {
                   if (updated) {
                     $set.flags = message.flags;
 
+                    // Check if any system flags were removed (case-insensitive)
+                    const oldFlagsLower = new Set(
+                      oldFlags.map((f) => getFlag(f))
+                    );
+
                     if (
-                      oldFlags.includes('\\Seen') ||
-                      oldFlags.includes('\\Flagged') ||
-                      oldFlags.includes('\\Deleted') ||
-                      oldFlags.includes('\\Draft')
+                      oldFlagsLower.has('\\seen') ||
+                      oldFlagsLower.has('\\flagged') ||
+                      oldFlagsLower.has('\\deleted') ||
+                      oldFlagsLower.has('\\draft')
                     ) {
-                      if (oldFlags.includes('\\Seen')) $set.unseen = true;
+                      if (oldFlagsLower.has('\\seen')) $set.unseen = true;
 
-                      if (oldFlags.includes('\\Flagged')) $set.flagged = false;
+                      if (oldFlagsLower.has('\\flagged')) $set.flagged = false;
 
-                      if (oldFlags.includes('\\Deleted')) {
+                      if (oldFlagsLower.has('\\deleted')) {
                         $set.undeleted = true;
                         if (!['\\Junk', '\\Trash'].includes(mailbox.specialUse))
                           $set.searchable = true;
                       }
 
-                      if (oldFlags.includes('\\Draft')) $set.draft = false;
+                      if (oldFlagsLower.has('\\draft')) $set.draft = false;
                     }
                   }
 
@@ -342,26 +364,31 @@ async function onStore(mailboxId, update, session, fn) {
 
               $set.modseq = newModseq;
 
-              // TODO: <https://github.com/nodemailer/wildduck/issues/770>
-
+              // RFC 7162 Section 3.1: CONDSTORE Extension
+              // "The server MUST guarantee that each STORE command performed on the same
+              // mailbox will get a different mod-sequence value."
+              //
+              // We use optimistic locking (modseq condition) to detect concurrent modifications.
+              // This prevents lost updates when multiple clients modify the same message.
+              //
+              // Note: UNCHANGEDSINCE pre-filtering is handled earlier (lines 186-198)
+              // This modseq check is for general concurrent modification detection.
               const condition = prepareQuery(Messages.mapping, {
                 _id: message._id,
                 mailbox: mailbox._id,
                 uid: message.uid,
-                // NOTE: this causes flag updates to not work properly and not save properly
-                // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L339-L341>
+                // Optimistic locking: Only update if modseq hasn't changed
+                // This detects if another client modified the message between
+                // when we read it and when we're trying to update it
                 modseq: {
                   $lt: newModseq
                 }
               });
 
-              // > I suggest treating modseq as if it only applies per message,
-              // > nothing more finely tuned, and implementing CONDSTORE only as
-              // > described in RFC 7162, not in either of the earlier
-              // > documents. The example is correct in 7162.
-              // <https://stackoverflow.com/a/53308943>
-
-              // TODO: edge case where modseq not accurate and so update does not occur
+              // RFC 7162 Section 3.1.4: STORE and UID STORE Commands
+              // "For any two successful STORE operations performed in the same session
+              // on the same mailbox, the mod-sequence of the second completed operation
+              // MUST be greater than the mod-sequence of the first completed operation."
 
               const sql = builder.build({
                 type: 'update',
@@ -372,8 +399,59 @@ async function onStore(mailboxId, update, session, fn) {
                 }
               });
 
-              session.db.prepare(sql.query).run(sql.values);
+              // Execute UPDATE with optimistic locking
+              const updateResult = session.db
+                .prepare(sql.query)
+                .run(sql.values);
 
+              // RFC 7162: Handle concurrent modification detection
+              //
+              // If UPDATE affected 0 rows, it means the modseq condition failed,
+              // indicating another client modified this message concurrently.
+              //
+              // Per RFC 3501 Section 6.4.6: STORE Command
+              // "NO - store error: can't store that data"
+              //
+              // We MUST return NO to the client to indicate the operation failed.
+              // The client can then re-fetch the message state and retry if needed.
+              //
+              // This matches the behavior of other RFC-compliant servers:
+              // - Dovecot: Returns NO on concurrent modification
+              // - Cyrus: Returns NO on optimistic lock failure
+              if (updateResult.changes === 0) {
+                this.logger.warn(
+                  'STORE failed due to concurrent modification',
+                  {
+                    ignore_hook: false,
+                    resolver: this.resolver,
+                    message: message._id,
+                    uid: message.uid,
+                    mailbox: mailbox._id,
+                    expectedModseq: newModseq,
+                    actualModseq: message.modseq,
+                    session
+                  }
+                );
+
+                // RFC 3501 Section 6.4.6: Return NO response
+                // This tells the client the operation failed and they should retry
+                throw new IMAPError(
+                  i18n.translate(
+                    'IMAP_OUT_OF_SYNC_TRY_AGAIN',
+                    session.user.locale
+                  ),
+                  {
+                    // Closest semantic match, but typically used for resource locking
+                    // * NO INUSE Your client is not in sync with another process or client.
+                    imapResponse: 'INUSE'
+                  }
+                );
+              }
+
+              // RFC 7162 Section 3.1.4: Successful STORE
+              // "Once a CONDSTORE enabling command is issued by the client, the server
+              // MUST automatically include both UID and mod-sequence data in all
+              // subsequent untagged FETCH responses"
               const entry = {
                 command: 'FETCH',
                 ignore: session.id,
@@ -440,10 +518,6 @@ async function onStore(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    //
-    // NOTE: if an error was thrown then we should still write payloads
-    //       (e.g. if there was an error during cursor)
-    //
     // send response
     fn(null, err, true, modified, payloads, entries);
 

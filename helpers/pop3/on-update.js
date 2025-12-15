@@ -20,9 +20,11 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const onMove = require('#helpers/imap/on-move');
+const onExpunge = require('#helpers/imap/on-expunge');
+const onStore = require('#helpers/imap/on-store');
 
-const onMovePromise = pify(onMove, { multiArgs: true });
+const onExpungePromise = pify(onExpunge, { multiArgs: true });
+const onStorePromise = pify(onStore, { multiArgs: true });
 
 async function onUpdate(update, session, fn) {
   this.logger.debug('onUpdate', { update, session });
@@ -144,31 +146,26 @@ async function onUpdate(update, session, fn) {
     }
 
     // handle deleted
+    // RFC 1939: POP3 DELE+QUIT should permanently delete messages, not move to Trash
     if (update.deleted && update.deleted.length > 0) {
-      const trashMailbox = await Mailboxes.findOne(this, session, {
-        specialUse: '\\Trash'
-      });
-
-      if (!trashMailbox)
-        throw new Error(
-          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
-        );
-
-      await onMovePromise.call(
+      // Step 1: Mark messages with \Deleted flag
+      await onStorePromise.call(
         this,
         session.user.mailbox,
         {
-          //
-          // TODO: currently performs double lookup
-          //       (we should add ability to pass `destination` as an object in future)
-          //
-          destination: trashMailbox.path,
-          // uids to move
+          action: 'add',
+          value: ['\\Deleted'],
           messages: update.deleted.map((message) => message.uid),
-          // add \Seen flag to deleted messages
-          markAsSeen: true,
+          silent: true
+        },
+        session
+      );
 
-          // do not broadcast messages
+      // Step 2: Permanently delete marked messages via EXPUNGE
+      await onExpungePromise.call(
+        this,
+        session.user.mailbox,
+        {
           silent: true
         },
         session

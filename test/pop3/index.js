@@ -27,6 +27,7 @@ const SQLite = require('../../sqlite-server');
 const POP3 = require('../../pop3-server');
 
 const Mailboxes = require('#models/mailboxes');
+const Messages = require('#models/messages');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const onAppend = require('#helpers/imap/on-append');
@@ -374,4 +375,146 @@ ZXhhbXBsZQo=
   t.is(dele1, 'message 1 deleted');
 
   // await t.context.pop3Command.command('QUIT');
+});
+
+// Add these tests to the end of test/pop3/index.js
+
+test('POP3 DELE deletes message after QUIT', async (t) => {
+  const { pop3Command, session, pop3 } = t.context;
+
+  // Refresh session and append a message
+  await pop3.refreshSession(session, 'POP3');
+
+  await onAppendPromise.call(
+    pop3,
+    'INBOX',
+    [],
+    new Date(),
+    `Subject: POP3 Delete Test\r\n\r\nBody`,
+    session
+  );
+
+  // Reconnect to see the message
+  await pop3Command.command('QUIT');
+
+  t.context.pop3Command = new Pop3Command({
+    user: `${t.context.alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+
+  await t.context.pop3Command.connect();
+  await t.context.pop3Command.command(
+    'USER',
+    `${t.context.alias.name}@${t.context.domain.name}`
+  );
+  await t.context.pop3Command.command('PASS', t.context.pass);
+
+  // STAT should show 1 message
+  // eslint-disable-next-line new-cap
+  const stat1 = await t.context.pop3Command.STAT();
+  t.regex(stat1, /^1 /, 'Should have 1 message before DELE');
+
+  // DELE 1
+  // eslint-disable-next-line new-cap
+  const dele = await t.context.pop3Command.DELE(1);
+  t.is(dele, 'message 1 deleted');
+
+  // QUIT to expunge
+  await t.context.pop3Command.command('QUIT');
+
+  // Reconnect
+  t.context.pop3Command = new Pop3Command({
+    user: `${t.context.alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+
+  await t.context.pop3Command.connect();
+  await t.context.pop3Command.command(
+    'USER',
+    `${t.context.alias.name}@${t.context.domain.name}`
+  );
+  await t.context.pop3Command.command('PASS', t.context.pass);
+
+  // STAT should now show 0
+  // eslint-disable-next-line new-cap
+  const stat2 = await t.context.pop3Command.STAT();
+  t.is(stat2, '0 0', 'Message should be deleted after QUIT');
+
+  // NOTE: this is commented out bc we don't actually delete yet
+  const count = await Messages.countDocuments(pop3, session, {});
+  t.is(count, 0);
+});
+
+test('POP3 RSET undeletes message', async (t) => {
+  const { pop3Command, session, pop3 } = t.context;
+
+  // Refresh session and append a message
+  await pop3.refreshSession(session, 'POP3');
+
+  await onAppendPromise.call(
+    pop3,
+    'INBOX',
+    [],
+    new Date(),
+    `Subject: POP3 RSET Test\r\n\r\nBody`,
+    session
+  );
+
+  // Reconnect
+  await pop3Command.command('QUIT');
+
+  t.context.pop3Command = new Pop3Command({
+    user: `${t.context.alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+
+  await t.context.pop3Command.connect();
+  await t.context.pop3Command.command(
+    'USER',
+    `${t.context.alias.name}@${t.context.domain.name}`
+  );
+  await t.context.pop3Command.command('PASS', t.context.pass);
+
+  // DELE 1
+  // eslint-disable-next-line new-cap
+  const dele = await t.context.pop3Command.DELE(1);
+  t.is(dele, 'message 1 deleted');
+
+  // RSET
+  // eslint-disable-next-line new-cap
+  const rset = await t.context.pop3Command.RSET();
+  t.truthy(rset, 'RSET should succeed');
+
+  // QUIT
+  await t.context.pop3Command.command('QUIT');
+
+  // Reconnect
+  t.context.pop3Command = new Pop3Command({
+    user: `${t.context.alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+
+  await t.context.pop3Command.connect();
+  await t.context.pop3Command.command(
+    'USER',
+    `${t.context.alias.name}@${t.context.domain.name}`
+  );
+  await t.context.pop3Command.command('PASS', t.context.pass);
+
+  // Message should still exist (RSET undid the DELE)
+  // eslint-disable-next-line new-cap
+  const stat = await t.context.pop3Command.STAT();
+  t.regex(stat, /^1 /, 'Message should still exist after RSET');
 });

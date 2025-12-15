@@ -126,10 +126,17 @@ async function recipientVerification(ctx) {
   // we only want them internally for logging purposes if we need to track down an issue
   //
   try {
-    if (!isSANB(ctx.params.text))
+    // When using wildcard route /v/(.*), the captured value is in params[0]
+    const encryptedText = ctx.params.text || ctx.params[0];
+    if (!isSANB(encryptedText))
       throw new Error(config.i18n.phrases.INVALID_EMAIL);
 
-    const text = decrypt(ctx.params.text);
+    // Security: validate encrypted token format and length
+    if (encryptedText.length > 1000) throw new Error('Token too long');
+    if (!/^[\w+/=-]+$/.test(encryptedText))
+      throw new Error('Invalid token format');
+
+    const text = decrypt(encryptedText);
     const [aliasId, recipient] = text.split('|');
 
     // ensure recipient is a valid email address
@@ -180,7 +187,7 @@ async function recipientVerification(ctx) {
       };
     }
   } catch (err) {
-    logger.warn(err);
+    logger.error(err);
     throw Boom.badRequest(ctx.translateError('INVALID_RECIPIENT_VERIFICATION'));
   }
 }
@@ -438,8 +445,15 @@ async function regenerateAliasPassword(ctx) {
       throw new Error('Alias param missing');
 
     // validate encrypted_password is set
-    if (!isSANB(ctx.params.encrypted_password))
+    // When using wildcard route, the captured value is in params[0]
+    const encryptedPassword = ctx.params.encrypted_password || ctx.params[0];
+    if (!isSANB(encryptedPassword))
       throw new Error('Encrypted password param missing');
+
+    // Security: validate encrypted token format and length
+    if (encryptedPassword.length > 1000) throw new Error('Token too long');
+    if (!/^[\w+/=-]+$/.test(encryptedPassword))
+      throw new Error('Invalid token format');
 
     // validate domain exists
     const domain = await Domains.findById(ctx.params.domain_id).lean().exec();
@@ -477,7 +491,7 @@ async function regenerateAliasPassword(ctx) {
     // ensure that the token is valid
     const isValid = await isValidPassword(
       alias.tokens,
-      decrypt(ctx.params.encrypted_password)
+      decrypt(encryptedPassword)
     );
 
     if (!isValid) throw new Error('Invalid password');

@@ -30,9 +30,9 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const Threads = require('#models/threads');
-const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const config = require('#config');
 const email = require('#helpers/email');
+const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const env = require('#config/env');
 const getAttachments = require('#helpers/get-attachments');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -41,6 +41,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const setupPragma = require('#helpers/setup-pragma');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const builder = new Builder();
@@ -624,10 +625,10 @@ async function getDatabase(
         const mailboxes = await Mailboxes.find(instance, session, {
           path: {
             $in: ['Trash', 'Spam', 'Junk']
-          },
-          specialUse: {
-            $in: ['\\Trash', '\\Junk']
           }
+          // specialUse: {
+          //   $in: ['\\Trash', '\\Junk']
+          // }
         });
 
         if (mailboxes.length === 0)
@@ -771,6 +772,20 @@ async function getDatabase(
           }).immediate(existingHashes);
           */
         }
+
+        db.pragma('wal_checkpoint(PASSIVE)');
+
+        // Optimize query planner and potentially trigger vacuum
+        db.pragma('analysis_limit=400');
+        db.pragma('optimize');
+
+        // Update storage after deleting messages from Trash/Spam/Junk
+        // This fixes the bug where deleted messages don't free up storage quota
+        updateStorageUsed(session.user.alias_id, instance.client)
+          .then()
+          .catch((err) =>
+            logger.fatal(err, { session, resolver: instance.resolver })
+          );
       } catch (err) {
         logger.fatal(err, { session, resolver: instance.resolver });
       }
@@ -878,6 +893,8 @@ async function getDatabase(
         db.pragma('analysis_limit=400');
         db.pragma('optimize');
       } catch (err) {
+        err.message = `VACUUM failed: ${err.message}`;
+        err.isCodeBug = true;
         logger.fatal(err);
       }
     }

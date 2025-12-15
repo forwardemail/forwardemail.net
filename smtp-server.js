@@ -70,6 +70,11 @@ class SMTP {
       authRequiredMessage: config.authRequiredMessage,
 
       //
+      // TODO: customize `heloResponse`
+      // <https://github.com/nodemailer/smtp-server/commit/7c8279f4c2ea3d19d27efaa54d8378f12de3f986>
+      //
+
+      //
       // most of these options mirror the FE forwarding server options
       //
       hideENHANCEDSTATUSCODES: false,

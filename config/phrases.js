@@ -91,6 +91,8 @@ const ALIAS_GENERATED_PASSWORD = `
 </div>`.trim();
 
 module.exports = {
+  IMAP_OUT_OF_SYNC_TRY_AGAIN:
+    'Your client is not in sync with another process or client.',
   DENYLIST_SUBJECT,
   DENYLIST_MESSAGE,
   ABUSE_PREVENTION_DELETE_ACCOUNT:

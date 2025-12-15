@@ -10,14 +10,14 @@ const env = require('#config/env');
 
 //
 // Encryption format versions (magic byte in first position):
-// - 0x02: AES-256-GCM with proper IV handling and base64 encoding (current, quantum-vulnerable)
+// - 0x02: AES-256-GCM with proper IV handling and base64url encoding (current, quantum-vulnerable)
 // - 0x03: XWing (X25519 + ML-KEM-768) hybrid (future, quantum-resistant) - COMMENTED OUT
 // - legacy: Broken AES-256-CBC with hex encoding (backwards compat only, detected by '-' separator)
 // - chacha: ChaCha20-Poly1305 (backwards compat only, detected by fallback)
 //
-// Format: BASE64(version_byte + IV + authTag + ciphertext)
+// Format: BASE64URL(version_byte + IV + authTag + ciphertext)
 // This uses magic byte for version detection (industry standard approach)
-// Base64 encoding for space efficiency (255 byte TXT record limit)
+// Base64url encoding for URL safety (RFC 4648 Section 5)
 //
 
 const VERSION_V2 = 0x02;
@@ -28,7 +28,7 @@ const VERSION_V3 = 0x03; // Reserved for future quantum-resistant implementation
 // - Magic byte version detection (no text prefix)
 // - Proper IV generation (no hex conversion bug)
 // - Authenticated encryption (GCM mode)
-// - Base64 encoding for space efficiency
+// - Base64url encoding for URL safety (+ -> -, / -> _, no padding)
 // - 1-byte version header
 // - 12-byte IV (GCM recommended)
 // - 16-byte auth tag
@@ -56,7 +56,8 @@ function encryptV2(text, encryptionKey = env.HELPER_ENCRYPTION_KEY) {
   const authTag = cipher.getAuthTag();
 
   // Combine: version byte (1) + IV (12 bytes) + authTag (16 bytes) + ciphertext
-  // Then base64 encode to save space vs hex (33% overhead vs 100%)
+  // Then base64url encode for URL safety (RFC 4648 Section 5)
+  // (encodes to save space vs hex (33% overhead vs 100%))
   const combined = Buffer.concat([
     Buffer.from([VERSION_V2]),
     iv,
@@ -64,7 +65,13 @@ function encryptV2(text, encryptionKey = env.HELPER_ENCRYPTION_KEY) {
     encrypted
   ]);
 
-  return combined.toString('base64');
+  // Use base64url encoding (RFC 4648) for URL safety
+  // Replace + with -, / with _, and remove padding =
+  return combined
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 }
 
 function decryptV2(data, encryptionKey = env.HELPER_ENCRYPTION_KEY) {
@@ -308,28 +315,68 @@ function decrypt(
 ) {
   if (!text) throw new TypeError('Text value missing');
 
-  // Legacy format detection: has '-' separator
-  if (text.includes('-')) {
+  // Legacy format detection: has '-' separator AND looks like legacy structure
+  // Legacy format: <iv>-<hex>, so exactly 2 parts when split by '-'
+  // The second part must be valid hex (only 0-9a-f)
+  // Base64url uses A-Za-z0-9-_ so it will have non-hex chars
+  const hasLegacySeparator = text.includes('-');
+  const parts = hasLegacySeparator ? text.split('-') : [];
+  const secondPartIsHex = parts.length === 2 && /^[\da-f]+$/i.test(parts[1]);
+  const looksLikeLegacy =
+    hasLegacySeparator &&
+    parts.length === 2 &&
+    !text.includes('_') &&
+    secondPartIsHex;
+
+  if (looksLikeLegacy) {
     try {
       return decryptLegacyAES(text, encryptionKey, algorithm);
-    } catch (err) {
+    } catch {
       // If legacy AES fails, try legacy key
       if (
         !triedLegacyKey &&
         env.HELPER_ENCRYPTION_KEY_LEGACY &&
         encryptionKey !== env.HELPER_ENCRYPTION_KEY_LEGACY
       ) {
-        return decrypt(text, env.HELPER_ENCRYPTION_KEY_LEGACY, algorithm, true);
+        try {
+          return decrypt(
+            text,
+            env.HELPER_ENCRYPTION_KEY_LEGACY,
+            algorithm,
+            true
+          );
+        } catch {
+          // Legacy key also failed, fall through to try new formats
+        }
       }
-
-      throw err;
+      // If legacy decryption failed, fall through to try new formats
+      // (handles edge case where base64url token looks like legacy)
     }
   }
 
-  // New format detection: decode base64 and check magic byte
+  // New format detection: handle both base64url (new) and base64 (old) formats
+  // First, fix corrupted tokens: base64 never contains spaces, so space = corrupted +
+  let base64Text = text.replace(/ /g, '+');
+
+  // Check if it looks like base64url (has - or _ but no + or /)
+  const isBase64Url =
+    (base64Text.includes('-') || base64Text.includes('_')) &&
+    !base64Text.includes('+') &&
+    !base64Text.includes('/');
+
+  if (isBase64Url) {
+    // Convert from base64url to base64 (RFC 4648 Section 5)
+    base64Text = base64Text.replace(/-/g, '+').replace(/_/g, '/');
+    // Add padding if needed
+    while (base64Text.length % 4) {
+      base64Text += '=';
+    }
+  }
+  // Otherwise assume standard base64 (old format) and use as-is
+
   // Note: Buffer.from(text, 'base64') never throws, even for invalid base64
   // It will just return garbage data, which will fail auth tag verification
-  const data = Buffer.from(text, 'base64');
+  const data = Buffer.from(base64Text, 'base64');
 
   // Check minimum length for v2/v3 format
   // v2: 1 byte version + 12 bytes IV + 16 bytes authTag + min 1 byte ciphertext = 30 bytes

@@ -321,7 +321,8 @@ localeRouter
     web.denylist.remove
   )
   // recipient verification
-  .get('/v/:text', web.recipientVerification)
+  // Use (.*) to capture everything including forward slashes in encrypted token
+  .get('/v/(.*)', web.recipientVerification)
   .get('/dashboard', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
@@ -509,7 +510,8 @@ localeRouter
     web.auth.forgotPassword
   )
   .get(
-    '/ap/:domain_id/:alias_id/:encrypted_password',
+    // Use (.*) for encrypted_password to capture forward slashes
+    '/ap/:domain_id/:alias_id/(.*)',
     rateLimit(20, 'regenerate alias password'),
     web.regenerateAliasPassword
   )
