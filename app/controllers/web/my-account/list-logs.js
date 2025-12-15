@@ -374,7 +374,13 @@ async function listLogs(ctx) {
   ) {
     // download in background and email to users
     const now = new Date();
-    getLogsCsv(now, query)
+    getLogsCsv(
+      now,
+      query,
+      ctx.state.user.group === 'admin',
+      ctx.state.domains,
+      nonAdminDomainsToAliases
+    )
       .then((results) => {
         // if no results return early
         if (!ctx.api && results.count === 0) return;

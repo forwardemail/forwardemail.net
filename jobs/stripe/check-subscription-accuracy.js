@@ -17,6 +17,7 @@ const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const config = require('#config');
+const payments = require('#config/payments');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const Users = require('#models/users');
@@ -69,26 +70,88 @@ async function mapper(customer) {
         `Found ${subscriptions.length} active/trialing subscription(s) for customer ${customer.id} (${customer.email}) with no corresponding user in database`
       );
 
-      // cancel all orphaned subscriptions
-      await pMapSeries(subscriptions, async (subscription) => {
-        await stripe.subscriptions.cancel(subscription.id);
-        logger.info(
-          `Cancelled orphaned subscription ${subscription.id} for customer ${customer.id} (${customer.email})`
-        );
-      });
+      // separate legacy add-ons from normal plan subscriptions
+      const legacyAddOns = [];
+      const normalPlanSubscriptions = [];
 
-      // send alert email to admins
-      await emailHelper({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `Cancelled orphaned Stripe subscriptions: ${customer.email}`
-        },
-        locals: {
-          message: `<p>Found and cancelled ${subscriptions.length} orphaned subscription(s) for Stripe customer ${customer.id} (${customer.email}) with no corresponding user in our database.</p>
-          <p><a href="https://dashboard.stripe.com/customers/${customer.id}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+      for (const subscription of subscriptions) {
+        // check if subscription has items and get the product ID
+        let isNormalPlan = false;
+        if (
+          subscription.items &&
+          subscription.items.data &&
+          subscription.items.data.length > 0
+        ) {
+          for (const item of subscription.items.data) {
+            const productId = item.price.product;
+            // check if this product ID is in the STRIPE_PRODUCTS mapping
+            if (payments.STRIPE_PRODUCTS[productId]) {
+              isNormalPlan = true;
+              break;
+            }
+          }
         }
-      });
+
+        if (isNormalPlan) {
+          normalPlanSubscriptions.push(subscription);
+        } else {
+          legacyAddOns.push(subscription);
+        }
+      }
+
+      // cancel normal plan subscriptions
+      if (normalPlanSubscriptions.length > 0) {
+        await pMapSeries(normalPlanSubscriptions, async (subscription) => {
+          await stripe.subscriptions.cancel(subscription.id);
+          logger.info(
+            `Cancelled orphaned subscription ${subscription.id} for customer ${customer.id} (${customer.email})`
+          );
+        });
+
+        // send alert email to admins
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Cancelled orphaned Stripe subscriptions: ${customer.email}`
+          },
+          locals: {
+            message: `<p>Found and cancelled ${normalPlanSubscriptions.length} orphaned subscription(s) for Stripe customer ${customer.id} (${customer.email}) with no corresponding user in our database.</p>
+          <p><a href="https://dashboard.stripe.com/customers/${customer.id}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+          }
+        });
+      }
+
+      // email admins about legacy add-ons without canceling them
+      if (legacyAddOns.length > 0) {
+        const subscriptionDetails = legacyAddOns
+          .map((sub) => {
+            const productIds = sub.items.data
+              .map((item) => item.price.product)
+              .join(', ');
+            return `<li>Subscription ID: ${sub.id}<br>Product ID(s): ${productIds}</li>`;
+          })
+          .join('');
+
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Legacy add-on subscription needs review: ${customer.email}`
+          },
+          locals: {
+            message: `<p>Found ${legacyAddOns.length} legacy add-on subscription(s) for Stripe customer ${customer.id} (${customer.email}) with no corresponding user in our database.</p>
+          <p>These subscriptions have NOT been cancelled automatically and need to be manually reviewed, fixed, deleted, or re-assigned to the correct user email address in our system.</p>
+          <p><strong>Subscription Details:</strong></p>
+          <ul>${subscriptionDetails}</ul>
+          <p><a href="https://dashboard.stripe.com/customers/${customer.id}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+          }
+        });
+
+        logger.info(
+          `Sent admin notification for ${legacyAddOns.length} legacy add-on subscription(s) for customer ${customer.id} (${customer.email})`
+        );
+      }
     }
 
     return;

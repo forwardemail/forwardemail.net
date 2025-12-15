@@ -17,7 +17,14 @@ function makeDelimitedString(arr) {
     .join('","')}"`;
 }
 
-async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
+// eslint-disable-next-line max-params
+async function getLogsCsv(
+  now = new Date(),
+  query = {},
+  isAdmin = false,
+  userDomains = [],
+  nonAdminDomainsToAliases = {}
+) {
   if (!_.isObject(query) || _.isEmpty(query)) throw new Error('Invalid query');
 
   //
@@ -73,6 +80,105 @@ async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
     if (!log?.meta?.session?.id) continue;
+
+    //
+    // Filter RCPT TO to only show recipients relevant to the user
+    //
+    if (!isAdmin && Array.isArray(log?.meta?.session?.envelope?.rcptTo)) {
+      log.meta.session.envelope.rcptTo =
+        log.meta.session.envelope.rcptTo.filter((rcpt) => {
+          const username = rcpt.address.includes('+')
+            ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
+            : rcpt.address.split('@')[0];
+          const domain = rcpt.address.split('@')[1];
+
+          let isAdminOfDomain = false;
+          const matchingDomain = userDomains.find(
+            (d) => d.name === domain.toLowerCase()
+          );
+
+          if (!matchingDomain) return false;
+
+          if (matchingDomain.group === 'admin') {
+            isAdminOfDomain = true;
+          }
+
+          if (isAdminOfDomain) return true;
+
+          const email = `${username}@${domain}`.toLowerCase();
+          const domainToAliases = nonAdminDomainsToAliases[matchingDomain.id];
+
+          if (!domainToAliases) return false;
+
+          if (
+            domainToAliases.includes(`*@${domain}`) ||
+            domainToAliases.includes(email)
+          )
+            return true;
+
+          return false;
+        });
+    }
+
+    //
+    // Filter BCC header to only show BCC recipients relevant to the user
+    //
+    if (
+      !isAdmin &&
+      log?.meta?.session?.headers &&
+      typeof log.meta.session.headers === 'object' &&
+      log.meta.session.headers.Bcc
+    ) {
+      const bccHeader = log.meta.session.headers.Bcc;
+      let bccEmails = [];
+
+      if (typeof bccHeader === 'string') {
+        bccEmails = bccHeader
+          .split(',')
+          .map((email) => email.trim())
+          .filter((email) => email.length > 0);
+      }
+
+      const filteredBccEmails = bccEmails.filter((email) => {
+        const username = email.includes('+')
+          ? email.slice(0, email.indexOf('+'))
+          : email.split('@')[0];
+        const domain = email.split('@')[1];
+
+        let isAdminOfDomain = false;
+        const matchingDomain = userDomains.find(
+          (d) => d.name === domain.toLowerCase()
+        );
+
+        if (!matchingDomain) return false;
+
+        if (matchingDomain.group === 'admin') {
+          isAdminOfDomain = true;
+        }
+
+        if (isAdminOfDomain) return true;
+
+        const emailLower = `${username}@${domain}`.toLowerCase();
+        const domainToAliases = nonAdminDomainsToAliases[matchingDomain.id];
+
+        if (!domainToAliases) return false;
+
+        if (
+          domainToAliases.includes(`*@${domain}`) ||
+          domainToAliases.includes(emailLower)
+        )
+          return true;
+
+        return false;
+      });
+
+      if (filteredBccEmails.length === 0) {
+        delete log.meta.session.headers.Bcc;
+      } else {
+        log.meta.session.headers.Bcc = filteredBccEmails.join(', ');
+      }
+    }
+
     let response =
       log?.err?.response ||
       log?.err?.message ||

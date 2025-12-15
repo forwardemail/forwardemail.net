@@ -511,7 +511,9 @@
 
     - name: Check if admin user already exists
       shell: |
-        mongosh --quiet --eval "db.adminCommand('listUsers').users.length" admin 2>/dev/null || echo "0"
+        # Try to check if specific user exists (works without auth)
+        # If that fails (auth required), check if we can authenticate (means user exists)
+        mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || echo "0"
       register: admin_user_check
       changed_when: false
       failed_when: false
@@ -705,12 +707,15 @@
 
     - name: Check MongoDB user creation result
       fail:
-        msg: "Failed to create MongoDB admin user"
+        msg: "Failed to create MongoDB admin user: {{ create_user_result.stdout | default('') }} {{ create_user_result.stderr | default('') }}"
       when:
         - not admin_user_exists
         - create_user_result.rc != 0
         - "'User already exists' not in create_user_result.stdout"
         - "'User created successfully' not in create_user_result.stdout"
+        - "'User already exists' not in create_user_result.stderr"
+        - "'already exists' not in create_user_result.stderr"
+        - "'duplicate key' not in create_user_result.stderr"
 
     - name: Stop mongod if it was started temporarily
       systemd:

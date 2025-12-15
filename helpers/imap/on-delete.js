@@ -83,14 +83,15 @@ async function onDelete(path, session, fn) {
         }
       );
 
-    // Protect all required system folders from deletion
-    if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
-        {
-          imapResponse: 'CANNOT'
-        }
-      );
+    //
+    // RFC 6154 Compliance: Allow deletion of all mailboxes including special-use ones
+    // Special-use mailboxes will be auto-recreated if they are in REQUIRED_PATHS
+    // This matches behavior of Dovecot and Stalwart IMAP servers
+    //
+    // Previous code prevented deletion of REQUIRED_PATHS mailboxes:
+    // if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
+    //   throw new IMAPError(...)
+    //
 
     //
     // NOTE: we move all messages to trash dir (safeguard for users)

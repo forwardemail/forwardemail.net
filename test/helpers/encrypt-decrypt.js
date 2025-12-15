@@ -17,17 +17,21 @@ test('basic v2 encryption and decryption', (t) => {
   t.is(decrypted, original, 'decrypted text should match original');
 });
 
-test('no visible text prefix (pure base64)', (t) => {
+test('no visible text prefix (pure base64url)', (t) => {
   const encrypted = encrypt('test@example.com');
   t.false(encrypted.startsWith('v2:'), 'should not have v2: prefix');
   t.false(encrypted.startsWith('v3:'), 'should not have v3: prefix');
-  const base64Regex = /^[A-Za-z\d+/]+=*$/;
-  t.regex(encrypted, base64Regex, 'should be pure base64');
+  // Base64url uses A-Za-z0-9-_ (no +, /, or = padding)
+  const base64urlRegex = /^[\w-]+$/;
+  t.regex(encrypted, base64urlRegex, 'should be pure base64url (URL-safe)');
 });
 
 test('magic byte is 0x02', (t) => {
   const encrypted = encrypt('test@example.com');
-  const data = Buffer.from(encrypted, 'base64');
+  // Convert base64url to base64 for decoding
+  let base64 = encrypted.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  const data = Buffer.from(base64, 'base64');
   t.is(data[0], 0x02, 'first byte should be 0x02');
 });
 
@@ -84,13 +88,19 @@ test('throws error for very short input', (t) => {
   });
 });
 
-test('base64 is more efficient than hex', (t) => {
+test('base64url is more efficient than hex', (t) => {
   const encrypted = encrypt('test@example.com');
-  const decoded = Buffer.from(encrypted, 'base64');
+  // Convert base64url to base64 for decoding
+  let base64 = encrypted.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  const decoded = Buffer.from(base64, 'base64');
   const hexSize = decoded.length * 2;
-  const base64Size = encrypted.length;
+  const base64urlSize = encrypted.length;
 
-  t.true(base64Size < hexSize, 'base64 should be smaller than hex encoding');
+  t.true(
+    base64urlSize < hexSize,
+    'base64url should be smaller than hex encoding'
+  );
 });
 
 test('TXT record fits in 255 bytes', (t) => {
@@ -155,11 +165,19 @@ test('minimum length check for v2 format', (t) => {
 
 test('tampering detection via auth tag', (t) => {
   const encrypted = encrypt('test@example.com');
-  const data = Buffer.from(encrypted, 'base64');
+  // Convert base64url to base64 for decoding
+  let base64 = encrypted.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  const data = Buffer.from(base64, 'base64');
 
   // eslint-disable-next-line no-bitwise
   data[data.length - 1] ^= 0xff;
-  const tampered = data.toString('base64');
+  // Convert back to base64url
+  const tamperedBase64 = data.toString('base64');
+  const tampered = tamperedBase64
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 
   t.throws(() => decrypt(tampered), {
     instanceOf: Error

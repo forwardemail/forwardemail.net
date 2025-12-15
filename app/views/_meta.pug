@@ -25,7 +25,7 @@ link(
 //- canonical
 link(
   rel="canonical",
-  href=canonical ? canonical : `${config.urls.web}/${defaultLocale}${ctx.pathWithoutLocale === '/' ? '' : ctx.pathWithoutLocale}`
+  href=canonical ? canonical : `${config.urls.web}/${defaultLocale}${ctx.pathWithoutLocale === "/" ? "" : ctx.pathWithoutLocale}`
 )
 
 //- feeds

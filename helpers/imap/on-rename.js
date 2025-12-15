@@ -60,14 +60,15 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
-    // Protect all required system folders from renaming
-    if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
-        {
-          imapResponse: 'CANNOT'
-        }
-      );
+    //
+    // RFC 6154 Compliance: Allow renaming of all mailboxes including special-use ones
+    // Special-use mailboxes will be auto-recreated if they are in REQUIRED_PATHS
+    // This matches behavior of Dovecot and Stalwart IMAP servers
+    //
+    // Previous code prevented renaming of REQUIRED_PATHS mailboxes:
+    // if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
+    //   throw new IMAPError(...)
+    //
 
     // Prevent renaming to the same path (no-op)
     if (mailbox.path === newPath)

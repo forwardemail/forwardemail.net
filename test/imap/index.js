@@ -2355,99 +2355,123 @@ test('imap_sequence_store_single_message_flag_consistency', async (t) => {
 
 // Bug fix tests for message deletion and folder rename issues
 
-// NEW TESTS FOR ID-BASED EMAIL CLIENTS-COMPATIBLE IMAP BEHAVIOR
+// RFC 6154 COMPLIANT IMAP BEHAVIOR TESTS
 // These tests verify that:
-// 1. System folders (INBOX/Trash/Junk) cannot be renamed
-// 2. System folders cannot be deleted (even if renamed, protection follows specialUse)
-// 3. Message flags are synchronized properly during MOVE operations
+// 1. INBOX cannot be renamed (RFC 3501 / wildduck implementation restriction)
+// 2. Essential folders (Trash/Drafts/Sent Mail) are auto-recreated after rename
+// 3. Essential folders are auto-recreated after deletion
+// 4. Optional folders (Junk/Spam/Archive) are NOT auto-recreated after deletion
+// 5. Message flags are synchronized properly during MOVE operations
 
-// Test 1: System folders cannot be renamed (ID-based email clients behavior)
-test('system folders cannot be renamed (ID-based email clients behavior)', async (t) => {
-  // Create Trash and Junk folders (INBOX already exists)
+// Test 1: INBOX cannot be renamed but essential folders can be renamed and are auto-recreated
+test('INBOX cannot be renamed but essential folders can be renamed and are auto-recreated (RFC 6154 compliant)', async (t) => {
+  // Create Trash and Drafts folders (INBOX already exists)
   await t.context.imapFlow.mailboxCreate('Trash');
-  await t.context.imapFlow.mailboxCreate('Junk');
+  await t.context.imapFlow.mailboxCreate('Drafts');
 
-  // Test INBOX
+  // Test INBOX - should still fail (wildduck implementation restriction)
   const inboxErr = await t.throwsAsync(
     t.context.imapFlow.mailboxRename('INBOX', 'Inbox2')
   );
   t.is(
     inboxErr.serverResponseCode,
     'CANNOT',
-    'INBOX rename should return CANNOT (matches ID-based email clients)'
+    'INBOX rename should return CANNOT (wildduck implementation restriction)'
   );
 
-  // Test Trash
-  const trashErr = await t.throwsAsync(
-    t.context.imapFlow.mailboxRename('Trash', 'Trash2')
-  );
-  t.is(
-    trashErr.serverResponseCode,
-    'CANNOT',
-    'Trash rename should return CANNOT (matches ID-based email clients)'
+  // Rename Trash - should succeed and be recreated
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxRename('Trash', 'Trash2'),
+    'Trash rename should succeed (RFC 6154 compliant)'
   );
 
-  // Test Junk
-  const junkErr = await t.throwsAsync(
-    t.context.imapFlow.mailboxRename('Junk', 'Junk2')
+  // Verify Trash was recreated
+  const mailboxes1 = await t.context.imapFlow.list();
+  const trashExists = mailboxes1.some((box) => box.path === 'Trash');
+  t.true(trashExists, 'Trash should be auto-recreated after rename');
+
+  // Rename Drafts - should succeed and be recreated
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxRename('Drafts', 'Drafts2'),
+    'Drafts rename should succeed (RFC 6154 compliant)'
   );
-  t.is(
-    junkErr.serverResponseCode,
-    'CANNOT',
-    'Junk rename should return CANNOT (matches ID-based email clients)'
-  );
+
+  // Verify Drafts was recreated
+  const mailboxes2 = await t.context.imapFlow.list();
+  const draftsExists = mailboxes2.some((box) => box.path === 'Drafts');
+  t.true(draftsExists, 'Drafts should be auto-recreated after rename');
 });
 
-// Test 2: System folders cannot be deleted (ID-based email clients behavior)
-test('system folders cannot be deleted (ID-based email clients behavior)', async (t) => {
-  // Create Trash and Junk folders (INBOX already exists)
+// Test 2: Essential folders are auto-recreated after deletion (RFC 6154 compliant)
+test('essential folders are auto-recreated after deletion (RFC 6154 compliant)', async (t) => {
+  // Create Trash and Drafts folders (INBOX already exists)
   await t.context.imapFlow.mailboxCreate('Trash');
-  await t.context.imapFlow.mailboxCreate('Junk');
+  await t.context.imapFlow.mailboxCreate('Drafts');
 
-  // Test INBOX
-  const inboxErr = await t.throwsAsync(
-    t.context.imapFlow.mailboxDelete('INBOX')
-  );
-  t.is(
-    inboxErr.serverResponseCode,
-    'CANNOT',
-    'INBOX deletion should return CANNOT (matches ID-based email clients)'
+  // Delete Trash - should succeed and be recreated
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxDelete('Trash'),
+    'Trash deletion should succeed (RFC 6154 compliant)'
   );
 
-  // Test Trash
-  const trashErr = await t.throwsAsync(
-    t.context.imapFlow.mailboxDelete('Trash')
-  );
-  t.is(
-    trashErr.serverResponseCode,
-    'CANNOT',
-    'Trash deletion should return CANNOT (matches ID-based email clients)'
+  // Verify Trash was recreated
+  const mailboxes1 = await t.context.imapFlow.list();
+  const trashExists = mailboxes1.some((box) => box.path === 'Trash');
+  t.true(trashExists, 'Trash should be auto-recreated after deletion');
+
+  // Delete Drafts - should succeed and be recreated
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxDelete('Drafts'),
+    'Drafts deletion should succeed (RFC 6154 compliant)'
   );
 
-  // Test Junk
-  const junkErr = await t.throwsAsync(t.context.imapFlow.mailboxDelete('Junk'));
-  t.is(
-    junkErr.serverResponseCode,
-    'CANNOT',
-    'Junk deletion should return CANNOT (matches ID-based email clients)'
-  );
+  // Verify Drafts was recreated
+  const mailboxes2 = await t.context.imapFlow.list();
+  const draftsExists = mailboxes2.some((box) => box.path === 'Drafts');
+  t.true(draftsExists, 'Drafts should be auto-recreated after deletion');
 });
 
-// Test 3: Non-system special folders CAN be renamed and deleted
-test('non-system special folders can be renamed and deleted (ID-based email clients behavior)', async (t) => {
-  // Create Sent folder (has specialUse but not protected)
-  await t.context.imapFlow.mailboxCreate('Sent');
+// Test 3: Optional folders are NOT auto-recreated after deletion (RFC 6154 compliant)
+test('optional folders are NOT auto-recreated after deletion (RFC 6154 compliant)', async (t) => {
+  // Create optional folders (Junk, Spam, Archive)
+  await t.context.imapFlow.mailboxCreate('Junk');
+  await t.context.imapFlow.mailboxCreate('Spam');
+  await t.context.imapFlow.mailboxCreate('Archive');
 
-  // Should be able to rename Sent
+  // Delete Junk - should succeed and NOT be recreated
   await t.notThrowsAsync(
-    t.context.imapFlow.mailboxRename('Sent', 'Sent2'),
-    'Sent folder should be renameable'
+    t.context.imapFlow.mailboxDelete('Junk'),
+    'Junk deletion should succeed'
   );
 
-  // Should be able to delete renamed Sent
+  // Verify Junk was NOT recreated
+  const mailboxes1 = await t.context.imapFlow.list();
+  const junkExists = mailboxes1.some((box) => box.path === 'Junk');
+  t.false(junkExists, 'Junk should NOT be auto-recreated (optional folder)');
+
+  // Delete Spam - should succeed and NOT be recreated
   await t.notThrowsAsync(
-    t.context.imapFlow.mailboxDelete('Sent2'),
-    'Renamed Sent folder should be deletable'
+    t.context.imapFlow.mailboxDelete('Spam'),
+    'Spam deletion should succeed'
+  );
+
+  // Verify Spam was NOT recreated
+  const mailboxes2 = await t.context.imapFlow.list();
+  const spamExists = mailboxes2.some((box) => box.path === 'Spam');
+  t.false(spamExists, 'Spam should NOT be auto-recreated (optional folder)');
+
+  // Delete Archive - should succeed and NOT be recreated
+  await t.notThrowsAsync(
+    t.context.imapFlow.mailboxDelete('Archive'),
+    'Archive deletion should succeed'
+  );
+
+  // Verify Archive was NOT recreated
+  const mailboxes3 = await t.context.imapFlow.list();
+  const archiveExists = mailboxes3.some((box) => box.path === 'Archive');
+  t.false(
+    archiveExists,
+    'Archive should NOT be auto-recreated (optional folder)'
   );
 });
 

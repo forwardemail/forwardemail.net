@@ -193,11 +193,7 @@ async function retrieveLog(ctx, next) {
   //
   // filter recipients to only show those relevant to the user
   //
-  if (
-    !log.email &&
-    !log?.meta?.email &&
-    Array.isArray(log?.meta?.session?.envelope?.rcptTo)
-  )
+  if (Array.isArray(log?.meta?.session?.envelope?.rcptTo))
     log.meta.session.envelope.rcptTo = log.meta.session.envelope.rcptTo.filter(
       (rcpt) => {
         // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
