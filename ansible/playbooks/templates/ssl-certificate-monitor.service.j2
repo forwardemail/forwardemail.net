@@ -5,6 +5,7 @@ Docs=https://github.com/forwardemail/forwardemail.net
 
 [Service]
 Type=oneshot
+Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
 Environment="WEB_URL=https://forwardemail.net"
 ExecStart=/usr/local/bin/ssl-certificate-monitor.sh
 StandardOutput=journal

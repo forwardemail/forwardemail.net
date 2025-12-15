@@ -73,6 +73,7 @@ for email in "${ADDR[@]}"; do
   if [ "$IS_HTML" = true ]; then
     # Send HTML email with proper headers
     (
+      echo "From: {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       echo "To: $email"
       echo "Subject: $SUBJECT"
       echo "MIME-Version: 1.0"
@@ -81,8 +82,14 @@ for email in "${ADDR[@]}"; do
       echo "$BODY"
     ) | sendmail -t
   else
-    # Send plain text email
-    echo "$BODY" | mail -s "$SUBJECT" "$email"
+    # Send plain text email with proper From header
+    (
+      echo "From: {{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
+      echo "To: $email"
+      echo "Subject: $SUBJECT"
+      echo ""
+      echo "$BODY"
+    ) | sendmail -t
   fi
 done
 

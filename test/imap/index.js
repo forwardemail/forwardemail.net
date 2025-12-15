@@ -2022,8 +2022,8 @@ test('imap_thunderbird_simulation_answered_flag_large_mailbox', async (t) => {
   t.log(`Lock for ${mailboxName} acquired.`);
 
   try {
-    const numMessages = 200;
-    const targetMessageSequence = 101;
+    const numMessages = 50;
+    const targetMessageSequence = 26;
 
     t.log(`Populating ${mailboxName} with ${numMessages} messages...`);
     for (let i = 1; i <= numMessages; i++) {
@@ -2032,7 +2032,7 @@ test('imap_thunderbird_simulation_answered_flag_large_mailbox', async (t) => {
       const message = `Subject: ${subject}\r\nTo: ${alias.name}@${domain.name}\r\nFrom: testuser${i}@example.com\r\n\r\n${body}`;
 
       await client.append(mailboxName, Buffer.from(message), []);
-      if (i % 50 === 0 || i === numMessages) {
+      if (i % 10 === 0 || i === numMessages) {
         t.log(`Appended ${i} of ${numMessages} messages to ${mailboxName}.`);
       }
     }

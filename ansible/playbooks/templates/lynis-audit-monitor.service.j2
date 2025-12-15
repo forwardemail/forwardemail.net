@@ -5,6 +5,7 @@ Docs=https://github.com/forwardemail/forwardemail.net
 
 [Service]
 Type=oneshot
+Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
 ExecStart=/usr/local/bin/lynis-audit-monitor.sh
 StandardOutput=journal
 StandardError=journal

@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-# Configuration
+# Configuration (with environment variable overrides)
 HOSTNAME="$(hostname)"
 HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
@@ -18,16 +18,20 @@ LOG_FILE="/var/log/auth.log"
 MONITOR_LOG="/var/log/ssh-security-monitor.log"
 ACTIVITY_LOG="/var/log/ssh-activity.log"
 LOCK_DIR="/var/lock"
-LOCK_DURATION_FAILED=1800  # 30 minutes for failed login alerts
-LOCK_DURATION_ROOT=0       # No rate limiting for root access (always alert)
-LOCK_DURATION_ACTIVITY=3600  # 1 hour for activity summary
-FAILED_THRESHOLD=5         # Number of failed attempts to trigger alert
+
+# Rate limiting configuration (can be overridden via environment variables)
+LOCK_DURATION_FAILED="${SSH_MONITOR_FAILED_RATE_LIMIT:-1800}"  # Default: 30 minutes for failed login alerts
+LOCK_DURATION_ROOT="${SSH_MONITOR_ROOT_RATE_LIMIT:-0}"        # Default: No rate limiting for root access (always alert)
+LOCK_DURATION_ACTIVITY="${SSH_MONITOR_ACTIVITY_RATE_LIMIT:-3600}"  # Default: 1 hour for activity summary
+FAILED_THRESHOLD="${SSH_MONITOR_FAILED_THRESHOLD:-5}"         # Default: Number of failed attempts to trigger alert
+
 CONFIG_DIR="/etc/security-monitor"
 AUTHORIZED_IPS_FILE="$CONFIG_DIR/authorized-ips.conf"
 AUTHORIZED_USERS_FILE="$CONFIG_DIR/authorized-users.conf"
 BUSINESS_HOURS_START=8
 BUSINESS_HOURS_END=18
 LAST_CHECK_FILE="$CONFIG_DIR/ssh-last-check"
+LAST_ACTIVITY_HASH_FILE="$CONFIG_DIR/ssh-last-activity-hash"
 
 # Ensure directories and files exist
 mkdir -p "$CONFIG_DIR"
@@ -376,6 +380,7 @@ send_activity_summary() {
     fi
 
     # Don't send report if only failed logins occurred (no successful logins)
+    # Failed logins are handled by separate failed login alerts
     if [ "$successful_count" -eq 0 ]; then
         log_message "Only failed logins detected, skipping activity summary"
         return
@@ -414,6 +419,23 @@ send_activity_summary() {
 <pre style='background-color: #f5f5f5; padding: 10px; overflow-x: auto;'>$(tail -50 "$ACTIVITY_LOG")</pre>
 <p><em>This summary is sent hourly when SSH activity is detected.</em></p>
 </body></html>"
+
+    # Duplicate detection: Check if content is identical to last email
+    # Generate hash of the activity counts and logged in users (not the full log)
+    local content_signature="${successful_count}:${failed_count}:${logged_in_users}"
+    local content_hash=$(echo "$content_signature" | md5sum | awk '{print $1}')
+
+    # Check if this is a duplicate of the last email
+    if [ -f "$LAST_ACTIVITY_HASH_FILE" ]; then
+        local last_hash=$(cat "$LAST_ACTIVITY_HASH_FILE" 2>/dev/null || echo "")
+        if [ "$content_hash" = "$last_hash" ] && [ -n "$last_hash" ]; then
+            log_message "Duplicate activity summary detected (hash: $content_hash), skipping email"
+            return
+        fi
+    fi
+
+    # Save hash for next run
+    echo "$content_hash" > "$LAST_ACTIVITY_HASH_FILE"
 
     send_alert "$subject" "$body" "info"
 }

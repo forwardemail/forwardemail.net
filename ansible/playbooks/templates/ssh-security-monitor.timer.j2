@@ -4,9 +4,9 @@ Documentation=https://github.com/forwardemail/forwardemail.net
 Requires=ssh-security-monitor.service
 
 [Timer]
-# Run every 10 minutes
+# Run every N minutes (configurable via SSH_MONITOR_INTERVAL env var, default 10)
 OnBootSec=3min
-OnUnitActiveSec=10min
+OnUnitActiveSec={{ lookup('env', 'SSH_MONITOR_INTERVAL') | default('10', true) }}min
 AccuracySec=1min
 Persistent=true
 
