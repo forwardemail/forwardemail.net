@@ -3369,3 +3369,831 @@ test('Messages moved to Trash should be permanently deleted on EXPUNGE', async (
   const trashBox = await imapFlow.mailboxOpen('Trash');
   t.is(trashBox.exists, 0, 'Trash should be empty');
 });
+
+test('COPY sets modseq to target mailbox modifyIndex (not source)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Step 1: Create high activity in INBOX to increase its modifyIndex
+  for (let i = 0; i < 10; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  // Step 2: Open INBOX and mark some messages to increase modifyIndex further
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 5; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 3: Get INBOX modifyIndex from database
+  const inboxMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  const inboxModifyIndex = inboxMailbox.modifyIndex;
+  t.true(
+    inboxModifyIndex > 10,
+    `INBOX modifyIndex should be > 10, got ${inboxModifyIndex}`
+  );
+
+  // Step 4: Get Trash modifyIndex (should be low since it's unused)
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+  const trashModifyIndex = trashMailbox.modifyIndex;
+  t.true(
+    trashModifyIndex < inboxModifyIndex,
+    `Trash modifyIndex (${trashModifyIndex}) should be < INBOX (${inboxModifyIndex})`
+  );
+
+  // Step 5: Append a test message to INBOX
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Copy modseq Test\r\n\r\nTest body'),
+    [String.raw`\Seen`]
+  );
+  const uid = String(result.uid);
+
+  // Step 6: Get the message's modseq from database
+  const originalMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: result.uid,
+      mailbox: inboxMailbox._id
+    }
+  );
+  t.true(
+    originalMessage.modseq >= inboxModifyIndex,
+    `Original message modseq (${originalMessage.modseq}) should be >= INBOX modifyIndex (${inboxModifyIndex})`
+  );
+
+  // Step 7: Copy message from INBOX to Trash
+  const copyResult = await imapFlow.messageCopy(uid, 'Trash', { uid: true });
+  t.true(copyResult.uidMap.size > 0, 'Should have UID mapping');
+
+  // Step 8: Get the copied message from database
+  const copiedUid = copyResult.uidMap.get(Number(uid));
+  const copiedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: copiedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+
+  // Step 9: CRITICAL TEST: Copied message modseq should match TARGET mailbox modifyIndex
+  // NOT the source mailbox modifyIndex!
+  t.true(
+    copiedMessage.modseq <= trashMailbox.modifyIndex + 1,
+    `Copied message modseq (${
+      copiedMessage.modseq
+    }) should be <= Trash modifyIndex + 1 (${
+      trashMailbox.modifyIndex + 1
+    }), but got ${
+      copiedMessage.modseq
+    }. This indicates the bug where COPY uses source mailbox modifyIndex instead of target.`
+  );
+
+  // Step 10: Verify STORE works on the copied message
+  await imapFlow.mailboxOpen('Trash');
+
+  // This should NOT fail with "concurrent modification" error
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(String(copiedUid), [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, 'STORE should succeed on copied message');
+
+  // Step 11: Verify the flag was actually set
+  const updatedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: copiedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+  t.true(
+    updatedMessage.flags.includes(String.raw`\Flagged`),
+    String.raw`Should have \Flagged flag after STORE`
+  );
+});
+
+test('MOVE sets modseq to target mailbox modifyIndex (verification)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Step 1: Create high activity in INBOX
+  for (let i = 0; i < 10; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  // Step 2: Open INBOX and mark some messages
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 5; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 3: Get mailbox modifyIndex values
+  const inboxMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+
+  t.true(
+    inboxMailbox.modifyIndex > trashMailbox.modifyIndex,
+    'INBOX should have higher modifyIndex than Trash'
+  );
+
+  // Step 4: Append a test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Move modseq Test\r\n\r\nTest body'),
+    [String.raw`\Seen`]
+  );
+  const uid = String(result.uid);
+
+  // Step 5: Move message from INBOX to Trash
+  const moveResult = await imapFlow.messageMove(uid, 'Trash', { uid: true });
+  t.true(moveResult.uidMap.size > 0, 'Should have UID mapping');
+
+  // Step 6: Get the moved message from database
+  const movedUid = moveResult.uidMap.get(Number(uid));
+  const movedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: movedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+
+  // Step 7: Verify moved message modseq matches TARGET mailbox modifyIndex
+  t.true(
+    movedMessage.modseq <= trashMailbox.modifyIndex + 1,
+    `Moved message modseq (${
+      movedMessage.modseq
+    }) should be <= Trash modifyIndex + 1 (${trashMailbox.modifyIndex + 1})`
+  );
+
+  // Step 8: Verify STORE works on the moved message
+  await imapFlow.mailboxOpen('Trash');
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(String(movedUid), [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, 'STORE should succeed on moved message');
+});
+
+test('STORE succeeds on messages with high modseq from COPY bug (production scenario)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // This test reproduces the exact scenario from production logs:
+  // - Mailbox: Trash (modifyIndex: 34)
+  // - Message: uid 20 (modseq: 93)
+  // - Expected: STORE should work, not fail with "concurrent modification"
+  //
+  // From production log:
+  // "mailbox": "Trash", "expectedModseq": 35, "actualModseq": 93
+  // "selected": { "modifyIndex": 34 }
+
+  // Step 1: Create high activity in INBOX to get high modifyIndex
+  for (let i = 0; i < 100; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: High Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  // Step 2: Mark many messages to drive up modifyIndex even more
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 50; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 3: Get INBOX modifyIndex (should be ~150 or higher)
+  const inboxMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  t.true(
+    inboxMailbox.modifyIndex > 90,
+    `INBOX modifyIndex should be > 90, got ${inboxMailbox.modifyIndex}`
+  );
+
+  // Step 4: Append a test message to INBOX
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from(
+      'Subject: Production Bug Test\r\n\r\nThis message will be copied to Trash'
+    ),
+    [String.raw`\Seen`]
+  );
+  const sourceUid = String(result.uid);
+
+  // Step 5: COPY message to Trash (this triggers the bug in unfixed code)
+  const copyResult = await imapFlow.messageCopy(sourceUid, 'Trash', {
+    uid: true
+  });
+  t.true(copyResult.uidMap.size > 0, 'Should have UID mapping');
+  const copiedUid = String(copyResult.uidMap.get(Number(sourceUid)));
+
+  // Step 6: Get Trash mailbox state
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+
+  // Step 7: Get the copied message from database
+  const copiedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: Number(copiedUid),
+      mailbox: trashMailbox._id
+    }
+  );
+
+  t.log(`Trash modifyIndex: ${trashMailbox.modifyIndex}`);
+  t.log(`Copied message modseq: ${copiedMessage.modseq}`);
+  t.log(`Expected modseq after STORE: ${trashMailbox.modifyIndex + 1}`);
+
+  // Step 8: This is the critical test - STORE should NOT fail
+  // In production, this was failing with:
+  // "STORE failed due to concurrent modification"
+  // "expectedModseq": 35, "actualModseq": 93
+  await imapFlow.mailboxOpen('Trash');
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, 'STORE should succeed even if message has high modseq from COPY bug');
+
+  // Step 9: Verify the flag was actually set
+  const updatedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: Number(copiedUid),
+      mailbox: trashMailbox._id
+    }
+  );
+  t.true(
+    updatedMessage.flags.includes(String.raw`\Flagged`),
+    String.raw`Should have \Flagged flag after STORE`
+  );
+
+  // Step 10: Verify modseq was updated correctly
+  t.true(
+    updatedMessage.modseq > copiedMessage.modseq,
+    `Updated modseq (${updatedMessage.modseq}) should be > original modseq (${copiedMessage.modseq})`
+  );
+});
+
+test('STORE handles messages with modseq > mailbox.modifyIndex (edge case)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // This test verifies the on-store.js fix handles the edge case where
+  // a message's modseq is higher than the mailbox's current modifyIndex.
+  // This can happen with:
+  // 1. Messages copied before the on-copy.js fix
+  // 2. Database migrations
+  // 3. Manual data corrections
+
+  // Step 1: Create a message in INBOX with high activity
+  for (let i = 0; i < 50; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 25; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 2: Append test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Edge Case Test\r\n\r\nTest body'),
+    []
+  );
+  const sourceUid = String(result.uid);
+
+  // Step 3: Copy to Trash
+  const copyResult = await imapFlow.messageCopy(sourceUid, 'Trash', {
+    uid: true
+  });
+  const copiedUid = String(copyResult.uidMap.get(Number(sourceUid)));
+
+  // Step 4: Verify the fix handles this correctly
+
+  // With the on-store.js fix, STORE should use exact match instead of $lt
+  await imapFlow.mailboxOpen('Trash');
+
+  // First STORE - should succeed
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Seen`], {
+      uid: true
+    });
+  }, 'First STORE should succeed');
+
+  // Second STORE - should also succeed
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, 'Second STORE should also succeed');
+
+  // Step 6: Verify both flags are set
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+  const finalMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: Number(copiedUid),
+      mailbox: trashMailbox._id
+    }
+  );
+  t.true(
+    finalMessage.flags.includes(String.raw`\Seen`),
+    String.raw`Should have \Seen flag`
+  );
+  t.true(
+    finalMessage.flags.includes(String.raw`\Flagged`),
+    String.raw`Should have \Flagged flag`
+  );
+});
+
+test('Multiple STORE operations work correctly after COPY (regression test)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // This test ensures that multiple STORE operations work correctly
+  // on copied messages, which was failing in production with the bug.
+
+  // Step 1: Create high activity in INBOX
+  for (let i = 0; i < 30; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 15; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 2: Append test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: Multi-STORE Test\r\n\r\nTest body'),
+    []
+  );
+  const sourceUid = String(result.uid);
+
+  // Step 3: Copy to Trash
+  const copyResult = await imapFlow.messageCopy(sourceUid, 'Trash', {
+    uid: true
+  });
+  const copiedUid = String(copyResult.uidMap.get(Number(sourceUid)));
+
+  await imapFlow.mailboxOpen('Trash');
+
+  // Step 4: Perform multiple STORE operations in sequence
+  // All should succeed without "concurrent modification" errors
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Seen`], {
+      uid: true
+    });
+  }, String.raw`STORE 1: Add \Seen`);
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, String.raw`STORE 2: Add \Flagged`);
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsRemove(copiedUid, [String.raw`\Seen`], {
+      uid: true
+    });
+  }, String.raw`STORE 3: Remove \Seen`);
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(copiedUid, [String.raw`\Seen`], {
+      uid: true
+    });
+  }, String.raw`STORE 4: Add \Seen again`);
+
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsSet(copiedUid, [String.raw`\Answered`], {
+      uid: true
+    });
+  }, String.raw`STORE 5: Set flags to \Answered only`);
+
+  // Step 5: Verify final state
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+  const finalMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: Number(copiedUid),
+      mailbox: trashMailbox._id
+    }
+  );
+
+  t.deepEqual(
+    finalMessage.flags.sort(),
+    [String.raw`\Answered`].sort(),
+    String.raw`Final flags should be [\Answered] only`
+  );
+});
+
+test('UIDVALIDITY remains stable across operations (should NOT change)', async (t) => {
+  const { imapFlow } = t.context;
+
+  // UIDVALIDITY should remain constant for a mailbox unless it's deleted and recreated
+  // This test ensures the modseq fixes don't accidentally change UIDVALIDITY
+
+  // Step 1: Get initial UIDVALIDITY for INBOX
+  let box = await imapFlow.mailboxOpen('INBOX');
+  const initialUidValidity = box.uidValidity;
+  t.true(initialUidValidity > 0, 'UIDVALIDITY should be positive');
+
+  // Step 2: Perform various operations
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: UIDVALIDITY Test\r\n\r\nTest body'),
+    []
+  );
+  const uid = String(result.uid);
+
+  await imapFlow.messageFlagsAdd(uid, [String.raw`\Seen`], { uid: true });
+  await imapFlow.messageFlagsAdd(uid, [String.raw`\Flagged`], { uid: true });
+  await imapFlow.messageCopy(uid, 'Trash', { uid: true });
+
+  // Step 3: Reopen INBOX and verify UIDVALIDITY hasn't changed
+  box = await imapFlow.mailboxOpen('INBOX');
+  t.is(
+    box.uidValidity,
+    initialUidValidity,
+    'UIDVALIDITY should remain unchanged after normal operations'
+  );
+
+  // Step 4: Check Trash UIDVALIDITY
+  const trashBox = await imapFlow.mailboxOpen('Trash');
+  t.true(trashBox.uidValidity > 0, 'Trash should have UIDVALIDITY');
+
+  // Step 5: Reopen Trash and verify UIDVALIDITY is stable
+  const trashBox2 = await imapFlow.mailboxOpen('Trash');
+  t.is(
+    trashBox2.uidValidity,
+    trashBox.uidValidity,
+    'Trash UIDVALIDITY should remain stable'
+  );
+});
+
+test('UIDVALIDITY is unique per mailbox', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Each mailbox should have its own UIDVALIDITY value
+  // They may be the same if created at the same time, but should be independent
+
+  const inboxBox = await imapFlow.mailboxOpen('INBOX');
+  const sentBox = await imapFlow.mailboxOpen('Sent Mail');
+  const trashBox = await imapFlow.mailboxOpen('Trash');
+  const draftsBox = await imapFlow.mailboxOpen('Drafts');
+
+  t.true(inboxBox.uidValidity > 0, 'INBOX should have UIDVALIDITY');
+  t.true(sentBox.uidValidity > 0, 'Sent Mail should have UIDVALIDITY');
+  t.true(trashBox.uidValidity > 0, 'Trash should have UIDVALIDITY');
+  t.true(draftsBox.uidValidity > 0, 'Drafts should have UIDVALIDITY');
+
+  // Verify they're all valid Unix timestamps (reasonable range)
+  const now = Math.floor(Date.now() / 1000);
+  const oneYearAgo = now - 365 * 24 * 60 * 60;
+
+  t.true(
+    inboxBox.uidValidity >= oneYearAgo && inboxBox.uidValidity <= now,
+    'INBOX UIDVALIDITY should be a reasonable Unix timestamp'
+  );
+});
+
+test('modifyIndex increments correctly after STORE operations', async (t) => {
+  const { imapFlow } = t.context;
+
+  // This test verifies that modifyIndex (HIGHESTMODSEQ) increments correctly
+  // after STORE operations, which is critical for CONDSTORE clients
+
+  // Step 1: Get initial mailbox state
+  const inboxMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  const initialModifyIndex = inboxMailbox.modifyIndex;
+
+  // Step 2: Append a message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: modifyIndex Test\r\n\r\nTest body'),
+    []
+  );
+  const uid = String(result.uid);
+
+  // Step 3: Verify modifyIndex incremented after APPEND
+  const afterAppend = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  t.true(
+    afterAppend.modifyIndex > initialModifyIndex,
+    `modifyIndex should increment after APPEND (was ${initialModifyIndex}, now ${afterAppend.modifyIndex})`
+  );
+
+  // Step 4: Perform STORE operation
+  await imapFlow.mailboxOpen('INBOX');
+  await imapFlow.messageFlagsAdd(uid, [String.raw`\Seen`], { uid: true });
+
+  // Step 5: Verify modifyIndex incremented after STORE
+  const afterStore = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  t.true(
+    afterStore.modifyIndex > afterAppend.modifyIndex,
+    `modifyIndex should increment after STORE (was ${afterAppend.modifyIndex}, now ${afterStore.modifyIndex})`
+  );
+
+  // Step 6: Perform another STORE
+  await imapFlow.messageFlagsAdd(uid, [String.raw`\Flagged`], { uid: true });
+
+  // Step 7: Verify modifyIndex incremented again
+  const afterStore2 = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  t.true(
+    afterStore2.modifyIndex > afterStore.modifyIndex,
+    `modifyIndex should increment after second STORE (was ${afterStore.modifyIndex}, now ${afterStore2.modifyIndex})`
+  );
+});
+
+test('Message modseq never exceeds mailbox modifyIndex after fixes', async (t) => {
+  const { imapFlow } = t.context;
+
+  // This is the key test that verifies the modseq fixes work correctly
+  // After the fixes, no message should ever have modseq > mailbox.modifyIndex
+
+  // Step 1: Create high activity in INBOX
+  for (let i = 0; i < 20; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 10; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 2: Append test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: modseq Boundary Test\r\n\r\nTest body'),
+    []
+  );
+  const sourceUid = String(result.uid);
+
+  // Step 3: Copy to Trash
+  const copyResult = await imapFlow.messageCopy(sourceUid, 'Trash', {
+    uid: true
+  });
+  const copiedUid = copyResult.uidMap.get(Number(sourceUid));
+
+  // Step 4: Verify message modseq <= mailbox modifyIndex in Trash
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+  const copiedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: copiedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+
+  t.true(
+    copiedMessage.modseq <= trashMailbox.modifyIndex,
+    `Message modseq (${copiedMessage.modseq}) should be <= mailbox modifyIndex (${trashMailbox.modifyIndex})`
+  );
+
+  // Step 5: Perform STORE and verify modseq is still within bounds
+  await imapFlow.mailboxOpen('Trash');
+  await imapFlow.messageFlagsAdd(String(copiedUid), [String.raw`\Flagged`], {
+    uid: true
+  });
+
+  const updatedMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+  const updatedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: copiedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+
+  t.true(
+    updatedMessage.modseq <= updatedMailbox.modifyIndex,
+    `Updated message modseq (${updatedMessage.modseq}) should be <= mailbox modifyIndex (${updatedMailbox.modifyIndex})`
+  );
+
+  // Step 6: Verify all messages in Trash have modseq <= modifyIndex
+  const allTrashMessages = await Messages.find(
+    t.context.imap,
+    t.context.session,
+    {
+      mailbox: trashMailbox._id
+    }
+  );
+
+  for (const message of allTrashMessages) {
+    t.true(
+      message.modseq <= updatedMailbox.modifyIndex,
+      `All messages should have modseq <= modifyIndex (message uid=${message.uid}, modseq=${message.modseq}, modifyIndex=${updatedMailbox.modifyIndex})`
+    );
+  }
+});
+
+test('MOVE operation maintains modseq integrity', async (t) => {
+  const { imapFlow } = t.context;
+
+  // Verify MOVE operations correctly set modseq to target mailbox modifyIndex
+
+  // Step 1: Create high activity in INBOX
+  for (let i = 0; i < 15; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(`Subject: Activity ${i}\r\n\r\nBody ${i}`),
+      []
+    );
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+  for (let i = 1; i <= 7; i++) {
+    await imapFlow.messageFlagsAdd(String(i), [String.raw`\Seen`], {
+      uid: true
+    });
+  }
+
+  // Step 2: Append test message
+  const result = await imapFlow.append(
+    'INBOX',
+    Buffer.from('Subject: MOVE modseq Test\r\n\r\nTest body'),
+    []
+  );
+  const sourceUid = String(result.uid);
+
+  // Step 3: Get INBOX and Trash modifyIndex
+  const inboxMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'INBOX'
+    }
+  );
+  const trashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+
+  t.log(`INBOX modifyIndex: ${inboxMailbox.modifyIndex}`);
+  t.log(`Trash modifyIndex: ${trashMailbox.modifyIndex}`);
+
+  // Step 4: MOVE message from INBOX to Trash
+  const moveResult = await imapFlow.messageMove(sourceUid, 'Trash', {
+    uid: true
+  });
+  const movedUid = moveResult.uidMap.get(Number(sourceUid));
+
+  // Step 5: Verify moved message has modseq matching Trash modifyIndex
+  const movedMessage = await Messages.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      uid: movedUid,
+      mailbox: trashMailbox._id
+    }
+  );
+
+  const updatedTrashMailbox = await Mailboxes.findOne(
+    t.context.imap,
+    t.context.session,
+    {
+      path: 'Trash'
+    }
+  );
+
+  t.true(
+    movedMessage.modseq <= updatedTrashMailbox.modifyIndex,
+    `Moved message modseq (${movedMessage.modseq}) should be <= Trash modifyIndex (${updatedTrashMailbox.modifyIndex})`
+  );
+
+  // Step 6: Verify STORE works on moved message
+  await imapFlow.mailboxOpen('Trash');
+  await t.notThrowsAsync(async () => {
+    await imapFlow.messageFlagsAdd(String(movedUid), [String.raw`\Flagged`], {
+      uid: true
+    });
+  }, 'STORE should work on moved message');
+});

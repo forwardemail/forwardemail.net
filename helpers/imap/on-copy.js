@@ -210,7 +210,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
                   ? targetMailbox.retention
                   : 0)
             ).toISOString();
-            m.modseq = mailbox.modifyIndex;
+            m.modseq = targetMailbox.modifyIndex;
             m.junk = targetMailbox.specialUse === '\\Junk';
             m.remoteAddress = session.remoteAddress;
             m.transaction = 'COPY';

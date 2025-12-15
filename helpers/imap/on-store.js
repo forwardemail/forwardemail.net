@@ -371,18 +371,25 @@ async function onStore(mailboxId, update, session, fn) {
               // We use optimistic locking (modseq condition) to detect concurrent modifications.
               // This prevents lost updates when multiple clients modify the same message.
               //
-              // Note: UNCHANGEDSINCE pre-filtering is handled earlier (lines 186-198)
+              // Note: UNCHANGEDSINCE pre-filtering is handled earlier (lines 198-210)
               // This modseq check is for general concurrent modification detection.
+              //
+              // IMPORTANT: We use exact match (not $lt) because message.modseq can be higher
+              // than mailbox.modifyIndex when messages are moved between mailboxes.
+              // The optimistic lock works by comparing the fetched modseq with the current
+              // database value - if they differ, another client modified the message.
               const condition = prepareQuery(Messages.mapping, {
                 _id: message._id,
                 mailbox: mailbox._id,
                 uid: message.uid,
-                // Optimistic locking: Only update if modseq hasn't changed
+                // Optimistic locking: Only update if modseq matches what we fetched
                 // This detects if another client modified the message between
                 // when we read it and when we're trying to update it
-                modseq: {
-                  $lt: newModseq
-                }
+                modseq: message.modseq
+                // TODO: we may want to revert back to this down the road
+                // modseq: {
+                //   $lt: newModseq
+                // }
               });
 
               // RFC 7162 Section 3.1.4: STORE and UID STORE Commands
