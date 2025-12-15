@@ -81,12 +81,14 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
   // Tracking variables
   let processedAliases = 0;
   let deletedOrphanedAliases = 0;
+  let deletedNonImapAliases = 0;
   let sentUserNotifications = 0;
   let databaseErrors = 0;
   let fileSystemErrors = 0;
   const deletedLocalFiles = [];
   const deletedR2Files = [];
   const orphanedAliases = [];
+  const nonImapAliases = [];
   const thresholdNotifications = [];
 
   try {
@@ -192,8 +194,10 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
         let batchProcessedAliases = 0;
         let batchDeletedOrphanedAliases = 0;
+        let batchDeletedNonImapAliases = 0;
         const batchSentUserNotifications = 0;
         const batchOrphanedAliases = [];
+        const batchNonImapAliases = [];
 
         // Process each alias in the batch
         await pMap(
@@ -408,12 +412,118 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
                 return; // Done processing this orphaned alias
               }
 
-              // ALIAS AND DOMAIN EXIST - This is valid, skip cleanup
-              logger.debug('Alias and domain are valid, skipping cleanup', {
-                aliasId: id,
-                domainId: domain._id,
-                aliasName: alias.name
-              });
+              // ALIAS AND DOMAIN EXIST - Check if alias has IMAP enabled
+              // If alias does NOT have IMAP enabled, we should clean up its storage
+              if (!alias.has_imap) {
+                logger.warn(
+                  `Found alias without IMAP enabled ${
+                    dryRun
+                      ? '- would delete storage (dry run)'
+                      : '- deleting storage'
+                  }`,
+                  {
+                    aliasId: id,
+                    domainId: domain._id,
+                    aliasName: alias.name,
+                    hasImap: alias.has_imap,
+                    dryRun
+                  }
+                );
+
+                // Track non-IMAP aliases for email notification
+                batchNonImapAliases.push({
+                  aliasId: id,
+                  domainId: domain._id,
+                  aliasName: alias.name,
+                  reason: 'imap_not_enabled'
+                });
+
+                // Find all files that would be/are deleted
+                const filesToDelete = sqliteFiles.filter((file) => {
+                  const match = file.name.match(
+                    /^([a-f\d]{24})(?:-tmp)?\.sqlite/
+                  );
+                  return match && match[1] === id;
+                });
+
+                // Track files for reporting (in both dry run and normal mode)
+                for (const file of filesToDelete) {
+                  deletedLocalFiles.push(file.name);
+                }
+
+                // Handle R2 backup files (in both dry run and normal mode)
+                try {
+                  const r2Result = await removeAliasBackup(alias, {
+                    dryRun // Use the same dryRun flag - helper handles both modes
+                  });
+                  if (r2Result && Array.isArray(r2Result)) {
+                    deletedR2Files.push(...r2Result);
+                  }
+                } catch (err) {
+                  logger.error(
+                    dryRun
+                      ? 'Failed to check R2 backup files for non-IMAP alias'
+                      : 'Failed to delete R2 backup files for non-IMAP alias',
+                    {
+                      aliasId: id,
+                      r2Error: err
+                    }
+                  );
+                }
+
+                if (dryRun) {
+                  logger.info(
+                    'Would delete storage for non-IMAP alias (dry run)',
+                    {
+                      aliasId: id,
+                      localFiles: filesToDelete.length
+                    }
+                  );
+                } else {
+                  // Actually delete local files (ONLY in normal mode)
+                  for (const file of filesToDelete) {
+                    try {
+                      await fs.promises.rm(file.path, { force: true });
+                      logger.info(
+                        'Deleted local SQLite file for non-IMAP alias',
+                        {
+                          aliasId: id,
+                          file: file.name
+                        }
+                      );
+                    } catch (err) {
+                      fileSystemErrors++;
+                      logger.error('Failed to delete local SQLite file', {
+                        aliasId: id,
+                        file: file.name,
+                        fileError: err
+                      });
+                    }
+                  }
+
+                  batchDeletedNonImapAliases++;
+                  logger.info(
+                    'Successfully deleted storage for non-IMAP alias',
+                    {
+                      aliasId: id,
+                      deletedFiles: filesToDelete.length
+                    }
+                  );
+                }
+
+                return; // Done processing this non-IMAP alias
+              }
+
+              // ALIAS AND DOMAIN EXIST AND IMAP IS ENABLED - This is valid, skip cleanup
+              logger.debug(
+                'Alias and domain are valid with IMAP enabled, skipping cleanup',
+                {
+                  aliasId: id,
+                  domainId: domain._id,
+                  aliasName: alias.name,
+                  hasImap: alias.has_imap
+                }
+              );
             } catch (err) {
               databaseErrors++;
               logger.error('Error processing alias', {
@@ -433,12 +543,15 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         // Update totals from batch
         processedAliases += batchProcessedAliases;
         deletedOrphanedAliases += batchDeletedOrphanedAliases;
+        deletedNonImapAliases += batchDeletedNonImapAliases;
         sentUserNotifications += batchSentUserNotifications;
         orphanedAliases.push(...batchOrphanedAliases);
+        nonImapAliases.push(...batchNonImapAliases);
 
         logger.info(`Completed batch ${batchIndex + 1}/${batches.length}`, {
           batchProcessedAliases,
           batchDeletedOrphanedAliases,
+          batchDeletedNonImapAliases,
           batchSentUserNotifications,
           dryRun
         });
@@ -720,6 +833,62 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       }
     }
 
+    // Send non-IMAP aliases notification if any were found
+    if (nonImapAliases.length > 0) {
+      try {
+        const actionText = dryRun
+          ? 'would have their storage deleted (dry run)'
+          : 'have had their storage deleted';
+
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.supportEmail,
+            subject: `Found ${
+              nonImapAliases.length
+            } aliases without IMAP enabled ${
+              dryRun ? '(DRY RUN)' : '- storage cleaned up'
+            }`
+          },
+          locals: {
+            message: `<p><strong>${
+              dryRun ? 'DRY RUN - ' : ''
+            }NON-IMAP ALIASES ${
+              dryRun ? 'ANALYSIS' : 'CLEANUP'
+            }:</strong> Found aliases that do not have IMAP enabled and should not have storage.</p>
+                    <p>These aliases ${actionText}:</p>
+                    <ul><li><code class="small">${nonImapAliases
+                      .map(
+                        (a) =>
+                          `Alias ID: ${a.aliasId}, Name: ${a.aliasName}, Domain ID: ${a.domainId}, Reason: ${a.reason}`
+                      )
+                      .join(
+                        '</code></li><li><code class="small">'
+                      )}</code></li></ul>
+                    <p><strong>Total non-IMAP aliases:</strong> ${
+                      nonImapAliases.length
+                    }</p>
+                    <p>${
+                      dryRun
+                        ? 'In normal mode, storage for these aliases would be automatically deleted to free up space.'
+                        : 'Storage for these aliases has been automatically removed to free up space.'
+                    }</p>`
+          }
+        });
+
+        logger.info('Sent non-IMAP aliases notification email', {
+          nonImapCount: nonImapAliases.length,
+          dryRun
+        });
+      } catch (err) {
+        logger.error('Failed to send non-IMAP aliases notification email', {
+          nonImapCount: nonImapAliases.length,
+          emailError: err,
+          dryRun
+        });
+      }
+    }
+
     // Send comprehensive completion email to support
     try {
       const completionSubject = dryRun
@@ -743,6 +912,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
          <ul>
            <li>Total aliases analyzed: ${processedAliases}</li>
            <li>Orphaned aliases found: ${orphanedAliases.length}</li>
+           <li>Non-IMAP aliases found: ${nonImapAliases.length}</li>
            <li>Local SQLite files that would be deleted: ${deletedLocalFiles.length}</li>
            <li>R2 backup files that would be deleted: ${deletedR2Files.length}</li>
            <li>User notifications that would be sent: Skipped (dry run mode)</li>
@@ -756,6 +926,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
          <ul>
            <li>Total aliases processed: ${processedAliases}</li>
            <li>Orphaned aliases deleted: ${deletedOrphanedAliases}</li>
+           <li>Non-IMAP aliases storage deleted: ${deletedNonImapAliases}</li>
            <li>Local SQLite files deleted: ${deletedLocalFiles.length}</li>
            <li>R2 backup files deleted: ${deletedR2Files.length}</li>
            <li>User notifications sent: ${sentUserNotifications}</li>
@@ -780,7 +951,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
              : ''
          }
          ${thresholdNotificationDetails}
-         <p><strong>Data integrity maintained:</strong> All orphaned aliases and their associated files have been cleaned up.</p>`;
+         <p><strong>Data integrity maintained:</strong> All orphaned aliases and their associated files have been cleaned up, and storage for non-IMAP aliases has been purged.</p>`;
 
       await emailHelper({
         template: 'alert',
@@ -796,7 +967,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       logger.info('Sent cleanup completion email', {
         processedAliases,
         orphanedAliases: orphanedAliases.length,
+        nonImapAliases: nonImapAliases.length,
         deletedOrphanedAliases,
+        deletedNonImapAliases,
         deletedLocalFiles: deletedLocalFiles.length,
         deletedR2Files: deletedR2Files.length,
         sentUserNotifications,
@@ -830,6 +1003,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           <ul>
             <li>Aliases processed before failure: ${processedAliases}</li>
             <li>Orphaned aliases deleted: ${deletedOrphanedAliases}</li>
+            <li>Non-IMAP aliases storage deleted: ${deletedNonImapAliases}</li>
             <li>Local files deleted: ${deletedLocalFiles.length}</li>
             <li>R2 files deleted: ${deletedR2Files.length}</li>
             <li>Threshold notifications sent: ${thresholdNotifications.length}</li>

@@ -243,6 +243,7 @@ async function removeUserAliasBackups(user, options = {}) {
 
 /**
  * Find and remove orphaned backup files from R2 that don't correspond to existing aliases
+ * Also removes backups for aliases without IMAP enabled
  * @param {String} storageLocation - The storage location to clean up
  * @param {Object} options - Options object
  * @param {Boolean} options.dryRun - If true, only report what would be deleted without actually deleting
@@ -309,7 +310,8 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
         totalFiles: 0,
         orphanedFiles: 0,
         bannedUserFiles: 0,
-        removedUserFiles: 0
+        removedUserFiles: 0,
+        nonImapFiles: 0
       };
     }
 
@@ -317,6 +319,7 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
     const validAliasIds = new Set();
     const bannedUserAliasIds = new Set();
     const removedUserAliasIds = new Set();
+    const nonImapAliasIds = new Set();
 
     // Process aliases in batches using cursor
     const cursor = Aliases.find({
@@ -337,6 +340,18 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
 
       if (!alias.domain || !alias.domain.members) {
         // Orphaned alias (no domain or members)
+        return;
+      }
+
+      // Check if alias has IMAP enabled - if not, mark for deletion
+      if (!alias.has_imap) {
+        nonImapAliasIds.add(aliasId);
+        logger.info('Found alias without IMAP enabled for R2 cleanup', {
+          aliasId,
+          aliasName: alias.name,
+          storageLocation,
+          dryRun
+        });
         return;
       }
 
@@ -382,14 +397,16 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
       (id) =>
         !validAliasIds.has(id) &&
         !bannedUserAliasIds.has(id) &&
-        !removedUserAliasIds.has(id)
+        !removedUserAliasIds.has(id) &&
+        !nonImapAliasIds.has(id)
     );
 
-    // Combine all IDs that should be deleted (orphaned + banned + removed)
+    // Combine all IDs that should be deleted (orphaned + banned + removed + non-IMAP)
     const aliasIdsToDelete = [
       ...orphanedAliasIds,
       ...bannedUserAliasIds,
-      ...removedUserAliasIds
+      ...removedUserAliasIds,
+      ...nonImapAliasIds
     ];
 
     logger.info(
@@ -404,6 +421,7 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
         orphanedAliasIds: orphanedAliasIds.length,
         bannedUserAliasIds: bannedUserAliasIds.size,
         removedUserAliasIds: removedUserAliasIds.size,
+        nonImapAliasIds: nonImapAliasIds.size,
         totalToDelete: aliasIdsToDelete.length,
         dryRun
       }
@@ -458,6 +476,8 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
                 reason = 'banned user';
               } else if (removedUserAliasIds.has(aliasIdToDelete)) {
                 reason = 'removed user';
+              } else if (nonImapAliasIds.has(aliasIdToDelete)) {
+                reason = 'imap not enabled';
               }
 
               logger.info(
@@ -492,7 +512,8 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
       totalFiles: aliasIds.size,
       orphanedFiles: orphanedAliasIds.length,
       bannedUserFiles: bannedUserAliasIds.size,
-      removedUserFiles: removedUserAliasIds.size
+      removedUserFiles: removedUserAliasIds.size,
+      nonImapFiles: nonImapAliasIds.size
     };
   } catch (err) {
     logger.error('Error cleaning up orphaned backups from R2', {

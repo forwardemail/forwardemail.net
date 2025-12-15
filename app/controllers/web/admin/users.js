@@ -5,6 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
+const Stripe = require('stripe');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
@@ -16,6 +17,9 @@ const { Domains, Users } = require('#models');
 // const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
+const env = require('#config/env');
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
@@ -194,6 +198,27 @@ async function remove(ctx) {
   //     userId: user._id
   //   });
   // }
+
+  // cancel the user's Stripe subscription if they have one
+  if (isSANB(user[config.userFields.stripeSubscriptionID])) {
+    try {
+      await stripe.subscriptions.del(
+        user[config.userFields.stripeSubscriptionID]
+      );
+      ctx.logger.info(
+        `Cancelled Stripe subscription ${
+          user[config.userFields.stripeSubscriptionID]
+        } for banned user ${user.email}`
+      );
+    } catch (err) {
+      ctx.logger.error(err, {
+        user_email: user.email,
+        subscription_id: user[config.userFields.stripeSubscriptionID]
+      });
+    }
+
+    user[config.userFields.stripeSubscriptionID] = undefined;
+  }
 
   // instead of removing the user entirely we just ban them
   user[config.userFields.isBanned] = true;

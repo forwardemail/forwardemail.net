@@ -71,7 +71,7 @@ async function listLogs(ctx) {
   // (e.g. this allows global vanity domain logs for the user)
   //
   const nonAdminDomains = filteredDomains.filter((d) => d.group !== 'admin');
-  // const nonAdminDomainsToAliases = {};
+  const nonAdminDomainsToAliases = {};
 
   if (nonAdminDomains.length > 0) {
     const aliases = await Aliases.find({
@@ -105,12 +105,12 @@ async function listLogs(ctx) {
 
         if (!domain) continue;
 
-        // if (!nonAdminDomainsToAliases[domain.id])
-        //   nonAdminDomainsToAliases[domain.id] = [];
+        if (!nonAdminDomainsToAliases[domain.id])
+          nonAdminDomainsToAliases[domain.id] = [];
 
-        // nonAdminDomainsToAliases[domain.id].push(
-        //   `${alias.name}@${domain.name}`
-        // );
+        nonAdminDomainsToAliases[domain.id].push(
+          `${alias.name}@${domain.name}`
+        );
 
         $or.push({
           domains: { $in: [domain._id] },
@@ -482,12 +482,9 @@ async function listLogs(ctx) {
   );
 
   //
-  // NOTE: the only benefit of the below would be to suppress the BCC recipients
-  //       (and for the purposes of shippings this quickly; we're leaving it out)
-  //       (if we revisit this in the future, to hide RCPT TO not applicable/relevant to user)
-  //       (then the below would need rewritten)
+  // Filter out BCC recipients that don't belong to the user
+  // (users should only see recipients relevant to them)
   //
-  /*
   if (ctx.state.user.group !== 'admin') {
     //
     // go through each log and filter out RCPT TO values
@@ -543,6 +540,81 @@ async function listLogs(ctx) {
             });
         }
 
+        //
+        // Filter BCC header to only show BCC recipients relevant to this user
+        //
+        if (
+          log?.meta?.session?.headers &&
+          typeof log.meta.session.headers === 'object' &&
+          log.meta.session.headers.Bcc
+        ) {
+          // Parse BCC header (can be a string with comma-separated emails)
+          const bccHeader = log.meta.session.headers.Bcc;
+          let bccEmails = [];
+
+          if (typeof bccHeader === 'string') {
+            // Split by comma and clean up whitespace
+            bccEmails = bccHeader
+              .split(',')
+              .map((email) => email.trim())
+              .filter((email) => email.length > 0);
+          }
+
+          // Filter BCC emails using the same logic as RCPT TO
+          const filteredBccEmails = bccEmails.filter((email) => {
+            // Extract username and domain
+            const emailLower = email.toLowerCase();
+            const parts = emailLower.split('@');
+            if (parts.length !== 2) return false;
+
+            const username = parts[0].includes('+')
+              ? parts[0].slice(0, parts[0].indexOf('+'))
+              : parts[0];
+            const domain = parts[1];
+
+            // Check if user is admin of the domain
+            let isAdmin = false;
+            const match = log.domains.find((logDomain) => {
+              const find = ctx.state.domains.find(
+                (d) =>
+                  d.id === logDomain.toString() &&
+                  d.name === domain.toLowerCase()
+              );
+              if (!find) return false;
+              if (find.group === 'admin') isAdmin = true;
+              return true;
+            });
+
+            if (!match) return false;
+
+            // If admin, show all BCC recipients for this domain
+            if (isAdmin) return true;
+
+            // Otherwise, only show if this email belongs to the user
+            const fullEmail = `${username}@${domain}`.toLowerCase();
+            const domainToAliases = nonAdminDomainsToAliases[match.toString()];
+
+            if (!domainToAliases) return false;
+
+            if (
+              domainToAliases.includes(`*@${domain}`) ||
+              domainToAliases.includes(fullEmail)
+            )
+              return true;
+
+            return false;
+          });
+
+          // Update or remove the BCC header
+          if (filteredBccEmails.length === 0) {
+            // Remove BCC header entirely if no relevant recipients
+            delete log.meta.session.headers.Bcc;
+          } else {
+            // Update BCC header with filtered recipients
+            log.meta.session.headers.Bcc = filteredBccEmails.join(', ');
+          }
+        }
+
         // safeguard in case query returns results we don't want to render
         if (
           !Array.isArray(log?.meta?.session?.envelope?.rcptTo) ||
@@ -554,7 +626,6 @@ async function listLogs(ctx) {
       })
     );
   }
-  */
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
 

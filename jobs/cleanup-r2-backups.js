@@ -61,6 +61,7 @@ graceful.listen();
   let totalOrphanedFiles = 0;
   let totalBannedUserFiles = 0;
   let totalRemovedUserFiles = 0;
+  let totalNonImapFiles = 0;
   let storageLocations = [];
   let jobError = null;
   let dryRun = false;
@@ -116,6 +117,7 @@ graceful.listen();
         totalOrphanedFiles += result.orphanedFiles;
         totalBannedUserFiles += result.bannedUserFiles;
         totalRemovedUserFiles += result.removedUserFiles;
+        totalNonImapFiles += result.nonImapFiles || 0;
 
         logger.info(
           dryRun
@@ -127,6 +129,7 @@ graceful.listen();
             orphanedFiles: result.orphanedFiles,
             bannedUserFiles: result.bannedUserFiles,
             removedUserFiles: result.removedUserFiles,
+            nonImapFiles: result.nonImapFiles || 0,
             totalFiles: result.totalFiles,
             dryRun
           }
@@ -149,6 +152,7 @@ graceful.listen();
         totalOrphanedFiles,
         totalBannedUserFiles,
         totalRemovedUserFiles,
+        totalNonImapFiles,
         storageLocations: storageLocations.length,
         dryRun
       }
@@ -192,7 +196,9 @@ graceful.listen();
                 r.deletedFiles.length
               } files ${action} (${r.orphanedFiles || 0} orphaned, ${
                 r.bannedUserFiles || 0
-              } banned users, ${r.removedUserFiles || 0} removed users)`;
+              } banned users, ${r.removedUserFiles || 0} removed users, ${
+                r.nonImapFiles || 0
+              } non-IMAP)`;
             })
             .join('</code></li><li><code class="small">')}</code></li></ul>
 
@@ -204,6 +210,7 @@ graceful.listen();
               <li><strong>Orphaned Aliases:</strong> ${totalOrphanedFiles}</li>
               <li><strong>Banned User Aliases:</strong> ${totalBannedUserFiles}</li>
               <li><strong>Removed User Aliases:</strong> ${totalRemovedUserFiles}</li>
+              <li><strong>Non-IMAP Aliases:</strong> ${totalNonImapFiles}</li>
               <li><strong>Storage Locations:</strong> ${
                 storageLocations.length
               }</li>

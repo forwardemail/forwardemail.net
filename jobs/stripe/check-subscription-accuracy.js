@@ -45,9 +45,112 @@ async function mapper(customer) {
     .lean()
     .exec();
 
-  if (!user) return;
+  // if user doesn't exist, this is an orphaned subscription
+  if (!user) {
+    // get all subscriptions for this customer
+    const [activeSubscriptions, trialingSubscriptions] = await Promise.all([
+      stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'active'
+      }),
+      stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'trialing'
+      })
+    ]);
 
-  if (user.is_banned) return;
+    const subscriptions = [
+      ...activeSubscriptions.data,
+      ...trialingSubscriptions.data
+    ];
+
+    if (subscriptions.length > 0) {
+      await logger.warn(
+        `Found ${subscriptions.length} active/trialing subscription(s) for customer ${customer.id} (${customer.email}) with no corresponding user in database`
+      );
+
+      // cancel all orphaned subscriptions
+      await pMapSeries(subscriptions, async (subscription) => {
+        await stripe.subscriptions.cancel(subscription.id);
+        logger.info(
+          `Cancelled orphaned subscription ${subscription.id} for customer ${customer.id} (${customer.email})`
+        );
+      });
+
+      // send alert email to admins
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `Cancelled orphaned Stripe subscriptions: ${customer.email}`
+        },
+        locals: {
+          message: `<p>Found and cancelled ${subscriptions.length} orphaned subscription(s) for Stripe customer ${customer.id} (${customer.email}) with no corresponding user in our database.</p>
+          <p><a href="https://dashboard.stripe.com/customers/${customer.id}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+        }
+      });
+    }
+
+    return;
+  }
+
+  // if user is banned, cancel their subscriptions
+  if (user.is_banned) {
+    // get all subscriptions for this customer
+    const [activeSubscriptions, trialingSubscriptions] = await Promise.all([
+      stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'active'
+      }),
+      stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'trialing'
+      })
+    ]);
+
+    const subscriptions = [
+      ...activeSubscriptions.data,
+      ...trialingSubscriptions.data
+    ];
+
+    if (subscriptions.length > 0) {
+      await logger.warn(
+        `Found ${subscriptions.length} active/trialing subscription(s) for banned user ${user.email} (${customer.id})`
+      );
+
+      // cancel all subscriptions for banned user
+      await pMapSeries(subscriptions, async (subscription) => {
+        await stripe.subscriptions.cancel(subscription.id);
+        logger.info(
+          `Cancelled subscription ${subscription.id} for banned user ${user.email} (${customer.id})`
+        );
+      });
+
+      // unset the subscription ID from user if it exists
+      if (user[config.userFields.stripeSubscriptionID]) {
+        await Users.findByIdAndUpdate(user._id, {
+          $unset: {
+            [config.userFields.stripeSubscriptionID]: 1
+          }
+        });
+      }
+
+      // send alert email to admins
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `Cancelled subscriptions for banned user: ${user.email}`
+        },
+        locals: {
+          message: `<p>Found and cancelled ${subscriptions.length} subscription(s) for banned user ${user.email} (${customer.id}).</p>
+          <p><a href="https://dashboard.stripe.com/customers/${customer.id}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+        }
+      });
+    }
+
+    return;
+  }
 
   // if emails did not match
   if (user.email !== customer.email) {

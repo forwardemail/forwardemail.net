@@ -508,6 +508,7 @@ async function getDatabase(
     let threadCheck = !instance.server;
     let vacuumCheck = !instance.server;
     let calendarDuplicateCheck = !instance.server;
+    let highestmodseqCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -517,7 +518,8 @@ async function getDatabase(
           `trash_check:${session.user.alias_id}`,
           `thread_check:${session.user.alias_id}`,
           `vacuum_check:${session.user.alias_id}`,
-          `calendar_duplicate_check:${session.user.alias_id}`
+          `calendar_duplicate_check:${session.user.alias_id}`,
+          `highestmodseq_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -525,6 +527,7 @@ async function getDatabase(
         threadCheck = boolean(results[3]);
         vacuumCheck = boolean(results[4]);
         calendarDuplicateCheck = boolean(results[5]);
+        highestmodseqCheck = boolean(results[6]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -852,13 +855,78 @@ async function getDatabase(
       }
     }
 
+    //
+    // Fix HIGHESTMODSEQ (modifyIndex) for mailboxes where messages have higher modseq
+    // This corrects the issue caused by the on-copy.js bug where messages copied from
+    // high-activity mailboxes retained their source modseq instead of getting the target
+    // mailbox's modifyIndex. Only run once per week.
+    //
+    if (!highestmodseqCheck) {
+      try {
+        await instance.client.set(
+          `highestmodseq_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('7d')
+        );
+
+        // Find all mailboxes
+        const mailboxes = await Mailboxes.find(instance, session, {});
+
+        for (const mailbox of mailboxes) {
+          // Find highest modseq in this mailbox
+          const sql = builder.build({
+            type: 'select',
+            table: 'Messages',
+            condition: {
+              mailbox: mailbox._id.toString()
+            },
+            fields: ['modseq'],
+            sort: { modseq: -1 },
+            limit: 1
+          });
+
+          const result = db.prepare(sql.query).get(sql.values);
+
+          if (result && result.modseq > mailbox.modifyIndex) {
+            // Update mailbox modifyIndex to match highest message modseq
+            const updateSql = builder.build({
+              type: 'update',
+              table: 'Mailboxes',
+              condition: {
+                _id: mailbox._id.toString()
+              },
+              modifier: {
+                $set: {
+                  modifyIndex: result.modseq
+                }
+              }
+            });
+
+            db.prepare(updateSql.query).run(updateSql.values);
+
+            logger.info('Fixed HIGHESTMODSEQ for mailbox', {
+              mailbox: mailbox.path,
+              oldModifyIndex: mailbox.modifyIndex,
+              newModifyIndex: result.modseq,
+              difference: result.modseq - mailbox.modifyIndex,
+              session
+            });
+          }
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
       !trashCheck ||
       !threadCheck ||
       !vacuumCheck ||
-      !calendarDuplicateCheck
+      !calendarDuplicateCheck ||
+      !highestmodseqCheck
     ) {
       try {
         //
