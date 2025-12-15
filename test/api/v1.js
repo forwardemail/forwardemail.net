@@ -927,6 +927,9 @@ Test`.trim()
     t.deepEqual(email.accepted.sort(), res.body.envelope.to.sort());
     t.deepEqual(email.rejectedErrors, []);
   }
+
+  // cleanup: close the test smtp server
+  await pify(server.close.bind(server))();
 });
 
 // multipart/form-data
@@ -1420,6 +1423,9 @@ test('smtp outbound spam block detection', async (t) => {
     t.is(email.rejectedErrors[0].recipient, res.body.envelope.to[0]);
     t.true(email.rejectedErrors[0].error === undefined);
   }
+
+  // cleanup: close the test smtp server
+  await pify(server.close.bind(server))();
 
   //
   // wait a second for redis connections to close (?)

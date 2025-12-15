@@ -33,7 +33,7 @@ section.d-flex.py-5.bg-themed.min-vh-100.align-items-center.text-center
               i.fas.fa-check-circle.text-success.mr-3.mt-1.fa-2x
               div
                 h4.font-weight-bold.text-sans-serif= t("Seamless Compatibility & Deliverability")
-                p.lead= t("Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all 2024 email standards for optimal deliverability.")
+                p.lead!= t("Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.", dayjs().format("YYYY"))
 
 // Second Hero Section - Universal Access & Device Compatibility
 section.bg-dark.bg-fixed.lazyload.py-5.text-white(
