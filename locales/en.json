@@ -14789,5 +14789,6 @@
   "Member does not exist.": "Member does not exist.",
   "Mailbox already exists": "Mailbox already exists",
   "Mailbox is reserved and cannot be removed": "Mailbox is reserved and cannot be removed",
-  "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.": "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability."
+  "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.": "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.",
+  "Authentication is required.": "Authentication is required."
 }

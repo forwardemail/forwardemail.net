@@ -91,6 +91,7 @@ const ALIAS_GENERATED_PASSWORD = `
 </div>`.trim();
 
 module.exports = {
+  AUTHENTICATION_REQUIRED: 'Authentication is required.',
   IMAP_OUT_OF_SYNC_TRY_AGAIN:
     'Your client is not in sync with another process or client.',
   DENYLIST_SUBJECT,
