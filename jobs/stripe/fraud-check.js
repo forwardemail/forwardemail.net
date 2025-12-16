@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Stripe = require('stripe');
 const pMap = require('p-map');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');
@@ -12,10 +11,8 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const logger = require('#helpers/logger');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const stripe = require('#helpers/stripe');
 
 async function mapper(customer) {
   // check if user has more than 5 payment methods

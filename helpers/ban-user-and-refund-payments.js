@@ -3,19 +3,16 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 
 const { paypalAgent } = require('./paypal');
 const logger = require('#helpers/logger');
+const stripe = require('#helpers/stripe');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const config = require('#config');
 const { Payments } = require('#models');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 /**
  * Ban a user and refund their payments as fraudulent (following 30-day first-time customer policy)

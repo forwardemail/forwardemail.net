@@ -3,14 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Stripe = require('stripe');
-
 const { paypalAgent } = require('./paypal');
 const logger = require('#helpers/logger');
-const env = require('#config/env');
+const stripe = require('#helpers/stripe');
 const { Payments } = require('#models');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 // this function accepts a payment ID
 // and refunds it appropriately in Stripe or PayPal

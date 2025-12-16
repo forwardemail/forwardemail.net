@@ -6,7 +6,6 @@
 const os = require('node:os');
 
 const { setTimeout } = require('node:timers/promises');
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -16,6 +15,7 @@ const getAllStripeCustomers = require('./get-all-stripe-customers');
 const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
+const stripe = require('#helpers/stripe');
 const config = require('#config');
 const payments = require('#config/payments');
 const i18n = require('#helpers/i18n');
@@ -25,7 +25,6 @@ const emailHelper = require('#helpers/email');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
 const concurrency = os.cpus().length;
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 //
 // this gets all customers in stripe

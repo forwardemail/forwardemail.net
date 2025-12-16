@@ -5,7 +5,6 @@
 
 const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
@@ -22,8 +21,8 @@ const env = require('#config/env');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
+const stripe = require('#helpers/stripe');
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const { STRIPE_PRODUCTS } = config.payments;
 
 async function processEvent(ctx, event) {

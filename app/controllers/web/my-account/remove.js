@@ -4,7 +4,6 @@
  */
 
 const Boom = require('@hapi/boom');
-const Stripe = require('stripe');
 const numeral = require('numeral');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
@@ -12,14 +11,12 @@ const _ = require('#helpers/lodash');
 
 const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 const config = require('#config');
+const stripe = require('#helpers/stripe');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const refundHelper = require('#helpers/refund');
 const { Domains, Aliases } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function remove(ctx) {
   if (ctx.state.user[config.userFields.hasSetPassword]) {

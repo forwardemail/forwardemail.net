@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const dedent = require('dedent');
 const isSANB = require('is-string-and-not-blank');
@@ -15,12 +14,11 @@ const logger = require('./logger');
 const ThresholdError = require('./threshold-error');
 const _ = require('#helpers/lodash');
 const config = require('#config');
-const env = require('#config/env');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
+const stripe = require('#helpers/stripe');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 // if for some reason data doesn't match between a saved
 // payment and the data we are getting from stripe, we do

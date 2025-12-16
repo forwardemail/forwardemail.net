@@ -6,7 +6,6 @@
 const os = require('node:os');
 
 const { setTimeout } = require('node:timers/promises');
-const Stripe = require('stripe');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -15,10 +14,10 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
-const env = require('#config/env');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
+const stripe = require('#helpers/stripe');
 const logger = require('#helpers/logger');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
@@ -26,7 +25,6 @@ const ThresholdError = require('#helpers/threshold-error');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
 const concurrency = os.cpus().length;
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function syncStripePayments() {
   const errorEmails = [];

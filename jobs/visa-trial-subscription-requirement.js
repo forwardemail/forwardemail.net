@@ -14,7 +14,6 @@ require('#config/mongoose');
 
 const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
-const Stripe = require('stripe');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -26,15 +25,14 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments, Domains } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
+const stripe = require('#helpers/stripe');
 
 const { PAYPAL_MAPPING, PAYPAL_PLAN_MAPPING } = config.payments;
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const graceful = new Graceful({
   mongooses: [mongoose],

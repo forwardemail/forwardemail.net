@@ -6,7 +6,6 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const Stripe = require('stripe');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
@@ -18,12 +17,10 @@ const striptags = require('striptags');
 const titleize = require('titleize');
 const _ = require('#helpers/lodash');
 
-const env = require('#config/env');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const { paypalAgent } = require('#helpers/paypal');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const stripe = require('#helpers/stripe');
 
 const { STRIPE_MAPPING, PAYPAL_MAPPING, PAYMENT_DURATIONS } = config.payments;
 

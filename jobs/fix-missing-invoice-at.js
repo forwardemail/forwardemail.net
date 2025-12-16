@@ -13,7 +13,6 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
@@ -22,12 +21,11 @@ const _ = require('#helpers/lodash');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const env = require('#config/env');
 const { Payments } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
+const stripe = require('#helpers/stripe');
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger

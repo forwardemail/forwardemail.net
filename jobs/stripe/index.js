@@ -11,7 +11,6 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Stripe = require('stripe');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
@@ -23,13 +22,12 @@ const checkSubscriptionAccuracy = require('./check-subscription-accuracy');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
-const env = require('#config/env');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Payments } = require('#models');
+const stripe = require('#helpers/stripe');
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const concurrency = os.cpus().length;
 
 const graceful = new Graceful({

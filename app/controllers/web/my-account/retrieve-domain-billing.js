@@ -6,7 +6,6 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const Stripe = require('stripe');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
@@ -20,8 +19,8 @@ const striptags = require('striptags');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const stripe = require('#helpers/stripe');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');
 const { Aliases, Domains, Payments } = require('#models');
@@ -30,8 +29,6 @@ const retryPayPalRequest = require('#helpers/retry-paypal-request');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
   config.payments;
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =

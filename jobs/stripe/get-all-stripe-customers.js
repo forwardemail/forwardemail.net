@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Stripe = require('stripe');
 const _ = require('#helpers/lodash');
 
-const env = require('#config/env');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const stripe = require('#helpers/stripe');
 
 async function getAllStripeCustomers() {
   let customers = [];

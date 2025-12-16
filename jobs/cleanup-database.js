@@ -14,12 +14,10 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
-const env = require('#config/env');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
@@ -27,10 +25,10 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { paypalAgent } = require('#helpers/paypal');
+const stripe = require('#helpers/stripe');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const graceful = new Graceful({
   mongooses: [mongoose],

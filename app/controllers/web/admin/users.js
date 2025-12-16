@@ -5,7 +5,6 @@
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
-const Stripe = require('stripe');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
@@ -17,9 +16,7 @@ const { Domains, Users } = require('#models');
 // const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
-const env = require('#config/env');
-
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const stripe = require('#helpers/stripe');
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 

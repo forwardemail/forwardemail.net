@@ -4,7 +4,6 @@
  */
 
 const Boom = require('@hapi/boom');
-const Stripe = require('stripe');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -21,13 +20,12 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');
-const env = require('#config/env');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
+const stripe = require('#helpers/stripe');
 const { Users } = require('#models');
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const options = { length: 10, type: 'numeric' };
 const store = new SessionChallengeStore();
 
