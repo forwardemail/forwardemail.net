@@ -4,6 +4,8 @@
  */
 
 const pWhilst = require('p-whilst');
+const safeStringify = require('fast-safe-stringify');
+
 const { paypalAgent } = require('./paypal');
 const logger = require('./logger');
 
@@ -31,10 +33,13 @@ async function getAllPayPalSubscriptionTransactions(subscription, agent) {
       if (Array.isArray(res.body.transactions)) {
         transactions.push(...res.body.transactions);
       } else {
-        await logger.error(
-          new Error('PayPal transactions missing from response body'),
-          { url, response: res }
-        );
+        const err = new Error('PayPal transactions missing from response body');
+        err.url = url;
+        err.res = safeStringify(res, null, 2);
+        err.text = res.text;
+        err._body = res.body;
+        err.isCodeBug = true;
+        await logger.error(err, { ignore_hook: false });
       }
 
       if (Number.isFinite(res.body.total_pages) && res.body.total_pages > 0)
