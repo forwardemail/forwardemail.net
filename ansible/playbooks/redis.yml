@@ -267,8 +267,57 @@
           - tcl
           - pkg-config
           - libssl-dev
+          - numactl
         state: present
         update_cache: yes
+
+    # ========================================
+    # NUMA DETECTION AND CONFIGURATION
+    # ========================================
+
+    - name: Check if NUMA is supported
+      shell: numactl --hardware 2>/dev/null | grep -q "available:" && echo "supported" || echo "not_supported"
+      register: numa_check
+      changed_when: false
+      failed_when: false
+
+    - name: Set NUMA support fact
+      set_fact:
+        numa_supported: "{{ numa_check.stdout == 'supported' }}"
+
+    - name: Set numactl prefix for Redis/Valkey
+      set_fact:
+        numactl_prefix: "{{ 'numactl --interleave=all' if numa_supported else '' }}"
+
+    - name: Display NUMA status
+      debug:
+        msg: "NUMA is {{ 'supported - will use numactl' if numa_supported else 'not supported - skipping numactl' }}"
+
+    - name: Stop numad daemon (conflicts with numactl)
+      systemd:
+        name: numad
+        state: stopped
+      failed_when: false
+      when: numa_supported
+
+    - name: Disable numad daemon (conflicts with numactl)
+      systemd:
+        name: numad
+        enabled: no
+      failed_when: false
+      when: numa_supported
+
+    - name: Configure NUMA-related sysctl settings
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        sysctl_file: /etc/sysctl.d/99-redis-numa.conf
+        reload: yes
+      loop:
+        - { name: 'vm.zone_reclaim_mode', value: '0' }
+        - { name: 'kernel.numa_balancing', value: '0' }
+      when: numa_supported
 
     - name: Create valkey user
       user:
@@ -337,7 +386,7 @@
           Type=simple
           User=valkey
           Group=valkey
-          ExecStart=/usr/bin/valkey-server /etc/valkey/valkey.conf
+          ExecStart={{ numactl_prefix }} /usr/bin/valkey-server /etc/valkey/valkey.conf
           ExecStop=/bin/kill -s TERM $MAINPID
           PIDFile=/var/run/valkey/valkey-server.pid
           TimeoutStartSec=90

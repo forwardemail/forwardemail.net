@@ -283,6 +283,7 @@
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
           - mongodb-database-tools
+          - numactl
         state: present
         update_cache: yes
       register: mongodb_install_result
@@ -344,6 +345,7 @@
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
           - mongodb-database-tools
+          - numactl
         state: present
         update_cache: yes
       when:
@@ -518,6 +520,54 @@
       debug:
         msg: "mongorestore is {{ 'available' if mongorestore_check.rc == 0 else 'NOT available' }} at {{ mongorestore_check.stdout if mongorestore_check.rc == 0 else 'not found' }}"
 
+    # ========================================
+    # NUMA DETECTION AND CONFIGURATION
+    # ========================================
+
+    - name: Check if NUMA is supported
+      shell: numactl --hardware 2>/dev/null | grep -q "available:" && echo "supported" || echo "not_supported"
+      register: numa_check
+      changed_when: false
+      failed_when: false
+
+    - name: Set NUMA support fact
+      set_fact:
+        numa_supported: "{{ numa_check.stdout == 'supported' }}"
+
+    - name: Set numactl prefix for MongoDB
+      set_fact:
+        numactl_prefix: "{{ 'numactl --interleave=all' if numa_supported else '' }}"
+
+    - name: Display NUMA status
+      debug:
+        msg: "NUMA is {{ 'supported - will use numactl' if numa_supported else 'not supported - skipping numactl' }}"
+
+    - name: Stop numad daemon (conflicts with numactl)
+      systemd:
+        name: numad
+        state: stopped
+      failed_when: false
+      when: numa_supported
+
+    - name: Disable numad daemon (conflicts with numactl)
+      systemd:
+        name: numad
+        enabled: no
+      failed_when: false
+      when: numa_supported
+
+    - name: Configure NUMA-related sysctl settings
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        sysctl_file: /etc/sysctl.d/99-mongodb-numa.conf
+        reload: yes
+      loop:
+        - { name: 'vm.zone_reclaim_mode', value: '0' }
+        - { name: 'kernel.numa_balancing', value: '0' }
+      when: numa_supported
+
     - name: Ensure mongodb group exists
       group:
         name: mongodb
@@ -575,10 +625,13 @@
           Group=mongodb
           RuntimeDirectory=mongodb
           PIDFile=/var/run/mongodb/mongod.pid
-          ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+          ExecStart={{ numactl_prefix }} /usr/bin/mongod --config /etc/mongod.conf
           ExecStartPre=/usr/bin/mkdir -p /var/run/mongodb
           ExecStartPre=/usr/bin/chown mongodb:mongodb /var/run/mongodb
           ExecStartPre=/usr/bin/chmod 0755 /var/run/mongodb
+          # Disable Transparent Huge Pages (THP) - causes performance issues
+          ExecStartPre=/bin/sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/enabled || true'
+          ExecStartPre=/bin/sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/defrag || true'
           PermissionsStartOnly=true
           LimitFSIZE=infinity
           LimitCPU=infinity
@@ -670,15 +723,15 @@
     # WIREDTIGER CACHE CALCULATION
     # ========================================
 
-    - name: Calculate WiredTiger cache size (50% of RAM - 1GB)
+    - name: Calculate WiredTiger cache size (65% of RAM - 1GB)
       set_fact:
-        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.5) | round(1), 0.25] | max }}"
+        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.65) | round(1), 0.25] | max }}"
 
     - name: Display calculated WiredTiger cache size
       debug:
         msg: |
           System RAM: {{ (total_mem_kb.stdout | int / 1024 / 1024) | round(2) }}GB
-          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (50% of RAM - 1GB)
+          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (65% of RAM - 1GB)
 
     # ========================================
     # BASE CONFIGURATION (NO TLS, NO AUTH)
@@ -698,16 +751,19 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                # Cache size: 65% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
+                # Checkpoint size: 1000MB for better write performance
+                checkpointSizeMB: 1000
               collectionConfig:
                 blockCompressor: snappy
               indexConfig:
                 prefixCompression: true
             journal:
               enabled: true
+              commitIntervalMs: 300
 
           # Where to write logging data
           systemLog:
@@ -720,6 +776,11 @@
             port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
             bindIp: 0.0.0.0
             maxIncomingConnections: 65536
+            # TCP keepalive for better connection management
+            serviceExecutor: adaptive
+            # Connection pool settings
+            connectionPool:
+              maxPoolSize: 500
 
           # Process management
           processManagement:
@@ -922,16 +983,19 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                # Cache size: 65% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
+                # Checkpoint size: 1000MB for better write performance
+                checkpointSizeMB: 1000
               collectionConfig:
                 blockCompressor: snappy
               indexConfig:
                 prefixCompression: true
             journal:
               enabled: true
+              commitIntervalMs: 300
 
           # Where to write logging data
           systemLog:
@@ -944,6 +1008,11 @@
             port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
             bindIp: 0.0.0.0
             maxIncomingConnections: 65536
+            # TCP keepalive for better connection management
+            serviceExecutor: adaptive
+            # Connection pool settings
+            connectionPool:
+              maxPoolSize: 500
             tls:
               mode: requireTLS
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem

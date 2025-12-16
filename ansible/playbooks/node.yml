@@ -55,6 +55,35 @@
         executable: /bin/bash
       when: n_result.stat.exists and node_version_installed and not node_version_installed.failed and node_version_installed.stdout is version(node_version, "ne", version_type="semver")
 
+    # ========================================
+    # NUMA DETECTION AND CONFIGURATION
+    # ========================================
+
+    - name: Install numactl
+      apt:
+        name: numactl
+        state: present
+        update_cache: no
+
+    - name: Check if NUMA is supported
+      shell: numactl --hardware 2>/dev/null | grep -q "available:" && echo "supported" || echo "not_supported"
+      register: numa_check
+      changed_when: false
+      failed_when: false
+
+    - name: Set NUMA support fact
+      set_fact:
+        numa_supported: "{{ numa_check.stdout == 'supported' }}"
+        numa_enabled: "{{ numa_check.stdout == 'supported' }}"
+
+    - name: Set numactl prefix for PM2/Node.js
+      set_fact:
+        numactl_prefix: "{{ 'numactl --interleave=all' if numa_supported else '' }}"
+
+    - name: Display NUMA status for Node.js
+      debug:
+        msg: "NUMA is {{ 'supported - will use numactl for PM2' if numa_supported else 'not supported - skipping numactl' }}"
+
     # install pm2 and pnpm
     - name: Check if pm2 exists
       stat:
@@ -298,6 +327,21 @@
         owner: root
         group: root
         mode: '0644'
+
+    - name: Add NUMA optimization to pm2-deploy service
+      copy:
+        dest: /etc/systemd/system/pm2-deploy.service.d/numa-optimization.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          # Manual changes will be overwritten on next deployment
+          # NUMA optimization for PM2/Node.js processes
+          [Service]
+          ExecStart=
+          ExecStart={{ numactl_prefix }} /home/deploy/n/bin/node /home/deploy/n/bin/pm2 resurrect
+        owner: root
+        group: root
+        mode: '0644'
+      when: numa_enabled | default(false)
 
     - name: Reload systemd daemon for pm2-deploy override
       systemd:
