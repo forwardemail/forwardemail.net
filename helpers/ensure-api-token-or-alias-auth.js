@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 const basicAuth = require('basic-auth');
 
+const i18n = require('#helpers/i18n');
 const policies = require('#helpers/policies');
 const aliasAuth = require('#controllers/api/v1/alias-auth');
 
@@ -24,9 +25,10 @@ async function ensureApiTokenOrAliasAuth(ctx, next) {
   if (!creds || !creds.name) {
     return ctx.throw(
       Boom.unauthorized(
-        ctx.translate
-          ? ctx.translate('AUTHENTICATION_REQUIRED')
-          : 'Authentication required. Use either API token or alias credentials.'
+        i18n.translate(
+          'AUTHENTICATION_REQUIRED',
+          ctx.locale || ctx.request.locale || 'en'
+        )
       )
     );
   }

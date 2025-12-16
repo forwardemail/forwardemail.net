@@ -90,6 +90,7 @@ graceful.listen();
   //
   // we should iterate over all users with stripeSubscriptionID
   // and if the subscription is canceled or cancelled then remove it
+  // or if the user is banned then remove it
   //
   try {
     const subscriptionIds = await Users.distinct(
@@ -103,7 +104,7 @@ graceful.listen();
         const subscription = await stripe.subscriptions.retrieve(id);
         if (!subscription)
           throw new Error(`Stripe subscription does not exist with ID ${id}`);
-        if (['canceled', 'cancelled'].includes(subscription.status))
+        if (['canceled', 'cancelled'].includes(subscription.status)) {
           await Users.findOneAndUpdate(
             {
               [config.userFields.stripeSubscriptionID]: subscription.id
@@ -114,6 +115,26 @@ graceful.listen();
               }
             }
           );
+        } else {
+          const exists = await Users.findOne({
+            [config.userFields.stripeSubscriptionID]: id,
+            is_banned: true
+          });
+          if (exists) {
+            // cancel subscription and delete from user
+            await stripe.subscriptions.del(id);
+            await Users.findOneAndUpdate(
+              {
+                [config.userFields.stripeSubscriptionID]: subscription.id
+              },
+              {
+                $unset: {
+                  [config.userFields.stripeSubscriptionID]: 1
+                }
+              }
+            );
+          }
+        }
         // TODO: if user subscription was past due then email them
       },
       { concurrency }
