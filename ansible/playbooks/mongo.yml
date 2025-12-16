@@ -876,6 +876,7 @@
               mode: requireTLS
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
               CAFile: /etc/mongodb/ssl/ca.pem
+              allowConnectionsWithoutCertificates: true
 
           # Process management
           processManagement:

@@ -1430,6 +1430,7 @@
       fail2ban_findtime: 365d
       # Email notifications for bans
       fail2ban_destemail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
+      fail2ban_sendername: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       fail2ban_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       fail2ban_action: "%(action_mwl)s"  # mail with logs
       fail2ban_mta: sendmail
@@ -1446,5 +1447,7 @@
       unattended_mail: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
       unattended_mail_sender: "{{ lookup('env', 'MSMTP_USERNAME') | default('mailerdaemon@forwardemail.net') }}"
       unattended_mail_report: "on-change"  # Send email only when packages are upgraded or errors occur
-      unattended_automatic_reboot: true
+      # Disable automatic reboots for critical database servers (mongo, redis)
+      # These servers require manual intervention for kernel updates to ensure data integrity
+      unattended_automatic_reboot: "{{ false if ('mongo' in group_names or 'redis' in group_names) else true }}"
       unattended_automatic_reboot_with_users: false
