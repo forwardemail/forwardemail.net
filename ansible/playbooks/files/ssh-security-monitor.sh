@@ -391,34 +391,23 @@ send_activity_summary() {
     fi
 
     local subject="[INFO] SSH Activity Summary - $HOSTNAME ($HOST_IP)"
-    local body="<html><body>
-<h2>📊 SSH Activity Report</h2>
-<p><strong>Server:</strong> $HOSTNAME</p>
-<p><strong>Report Time:</strong> $TIMESTAMP</p>
-<hr>
-<h3>Activity Summary:</h3>
-<table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
-<tr style='background-color: #f2f2f2;'>
-  <th>Metric</th>
-  <th>Count</th>
-</tr>
-<tr>
-  <td>Successful Logins</td>
-  <td>$successful_count</td>
-</tr>
-<tr>
-  <td>Failed Login Attempts</td>
-  <td>$failed_count</td>
-</tr>
-</table>
-<hr>
-<h3>Currently Logged In Users:</h3>
-<pre style='background-color: #f5f5f5; padding: 10px;'>$logged_in_users</pre>
-<hr>
-<h3>Recent Activity Log:</h3>
-<pre style='background-color: #f5f5f5; padding: 10px; overflow-x: auto;'>$(tail -50 "$ACTIVITY_LOG")</pre>
-<p><em>This summary is sent hourly when SSH activity is detected.</em></p>
-</body></html>"
+    local body="SSH Activity Summary
+Timestamp: $TIMESTAMP
+Server: $HOSTNAME ($HOST_IP)
+
+Activity Summary:
+  - Successful Logins: $successful_count
+  - Failed Login Attempts: $failed_count
+
+Currently Logged In Users:
+$logged_in_users
+
+Recent Activity Log:
+$(tail -50 "$ACTIVITY_LOG")
+
+View logs: sudo journalctl -u ssh-security-monitor.service -n 50
+
+Note: This summary is sent hourly when SSH activity is detected."
 
     # Duplicate detection: Check if content is identical to last email
     # Generate hash of the activity counts and logged in users (not the full log)

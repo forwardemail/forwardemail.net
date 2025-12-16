@@ -195,17 +195,17 @@
           
           View logs: sudo journalctl -u {{ service_identifier }}-ufw-whitelist-update.service -n 50"
 
-          # Send email report (always, even if no changes)
+          # Send email report only if changes were made
           if [ "$CHANGES_MADE" = true ]; then
             SUBJECT="[UFW] Whitelist Updated: $SERVICE_NAME (Port $SERVICE_PORT)"
+            
+            /usr/local/bin/send-rate-limited-email.sh \
+              "ufw-whitelist-{{ service_identifier }}" \
+              "$SUBJECT" \
+              "$REPORT"
           else
-            SUBJECT="[UFW] Whitelist Status: $SERVICE_NAME (Port $SERVICE_PORT) - No Changes"
+            echo "[$(date -Iseconds)] No changes detected - skipping email notification"
           fi
-          
-          /usr/local/bin/send-rate-limited-email.sh \
-            "ufw-whitelist-{{ service_identifier }}" \
-            "$SUBJECT" \
-            "$REPORT"
 
           echo "[$(date -Iseconds)] UFW whitelist updated (added: $ADDED_COUNT, removed: $REMOVED_COUNT)"
 

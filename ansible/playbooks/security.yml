@@ -35,6 +35,21 @@
       service:
         name: rsyslog
         state: restarted
+
+    - name: Restart monitoring services
+      systemd:
+        daemon_reload: yes
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - system-resource-monitor.timer
+        - ssh-security-monitor.timer
+        - usb-device-monitor.timer
+        - root-access-monitor.timer
+        - lynis-audit-monitor.timer
+        - package-monitor.timer
+        - open-ports-monitor.timer
+        - ssl-certificate-monitor.timer
   tasks:
     # Ensure netplan is installed and protected from removal
     - name: Ensure netplan is installed
@@ -517,6 +532,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy system resource monitor timer
       template:
@@ -533,6 +549,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy SSH security monitor timer
       template:
@@ -549,6 +566,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy USB device monitor timer
       template:
@@ -587,6 +605,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy root access monitor timer
       template:
@@ -603,6 +622,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy Lynis audit monitor timer
       template:
@@ -619,6 +639,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy package monitor timer
       template:
@@ -635,6 +656,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy open ports monitor timer
       template:
@@ -651,6 +673,7 @@
         owner: root
         group: root
         mode: '0644'
+      notify: Restart monitoring services
 
     - name: Deploy SSL certificate monitor timer
       template:
