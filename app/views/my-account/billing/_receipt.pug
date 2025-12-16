@@ -3,14 +3,12 @@ include ./_payment-method.pug
 if !returnHTML
   .text-center.pb-5
     img.d-inline-block.mr-1(
-      src=manifest(isPDF || ctx.path.endsWith(".pdf") ? "img/apple-touch-icon.png" : "img/logo-square.svg"),
+      src=manifest(isPDF || ctx.path.endsWith(".pdf") ? "img/logo-square-180x180.png" : "img/logo-square.svg"),
       width=50,
       height=50,
       alt=""
     )
-    h1.h2.m-0.align-middle.d-inline-block
-      span.font-weight-bold.text-primary Forward
-      span.font-weight-normal.text-info Email
+    h1.h2.m-0.ml-2.align-middle.d-inline-block.text-sans-serif.font-weight-bold= "Forward Email"
 .text-monospace.table-responsive
   table.table.mb-0
     tbody

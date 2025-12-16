@@ -36,7 +36,7 @@ const isRedisError = require('#helpers/is-redis-error');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const updateStorageUsed = require('#helpers/update-storage-used');
-const removeAliasBackup = require('#helpers/remove-alias-backup');
+const { removeAliasBackup } = require('#helpers/remove-alias-backup');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

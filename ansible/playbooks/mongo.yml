@@ -241,7 +241,7 @@
     # - https://www.mongodb.com/community/forums/t/performance-drop-after-upgrade-6-0-10-7-0-1/246712
     # - https://revisit.tech/blog/mongodb-8-0-performanace-is-36-percent-higher-but-there-is-a-catch/
     # - https://dev.to/manoj_from_revisit_dot_tech/mongodb-80-performance-is-36-higher-nope-its-not--35jk
-    
+
     - name: Remove old MongoDB GPG keys
       file:
         path: "{{ item }}"
@@ -282,6 +282,7 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
+          - mongodb-database-tools
         state: present
         update_cache: yes
       register: mongodb_install_result
@@ -342,6 +343,7 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
+          - mongodb-database-tools
         state: present
         update_cache: yes
       when:
@@ -490,6 +492,31 @@
         - mongodb-org-server
         - mongodb-org-mongos
         - mongodb-org-tools
+        - mongodb-database-tools
+
+    # Fix corrupted mongodb-database-tools package if needed
+    - name: Check mongodb-database-tools package integrity
+      shell: dpkg --verify mongodb-database-tools 2>&1
+      register: db_tools_verify
+      changed_when: false
+      failed_when: false
+
+    - name: Reinstall mongodb-database-tools if corrupted
+      apt:
+        name: mongodb-database-tools
+        state: present
+        force: yes
+      when: db_tools_verify.rc != 0
+
+    - name: Verify mongorestore is available
+      command: which mongorestore
+      register: mongorestore_check
+      changed_when: false
+      failed_when: false
+
+    - name: Display mongorestore status
+      debug:
+        msg: "mongorestore is {{ 'available' if mongorestore_check.rc == 0 else 'NOT available' }} at {{ mongorestore_check.stdout if mongorestore_check.rc == 0 else 'not found' }}"
 
     - name: Ensure mongodb group exists
       group:
@@ -618,9 +645,11 @@
 
     - name: Check if admin user already exists
       shell: |
-        # Try to check if specific user exists (works without auth)
-        # If that fails (auth required), check if we can authenticate (means user exists)
-        /usr/local/bin/mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || echo "0"
+        # Try without TLS first (for base config), then with TLS (for existing secure config)
+        # This ensures accurate user detection regardless of current MongoDB configuration
+        /usr/local/bin/mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || \
+        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || \
+        echo "0"
       register: admin_user_check
       changed_when: false
       failed_when: false
@@ -706,6 +735,25 @@
         group: root
         mode: '0644'
 
+    # Restart MongoDB with base config if it was already running and user doesn't exist
+    # This ensures MongoDB is in "open" mode (no TLS, no auth) for user creation
+    - name: Restart mongod with base config for user creation (if needed)
+      systemd:
+        name: mongod
+        state: restarted
+      when:
+        - mongod_was_running
+        - not admin_user_exists
+
+    - name: Wait for mongod to be ready with base config
+      wait_for:
+        port: "{{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
+        delay: 3
+        timeout: 60
+      when:
+        - mongod_was_running
+        - not admin_user_exists
+
     # Configure MongoDB for TLS/SSL
     - name: Ensure MongoDB TLS/SSL configuration directory exists
       file:
@@ -769,13 +817,21 @@
         - not mongod_was_running
         - not admin_user_exists
 
+    # DEBUG: Check environment variables before user creation
+    - name: DEBUG - Verify MONGO_USER and MONGO_PASS are set
+      debug:
+        msg: |
+          MONGO_USER: '{{ lookup('env', 'MONGO_USER') }}' (length: {{ lookup('env', 'MONGO_USER') | length }})
+          MONGO_PASS: '{{ lookup('env', 'MONGO_PASS') }}' (length: {{ lookup('env', 'MONGO_PASS') | length }})
+          MONGO_PASS first 8 chars: {{ lookup('env', 'MONGO_PASS')[:8] }}...
+      when: not admin_user_exists
+
     - name: Copy MongoDB user creation Python script
       copy:
         src: files/create_mongo_user.py
         dest: /tmp/create_mongo_user.py
         mode: '0700'
       when: not admin_user_exists
-      no_log: true
 
     - name: Create MongoDB user creation script using Python
       shell: |
@@ -785,22 +841,38 @@
       register: script_creation
       when: not admin_user_exists
       failed_when: false
-      no_log: true
+
+    - name: DEBUG - Show Python script output
+      debug:
+        msg: |
+          Python script exit code: {{ script_creation.rc }}
+          Python script stdout: {{ script_creation.stdout }}
+          Python script stderr: {{ script_creation.stderr }}
+      when: not admin_user_exists
 
     - name: Check Python script result
       fail:
-        msg: "Failed to create MongoDB user creation script"
+        msg: "Failed to create MongoDB user creation script: {{ script_creation.stderr }}"
       when:
         - not admin_user_exists
         - script_creation.rc != 0
 
     - name: Create MongoDB admin user
       shell: |
-        /usr/local/bin/mongosh --quiet admin --file /tmp/create_mongo_user.js
+        # Try without TLS first (for base config), then with TLS if that fails
+        /usr/local/bin/mongosh --quiet admin --file /tmp/create_mongo_user.js 2>/dev/null || \
+        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates admin --file /tmp/create_mongo_user.js
       register: create_user_result
       when: not admin_user_exists
       failed_when: false
-      no_log: true
+
+    - name: DEBUG - Show user creation output
+      debug:
+        msg: |
+          User creation exit code: {{ create_user_result.rc }}
+          User creation stdout: {{ create_user_result.stdout }}
+          User creation stderr: {{ create_user_result.stderr }}
+      when: not admin_user_exists
 
     - name: Remove temporary MongoDB scripts
       file:

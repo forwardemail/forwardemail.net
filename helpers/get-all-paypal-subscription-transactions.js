@@ -32,7 +32,12 @@ async function getAllPayPalSubscriptionTransactions(subscription, agent) {
       currentPage++;
       if (Array.isArray(res.body.transactions)) {
         transactions.push(...res.body.transactions);
+      } else if (res.body && Object.keys(res.body).length === 0) {
+        // Empty response {} means no transactions in the time range - this is valid
+        // PayPal API returns empty object instead of {transactions: []} when there are no transactions
+        // Do nothing, just continue
       } else {
+        // Unexpected response format (not an array and not empty object)
         const err = new Error('PayPal transactions missing from response body');
         err.url = url;
         err.res = safeStringify(res, null, 2);

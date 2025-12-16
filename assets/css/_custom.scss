@@ -43,21 +43,21 @@ body.app {
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
-  &[aria-expanded*="false"] {
+  &[aria-expanded*='false'] {
     -webkit-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -ms-transform: rotate(0deg);
     transform: rotate(0deg);
   }
-  &[aria-expanded*="true"] {
+  &[aria-expanded*='true'] {
     -webkit-transform: rotate(-180deg);
     -moz-transform: rotate(-180deg);
     -o-transform: rotate(-180deg);
     -ms-transform: rotate(-180deg);
     transform: rotate(-180deg);
     i.fas.fa-bars:before {
-      content: "\f00d"
+      content: '\f00d';
     }
   }
 }
@@ -65,11 +65,13 @@ body.app {
 @include media-breakpoint-up(sm) {
   .navbar-small {
     .navbar-collapse {
-      a.btn, button.btn {
+      a.btn,
+      button.btn {
         font-size: 0.8rem !important;
       }
       &.show {
-        a.btn, button.btn {
+        a.btn,
+        button.btn {
           font-size: 1rem !important;
         }
       }
@@ -78,7 +80,9 @@ body.app {
 }
 
 @media (prefers-color-scheme: light) {
-  .text-themed a, a.text-themed, a.text-themed.btn-link {
+  .text-themed a,
+  a.text-themed,
+  a.text-themed.btn-link {
     color: inherit;
     &:hover {
       color: inherit;
@@ -87,7 +91,8 @@ body.app {
   .btn-link.text-themed {
     color: inherit;
   }
-  mark, .mark {
+  mark,
+  .mark {
     margin: 0 -0.4em;
     padding: 0.1em 0.4em;
     border-radius: 0.8em 0.3em;
@@ -106,7 +111,9 @@ body.app {
 // <https://github.com/forwardemail/forwardemail.net/issues/141>
 // <https://stackoverflow.com/q/58931615>
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     animation-delay: -1s !important;
     animation-duration: 1s !important;
     animation-iteration-count: 1 !important;
@@ -117,12 +124,23 @@ body.app {
 }
 
 .dropdown-toggle::after {
-  vertical-align:middle !important;
+  vertical-align: middle !important;
 }
 
 .modal-header {
   font-family: $headings-font-family;
-  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6 {
     margin-bottom: 0 !important;
   }
 }
@@ -130,7 +148,7 @@ body.app {
 @media (prefers-color-scheme: light) {
   @include media-breakpoint-up(md) {
     .bg-fixed {
-      background-color: #E6FAFF;
+      background-color: #e6faff;
     }
   }
 }
@@ -162,13 +180,14 @@ html {
     .no-js {
       display: none !important;
     }
-    img.lazyload, span.lazyload {
+    img.lazyload,
+    span.lazyload {
       display: none !important;
     }
   }
 
-
-  &.no-js, &.bot-detected {
+  &.no-js,
+  &.bot-detected {
     // hide css for js that bots don't use
     // (since we only support lazyload for bots)
     .dropdown-toggle:after {
@@ -186,8 +205,8 @@ pre {
   white-space: pre-wrap !important;
 }
 
-
-.btn.focus, .btn:focus {
+.btn.focus,
+.btn:focus {
   box-shadow: none !important;
 }
 
@@ -247,7 +266,8 @@ pre {
   @include font-size($font-size-base);
 }
 
-a, .markdown-body a {
+a,
+.markdown-body a {
   color: $link-color;
   text-decoration: $link-decoration;
   background-color: transparent; // Remove the gray background on active links in IE 10.
@@ -258,7 +278,8 @@ a, .markdown-body a {
   }
 }
 
-.lazyframe[data-vendor=youtube], .lazyframe[data-vendor=youtube_nocookie] {
+.lazyframe[data-vendor='youtube'],
+.lazyframe[data-vendor='youtube_nocookie'] {
   background-color: #000000;
 }
 
@@ -311,7 +332,7 @@ a, .markdown-body a {
 }
 
 .ubuntu-font {
-  font-family: "Ubuntu", sans-serif !important;
+  font-family: 'Ubuntu', sans-serif !important;
   font-weight: 400;
   font-style: normal;
 }
@@ -320,9 +341,19 @@ a, .markdown-body a {
   animation: bounce-animation 2s ease infinite;
 }
 @keyframes bounce-animation {
-	0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-	40% {transform: translateY(-20px);}
-	60% {transform: translateY(-10px);}
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
 }
 
 #modal-reply-to-email-list {
@@ -341,4 +372,78 @@ a, .markdown-body a {
 
 .scalar-app .darklight-reference .text-sidebar-c-2 {
   display: none !important;
+}
+
+/* Force light mode for print (receipts, PDFs, etc.) */
+@media print {
+  :root {
+    color-scheme: light only;
+  }
+
+  body,
+  html {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Force light mode for all text elements */
+  * {
+    background-color: transparent !important;
+    color: #000 !important;
+  }
+
+  /* Preserve specific colors for branding */
+  .text-primary {
+    color: #007bff !important;
+  }
+
+  .text-info {
+    color: #17a2b8 !important;
+  }
+
+  .text-success {
+    color: #28a745 !important;
+  }
+
+  .text-danger {
+    color: #dc3545 !important;
+  }
+
+  .text-warning {
+    color: #ffc107 !important;
+  }
+
+  /* Links should be dark for print */
+  a,
+  a.text-themed,
+  .text-themed a,
+  a.text-decoration-none {
+    color: #000 !important;
+  }
+
+  /* Tables */
+  table {
+    border-color: #dee2e6 !important;
+  }
+
+  th,
+  td {
+    border-color: #dee2e6 !important;
+    color: #000 !important;
+  }
+
+  /* Remove dark backgrounds */
+  .bg-dark,
+  .bg-secondary {
+    background-color: #fff !important;
+  }
+
+  /* Ensure proper contrast for borders */
+  .border,
+  .border-top,
+  .border-bottom,
+  .border-left,
+  .border-right {
+    border-color: #dee2e6 !important;
+  }
 }
