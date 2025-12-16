@@ -282,7 +282,6 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
-          - mongodb-mongosh
         state: present
         update_cache: yes
       register: mongodb_install_result
@@ -343,7 +342,6 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
-          - mongodb-mongosh
         state: present
         update_cache: yes
       when:
@@ -375,6 +373,113 @@
       debug:
         msg: "MongoDB packages successfully installed and verified (mongod binary exists)"
 
+    # ========================================
+    # MONGOSH INSTALLATION (TARBALL METHOD)
+    # ========================================
+    # mongodb-mongosh package doesn't exist in MongoDB 6.0 repository
+    # Install mongosh separately from tarball
+
+    - name: Check if mongosh is already installed
+      stat:
+        path: /usr/local/bin/mongosh
+      register: mongosh_binary
+
+    - name: Download mongosh tarball
+      get_url:
+        url: https://downloads.mongodb.com/compass/mongosh-2.5.10-linux-x64.tgz
+        dest: /tmp/mongosh.tgz
+        mode: '0644'
+      when: not mongosh_binary.stat.exists
+
+    - name: Extract mongosh tarball
+      unarchive:
+        src: /tmp/mongosh.tgz
+        dest: /tmp/
+        remote_src: yes
+      when: not mongosh_binary.stat.exists
+
+    - name: Install mongosh binary
+      copy:
+        src: /tmp/mongosh-2.5.10-linux-x64/bin/mongosh
+        dest: /usr/local/bin/mongosh
+        mode: '0755'
+        remote_src: yes
+      when: not mongosh_binary.stat.exists
+
+    - name: Install mongosh crypto library
+      copy:
+        src: /tmp/mongosh-2.5.10-linux-x64/bin/mongosh_crypt_v1.so
+        dest: /usr/local/lib/mongosh_crypt_v1.so
+        mode: '0644'
+        remote_src: yes
+      when: not mongosh_binary.stat.exists
+
+    - name: Clean up mongosh installation files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/mongosh.tgz
+        - /tmp/mongosh-2.5.10-linux-x64
+      when: not mongosh_binary.stat.exists
+
+    - name: Verify mongosh installation
+      command: /usr/local/bin/mongosh --version
+      register: mongosh_version
+      changed_when: false
+
+    - name: Display mongosh version
+      debug:
+        msg: "mongosh successfully installed: {{ mongosh_version.stdout }}"
+
+    # Disable mongosh telemetry for all users
+    - name: Disable mongosh telemetry for root user
+      file:
+        path: /root/.mongodb/mongosh
+        state: directory
+        mode: '0755'
+
+    - name: Create mongosh config for root to disable telemetry
+      copy:
+        dest: /root/.mongodb/mongosh/config
+        content: |
+          enableTelemetry: false
+        mode: '0644'
+
+    - name: Disable mongosh telemetry for deploy user
+      file:
+        path: /home/deploy/.mongodb/mongosh
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0755'
+
+    - name: Create mongosh config for deploy to disable telemetry
+      copy:
+        dest: /home/deploy/.mongodb/mongosh/config
+        content: |
+          enableTelemetry: false
+        owner: deploy
+        group: deploy
+        mode: '0644'
+
+    - name: Disable mongosh telemetry for devops user
+      file:
+        path: /home/devops/.mongodb/mongosh
+        state: directory
+        owner: devops
+        group: devops
+        mode: '0755'
+
+    - name: Create mongosh config for devops to disable telemetry
+      copy:
+        dest: /home/devops/.mongodb/mongosh/config
+        content: |
+          enableTelemetry: false
+        owner: devops
+        group: devops
+        mode: '0644'
+
     - name: Hold MongoDB packages to prevent accidental upgrades
       dpkg_selections:
         name: "{{ item }}"
@@ -385,7 +490,6 @@
         - mongodb-org-server
         - mongodb-org-mongos
         - mongodb-org-tools
-        - mongodb-mongosh
 
     - name: Ensure mongodb group exists
       group:
@@ -516,7 +620,7 @@
       shell: |
         # Try to check if specific user exists (works without auth)
         # If that fails (auth required), check if we can authenticate (means user exists)
-        mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || echo "0"
+        /usr/local/bin/mongosh --quiet --eval "try { var u = db.getUser('{{ lookup('env', 'MONGO_USER') }}'); print(u !== null ? '1' : '0'); } catch(e) { print('0'); }" admin 2>/dev/null || echo "0"
       register: admin_user_check
       changed_when: false
       failed_when: false
@@ -692,7 +796,7 @@
 
     - name: Create MongoDB admin user
       shell: |
-        mongosh --quiet admin --file /tmp/create_mongo_user.js
+        /usr/local/bin/mongosh --quiet admin --file /tmp/create_mongo_user.js
       register: create_user_result
       when: not admin_user_exists
       failed_when: false
@@ -810,7 +914,7 @@
     - name: Verify MongoDB authentication is enabled
       shell: |
         # Try to run a command without authentication - should fail
-        if mongosh --quiet --tls --tlsCAFile /etc/mongodb/ssl/ca.pem --host localhost:{{ lookup('env', 'MONGO_PORT') | default('27017', true) }} --eval "db.adminCommand('listDatabases')" admin 2>&1 | grep -q "Authentication failed"; then
+        if /usr/local/bin/mongosh --quiet --tls --tlsCAFile /etc/mongodb/ssl/ca.pem --host localhost:{{ lookup('env', 'MONGO_PORT') | default('27017', true) }} --eval "db.adminCommand('listDatabases')" admin 2>&1 | grep -q "Authentication failed"; then
           echo "Authentication is properly enabled"
           exit 0
         else
@@ -1180,7 +1284,7 @@
         ║    sudo systemctl status mongod                                       ║
         ║                                                                        ║
         ║  To connect to MongoDB:                                               ║
-        ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
+        ║    /usr/local/bin/mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
         ║            --host localhost:27017 \                                   ║
         ║            -u $MONGO_USER -p $MONGO_PASS --authenticationDatabase admin║
         ║                                                                        ║
