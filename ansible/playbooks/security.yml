@@ -773,12 +773,13 @@
         group: root
         mode: '0644'
 
-    - name: Deploy enhanced bash command logging to bash.bashrc (all interactive bash)
+    - name: Deploy enhanced bash command logging to bash.bashrc (all bash shells)
       blockinfile:
         path: /etc/bash.bashrc
         marker: "# {mark} ANSIBLE MANAGED BLOCK - Command Logging"
+        insertbefore: '^\[ -z "\$PS1" \] && return'
         block: |
-          # Source bash command logging for all interactive shells
+          # Source bash command logging for ALL shells (interactive and non-interactive)
           if [ -f /etc/profile.d/bash-logging.sh ]; then
               source /etc/profile.d/bash-logging.sh
           fi
