@@ -314,6 +314,71 @@ const Emails = new mongoose.Schema(
       }
     ],
     //
+    // successful deliveries with transport information
+    // (stores MX records, response codes, and other delivery metadata)
+    //
+    deliveries: [
+      {
+        // recipient email address
+        recipient: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          validate: (v) => isEmail(v)
+        },
+        // date of successful delivery
+        date: {
+          type: Date
+        },
+        // SMTP response from receiving server
+        response: String,
+        // SMTP response code (e.g. 250)
+        responseCode: Number,
+        // MX record information
+        mx: {
+          // MX hostname
+          host: String,
+          // MX priority
+          priority: Number,
+          // resolved IP address
+          ip: String,
+          // port used for connection
+          port: Number
+        },
+        // TLS information
+        tls: {
+          // whether TLS was used
+          enabled: Boolean,
+          // TLS version (e.g. 'TLSv1.3')
+          version: String,
+          // cipher suite used
+          cipher: String
+        },
+        // whether message was encrypted with PGP
+        pgp: Boolean,
+        // whether DKIM was signed
+        dkim: Boolean,
+        // truth source for MX lookup (e.g. 'dns', 'mta-sts')
+        truthSource: String,
+        // whether TLS was required
+        requireTLS: Boolean,
+        // whether TLS was ignored
+        ignoreTLS: Boolean,
+        // whether opportunistic TLS was used
+        opportunisticTLS: Boolean,
+        // delivery duration in milliseconds
+        duration: Number
+      }
+    ],
+    //
+    // NOTE: rejectedErrors now enhanced to include additional transport properties:
+    // - mx: { host, priority, ip, port }
+    // - tls: { enabled, version, cipher }
+    // - truthSource: string
+    // - requireTLS: boolean
+    // - ignoreTLS: boolean
+    // - opportunisticTLS: boolean
+    //
     // an array of errors with `err.recipient` as the email address rejected
     // (we only store the most recent `rejectedError` per recipient)
     //

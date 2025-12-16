@@ -1704,6 +1704,7 @@ test('lists emails', async (t) => {
     t.deepEqual(
       _.sortBy(Object.keys(res.body)),
       _.sortBy([
+        'deliveries',
         'rejectedErrors',
         'accepted',
         'alias',
@@ -1745,6 +1746,7 @@ test('lists emails', async (t) => {
     t.deepEqual(
       _.sortBy(Object.keys(res.body)),
       _.sortBy([
+        'deliveries',
         'rejectedErrors',
         'accepted',
         'alias',

@@ -28,6 +28,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
@@ -280,7 +281,7 @@ class SQLite {
           .call(this, data, ws)
           .then()
           .catch((err) => {
-            err.isCodeBug = true;
+            err.isCodeBug = isCodeBug(err);
             this.logger.fatal(err);
           });
       });

@@ -1128,6 +1128,48 @@ async function processEmail({ email, port = 25, resolver, client }) {
       if (Array.isArray(info.accepted) && info.accepted.length > 0) {
         for (const a of info.accepted) {
           accepted.add(a);
+
+          // store delivery information with transport metadata
+          if (!Array.isArray(email.deliveries)) email.deliveries = [];
+
+          // extract delivery information from info and session
+          const delivery = {
+            recipient: a,
+            date: new Date(),
+            response: info.response,
+            responseCode: info.responseCode || 250,
+            pgp: info.pgp || false,
+            dkim: true // always signed by sendEmail
+          };
+
+          // add MX information from session if available
+          if (info.session?.mx) {
+            delivery.mx = {
+              host: info.session.mx.host,
+              priority: info.session.mx.priority,
+              ip: info.session.mx.ip,
+              port: info.session.mx.port
+            };
+          }
+
+          // add TLS information from session if available
+          if (info.session?.tls) {
+            delivery.tls = {
+              enabled: true,
+              version: info.session.tls.version,
+              cipher: info.session.tls.cipher
+            };
+          }
+
+          // add truth source and TLS policy information
+          if (info.session) {
+            delivery.truthSource = info.session.truthSource;
+            delivery.requireTLS = info.session.requireTLS;
+            delivery.ignoreTLS = info.session.ignoreTLS;
+            delivery.opportunisticTLS = info.session.opportunisticTLS;
+          }
+
+          email.deliveries.push(delivery);
         }
       }
 
@@ -1172,7 +1214,39 @@ async function processEmail({ email, port = 25, resolver, client }) {
       for (const err of rejectedErrors) {
         if (!isEmail(err.recipient))
           throw new Error('Recipient not assigned to error');
-        email.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
+
+        // enhance error with transport information from session
+        const enhancedError = err instanceof Error ? parseErr(err) : err;
+
+        // add MX information if available
+        if (err.mx) {
+          enhancedError.mx = {
+            host: err.mx.host,
+            priority: err.mx.priority,
+            ip: err.mx.ip,
+            port: err.port
+          };
+        }
+
+        // add TLS information if available
+        if (err.tls) {
+          enhancedError.tls = {
+            enabled: Boolean(err.tls),
+            version: err.tls.version,
+            cipher: err.tls.cipher
+          };
+        }
+
+        // add truth source and TLS policy information
+        if (err.truthSource) enhancedError.truthSource = err.truthSource;
+        if (typeof err.requireTLS === 'boolean')
+          enhancedError.requireTLS = err.requireTLS;
+        if (typeof err.ignoreTLS === 'boolean')
+          enhancedError.ignoreTLS = err.ignoreTLS;
+        if (typeof err.opportunisticTLS === 'boolean')
+          enhancedError.opportunisticTLS = err.opportunisticTLS;
+
+        email.rejectedErrors.push(enhancedError);
         /*
         // TODO: re-enable this after checking bounceInfo and more
         if (

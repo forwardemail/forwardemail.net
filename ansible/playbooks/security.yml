@@ -986,6 +986,71 @@
           - mongodb-mongosh
         update_cache: true
 
+    # Disable mongosh telemetry globally for all users
+    - name: Create mongosh config directory for root
+      file:
+        path: /root/.mongodb/mongosh
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Disable mongosh telemetry for root
+      copy:
+        dest: /root/.mongodb/mongosh/config
+        content: |
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create mongosh config directory for deploy user
+      file:
+        path: /home/deploy/.mongodb/mongosh
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0755'
+      ignore_errors: true
+
+    - name: Disable mongosh telemetry for deploy user
+      copy:
+        dest: /home/deploy/.mongodb/mongosh/config
+        content: |
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
+        owner: deploy
+        group: deploy
+        mode: '0644'
+      ignore_errors: true
+
+    - name: Create mongosh config directory for devops user
+      file:
+        path: /home/devops/.mongodb/mongosh
+        state: directory
+        owner: devops
+        group: devops
+        mode: '0755'
+      ignore_errors: true
+
+    - name: Disable mongosh telemetry for devops user
+      copy:
+        dest: /home/devops/.mongodb/mongosh/config
+        content: |
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
+        owner: devops
+        group: devops
+        mode: '0644'
+      ignore_errors: true
+
 - hosts: all
   name: Sysctl
   become: true

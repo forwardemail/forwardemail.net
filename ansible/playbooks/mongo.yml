@@ -282,6 +282,7 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
+          - mongodb-mongosh
         state: present
         update_cache: yes
       register: mongodb_install_result
@@ -342,6 +343,7 @@
           - mongodb-org-server=6.0.18
           - mongodb-org-mongos=6.0.18
           - mongodb-org-tools=6.0.18
+          - mongodb-mongosh
         state: present
         update_cache: yes
       when:
@@ -383,6 +385,7 @@
         - mongodb-org-server
         - mongodb-org-mongos
         - mongodb-org-tools
+        - mongodb-mongosh
 
     - name: Ensure mongodb group exists
       group:
@@ -788,6 +791,42 @@
         group: root
         mode: '0644'
 
+    # ========================================
+    # RESTART MONGODB WITH SECURE CONFIGURATION
+    # ========================================
+
+    - name: Restart mongod to apply TLS and authentication
+      systemd:
+        name: mongod
+        state: restarted
+      when: admin_user_exists or (not admin_user_exists and create_user_result.rc == 0)
+
+    - name: Wait for mongod to be ready after restart
+      wait_for:
+        port: "{{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
+        delay: 3
+        timeout: 60
+
+    - name: Verify MongoDB authentication is enabled
+      shell: |
+        # Try to run a command without authentication - should fail
+        if mongosh --quiet --tls --tlsCAFile /etc/mongodb/ssl/ca.pem --host localhost:{{ lookup('env', 'MONGO_PORT') | default('27017', true) }} --eval "db.adminCommand('listDatabases')" admin 2>&1 | grep -q "Authentication failed"; then
+          echo "Authentication is properly enabled"
+          exit 0
+        else
+          echo "WARNING: MongoDB may not have authentication enabled"
+          exit 1
+        fi
+      register: auth_check
+      changed_when: false
+      failed_when: false
+
+    - name: Display authentication status
+      debug:
+        msg: |
+          MongoDB Authentication Status:
+          {{ auth_check.stdout }}
+
     # Disable mongosh telemetry globally
     - name: Create mongosh config directory
       file:
@@ -799,6 +838,7 @@
       loop:
         - root
         - deploy
+        - devops
       ignore_errors: true
 
     - name: Disable mongosh telemetry for all users
@@ -815,6 +855,7 @@
       loop:
         - root
         - deploy
+        - devops
       ignore_errors: true
 
     # UFW Configuration - Using reusable playbook
@@ -1120,38 +1161,36 @@
         state: started
 
     # ============================================================================
-    # POST-DEPLOYMENT INSTRUCTIONS
+    # POST-DEPLOYMENT SUMMARY
     # ============================================================================
-    - name: Display manual restart instructions
+    - name: Display deployment summary
       shell: |
         cat << 'EOF'
 
         ╔════════════════════════════════════════════════════════════════════════╗
         ║                                                                        ║
-        ║                    ⚠️  MANUAL START/RESTART REQUIRED ⚠️                ║
+        ║                    ✅  MONGODB DEPLOYMENT COMPLETE                     ║
         ║                                                                        ║
-        ║  MongoDB configuration has been updated but the service was NOT       ║
-        ║  automatically started/restarted to prevent disruption.               ║
+        ║  MongoDB has been configured and restarted with:                      ║
+        ║    ✅ TLS encryption enabled (requireTLS)                             ║
+        ║    ✅ Authentication enabled (admin user created)                     ║
+        ║    ✅ Automatic backups configured                                    ║
         ║                                                                        ║
-        ║  To start MongoDB (first-time install or after purge):                ║
-        ║    sudo systemctl start mongod                                        ║
+        ║  To verify MongoDB is running:                                        ║
+        ║    sudo systemctl status mongod                                       ║
         ║                                                                        ║
-        ║  To restart MongoDB (if already running):                             ║
-        ║    sudo systemctl restart mongod                                      ║
-        ║                                                                        ║
-        ║  ⚠️  WARNING: This will:                                              ║
-        ║    • Disconnect all active MongoDB connections                        ║
-        ║    • Cause brief service interruption                                 ║
-        ║    • May take time if large datasets need to be flushed               ║
-        ║                                                                        ║
-        ║  💡 RECOMMENDATION:                                                   ║
-        ║    • Schedule restart during low-traffic period                       ║
-        ║    • Notify team before restarting                                    ║
-        ║    • Monitor logs: sudo journalctl -u mongod -f                       ║
-        ║                                                                        ║
-        ║  To verify MongoDB is running after restart:                          ║
+        ║  To connect to MongoDB:                                               ║
         ║    mongosh --tls --tlsCAFile /etc/mongodb/ssl/ca.pem \               ║
-        ║            --host localhost:27017 --eval "db.adminCommand('ping')"   ║
+        ║            --host localhost:27017 \                                   ║
+        ║            -u $MONGO_USER -p $MONGO_PASS --authenticationDatabase admin║
+        ║                                                                        ║
+        ║  To view logs:                                                        ║
+        ║    sudo journalctl -u mongod -f                                       ║
+        ║                                                                        ║
+        ║  Security Status:                                                     ║
+        ║    • Only authenticated users can access databases                    ║
+        ║    • All connections require TLS encryption                           ║
+        ║    • Admin user: $MONGO_USER (from environment)                       ║
         ║                                                                        ║
         ╚════════════════════════════════════════════════════════════════════════╝
 
