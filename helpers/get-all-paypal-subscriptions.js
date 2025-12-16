@@ -4,6 +4,7 @@
  */
 
 const logger = require('./logger');
+const { paypalAgent } = require('./paypal');
 
 /**
  * Get all PayPal subscriptions with pagination
@@ -17,6 +18,11 @@ const logger = require('./logger');
  * @returns {Promise<Array>} Array of all subscriptions
  */
 async function getAllPayPalSubscriptions(agent, options = {}) {
+  // Create agent if not provided (defensive programming)
+  if (!agent) {
+    agent = await paypalAgent();
+  }
+
   const subscriptions = [];
   let page = 1;
   const pageSize = options.pageSize || 20; // Use max page size for efficiency

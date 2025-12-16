@@ -201,6 +201,12 @@ async function update(ctx) {
       mailboxId
     );
 
+    if (!mailbox) {
+      throw Boom.notFound(
+        i18n.translateError('IMAP_MAILBOX_DOES_NOT_EXIST', ctx.locale)
+      );
+    }
+
     ctx.body = json(mailbox);
   } catch (_err) {
     // since we use multiArgs from pify

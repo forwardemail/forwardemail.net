@@ -21,11 +21,12 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const isFQDN = require('is-fqdn');
 const mongoose = require('mongoose');
-// const ms = require('ms');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const pEvent = require('p-event');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
+const { boolean } = require('boolean');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
@@ -46,7 +47,7 @@ const graceful = new Graceful({
   logger
 });
 
-// const SEVEN_DAYS_TO_MS = ms('7d');
+const THIRTY_DAYS_TO_MS = ms('30d');
 
 graceful.listen();
 
@@ -55,6 +56,21 @@ const DOMAIN_BATCH_SIZE = 1000; // Tune this based on your needs
 const ALIAS_BATCH_SIZE = 5000; // Larger batch for aliases as they're simpler
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
+
+// Statistics tracking
+const stats = {
+  domainsProcessed: 0,
+  domainsSkippedAllAdminsBanned: 0,
+  aliasesProcessed: 0,
+  aliasesSkippedBannedUser: 0,
+  entriesBeforeDenylistCheck: 0,
+  entriesFilteredDenylisted: 0,
+  entriesFilteredHardcoded: 0,
+  entriesAddedToAllowlist: 0,
+  denylistRemovals: 0,
+  backscatterRemovals: 0,
+  silentRemovals: 0
+};
 
 // Helper function for retrying operations
 async function retryOperation(
@@ -81,10 +97,75 @@ async function retryOperation(
   throw lastError;
 }
 
+// Helper function to check if value is denylisted (without throwing)
+async function checkDenylisted(value) {
+  try {
+    // Check hard-coded denylist first
+    if (config.denylist.has(value)) {
+      return { denylisted: true, reason: 'hardcoded' };
+    }
+
+    // If email, check domain and root domain
+    if (isEmail(value)) {
+      const domain = parseHostFromDomainOrAddress(value);
+      if (config.denylist.has(domain)) {
+        return { denylisted: true, reason: 'hardcoded' };
+      }
+
+      const root = parseRootDomain(domain);
+      if (domain !== root && config.denylist.has(root)) {
+        return { denylisted: true, reason: 'hardcoded' };
+      }
+    }
+
+    // If FQDN, check root domain
+    if (isFQDN(value)) {
+      if (config.denylist.has(value)) {
+        return { denylisted: true, reason: 'hardcoded' };
+      }
+
+      const root = parseRootDomain(value);
+      if (value !== root && config.denylist.has(root)) {
+        return { denylisted: true, reason: 'hardcoded' };
+      }
+
+      // Check test domains
+      if (config.testDomains.some((s) => value.endsWith(`.${s}`))) {
+        return { denylisted: true, reason: 'hardcoded' };
+      }
+    }
+
+    // Check Redis denylist
+    const denylisted = await client.get(`denylist:${value}`);
+    if (boolean(denylisted)) {
+      return { denylisted: true, reason: 'redis' };
+    }
+
+    // Check root domain in Redis if different
+    if (isEmail(value) || isFQDN(value)) {
+      const root = parseRootDomain(
+        isFQDN(value) ? value : parseHostFromDomainOrAddress(value)
+      );
+
+      if (root !== value) {
+        const rootDenylisted = await client.get(`denylist:${root}`);
+        if (boolean(rootDenylisted)) {
+          return { denylisted: true, reason: 'redis' };
+        }
+      }
+    }
+
+    return { denylisted: false };
+  } catch (err) {
+    logger.error(`Error checking denylist for ${value}:`, err);
+    // On error, assume not denylisted to avoid blocking legitimate entries
+    return { denylisted: false };
+  }
+}
+
 // Optimized function to process domains with pagination
-async function processDomainsBatch(bannedUserIdsSet, set) {
+async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
   let lastId = null;
-  let totalProcessed = 0;
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -107,15 +188,16 @@ async function processDomainsBatch(bannedUserIdsSet, set) {
     });
 
     if (domains.length === 0) {
-      logger.info(`Completed processing ${totalProcessed} domains`);
+      logger.info(`Completed processing ${stats.domainsProcessed} domains`);
       break;
     }
 
     lastId = domains[domains.length - 1]._id;
-    totalProcessed += domains.length;
 
     logger.info(
-      `Processing domain batch: ${domains.length} domains (total: ${totalProcessed})`
+      `Processing domain batch: ${domains.length} domains (total: ${
+        stats.domainsProcessed + domains.length
+      })`
     );
 
     // Process the batch in parallel with controlled concurrency
@@ -124,27 +206,85 @@ async function processDomainsBatch(bannedUserIdsSet, set) {
         try {
           logger.debug('processing %s', domain.name);
 
-          // filter out domains where all users are banned
+          // Check if all admins are banned
+          const adminMembers = domain.members?.filter(
+            (m) => m.group === 'admin'
+          );
+
           if (
-            !domain.members ||
-            !Array.isArray(domain.members) ||
-            domain.members.every((m) => bannedUserIdsSet.has(m.user.toString()))
+            !adminMembers ||
+            adminMembers.every((m) => bannedUserIdsSet.has(m.user.toString()))
           ) {
-            logger.info('all domain users were banned %s', domain.name);
+            logger.info(
+              'all domain admins are banned, skipping domain %s',
+              domain.name
+            );
+            stats.domainsSkippedAllAdminsBanned++;
             return;
           }
 
-          set.add(punycode.toASCII(domain.name));
-          {
-            // parse root domain
-            const rootDomain = parseRootDomain(domain.name);
-            if (domain.name !== rootDomain) {
-              set.add(punycode.toASCII(rootDomain));
+          stats.domainsProcessed++;
+
+          const domainName = punycode.toASCII(domain.name);
+
+          // Check if domain is denylisted
+          const denylistCheck = await checkDenylisted(domainName);
+          if (denylistCheck.denylisted) {
+            logger.debug(
+              'domain %s is denylisted (%s), skipping',
+              domainName,
+              denylistCheck.reason
+            );
+            denylistedEntries.push({
+              value: domainName,
+              type: 'domain',
+              reason: denylistCheck.reason
+            });
+            if (denylistCheck.reason === 'hardcoded') {
+              stats.entriesFilteredHardcoded++;
+            } else {
+              stats.entriesFilteredDenylisted++;
+            }
+
+            return;
+          }
+
+          set.add(domainName);
+
+          // Parse root domain
+          const rootDomain = parseRootDomain(domain.name);
+          if (domain.name !== rootDomain) {
+            const rootDomainAscii = punycode.toASCII(rootDomain);
+            const rootDenylistCheck = await checkDenylisted(rootDomainAscii);
+            // eslint-disable-next-line no-negated-condition
+            if (!rootDenylistCheck.denylisted) {
+              set.add(rootDomainAscii);
+            } else {
+              logger.debug(
+                'root domain %s is denylisted (%s), skipping',
+                rootDomainAscii,
+                rootDenylistCheck.reason
+              );
+              denylistedEntries.push({
+                value: rootDomainAscii,
+                type: 'root_domain',
+                reason: rootDenylistCheck.reason
+              });
+              if (rootDenylistCheck.reason === 'hardcoded') {
+                stats.entriesFilteredHardcoded++;
+              } else {
+                stats.entriesFilteredDenylisted++;
+              }
             }
           }
 
           // Process aliases for this domain with pagination
-          await processAliasesBatch(domain, bannedUserIdsSet, set);
+          await processAliasesBatch(
+            domain,
+            bannedUserIdsSet,
+            set,
+            denylistedEntries
+          );
         } catch (err) {
           logger.error(`Error processing domain ${domain.name}:`, err);
           // Continue processing other domains even if one fails
@@ -155,9 +295,13 @@ async function processDomainsBatch(bannedUserIdsSet, set) {
 }
 
 // Optimized function to process aliases with pagination
-async function processAliasesBatch(domain, bannedUserIdsSet, set) {
+async function processAliasesBatch(
+  domain,
+  bannedUserIdsSet,
+  set,
+  denylistedEntries
+) {
   let lastId = null;
-  let totalProcessed = 0;
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -176,29 +320,42 @@ async function processAliasesBatch(domain, bannedUserIdsSet, set) {
     const aliases = await retryOperation(async () => {
       // eslint-disable-next-line unicorn/no-array-callback-reference
       return Aliases.find(query)
-        .select('name recipients _id')
+        .select('name recipients _id user')
         .sort({ _id: 1 }) // Ensures consistent ordering for pagination
         .limit(ALIAS_BATCH_SIZE)
         .lean();
     });
 
     if (aliases.length === 0) {
-      if (totalProcessed > 0) {
-        logger.debug(
-          `Completed processing ${totalProcessed} aliases for domain ${domain.name}`
-        );
-      }
-
       break;
     }
 
     lastId = aliases[aliases.length - 1]._id;
-    totalProcessed += aliases.length;
+
+    // Track aliases processed and skipped
+    const aliasesBeforeFilter = aliases.length;
+    const validAliases = aliases.filter((alias) => {
+      if (bannedUserIdsSet.has(alias.user.toString())) {
+        stats.aliasesSkippedBannedUser++;
+        return false;
+      }
+
+      return true;
+    });
+
+    stats.aliasesProcessed += validAliases.length;
+
+    logger.debug(
+      'processing %d aliases for domain %s (%d skipped banned users)',
+      validAliases.length,
+      domain.name,
+      aliasesBeforeFilter - validAliases.length
+    );
 
     // Process aliases in smaller chunks to avoid overwhelming the system
     const chunkSize = 1000;
-    for (let i = 0; i < aliases.length; i += chunkSize) {
-      const chunk = aliases.slice(i, i + chunkSize);
+    for (let i = 0; i < validAliases.length; i += chunkSize) {
+      const chunk = validAliases.slice(i, i + chunkSize);
 
       await Promise.all(
         chunk.map(async (alias) => {
@@ -210,42 +367,144 @@ async function processAliasesBatch(domain, bannedUserIdsSet, set) {
               alias.recipients.length
             );
 
-            // add alias.name @ domain.name
-            /*
-            if (
-              !alias.name.startsWith('/') &&
-              isEmail(`${alias.name}@${domain.name}`) &&
-              alias.name !== '*'
-            ) {
-              set.add(`${alias.name}@${domain.name}`);
-            }
-            */
-
             for (const recipient of alias.recipients) {
               if (isFQDN(recipient)) {
-                const domain = recipient.toLowerCase();
-                set.add(punycode.toASCII(domain));
-                // parse root domain
-                const rootDomain = parseRootDomain(domain);
-                if (domain !== rootDomain) {
-                  set.add(punycode.toASCII(domain));
+                const recipientDomain = recipient.toLowerCase();
+                const recipientDomainAscii = punycode.toASCII(recipientDomain);
+
+                const denylistCheck = await checkDenylisted(
+                  recipientDomainAscii
+                );
+                if (denylistCheck.denylisted) {
+                  logger.debug(
+                    'recipient domain %s is denylisted (%s), skipping',
+                    recipientDomainAscii,
+                    denylistCheck.reason
+                  );
+                  denylistedEntries.push({
+                    value: recipientDomainAscii,
+                    type: 'recipient_domain',
+                    reason: denylistCheck.reason
+                  });
+                  if (denylistCheck.reason === 'hardcoded') {
+                    stats.entriesFilteredHardcoded++;
+                  } else {
+                    stats.entriesFilteredDenylisted++;
+                  }
+
+                  continue;
+                }
+
+                set.add(recipientDomainAscii);
+
+                // Parse root domain
+                const rootDomain = parseRootDomain(recipientDomain);
+                if (recipientDomain !== rootDomain) {
+                  const rootDomainAscii = punycode.toASCII(rootDomain);
+                  const rootDenylistCheck = await checkDenylisted(
+                    rootDomainAscii
+                  );
+                  // eslint-disable-next-line no-negated-condition
+                  if (!rootDenylistCheck.denylisted) {
+                    set.add(rootDomainAscii);
+                  } else {
+                    logger.debug(
+                      'recipient root domain %s is denylisted (%s), skipping',
+                      rootDomainAscii,
+                      rootDenylistCheck.reason
+                    );
+                    denylistedEntries.push({
+                      value: rootDomainAscii,
+                      type: 'recipient_root_domain',
+                      reason: rootDenylistCheck.reason
+                    });
+                    if (rootDenylistCheck.reason === 'hardcoded') {
+                      stats.entriesFilteredHardcoded++;
+                    } else {
+                      stats.entriesFilteredDenylisted++;
+                    }
+                  }
                 }
               } else if (isEmail(recipient)) {
-                // parse domain
-                // const [userPortion, domain] = recipient.split('@');
-                const [, domain] = recipient.split('@');
-                // parse root domain
-                set.add(punycode.toASCII(domain));
-                // if (alias.name.startsWith('/') && !/\$\d/.test(userPortion))
-                //   set.add(recipient); // already lowercased (see alias model)
-                // else set.add(recipient); // already lowercased (see alias model)
-                // parse root domain
-                const rootDomain = parseRootDomain(domain);
-                if (domain !== rootDomain) {
-                  set.add(punycode.toASCII(domain));
+                // Parse domain
+                const [, recipientDomain] = recipient.split('@');
+                const recipientDomainAscii = punycode.toASCII(recipientDomain);
+
+                const denylistCheck = await checkDenylisted(
+                  recipientDomainAscii
+                );
+                if (denylistCheck.denylisted) {
+                  logger.debug(
+                    'recipient email domain %s is denylisted (%s), skipping',
+                    recipientDomainAscii,
+                    denylistCheck.reason
+                  );
+                  denylistedEntries.push({
+                    value: recipientDomainAscii,
+                    type: 'recipient_email_domain',
+                    reason: denylistCheck.reason
+                  });
+                  if (denylistCheck.reason === 'hardcoded') {
+                    stats.entriesFilteredHardcoded++;
+                  } else {
+                    stats.entriesFilteredDenylisted++;
+                  }
+
+                  continue;
+                }
+
+                set.add(recipientDomainAscii);
+
+                // Parse root domain
+                const rootDomain = parseRootDomain(recipientDomain);
+                if (recipientDomain !== rootDomain) {
+                  const rootDomainAscii = punycode.toASCII(rootDomain);
+                  const rootDenylistCheck = await checkDenylisted(
+                    rootDomainAscii
+                  );
+                  // eslint-disable-next-line no-negated-condition
+                  if (!rootDenylistCheck.denylisted) {
+                    set.add(rootDomainAscii);
+                  } else {
+                    logger.debug(
+                      'recipient email root domain %s is denylisted (%s), skipping',
+                      rootDomainAscii,
+                      rootDenylistCheck.reason
+                    );
+                    denylistedEntries.push({
+                      value: rootDomainAscii,
+                      type: 'recipient_email_root_domain',
+                      reason: rootDenylistCheck.reason
+                    });
+                    if (rootDenylistCheck.reason === 'hardcoded') {
+                      stats.entriesFilteredHardcoded++;
+                    } else {
+                      stats.entriesFilteredDenylisted++;
+                    }
+                  }
                 }
               } else if (isIP(recipient)) {
-                set.add(recipient);
+                const ipDenylistCheck = await checkDenylisted(recipient);
+                // eslint-disable-next-line no-negated-condition
+                if (!ipDenylistCheck.denylisted) {
+                  set.add(recipient);
+                } else {
+                  logger.debug(
+                    'recipient IP %s is denylisted (%s), skipping',
+                    recipient,
+                    ipDenylistCheck.reason
+                  );
+                  denylistedEntries.push({
+                    value: recipient,
+                    type: 'recipient_ip',
+                    reason: ipDenylistCheck.reason
+                  });
+                  if (ipDenylistCheck.reason === 'hardcoded') {
+                    stats.entriesFilteredHardcoded++;
+                  } else {
+                    stats.entriesFilteredDenylisted++;
+                  }
+                }
               }
               // TODO: we don't ban webhooks currently
             }
@@ -319,69 +578,157 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
 
   try {
     const bannedUserIdsSet = await Users.getBannedUserIdSet(client);
+    logger.info(`Found ${bannedUserIdsSet.size} banned users`);
 
     const set = new Set();
+    const denylistedEntries = [];
 
     // Process domains with optimized pagination
-    await processDomainsBatch(bannedUserIdsSet, set);
+    await processDomainsBatch(bannedUserIdsSet, set, denylistedEntries);
+
+    stats.entriesBeforeDenylistCheck = set.size + denylistedEntries.length;
+    stats.entriesAddedToAllowlist = set.size;
 
     logger.info(`Total unique entries in allowlist: ${set.size}`);
+    logger.info(
+      `Total denylisted entries filtered: ${denylistedEntries.length}`
+    );
 
     const p = client.pipeline();
 
-    /*
+    // Set allowlist entries in Redis with 30-day expiration
     for (const key of set) {
-      p.set(`allowlist:${key}`, true, 'PX', SEVEN_DAYS_TO_MS);
+      p.set(`allowlist:${key}`, 'true', 'PX', THIRTY_DAYS_TO_MS);
     }
-    */
 
     // Process Redis streams with error handling
     const denylistSet = new Set();
     await processRedisStream(client, 'denylist:*', set, denylistSet, p);
+    stats.denylistRemovals = denylistSet.size;
 
     const silentSet = new Set();
     await processRedisStream(client, 'silent:*', set, silentSet, p);
+    stats.silentRemovals = silentSet.size;
 
     const backscatterSet = new Set();
     await processRedisStream(client, 'backscatter:*', set, backscatterSet, p);
+    stats.backscatterRemovals = backscatterSet.size;
 
     await retryOperation(async () => {
       await p.exec();
     });
 
-    const csvContent = ['prefix,value']; // header row
+    // Create CSV with all removals
+    const removalsCsvContent = ['prefix,value']; // header row
 
     for (const key of denylistSet) {
-      csvContent.push(`denylist,${key}`);
+      removalsCsvContent.push(`denylist,${key}`);
     }
 
     for (const key of backscatterSet) {
-      csvContent.push(`backscatter,${key}`);
+      removalsCsvContent.push(`backscatter,${key}`);
     }
 
     for (const key of silentSet) {
-      csvContent.push(`silent,${key}`);
+      removalsCsvContent.push(`silent,${key}`);
     }
+
+    // Create full allowlist CSV
+    const allowlistCsvContent = ['domain_or_email']; // header row
+    for (const key of set) {
+      allowlistCsvContent.push(key);
+    }
+
+    // Create denylisted entries CSV
+    const denylistedCsvContent = ['value,type,reason']; // header row
+    for (const entry of denylistedEntries) {
+      denylistedCsvContent.push(`${entry.value},${entry.type},${entry.reason}`);
+    }
+
+    // Calculate statistics
+    const totalRemovals =
+      stats.denylistRemovals + stats.backscatterRemovals + stats.silentRemovals;
 
     await emailHelper({
       template: 'alert',
       message: {
         to: config.alertsEmail,
-        subject: 'Sync paid users report',
+        subject: `Sync Paid Alias Allowlist Report - ${stats.entriesAddedToAllowlist.toLocaleString()} entries added, ${
+          stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
+        } filtered`,
         attachments: [
           {
-            filename: 'report.csv',
-            content: csvContent.join('\n')
+            filename: 'allowlist-full.csv',
+            content: allowlistCsvContent.join('\n')
+          },
+          {
+            filename: 'removals.csv',
+            content: removalsCsvContent.join('\n')
+          },
+          {
+            filename: 'denylisted-filtered.csv',
+            content: denylistedCsvContent.join('\n')
           }
         ]
       },
       locals: {
         message: `
-<ul>
-  <li><strong>Denylist Removals</strong>: ${denylistSet.size}</li>
-  <li><strong>Backscatter Removals</strong>: ${backscatterSet.size}</li>
-  <li><strong>Silent Removals</strong>: ${silentSet.size}</li>
-</ul>
+<div style="font-family: sans-serif;">
+  <h2>Sync Paid Alias Allowlist - Job Completed Successfully</h2>
+
+  <h3>Processing Statistics</h3>
+  <ul>
+    <li><strong>Domains Processed</strong>: ${stats.domainsProcessed.toLocaleString()}</li>
+    <li><strong>Domains Skipped (All Admins Banned)</strong>: ${stats.domainsSkippedAllAdminsBanned.toLocaleString()}</li>
+    <li><strong>Aliases Processed</strong>: ${stats.aliasesProcessed.toLocaleString()}</li>
+    <li><strong>Aliases Skipped (Banned Users)</strong>: ${stats.aliasesSkippedBannedUser.toLocaleString()}</li>
+    <li><strong>Banned Users in System</strong>: ${bannedUserIdsSet.size.toLocaleString()}</li>
+  </ul>
+
+  <h3>Allowlist Entries Added</h3>
+  <ul>
+    <li><strong>Total Allowlist Entries</strong>: ${stats.entriesAddedToAllowlist.toLocaleString()}</li>
+    <li><strong>TTL (Time to Live)</strong>: 30 days</li>
+    <li><strong>Redis Key Pattern</strong>: <code>allowlist:*</code></li>
+  </ul>
+
+  <h3>Denylisted Entries Filtered (Not Added to Allowlist)</h3>
+  <ul>
+    <li><strong>Filtered by Hardcoded Denylist</strong>: ${stats.entriesFilteredHardcoded.toLocaleString()}</li>
+    <li><strong>Filtered by Redis Denylist</strong>: ${stats.entriesFilteredDenylisted.toLocaleString()}</li>
+    <li><strong>Total Filtered</strong>: ${(
+      stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
+    ).toLocaleString()}</li>
+  </ul>
+
+  <h3>Removals from Blocklists</h3>
+  <ul>
+    <li><strong>Denylist Removals</strong>: ${stats.denylistRemovals.toLocaleString()}</li>
+    <li><strong>Backscatter Removals</strong>: ${stats.backscatterRemovals.toLocaleString()}</li>
+    <li><strong>Silent Removals</strong>: ${stats.silentRemovals.toLocaleString()}</li>
+    <li><strong>Total Removals</strong>: ${totalRemovals.toLocaleString()}</li>
+  </ul>
+
+  <h3>Summary</h3>
+  <p>This job processes all paid domains (enhanced_protection and team plans) with verified TXT records, along with their aliases and recipients. Domains and emails from paid users are added to the allowlist to prevent false positives in spam filtering.</p>
+
+  <p><strong>Key Features:</strong></p>
+  <ul>
+    <li>Excludes aliases from banned users</li>
+    <li>Excludes domains where all admins are banned</li>
+    <li>Filters out any denylisted entries before adding to allowlist</li>
+    <li>Removes paid user entries from denylist, backscatter, and silent lists</li>
+  </ul>
+
+  <p><strong>Attachments:</strong></p>
+  <ul>
+    <li><code>allowlist-full.csv</code> - All ${stats.entriesAddedToAllowlist.toLocaleString()} allowlist entries added to Redis</li>
+    <li><code>removals.csv</code> - All entries removed from denylist, backscatter, and silent lists (${totalRemovals.toLocaleString()} entries)</li>
+    <li><code>denylisted-filtered.csv</code> - Entries that were filtered out due to being denylisted (${(
+      stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
+    ).toLocaleString()} entries)</li>
+  </ul>
+</div>
         `.trim()
       }
     });
