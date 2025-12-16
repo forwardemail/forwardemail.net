@@ -119,7 +119,7 @@ let jobs = [
   },
   {
     name: 'cleanup-denylist',
-    interval: '30m',
+    interval: '1h',
     timeout: 0
   },
   {
