@@ -105,9 +105,9 @@ parse_lynis_report() {
 
     # Extract key metrics
     local hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' || echo "0")
-    local tests_performed=$(grep "^tests_performed=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' || echo "0")
-    local warnings=$(grep -c "^warning\[\]=" "$LYNIS_REPORT" || echo "0")
-    local suggestions=$(grep -c "^suggestion\[\]=" "$LYNIS_REPORT" || echo "0")
+    local tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" | cut -d'=' -f2 | tr '|' '\n' | wc -l || echo "0")
+    local warnings=$(grep "^warning\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
+    local suggestions=$(grep "^suggestion\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
 
     # Ensure hardening_index is a valid number
     if ! [[ "$hardening_index" =~ ^[0-9]+$ ]]; then
@@ -181,10 +181,20 @@ send_audit_report() {
         severity="INFO"
     fi
 
+    # Extract additional system information from report
+    local os_fullname=$(grep "^os_fullname=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "Unknown")
+    local kernel_version=$(grep "^os_kernel_version_full=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "Unknown")
+    local uptime_days=$(grep "^uptime_in_days=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
+    local firewall_active=$(grep "^firewall_active=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
+    local lynis_tests_done=$(grep "^lynis_tests_done=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
+
     local subject="[${severity}] Lynis Security Audit - $HOSTNAME ($HOST_IP)"
     local body="<html><body>
 <h2 style='color: $color;'>🔒 Lynis System Security Audit</h2>
-<p><strong>Server:</strong> $HOSTNAME</p>
+<p><strong>Server:</strong> $HOSTNAME ($HOST_IP)</p>
+<p><strong>OS:</strong> $os_fullname</p>
+<p><strong>Kernel:</strong> $kernel_version</p>
+<p><strong>Uptime:</strong> $uptime_days days</p>
 <p><strong>Audit Time:</strong> $TIMESTAMP</p>
 <hr>
 <h3>Security Score:</h3>
@@ -208,6 +218,14 @@ send_audit_report() {
 <tr>
   <td>Suggestions</td>
   <td>$suggestions</td>
+</tr>
+<tr>
+  <td>Tests Completed</td>
+  <td>$lynis_tests_done</td>
+</tr>
+<tr>
+  <td>Firewall Active</td>
+  <td style='color: $([ "$firewall_active" -eq 1 ] && echo "#5cb85c" || echo "#d9534f");'>$([ "$firewall_active" -eq 1 ] && echo "Yes" || echo "No")</td>
 </tr>
 </table>
 <hr>
