@@ -678,6 +678,26 @@
         state: started
         enabled: yes
 
+    # Configure logrotate for Redis/Valkey logs
+    - name: Create logrotate configuration for Redis/Valkey
+      copy:
+        dest: /etc/logrotate.d/valkey
+        mode: '0644'
+        content: |
+          /var/log/valkey/*.log {
+              daily
+              rotate 30
+              compress
+              delaycompress
+              missingok
+              notifempty
+              create 0640 valkey valkey
+              sharedscripts
+              postrotate
+                  /bin/systemctl reload valkey-server > /dev/null 2>&1 || true
+              endscript
+          }
+
     # UFW Configuration - Using reusable playbook
     # See ufw-allowlist.yml for implementation details
 
