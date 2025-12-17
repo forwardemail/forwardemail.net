@@ -15,6 +15,9 @@ const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { Domains, Emails, Aliases } = require('#models');
 
+// Cap count at 10,000 like list-logs to improve performance
+const MAX_COUNT_LIMIT = 10_000;
+
 async function listEmails(ctx, next) {
   // user must be domain admin or alias owner of the email
   const [domains, aliases, count] = await Promise.all([
@@ -37,6 +40,20 @@ async function listEmails(ctx, next) {
   ctx.state.dailySMTPMessages = count;
 
   // TODO: status filter
+
+  // Ensure user has at least one alias or domain to prevent empty queries
+  if (aliases.length === 0 && domains.length === 0) {
+    ctx.state.emails = [];
+    ctx.state.itemCount = 0;
+    ctx.state.pageCount = 0;
+    ctx.state.pages = [];
+    setPaginationHeaders(ctx, 0, ctx.query.page, 0, 0);
+    if (ctx.api) return next();
+    if (ctx.accepts('html')) return ctx.render('my-account/emails');
+    const table = await ctx.render('my-account/emails/_table');
+    ctx.body = { table };
+    return;
+  }
 
   let query = {
     $or: [
@@ -104,6 +121,7 @@ async function listEmails(ctx, next) {
     if (!domain.has_smtp)
       throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
 
+    // Filter by domain AND user's aliases/domains (for proper access control)
     query = {
       $and: [
         {
@@ -116,227 +134,149 @@ async function listEmails(ctx, next) {
     };
   }
 
-  // advanced search filtering (either aggregate or find)
+  // For search queries: fetch emails and do comprehensive search in memory
   if (isSANB(ctx.query.q)) {
-    const $regex = _.escapeRegExp(ctx.query.q.trim());
+    const searchQuery = ctx.query.q.trim();
+    const searchRegex = new RegExp(_.escapeRegExp(searchQuery), 'i');
 
-    if (!query.$and) {
-      query = {
-        $and: [
-          {
-            ...query
-          }
-        ]
-      };
+    // Use the full query (includes $or or $and with proper access control)
+    const searchQueryObj = query;
+
+    // Validate searchQueryObj is not empty
+    if (!searchQueryObj || Object.keys(searchQueryObj).length === 0) {
+      throw Boom.badRequest('Invalid search query');
     }
 
-    // <https://stackoverflow.com/a/71999502>
-    const arr = [
-      {
-        $addFields: {
-          headers: {
-            $objectToArray: '$headers'
-          }
-        }
-      },
-      {
-        $match: {
-          $and: [
-            ...query.$and,
-            {
-              $or: [
-                {
-                  'headers.k': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'headers.v': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'envelope.from': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'envelope.to': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  messageId: {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  subject: {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'rejectedErrors.response': {
-                    $regex,
-                    $options: 'i'
-                  }
-                },
-                {
-                  'rejectedErrors.message': {
-                    $regex,
-                    $options: 'i'
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      },
-      {
-        $addFields: {
-          headers: {
-            $arrayToObject: '$headers'
-          }
-        }
-      }
-    ];
-
-    let $sort = { created_at: ctx.api ? 1 : -1 };
+    // Determine sort field
+    let sortField = ctx.api ? 'created_at' : '-created_at';
     if (isSANB(ctx.query.sort)) {
-      const order = ctx.query.sort.startsWith('-') ? -1 : 1;
-      $sort = {
-        [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
-      };
+      sortField = ctx.query.sort;
     }
 
-    // OPTIMIZATION: Use $facet to combine count + data queries
-    const results = await Emails.aggregate([
-      ...arr,
-      {
-        $facet: {
-          metadata: [{ $count: 'total' }],
-          data: [
-            {
-              $project: {
-                _id: 1,
-                id: 1,
-                object: 1,
-                created_at: 1,
-                updated_at: 1,
-                alias: 1,
-                domain: 1,
-                user: 1,
-                status: 1,
-                envelope: 1,
-                messageId: 1,
-                date: 1,
-                subject: 1,
-                hard_bounces: 1,
-                soft_bounces: 1,
-                is_bounce: 1,
-                is_locked: 1,
-                is_redacted: 1,
-                // omit the following fields if API
-                // - message
-                // - headers
-                // - accepted
-                // - rejectedErrors
-                ...(ctx.api
-                  ? {}
-                  : {
-                      headers: 1,
-                      accepted: 1,
-                      rejectedErrors: 1
-                    })
-              }
-            },
-            {
-              $sort
-            },
-            {
-              $skip: ctx.paginate.skip
-            },
-            {
-              $limit: Number.parseInt(ctx.query.limit, 10)
-            }
-          ]
+    // Fetch up to MAX_COUNT_LIMIT emails matching user's aliases/domains
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    const allEmails = await Emails.find(searchQueryObj)
+      .limit(MAX_COUNT_LIMIT)
+      .sort(sortField)
+      .select('-message')
+      .lean()
+      .maxTimeMS(30_000)
+      .exec();
+
+    // Filter in memory with comprehensive search
+    // (permission already checked by the query above)
+    const filteredEmails = allEmails.filter((email) => {
+      // Comprehensive search across all fields (like original)
+      // Check headers
+      if (email.headers && typeof email.headers === 'object') {
+        for (const [key, value] of Object.entries(email.headers)) {
+          if (
+            searchRegex.test(key) ||
+            (typeof value === 'string' && searchRegex.test(value))
+          ) {
+            return true;
+          }
         }
       }
-    ]);
 
-    ctx.state.emails = results[0].data || [];
-    ctx.state.itemCount =
-      results[0].metadata && results[0].metadata.length > 0
-        ? results[0].metadata[0].total
-        : 0;
+      // Check envelope.from and envelope.to
+      if (email.envelope) {
+        if (email.envelope.from && searchRegex.test(email.envelope.from))
+          return true;
+        if (
+          email.envelope.to &&
+          (Array.isArray(email.envelope.to)
+            ? email.envelope.to.some((to) => searchRegex.test(to))
+            : searchRegex.test(email.envelope.to))
+        )
+          return true;
+      }
+
+      // Check messageId
+      if (email.messageId && searchRegex.test(email.messageId)) return true;
+
+      // Check subject
+      if (email.subject && searchRegex.test(email.subject)) return true;
+
+      // Check rejectedErrors
+      if (email.rejectedErrors && Array.isArray(email.rejectedErrors)) {
+        for (const error of email.rejectedErrors) {
+          if (error.response && searchRegex.test(error.response)) return true;
+          if (error.message && searchRegex.test(error.message)) return true;
+        }
+      }
+
+      return false;
+    });
+
+    //
+    // TODO: optimize this in future by instead of redirecting it renders an alert
+    // (would need to modify @ladjs/assets to support swal in body of table ajax)
+    //
+    // Show warning if we hit the limit
+    if (
+      !ctx.api &&
+      allEmails.length >= MAX_COUNT_LIMIT &&
+      !ctx.accepts('html')
+    ) {
+      ctx.flash(
+        'warning',
+        `Search results limited to ${MAX_COUNT_LIMIT.toLocaleString()} emails. For comprehensive search, please use the <a href="${ctx.state.l(
+          '/email-api#tag/logs/get/v1/logs/download'
+        )}" target="_blank" rel="noopener noreferrer">Logs Email API</a>.`
+      );
+      ctx.body = {
+        redirectTo: ctx.href
+      };
+      return;
+    }
+
+    // Remove headers/accepted/rejectedErrors for API responses
+    if (ctx.api) {
+      for (const email of filteredEmails) {
+        delete email.headers;
+        delete email.accepted;
+        delete email.rejectedErrors;
+      }
+    }
+
+    // Paginate the filtered results
+    const startIndex = ctx.paginate.skip;
+    const endIndex = startIndex + ctx.query.limit;
+    const paginatedEmails = filteredEmails.slice(startIndex, endIndex);
+
+    ctx.state.emails = paginatedEmails;
+    ctx.state.itemCount = filteredEmails.length;
   } else {
-    // OPTIMIZATION: Use $facet to combine count + data queries
-    let $sort = { created_at: ctx.api ? 1 : -1 };
+    // No search: use the fast .find() approach
+    let sortField = ctx.api ? 'created_at' : '-created_at';
     if (isSANB(ctx.query.sort)) {
-      const order = ctx.query.sort.startsWith('-') ? -1 : 1;
-      $sort = {
-        [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
-      };
+      sortField = ctx.query.sort;
     }
 
-    const results = await Emails.aggregate([
-      {
-        $match: query
-      },
-      {
-        $facet: {
-          metadata: [{ $count: 'total' }],
-          data: [
-            {
-              $project: {
-                _id: 1,
-                id: 1,
-                object: 1,
-                created_at: 1,
-                updated_at: 1,
-                alias: 1,
-                domain: 1,
-                user: 1,
-                status: 1,
-                envelope: 1,
-                messageId: 1,
-                date: 1,
-                subject: 1,
-                headers: 1,
-                accepted: 1,
-                rejectedErrors: 1,
-                hard_bounces: 1,
-                soft_bounces: 1,
-                is_bounce: 1,
-                is_locked: 1,
-                is_redacted: 1
-              }
-            },
-            {
-              $sort
-            },
-            {
-              $skip: ctx.paginate.skip
-            },
-            {
-              $limit: Number.parseInt(ctx.query.limit, 10)
-            }
-          ]
-        }
-      }
+    const [emails, itemCount] = await Promise.all([
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      Emails.find(query)
+        .limit(ctx.query.limit)
+        .skip(ctx.paginate.skip)
+        .sort(sortField)
+        .select(
+          ctx.api ? '-message -headers -accepted -rejectedErrors' : '-message'
+        )
+        .lean()
+        .maxTimeMS(30_000)
+        .exec(),
+      // Capped count with query filter (fast)
+      Emails.aggregate(
+        [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
+        { maxTimeMS: 30_000 }
+      )
+        .exec()
+        .then((result) => result[0]?.total || 0)
     ]);
 
-    ctx.state.emails = results[0].data || [];
-    ctx.state.itemCount =
-      results[0].metadata && results[0].metadata.length > 0
-        ? results[0].metadata[0].total
-        : 0;
+    ctx.state.emails = emails;
+    ctx.state.itemCount = itemCount;
   }
 
   ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
