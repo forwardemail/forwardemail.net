@@ -1243,9 +1243,9 @@
 
           # Calculate dates
           THIRTY_DAYS_AGO=$(date -d "30 days ago" +%s)
-          SEVEN_DAYS_AGO=$(date -d "7 days ago" +%s)
+          TWO_DAYS_AGO=$(date -d "2 days ago" +%s)
 
-          echo "Retention policy: Keep all backups < 7 days, one per day for 8-30 days, delete > 30 days"
+          echo "Retention policy: Keep hourly for days 1-2, one per day for days 3-30, delete > 30 days"
           echo "Checking bucket: s3://${BACKUP_BUCKET}/mongo/"
 
           # List all backups and process
@@ -1299,8 +1299,8 @@
                 ERRORS=$((ERRORS + 1))
               fi
 
-            # For backups 8-30 days old, keep only one per day
-            elif [ "$FILE_TIMESTAMP" -lt "$SEVEN_DAYS_AGO" ]; then
+            # For backups 3-30 days old, keep only one per day
+            elif [ "$FILE_TIMESTAMP" -lt "$TWO_DAYS_AGO" ]; then
               # Extract date from ISO 8601 timestamp in filename (YYYY-MM-DD)
               BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
 
@@ -1329,7 +1329,7 @@
                 KEPT_RECENT=$((KEPT_RECENT + 1))
               fi
             else
-              # Recent backup (< 7 days), keep it
+              # Recent backup (< 2 days), keep all hourly backups
               KEPT_RECENT=$((KEPT_RECENT + 1))
             fi
           done
@@ -1342,7 +1342,7 @@
           echo "=== MongoDB Backup Cleanup Summary ==="
           echo "Deleted (>30 days): ${DELETED_OLD}"
           echo "Deleted (daily consolidation): ${DELETED_DAILY}"
-          echo "Kept (recent <7 days): ${KEPT_RECENT}"
+          echo "Kept (recent <2 days, hourly): ${KEPT_RECENT}"
           echo "Errors: ${ERRORS}"
           echo "Completed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
