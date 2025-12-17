@@ -1382,7 +1382,7 @@
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 
-    # Create systemd timer for MongoDB backup (every 6 hours)
+    # Create systemd timer for MongoDB backup (hourly)
     - name: Create MongoDB backup systemd timer
       copy:
         dest: /etc/systemd/system/mongodb-backup.timer
@@ -1390,11 +1390,11 @@
           # WARNING: This file is managed by Ansible
           # Manual changes will be overwritten on next deployment
           [Unit]
-          Description=MongoDB Backup Every 6 Hours
+          Description=MongoDB Backup Hourly
 
           [Timer]
           OnBootSec=15min
-          OnUnitActiveSec=6h
+          OnUnitActiveSec=1h
 
           [Install]
           WantedBy=timers.target
