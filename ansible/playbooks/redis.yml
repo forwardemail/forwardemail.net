@@ -386,6 +386,9 @@
           Type=simple
           User=valkey
           Group=valkey
+          # Disable Transparent Huge Pages (THP) - causes performance issues
+          ExecStartPre=/bin/sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/enabled || true'
+          ExecStartPre=/bin/sh -c 'echo never > /sys/kernel/mm/transparent_hugepage/defrag || true'
           ExecStart={{ numactl_prefix }} /usr/bin/valkey-server /etc/valkey/valkey.conf
           ExecStop=/bin/kill -s TERM $MAINPID
           PIDFile=/var/run/valkey/valkey-server.pid

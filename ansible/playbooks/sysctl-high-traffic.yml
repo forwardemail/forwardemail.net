@@ -48,6 +48,7 @@
         sysctl_file: "/etc/sysctl.d/99-{{ sysctl_file_name }}.conf"
       loop:
         # Memory Management
+        - { name: 'vm.overcommit_memory', value: '1' }  # Prevent OOM for Redis/MongoDB
         - { name: 'vm.swappiness', value: '1' }  # Minimize swapping, prefer RAM
         - { name: 'vm.dirty_ratio', value: '20' }  # Max % of RAM for dirty pages before blocking writes
         - { name: 'vm.dirty_background_ratio', value: '10' }  # Start background writeback at 10%
