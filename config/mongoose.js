@@ -17,7 +17,8 @@ const m = new Mongoose({
   mongo: {
     options: {
       compressors: ['snappy'],
-      maxPoolSize: 500
+      maxPoolSize: 500,
+      family: 4 // Force IPv4
     }
   }
 });
