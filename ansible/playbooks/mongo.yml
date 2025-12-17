@@ -774,8 +774,6 @@
             port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
             bindIp: 0.0.0.0
             maxIncomingConnections: 65536
-            # TCP keepalive for better connection management
-            serviceExecutor: adaptive
 
           # Process management
           processManagement:
@@ -1001,8 +999,6 @@
             port: {{ lookup('env', 'MONGO_PORT') | default('27017', true) }}
             bindIp: 0.0.0.0
             maxIncomingConnections: 65536
-            # TCP keepalive for better connection management
-            serviceExecutor: adaptive
             tls:
               mode: requireTLS
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
