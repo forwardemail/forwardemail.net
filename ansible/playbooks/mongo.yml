@@ -755,8 +755,6 @@
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
-                # Checkpoint size: 1000MB for better write performance
-                checkpointSizeMB: 1000
               collectionConfig:
                 blockCompressor: snappy
               indexConfig:
@@ -778,9 +776,6 @@
             maxIncomingConnections: 65536
             # TCP keepalive for better connection management
             serviceExecutor: adaptive
-            # Connection pool settings
-            connectionPool:
-              maxPoolSize: 500
 
           # Process management
           processManagement:
@@ -987,8 +982,6 @@
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
-                # Checkpoint size: 1000MB for better write performance
-                checkpointSizeMB: 1000
               collectionConfig:
                 blockCompressor: snappy
               indexConfig:
@@ -1010,9 +1003,6 @@
             maxIncomingConnections: 65536
             # TCP keepalive for better connection management
             serviceExecutor: adaptive
-            # Connection pool settings
-            connectionPool:
-              maxPoolSize: 500
             tls:
               mode: requireTLS
               certificateKeyFile: /etc/mongodb/ssl/mongodb.pem

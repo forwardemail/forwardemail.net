@@ -16,7 +16,8 @@ const m = new Mongoose({
   bindEvents: false,
   mongo: {
     options: {
-      compressors: ['snappy']
+      compressors: ['snappy'],
+      maxPoolSize: 500
     }
   }
 });
