@@ -177,27 +177,33 @@
         required_swap_mb: "{{ total_memory_mb.stdout | int }}"
         required_swap_bytes: "{{ (total_memory_mb.stdout | int) * 1024 * 1024 }}"
 
-    - name: Disable existing swap if size doesn't match
-      command: swapoff /swapfile
-      when:
-        - swapfile_stat.stat.exists
-        - current_swap_bytes.stdout != ""
-        - current_swap_bytes.stdout | int != required_swap_bytes | int
-      ignore_errors: true
+    - name: Check if swap resize is needed
+      set_fact:
+        swap_resize_needed: "{{ swapfile_stat.stat.exists and current_swap_bytes.stdout != '' and (current_swap_bytes.stdout | int != required_swap_bytes | int) }}"
 
-    - name: Remove old swap file if size doesn't match
-      file:
-        path: /swapfile
-        state: absent
-      when:
-        - swapfile_stat.stat.exists
-        - current_swap_bytes.stdout != ""
-        - current_swap_bytes.stdout | int != required_swap_bytes | int
+    - name: Display swap resize warning
+      debug:
+        msg: |
+          WARNING: Swap file size ({{ current_swap_bytes.stdout | int / 1024 / 1024 }}MB) does not match required size ({{ required_swap_mb }}MB).
+          Swap resizing requires manual intervention to avoid system instability.
+          To resize swap safely:
+          1. Schedule maintenance window
+          2. Stop MongoDB: systemctl stop mongod
+          3. Disable swap: swapoff /swapfile
+          4. Remove old swap: rm /swapfile
+          5. Re-run this playbook
+          Skipping automatic swap resize for safety.
+      when: swap_resize_needed | bool
+
+    - name: Skip swap operations if resize is needed
+      set_fact:
+        skip_swap_setup: "{{ swap_resize_needed | bool }}"
 
     - name: Create swap file with size equal to RAM
       command: fallocate -l {{ required_swap_mb }}M /swapfile
       args:
         creates: /swapfile
+      when: not (skip_swap_setup | default(false) | bool)
 
     - name: Set swap file permissions
       file:
@@ -208,9 +214,11 @@
 
     - name: Format swap file
       command: mkswap /swapfile
-      when: not swapfile_stat.stat.exists or (current_swap_bytes.stdout | int != required_swap_bytes | int)
+      when:
+        - not (skip_swap_setup | default(false) | bool)
+        - not swapfile_stat.stat.exists
       register: mkswap_result
-      changed_when: "'Setting up swapspace' in mkswap_result.stdout"
+      changed_when: "mkswap_result is not skipped and 'Setting up swapspace' in mkswap_result.stdout"
 
     - name: Enable swap file
       command: swapon /swapfile
@@ -768,6 +776,13 @@
             destination: file
             logAppend: true
             path: /var/log/mongodb/mongod.log
+            logRotate: reopen
+            verbosity: 0
+            component:
+              accessControl:
+                verbosity: 0
+              command:
+                verbosity: 0
 
           # Network interfaces
           net:
@@ -784,7 +799,7 @@
           # Operation Profiling (log slow operations)
           operationProfiling:
             mode: slowOp
-            slowOpThresholdMs: 100
+            slowOpThresholdMs: 500
         owner: root
         group: root
         mode: '0644'
@@ -993,6 +1008,13 @@
             destination: file
             logAppend: true
             path: /var/log/mongodb/mongod.log
+            logRotate: reopen
+            verbosity: 0
+            component:
+              accessControl:
+                verbosity: 0
+              command:
+                verbosity: 0
 
           # Network interfaces
           net:
@@ -1014,7 +1036,7 @@
           # Operation Profiling (log slow operations)
           operationProfiling:
             mode: slowOp
-            slowOpThresholdMs: 100
+            slowOpThresholdMs: 500
 
           # Security
           security:
@@ -1058,6 +1080,26 @@
         msg: |
           MongoDB Authentication Status:
           {{ auth_check.stdout }}
+
+    # Configure logrotate for MongoDB logs
+    - name: Create logrotate configuration for MongoDB
+      copy:
+        dest: /etc/logrotate.d/mongodb
+        mode: '0644'
+        content: |
+          /var/log/mongodb/*.log {
+              daily
+              rotate 7
+              compress
+              delaycompress
+              missingok
+              notifempty
+              create 0600 mongodb mongodb
+              sharedscripts
+              postrotate
+                  /bin/kill -SIGUSR1 $(cat /var/run/mongodb/mongod.pid 2>/dev/null) 2>/dev/null || true
+              endscript
+          }
 
     # Disable mongosh telemetry globally
     - name: Create mongosh config directory
