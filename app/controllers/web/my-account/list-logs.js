@@ -245,40 +245,8 @@ async function listLogs(ctx) {
     }
   }
 
-  // Use regex matching for subject search (more accurate than $text)
-  if (isSANB(subject)) {
-    const regexCondition = {
-      $or: [
-        {
-          subject: {
-            $regex: new RegExp(_.escapeRegExp(subject), 'i')
-          }
-        },
-        {
-          text_message: {
-            $regex: new RegExp(_.escapeRegExp(subject), 'i')
-          }
-        }
-      ]
-    };
-
-    if (query.$or) {
-      query = {
-        $and: [
-          {
-            $or: query.$or
-          },
-          regexCondition
-        ]
-      };
-    } else if (query.$and) {
-      query.$and.push(regexCondition);
-    } else {
-      query = {
-        $and: [query, regexCondition]
-      };
-    }
-  }
+  // Store subject for comprehensive search later
+  // (will be used for in-memory filtering if subject search is needed)
 
   // response_code -> 'err.responseCode'
   if (
@@ -440,50 +408,111 @@ async function listLogs(ctx) {
     return;
   }
 
-  //
-  // OPTIMIZATION:
-  // 1. Count: Capped at MAX_COUNT_LIMIT with query filter (fast)
-  // 2. Distinct values: From entire collection without query filter (fast, small set)
-  //
+  // Cap count at 10,000 like list-emails to improve performance
   const MAX_COUNT_LIMIT = 10_000;
 
-  const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
+  let logs;
+  let itemCount;
+
+  // For search queries with subject: fetch logs and do comprehensive search in memory
+  if (isSANB(subject)) {
+    const searchQuery = subject.trim();
+    const searchRegex = new RegExp(_.escapeRegExp(searchQuery), 'i');
+
+    // Determine sort field
+    let sortField = ctx.api ? 'created_at' : '-created_at';
+    if (isSANB(ctx.query.sort)) {
+      sortField = ctx.query.sort;
+    }
+
+    // Fetch up to MAX_COUNT_LIMIT logs matching user's domains/aliases
     // eslint-disable-next-line unicorn/no-array-callback-reference
-    Logs.find(query)
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .sort(
-        isSANB(ctx.query.sort)
-          ? ctx.query.sort
-          : ctx.api
-          ? 'created_at'
-          : '-created_at'
-      )
+    const allLogs = await Logs.find(query)
+      .sort(sortField)
+      .limit(MAX_COUNT_LIMIT)
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
-      .exec(),
-    // Capped count with query filter (fast)
-    Logs.aggregate(
-      [
-        { $match: query },
-        {
-          $sort: isSANB(ctx.query.sort)
-            ? {
-                [ctx.query.sort.startsWith('-')
-                  ? ctx.query.sort.slice(1)
-                  : ctx.query.sort]: ctx.query.sort.startsWith('-') ? -1 : 1
-              }
+      .exec();
+
+    // Filter in memory with comprehensive search
+    // (permission already checked by the query above)
+    const filteredLogs = allLogs.filter((log) => {
+      // Comprehensive search across all fields
+      // Check subject
+      if (log.subject && searchRegex.test(log.subject)) return true;
+
+      // Check text_message
+      if (log.text_message && searchRegex.test(log.text_message)) return true;
+
+      // Check message
+      if (log.message && searchRegex.test(log.message)) return true;
+
+      // Check meta (headers and other metadata)
+      if (log.meta && typeof log.meta === 'object') {
+        const metaString = JSON.stringify(log.meta);
+        if (searchRegex.test(metaString)) return true;
+      }
+
+      // Check err object
+      if (log.err && typeof log.err === 'object') {
+        // Check err.message
+        if (log.err.message && searchRegex.test(log.err.message)) return true;
+        // Check err.response
+        if (log.err.response && searchRegex.test(log.err.response)) return true;
+        // Check entire err object
+        const errString = JSON.stringify(log.err);
+        if (searchRegex.test(errString)) return true;
+      }
+
+      return false;
+    });
+
+    // Show warning if we hit the limit
+    if (!ctx.api && allLogs.length >= MAX_COUNT_LIMIT && !ctx.accepts('html')) {
+      ctx.flash(
+        'warning',
+        `Search results limited to ${MAX_COUNT_LIMIT.toLocaleString()} logs. For comprehensive search, please use the <a href="${ctx.state.l(
+          '/email-api#tag/logs/get/v1/logs/download'
+        )}" target="_blank" rel="noopener noreferrer">Logs Email API</a>.`
+      );
+      ctx.body = {
+        redirectTo: ctx.href
+      };
+      return;
+    }
+
+    // Paginate the filtered results
+    const startIndex = ctx.paginate.skip;
+    const endIndex = startIndex + ctx.query.limit;
+    const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
+
+    logs = paginatedLogs;
+    itemCount = filteredLogs.length;
+  } else {
+    // No subject search: use the fast .find() approach
+    const [fetchedLogs, count] = await Promise.all([
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      Logs.find(query)
+        .limit(ctx.query.limit)
+        .skip(ctx.paginate.skip)
+        .sort(
+          isSANB(ctx.query.sort)
+            ? ctx.query.sort
             : ctx.api
-            ? { created_at: 1 }
-            : { created_at: -1 }
-        },
-        { $limit: MAX_COUNT_LIMIT },
-        { $count: 'total' }
-      ],
-      { maxTimeMS: SIXTY_SECONDS }
-    )
-      .exec()
-      .then((result) => result[0]?.total || 0),
+            ? 'created_at'
+            : '-created_at'
+        )
+        .lean()
+        .maxTimeMS(SIXTY_SECONDS)
+        .exec(),
+      // Count all matching documents
+      Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS)
+    ]);
+    logs = fetchedLogs;
+    itemCount = count;
+  }
+
+  const [responseCodes, bounceCategories] = await Promise.all([
     // Distinct response codes from entire collection (no query filter)
     Logs.distinct('err.responseCode'),
     // Distinct bounce categories from entire collection (no query filter)

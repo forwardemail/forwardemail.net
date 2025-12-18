@@ -156,8 +156,8 @@ async function listEmails(ctx, next) {
     // Fetch up to MAX_COUNT_LIMIT emails matching user's aliases/domains
     // eslint-disable-next-line unicorn/no-array-callback-reference
     const allEmails = await Emails.find(searchQueryObj)
-      .limit(MAX_COUNT_LIMIT)
       .sort(sortField)
+      .limit(MAX_COUNT_LIMIT)
       .select('-message')
       .lean()
       .maxTimeMS(30_000)
