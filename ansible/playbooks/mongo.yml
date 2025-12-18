@@ -887,11 +887,12 @@
         - not admin_user_exists
 
     # DEBUG: Check environment variables before user creation
-    - name: DEBUG - Verify MONGO_USER and MONGO_PASS are set
+    - name: DEBUG - Verify MONGO_USER, MONGO_HOST, and MONGO_PASS are set
       debug:
         msg: |
           MONGO_USER: '{{ lookup('env', 'MONGO_USER') }}' (length: {{ lookup('env', 'MONGO_USER') | length }})
           MONGO_PASS: '{{ lookup('env', 'MONGO_PASS') }}' (length: {{ lookup('env', 'MONGO_PASS') | length }})
+          MONGO_HOST: '{{ lookup('env', 'MONGO_HOST') }}' (length: {{ lookup('env', 'MONGO_HOST') | length }})
           MONGO_PASS first 8 chars: {{ lookup('env', 'MONGO_PASS')[:8] }}...
       when: not admin_user_exists
 
@@ -1176,6 +1177,8 @@
           BACKUP_SECRET="${BACKUP_SECRET}"
           MONGO_PORT="${MONGO_PORT:-27017}"
           MONGO_USER="${MONGO_USER:-admin}"
+          MONGO_NAME="${MONGO_NAME}"
+          MONGO_HOST="${MONGO_HOST}"
           MONGO_PASS="${MONGO_PASS}"
 
           # Check if BACKUP_SECRET is set
@@ -1234,7 +1237,7 @@
 
           # Perform backup, encrypt with GPG, and stream directly to S3
           echo "Starting mongodump on localhost:${MONGO_PORT}..."
-          if ! mongodump --uri="mongodb://${MONGO_USER}:${MONGO_PASS}@localhost:${MONGO_PORT}/?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin" --oplog --archive --gzip 2>&1 | \
+          if ! mongodump --uri="mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_NAME}?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin" --oplog --archive --gzip 2>&1 | \
             gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
             ERROR_MSG="Failed to backup/encrypt/upload MongoDB at $(date -u +%Y-%m-%dT%H:%M:%SZ). Check MongoDB connection and AWS credentials."
