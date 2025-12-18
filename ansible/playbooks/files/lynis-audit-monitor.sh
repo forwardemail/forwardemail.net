@@ -105,7 +105,7 @@ parse_lynis_report() {
 
     # Extract key metrics
     local hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' | tr -d ' ' || echo "0")
-    local tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" | cut -d'=' -f2 | tr '|' '\n' | wc -l || echo "0")
+    local tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" | cut -d'=' -f2 | tr -d '\n\r' | awk -F'|' '{print NF}' || echo "0")
     local warnings=$(grep "^warning\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
     local suggestions=$(grep "^suggestion\[\]=" "$LYNIS_REPORT" | wc -l | tr -d ' ' || echo "0")
 
