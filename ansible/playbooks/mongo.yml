@@ -1234,7 +1234,7 @@
 
           # Perform backup, encrypt with GPG, and stream directly to S3
           echo "Starting mongodump on localhost:${MONGO_PORT}..."
-          if ! mongodump --host=localhost --port="${MONGO_PORT}" --username="${MONGO_USER}" --password="${MONGO_PASS}" --authenticationDatabase=admin --tls --tlsCAFile=/etc/mongodb/ssl/ca.pem --oplog --archive --gzip 2>&1 | \
+          if ! mongodump --uri="mongodb://${MONGO_USER}:${MONGO_PASS}@localhost:${MONGO_PORT}/?tls=true&tlsCAFile=/etc/mongodb/ssl/ca.pem&authSource=admin" --oplog --archive --gzip 2>&1 | \
             gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
             aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
             ERROR_MSG="Failed to backup/encrypt/upload MongoDB at $(date -u +%Y-%m-%dT%H:%M:%SZ). Check MongoDB connection and AWS credentials."

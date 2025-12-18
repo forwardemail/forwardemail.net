@@ -251,12 +251,44 @@ analyze_recent_commands() {
     if [ -n "$sudo_commands" ]; then
         log_activity "SUDO COMMANDS EXECUTED:"
         while IFS= read -r line; do
-            local user=$(echo "$line" | grep -oP "sudo:\s+\K\w+" || echo "unknown")
-            local command=$(echo "$line" | grep -oP "COMMAND=\K.*" || echo "unknown")
+            # Extract user (word after "sudo:")
+            local user=$(echo "$line" | sed -n 's/.*sudo:[[:space:]]*\([^[:space:]]*\).*/\1/p')
+            [ -z "$user" ] && user="unknown"
+            # Extract full command (everything after COMMAND=)
+            local command=$(echo "$line" | sed -n 's/.*COMMAND=\(.*\)/\1/p')
+            [ -z "$command" ] && command="unknown"
             local timestamp=$(echo "$line" | awk '{print $1, $2, $3}')
 
             log_activity "  user=$user command=$command timestamp=$timestamp"
         done <<< "$sudo_commands"
+    fi
+
+    # Get non-interactive SSH command executions from bash-commands.log
+    # The enhanced bash logging script logs these with NON_INTERACTIVE: prefix
+    if [ -f /var/log/bash-commands.log ]; then
+        local non_interactive_commands=$(awk -v start="$last_check" '
+            BEGIN {
+                cmd="date +%s"
+                cmd | getline current_time
+                close(cmd)
+            }
+            /NON_INTERACTIVE:/ {
+                match($0, /[A-Z][a-z]{2} +[0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2}/, ts)
+                if (ts[0]) {
+                    cmd="date -d \"" ts[0] " " strftime("%Y") "\" +%s 2>/dev/null"
+                    cmd | getline log_time
+                    close(cmd)
+                    if (log_time >= start) print
+                }
+            }
+        ' /var/log/bash-commands.log 2>/dev/null || echo "")
+
+        if [ -n "$non_interactive_commands" ]; then
+            log_activity "NON-INTERACTIVE SSH COMMANDS EXECUTED:"
+            while IFS= read -r line; do
+                log_activity "  $line"
+            done <<< "$non_interactive_commands"
+        fi
     fi
 
     # Get all bash commands from bash-commands.log
