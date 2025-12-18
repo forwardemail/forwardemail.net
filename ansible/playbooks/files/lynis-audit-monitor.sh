@@ -104,10 +104,10 @@ parse_lynis_report() {
     fi
 
     # Extract key metrics
-    local hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' || echo "0")
+    local hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' | tr -d ' ' || echo "0")
     local tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" | cut -d'=' -f2 | tr '|' '\n' | wc -l || echo "0")
     local warnings=$(grep "^warning\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
-    local suggestions=$(grep "^suggestion\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
+    local suggestions=$(grep "^suggestion\[\]=" "$LYNIS_REPORT" | wc -l | tr -d ' ' || echo "0")
 
     # Ensure hardening_index is a valid number
     if ! [[ "$hardening_index" =~ ^[0-9]+$ ]]; then
@@ -139,7 +139,7 @@ get_suggestions() {
         return
     fi
 
-    grep "^suggestion\[\]=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -20 | sed 's/|/ - /g' || echo "No suggestions found"
+    grep "^suggestion\[\]=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -20 | sed 's/|/ - /g' | sed 's/^- //g' || echo "No suggestions found"
 }
 
 # Get vulnerable packages
