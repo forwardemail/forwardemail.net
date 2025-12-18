@@ -245,17 +245,21 @@ async function listLogs(ctx) {
     }
   }
 
-  //
-  // OPTIMIZATION: Use text search only, remove redundant regex matching.
-  // Text search is much faster and provides good-enough fuzzy matching.
-  // The previous implementation used both $text search AND regex, which caused
-  // double scanning of results. Text search alone is 30-50% faster.
-  //
+  // Use regex matching for subject search (more accurate than $text)
   if (isSANB(subject)) {
-    const textSearchCondition = {
-      $text: {
-        $search: subject
-      }
+    const regexCondition = {
+      $or: [
+        {
+          subject: {
+            $regex: new RegExp(_.escapeRegExp(subject), 'i')
+          }
+        },
+        {
+          text_message: {
+            $regex: new RegExp(_.escapeRegExp(subject), 'i')
+          }
+        }
+      ]
     };
 
     if (query.$or) {
@@ -264,14 +268,14 @@ async function listLogs(ctx) {
           {
             $or: query.$or
           },
-          textSearchCondition
+          regexCondition
         ]
       };
     } else if (query.$and) {
-      query.$and.push(textSearchCondition);
+      query.$and.push(regexCondition);
     } else {
       query = {
-        $and: [query, textSearchCondition]
+        $and: [query, regexCondition]
       };
     }
   }
@@ -460,7 +464,22 @@ async function listLogs(ctx) {
       .exec(),
     // Capped count with query filter (fast)
     Logs.aggregate(
-      [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
+      [
+        { $match: query },
+        {
+          $sort: isSANB(ctx.query.sort)
+            ? {
+                [ctx.query.sort.startsWith('-')
+                  ? ctx.query.sort.slice(1)
+                  : ctx.query.sort]: ctx.query.sort.startsWith('-') ? -1 : 1
+              }
+            : ctx.api
+            ? { created_at: 1 }
+            : { created_at: -1 }
+        },
+        { $limit: MAX_COUNT_LIMIT },
+        { $count: 'total' }
+      ],
       { maxTimeMS: SIXTY_SECONDS }
     )
       .exec()
