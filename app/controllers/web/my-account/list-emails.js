@@ -217,7 +217,7 @@ async function listEmails(ctx, next) {
     if (
       !ctx.api &&
       allEmails.length >= MAX_COUNT_LIMIT &&
-      !ctx.accepts('html')
+      ctx.accepts('html')
     ) {
       ctx.flash(
         'warning',
@@ -225,10 +225,6 @@ async function listEmails(ctx, next) {
           '/email-api#tag/logs/get/v1/logs/download'
         )}" target="_blank" rel="noopener noreferrer">Logs Email API</a>.`
       );
-      ctx.body = {
-        redirectTo: ctx.href
-      };
-      return;
     }
 
     // Remove headers/accepted/rejectedErrors for API responses

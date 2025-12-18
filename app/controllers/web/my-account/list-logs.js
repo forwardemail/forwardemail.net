@@ -447,38 +447,138 @@ async function listLogs(ctx) {
       // Check message
       if (log.message && searchRegex.test(log.message)) return true;
 
-      // Check meta (headers and other metadata)
-      if (log.meta && typeof log.meta === 'object') {
-        const metaString = JSON.stringify(log.meta);
-        if (searchRegex.test(metaString)) return true;
+      // Check meta.session.envelope addresses
+      if (log.meta?.session?.envelope) {
+        if (
+          log.meta.session.envelope.mailFrom?.address &&
+          searchRegex.test(log.meta.session.envelope.mailFrom.address)
+        )
+          return true;
+        if (Array.isArray(log.meta.session.envelope.rcptTo)) {
+          for (const rcpt of log.meta.session.envelope.rcptTo) {
+            if (rcpt.address && searchRegex.test(rcpt.address)) return true;
+          }
+        }
       }
 
-      // Check err object
+      // Check meta.session.headers
+      if (
+        log.meta?.session?.headers &&
+        typeof log.meta.session.headers === 'object'
+      ) {
+        for (const [key, value] of Object.entries(log.meta.session.headers)) {
+          if (
+            searchRegex.test(key) ||
+            (typeof value === 'string' && searchRegex.test(value))
+          )
+            return true;
+        }
+      }
+
+      // Check meta.info.envelope
+      if (log.meta?.info?.envelope) {
+        if (
+          log.meta.info.envelope.from &&
+          searchRegex.test(log.meta.info.envelope.from)
+        )
+          return true;
+        if (Array.isArray(log.meta.info.envelope.to)) {
+          for (const to of log.meta.info.envelope.to) {
+            if (searchRegex.test(to)) return true;
+          }
+        }
+      }
+
+      // Check meta.info.response
+      if (log.meta?.info?.response && searchRegex.test(log.meta.info.response))
+        return true;
+
+      // Check meta.info.messageId
+      if (
+        log.meta?.info?.messageId &&
+        searchRegex.test(log.meta.info.messageId)
+      )
+        return true;
+
+      // Check meta.session connection details
+      if (
+        log.meta?.session?.remoteAddress &&
+        searchRegex.test(log.meta.session.remoteAddress)
+      )
+        return true;
+      if (
+        log.meta?.session?.resolvedClientHostname &&
+        searchRegex.test(log.meta.session.resolvedClientHostname)
+      )
+        return true;
+      if (
+        log.meta?.session?.hostNameAppearsAs &&
+        searchRegex.test(log.meta.session.hostNameAppearsAs)
+      )
+        return true;
+      if (
+        log.meta?.session?.originalFromAddress &&
+        searchRegex.test(log.meta.session.originalFromAddress)
+      )
+        return true;
+      if (
+        log.meta?.session?.truthSource &&
+        searchRegex.test(log.meta.session.truthSource)
+      )
+        return true;
+
+      // Check meta.session.mx details
+      if (log.meta?.session?.mx) {
+        if (
+          log.meta.session.mx.hostname &&
+          searchRegex.test(log.meta.session.mx.hostname)
+        )
+          return true;
+        if (
+          log.meta.session.mx.host &&
+          searchRegex.test(log.meta.session.mx.host)
+        )
+          return true;
+        if (
+          log.meta.session.mx.localAddress &&
+          searchRegex.test(log.meta.session.mx.localAddress)
+        )
+          return true;
+        if (
+          log.meta.session.mx.localHostname &&
+          searchRegex.test(log.meta.session.mx.localHostname)
+        )
+          return true;
+      }
+
+      // Check err object (skip err.stack as it's too verbose)
       if (log.err && typeof log.err === 'object') {
         // Check err.message
         if (log.err.message && searchRegex.test(log.err.message)) return true;
         // Check err.response
         if (log.err.response && searchRegex.test(log.err.response)) return true;
-        // Check entire err object
-        const errString = JSON.stringify(log.err);
-        if (searchRegex.test(errString)) return true;
+        // Check err.target
+        if (log.err.target && searchRegex.test(log.err.target)) return true;
+        // Check err.envelope
+        if (log.err.envelope) {
+          if (log.err.envelope.from && searchRegex.test(log.err.envelope.from))
+            return true;
+          if (log.err.envelope.to && searchRegex.test(log.err.envelope.to))
+            return true;
+        }
       }
 
       return false;
     });
 
     // Show warning if we hit the limit
-    if (!ctx.api && allLogs.length >= MAX_COUNT_LIMIT && !ctx.accepts('html')) {
+    if (!ctx.api && allLogs.length >= MAX_COUNT_LIMIT && ctx.accepts('html')) {
       ctx.flash(
         'warning',
         `Search results limited to ${MAX_COUNT_LIMIT.toLocaleString()} logs. For comprehensive search, please use the <a href="${ctx.state.l(
           '/email-api#tag/logs/get/v1/logs/download'
         )}" target="_blank" rel="noopener noreferrer">Logs Email API</a>.`
       );
-      ctx.body = {
-        redirectTo: ctx.href
-      };
-      return;
     }
 
     // Paginate the filtered results
