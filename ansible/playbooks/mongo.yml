@@ -106,7 +106,10 @@
       assert:
         that:
           - lookup('env', 'MONGO_HOST') != ''
+          - lookup('env', 'MONGO_NAME') != ''
+          - lookup('env', 'MONGO_PASS') != ''
           - lookup('env', 'MONGO_PORT') != ''
+          - lookup('env', 'MONGO_USER') != ''
           - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
           - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
           - lookup('env', 'AWS_ENDPOINT_URL') != ''
@@ -115,7 +118,10 @@
           Required environment variables are missing for MongoDB playbook.
           Please ensure the following variables are set in your .env file:
           - MONGO_HOST
+          - MONGO_NAME
+          - MONGO_PASS
           - MONGO_PORT
+          - MONGO_USER
           - SSL_CERT_PATH
           - SSL_KEY_PATH
           - SSL_CA_PATH
@@ -1410,8 +1416,12 @@
           Environment="AWS_DEFAULT_REGION={{ lookup('env', 'AWS_DEFAULT_REGION') or 'auto' }}"
           Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
-          Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
           Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+          Environment="MONGO_PORT={{ lookup('env', 'MONGO_PORT') | default('27017', true) }}"
+          Environment="MONGO_NAME={{ lookup('env', 'MONGO_NAME') }}"
+          Environment="MONGO_USER={{ lookup('env', 'MONGO_USER') }}"
+          Environment="MONGO_PASS={{ lookup('env', 'MONGO_PASS') }}"
+          Environment="MONGO_HOST={{ lookup('env', 'MONGO_HOST') }}"
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 
