@@ -774,8 +774,8 @@ if (
     if (isDomainImpersonation) {
       // allow only if both DKIM and SPF are passing AND the root domain is ours
       const isAuthenticatedAsUs =
-        session.hadAlignedAndPassingDKIM &&
-        session.spfFromHeader.status.result === 'pass' &&
+        (session.hadAlignedAndPassingDKIM ||
+          session.spfFromHeader.status.result === 'pass') &&
         session.originalFromAddressRootDomain === env.WEB_HOST;
 
       if (!isAuthenticatedAsUs) {
