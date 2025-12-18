@@ -587,7 +587,7 @@ async function listLogs(ctx) {
     const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
 
     logs = paginatedLogs;
-    itemCount = filteredLogs.length;
+    // NOTE: itemCount will be set after filtering (line ~845)
   } else {
     // No subject search: use the fast .find() approach
     const [fetchedLogs, count] = await Promise.all([
@@ -601,6 +601,11 @@ async function listLogs(ctx) {
             : ctx.api
             ? 'created_at'
             : '-created_at'
+        )
+        .select(
+          ctx.api
+            ? '-meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
+            : '-message -meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
         )
         .lean()
         .maxTimeMS(SIXTY_SECONDS)
@@ -837,6 +842,11 @@ async function listLogs(ctx) {
       seen.set(messageId, true);
       return true; // Keep first occurrence
     });
+
+    // Recalculate itemCount after all filtering for comprehensive search
+    if (isSANB(subject)) {
+      ctx.state.itemCount = ctx.state.logs.length;
+    }
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');

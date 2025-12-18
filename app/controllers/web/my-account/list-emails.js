@@ -262,13 +262,8 @@ async function listEmails(ctx, next) {
         .lean()
         .maxTimeMS(30_000)
         .exec(),
-      // Capped count with query filter (fast)
-      Emails.aggregate(
-        [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
-        { maxTimeMS: 30_000 }
-      )
-        .exec()
-        .then((result) => result[0]?.total || 0)
+      // Actual count when no search query
+      Emails.countDocuments(query).maxTimeMS(30_000)
     ]);
 
     ctx.state.emails = emails;
