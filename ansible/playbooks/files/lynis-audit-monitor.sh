@@ -103,11 +103,24 @@ parse_lynis_report() {
         return 1
     fi
 
-    # Extract key metrics
-    local hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -1 | tr -d ' \n\r' | tr -d ' ' || echo "0")
-    local tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" | cut -d'=' -f2 | tr -d '\n\r' | awk -F'|' '{print NF}' || echo "0")
-    local warnings=$(grep "^warning\[\]=" "$LYNIS_REPORT" | wc -l || echo "0")
-    local suggestions=$(grep "^suggestion\[\]=" "$LYNIS_REPORT" | wc -l | tr -d ' ' || echo "0")
+    # Extract key metrics - use tr -d to strip ALL whitespace and newlines for robustness
+    local hardening_index
+    hardening_index=$(grep "^hardening_index=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 | head -1 | tr -d ' \t\n\r')
+    hardening_index=${hardening_index:-0}
+
+    local tests_performed
+    tests_performed=$(grep "^tests_executed=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 | tr -d '\n\r' | awk -F'|' '{print NF}')
+    tests_performed=${tests_performed:-0}
+
+    local warnings
+    warnings=$(grep -c "^warning\[\]=" "$LYNIS_REPORT" 2>/dev/null)
+    warnings=$(echo "$warnings" | tr -d ' \t\n\r')
+    warnings=${warnings:-0}
+
+    local suggestions
+    suggestions=$(grep -c "^suggestion\[\]=" "$LYNIS_REPORT" 2>/dev/null)
+    suggestions=$(echo "$suggestions" | tr -d ' \t\n\r')
+    suggestions=${suggestions:-0}
 
     # Ensure hardening_index is a valid number
     if ! [[ "$hardening_index" =~ ^[0-9]+$ ]]; then
