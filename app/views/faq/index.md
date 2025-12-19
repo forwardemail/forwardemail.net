@@ -912,30 +912,80 @@ Emails can land in spam folders for several reasons:
 
 You can try to use one or more of these tools to check your domain's reputation and categorization:
 
-| Tool Name                                   | URL                                                              | Type                   |
-| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
-| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>                  | Categorization         |
-| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                    | DNSBL                  |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>                | Reputation             |
-| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation>     | DNSBL                  |
-| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                          | Blacklist              |
-| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                              | Reputation             |
-| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                                  | Reputation             |
-| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                             | DNSBL                  |
-| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>                 | Reputation             |
-| Invaluement                                 | <https://www.invaluement.com/lookup/>                            | DNSBL                  |
-| SURBL                                       | <https://www.surbl.org/>                                         | DNSBL                  |
-| Apple/Proofpoint IP removal                 | <https://ipcheck.proofpoint.com/>                                | Removal                |
-| Cloudmark IP removal                        | <https://csi.cloudmark.com/en/reset/>                            | Removal                |
-| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                               | DNSBL                  |
-| Microsoft Outlook and Office 365 IP removal | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Removal                |
-| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                     | DNSBL                  |
-| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                                 | Backscatter Protection |
-| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (requires a fee)                  | DNSWL                  |
-| AT&T                                        | `abuse_rbl@abuse-att.net`                                        | Removal                |
-| AOL/Verizon (e.g. `[IPTS04]`)               | <https://senders.yahooinc.com/>                                  | Removal                |
-| Cox Communications                          | `unblock.request@cox.net`                                        | Removal                |
-| t-online.de (German/T-Mobile)               | `tobr@rx.t-online.de`                                            | Removal                |
+#### Reputation and Blocklist Check Tools
+
+| Tool Name                                   | URL                                                          | Type                   |
+| ------------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| Cloudflare Domain Categorization Feedback   | <https://radar.cloudflare.com/domains/feedback>              | Categorization         |
+| Spamhaus IP and Domain Reputation Checker   | <https://check.spamhaus.org/>                                | DNSBL                  |
+| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center>            | Reputation             |
+| Barracuda IP and Domain Reputation Lookup   | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL                  |
+| MX Toolbox Blacklist Check                  | <https://mxtoolbox.com/blacklists.aspx>                      | Blacklist              |
+| Google Postmaster Tools                     | <https://www.gmail.com/postmaster/>                          | Reputation             |
+| Yahoo Sender Hub                            | <https://senders.yahooinc.com/>                              | Reputation             |
+| MultiRBL.valli.org Blacklist Check          | <https://multirbl.valli.org/lookup/>                         | DNSBL                  |
+| Sender Score                                | <https://senderscore.org/act/blocklist-remover/>             | Reputation             |
+| Invaluement                                 | <https://www.invaluement.com/lookup/>                        | DNSBL                  |
+| SURBL                                       | <https://www.surbl.org/>                                     | DNSBL                  |
+| SpamCop                                     | <https://www.spamcop.net/bl.shtml>                           | DNSBL                  |
+| UCEPROTECT's Levels 1, 2, and 3             | <https://www.uceprotect.net/en/rblcheck.php>                 | DNSBL                  |
+| UCEPROTECT's backscatterer.org              | <https://www.backscatterer.org/>                             | Backscatter Protection |
+| UCEPROTECT's whitelisted.org                | <https://www.whitelisted.org/> (requires a fee)              | DNSWL                  |
+
+#### IP Removal Request Forms by Provider
+
+If your IP address has been blocked by a specific email provider, use the appropriate removal form or contact below:
+
+| Provider                               | Removal Form / Contact                                                                                     | Notes                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Google/Gmail                           | <https://support.google.com/mail/contact/bulk_send_new>                                                    | Bulk sender contact form                     |
+| Microsoft (Outlook/Office 365/Hotmail) | <https://sender.office.com>                                                                                | Office 365 IP delist portal                  |
+| Yahoo/AOL/Verizon                      | <https://senders.yahooinc.com/>                                                                            | Yahoo Sender Hub                             |
+| Apple/iCloud                           | <https://ipcheck.proofpoint.com/>                                                                          | Apple uses Proofpoint for IP reputation      |
+| Proofpoint                             | <https://ipcheck.proofpoint.com/>                                                                          | Proofpoint IP check and removal              |
+| Barracuda Networks                     | <https://www.barracudacentral.org/lookups/lookup-reputation>                                               | Barracuda reputation lookup and removal      |
+| Cloudmark                              | <https://csi.cloudmark.com/en/reset/>                                                                      | Cloudmark CSI reset request                  |
+| GoDaddy/SecureServer                   | <https://unblock.secureserver.net>                                                                         | GoDaddy IP unblock request form              |
+| Comcast/Xfinity                        | <https://spa.xfinity.com/report>                                                                           | Comcast IP removal request                   |
+| Charter/Spectrum                       | <https://www.spectrum.net/support/internet/understanding-email-error-codes>                                | Contact Spectrum support for removal         |
+| AT&T                                   | `abuse_rbl@abuse-att.net`                                                                                  | Email for removal request                    |
+| Cox Communications                     | `unblock.request@cox.net`                                                                                  | Email for removal request                    |
+| CenturyLink/Lumen                      | `abuse@centurylink.com`                                                                                    | Uses Cloudfilter                             |
+| Windstream                             | `abuse@windstream.net`                                                                                     | Email for removal request                    |
+| t-online.de (Germany)                  | `tobr@rx.t-online.de`                                                                                      | Email for removal request                    |
+| Orange France                          | <https://postmaster.orange.fr/>                                                                            | Use contact form or email `abuse@orange.fr`  |
+| GMX                                    | <https://postmaster.gmx.net/en/contact>                                                                    | GMX postmaster contact form                  |
+| Mail.ru                                | <https://postmaster.mail.ru/>                                                                              | Mail.ru postmaster portal                    |
+| Yandex                                 | <https://postmaster.yandex.ru/>                                                                            | Yandex postmaster portal                     |
+| QQ Mail (Tencent)                      | <https://open.mail.qq.com/>                                                                                | QQ Mail whitelist application (Chinese)      |
+| Netease (163.com)                      | <https://mail.163.com/postmaster/>                                                                         | Netease postmaster portal                    |
+| Alibaba/Aliyun/HiChina                 | <https://www.alibabacloud.com/help/en/alibaba-mail/>                                                       | Contact via Alibaba Cloud console            |
+| Amazon SES                             | <https://docs.aws.amazon.com/ses/latest/dg/faqs-dnsbls.html>                                               | AWS SES console > Blacklist Removal          |
+| SendGrid                               | <https://support.sendgrid.com/>                                                                            | Contact SendGrid support                     |
+| Mimecast                               | <https://community.mimecast.com/>                                                                          | Uses third-party RBLs - contact specific RBL |
+| Fastmail                               | <https://www.fastmail.com/support/>                                                                        | Contact Fastmail support                     |
+| Zoho                                   | <https://help.zoho.com/portal/en/kb/campaigns/faqs/campaign-review/articles/how-do-i-delist-my-ip-address> | Contact Zoho support                         |
+| ProtonMail                             | <https://proton.me/support/contact>                                                                        | Contact Proton support                       |
+| Tutanota                               | <https://tutanota.com/support>                                                                             | Contact Tutanota support                     |
+| Hushmail                               | <https://www.hushmail.com/support/>                                                                        | Contact Hushmail support                     |
+| Mailbox.org                            | <https://mailbox.org/en/support>                                                                           | Contact Mailbox.org support                  |
+| Posteo                                 | <https://posteo.de/en/site/contact>                                                                        | Contact Posteo support                       |
+| DuckDuckGo Email                       | <https://duckduckgo.com/email/support>                                                                     | Contact DuckDuckGo support                   |
+| Sonic.net                              | <https://www.sonic.com/support>                                                                            | Contact Sonic support                        |
+| Telus                                  | <https://www.telus.com/en/support>                                                                         | Contact Telus support                        |
+| Vodafone Germany                       | <https://www.vodafone.de/hilfe/>                                                                           | Contact Vodafone support                     |
+| Xtra (Spark NZ)                        | <https://www.spark.co.nz/help/>                                                                            | Contact Spark NZ support                     |
+| UOL/BOL (Brazil)                       | <https://ajuda.uol.com.br/>                                                                                | Contact UOL support (Portuguese)             |
+| Libero (Italy)                         | <https://aiuto.libero.it/>                                                                                 | Contact Libero support (Italian)             |
+| Telenet (Belgium)                      | <https://www2.telenet.be/en/support/>                                                                      | Contact Telenet support                      |
+| Facebook/WhatsApp                      | <https://www.facebook.com/business/help>                                                                   | Contact Facebook business support            |
+| LinkedIn                               | <https://www.linkedin.com/help/linkedin>                                                                   | Contact LinkedIn support                     |
+| Groups.io                              | <https://groups.io/helpcenter>                                                                             | Contact Groups.io support                    |
+| Earthlink/Vade Secure                  | <https://sendertool.vadesecure.com/en/>                                                                    | Vade Secure sender tool                      |
+| Cloudflare Email Security              | <https://www.cloudflare.com/products/zero-trust/email-security/>                                           | Contact Cloudflare support                   |
+| Hornetsecurity/Expurgate               | <https://www.hornetsecurity.com/>                                                                          | Contact Hornetsecurity support               |
+| SpamExperts/Antispamcloud              | <https://www.spamexperts.com/>                                                                             | Contact via hosting provider                 |
+| Mail2World                             | <https://www.mail2world.com/support/>                                                                      | Contact Mail2World support                   |
 
 > \[!TIP]
 > Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.

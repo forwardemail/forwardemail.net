@@ -238,6 +238,15 @@ let jobs = [
     interval: '4h',
     timeout: 0
   },
+  //
+  // hourly digest of blocklist bounces with truthSource set
+  // emails security team with distinct errors, IP removal links, and log links
+  //
+  {
+    name: 'blocklist-digest',
+    interval: '1h',
+    timeout: 0
+  },
   // feature reminder for users not taking advantage of IMAP/SMTP
   {
     name: 'feature-reminder',
