@@ -119,6 +119,51 @@ function getBounceInfo(err) {
       ' ; Resolve this issue by visiting https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/configure-proofpoint-with-exchange#specify-a-limit-for-the-number-of-messages-per-connection ;';
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
+    //
+    // Barracuda "550 permanent failure" responses are recipient rejections, not blocklist
+    // e.g. "550 permanent failure for one or more recipients (user@example.com:blocked)"
+    //
+  } else if (
+    err.truthSource === 'barracudanetworks.com' &&
+    response.includes('permanent failure for one or more recipients')
+  ) {
+    bounceInfo.category = 'recipient';
+    bounceInfo.action = 'reject';
+    //
+    // Gmail "suspicious due to the nature of the content" is spam, not blocklist
+    // e.g. "421-4.7.0 Gmail has detected that this message is suspicious due to the nature of the content"
+    //
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('suspicious due to the nature of the content')
+  ) {
+    bounceInfo.category = 'spam';
+    //
+    // QQ.com "Mail is rejected by recipients" with IP in message is spam (content-based), not blocklist
+    // e.g. "550 Mail is rejected by recipients [..... IP: 138.197.213.185]. https://service.mail.qq.com/detail/0/92."
+    // The URL /detail/0/92 indicates spam content rejection
+    //
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Mail is rejected by recipients') &&
+    response.includes('service.mail.qq.com/detail/0/92')
+  ) {
+    bounceInfo.category = 'spam';
+    //
+    // Netease (163.com, qiye.163.com) "DT:SPM" is spam, not blocklist
+    // e.g. "550 5.7.0 DT:SPM .For more information, please visit https://feedback.qiye.163.com/..."
+    //
+  } else if (err.truthSource === 'netease.com' && response.includes('DT:SPM')) {
+    bounceInfo.category = 'spam';
+    //
+    // Yahoo/AOL [PH01] is phishing/spam content rejection, not blocklist
+    // e.g. "554 Message not allowed - [PH01] Email not accepted for policy reasons."
+    //
+  } else if (
+    err.truthSource === 'yahoodns.net' &&
+    response.includes('[PH01]')
+  ) {
+    bounceInfo.category = 'spam';
   } else if (err.truthSource === '163.com' && response.includes('DT:SPM')) {
     bounceInfo.category = 'spam';
   } else if (err.truthSource === 'orange.fr' && response.includes('[506]')) {
@@ -243,10 +288,16 @@ function getBounceInfo(err) {
     // then note that this error [CS01] or [HM08] Message rejected due to local policy
     // indicates that blocklist or spam was detected and so treat it appropriately
     //
-    response.includes('[HM08] Message rejected due to local policy')
+    // NOTE: [HM08] without our IP address is spam (content-based), not blocklist
+    //
+    response.includes('[HM08] Message rejected due to local policy') &&
+    response.includes(IP_ADDRESS)
   )
     bounceInfo.category = 'blocklist';
-  else if (response.includes('[CS01] Message rejected due to local policy'))
+  else if (
+    response.includes('[HM08] Message rejected due to local policy') ||
+    response.includes('[CS01] Message rejected due to local policy')
+  )
     bounceInfo.category = 'spam';
   //
   // if it was spectrum/charter/rr then if blocked then retry
