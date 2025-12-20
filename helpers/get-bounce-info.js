@@ -164,6 +164,57 @@ function getBounceInfo(err) {
     response.includes('[PH01]')
   ) {
     bounceInfo.category = 'spam';
+    //
+    // QQ.com "Suspected bounce attacks" is spam, not blocklist
+    // e.g. "550 Suspected bounce attacks [...]. https://service.mail.qq.com/detail/122/57."
+    //
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Suspected bounce attacks')
+  ) {
+    bounceInfo.category = 'spam';
+    //
+    // QQ.com "Mailbox unavailable or access denied" with detail/122/166 is recipient rejection
+    // e.g. "550 Mailbox unavailable or access denied. http://service.mail.qq.com/detail/122/166"
+    //
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Mailbox unavailable or access denied') &&
+    response.includes('service.mail.qq.com/detail/122/166')
+  ) {
+    bounceInfo.category = 'recipient';
+    bounceInfo.action = 'reject';
+    //
+    // Spectrum/Charter AUP#In-1010 is spam/suspicious activity, not blocklist
+    // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
+    // "This email account has been blocked from sending emails due to suspicious activity"
+    //
+  } else if (
+    err.truthSource === 'charter.net' &&
+    response.includes('AUP#In-1010')
+  ) {
+    bounceInfo.category = 'spam';
+    //
+    // Gmail RFC 5322 non-compliant messages (e.g. missing From header) is message issue, not blocklist
+    // e.g. "550-5.7.1 [IP] Gmail has detected that this message is not RFC 5322 compliant"
+    //
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('is not RFC 5322') &&
+    response.includes('compliant')
+  ) {
+    bounceInfo.category = 'message';
+    //
+    // Gmail SPF authentication failure rate limiting is greylist (temporary), not blocklist
+    // e.g. "421-4.7.27 Your email has been rate limited because SPF authentication didn't pass"
+    //
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('rate limited') &&
+    response.includes("SPF authentication didn't")
+  ) {
+    bounceInfo.category = 'greylist';
+    bounceInfo.action = 'defer';
   } else if (err.truthSource === '163.com' && response.includes('DT:SPM')) {
     bounceInfo.category = 'spam';
   } else if (err.truthSource === 'orange.fr' && response.includes('[506]')) {

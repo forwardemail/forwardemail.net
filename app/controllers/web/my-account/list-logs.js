@@ -587,7 +587,8 @@ async function listLogs(ctx) {
     const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
 
     logs = paginatedLogs;
-    // NOTE: itemCount will be set after filtering (line ~845)
+    // Set itemCount to total filtered count (before pagination)
+    itemCount = filteredLogs.length;
   } else {
     // No subject search: use the fast .find() approach
     const [fetchedLogs, count] = await Promise.all([
@@ -843,7 +844,7 @@ async function listLogs(ctx) {
       return true; // Keep first occurrence
     });
 
-    // Recalculate itemCount after all filtering for comprehensive search
+    // Update itemCount after deduplication (only for search queries)
     if (isSANB(subject)) {
       ctx.state.itemCount = ctx.state.logs.length;
     }

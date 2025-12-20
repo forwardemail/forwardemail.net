@@ -152,7 +152,20 @@ get_memory_details() {
 
 # Get swap usage
 get_swap_usage() {
-    free -h | awk 'NR==3{if($2 != "0B" && $2 != "0") printf "Total: %s, Used: %s, Free: %s", $2, $3, $4; else print "Swap disabled"}'
+    local swap_line
+    swap_line=$(free -h | grep -i "^Swap:")
+    if [ -z "$swap_line" ]; then
+        echo "Swap disabled"
+        return
+    fi
+    echo "$swap_line" | awk '{
+        # $1 is "Swap:", $2 is total, $3 is used, $4 is free
+        if ($2 == "0B" || $2 == "0" || $2 == "0Bi" || $2 == "") {
+            print "Swap disabled"
+        } else {
+            printf "Total: %s, Used: %s, Free: %s", $2, $3, $4
+        }
+    }'
 }
 
 # Get system uptime

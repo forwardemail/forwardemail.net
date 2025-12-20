@@ -1,5 +1,5 @@
-//- prefetch fonts
-//- https://caniuse.com/link-rel-prefetch
+//- preload fonts
+//- https://caniuse.com/link-rel-preload
 //- integrity attribute not currently supported
 //- <https://crbug.com/981419>
 //-.
@@ -11,7 +11,7 @@ if !isBot(ctx.get('User-Agent'))
   - fonts.push("vc-honey-latin-700.woff2");
 each font in fonts
   link(
-    rel="prefetch",
+    rel="preload",
     href=manifest(`fonts/${font}`),
     type="font/woff2",
     as="font",
