@@ -485,7 +485,7 @@ const obj = {
     // sandboxed
     true,
     // tti
-    'https://forwardemail.net#tti',
+    'https://forwardemail.net/tti',
     // pricing
     '$3/mo',
     // storage

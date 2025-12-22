@@ -7,7 +7,7 @@
 // eslint-disable-next-line unicorn/prefer-node-protocol
 const path = require('path');
 
-const errors = require('wildduck/lib/errors');
+const errors = require('@forwardemail/wildduck/lib/errors');
 
 // eslint-disable-next-line n/prefer-global/process
 const test = process.env.NODE_ENV === 'test';

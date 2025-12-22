@@ -11,12 +11,11 @@ const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
-const MessageHandler = require('wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const Piscina = require('piscina');
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const pify = require('pify');
 const pWaitFor = require('p-wait-for');
 const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
@@ -87,14 +86,18 @@ class SQLite {
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
 
-    // promisified version of prepare message from wildduck message handler
-    this.prepareMessage = pify(
-      MessageHandler.prototype.prepareMessage.bind({
-        indexer: this.indexer,
-        normalizeSubject: MessageHandler.prototype.normalizeSubject,
-        generateIndexedHeaders: MessageHandler.prototype.generateIndexedHeaders
-      })
-    );
+    // override message handler to provider our own `indexer`
+    this.prepareMessage = (options) => {
+      return MessageHandler.prototype.prepareMessageAsync.call(
+        {
+          indexer: this.indexer,
+          normalizeSubject: MessageHandler.prototype.normalizeSubject,
+          generateIndexedHeaders:
+            MessageHandler.prototype.generateIndexedHeaders
+        },
+        options
+      );
+    };
 
     //
     // the notifier is utilized in the IMAP connection (see `wildduck/imap-core/lib/imap-connection.js`)

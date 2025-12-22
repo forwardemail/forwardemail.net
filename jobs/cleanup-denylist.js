@@ -22,6 +22,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const isAllowlisted = require('#helpers/is-allowlisted');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -194,26 +195,47 @@ function delay(ms) {
     );
 
     //
-    // Phase 2: Filter keys that match entries
+    // Phase 2: Filter keys that match entries or are allowlisted
     //
-    logger.info('Phase 2: Filtering keys that match entries');
+    logger.info(
+      'Phase 2: Filtering keys that match entries or are allowlisted'
+    );
     const filterStartTime = Date.now();
 
-    const keysMatchingEntries = allKeys.filter((key) => keyMatchesEntries(key));
-
-    // Separate keys that match truth sources (don't delete these)
+    // Separate keys that match truth sources (don't delete these unless explicitly allowlisted)
     const truthSourceKeys = [];
     const keysToDelete = [];
+    const allowlistedKeys = [];
 
-    // Process keys with concurrency to speed up MX lookups
+    // Process all keys with concurrency
     await pMap(
-      keysMatchingEntries,
+      allKeys,
       async (key) => {
-        const matches = await keyMatchesTruthSource(key);
-        if (matches) {
-          truthSourceKeys.push(key);
-        } else {
+        // Remove 'denylist:' prefix to get the value
+        const value = key.replace(/^denylist:/i, '');
+
+        // Check if the value is allowlisted (this checks Redis allowlist:* keys,
+        // hard-coded config.allowlist, config.truthSources, and performs
+        // reverse DNS lookups for IPs)
+        const allowlisted = await isAllowlisted(value, client, resolver);
+        if (allowlisted) {
+          // Explicitly allowlisted - always delete from denylist
+          // (explicit allowlist takes precedence over truth source matching)
+          allowlistedKeys.push(key);
           keysToDelete.push(key);
+          return;
+        }
+
+        // Check if key matches entries (config.allowlist or config.truthSources)
+        if (keyMatchesEntries(key)) {
+          const matchesTruthSource = await keyMatchesTruthSource(key);
+          if (matchesTruthSource) {
+            // Matches truth source via MX but NOT explicitly allowlisted
+            // Preserve for manual review (could be legitimate spammer)
+            truthSourceKeys.push(key);
+          } else {
+            keysToDelete.push(key);
+          }
         }
       },
       { concurrency: 10 }
@@ -221,12 +243,18 @@ function delay(ms) {
 
     const filterDuration = Date.now() - filterStartTime;
     logger.info(
-      `Phase 2 complete: Found ${keysMatchingEntries.length} matching keys (${keysToDelete.length} to delete, ${truthSourceKeys.length} truth sources to preserve) in ${filterDuration}ms`
+      `Phase 2 complete: Found ${keysToDelete.length} keys to delete (${allowlistedKeys.length} via allowlist lookup), ${truthSourceKeys.length} truth sources to preserve in ${filterDuration}ms`
     );
 
     if (truthSourceKeys.length > 0) {
       logger.warn(
-        `Found ${truthSourceKeys.length} keys matching truth sources - these will NOT be deleted`
+        `Found ${truthSourceKeys.length} keys matching truth sources (not explicitly allowlisted) - these will NOT be deleted`
+      );
+    }
+
+    if (allowlistedKeys.length > 0) {
+      logger.info(
+        `Found ${allowlistedKeys.length} keys via isAllowlisted() lookup that will be deleted`
       );
     }
 
@@ -301,6 +329,7 @@ function delay(ms) {
       const summary = {
         totalKeys: allKeys.length,
         matchedKeys: keysToDelete.length,
+        allowlistedKeys: allowlistedKeys.length,
         deletedKeys: deletedCount,
         errorCount,
         scanDuration: `${scanDuration}ms`,
@@ -363,7 +392,8 @@ function delay(ms) {
 <table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Metric</th><th>Value</th></tr>
   <tr><td>Total denylist keys scanned</td><td>${allKeys.length}</td></tr>
-  <tr><td>Keys matching entries</td><td>${keysMatchingEntries.length}</td></tr>
+  <tr><td>Keys to delete (entries + allowlisted)</td><td>${keysToDelete.length}</td></tr>
+  <tr><td>Keys found via isAllowlisted()</td><td>${allowlistedKeys.length}</td></tr>
   <tr><td>Keys deleted</td><td>${deletedCount}</td></tr>
   <tr><td>Truth source matches (preserved)</td><td>${truthSourceKeys.length}</td></tr>
   <tr><td>Errors</td><td>${errorCount}</td></tr>

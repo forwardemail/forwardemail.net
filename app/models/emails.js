@@ -277,6 +277,15 @@ const Emails = new mongoose.Schema(
       recipient: String
     },
 
+    //
+    // RFC 8689 - REQUIRETLS parameter
+    // Indicates that the message requires TLS for the entire delivery chain
+    //
+    requireTLS: {
+      type: Boolean,
+      default: false
+    },
+
     // email to be sent (with date, message-id, etc headers already set)
     message: {
       type: mongoose.Schema.Types.Mixed,
@@ -502,6 +511,12 @@ Emails.pre('validate', function (next) {
   )
     throw Boom.badRequest('Property "dsn.recipient" must be a String');
 
+  next();
+});
+
+// if a message is a bounce requireTLS should always be false
+Emails.pre('validate', function (next) {
+  if (this.is_bounce) this.requireTLS = false;
   next();
 });
 
@@ -1770,7 +1785,8 @@ Emails.statics.queue = async function (
     status,
     is_bounce: isBounce,
     dsn: options?.dsn,
-    rcptTo: options?.rcptTo
+    rcptTo: options?.rcptTo,
+    requireTLS: boolean(options?.requireTLS)
   });
 
   return email;

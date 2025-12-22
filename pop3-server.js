@@ -16,8 +16,8 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('wildduck/lib/message-handler');
-const POP3Server = require('wildduck/lib/pop3/server');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
+const POP3Server = require('@forwardemail/wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
 const pify = require('pify');
 
@@ -117,14 +117,18 @@ class POP3 {
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
 
-    // promisified version of prepare message from wildduck message handler
-    this.prepareMessage = pify(
-      MessageHandler.prototype.prepareMessage.bind({
-        indexer: this.indexer,
-        normalizeSubject: MessageHandler.prototype.normalizeSubject,
-        generateIndexedHeaders: MessageHandler.prototype.generateIndexedHeaders
-      })
-    );
+    // override message handler to provider our own `indexer`
+    this.prepareMessage = (options) => {
+      return MessageHandler.prototype.prepareMessageAsync.call(
+        {
+          indexer: this.indexer,
+          normalizeSubject: MessageHandler.prototype.normalizeSubject,
+          generateIndexedHeaders:
+            MessageHandler.prototype.generateIndexedHeaders
+        },
+        options
+      );
+    };
 
     //
     // the notifier is utilized in the POP3 connection (see `wildduck/imap-core/lib/imap-connection.js`)

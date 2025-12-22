@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const bytes = require('@forwardemail/bytes');
+const regexParser = require('regex-parser');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -30,6 +31,8 @@ const getKeyInfo = require('#helpers/get-key-info');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
+
+const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
 // <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
 const consistsRepeatedSubstring = (str) =>
@@ -549,6 +552,57 @@ Aliases.pre('validate', function (next) {
         'You cannot enable IMAP for catch-all/regular expression alias names.  Please go back and create a unique/individual alias (e.g. "you@yourdomain.com") and try again.'
       )
     );
+  next();
+});
+
+// validate regex aliases to prevent invalid patterns (e.g. perl operators like negative lookahead)
+Aliases.pre('validate', function (next) {
+  // only validate regex aliases
+  if (!isSANB(this.name) || !this.name.startsWith('/')) return next();
+
+  const hasTwoSlashes = this.name.lastIndexOf('/') !== this.name.indexOf('/');
+  if (!hasTwoSlashes) return next();
+
+  // find the regex flag ending
+  let lastIndex;
+  for (const ending of REGEX_FLAG_ENDINGS) {
+    if (
+      this.name.lastIndexOf(ending) !== -1 &&
+      this.name.lastIndexOf(ending) !== 0
+    ) {
+      lastIndex = ending;
+      break;
+    }
+  }
+
+  if (!lastIndex) return next();
+
+  let parsedRegex = this.name.slice(
+    0,
+    Math.max(0, this.name.lastIndexOf(lastIndex) + 1)
+  );
+
+  // add case insensitive flag since email addresses are case insensitive
+  if (lastIndex === '/g' || lastIndex === '/') parsedRegex += 'i';
+
+  // attempt to parse the regex with RE2 to validate it
+  try {
+    // eslint-disable-next-line no-new
+    new RE2(regexParser(parsedRegex));
+  } catch (err) {
+    logger.debug(err, { parsedRegex, aliasName: this.name });
+    return next(
+      Boom.badRequest(
+        i18n.translateError(
+          'INVALID_REGEX_PATTERN',
+          this.locale,
+          this.name,
+          err.message
+        )
+      )
+    );
+  }
+
   next();
 });
 

@@ -5,7 +5,7 @@
 
 const RE2 = require('re2');
 const ip = require('ip');
-const zoneMTABounces = require('zone-mta/lib/bounces');
+const zoneMTABounces = require('@zone-eu/zone-mta/lib/bounces');
 
 const isRetryableError = require('#helpers/is-retryable-error');
 
@@ -220,13 +220,6 @@ function getBounceInfo(err) {
   } else if (err.truthSource === 'orange.fr' && response.includes('[506]')) {
     // <https://github.com/sisimai/p5-Sisimai/issues/243>
     bounceInfo.category = 'spam';
-  } else if (
-    err.truthSource === 'qq.com' &&
-    (response.includes('mailbox unavailable') ||
-      response.includes('Access denied') ||
-      (response.includes('550 recipient') && response.includes('denied')))
-  ) {
-    bounceInfo.category = 'recipient';
   } else if (err.truthSource && response.includes('Too many emails')) {
     bounceInfo.category = 'greylist';
   } else if (

@@ -16,7 +16,7 @@
 const crypto = require('node:crypto');
 
 const Database = require('better-sqlite3-multiple-ciphers');
-const MessageHandler = require('wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const validationErrorTransform = require('mongoose-validation-error-transform');

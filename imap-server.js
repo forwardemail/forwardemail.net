@@ -16,7 +16,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('@forwardemail/bytes');
 const mongoose = require('mongoose');
@@ -24,7 +24,7 @@ const pRetry = require('p-retry');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const ms = require('ms');
-const { IMAPServer } = require('wildduck/imap-core');
+const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -173,14 +173,18 @@ class IMAP {
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
 
-    // promisified version of prepare message from wildduck message handler
-    this.prepareMessage = pify(
-      MessageHandler.prototype.prepareMessage.bind({
-        indexer: this.indexer,
-        normalizeSubject: MessageHandler.prototype.normalizeSubject,
-        generateIndexedHeaders: MessageHandler.prototype.generateIndexedHeaders
-      })
-    );
+    // override message handler to provider our own `indexer`
+    this.prepareMessage = (options) => {
+      return MessageHandler.prototype.prepareMessageAsync.call(
+        {
+          indexer: this.indexer,
+          normalizeSubject: MessageHandler.prototype.normalizeSubject,
+          generateIndexedHeaders:
+            MessageHandler.prototype.generateIndexedHeaders
+        },
+        options
+      );
+    };
 
     // every hour attempt to run a backup on the connected users
     // (initial auth may attempt to backup, but could fail)

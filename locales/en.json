@@ -14790,5 +14790,8 @@
   "Mailbox already exists": "Mailbox already exists",
   "Mailbox is reserved and cannot be removed": "Mailbox is reserved and cannot be removed",
   "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.": "Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all <span class='notranslate'>%d</span> email standards for optimal deliverability.",
-  "Authentication is required.": "Authentication is required."
+  "Authentication is required.": "Authentication is required.",
+  "<span class=\"notranslate\">%s</span> had a bounce webhook error": "<span class=\"notranslate\">%s</span> had a bounce webhook error",
+  "<p>The domain <strong class=\"notranslate\">%s</strong> had the following bounce webhook error from our POST request submitted to <strong class=\"notranslate\">%s</strong>:</p>": "<p>The domain <strong class=\"notranslate\">%s</strong> had the following bounce webhook error from our POST request submitted to <strong class=\"notranslate\">%s</strong>:</p>",
+  "At least one admin user must belong to the domain.": "At least one admin user must belong to the domain."
 }

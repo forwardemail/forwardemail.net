@@ -5,7 +5,7 @@
 
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const { IMAPServer } = require('wildduck/imap-core');
+const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

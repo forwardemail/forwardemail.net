@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
+
+const x509 = require('@peculiar/x509');
+const { Crypto } = require('@peculiar/webcrypto');
 
 // <https://github.com/simonexmachina/factory-girl/issues/157>
 // <https://github.com/thiagomini/factory-girl-ts/issues/34>
@@ -38,6 +42,9 @@ let getPort;
 import('get-port').then((obj) => {
   getPort = obj.default;
 });
+
+const crypto = new Crypto();
+x509.cryptoProvider.set(crypto);
 
 //
 // setup utilities
@@ -277,3 +284,50 @@ exports.teardownWebServer = async (t) => {
     }
   }
 };
+
+async function generateSmtpKeys() {
+  // 2. Generate RSA Key Pair
+  const alg = {
+    name: 'RSASSA-PKCS1-v1_5',
+    hash: 'SHA-256',
+    publicExponent: new Uint8Array([1, 0, 1]),
+    modulusLength: 2048
+  };
+  const keys = await crypto.subtle.generateKey(alg, true, ['sign', 'verify']);
+
+  // 3. Create the Self-Signed Certificate
+  const cert = await x509.X509CertificateGenerator.createSelfSigned({
+    serialNumber: '01',
+    name: 'CN=localhost', // Match your SMTP server domain
+    notBefore: new Date(),
+    notAfter: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+    signingAlgorithm: alg,
+    keys,
+    extensions: [
+      new x509.BasicConstraintsExtension(false, true), // Not a CA
+      new x509.KeyUsagesExtension(
+        // eslint-disable-next-line no-bitwise
+        x509.KeyUsageFlags.digitalSignature |
+          x509.KeyUsageFlags.keyEncipherment,
+        true
+      )
+    ]
+  });
+
+  // 4. Export to PEM strings for smtp-server
+  const certPem = cert.toString('pem');
+
+  // Exporting private key requires pkcs8 format
+  const privateKeyBuffer = await crypto.subtle.exportKey(
+    'pkcs8',
+    keys.privateKey
+  );
+  const keyPem = `-----BEGIN PRIVATE KEY-----\n${Buffer.from(privateKeyBuffer)
+    .toString('base64')
+    .match(/.{1,64}/g)
+    .join('\n')}\n-----END PRIVATE KEY-----`;
+
+  return { key: keyPem, cert: certPem };
+}
+
+exports.generateSmtpKeys = generateSmtpKeys;

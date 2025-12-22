@@ -135,6 +135,12 @@ module.exports = {
     '<div>The following alias names were detected on <strong class="notranslate text-monospace">%s</span> to be listed in restricted alias names and already existed.  You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</div><ul class="notranslate"><li>%s</li></ul>',
   INVALID_LOCAL_PART:
     '<span class="notranslate">%s</span> is not a valid UTF-8 local part for an alias name',
+  INVALID_REGEX_PATTERN:
+    'The regex alias <span class="notranslate">%s</span> has an invalid pattern: <span class="notranslate">%s</span>. Please note that Perl-style operators like negative lookahead (?!) and lookbehind (?<!) are not supported.',
+  INVALID_REGEX_ALIAS_SUBJECT:
+    'Invalid regex pattern detected for alias on <span class="notranslate">%s</span>',
+  INVALID_REGEX_ALIAS_MESSAGE:
+    'An alias with an invalid regex pattern was detected on your domain <span class="notranslate">%s</span>. The alias <span class="notranslate">%s</span> has the pattern <span class="notranslate">%s</span> which caused the error: <span class="notranslate">%s</span>. Please note that Perl-style operators like negative lookahead (?!) and lookbehind (?<!) are not supported by our regex engine (RE2). Please update or remove this alias to prevent email delivery issues.',
   ALIAS_NAME_INVISIBLE_UNICODE:
     'Alias name cannot contain invisible Unicode characters',
   RECIPIENT_INVISIBLE_UNICODE:

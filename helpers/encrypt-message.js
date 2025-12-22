@@ -17,7 +17,7 @@ const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
 const openpgp = require('openpgp/dist/node/openpgp.js');
-const tools = require('wildduck/lib/tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 
 const config = require('#config');
 

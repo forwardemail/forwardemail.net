@@ -248,7 +248,10 @@ async function sendEmail(
       resolver,
       logger,
       cache,
-      client
+      client,
+      envelope: {
+        requireTLS: Boolean(email?.requireTLS || session.envelope.requireTLS)
+      }
     })
   ]);
 
@@ -304,14 +307,16 @@ async function sendEmail(
               // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
               dsn: {
                 notify: 'never'
-              }
+              },
+              requireTLS: email.requireTLS
             }
           : {
               ...envelope,
               // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
               dsn: {
                 notify: 'never'
-              }
+              },
+              requireTLS: email?.requireTLS
             },
       raw: pgpResults.finalRaw,
       //
@@ -324,7 +329,8 @@ async function sendEmail(
       //
       dsn: {
         notify: 'never'
-      }
+      },
+      requireTLSExtensionEnabled: Boolean(requireTLS)
     });
     info.pgp = pgpResults.pgp;
     logger.info('delivered', {

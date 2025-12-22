@@ -13,10 +13,12 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const imapTools = require('wildduck/imap-core/lib/imap-tools');
-const tools = require('wildduck/lib/tools');
+const imapTools = require('@forwardemail/wildduck/imap-core/lib/imap-tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
-const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const {
+  IMAPConnection
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -150,7 +152,8 @@ async function onStore(mailboxId, update, session, fn) {
       _id: true,
       uid: true,
       flags: true,
-      modseq: true
+      modseq: true,
+      thread: true
     };
 
     const fields = Object.keys(projection);
@@ -165,6 +168,9 @@ async function onStore(mailboxId, update, session, fn) {
     });
 
     const messages = session.db.prepare(sql.query).all(sql.values);
+
+    // Determine if unseen status changed for this STORE operation
+    const unseenChange = update.value.some((f) => getFlag(f) === '\\seen');
 
     try {
       if (messages.length > 0) {
@@ -464,8 +470,10 @@ async function onStore(mailboxId, update, session, fn) {
                 ignore: session.id,
                 uid: message.uid,
                 flags: message.flags,
+                thread: message.thread,
                 message: message._id,
-                modseq: newModseq
+                modseq: newModseq,
+                unseenChange
               };
 
               entries.push(entry);

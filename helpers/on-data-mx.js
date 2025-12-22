@@ -1238,7 +1238,8 @@ async function forward(recipient, headers, session, body) {
         port: recipient.port,
         envelope: {
           from,
-          to: recipient.to[0]
+          to: recipient.to[0],
+          requireTLS: session.envelope.requireTLS
         },
         raw: Buffer.concat([sealHeaders, unsealed]),
         resolver: this.resolver,
@@ -1332,7 +1333,8 @@ async function forward(recipient, headers, session, body) {
             port: recipient.port,
             envelope: {
               from,
-              to: recipient.to[0]
+              to: recipient.to[0],
+              requireTLS: session.envelope.requireTLS
             },
             raw: Buffer.concat([sealHeaders, unsealed]),
             resolver: this.resolver,

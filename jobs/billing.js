@@ -136,7 +136,12 @@ async function mapper(user) {
   if (_.isDate(user[config.userFields.paymentReminderFinalNoticeSentAt])) {
     // if it has been more than a month then ban the user and email admins
     // otherwise return early since we've already notified them
+    //
+    // NOTE: also ensure the plan is actually past due before sending termination notice
+    // This prevents sending termination emails to users who paid after the final notice
+    //
     if (
+      dayjs(user[config.userFields.planExpiresAt]).isBefore(dayjs()) &&
       Date.now() >
         dayjs(user[config.userFields.paymentReminderFinalNoticeSentAt])
           .add(1, 'month')

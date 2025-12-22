@@ -16,9 +16,9 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const logger = require('#helpers/logger');
 
-// dynamically import @cleandns/whois-rdap
+// dynamically import @forwardemail/whois-rdap
 let whois;
-import('@cleandns/whois-rdap').then((obj) => {
+import('@forwardemail/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
 

@@ -57,6 +57,10 @@ function getNodemailerMessageFromRequest(ctx) {
     // <https://nodemailer.com/extras/mailcomposer/#message-fields>
     'newline',
 
+    // RFC 8689 REQUIRETLS support
+    'requireTLSExtensionEnabled',
+    'requireTLS',
+
     // dkim (handled by sending job)
 
     // NOTE: "folder" is special and used only for /v1/messages routes
@@ -66,6 +70,11 @@ function getNodemailerMessageFromRequest(ctx) {
 
     'dsn'
   ]);
+
+  // nodemailer naming convention may be confusing so we support both
+  if (message.requireTLSExtensionEnabled)
+    message.requireTLS = message.requireTLSExtensionEnabled;
+  delete message.requireTLSExtensionEnabled;
 
   // dsn: {
   //   id: "msg-123",

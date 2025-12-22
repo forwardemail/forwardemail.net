@@ -19,7 +19,7 @@ const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
-const { SMTPServer } = require('@forwardemail/smtp-server');
+const { SMTPServer } = require('smtp-server');
 
 // const _ = require('lodash');
 const utils = require('../utils');
@@ -1713,6 +1713,7 @@ test('lists emails', async (t) => {
         'domain',
         'envelope',
         'hard_bounces',
+        'requireTLS',
         'headers',
         'id',
         'is_bounce',
@@ -1755,6 +1756,7 @@ test('lists emails', async (t) => {
         'domain',
         'envelope',
         'hard_bounces',
+        'requireTLS',
         'headers',
         'id',
         'is_bounce',
@@ -1798,10 +1800,11 @@ test('lists emails', async (t) => {
     t.deepEqual(
       _.sortBy(Object.keys(res.body[0])),
       _.sortBy([
-        'accepted',
+        // 'accepted',
         'alias',
         'created_at',
         'date',
+        'deliveries',
         'domain',
         'envelope',
         'hard_bounces',
@@ -1812,6 +1815,7 @@ test('lists emails', async (t) => {
         'link',
         'messageId',
         'object',
+        'requireTLS',
         'soft_bounces',
         'status',
         'subject',

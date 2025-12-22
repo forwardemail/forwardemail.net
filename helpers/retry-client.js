@@ -28,7 +28,9 @@ class RetryClient extends undici.Client {
 
     this.request = async (options, count = 1) => {
       try {
-        options.throwOnError = true;
+        // throwOnError was removed in undici v7
+        // <https://github.com/nodejs/undici/issues/4698>
+        // options.throwOnError = true;
         const abortController = new AbortController();
         options.signal = abortController.signal;
 
@@ -67,11 +69,12 @@ class RetryClient extends undici.Client {
         if (response.statusCode !== 200) {
           // still need to consume body even if an error occurs
           const body = await response.body.text();
-          const err = new undici.errors.ResponseStatusCodeError(
+          // ResponseStatusCodeError was removed in undici v7 and replaced with ResponseError
+          // <https://github.com/nodejs/undici/pull/4473>
+          const err = new undici.errors.ResponseError(
             `Response status code ${response.statusCode}`,
             response.statusCode,
-            response.headers,
-            body
+            { headers: response.headers, body }
           );
           err.options = options;
           err.count = count;

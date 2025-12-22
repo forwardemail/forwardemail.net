@@ -23,7 +23,7 @@ async function getMessage(imapClient, info, provider) {
           for await (const message of imapClient.fetch('*', {
             headers: ['Message-ID']
           })) {
-            if (received) continue;
+            if (received) break;
             if (
               message.headers &&
               message.headers

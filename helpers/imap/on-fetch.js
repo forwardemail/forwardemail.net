@@ -14,10 +14,12 @@
  */
 
 const getStream = require('get-stream');
-const tools = require('wildduck/lib/tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
-const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
-const { imapHandler } = require('wildduck/imap-core');
+const {
+  IMAPConnection
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
+const { imapHandler } = require('@forwardemail/wildduck/imap-core');
 const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
@@ -103,7 +105,8 @@ async function onFetch(mailboxId, options, session, fn) {
     const projection = {
       _id: true,
       uid: true,
-      modseq: true
+      modseq: true,
+      thread: true
     };
 
     if (options.flagsExist) projection.flags = true;
@@ -366,7 +369,10 @@ async function onFetch(mailboxId, options, session, fn) {
           command: 'FETCH',
           uid: message.uid,
           flags: message.flags,
-          message: message._id
+          message: message._id,
+          thread: message.thread,
+          // unseenChange is true when marking as seen via FETCH
+          unseenChange: true
         });
       }
     }

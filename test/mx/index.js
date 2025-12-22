@@ -20,7 +20,7 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const test = require('ava');
-const { SMTPServer } = require('@forwardemail/smtp-server');
+const { SMTPServer } = require('smtp-server');
 const { SRS } = require('sender-rewriting-scheme');
 
 const utils = require('../utils');
@@ -1802,6 +1802,209 @@ This should be allowed through
     1,
     'Email from non-denylisted address should be received'
   );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('requiretls propagation', async (t) => {
+  // Generate self-signed cert in-memory
+  const { key, cert } = await utils.generateSmtpKeys();
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp,
+    secure: true,
+    key,
+    cert
+  });
+
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  const downstreamPort = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: downstreamPort.toString()
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [IP_ADDRESS],
+      is_enabled: true
+    })
+    .create();
+
+  // Create downstream SMTP server to receive forwarded email
+  const receivedEmails = [];
+  const server = new SMTPServer({
+    authOptional: true,
+    secure: false,
+    onData(stream, session, callback) {
+      const chunks = [];
+      stream.on('data', (chunk) => {
+        chunks.push(chunk);
+      });
+      stream.on('end', () => {
+        receivedEmails.push({
+          session,
+          raw: Buffer.concat(chunks).toString()
+        });
+        callback();
+      });
+    },
+    logger
+  });
+
+  await util.promisify(server.listen).bind(server)(downstreamPort);
+
+  // Spoof DNS records
+  const map = new Map();
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+  map.set(
+    `_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [`v=DMARC1; p=reject; rua=mailto:dmarc@${domain.name};`],
+      true
+    )
+  );
+  map.set(
+    'a:test.com',
+    resolver.spoofPacket('test.com', 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+  map.set(
+    'mx:test.com',
+    resolver.spoofPacket(
+      'test.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Store spoofed DNS cache
+  await resolver.options.cache.mset(map);
+
+  // Set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    secure: true,
+    tls,
+    requireTLS: true
+  });
+
+  // Send email with REQUIRETLS to MX server
+  const err = await t.throwsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'test@test.com',
+        to: `${alias.name}@${domain.name}`,
+        // <https://github.com/nodemailer/nodemailer/pull/1793
+        requireTLSExtensionEnabled: true
+      },
+      raw: `
+To: ${alias.name}@${domain.name}
+From: test@test.com
+Subject: test requiretls propagation
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test REQUIRETLS propagation through MX
+`.trim()
+    })
+  );
+
+  t.regex(err.message, /Server does not support REQUIRETLS extension/);
+  t.is(err.responseCode, 550);
 
   await server.close();
   await smtp.close();

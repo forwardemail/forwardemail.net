@@ -341,7 +341,8 @@ async function onDataSMTP(session, date, headers, body) {
       catchall: typeof session?.user?.alias_id !== 'string',
       isPending: true,
       rcptTo: session.envelope.rcptTo,
-      dsn
+      dsn,
+      requireTLS: session.envelope.requireTLS
     });
 
     if (!_.isDate(domain.smtp_suspended_sent_at)) {

@@ -8,8 +8,8 @@ const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
 const isFQDN = require('is-fqdn');
-const POP3Server = require('wildduck/lib/pop3/server');
-const { IMAPServer } = require('wildduck/imap-core');
+const POP3Server = require('@forwardemail/wildduck/lib/pop3/server');
+const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
 
 const SMTPError = require('#helpers/smtp-error');
 const DenylistError = require('#helpers/denylist-error');

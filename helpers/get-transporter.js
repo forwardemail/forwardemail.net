@@ -199,8 +199,9 @@ async function getTransporter(options = {}, err) {
     port,
     resolver,
     logger,
-    cache
+    cache,
     // client
+    envelope
   } = options;
 
   // safeguard to ensure port is always a number
@@ -261,7 +262,8 @@ async function getTransporter(options = {}, err) {
     truthSource = parseRootDomain(mx.hostname);
 
   const requireTLS = Boolean(
-    Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
+    envelope?.requireTLS ||
+      Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
       (truthSource && OUTLOOK_HOSTS.has(truthSource)) ||
       (truthSource && truthSource === 'google.com')
   );

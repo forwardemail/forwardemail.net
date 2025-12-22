@@ -8,22 +8,23 @@ const fs = require('node:fs');
 const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
 const pify = require('pify');
-const { SMTPServer } = require('@forwardemail/smtp-server');
+const { SMTPServer } = require('smtp-server');
 
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
+const isLockingError = require('#helpers/is-locking-error');
+const isMongoError = require('#helpers/is-mongo-error');
+const isRedisError = require('#helpers/is-redis-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const onClose = require('#helpers/on-close');
 const onConnect = require('#helpers/on-connect');
 const onData = require('#helpers/on-data');
 const onMailFrom = require('#helpers/on-mail-from');
 const onRcptTo = require('#helpers/on-rcpt-to');
-const isRetryableError = require('#helpers/is-retryable-error');
-const isRedisError = require('#helpers/is-redis-error');
-const isMongoError = require('#helpers/is-mongo-error');
-const isLockingError = require('#helpers/is-locking-error');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
@@ -74,6 +75,18 @@ class MX {
       // <https://github.com/nodemailer/wildduck/issues/563>
       // hide8BITMIME: true,
 
+      //
+      // Enable REQUIRETLS support (RFC 8689)
+      //
+      // NOTE: currently disabled until we have ensured full compliance
+      //       tests still use this though so we're keeping it for now
+      //       we need to add TLS-Required: No header support
+      //       and also fallback so it rotates through MX servers and retries
+      //       and also double check that we're RFC compliant in other edge cases
+      //       <https://www.rfc-editor.org/rfc/rfc8689.pdf>
+      //
+      hideREQUIRETLS: config.env !== 'test',
+
       // keys
       ...(config.env === 'production'
         ? {
@@ -81,7 +94,10 @@ class MX {
             cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
             ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
           }
-        : {})
+        : {}),
+
+      // override with any options passed (useful for testing)
+      ..._.omit(options, ['client', 'wsp'])
     });
 
     // override logger

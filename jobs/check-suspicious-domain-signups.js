@@ -462,8 +462,11 @@ function generateDomainReport(analysis, mxCheck, riskScore, users) {
     patterns: analysis.patterns,
     riskIndicators: analysis.riskIndicators,
     recommendation: getRecommendation(severity, riskScore),
-    userEmails: users.map((u) => u.email), // Include user emails for manual review
-    userIds: users.map((u) => u._id.toString())
+    users: users.map((u) => ({
+      id: u._id.toString(),
+      email: u.email,
+      created_at: u.created_at
+    }))
   };
 }
 
@@ -503,81 +506,102 @@ async function sendSecurityAlert(severity, reports) {
     const reportsHtml = reports
       .map((report, index) =>
         `
-<div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; background: ${
+<div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; margin: 15px 0; background: ${
           report.severity === 'critical'
             ? '#fff5f5'
             : report.severity === 'high'
             ? '#fff8e1'
-            : '#f5f5f5'
-        }">
-  <h3 style="margin-top: 0;">${index + 1}. ${report.domain}</h3>
-  <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; margin: 10px 0;">
+            : '#f9f9f9'
+        };">
+  <h3 style="margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid ${
+    report.severity === 'critical'
+      ? '#dc3545'
+      : report.severity === 'high'
+      ? '#fd7e14'
+      : '#6c757d'
+  };">
+    ${index + 1}. ${report.domain}
+    <span style="float: right; font-size: 14px; color: ${
+      report.severity === 'critical'
+        ? '#dc3545'
+        : report.severity === 'high'
+        ? '#fd7e14'
+        : '#6c757d'
+    }; text-transform: uppercase;">${report.severity}</span>
+  </h3>
+
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
     <tr>
-      <th style="text-align: left; background: #f0f0f0;">Metric</th>
-      <th style="text-align: left; background: #f0f0f0;">Value</th>
+      <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa; width: 40%;"><strong>Risk Score</strong></td>
+      <td style="padding: 8px; border: 1px solid #ddd;">
+        <span style="color: ${
+          report.riskScore >= 80
+            ? '#dc3545'
+            : report.riskScore >= 60
+            ? '#fd7e14'
+            : '#212529'
+        }; font-weight: bold; font-size: 18px;">${report.riskScore}/100</span>
+      </td>
     </tr>
     <tr>
-      <td><strong>Risk Score</strong></td>
-      <td><span style="color: ${
-        report.riskScore >= 80
-          ? 'red'
-          : report.riskScore >= 60
-          ? 'orange'
-          : 'black'
-      }; font-weight: bold;">${report.riskScore}/100</span></td>
+      <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Total Users</strong></td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${
+        report.totalUsers
+      }</td>
     </tr>
     <tr>
-      <td><strong>Severity</strong></td>
-      <td><span style="color: ${
-        report.severity === 'critical'
-          ? 'red'
-          : report.severity === 'high'
-          ? 'orange'
-          : 'black'
-      }; font-weight: bold; text-transform: uppercase;">${
-          report.severity
-        }</span></td>
+      <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Has MX Records</strong></td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${
+        report.hasMX ? '✅ Yes' : '❌ No'
+      }</td>
     </tr>
     <tr>
-      <td><strong>Total Users</strong></td>
-      <td>${report.totalUsers}</td>
-    </tr>
-    <tr>
-      <td><strong>Truth Source</strong></td>
-      <td>${report.isTruthSource ? '✅ Yes' : '❌ No'}</td>
-    </tr>
-    <tr>
-      <td><strong>Has MX Records</strong></td>
-      <td>${report.hasMX ? '✅ Yes' : '❌ No'}</td>
-    </tr>
-    <tr>
-      <td><strong>MX Status</strong></td>
-      <td>${report.mxReason}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;"><strong>MX Status</strong></td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${report.mxReason}</td>
     </tr>
   </table>
 
   ${
     report.patterns.length > 0
       ? `
-  <h4>Suspicious Patterns Detected:</h4>
-  <ul>
-    ${report.patterns
-      .map(
-        (p) =>
-          `<li><strong>${p.timeWindow}:</strong> ${
-            p.userCount
-          } signups (threshold: ${p.threshold}, exceeded by ${
-            p.exceeded
-          }) - <span style="color: ${
+  <div style="margin-bottom: 15px;">
+    <h4 style="margin: 0 0 10px 0; color: #495057;">Suspicious Patterns</h4>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="background: #f8f9fa;">
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Time Window</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Signups</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Threshold</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Exceeded By</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Severity</th>
+      </tr>
+      ${report.patterns
+        .map(
+          (p) => `
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;">${p.timeWindow}</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold;">${
+          p.userCount
+        }</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
+          p.threshold
+        }</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center; color: #dc3545;">+${
+          p.exceeded
+        }</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+          <span style="color: ${
             p.severity === 'critical'
-              ? 'red'
+              ? '#dc3545'
               : p.severity === 'high'
-              ? 'orange'
-              : 'black'
-          }; text-transform: uppercase;">${p.severity}</span></li>`
-      )
-      .join('\n    ')}
-  </ul>
+              ? '#fd7e14'
+              : '#6c757d'
+          }; text-transform: uppercase; font-weight: bold;">${p.severity}</span>
+        </td>
+      </tr>`
+        )
+        .join('')}
+    </table>
+  </div>
   `
       : ''
   }
@@ -585,85 +609,138 @@ async function sendSecurityAlert(severity, reports) {
   ${
     report.riskIndicators.length > 0
       ? `
-  <h4>Risk Indicators:</h4>
-  <ul>
-    ${report.riskIndicators.map((i) => `<li>${i}</li>`).join('\n    ')}
-  </ul>
+  <div style="margin-bottom: 15px;">
+    <h4 style="margin: 0 0 10px 0; color: #495057;">Risk Indicators</h4>
+    <ul style="margin: 0; padding-left: 20px;">
+      ${report.riskIndicators
+        .map((i) => `<li style="margin-bottom: 5px;">${i}</li>`)
+        .join('')}
+    </ul>
+  </div>
   `
       : ''
   }
 
-  <h4 style="color: ${
+  <div style="background: ${
     report.severity === 'critical'
-      ? 'red'
+      ? '#f8d7da'
       : report.severity === 'high'
-      ? 'orange'
-      : 'black'
-  };">Recommendation:</h4>
-  <p><strong>${report.recommendation}</strong></p>
+      ? '#fff3cd'
+      : '#e2e3e5'
+  }; padding: 12px; border-radius: 4px; margin-bottom: 15px;">
+    <strong>Recommendation:</strong> ${report.recommendation}
+  </div>
 
-  <h4>Affected Users (${report.userEmails.length}):</h4>
-  <details>
-    <summary>Click to view user list</summary>
-    <ul style="font-family: monospace; font-size: 12px;">
-      ${report.userEmails.map((email) => `<li>${email}</li>`).join('\n      ')}
-    </ul>
-  </details>
+  <div>
+    <h4 style="margin: 0 0 10px 0; color: #495057;">Affected Users (${
+      report.users.length
+    })</h4>
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+      <tr style="background: #f8f9fa;">
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">#</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Email</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Created</th>
+        <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Admin Link</th>
+      </tr>
+      ${report.users
+        .map(
+          (user, i) => `
+      <tr>
+        <td style="padding: 6px 8px; border: 1px solid #ddd;">${i + 1}</td>
+        <td style="padding: 6px 8px; border: 1px solid #ddd; font-family: monospace;">${
+          user.email
+        }</td>
+        <td style="padding: 6px 8px; border: 1px solid #ddd;">${dayjs(
+          user.created_at
+        ).format('YYYY-MM-DD HH:mm')}</td>
+        <td style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">
+          <a href="${config.urls.web}/en/admin/users/${
+            user.id
+          }" style="color: #007bff; text-decoration: none;">View User</a>
+        </td>
+      </tr>`
+        )
+        .join('')}
+    </table>
+  </div>
 </div>
     `.trim()
       )
       .join('\n\n');
 
     const summaryHtml = `
-<h2>🚨 Suspicious Domain Signup Detection Report</h2>
-<p><strong>Alert Level:</strong> <span style="color: ${
-      severity === 'critical' ? 'red' : severity === 'high' ? 'orange' : 'black'
-    }; font-weight: bold; text-transform: uppercase;">${severity}</span></p>
+<h2 style="color: #212529; border-bottom: 2px solid #dee2e6; padding-bottom: 10px;">
+  🚨 Suspicious Domain Signup Detection Report
+</h2>
 
-<table border="1" cellpadding="5" cellspacing="0" style="margin: 20px 0;">
-  <tr>
-    <th style="text-align: left; background: #f0f0f0;">Summary</th>
-    <th style="text-align: left; background: #f0f0f0;">Value</th>
+<div style="background: ${
+      severity === 'critical'
+        ? '#f8d7da'
+        : severity === 'high'
+        ? '#fff3cd'
+        : '#e2e3e5'
+    }; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+  <strong>Alert Level:</strong>
+  <span style="color: ${
+    severity === 'critical'
+      ? '#dc3545'
+      : severity === 'high'
+      ? '#fd7e14'
+      : '#212529'
+  }; font-weight: bold; text-transform: uppercase; font-size: 18px; margin-left: 10px;">${severity}</span>
+</div>
+
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+  <tr style="background: #343a40; color: white;">
+    <th style="padding: 12px; text-align: left;" colspan="2">Summary</th>
   </tr>
   <tr>
-    <td>Suspicious Domains Detected</td>
-    <td><strong>${reports.length}</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa; width: 50%;"><strong>Suspicious Domains Detected</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-size: 18px; font-weight: bold;">${
+      reports.length
+    }</td>
   </tr>
   <tr>
-    <td>Total Users Affected</td>
-    <td><strong>${totalUsers}</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Total Users Affected</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-size: 18px; font-weight: bold;">${totalUsers}</td>
   </tr>
   <tr>
-    <td>Critical Severity</td>
-    <td><strong>${
-      reports.filter((r) => r.severity === 'critical').length
-    }</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Critical Severity</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd;">
+      <span style="color: #dc3545; font-weight: bold;">${
+        reports.filter((r) => r.severity === 'critical').length
+      }</span>
+    </td>
   </tr>
   <tr>
-    <td>High Severity</td>
-    <td><strong>${
-      reports.filter((r) => r.severity === 'high').length
-    }</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>High Severity</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd;">
+      <span style="color: #fd7e14; font-weight: bold;">${
+        reports.filter((r) => r.severity === 'high').length
+      }</span>
+    </td>
   </tr>
   <tr>
-    <td>Medium Severity</td>
-    <td><strong>${
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Medium Severity</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd;">${
       reports.filter((r) => r.severity === 'medium').length
-    }</strong></td>
+    }</td>
   </tr>
   <tr>
-    <td>Low Severity</td>
-    <td><strong>${
+    <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Low Severity</strong></td>
+    <td style="padding: 10px; border: 1px solid #ddd;">${
       reports.filter((r) => r.severity === 'low').length
-    }</strong></td>
+    }</td>
   </tr>
 </table>
 
-<h3>Detailed Reports:</h3>
+<h3 style="color: #212529; border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Detailed Reports</h3>
 ${reportsHtml}
 
-<hr style="margin: 30px 0;">
-<p><em>This is an automated fraud detection alert. Please review and take appropriate action manually.</em></p>
+<hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
+<p style="color: #6c757d; font-size: 12px;">
+  <em>This is an automated fraud detection alert. Please review and take appropriate action manually.</em>
+</p>
     `.trim();
 
     await emailHelper({

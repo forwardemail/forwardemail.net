@@ -50,6 +50,9 @@ async function remove(ctx) {
   //
   await abusePreventionByUserId(ctx);
 
+  // store the user's email before it gets rewritten
+  const originalEmail = ctx.state.user.email;
+
   // filter domain ids for admin owned domains
   const domainIds = ctx.state.domains
     .filter((d) => d.group === 'admin')
@@ -226,6 +229,31 @@ async function remove(ctx) {
   // clear banned cache
   ctx.client
     .del('banned_user_ids')
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
+  // send win-back email to the user's original email address
+  emailHelper({
+    message: {
+      to: originalEmail,
+      from: config.supportEmail,
+      bcc: config.supportEmail,
+      subject: 'Forward Email - Quick question',
+      text: `Hey,
+
+I'm the founder of Forward Email and I noticed you deleted your account. I'm sorry if we let you down.
+
+Was there a missing feature? Configuration issue? Question we didn't answer?
+
+Reply and let me know. I'll send you a coupon for at least a free month.
+
+P.S. Don't worry, your email and data have been deleted from our system. This is a one-time email - no spam or follow-ups.
+
+--
+Forward Email
+https://forwardemail.net`
+    }
+  })
     .then()
     .catch((err) => ctx.logger.fatal(err));
 

@@ -1294,6 +1294,10 @@
           "link": {
             "type": "string",
             "format": "uri"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Indicates if TLS is required for the entire delivery chain (RFC 8689)."
           }
         },
         "example": {
@@ -1513,6 +1517,10 @@
           "list": {
             "type": "object",
             "description": "Optional object of List-* headers."
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "If true, requires TLS for the entire delivery chain (RFC 8689). The message will only be transmitted over TLS-encrypted connections."
           }
         }
       },

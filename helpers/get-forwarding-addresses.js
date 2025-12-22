@@ -17,11 +17,14 @@ const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
 
 const _ = require('#helpers/lodash');
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
 const emailHelper = require('#helpers/email');
 const getErrorCode = require('#helpers/get-error-code');
+const i18n = require('#helpers/i18n');
 const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
 const getKeyInfo = require('#helpers/get-key-info');
 const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
@@ -242,10 +245,11 @@ async function getForwardingAddresses(
 
   // if the record was blank then throw an error
   if (!isSANB(record) && !hasIMAP)
-    throw new SMTPError(
-      `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 550, ignore_hook: true, notConfigured: true }
-    );
+    throw new SMTPError(`${address} does not exist`, {
+      responseCode: 550,
+      ignore_hook: true,
+      notConfigured: true
+    });
 
   // e.g. user@example.com => user@gmail.com
   // record = "forward-email=hello:user@gmail.com"
@@ -528,10 +532,105 @@ async function getForwardingAddresses(
         // NOTE: catches errors like "Invalid regular expression":
         regex = new RE2(regexParser(parsedRegex));
       } catch (err) {
-        // TODO: possibly email the owner/admin for things like negative lookhead or perl operator issues
         err.address = address;
         err.parsedRegex = parsedRegex;
-        logger.fatal(err, { session, resolver: this.resolver });
+        logger.debug(err, { session, resolver: this.resolver });
+
+        // email the domain admins and alias owner about the invalid regex
+        // use redis caching to only send once per month
+        // check both element-based and alias-id-based cache keys
+        // (multiple elements may map to the same alias)
+        const elementCacheKey = `invalid_regex_email:${element}`;
+        this.client
+          .get(elementCacheKey)
+          .then(async (cache) => {
+            if (cache) return;
+            try {
+              // find the alias by name pattern matching
+              const aliasName = element.split(':')[0] || element;
+              const domainDoc = await Domains.findOne({
+                name: domain
+              })
+                .select('_id name id members')
+                .lean()
+                .exec();
+
+              if (!domainDoc) return;
+
+              const alias = await Aliases.findOne({
+                domain: domainDoc._id,
+                name: aliasName
+              })
+                .select('id user name')
+                .populate(
+                  'user',
+                  `email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
+                )
+                .lean()
+                .exec();
+
+              // check alias-id-based cache key (in case multiple elements map to same alias)
+              if (alias?.id) {
+                const aliasIdCacheKey = `invalid_regex_alias:${alias.id}`;
+                const aliasCache = await this.client.get(aliasIdCacheKey);
+                if (aliasCache) return;
+              }
+
+              // get domain admins
+              const obj = await Domains.getToAndMajorityLocaleByDomain(
+                domainDoc
+              );
+              const to = [...obj.to];
+
+              // add alias owner if different from admins
+              if (
+                alias?.user?.email &&
+                alias.user[config.userFields.hasVerifiedEmail] &&
+                !alias.user[config.userFields.isBanned] &&
+                !to.includes(alias.user.email)
+              ) {
+                to.push(alias.user.email);
+              }
+
+              const subject = i18n.translate(
+                'INVALID_REGEX_ALIAS_SUBJECT',
+                obj.locale,
+                domain
+              );
+              const message = i18n.translate(
+                'INVALID_REGEX_ALIAS_MESSAGE',
+                obj.locale,
+                domain,
+                aliasName,
+                parsedRegex,
+                err.message
+              );
+
+              await emailHelper({
+                template: 'alert',
+                message: {
+                  to,
+                  bcc: config.alertsEmail,
+                  subject
+                },
+                locals: {
+                  message,
+                  locale: obj.locale
+                }
+              });
+
+              // cache for 30 days to prevent repeated emails
+              // set both element-based and alias-id-based cache keys
+              await this.client.set(elementCacheKey, true, 'PX', ms('30d'));
+              if (alias?.id) {
+                const aliasIdCacheKey = `invalid_regex_alias:${alias.id}`;
+                await this.client.set(aliasIdCacheKey, true, 'PX', ms('30d'));
+              }
+            } catch (emailErr) {
+              logger.fatal(emailErr);
+            }
+          })
+          .catch((cacheErr) => logger.fatal(cacheErr));
       }
 
       if (username && regex && regex.test(username.toLowerCase())) {
@@ -690,10 +789,11 @@ async function getForwardingAddresses(
 
   // if we don't have a forwarding address then throw an error
   if (forwardingAddresses.length === 0 && !hasIMAP) {
-    throw new SMTPError(
-      `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 550, ignore_hook: true, notConfigured: true }
-    );
+    throw new SMTPError(`${address} does not exist`, {
+      responseCode: 550,
+      ignore_hook: true,
+      notConfigured: true
+    });
   }
 
   //

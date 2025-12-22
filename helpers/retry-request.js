@@ -20,7 +20,9 @@ async function retryRequest(url, opts = {}, count = 1) {
     // exponential retry backoff (2, 4, 8)
     opts.calculateDelay = (count) => Math.round(1000 * 2 ** count);
 
-    opts.throwOnError = true;
+    // throwOnError was removed in undici v7
+    // <https://github.com/nodejs/undici/issues/4698>
+    // opts.throwOnError = true;
 
     const abortController = new AbortController();
     opts.signal = abortController.signal;
@@ -75,11 +77,12 @@ async function retryRequest(url, opts = {}, count = 1) {
     if (response.statusCode !== 200) {
       // still need to consume body even if an error occurs
       const body = await response.body.text();
-      const err = new undici.errors.ResponseStatusCodeError(
+      // ResponseStatusCodeError was removed in undici v7 and replaced with ResponseError
+      // <https://github.com/nodejs/undici/pull/4473>
+      const err = new undici.errors.ResponseError(
         `Response status code ${response.statusCode}`,
         response.statusCode,
-        response.headers,
-        body
+        { headers: response.headers, body }
       );
       err.url = url;
       err.options = opts;

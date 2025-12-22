@@ -18,7 +18,7 @@ const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
-const { SMTPServer } = require('@forwardemail/smtp-server');
+const { SMTPServer } = require('smtp-server');
 const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
@@ -4128,5 +4128,197 @@ Test`.trim()
   );
 
   await server.close();
+  await smtp.close();
+});
+
+test('requiretls support', async (t) => {
+  // Generate self-signed cert in-memory
+  const { key, cert } = await utils.generateSmtpKeys();
+  const secure = true;
+  const smtp = new SMTP(
+    {
+      client: t.context.client,
+      key,
+      cert
+    },
+    secure
+  );
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+  const downstreamPort = await getPort();
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: downstreamPort.toString()
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [IP_ADDRESS],
+      is_enabled: true
+    })
+    .create();
+
+  const pass = await alias.createToken();
+
+  await alias.save();
+
+  // Spoof DNS records
+  const map = new Map();
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+  map.set(
+    `_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [`v=DMARC1; p=reject; rua=mailto:dmarc@${domain.name};`],
+      true
+    )
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Store spoofed DNS cache
+  await resolver.options.cache.mset(map);
+
+  // Set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    secure,
+    tls,
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  // Send email with REQUIRETLS
+  const info = await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: user.email,
+      // <https://github.com/nodemailer/nodemailer/pull/1793
+      requireTLSExtensionEnabled: true
+    },
+    raw: `
+To: ${user.email}
+From: ${alias.name}@${domain.name}
+Subject: test requiretls
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test REQUIRETLS
+`.trim()
+  });
+
+  t.log('info', info);
+
+  // Wait for email to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        'envelope.from': `${alias.name}@${domain.name}`,
+        'envelope.to': user.email
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  // Verify email was stored with requireTLS flag
+  const email = await Emails.findOne({
+    'envelope.from': `${alias.name}@${domain.name}`,
+    'envelope.to': user.email
+  })
+    .lean()
+    .exec();
+
+  t.true(email !== null);
+  t.is(email.requireTLS, true);
+
   await smtp.close();
 });
