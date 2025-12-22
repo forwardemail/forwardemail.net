@@ -238,7 +238,7 @@ async function remove(ctx) {
       to: originalEmail,
       from: config.supportEmail,
       bcc: config.supportEmail,
-      subject: 'Forward Email - Quick question',
+      subject: 'Quick question',
       text: `Hey,
 
 I'm the founder of Forward Email and I noticed you deleted your account. I'm sorry if we let you down.
