@@ -185,6 +185,59 @@ function getBounceInfo(err) {
     bounceInfo.category = 'recipient';
     bounceInfo.action = 'reject';
     //
+    // QQ.com (WeChat Work) "Mailbox unavailable or access denied" with weixin help URL is recipient rejection
+    // e.g. "550 Mailbox unavailable or access denied [...]. https://open.work.weixin.qq.com/help2/pc/20057."
+    //
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Mailbox unavailable or access denied') &&
+    response.includes('open.work.weixin.qq.com')
+  ) {
+    bounceInfo.category = 'recipient';
+    bounceInfo.action = 'reject';
+    //
+    // QQ.com (WeChat Work) "Mail is rejected by recipients" with weixin help URL is recipient rejection
+    // e.g. "550 Mail is rejected by recipients [...]. https://open.work.weixin.qq.com/help2/pc/20051."
+    // Note: This is different from the qq.com/detail/0/92 spam case
+    //
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Mail is rejected by recipients') &&
+    response.includes('open.work.weixin.qq.com')
+  ) {
+    bounceInfo.category = 'recipient';
+    bounceInfo.action = 'reject';
+    //
+    // Outlook/Microsoft "MailFrom domain is listed in Spamhaus" is spam (domain blocklist), not IP blocklist
+    // e.g. "550 5.7.1 Service unavailable, MailFrom domain is listed in Spamhaus."
+    // The sender's DOMAIN is blocked, not our IP
+    //
+  } else if (response.includes('MailFrom domain is listed in Spamhaus')) {
+    bounceInfo.category = 'spam';
+    bounceInfo.action = 'reject';
+    //
+    // Proofpoint "Local Policy Violation" is policy rejection, not blocklist
+    // e.g. "550 5.7.0 Local Policy Violation"
+    //
+  } else if (
+    err.truthSource === 'pphosted.com' &&
+    response.includes('Local Policy Violation')
+  ) {
+    bounceInfo.category = 'policy';
+    bounceInfo.action = 'reject';
+    //
+    // Google "policy that prohibited the mail" is policy rejection, not blocklist
+    // e.g. "550-5.7.1 The user or domain that you are sending to (or from) has a policy that prohibited the mail"
+    // <https://support.google.com/a/answer/172179>
+    //
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('has a policy that') &&
+    response.includes('prohibited the mail')
+  ) {
+    bounceInfo.category = 'policy';
+    bounceInfo.action = 'reject';
+    //
     // Spectrum/Charter AUP#In-1010 is spam/suspicious activity, not blocklist
     // <https://www.spectrum.net/support/internet/understanding-email-error-codes>
     // "This email account has been blocked from sending emails due to suspicious activity"
@@ -234,8 +287,11 @@ function getBounceInfo(err) {
     bounceInfo.category = response.includes(IP_ADDRESS) ? 'blocklist' : 'spam';
   } else if (
     err.truthSource === 'qq.com' &&
-    response.includes('Mail is rejected by recipients')
+    response.includes('Mail is rejected by recipients') &&
+    !response.includes('open.work.weixin.qq.com')
   ) {
+    // Only classify as blocklist if NOT from WeChat Work (weixin)
+    // WeChat Work rejections are recipient-level, not IP blocklist
     bounceInfo.category = 'blocklist';
   } else if (
     err.truthSource === 'yahoodns.net' &&
