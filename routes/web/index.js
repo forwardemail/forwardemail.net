@@ -566,7 +566,7 @@ localeRouter
     '/register',
     policies.ensureLoggedOut,
     policies.ensureTurnstile,
-    rateLimit(5, 'create user'),
+    rateLimit(10, 'create user'),
     web.auth.register
   );
 
