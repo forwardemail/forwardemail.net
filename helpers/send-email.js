@@ -329,8 +329,8 @@ async function sendEmail(
       //
       dsn: {
         notify: 'never'
-      },
-      requireTLSExtensionEnabled: Boolean(requireTLS)
+      }
+      // requireTLSExtensionEnabled: Boolean(requireTLS)
     });
     info.pgp = pgpResults.pgp;
     logger.info('delivered', {
