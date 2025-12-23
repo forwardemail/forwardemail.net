@@ -49,7 +49,7 @@
         state: present
         reload: yes
         sysctl_file: /etc/sysctl.d/99-amd-ryzen-numa.conf
-      when: 
+      when:
         - is_amd_ryzen
         - numa_balancing_exists.stat.exists | default(false)
 
@@ -58,7 +58,7 @@
       shell: |
         echo never > /sys/kernel/mm/transparent_hugepage/enabled
         echo never > /sys/kernel/mm/transparent_hugepage/defrag
-      when: 
+      when:
         - is_amd_ryzen
         - disable_thp | default(false)
 

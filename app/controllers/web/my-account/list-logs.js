@@ -71,6 +71,7 @@ async function listLogs(ctx) {
   // (e.g. this allows global vanity domain logs for the user)
   //
   const nonAdminDomains = filteredDomains.filter((d) => d.group !== 'admin');
+  // KEEP: Required for BCC/RCPT filtering security features
   const nonAdminDomainsToAliases = {};
 
   if (nonAdminDomains.length > 0) {
@@ -105,6 +106,7 @@ async function listLogs(ctx) {
 
         if (!domain) continue;
 
+        // KEEP: Required for BCC/RCPT filtering
         if (!nonAdminDomainsToAliases[domain.id])
           nonAdminDomainsToAliases[domain.id] = [];
 
@@ -245,8 +247,44 @@ async function listLogs(ctx) {
     }
   }
 
-  // Store subject for comprehensive search later
-  // (will be used for in-memory filtering if subject search is needed)
+  //
+  // FIX: Use MongoDB $regex for subject search instead of in-memory filtering
+  // This is the key performance fix - the in-memory approach was causing timeouts
+  // for users with 200-300K logs
+  //
+  if (isSANB(subject)) {
+    const regexCondition = {
+      $or: [
+        {
+          subject: {
+            $regex: new RegExp(_.escapeRegExp(subject), 'i')
+          }
+        },
+        {
+          text_message: {
+            $regex: new RegExp(_.escapeRegExp(subject), 'i')
+          }
+        }
+      ]
+    };
+
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          regexCondition
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push(regexCondition);
+    } else {
+      query = {
+        $and: [query, regexCondition]
+      };
+    }
+  }
 
   // response_code -> 'err.responseCode'
   if (
@@ -346,6 +384,7 @@ async function listLogs(ctx) {
   ) {
     // download in background and email to users
     const now = new Date();
+    // KEEP: Updated getLogsCsv call with additional parameters for BCC filtering
     getLogsCsv(
       now,
       query,
@@ -408,225 +447,46 @@ async function listLogs(ctx) {
     return;
   }
 
-  // Cap count at 10,000 like list-emails to improve performance
+  //
+  // FIX: Use capped count for performance instead of full countDocuments
+  // This prevents scanning 200-300K documents just to get a count
+  //
   const MAX_COUNT_LIMIT = 10_000;
 
-  let logs;
-  let itemCount;
-
-  // For search queries with subject: fetch logs and do comprehensive search in memory
-  if (isSANB(subject)) {
-    const searchQuery = subject.trim();
-    const searchRegex = new RegExp(_.escapeRegExp(searchQuery), 'i');
-
-    // Determine sort field
-    let sortField = ctx.api ? 'created_at' : '-created_at';
-    if (isSANB(ctx.query.sort)) {
-      sortField = ctx.query.sort;
-    }
-
-    // Fetch up to MAX_COUNT_LIMIT logs matching user's domains/aliases
+  const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
-    const allLogs = await Logs.find(query)
-      .sort(sortField)
-      .limit(MAX_COUNT_LIMIT)
+    Logs.find(query)
+      .limit(ctx.query.limit)
+      .skip(ctx.paginate.skip)
+      .sort(
+        isSANB(ctx.query.sort)
+          ? ctx.query.sort
+          : ctx.api
+          ? 'created_at'
+          : '-created_at'
+      )
+      // KEEP: Field selection optimization to reduce data transfer
+      .select(
+        ctx.api
+          ? '-meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
+          : '-message -meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
+      )
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
-      .exec();
-
-    // Filter in memory with comprehensive search
-    // (permission already checked by the query above)
-    const filteredLogs = allLogs.filter((log) => {
-      // Comprehensive search across all fields
-      // Check subject
-      if (log.subject && searchRegex.test(log.subject)) return true;
-
-      // Check text_message
-      if (log.text_message && searchRegex.test(log.text_message)) return true;
-
-      // Check message
-      if (log.message && searchRegex.test(log.message)) return true;
-
-      // Check meta.session.envelope addresses
-      if (log.meta?.session?.envelope) {
-        if (
-          log.meta.session.envelope.mailFrom?.address &&
-          searchRegex.test(log.meta.session.envelope.mailFrom.address)
-        )
-          return true;
-        if (Array.isArray(log.meta.session.envelope.rcptTo)) {
-          for (const rcpt of log.meta.session.envelope.rcptTo) {
-            if (rcpt.address && searchRegex.test(rcpt.address)) return true;
-          }
-        }
-      }
-
-      // Check meta.session.headers
-      if (
-        log.meta?.session?.headers &&
-        typeof log.meta.session.headers === 'object'
-      ) {
-        for (const [key, value] of Object.entries(log.meta.session.headers)) {
-          if (
-            searchRegex.test(key) ||
-            (typeof value === 'string' && searchRegex.test(value))
-          )
-            return true;
-        }
-      }
-
-      // Check meta.info.envelope
-      if (log.meta?.info?.envelope) {
-        if (
-          log.meta.info.envelope.from &&
-          searchRegex.test(log.meta.info.envelope.from)
-        )
-          return true;
-        if (Array.isArray(log.meta.info.envelope.to)) {
-          for (const to of log.meta.info.envelope.to) {
-            if (searchRegex.test(to)) return true;
-          }
-        }
-      }
-
-      // Check meta.info.response
-      if (log.meta?.info?.response && searchRegex.test(log.meta.info.response))
-        return true;
-
-      // Check meta.info.messageId
-      if (
-        log.meta?.info?.messageId &&
-        searchRegex.test(log.meta.info.messageId)
-      )
-        return true;
-
-      // Check meta.session connection details
-      if (
-        log.meta?.session?.remoteAddress &&
-        searchRegex.test(log.meta.session.remoteAddress)
-      )
-        return true;
-      if (
-        log.meta?.session?.resolvedClientHostname &&
-        searchRegex.test(log.meta.session.resolvedClientHostname)
-      )
-        return true;
-      if (
-        log.meta?.session?.hostNameAppearsAs &&
-        searchRegex.test(log.meta.session.hostNameAppearsAs)
-      )
-        return true;
-      if (
-        log.meta?.session?.originalFromAddress &&
-        searchRegex.test(log.meta.session.originalFromAddress)
-      )
-        return true;
-      if (
-        log.meta?.session?.truthSource &&
-        searchRegex.test(log.meta.session.truthSource)
-      )
-        return true;
-
-      // Check meta.session.mx details
-      if (log.meta?.session?.mx) {
-        if (
-          log.meta.session.mx.hostname &&
-          searchRegex.test(log.meta.session.mx.hostname)
-        )
-          return true;
-        if (
-          log.meta.session.mx.host &&
-          searchRegex.test(log.meta.session.mx.host)
-        )
-          return true;
-        if (
-          log.meta.session.mx.localAddress &&
-          searchRegex.test(log.meta.session.mx.localAddress)
-        )
-          return true;
-        if (
-          log.meta.session.mx.localHostname &&
-          searchRegex.test(log.meta.session.mx.localHostname)
-        )
-          return true;
-      }
-
-      // Check err object (skip err.stack as it's too verbose)
-      if (log.err && typeof log.err === 'object') {
-        // Check err.message
-        if (log.err.message && searchRegex.test(log.err.message)) return true;
-        // Check err.response
-        if (log.err.response && searchRegex.test(log.err.response)) return true;
-        // Check err.target
-        if (log.err.target && searchRegex.test(log.err.target)) return true;
-        // Check err.envelope
-        if (log.err.envelope) {
-          if (log.err.envelope.from && searchRegex.test(log.err.envelope.from))
-            return true;
-          if (log.err.envelope.to && searchRegex.test(log.err.envelope.to))
-            return true;
-        }
-      }
-
-      return false;
-    });
-
-    // Show warning if we hit the limit
-    if (!ctx.api && allLogs.length >= MAX_COUNT_LIMIT && ctx.accepts('html')) {
-      ctx.flash(
-        'warning',
-        `Search results limited to ${MAX_COUNT_LIMIT.toLocaleString()} logs. For comprehensive search, please use the <a href="${ctx.state.l(
-          '/email-api#tag/logs/get/v1/logs/download'
-        )}" target="_blank" rel="noopener noreferrer">Logs Email API</a>.`
-      );
-    }
-
-    // Paginate the filtered results
-    const startIndex = ctx.paginate.skip;
-    const endIndex = startIndex + ctx.query.limit;
-    const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
-
-    logs = paginatedLogs;
-    // Set itemCount to total filtered count (before pagination)
-    itemCount = filteredLogs.length;
-  } else {
-    // No subject search: use the fast .find() approach
-    const [fetchedLogs, count] = await Promise.all([
-      // eslint-disable-next-line unicorn/no-array-callback-reference
-      Logs.find(query)
-        .limit(ctx.query.limit)
-        .skip(ctx.paginate.skip)
-        .sort(
-          isSANB(ctx.query.sort)
-            ? ctx.query.sort
-            : ctx.api
-            ? 'created_at'
-            : '-created_at'
-        )
-        .select(
-          ctx.api
-            ? '-meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
-            : '-message -meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
-        )
-        .lean()
-        .maxTimeMS(SIXTY_SECONDS)
-        .exec(),
-      // Count all matching documents
-      Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS)
-    ]);
-    logs = fetchedLogs;
-    itemCount = count;
-  }
-
-  const [responseCodes, bounceCategories] = await Promise.all([
-    // Distinct response codes from entire collection (no query filter)
+      .exec(),
+    // FIX: Use capped aggregation for count (much faster for large datasets)
+    Logs.aggregate(
+      [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
+      { maxTimeMS: SIXTY_SECONDS }
+    ).then((result) => result[0]?.total || 0),
+    // KEEP: Distinct from entire collection (no query filter) - fast
     Logs.distinct('err.responseCode'),
-    // Distinct bounce categories from entire collection (no query filter)
     Logs.distinct('bounce_category')
   ]);
 
   ctx.state.logs = logs;
   ctx.state.itemCount = itemCount;
+  // KEEP: Filter and sort for cleaner UI
   ctx.state.responseCodes = responseCodes
     .filter((code) => code !== null && code !== undefined)
     .sort((a, b) => a - b);
@@ -642,8 +502,9 @@ async function listLogs(ctx) {
   );
 
   //
-  // Filter out BCC recipients that don't belong to the user
+  // KEEP: Filter out BCC recipients that don't belong to the user
   // (users should only see recipients relevant to them)
+  // This is a critical security/privacy fix from Dec 15
   //
   if (ctx.state.user.group !== 'admin') {
     //
@@ -701,7 +562,8 @@ async function listLogs(ctx) {
         }
 
         //
-        // Filter BCC header to only show BCC recipients relevant to this user
+        // KEEP: Filter BCC header to only show BCC recipients relevant to this user
+        // This is a critical security/privacy fix from Dec 15
         //
         if (
           log?.meta?.session?.headers &&
@@ -787,8 +649,9 @@ async function listLogs(ctx) {
     );
 
     //
-    // Deduplicate logs by Message-ID ONLY for BCC messages from system domain
+    // KEEP: Deduplicate logs by Message-ID ONLY for BCC messages from system domain
     // to prevent users from guessing how many people were on the BCC chain
+    // This is a privacy enhancement from Dec 15
     //
     const webHostDomain = config.webHost; // e.g., "forwardemail.net"
     const seen = new Map();
@@ -843,11 +706,6 @@ async function listLogs(ctx) {
       seen.set(messageId, true);
       return true; // Keep first occurrence
     });
-
-    // Update itemCount after deduplication (only for search queries)
-    if (isSANB(subject)) {
-      ctx.state.itemCount = ctx.state.logs.length;
-    }
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');

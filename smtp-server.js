@@ -92,6 +92,9 @@ class SMTP {
       // maxClients: Infinity, // default is Infinity
       // allow 3m to process bulk RCPT TO
       socketTimeout: config.socketTimeout,
+      // <https://brooker.co.za/blog/2024/05/09/nagle.html>
+      // <https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener>
+      noDelay: true,
       // default closeTimeout is 30s
       closeTimeout: ms('30s'),
       // <https://github.com/nodemailer/smtp-server/issues/177>

@@ -67,6 +67,9 @@ class POP3 {
       useProxy: false,
       ignoredHosts: [],
       socketTimeout: config.socketTimeout,
+      // <https://brooker.co.za/blog/2024/05/09/nagle.html>
+      // <https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener>
+      noDelay: true,
       // TODO: submit PR to add ability to customize version string
       disableVersionString: true,
       id: {

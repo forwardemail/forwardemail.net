@@ -147,17 +147,17 @@
       shell: |
         # Get the current fstab line for root filesystem
         CURRENT_LINE=$(grep -E '\s+/\s+' /etc/fstab | grep -v '^#' | head -1)
-        
+
         # Extract components
         DEVICE=$(echo "$CURRENT_LINE" | awk '{print $1}')
         MOUNTPOINT=$(echo "$CURRENT_LINE" | awk '{print $2}')
         FSTYPE=$(echo "$CURRENT_LINE" | awk '{print $3}')
         DUMP=$(echo "$CURRENT_LINE" | awk '{print $5}')
         PASS=$(echo "$CURRENT_LINE" | awk '{print $6}')
-        
+
         # Build new line with optimized options
         NEW_LINE="$DEVICE $MOUNTPOINT $FSTYPE {{ optimized_opts | trim }} $DUMP $PASS"
-        
+
         # Use sed to replace the line in-place
         sed -i.bak "/^\s*[^#].*\s\+\/\s\+/c\\$NEW_LINE" /etc/fstab
       when: needs_optimization and fstab_root_entry.rc == 0

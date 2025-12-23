@@ -57,7 +57,7 @@ The `io-filesystem-tuning.yml` playbook provides comprehensive I/O scheduler and
 
 ## Integration
 
-### MongoDB
+### MongoDB (Primary)
 
 ```yaml
 - name: Import I/O and filesystem tuning for MongoDB
@@ -230,7 +230,7 @@ cat /etc/udev/rules.d/60-mongo-scheduler.rules
 
 ## Research Sources
 
-### MongoDB
+### MongoDB (Primary)
 
 * **Official Documentation**: [MongoDB Production Notes](https://www.mongodb.com/docs/manual/administration/production-notes/)
 * Recommends `deadline` I/O scheduler for physical servers

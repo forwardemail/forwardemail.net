@@ -2,7 +2,7 @@
 
 # Forward Email Self-Hosted Setup Script
 # Enhanced version with Debian support
-# 
+#
 # How to install:
 # bash <(curl -fsSL selfhost.forwardemail.net)
 
@@ -484,7 +484,6 @@ update_default_env() {
   update_env_file SEND_EMAIL true
   update_env_file PREVIEW_EMAIL false
   update_env_file MONGO_HOST 127.0.0.1
-  update_env_file LOGS_MONGO_HOST 127.0.0.1
   update_env_file JOURNALS_MONGO_HOST 127.0.0.1
   update_env_file EMAILS_MONGO_HOST 127.0.0.1
   update_env_file REDIS_HOST 127.0.0.1

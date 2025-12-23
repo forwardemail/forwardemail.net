@@ -118,7 +118,15 @@ export MONGO_HOST="mongo.example.com"  # Hostname or IP address
 export MONGO_PORT="27017"  # Default: 27017
 export MONGO_USER="admin"  # Admin username (single user with all permissions)
 export MONGO_PASS="your-strong-mongodb-password"  # Admin password
-export MONGO_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forwardemail-backups"
+export MONGO_BACKUP_BUCKET="forwardemail-backups"
+
+# Logs MongoDB
+export LOGS_HOST="logs.example.com"
+export LOGS_PORT="27017"
+export LOGS_USER="admin"
+export LOGS_PASS="your-strong-logs-mongodb-password"
+export LOGS_NAME="forwardemail_logs"
+export LOGS_BACKUP_BUCKET="forwardemail-backups"  # Optional, defaults to "forwardemail-backups"
 ```
 
 > \[!NOTE]

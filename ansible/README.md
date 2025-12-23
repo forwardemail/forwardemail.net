@@ -37,6 +37,7 @@ ansible/
 │   ├── ufw-allowlist.yml       # Reusable UFW IP allowlist management
 │   ├── remove-postfix.yml      # Remove Postfix from servers (cleanup tool)
 │   ├── mongo.yml               # MongoDB deployment
+│   ├── logs.yml                # Logs MongoDB deployment (separate instance)
 │   ├── redis.yml               # Redis/Valkey deployment
 │   ├── bree.yml                # Bree job scheduler
 │   ├── http.yml                # HTTP/API servers
@@ -135,8 +136,11 @@ ansible-playbook ansible/playbooks/security.yml -i hosts.yml
 # 2. Deploy Node.js and PM2
 ansible-playbook ansible/playbooks/node.yml -i hosts.yml
 
-# 3. Deploy MongoDB
+# 3. Deploy MongoDB (primary)
 ansible-playbook ansible/playbooks/mongo.yml -i hosts.yml
+
+# 3b. Deploy Logs MongoDB (separate instance)
+ansible-playbook ansible/playbooks/logs.yml -i hosts.yml
 
 # 4. Deploy Redis/Valkey
 ansible-playbook ansible/playbooks/redis.yml -i hosts.yml
@@ -301,7 +305,7 @@ Kernel parameter optimizations for high-traffic servers (databases, APIs, mail s
 * 🔌 **Connection tracking**: Optimized for high connection counts
 * 🚀 **TCP optimizations**: Fast open, window scaling, timestamps
 
-**Integrated into**: `mongo.yml`, `redis.yml`, `sqlite.yml`
+**Integrated into**: `mongo.yml`, `logs.yml`, `redis.yml`, `sqlite.yml`
 
 **Benefits**:
 
@@ -447,6 +451,9 @@ ansible-playbook ansible/playbooks/security.yml -i hosts.yml
 
 # Deploy all database optimizations
 ansible-playbook ansible/playbooks/mongo.yml -i hosts.yml
+
+# 3b. Deploy Logs MongoDB (separate instance)
+ansible-playbook ansible/playbooks/logs.yml -i hosts.yml
 ansible-playbook ansible/playbooks/redis.yml -i hosts.yml
 
 # Deploy Node.js with PM2 monitoring
@@ -532,7 +539,7 @@ ansible-playbook ansible/playbooks/remove-postfix.yml \
 # Or remove from specific server groups
 ansible-playbook ansible/playbooks/remove-postfix.yml \
   -i hosts.yml \
-  -e "target_hosts=http:redis:bree:mongo:sqlite"
+  -e "target_hosts=http:redis:bree:mongo:logs:sqlite"
 ```
 
 > \[!WARNING]

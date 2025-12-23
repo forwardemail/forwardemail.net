@@ -354,6 +354,15 @@ Logs.index({
   created_at: -1
 });
 
+Logs.index({
+  domains: 1,
+  created_at: 1,
+  message: 1,
+  bounce_category: 1,
+  'err.responseCode': 1,
+  'meta.app.hostname': 1
+});
+
 //
 // if we're saving a "delivered" message
 // then ensure that `resolver` is set

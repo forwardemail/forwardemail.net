@@ -134,6 +134,13 @@ function isRetryableError(err) {
   if (typeof err.status === 'number' && HTTP_RETRY_STATUS_CODES.has(err.status))
     return true;
 
+  // undici v7 uses statusCode instead of status
+  if (
+    typeof err.statusCode === 'number' &&
+    HTTP_RETRY_STATUS_CODES.has(err.statusCode)
+  )
+    return true;
+
   if (err.responseCode === 421) return true;
 
   if (

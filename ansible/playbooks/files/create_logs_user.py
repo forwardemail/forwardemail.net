@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Create MongoDB user with credentials from environment variables.
+Create MongoDB user for Logs database with credentials from environment variables.
 This script creates a JavaScript file for mongosh execution.
 IMPROVED VERSION with better error handling and debugging.
 """
@@ -11,29 +11,29 @@ import sys
 
 def main():
     # Get credentials from environment
-    username = os.environ.get('MONGO_USER', '')
-    password = os.environ.get('MONGO_PASS', '')
+    username = os.environ.get('LOGS_USER', '')
+    password = os.environ.get('LOGS_PASS', '')
 
     # Debug output (will be visible in Ansible logs)
-    print(f"DEBUG: MONGO_USER length: {len(username)}")
-    print(f"DEBUG: MONGO_PASS length: {len(password)}")
+    print(f"DEBUG: LOGS_USER length: {len(username)}")
+    print(f"DEBUG: LOGS_PASS length: {len(password)}")
 
     if not username:
-        print("ERROR: MONGO_USER environment variable is not set or empty")
+        print("ERROR: LOGS_USER environment variable is not set or empty")
         sys.exit(1)
 
     if not password:
-        print("ERROR: MONGO_PASS environment variable is not set or empty")
+        print("ERROR: LOGS_PASS environment variable is not set or empty")
         sys.exit(1)
 
     # Validate username
     if len(username) < 1:
-        print("ERROR: MONGO_USER must be at least 1 character")
+        print("ERROR: LOGS_USER must be at least 1 character")
         sys.exit(1)
 
     # Validate password
     if len(password) < 8:
-        print("ERROR: MONGO_PASS must be at least 8 characters")
+        print("ERROR: LOGS_PASS must be at least 8 characters")
         sys.exit(1)
 
     print(f"INFO: Creating user '{username}' with password of length {len(password)}")
@@ -70,10 +70,10 @@ def main():
 
     # Write with restrictive permissions (owner read/write only)
     try:
-        fd = os.open('/tmp/create_mongo_user.js', os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        fd = os.open('/tmp/create_logs_user.js', os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         with os.fdopen(fd, 'w', encoding='utf-8') as f:
             f.write(script)
-        print("INFO: Script created successfully at /tmp/create_mongo_user.js")
+        print("INFO: Script created successfully at /tmp/create_logs_user.js")
     except Exception as e:
         print(f"ERROR: Failed to write script file: {e}")
         sys.exit(1)

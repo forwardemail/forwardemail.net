@@ -34,6 +34,7 @@ ansible/playbooks/
 ├── ufw-allowlist.yml          # Reusable UFW allowlist management playbook
 ├── redis.yml                  # Redis playbook (imports ufw-allowlist.yml)
 ├── mongo.yml                  # MongoDB playbook (imports ufw-allowlist.yml)
+├── logs.yml                   # Logs MongoDB playbook (imports ufw-allowlist.yml) (imports ufw-allowlist.yml)
 └── sqlite.yml                 # SQLite playbook (imports ufw-allowlist.yml)
 ```
 
@@ -130,7 +131,7 @@ For each service, the playbook creates:
     ufw_comment: "Auto-whitelist Redis TLS"
 ```
 
-### For MongoDB
+### For MongoDB (Primary)
 
 ```yaml
 - name: Import UFW allowlist playbook for MongoDB
@@ -247,7 +248,7 @@ If migrating from the old inline UFW configuration:
 
 Ensure the following environment variables are set:
 
-* `REDIS_PORT` / `MONGO_PORT` / `SQLITE_PORT` - Service port number
+* `REDIS_PORT` / `MONGO_PORT` / `LOGS_PORT` / `SQLITE_PORT` - Service port number
 * `MSMTP_RCPTS` - Email recipients for notifications (defaults to `security@forwardemail.net`)
 
 

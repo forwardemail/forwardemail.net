@@ -162,7 +162,8 @@ Import the playbook with service-specific variables:
 
 This playbook is automatically imported by:
 
-* **mongo.yml** - MongoDB servers
+* **mongo.yml** - MongoDB servers (primary)
+* **logs.yml** - Logs MongoDB servers
 * **redis.yml** - Redis/Valkey servers
 * **sqlite.yml** - SQLite servers with WebSocket connections
 

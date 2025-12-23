@@ -5,7 +5,7 @@ This guide covers kernel and OS-level optimizations implemented in the MongoDB p
 
 ## Kernel Optimizations
 
-The `mongo.yml` playbook automatically configures the following kernel parameters for optimal MongoDB performance.
+The `mongo.yml` and `logs.yml` playbooks automatically configures the following kernel parameters for optimal MongoDB performance.
 
 ### Sysctl Parameters
 

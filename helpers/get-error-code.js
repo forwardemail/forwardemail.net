@@ -92,6 +92,20 @@ function getErrorCode(err) {
     if (err.output.statusCode >= 400 && err.output.statusCode < 500) return 421;
   }
 
+  //
+  // undici v7 uses statusCode instead of status for ResponseError
+  // (must be between 4xx and 5xx in order to be an error)
+  //
+  if (
+    typeof err.statusCode === 'number' &&
+    err.statusCode >= 400 &&
+    err.statusCode < 600
+  ) {
+    if ([403, 404].includes(err.statusCode)) return 550;
+    if (err.statusCode >= 400 && err.statusCode < 500) return 421;
+    return err.statusCode;
+  }
+
   return 550;
 }
 

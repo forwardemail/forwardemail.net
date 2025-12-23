@@ -101,7 +101,10 @@ redis.example.com    AAAA   2001:db8::2  TTL: 300
 # Recommended: Same MongoDB version as backup
 
 # Run Ansible playbook to configure new server
+# For primary MongoDB:
 ansible-playbook -i inventory ansible/playbooks/mongo.yml
+# For Logs MongoDB:
+# ansible-playbook -i inventory ansible/playbooks/logs.yml
 ```
 
 #### Step 2: Restore from Cloudflare R2 Backup
@@ -449,7 +452,10 @@ sudo systemctl start redis-backup.service
 ```bash
 # Provision test server (separate from production)
 # Use same Ansible playbooks
+# For primary MongoDB:
 ansible-playbook -i test-inventory ansible/playbooks/mongo.yml
+# For Logs MongoDB:
+# ansible-playbook -i test-inventory ansible/playbooks/logs.yml
 ```
 
 #### Step 2: Restore from Production Backup

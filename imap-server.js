@@ -103,6 +103,9 @@ class IMAP {
       ignoreSTARTTLS: !secure,
       useProxy: false,
       socketTimeout: config.socketTimeout,
+      // <https://brooker.co.za/blog/2024/05/09/nagle.html>
+      // <https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener>
+      noDelay: true,
       ignoredHosts: [],
       id: {
         name: os.hostname(),

@@ -1119,6 +1119,10 @@ async function forward(recipient, headers, session, body) {
           err.message = `${err_.status} ${status(err_.status)}${
             err_.status === 500 ? '' : ' Error'
           } for ${address}`;
+        } else if (err_.statusCode) {
+          err.message = `${err_.statusCode} ${status(err_.statusCode)}${
+            err_.statusCode === 500 ? '' : ' Error'
+          } for ${address}`;
         } else if (err_.code) {
           err.message = `${err_.code} for ${address}`;
         }

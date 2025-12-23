@@ -202,7 +202,7 @@ Follow the same procedure as above, but:
 > \[!WARNING]
 > **DO NOT UPGRADE TO v7 OR v8** - See performance warnings at the top of this document.
 
-If you absolutely must upgrade (not recommended), update the `mongodb_version` variable in `mongo.yml`:
+If you absolutely must upgrade (not recommended), update the `mongodb_version` variable in `mongo.yml` (or `logs.yml` for the Logs MongoDB instance):
 
 ```yaml
 vars:
