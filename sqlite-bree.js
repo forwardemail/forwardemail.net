@@ -6,6 +6,8 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const process = require('node:process');
+
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 
@@ -23,11 +25,11 @@ const bree = new Bree({
       //
       name: 'cleanup-sqlite',
       interval: '1h',
-      timeout: '30m'
+      timeout: 0
     },
     {
-      name: 'jobs/cleanup-r2-backups',
-      timeout: '1h',
+      name: 'cleanup-r2-backups',
+      timeout: 0,
       interval: '1d'
     }
   ]
@@ -40,7 +42,13 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
-  await bree.start();
+  try {
+    await bree.start();
+  } catch (err) {
+    await logger.fatal(err);
+
+    process.exit(1);
+  }
 })();
 
 logger.info('SQLite bree started', { hide_meta: true });
