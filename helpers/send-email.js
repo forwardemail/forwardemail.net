@@ -329,8 +329,14 @@ async function sendEmail(
       //
       dsn: {
         notify: 'never'
-      }
-      // requireTLSExtensionEnabled: Boolean(requireTLS)
+      },
+      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
+      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
+      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
+      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
+      ...(config.env === 'test'
+        ? { requireTLSExtensionEnabled: Boolean(requireTLS) }
+        : {})
     });
     info.pgp = pgpResults.pgp;
     logger.info('delivered', {
