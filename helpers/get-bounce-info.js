@@ -501,6 +501,31 @@ function getBounceInfo(err) {
     bounceInfo.category = 'blocklist';
 
   //
+  // OVERRIDE SECTION: These checks run AFTER all other checks and override
+  // any category set by zone-mta or earlier checks. This ensures specific
+  // error patterns are correctly categorized regardless of generic matches.
+  //
+
+  // QQ.com (WeChat Work) errors should be recipient, not blocklist
+  if (
+    err.truthSource === 'qq.com' &&
+    (response.includes('Mailbox unavailable or access denied') ||
+      response.includes('Mail is rejected by recipients'))
+  ) {
+    bounceInfo.category = 'recipient';
+    bounceInfo.action = 'reject';
+  }
+
+  // Yahoo/AOL "sender is unauthenticated" is auth issue, not blocklist
+  if (
+    err.truthSource === 'yahoodns.net' &&
+    response.includes('sender is unauthenticated')
+  ) {
+    bounceInfo.category = 'auth';
+    bounceInfo.action = 'reject';
+  }
+
+  //
   // set "action" based off "category"
   //
   // if it was blocklist then set action to defer
