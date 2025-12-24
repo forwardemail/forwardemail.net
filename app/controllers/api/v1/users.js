@@ -58,7 +58,9 @@ async function updateAliasSettingsForContext(ctx, body) {
   if (body && typeof body !== 'object')
     throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
 
-  const alias = await Aliases.findById(aliasContext.aliasId);
+  const alias = await Aliases.findById(aliasContext.aliasId)
+    .populate('domain', 'id name plan max_quota_per_alias')
+    .exec();
   if (!alias)
     throw Boom.unauthorized(ctx.translateError('SETTINGS_INVALID_ALIAS_ID'));
 
@@ -80,6 +82,7 @@ async function updateAliasSettingsForContext(ctx, body) {
   }
 
   await alias.save();
+  return alias;
 }
 
 async function create(ctx) {
@@ -153,13 +156,7 @@ async function update(ctx) {
   const { body } = ctx.request;
 
   if (ctx.state?.session?.db) {
-    await updateAliasSettingsForContext(ctx, body);
-
-    const alias = await Aliases.findById(ctx.state.user.alias_id)
-      .populate('user', `id email plan ${config.userFields.isBanned}`)
-      .populate('domain', 'id name plan max_quota_per_alias')
-      .lean()
-      .exec();
+    const alias = await updateAliasSettingsForContext(ctx, body);
 
     if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
 
