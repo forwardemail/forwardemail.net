@@ -906,18 +906,22 @@ const config = {
   securityEmail: env.EMAIL_SECURITY,
   isSelfHosted: env.SELF_HOSTED,
   email: {
-    preview: {
-      open: env.PREVIEW_EMAIL,
-      openSimulator: false,
-      simpleParser: {
-        Iconv,
-        skipHtmlToText: true,
-        skipTextLinks: true,
-        skipTextToHtml: true,
-        skipImageLinks: true,
-        maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
-      }
-    },
+    // NOTE: preview must be `false` (not an object) when PREVIEW_EMAIL is false
+    // otherwise email-templates will still call preview-email and write files to /tmp
+    preview: boolean(env.PREVIEW_EMAIL)
+      ? {
+          open: true,
+          openSimulator: false,
+          simpleParser: {
+            Iconv,
+            skipHtmlToText: true,
+            skipTextLinks: true,
+            skipTextToHtml: true,
+            skipImageLinks: true,
+            maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
+          }
+        }
+      : false,
     subjectPrefix: `${env.APP_NAME} – `,
     message: {
       from: env.EMAIL_DEFAULT_FROM,
