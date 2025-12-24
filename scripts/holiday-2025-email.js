@@ -19,8 +19,9 @@ const pMap = require('p-map');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
-const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+
+const logger = console; // require('#helpers/logger');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -39,7 +40,7 @@ if (parentPort)
 graceful.listen();
 
 // concurrency for sending emails
-const concurrency = 50;
+const concurrency = 1000;
 
 async function mapper(user) {
   // return early if the job was already cancelled
@@ -47,8 +48,9 @@ async function mapper(user) {
 
   try {
     // safeguard
-    if (!user) return;
+    if (!user || user.email.endsWith('@removed.forwardemail.net')) return;
 
+    console.time(`send email to ${user.email}`);
     // send email
     await email({
       template: 'holiday-2025',
@@ -57,6 +59,7 @@ async function mapper(user) {
       },
       locals: { user: user.toObject() }
     });
+    console.timeEnd(`send email to ${user.email}`);
 
     // store that we sent this email
     await Users.findByIdAndUpdate(user._id, {
@@ -84,7 +87,8 @@ async function mapper(user) {
       [config.userFields.isBanned]: false,
       [config.userFields.hasVerifiedEmail]: true,
       has_newsletter: true,
-      holiday_2025_email_sent_at: { $exists: false }
+      holiday_2025_email_sent_at: { $exists: false },
+      is_removed: false
     };
 
     const count = await Users.countDocuments(query);
@@ -94,7 +98,7 @@ async function mapper(user) {
     const users = [];
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const user of Users.find(query)
-      .select('_id email')
+      .select('_id id email')
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       // break if cancelled

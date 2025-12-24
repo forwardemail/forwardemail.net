@@ -689,36 +689,46 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
 
    > You may need to remove or change the `transmit-hash-policy` as well for your configuration.
 
+   > You will also need to update `enp1s0f0np0` and `enp1s0f1np1` with your network interface names from `ip link show`.
+
    ```sh
    # This is the network config written by 'subiquity'
    network:
      version: 2
+     ethernets:
+       enp1s0f0np0:
+         dhcp4: false
+         dhcp6: false
+       enp1s0f1np1:
+         dhcp4: false
+         dhcp6: false
      bonds:
        bond0:
          addresses:
-         - IPV4_GOES_HERE/24
-         - IPV6_GOES_HERE/64
+         - IPV4_ADDRESS_HERE/24
+         - IPV6_ADDRESS_HERE/64
          interfaces:
-         - enp1s0f0
-         - enp1s0f1
+         - enp1s0f0np0
+         - enp1s0f1np1
          nameservers:
            addresses:
            - 1.1.1.1
-           - 1.0.0.1
            - 2606:4700:4700::1111
+           - 1.0.0.1
            - 2606:4700:4700::1001
+           - 8.8.8.8
+           - 2001:4860:4860::8888
+           - 8.8.4.4
+           - 2001:4860:4860::8844
            search: []
          parameters:
            mode: 802.3ad
            transmit-hash-policy: layer3+4
          routes:
          - to: ::/0
-           via: IPV6_GATEWAY
+           via: IPV6_GATEWAY_HERE
          - to: default
-           via: IPV4_GATEWAY
-     ethernets:
-       enp1s0f0: {}
-       enp1s0f1: {}
+           via: IPV4_GATEWAY_HERE
    ```
 
    ```sh
