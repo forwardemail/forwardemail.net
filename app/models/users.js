@@ -240,7 +240,8 @@ const Users = new mongoose.Schema({
     validate: (value) => validator.isEmail(value)
   },
   scheduled_send_sent_at: Date,
-  smtp_rate_limit_sent_at: Date
+  smtp_rate_limit_sent_at: Date,
+  holiday_2025_email_sent_at: Date
 });
 
 // Additional variable based properties to add to the schema

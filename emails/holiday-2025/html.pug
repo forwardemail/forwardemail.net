@@ -1,0 +1,428 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            = emoji("christmas_tree")
+            = " "
+            = t("Happy Holidays from Forward Email")
+            = " "
+            = emoji("christmas_tree")
+          .card-body.p-0
+            //- Holiday graphic at the top
+            a(href=config.urls.web)
+              img.img-fluid.d-block.align-top(
+                src=manifest("img/articles/holiday.jpg"),
+                alt=t("Happy Holidays")
+              )
+
+            //- Opening message
+            .p-3
+              h1.h3.text-center
+                = emoji("sparkles")
+                = " "
+                = t("Reflecting on 2025")
+                = " "
+                = emoji("sparkles")
+              p.card-text
+                | As 2025 comes to a close, we want to take a moment to thank you for being part of the Forward Email community.
+                | Whether you're on a free or paid plan, your trust and support over the past 8 years means the world to us.
+              p.card-text
+                = emoji("heart")
+                = " "
+                strong We remain deeply committed to upholding the highest standards of privacy and reliability for our users.
+                = " "
+                | As of the end of 2025, we are proud to be the only fully 100% open-source email service provider on the Internet today.
+
+            a(href=config.urls.web)
+              img.img-fluid.d-block.align-top(
+                src=manifest("img/articles/tangerine-scene.jpeg"),
+                alt=t("2025 Year in Review")
+              )
+
+            //- 2025 Highlights
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("rocket")
+                = " "
+                = t("2025 Year in Review")
+                = " "
+                = emoji("rocket")
+              p.card-text.text-center
+                | This year we shipped
+                = " "
+                strong 888 commits
+                | ,
+                = " "
+                strong 2.6M+ lines added
+                | ,
+                = " "
+                strong 1.7M lines removed
+                | , and
+                = " "
+                strong 56 releases
+                = " "
+                | (including v2.0.0).
+
+              ul.list-unstyled.mb-0
+                li.mb-2
+                  = emoji("shield")
+                  = " "
+                  strong= t("Spam Scanner & Tangerine Updates")
+                  = " – "
+                  | Major improvements to our open-source spam filtering and DNS-over-HTTPS libraries,
+                  = " "
+                  = emoji("brain")
+                  = " "
+                  a(
+                    href="https://github.com/spamscanner/spamscanner",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Spam Scanner
+                  = " and "
+                  = emoji("tangerine")
+                  = " "
+                  a(
+                    href="https://github.com/forwardemail/tangerine",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Tangerine
+                  = "."
+                li.mb-2
+                  = emoji("envelope")
+                  = " "
+                  strong= t("Core IMAP/POP3 Fixes")
+                  = " – "
+                  | Hundreds of bug fixes and optimizations for rock-solid email retrieval.
+                li.mb-2
+                  = emoji("building_construction")
+                  = " "
+                  strong= t("DataPacket Infrastructure Migration")
+                  = " – "
+                  | Our entire infrastructure is now largely migrated to bare metal servers in Denver, CO.
+                li.mb-2
+                  = emoji("card_index")
+                  = " "
+                  strong= t("CardDAV Launch")
+                  = " – "
+                  | Contact synchronization is now available alongside email, calendar, and tasks.
+                li.mb-2
+                  = emoji("beach_umbrella")
+                  = " "
+                  strong= t("Vacation Responder")
+                  = " – "
+                  | A highly-requested auto-reply feature.
+                li.mb-2
+                  = emoji("lock")
+                  = " "
+                  strong= t("Argon2id + OpenPGP/WKD Encryption")
+                  = " – "
+                  | Enhanced security with upgraded password hashing and email forwarding encryption.
+                li.mb-2
+                  = emoji("scroll")
+                  = " "
+                  strong= t("Technical Whitepaper")
+                  = " – "
+                  | We released our comprehensive technical whitepaper in April.
+                  = " "
+                  a(
+                    href="https://forwardemail.net/technical-whitepaper.pdf",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Read it here
+                    = " "
+                    != "&rarr;"
+
+              p.card-text.mt-3
+                = emoji("package")
+                = " "
+                | We also shipped hundreds of commits, PRs, and bug fixes to the underlying 100% open source packages we maintain and depend on.
+
+            //- Infrastructure section with X posts
+            a(href=config.urls.web)
+              img.img-fluid.d-block.align-top(
+                src=manifest("img/articles/servers.jpeg"),
+                alt=t("New Servers")
+              )
+            .p-3
+              h2.h4.text-center
+                = emoji("gear")
+                = " "
+                = t("Bare Metal Infrastructure")
+                = " "
+                = emoji("gear")
+              p.card-text
+                | Our migration to DataPacket's bare metal servers in Denver, CO represents a major investment in performance, reliability, and ability to offer new features.
+                | Check out these posts and
+                = " "
+                a(href="https://forwardemail.net/security") our security infrastructure page
+                = " for a behind-the-scenes look:"
+              ul.list-unstyled.mb-0
+                li.mb-1
+                  = emoji("link")
+                  = " "
+                  a(
+                    href="https://x.com/fwdemail/status/2001853998190690444",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = " 14x AMD Ryzen Servers, NVMe SSDs, NUMA-optimized"
+                li.mb-1
+                  = emoji("link")
+                  = " "
+                  a(
+                    href="https://x.com/fwdemail/status/2003306327712346155",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = " Unlimited SMTP sending based on reputation (coming soon)"
+                li.mb-1
+                  = emoji("link")
+                  = " "
+                  a(
+                    href="https://x.com/fwdemail/status/2002872581402063281",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = " GDPR-compliant phishing, malware, and spam classifier"
+
+            //- Paid plan reminder
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("star")
+                = " "
+                = t("Paid Plans")
+                = " "
+                = emoji("star")
+              p.card-text.text-center
+                | All paid accounts (
+                strong $3/mo
+                | ) include
+                = " "
+                strong 10 GB of encrypted storage
+                = " "
+                | and work with any mail client like Apple Mail, Outlook, or Thunderbird.
+                | We fully support IMAP, POP3, SMTP, CalDAV, and CardDAV.
+              p.card-text.text-center
+                a.btn.btn-dark(href=`${config.urls.web}/${locale}/pricing`)
+                  = t("View Pricing")
+                  = " "
+                  != "&rarr;"
+
+            //- 2026 Roadmap
+            .p-3
+              h2.h4.text-center
+                = emoji("crystal_ball")
+                = " "
+                = t("2026 Roadmap")
+                = " "
+                = emoji("crystal_ball")
+              ul.list-unstyled.mb-0
+                li.mb-2
+                  = emoji("eu")
+                  = " "
+                  strong= t("EU Datacenter")
+                  = " – "
+                  | Growth required us to focus on existing infrastructure first, but it's in progress.
+                li.mb-2
+                  = emoji("computer")
+                  = " "
+                  strong= t("Custom Webmail")
+                  = " – "
+                  | PWA with offline mode, desktop and mobile apps (we decided to build our own instead of using SnappyMail).
+                li.mb-2
+                  = emoji("mega")
+                  = " "
+                  strong= t("Newsletter Marketing Solution")
+                  = " – "
+                  | A full-featured alternative to Mailchimp, Klaviyo, and others.
+                li.mb-2
+                  = emoji("mag")
+                  = " "
+                  strong= t("3rd Party Security Audit")
+                  = " – "
+                  | Independent verification of our security practices.
+
+            //- Blog posts and case studies
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("books")
+                = " "
+                = t("Featured Reading")
+                = " "
+                = emoji("books")
+              p.card-text
+                strong= t("Technical Deep Dives")
+              ul.list-unstyled.mb-3
+                li.mb-1
+                  = emoji("closed_lock_with_key")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) How Our Quantum-Resistant Email Service Works
+                li.mb-1
+                  = emoji("unlock")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Why Open Source Email Security & Privacy Matters
+                li.mb-1
+                  = emoji("headstone")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/email-startup-graveyard-why-80-percent-email-companies-fail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Email Startup Graveyard: Why 80% Fail
+                li.mb-1
+                  = emoji("package")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) A Decade of Open Source: Billion Downloads
+
+              p.card-text
+                strong= t("Enterprise Case Studies")
+              ul.list-unstyled.mb-0
+                li.mb-1
+                  = emoji("penguin")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/linux-foundation-email-enterprise-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) The Linux Foundation
+                li.mb-1
+                  = emoji("cd")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/canonical-ubuntu-email-enterprise-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Canonical / Ubuntu
+                li.mb-1
+                  = emoji("mortar_board")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) University Alumni Email
+                li.mb-1
+                  = emoji("classical_building")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Federal Government (Section 889 Compliant)
+
+            //- Resources
+            .p-3
+              h2.h4.text-center
+                = emoji("toolbox")
+                = " "
+                = t("Resources")
+                = " "
+                = emoji("toolbox")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/faq`
+                  )
+                    = emoji("question")
+                    = " "
+                    = t("FAQ")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/email-api`
+                  )
+                    = emoji("electric_plug")
+                    = " "
+                    = t("Email API")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = emoji("octocat")
+                    = " "
+                    = t("GitHub")
+
+            //- Community
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("speech_balloon")
+                = " "
+                = t("Join Our Community")
+                = " "
+                = emoji("speech_balloon")
+              p.card-text.text-center
+                | Connect with us and other Forward Email users on Matrix!
+              p.card-text.text-center
+                a.btn.btn-primary(
+                  href="https://matrix.to/#/#forwardemail:matrix.org",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  = emoji("globe_with_meridians")
+                  = " "
+                  = t("Join Matrix Chat")
+
+            //- X Post link
+            .p-3
+              h2.h4.text-center
+                = emoji("bird")
+                = " "
+                = t("Follow Us")
+                = " "
+                = emoji("bird")
+              p.card-text.text-center
+                | Read our full 2025 year-in-review thread on X:
+              p.card-text.text-center
+                a.btn.btn-dark(
+                  href="https://x.com/fwdemail/status/2003518106791248174",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  = t("View on X")
+                  = " "
+                  != "&rarr;"
+
+            //- Closing
+            .p-3.bg-light
+              p.card-text.text-center
+                = emoji("pray")
+                = " "
+                strong Thank you for your support over the past 8 years.
+                = " "
+                = emoji("pray")
+              p.card-text.text-center
+                | Wishing you and yours a wonderful holiday season and a new year filled with health, balance, and peace of mind.
+              p.card-text.text-center.h4
+                = emoji("christmas_tree")
+                = " "
+                = emoji("sparkles")
+                = " "
+                = emoji("gift")
+                = " "
+                = emoji("snowflake")
+                = " "
+                = emoji("star2")
+              p.card-text.text-center.mt-3
+                | With gratitude,
+                br
+                strong The Forward Email Team
+
+          .card-footer.text-center.small.text-muted
+            = t("Privacy. Transparency. Security. Open Source. Always.")
