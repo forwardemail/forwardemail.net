@@ -39,7 +39,7 @@ if (parentPort)
 graceful.listen();
 
 // concurrency for sending emails
-const concurrency = 5;
+const concurrency = 50;
 
 async function mapper(user) {
   // return early if the job was already cancelled
