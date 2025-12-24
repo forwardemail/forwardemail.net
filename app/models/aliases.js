@@ -107,6 +107,33 @@ APS.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
+const COLOR_REGEX = /^#([A-Fa-f\d]{6}|[A-Fa-f\d]{8})$/;
+// Allow standard atom characters plus leading "\" or "$" so we can return reserved conflicts instead of 400s
+const KEYWORD_REGEX = /^([A-Za-z\d]|[\\$])[\w.-]*$/;
+
+function getLocale(doc) {
+  if (!doc) return undefined;
+  if (doc.locale) return doc.locale;
+  if (typeof doc.ownerDocument === 'function') {
+    const owner = doc.ownerDocument();
+    if (owner?.locale) return owner.locale;
+  }
+
+  return i18n.config.defaultLocale;
+}
+
+function validateLabelSettingsMinimal(value) {
+  if (value === undefined || value === null) return true;
+  return Object.entries(value).every(([keyword, item]) => {
+    if (!isSANB(keyword)) return false;
+    const normalizedKeyword = String(keyword).trim().toLowerCase();
+    if (!KEYWORD_REGEX.test(normalizedKeyword)) return false;
+    if (!_.isPlainObject(item)) return false;
+    if (item.color === undefined || item.color === null) return true;
+    return COLOR_REGEX.test(String(item.color).trim());
+  });
+}
+
 const Aliases = new mongoose.Schema({
   // if a rekey operation is being performed then don't allow auth or read/write
   is_rekey: {
@@ -288,6 +315,157 @@ const Aliases = new mongoose.Schema({
     type: Boolean,
     default: false,
     index: true
+  },
+  appearance_theme: {
+    type: String,
+    enum: ['system', 'light', 'dark'],
+    default: 'system'
+  },
+  appearance_layout_mode: {
+    type: String,
+    enum: ['personal', 'compact'],
+    default: 'personal'
+  },
+  compose_plain_default: {
+    type: Boolean,
+    default: false
+  },
+  mail_messages_per_page: {
+    type: Number,
+    enum: [20, 50, 100],
+    default: 50
+  },
+  mail_archive_folder: {
+    type: String,
+    trim: true,
+    default: null,
+    validate: {
+      validator(value) {
+        return value === null || value === undefined || isSANB(value);
+      },
+      message() {
+        return i18n.translateError(
+          'SETTINGS_ARCHIVE_FOLDER_INVALID',
+          getLocale(this)
+        );
+      }
+    }
+  },
+  search_body_indexing: {
+    type: Boolean,
+    default: false
+  },
+  search_saved_searches: {
+    type: Array,
+    default: [],
+    set(arr) {
+      const value = Array.isArray(arr)
+        ? arr
+        : _.isPlainObject(arr)
+        ? [arr]
+        : [];
+      return value
+        .filter((item) => _.isPlainObject(item))
+        .map((item) => ({
+          name: typeof item.name === 'string' ? item.name.trim() : item.name,
+          query: typeof item.query === 'string' ? item.query.trim() : item.query
+        }));
+    },
+    validate: {
+      validator(value) {
+        if (!Array.isArray(value)) return false;
+        return value.every((item) => {
+          if (!_.isPlainObject(item)) return false;
+          const { name, query } = item;
+          if (!isSANB(name) || !isSANB(query)) return false;
+          if (String(name).trim().length > 100) return false;
+          if (String(query).trim().length > 500) return false;
+          return true;
+        });
+      },
+      message() {
+        return i18n.translateError(
+          'SETTINGS_SAVED_SEARCH_QUERY_REQUIRED',
+          getLocale(this)
+        );
+      }
+    }
+  },
+  prefetch_enabled: {
+    type: Boolean,
+    default: false
+  },
+  prefetch_folders: {
+    type: [String],
+    default: [],
+    set: (arr) =>
+      Array.isArray(arr)
+        ? arr
+            .filter((folder) => typeof folder === 'string' && folder.trim())
+            .map((folder) => folder.trim())
+        : arr
+  },
+  prefetch_mode: {
+    type: String,
+    enum: ['all', 'recent', 'custom'],
+    default: 'recent'
+  },
+  shortcuts: {
+    type: Object,
+    default: () => ({}),
+    validate: {
+      validator(map) {
+        if (!map) return true;
+        const values = Object.values(map);
+        return values.every((value) => isSANB(value));
+      },
+      message() {
+        return i18n.translateError(
+          'SETTINGS_SHORTCUT_KEYBINDING_REQUIRED',
+          getLocale(this)
+        );
+      }
+    }
+  },
+  label_settings: {
+    type: Object,
+    default: () => ({}),
+    validate: {
+      validator(value) {
+        return validateLabelSettingsMinimal(value);
+      },
+      message() {
+        return i18n.translateError(
+          'SETTINGS_LABEL_KEYWORD_INVALID',
+          getLocale(this)
+        );
+      }
+    }
+  },
+  security_remember_passphrase: {
+    type: Boolean,
+    default: false
+  },
+  aliases_defaults: {
+    type: Object,
+    default: () => ({}),
+    set(value) {
+      this.__aliasesDefaultsWasArray = Array.isArray(value);
+      return value;
+    },
+    validate: {
+      validator(value) {
+        if (value === undefined || value === null) return true;
+        if (this.__aliasesDefaultsWasArray) return false;
+        return value instanceof Map || _.isPlainObject(value);
+      },
+      message() {
+        return i18n.translateError(
+          'SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT',
+          getLocale(this)
+        );
+      }
+    }
   },
   // recipients that are verified (ones that have clicked email link)
   // the API endpoint for lookups uses this as well as the UI on FE front-end side

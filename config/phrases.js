@@ -883,5 +883,21 @@ module.exports = {
     'Contact address country must be a valid string.',
   CONTACT_ADDRESS_TYPE_INVALID: 'Contact address type must be a valid string.',
 
+  // Settings validation phrases
+  SETTINGS_ALIAS_AUTH_REQUIRED: 'Alias authentication required.',
+  SETTINGS_INVALID_ALIAS_ID: 'Invalid alias ID.',
+  SETTINGS_LABEL_KEYWORD_INVALID:
+    'Label keyword must follow IMAP atom rules (letters, numbers, underscores, hyphens, dots).',
+  SETTINGS_LABEL_NAME_REQUIRED: 'Label name is required.',
+  SETTINGS_LABEL_COLOR_INVALID: 'Color must be a hex value like #33AADD.',
+  SETTINGS_ARCHIVE_FOLDER_INVALID:
+    'Archive folder must be a non-empty string or null.',
+  SETTINGS_SAVED_SEARCH_NAME_REQUIRED: 'Saved search name is required.',
+  SETTINGS_SAVED_SEARCH_QUERY_REQUIRED: 'Saved search query is required.',
+  SETTINGS_SHORTCUT_KEYBINDING_REQUIRED:
+    'Shortcut keybindings must be non-empty strings.',
+  SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT:
+    'Alias defaults must be provided as an object.',
+
   ...STATUSES
 };
