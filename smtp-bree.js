@@ -4,18 +4,14 @@
  */
 
 //
-// SMTP Bree Job Scheduler with Piscina Thread Pool
+// SMTP Bree Job Scheduler
 //
-// This module manages email sending throughput using a combination of:
-// 1. Bree job scheduler - Coordinates the send-emails job
-// 2. Piscina thread pool - Provides true multi-threaded parallelism
-//
-// The Piscina thread pool allows email processing to utilize all available
-// CPU cores, significantly increasing throughput compared to single-threaded
-// processing with PQueue alone.
+// This module manages email sending throughput using Bree job scheduler.
+// The send-emails job handles the actual email processing with optional
+// Piscina thread pool support for multi-threaded parallelism.
 //
 // Configuration (via environment variables):
-// - SMTP_PISCINA_ENABLED: Enable/disable Piscina (default: true in production)
+// - SMTP_PISCINA_ENABLED: Enable/disable Piscina (default: false)
 // - SMTP_MAX_THREADS: Maximum worker threads (default: CPU count, max 8)
 // - SMTP_MIN_THREADS: Minimum worker threads (default: 1)
 // - SMTP_IDLE_TIMEOUT: Worker idle timeout in ms (default: 30000)
@@ -25,23 +21,19 @@
 require('#config/env');
 
 const os = require('node:os');
-const path = require('node:path');
 
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
-const Piscina = require('piscina');
 const ms = require('ms');
 
-// const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
 //
 // Piscina Configuration
 //
-// Thread pool settings optimized for email processing workloads.
-// Email sending is I/O-bound (network), so we can use more threads
-// than CPU cores to maximize throughput.
+// These settings are passed to the send-emails job via workerData.
+// The job creates the Piscina instance in its own process.
 //
 const cpuCount = os.cpus().length;
 const maxThreads = env.SMTP_MAX_THREADS
@@ -54,14 +46,21 @@ const idleTimeout = env.SMTP_IDLE_TIMEOUT
   ? Number.parseInt(env.SMTP_IDLE_TIMEOUT, 10)
   : ms('30s');
 
+//
 // Check if Piscina should be enabled
-// Default to true in production, false in test/development for easier debugging
-// const piscinaEnabled =
-//   env.SMTP_PISCINA_ENABLED === undefined
-//     ? config.env === 'production'
-//     : env.SMTP_PISCINA_ENABLED === 'true' || env.SMTP_PISCINA_ENABLED === true;
-
-const piscinaEnabled = false;
+//
+// IMPORTANT: Piscina is disabled by default because:
+// 1. Each worker thread loads the full application context (heavy memory usage)
+// 2. Each worker needs its own MongoDB connection (connection pool exhaustion)
+// 3. The "task queue is at limit" error occurs when queue fills faster than processing
+//
+// Only enable Piscina if you have:
+// - Sufficient memory (each thread uses ~100-200MB)
+// - Sufficient MongoDB connection pool capacity
+// - Properly tuned SMTP_MAX_THREADS for your workload
+//
+const piscinaEnabled =
+  env.SMTP_PISCINA_ENABLED === 'true' || env.SMTP_PISCINA_ENABLED === true;
 
 logger.info(
   `SMTP bree starting (Piscina: ${
@@ -69,32 +68,6 @@ logger.info(
   }, threads: ${minThreads}-${maxThreads}, CPUs: ${cpuCount})`,
   { hide_meta: true }
 );
-
-//
-// Create Piscina thread pool for email processing
-//
-// The thread pool is created at module load time and shared across
-// all job invocations. This avoids the overhead of creating new
-// threads for each batch of emails.
-//
-let piscina = null;
-
-if (piscinaEnabled) {
-  piscina = new Piscina({
-    filename: path.resolve(__dirname, 'helpers', 'smtp-worker.js'),
-    // maxQueue: 'auto' sets queue size to maxThreads^2
-    // This provides backpressure when the pool is saturated
-    maxQueue: 'auto',
-    idleTimeout,
-    minThreads,
-    maxThreads
-  });
-
-  logger.info(
-    `Piscina thread pool created (min: ${minThreads}, max: ${maxThreads}, idleTimeout: ${idleTimeout}ms)`,
-    { hide_meta: true }
-  );
-}
 
 const bree = new Bree({
   logger,
@@ -118,7 +91,8 @@ const bree = new Bree({
         workerData: {
           piscinaEnabled,
           maxThreads,
-          minThreads
+          minThreads,
+          idleTimeout
         }
       }
     },
@@ -137,35 +111,12 @@ const bree = new Bree({
 //
 // Graceful shutdown handling
 //
-// Ensures both Bree and Piscina are properly shut down when the
-// process receives a termination signal.
-//
 const graceful = new Graceful({
   brees: [bree],
-  logger,
-  customHandlers: piscina
-    ? [
-        async () => {
-          logger.info('Shutting down Piscina thread pool...', {
-            hide_meta: true
-          });
-          await piscina.destroy();
-          logger.info('Piscina thread pool destroyed', { hide_meta: true });
-        }
-      ]
-    : []
+  logger
 });
 
 graceful.listen();
-
-//
-// Export piscina for use by send-emails job
-//
-// The send-emails job imports this module to access the shared
-// Piscina instance, avoiding the need to create a new thread pool
-// for each job invocation.
-//
-module.exports = { piscina, piscinaEnabled };
 
 (async () => {
   await bree.start();

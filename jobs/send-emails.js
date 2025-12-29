@@ -4,14 +4,18 @@
  */
 
 //
-// Send Emails Job with Piscina Thread Pool Support
+// Send Emails Job with Optional Piscina Thread Pool Support
 //
 // This job processes the email queue and sends emails using either:
 // 1. Piscina thread pool (when enabled) - True multi-threaded parallelism
-// 2. PQueue (fallback) - Single-threaded async concurrency
+// 2. PQueue (default) - Single-threaded async concurrency
 //
-// The Piscina approach distributes email processing across multiple CPU cores,
-// significantly increasing throughput for high-volume email sending.
+// IMPORTANT: Piscina is disabled by default due to:
+// - High memory usage (each thread loads full app context)
+// - MongoDB connection pool exhaustion risk
+// - "Task queue is at limit" errors under high load
+//
+// Only enable Piscina with proper resource tuning.
 //
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -27,7 +31,6 @@ const { setTimeout } = require('node:timers/promises');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Piscina = require('piscina');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -66,42 +69,65 @@ const graceful = new Graceful({
 // When Piscina is enabled (via workerData from smtp-bree.js), we create
 // a thread pool that distributes email processing across multiple CPU cores.
 //
-// The thread pool is created here (in the Bree worker) rather than in
-// smtp-bree.js because Bree workers run in separate processes, and we
-// need the thread pool to be accessible within this process.
-//
 const piscinaEnabled = workerData?.piscinaEnabled ?? false;
 const maxThreads = workerData?.maxThreads ?? Math.min(os.cpus().length, 8);
 const minThreads = workerData?.minThreads ?? 1;
+const idleTimeout = workerData?.idleTimeout ?? ms('30s');
 
 let piscina = null;
 
 if (piscinaEnabled) {
+  // Lazy load Piscina only when enabled to avoid unnecessary overhead
+  const Piscina = require('piscina');
+
+  //
+  // Calculate appropriate maxQueue to prevent "task queue is at limit" errors
+  //
+  // The queue size should be large enough to buffer work but not so large
+  // that it causes memory issues. We use smtpMaxQueue * 2 to provide
+  // headroom for burst traffic.
+  //
+  const maxQueue = config.smtpMaxQueue * 2;
+
   piscina = new Piscina({
     filename: path.resolve(__dirname, '..', 'helpers', 'smtp-worker.js'),
-    maxQueue: 'auto',
-    idleTimeout: ms('30s'),
+    maxQueue,
+    idleTimeout,
     minThreads,
-    maxThreads
+    maxThreads,
+    //
+    // Resource limits to prevent runaway memory usage
+    //
+    resourceLimits: {
+      maxOldGenerationSizeMb: 256,
+      maxYoungGenerationSizeMb: 64
+    }
+  });
+
+  //
+  // Monitor Piscina queue status for debugging
+  //
+  piscina.on('drain', () => {
+    logger.debug('Piscina queue drained', { hide_meta: true });
   });
 
   logger.info(
-    `send-emails: Piscina thread pool created (threads: ${minThreads}-${maxThreads})`,
+    `send-emails: Piscina thread pool created (threads: ${minThreads}-${maxThreads}, maxQueue: ${maxQueue})`,
     { hide_meta: true }
   );
 }
 
 //
-// PQueue Configuration (fallback when Piscina is disabled)
+// PQueue Configuration
 //
-// When Piscina is disabled, we fall back to PQueue for async concurrency.
-// This provides concurrency within a single thread but doesn't utilize
-// multiple CPU cores.
+// PQueue provides async concurrency control. When Piscina is enabled,
+// PQueue acts as a rate limiter to prevent overwhelming the thread pool.
+// When Piscina is disabled, PQueue handles all concurrency.
 //
 const queueConcurrency = piscinaEnabled
-  ? // When using Piscina, we use a higher PQueue concurrency since
-    // the actual work is done in the thread pool
-    config.smtpMaxQueue
+  ? // When using Piscina, limit PQueue concurrency to match thread count
+    // This prevents queue saturation
+    maxThreads * 2
   : // Without Piscina, use the original concurrency
     Math.round(config.smtpMaxQueue / 2);
 
@@ -146,6 +172,25 @@ graceful.listen();
 //
 async function processEmailTask(email) {
   if (piscinaEnabled && piscina) {
+    //
+    // Check if Piscina queue has capacity before submitting
+    // This prevents "task queue is at limit" errors
+    //
+    if (piscina.queueSize >= piscina.options.maxQueue) {
+      logger.warn(
+        `Piscina queue full (${piscina.queueSize}/${piscina.options.maxQueue}), processing directly`,
+        { email: email._id }
+      );
+      // Fall back to direct processing when queue is full
+      try {
+        await processEmail({ email, resolver, client });
+      } catch (err) {
+        logger.error(err, { email });
+      }
+
+      return;
+    }
+
     // Use Piscina thread pool for parallel processing
     try {
       const result = await piscina.run({ email });
@@ -153,7 +198,22 @@ async function processEmailTask(email) {
         logger.error(new Error(result.error), { email });
       }
     } catch (err) {
-      logger.error(err, { email });
+      //
+      // Handle Piscina-specific errors
+      //
+      if (err.message && err.message.includes('queue is at limit')) {
+        logger.warn('Piscina queue at limit, processing directly', {
+          email: email._id
+        });
+        // Fall back to direct processing
+        try {
+          await processEmail({ email, resolver, client });
+        } catch (processErr) {
+          logger.error(processErr, { email });
+        }
+      } else {
+        logger.error(err, { email });
+      }
     }
   } else {
     // Fall back to direct processing (single-threaded)
@@ -169,8 +229,14 @@ async function sendEmails() {
   // Return early if the job was already cancelled
   if (isCancelled) return;
 
-  if (queue.size >= config.smtpMaxQueue) {
-    logger.info(`queue has more than ${config.smtpMaxQueue} tasks`);
+  //
+  // Check queue capacity before fetching more emails
+  //
+  const currentQueueSize = queue.size + queue.pending;
+  if (currentQueueSize >= config.smtpMaxQueue) {
+    logger.info(
+      `queue has ${currentQueueSize} tasks (max: ${config.smtpMaxQueue}), waiting...`
+    );
     await setTimeout(5000);
     return;
   }
@@ -178,9 +244,26 @@ async function sendEmails() {
   // TODO: capacity/recipient issues should be hard 550 bounce for outbound
 
   const now = new Date();
-  const limit = config.smtpMaxQueue - queue.size;
+  //
+  // Calculate how many emails to fetch based on available queue capacity
+  //
+  const limit = Math.min(
+    config.smtpMaxQueue - currentQueueSize,
+    piscinaEnabled ? maxThreads * 4 : config.smtpMaxQueue
+  );
 
-  logger.info('queueing %d emails', limit);
+  if (limit <= 0) {
+    logger.info('no queue capacity available, waiting...');
+    await setTimeout(5000);
+    return;
+  }
+
+  logger.info(
+    'queueing %d emails (queue: %d/%d)',
+    limit,
+    currentQueueSize,
+    config.smtpMaxQueue
+  );
 
   // TODO: filter out recently blocked targets by rejectedErrors[x].mx.target
 
@@ -311,6 +394,15 @@ async function sendEmails() {
     .addCursorFlag('noCursorTimeout', true)) {
     // Return early if the job was already cancelled
     if (isCancelled) break;
+
+    //
+    // Check queue capacity before adding more tasks
+    // This provides additional backpressure
+    //
+    if (queue.size + queue.pending >= config.smtpMaxQueue) {
+      logger.info('queue full during iteration, breaking');
+      break;
+    }
 
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
     queue.add(() => processEmailTask(email), {

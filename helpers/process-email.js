@@ -77,37 +77,59 @@ async function processEmail({ email, port = 25, resolver, client }) {
     ignore_hook: false
   };
 
+  //
+  // ATOMIC LOCK ACQUISITION
+  //
+  // Use findOneAndUpdate with conditions to atomically:
+  // 1. Check if email exists
+  // 2. Check if email is not already locked
+  // 3. Check if email status is 'queued'
+  // 4. Check if email date is in the past
+  // 5. Lock the email if all conditions are met
+  //
+  // This prevents race conditions where multiple workers could
+  // try to process the same email simultaneously.
+  //
   try {
-    // lookup the email by id to get most recent data and version key (`__v`)
-    email = await Emails.findById(email._id);
-    if (!email) throw new Error('Email does not exist');
+    const now = new Date();
+    email = await Emails.findOneAndUpdate(
+      {
+        _id: email._id,
+        status: 'queued',
+        is_locked: false,
+        date: { $lte: now }
+      },
+      {
+        $set: {
+          is_locked: true,
+          locked_by: IP_ADDRESS,
+          locked_at: now
+        }
+      },
+      {
+        new: true,
+        returnDocument: 'after'
+      }
+    );
 
-    // locked_at must not be set
-    if (_.isDate(email.locked_at)) throw new Error('Email is locked already');
-
-    // date must be in the past
-    if (new Date(email.date).getTime() > Date.now())
-      throw new Error('Email date is in the future');
-
-    // status must be "queued" in order to be processed
-    if (email.status !== 'queued')
-      throw new Error('Email status must be queued');
+    // If no document was returned, the email either:
+    // - doesn't exist
+    // - is already locked by another worker
+    // - has a status other than 'queued' (already sent/failed)
+    // - has a date in the future
+    if (!email) {
+      logger.debug(
+        'Email not available for processing (already locked, sent, or not ready)',
+        meta
+      );
+      return;
+    }
   } catch (err) {
-    // create log
     logger.debug(err, meta);
     return;
   }
 
   try {
-    // lock job
-    await Emails.findByIdAndUpdate(email._id, {
-      $set: {
-        is_locked: true,
-        locked_by: IP_ADDRESS,
-        locked_at: new Date()
-      }
-    });
-
     // ensure user, domain, and alias still exist and are all enabled
     let [user, domain, alias] = await Promise.all([
       Users.findById(email.user).lean().exec(),

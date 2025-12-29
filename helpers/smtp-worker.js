@@ -9,9 +9,13 @@
 // This worker processes individual emails in a separate thread,
 // allowing for true parallel processing across multiple CPU cores.
 //
-// The worker is invoked by smtp-bree.js via Piscina and receives
-// email data to process. Each thread maintains its own MongoDB
-// connection and Redis client for optimal performance.
+// IMPORTANT: Each worker thread:
+// - Loads the full application context (heavy memory usage ~100-200MB)
+// - Maintains its own MongoDB connection
+// - Should be used sparingly and with proper resource tuning
+//
+// The worker is invoked by send-emails.js via Piscina and receives
+// email data to process.
 //
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -19,52 +23,72 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const Graceful = require('@ladjs/graceful');
+const process = require('node:process');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
-const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
-const client = new Redis(breeSharedConfig.redis, logger);
-const resolver = createTangerine(client, logger);
 
-// Track if worker is shutting down
-let isCancelled = false;
-
-const graceful = new Graceful({
-  ...(config.env === 'test'
-    ? {
-        mongooses: [mongoose],
-        redisClients: [client]
-      }
-    : {}),
-  logger,
-  timeoutMs: config.env === 'test' ? ms('5s') : ms('1m'),
-  customHandlers: [
-    async () => {
-      isCancelled = true;
-    }
-  ]
-});
-
-graceful.listen();
-
-// Initialize mongoose connection once per worker
+//
+// Lazy initialization of resources
+//
+// We defer initialization until the first task to avoid
+// unnecessary resource allocation for idle workers.
+//
+let client = null;
+let resolver = null;
 let mongooseInitialized = false;
+let initializationPromise = null;
 
-async function initializeMongoose() {
-  if (!mongooseInitialized) {
-    await setupMongoose(logger);
-    mongooseInitialized = true;
+async function initialize() {
+  if (initializationPromise) {
+    return initializationPromise;
+  }
+
+  initializationPromise = (async () => {
+    if (!mongooseInitialized) {
+      await setupMongoose(logger);
+      mongooseInitialized = true;
+    }
+
+    if (!client) {
+      client = new Redis(breeSharedConfig.redis, logger);
+      resolver = createTangerine(client, logger);
+    }
+  })();
+
+  return initializationPromise;
+}
+
+//
+// Cleanup function for graceful shutdown
+//
+async function cleanup() {
+  if (client) {
+    try {
+      await client.quit();
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+
+  if (mongoose.connection.readyState === 1) {
+    try {
+      await mongoose.connection.close();
+    } catch {
+      // Ignore cleanup errors
+    }
   }
 }
+
+// Register cleanup on process exit
+process.on('beforeExit', cleanup);
 
 //
 // Main worker function - processes a single email
@@ -78,13 +102,9 @@ async function initializeMongoose() {
 // @returns {Object} - Result of processing (success/error info)
 //
 async function processEmailWorker(payload) {
-  if (isCancelled) {
-    return { success: false, error: 'Worker is shutting down' };
-  }
-
   try {
-    // Ensure mongoose is initialized
-    await initializeMongoose();
+    // Ensure resources are initialized
+    await initialize();
 
     const { email } = payload;
 

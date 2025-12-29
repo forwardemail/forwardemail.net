@@ -152,24 +152,27 @@ test('thread count is at least 1', (t) => {
 //
 // Concurrency Calculation Tests
 //
+// When Piscina is enabled, PQueue concurrency is set to maxThreads * 2
+// to prevent overwhelming the thread pool while still providing buffering.
+//
 test('queue concurrency calculation with Piscina enabled', (t) => {
   const piscinaEnabled = true;
-  const smtpMaxQueue = 100;
+  const maxThreads = 4;
 
   const queueConcurrency = piscinaEnabled
-    ? smtpMaxQueue
-    : Math.round(smtpMaxQueue / 2);
+    ? maxThreads * 2
+    : Math.round(config.smtpMaxQueue / 2);
 
-  t.is(queueConcurrency, 100);
+  t.is(queueConcurrency, 8);
 });
 
 test('queue concurrency calculation with Piscina disabled', (t) => {
   const piscinaEnabled = false;
-  const smtpMaxQueue = 100;
+  const maxThreads = 4;
 
   const queueConcurrency = piscinaEnabled
-    ? smtpMaxQueue
-    : Math.round(smtpMaxQueue / 2);
+    ? maxThreads * 2
+    : Math.round(config.smtpMaxQueue / 2);
 
   t.is(queueConcurrency, 50);
 });
@@ -210,50 +213,29 @@ test('default idle timeout is 30 seconds', (t) => {
 //
 // Piscina Enabled Flag Tests
 //
-test('SMTP_PISCINA_ENABLED defaults to false in test environment', (t) => {
+// Piscina is now disabled by default (must be explicitly enabled)
+// due to resource management concerns.
+//
+test('SMTP_PISCINA_ENABLED defaults to false', (t) => {
   const envValue = undefined;
-  const configEnv = 'test';
 
-  const piscinaEnabled =
-    envValue === undefined
-      ? configEnv === 'production'
-      : envValue === 'true' || envValue === true;
+  const piscinaEnabled = envValue === 'true' || envValue === true;
 
   t.false(piscinaEnabled);
 });
 
-test('SMTP_PISCINA_ENABLED defaults to true in production environment', (t) => {
-  const envValue = undefined;
-  const configEnv = 'production';
-
-  const piscinaEnabled =
-    envValue === undefined
-      ? configEnv === 'production'
-      : envValue === 'true' || envValue === true;
-
-  t.true(piscinaEnabled);
-});
-
 test('SMTP_PISCINA_ENABLED can be explicitly enabled', (t) => {
   const envValue = 'true';
-  const configEnv = 'test';
 
-  const piscinaEnabled =
-    envValue === undefined
-      ? configEnv === 'production'
-      : envValue === 'true' || envValue === true;
+  const piscinaEnabled = envValue === 'true' || envValue === true;
 
   t.true(piscinaEnabled);
 });
 
 test('SMTP_PISCINA_ENABLED can be explicitly disabled', (t) => {
   const envValue = 'false';
-  const configEnv = 'production';
 
-  const piscinaEnabled =
-    envValue === undefined
-      ? configEnv === 'production'
-      : envValue === 'true' || envValue === true;
+  const piscinaEnabled = envValue === 'true' || envValue === true;
 
   t.false(piscinaEnabled);
 });
@@ -283,6 +265,47 @@ test('queue size check prevents overloading', async (t) => {
 
   // Clear queue for cleanup
   queue.clear();
+});
+
+//
+// Piscina maxQueue Calculation Tests
+//
+test('Piscina maxQueue should be smtpMaxQueue * 2', (t) => {
+  const maxQueue = config.smtpMaxQueue * 2;
+  t.is(maxQueue, 200);
+});
+
+//
+// Backpressure and Fallback Tests
+//
+test('simulates fallback to direct processing when Piscina queue is full', async (t) => {
+  let directProcessingCount = 0;
+  let piscinaProcessingCount = 0;
+
+  // Simulate the processEmailTask function behavior
+  const processEmailTask = async (email, piscinaQueueFull) => {
+    if (piscinaQueueFull) {
+      // Fall back to direct processing
+      directProcessingCount++;
+      return { success: true, fallback: true };
+    }
+
+    piscinaProcessingCount++;
+    return { success: true, fallback: false };
+  };
+
+  // Process some emails with Piscina available
+  for (let i = 0; i < 5; i++) {
+    await processEmailTask({ _id: `email-${i}` }, false);
+  }
+
+  // Process some emails with Piscina queue full
+  for (let i = 5; i < 10; i++) {
+    await processEmailTask({ _id: `email-${i}` }, true);
+  }
+
+  t.is(piscinaProcessingCount, 5);
+  t.is(directProcessingCount, 5);
 });
 
 //
@@ -364,4 +387,37 @@ test('handles queue cancellation during processing', async (t) => {
   // Some tasks should have been processed before cancellation
   t.true(processed > 0);
   t.true(processed < 50);
+});
+
+//
+// Limit Calculation Tests
+//
+test('email fetch limit respects queue capacity', (t) => {
+  const smtpMaxQueue = 100;
+  const currentQueueSize = 30;
+  const maxThreads = 4;
+  const piscinaEnabled = true;
+
+  const limit = Math.min(
+    smtpMaxQueue - currentQueueSize,
+    piscinaEnabled ? maxThreads * 4 : smtpMaxQueue
+  );
+
+  // With Piscina enabled, limit should be min(70, 16) = 16
+  t.is(limit, 16);
+});
+
+test('email fetch limit without Piscina', (t) => {
+  const smtpMaxQueue = 100;
+  const currentQueueSize = 30;
+  const maxThreads = 4;
+  const piscinaEnabled = false;
+
+  const limit = Math.min(
+    smtpMaxQueue - currentQueueSize,
+    piscinaEnabled ? maxThreads * 4 : smtpMaxQueue
+  );
+
+  // Without Piscina, limit should be min(70, 100) = 70
+  t.is(limit, 70);
 });
