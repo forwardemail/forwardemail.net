@@ -9,38 +9,18 @@ const pWaitFor = require('p-wait-for');
 const logger = require('#helpers/logger');
 
 //
-// Yahoo does not support IMAP IDLE command
-// See:
-// - https://stackoverflow.com/a/71254393
-// - https://github.com/ikvk/imap_tools/blob/master/tests/test_idle.py
+// NOTE: We use polling instead of IMAP IDLE for all providers because:
+// 1. Gmail's IDLE EXISTS notifications are delayed 30+ seconds
+// 2. Yahoo does not support IMAP IDLE at all
+//    - https://stackoverflow.com/a/71254393
+//    - https://github.com/ikvk/imap_tools/blob/master/tests/test_idle.py
+// 3. Polling provides consistent, predictable behavior across all providers
 //
-const PROVIDERS_WITHOUT_IDLE_SUPPORT = new Set(['Yahoo/AOL']);
-
-// Polling interval for providers that don't support IDLE
-const POLLING_INTERVAL = ms('1s');
+const POLLING_INTERVAL = 0; // ms('1s');
 
 /**
- * Shared registry of pending message lookups per IMAP client.
- * This allows multiple getMessage() calls on the same client to share
- * a single EXISTS event handler, avoiding race conditions.
- *
- * Structure: WeakMap<ImapClient, Map<messageIdPart, {resolve, reject, info, startTime}>>
- */
-const pendingMessages = new WeakMap();
-
-/**
- * Track which clients have an EXISTS handler attached
- */
-const clientHandlers = new WeakMap();
-
-/**
- * Wait for a message to arrive using IMAP IDLE (event-driven, no polling).
- * Uses long-lived connections and verifies message ID when new messages arrive.
- *
- * For providers that don't support IDLE (e.g., Yahoo), falls back to polling.
- *
- * Multiple concurrent calls on the same IMAP client share a single EXISTS handler
- * to avoid race conditions where one handler consumes an event meant for another.
+ * Wait for a message to arrive using continuous polling.
+ * Checks the mailbox at regular intervals until the message is found or timeout.
  *
  * @param {Object} imapClient - ImapFlow client instance (should have mailbox selected)
  * @param {Object} info - Message info containing messageId
@@ -59,18 +39,14 @@ async function getMessage(imapClient, info, provider) {
     .replace('>', '')
     .split('@')[0];
 
-  // Check if this provider supports IDLE
-  const supportsIdle = !PROVIDERS_WITHOUT_IDLE_SUPPORT.has(provider.name);
-
   logger.debug('getMessage started', {
     provider: provider.name,
     messageId: info.messageId,
     messageIdPart,
     timeout,
-    supportsIdle,
+    pollingInterval: POLLING_INTERVAL,
     mailboxPath: imapClient.mailbox?.path,
     mailboxExists: imapClient.mailbox?.exists,
-    clientIdling: imapClient.idling,
     clientUsable: imapClient.usable
   });
 
@@ -101,48 +77,20 @@ async function getMessage(imapClient, info, provider) {
       return { provider, received, err };
     }
 
-    // Use appropriate waiting strategy based on provider capabilities
-    if (supportsIdle) {
-      // Use IDLE for providers that support it (Gmail, iCloud, Forward Email)
-      logger.debug(
-        'Message not found, entering IDLE wait with shared handler',
-        {
-          provider: provider.name,
-          messageIdPart,
-          timeoutMs: timeout
-        }
-      );
+    // Use polling to wait for message
+    logger.debug('Message not found, starting polling', {
+      provider: provider.name,
+      messageIdPart,
+      timeoutMs: timeout,
+      pollingIntervalMs: POLLING_INTERVAL
+    });
 
-      received = await waitForMessageWithSharedHandler(
-        imapClient,
-        messageIdPart,
-        {
-          timeout,
-          provider,
-          info,
-          startTime
-        }
-      );
-    } else {
-      // Fall back to polling for providers that don't support IDLE (Yahoo)
-      // See: https://stackoverflow.com/a/71254393
-      logger.debug(
-        'Message not found, using polling fallback (no IDLE support)',
-        {
-          provider: provider.name,
-          messageIdPart,
-          timeoutMs: timeout,
-          pollingIntervalMs: POLLING_INTERVAL
-        }
-      );
-
-      received = await waitForMessageWithPolling(imapClient, messageIdPart, {
-        timeout,
-        provider,
-        info,
-        startTime
-      });
-    }
+    received = await waitForMessageWithPolling(imapClient, messageIdPart, {
+      timeout,
+      provider,
+      info,
+      startTime
+    });
   } catch (_err) {
     err = _err;
     logger.debug('getMessage caught error', {
@@ -159,15 +107,13 @@ async function getMessage(imapClient, info, provider) {
     logger.info('getMessage completed successfully', {
       provider: provider.name,
       totalTimeMs: totalTime,
-      messageId: info.messageId,
-      method: supportsIdle ? 'IDLE' : 'polling'
+      messageId: info.messageId
     });
   } else {
     logger.warn('getMessage completed without finding message', {
       provider: provider.name,
       totalTimeMs: totalTime,
       messageId: info.messageId,
-      method: supportsIdle ? 'IDLE' : 'polling',
       error: err ? err.message : 'no error'
     });
   }
@@ -182,7 +128,18 @@ async function checkForMessage(imapClient, messageIdPart) {
   const checkStartTime = Date.now();
 
   try {
-    // Search for recent messages (last 10) to avoid scanning entire mailbox
+    // Issue NOOP to refresh mailbox state before checking
+    // This is required for Yahoo which doesn't push EXISTS updates
+    // Without NOOP, Yahoo returns stale mailbox data
+    try {
+      await imapClient.noop();
+    } catch (noopErr) {
+      logger.debug('NOOP failed, continuing anyway', {
+        error: noopErr.message
+      });
+    }
+
+    // Get current mailbox status (now refreshed after NOOP)
     const status = imapClient.mailbox;
 
     logger.debug('checkForMessage: mailbox status', {
@@ -241,7 +198,7 @@ async function checkForMessage(imapClient, messageIdPart) {
       durationMs: Date.now() - checkStartTime
     });
   } catch (err) {
-    // Log but don't throw - we'll retry via IDLE or polling
+    // Log but don't throw - we'll retry on next poll
     logger.warn('checkForMessage: error during check', {
       error: err.message,
       stack: err.stack,
@@ -253,11 +210,14 @@ async function checkForMessage(imapClient, messageIdPart) {
 }
 
 /**
- * Wait for a message using polling (for providers that don't support IDLE like Yahoo)
+ * Wait for a message using continuous polling.
  *
- * Yahoo does not support IMAP IDLE:
- * - https://stackoverflow.com/a/71254393
- * - https://github.com/ikvk/imap_tools/blob/master/tests/test_idle.py
+ * We use polling instead of IMAP IDLE because:
+ * 1. Gmail's IDLE EXISTS notifications are delayed 30+ seconds
+ * 2. Yahoo does not support IMAP IDLE at all
+ *    - https://stackoverflow.com/a/71254393
+ *    - https://github.com/ikvk/imap_tools/blob/master/tests/test_idle.py
+ * 3. Polling provides consistent, predictable behavior across all providers
  */
 async function waitForMessageWithPolling(imapClient, messageIdPart, options) {
   const { timeout, provider, info, startTime } = options;
@@ -319,258 +279,6 @@ async function waitForMessageWithPolling(imapClient, messageIdPart, options) {
     });
     throw new Error('Polling timeout waiting for message');
   }
-}
-
-/**
- * Check ALL pending messages for a client and resolve any that are found.
- * This is called when an EXISTS event fires.
- */
-async function checkAllPendingMessages(imapClient) {
-  const pending = pendingMessages.get(imapClient);
-  if (!pending || pending.size === 0) {
-    return;
-  }
-
-  const checkStartTime = Date.now();
-  const pendingIds = [...pending.keys()];
-
-  logger.debug('checkAllPendingMessages: checking for all pending messages', {
-    pendingCount: pendingIds.length,
-    pendingIds
-  });
-
-  try {
-    const status = imapClient.mailbox;
-    if (!status || !status.exists || status.exists === 0) {
-      logger.debug('checkAllPendingMessages: mailbox empty or not selected');
-      return;
-    }
-
-    // Check last 10 messages (or more if we have many pending)
-    const checkCount = Math.max(10, pending.size * 2);
-    const startSeq = Math.max(1, status.exists - checkCount + 1);
-    const range = `${startSeq}:*`;
-
-    logger.debug('checkAllPendingMessages: fetching messages', {
-      range,
-      totalMessages: status.exists,
-      checkingCount: status.exists - startSeq + 1,
-      pendingCount: pending.size
-    });
-
-    const foundIds = new Set();
-
-    for await (const message of imapClient.fetch(range, {
-      envelope: true
-    })) {
-      const msgId = message.envelope?.messageId;
-      if (!msgId) continue;
-
-      // Check if this message matches any pending lookup
-      for (const [messageIdPart, entry] of pending.entries()) {
-        if (msgId.includes(messageIdPart) && !foundIds.has(messageIdPart)) {
-          foundIds.add(messageIdPart);
-
-          logger.info('checkAllPendingMessages: FOUND message', {
-            provider: entry.provider.name,
-            messageIdPart,
-            seq: message.seq,
-            uid: message.uid,
-            fullMessageId: msgId,
-            totalTimeMs: Date.now() - entry.startTime
-          });
-
-          // Resolve this pending lookup
-          const receivedTime = new Date();
-          entry.resolve(receivedTime);
-
-          // Remove from pending
-          pending.delete(messageIdPart);
-        }
-      }
-    }
-
-    logger.debug('checkAllPendingMessages: check completed', {
-      foundCount: foundIds.size,
-      remainingPending: pending.size,
-      durationMs: Date.now() - checkStartTime
-    });
-  } catch (err) {
-    logger.warn('checkAllPendingMessages: error during check', {
-      error: err.message,
-      stack: err.stack,
-      durationMs: Date.now() - checkStartTime
-    });
-  }
-}
-
-/**
- * Set up the shared EXISTS handler for a client if not already set up
- */
-function ensureSharedHandler(imapClient) {
-  if (clientHandlers.has(imapClient)) {
-    return; // Already has handler
-  }
-
-  let checkInProgress = false;
-  let existsEventCount = 0;
-
-  const sharedOnExists = async (data) => {
-    existsEventCount++;
-
-    const pending = pendingMessages.get(imapClient);
-    const pendingCount = pending ? pending.size : 0;
-
-    logger.info('IDLE: shared exists event received', {
-      eventNumber: existsEventCount,
-      count: data.count,
-      prevCount: data.prevCount,
-      path: data.path,
-      pendingMessages: pendingCount,
-      checkInProgress
-    });
-
-    if (pendingCount === 0) {
-      logger.debug('IDLE: no pending messages to check');
-      return;
-    }
-
-    // Prevent concurrent checks
-    if (checkInProgress) {
-      logger.debug('IDLE: check already in progress, skipping');
-      return;
-    }
-
-    checkInProgress = true;
-
-    try {
-      await checkAllPendingMessages(imapClient);
-    } catch (err) {
-      logger.warn('IDLE: error in shared handler check', {
-        error: err.message
-      });
-    } finally {
-      checkInProgress = false;
-    }
-
-    // Re-enter IDLE if there are still pending messages
-    const remainingPending = pendingMessages.get(imapClient);
-    if (remainingPending && remainingPending.size > 0 && !imapClient.idling) {
-      logger.debug(
-        'IDLE: re-entering IDLE mode for remaining pending messages',
-        {
-          remainingCount: remainingPending.size
-        }
-      );
-      imapClient.idle().catch((idleErr) => {
-        logger.debug('IDLE: idle() ended', {
-          error: idleErr ? idleErr.message : 'normal termination'
-        });
-      });
-    }
-  };
-
-  // Attach the shared handler
-  imapClient.on('exists', sharedOnExists);
-
-  // Store reference for cleanup
-  clientHandlers.set(imapClient, {
-    handler: sharedOnExists,
-    existsEventCount: () => existsEventCount
-  });
-
-  logger.debug('ensureSharedHandler: attached shared EXISTS handler');
-}
-
-/**
- * Wait for a message using shared IMAP IDLE event handler.
- * Multiple concurrent calls share a single EXISTS handler to avoid race conditions.
- */
-async function waitForMessageWithSharedHandler(
-  imapClient,
-  messageIdPart,
-  options
-) {
-  const { timeout, provider, info, startTime } = options;
-
-  logger.debug('waitForMessageWithSharedHandler: starting', {
-    provider: provider.name,
-    messageIdPart,
-    timeoutMs: timeout,
-    clientIdling: imapClient.idling,
-    clientUsable: imapClient.usable,
-    mailboxPath: imapClient.mailbox?.path
-  });
-
-  // Ensure the shared handler is set up
-  ensureSharedHandler(imapClient);
-
-  // Initialize pending messages map for this client if needed
-  if (!pendingMessages.has(imapClient)) {
-    pendingMessages.set(imapClient, new Map());
-  }
-
-  const pending = pendingMessages.get(imapClient);
-
-  return new Promise((resolve, reject) => {
-    // Set up timeout
-    const timeoutId = setTimeout(() => {
-      // Remove from pending
-      if (pending.has(messageIdPart)) {
-        pending.delete(messageIdPart);
-        logger.warn('IDLE: timeout reached for message', {
-          provider: provider.name,
-          messageId: info.messageId,
-          messageIdPart,
-          timeoutMs: timeout,
-          totalTimeMs: Date.now() - startTime,
-          remainingPending: pending.size
-        });
-        reject(new Error('IDLE timeout waiting for message'));
-      }
-    }, timeout);
-
-    // Add to pending messages
-    pending.set(messageIdPart, {
-      resolve(receivedTime) {
-        clearTimeout(timeoutId);
-        resolve(receivedTime);
-      },
-      reject(err) {
-        clearTimeout(timeoutId);
-        pending.delete(messageIdPart);
-        reject(err);
-      },
-      provider,
-      info,
-      startTime,
-      timeoutId
-    });
-
-    logger.debug('waitForMessageWithSharedHandler: added to pending', {
-      provider: provider.name,
-      messageIdPart,
-      totalPending: pending.size
-    });
-
-    // Enter IDLE mode if not already idling
-    if (imapClient.idling) {
-      logger.debug('waitForMessageWithSharedHandler: client already idling', {
-        provider: provider.name
-      });
-    } else {
-      logger.debug('waitForMessageWithSharedHandler: entering IDLE mode', {
-        provider: provider.name
-      });
-
-      imapClient.idle().catch((idleErr) => {
-        logger.debug('IDLE: idle() ended', {
-          provider: provider.name,
-          error: idleErr ? idleErr.message : 'normal termination'
-        });
-      });
-    }
-  });
 }
 
 module.exports = getMessage;
