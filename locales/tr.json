@@ -13547,5 +13547,14 @@
   "Follow Us": "Follow Us",
   "View on X": "View on X",
   "Privacy. Transparency. Security. Open Source. Always.": "Privacy. Transparency. Security. Open Source. Always.",
-  "New Servers": "New Servers"
+  "New Servers": "New Servers",
+  "Phishing alert emails": "Phishing alert emails",
+  "Connected Accounts": "Connected Accounts",
+  "You must set a password before disconnecting connected accounts to ensure you can still log in.": "You must set a password before disconnecting connected accounts to ensure you can still log in.",
+  "Set a password": "Set a password",
+  "Disconnect": "Disconnect",
+  "My Account - Profile": "My Account - Profile",
+  "%s account disconnected from your Forward Email account": "%s account disconnected from your Forward Email account",
+  "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.": "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.",
+  "Successfully disconnected your <span class=\"notranslate\">%s</span> account.": "Successfully disconnected your <span class=\"notranslate\">%s</span> account."
 }

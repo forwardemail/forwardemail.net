@@ -7,7 +7,7 @@ const punycode = require('node:punycode');
 
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
-const { readKey } = require('openpgp/dist/node/openpgp.js');
+const { readKey } = require('openpgp');
 
 const DenylistError = require('./denylist-error');
 const WKD = require('./wkd');

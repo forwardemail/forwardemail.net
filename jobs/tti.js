@@ -58,7 +58,13 @@ setInterval(async () => {
             return;
 
           imapClients.delete(provider.name);
-          const imapClient = new ImapFlow(provider.config);
+          const imapClient = new ImapFlow({
+            ...provider.config,
+            // Explicit timeouts to prevent ~15s spikes from default greetingTimeout (16s)
+            greetingTimeout: ms('30s'),
+            connectionTimeout: ms('30s'),
+            socketTimeout: ms('1d') // long-lived IMAP connections
+          });
           await imapClient.connect();
           await imapClient.mailboxOpen('INBOX');
           imapClients.set(provider.name, imapClient);
@@ -200,6 +206,9 @@ async function checkTTI() {
             imapClients.delete(provider.name);
             imapClient = new ImapFlow({
               ...provider.config,
+              // Explicit timeouts to prevent ~15s spikes from default greetingTimeout (16s)
+              greetingTimeout: ms('30s'),
+              connectionTimeout: ms('30s'),
               socketTimeout: ms('1d') // long-lived IMAP connections
             });
             await imapClient.connect();

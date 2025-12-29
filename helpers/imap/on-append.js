@@ -24,7 +24,7 @@ const {
   IMAPConnection
 } = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 // const { convert } = require('html-to-text');
-const { readKey } = require('openpgp/dist/node/openpgp.js');
+const { readKey } = require('openpgp');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');

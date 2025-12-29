@@ -192,6 +192,56 @@ block body
             = t("Need to unsubscribe or cancel your account?")
             = " "
             a.alert-link(href=l("/my-account/security"))= t("Delete your account")
+
+          //- Connected Accounts Section
+          if user[config.passport.fields.githubProfileID] || user[config.passport.fields.googleProfileID]
+            .card.border-themed.mt-3
+              h2.h6.card-header= t("Connected Accounts")
+              .card-body
+                if !user[config.userFields.hasVerifiedEmail]
+                  .alert.alert-warning.small.mb-3
+                    = t("You must verify your email address before disconnecting connected accounts.")
+                if !user[config.userFields.hasSetPassword]
+                  .alert.alert-warning.small.mb-3
+                    = t("You must set a password before disconnecting connected accounts to ensure you can still log in.")
+                    = " "
+                    a.alert-link(
+                      href="#",
+                      role="button",
+                      data-toggle="modal",
+                      data-target="#modal-change-password"
+                    )= t("Set a password")
+                if user[config.passport.fields.githubProfileID]
+                  .d-flex.align-items-center.justify-content-between(
+                    class=user[config.passport.fields.googleProfileID] ? "mb-2" : ""
+                  )
+                    .d-flex.align-items-center
+                      i.fab.fa-github.fa-lg.mr-2
+                      span= t("GitHub")
+                    if user[config.userFields.hasVerifiedEmail] && user[config.userFields.hasSetPassword]
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/disconnect/github`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="DELETE")
+                        button.btn.btn-sm.btn-danger(type="submit")= t("Disconnect")
+                    else
+                      button.btn.btn-sm.btn-secondary(type="button", disabled)= t("Disconnect")
+                if user[config.passport.fields.googleProfileID]
+                  .d-flex.align-items-center.justify-content-between
+                    .d-flex.align-items-center
+                      i.fab.fa-google.fa-lg.mr-2
+                      span= t("Google")
+                    if user[config.userFields.hasVerifiedEmail] && user[config.userFields.hasSetPassword]
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/disconnect/google`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="DELETE")
+                        button.btn.btn-sm.btn-danger(type="submit")= t("Disconnect")
+                    else
+                      button.btn.btn-sm.btn-secondary(type="button", disabled)= t("Disconnect")
+
         .col-md.mt-3.mt-md-0
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")

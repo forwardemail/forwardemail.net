@@ -3,21 +3,36 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+//
+// Send Emails Job with Piscina Thread Pool Support
+//
+// This job processes the email queue and sends emails using either:
+// 1. Piscina thread pool (when enabled) - True multi-threaded parallelism
+// 2. PQueue (fallback) - Single-threaded async concurrency
+//
+// The Piscina approach distributes email processing across multiple CPU cores,
+// significantly increasing throughput for high-volume email sending.
+//
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
+const os = require('node:os');
+const path = require('node:path');
 const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
+const { parentPort, workerData } = require('node:worker_threads');
 const { setTimeout } = require('node:timers/promises');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Piscina = require('piscina');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -28,10 +43,11 @@ const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+
+const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const setupMongoose = require('#helpers/setup-mongoose');
-const getBlockedHashes = require('#helpers/get-blocked-hashes');
 
 const IP_ADDRESS = ip.address();
 const breeSharedConfig = sharedConfig('BREE');
@@ -44,16 +60,64 @@ const graceful = new Graceful({
   logger
 });
 
+//
+// Piscina Thread Pool Configuration
+//
+// When Piscina is enabled (via workerData from smtp-bree.js), we create
+// a thread pool that distributes email processing across multiple CPU cores.
+//
+// The thread pool is created here (in the Bree worker) rather than in
+// smtp-bree.js because Bree workers run in separate processes, and we
+// need the thread pool to be accessible within this process.
+//
+const piscinaEnabled = workerData?.piscinaEnabled ?? false;
+const maxThreads = workerData?.maxThreads ?? Math.min(os.cpus().length, 8);
+const minThreads = workerData?.minThreads ?? 1;
+
+let piscina = null;
+
+if (piscinaEnabled) {
+  piscina = new Piscina({
+    filename: path.resolve(__dirname, '..', 'helpers', 'smtp-worker.js'),
+    maxQueue: 'auto',
+    idleTimeout: ms('30s'),
+    minThreads,
+    maxThreads
+  });
+
+  logger.info(
+    `send-emails: Piscina thread pool created (threads: ${minThreads}-${maxThreads})`,
+    { hide_meta: true }
+  );
+}
+
+//
+// PQueue Configuration (fallback when Piscina is disabled)
+//
+// When Piscina is disabled, we fall back to PQueue for async concurrency.
+// This provides concurrency within a single thread but doesn't utilize
+// multiple CPU cores.
+//
+const queueConcurrency = piscinaEnabled
+  ? // When using Piscina, we use a higher PQueue concurrency since
+    // the actual work is done in the thread pool
+    config.smtpMaxQueue
+  : // Without Piscina, use the original concurrency
+    Math.round(config.smtpMaxQueue / 2);
+
 const queue = new PQueue({
-  concurrency: Math.round(config.smtpMaxQueue / 2)
-  // concurrency: config.concurrency * 30
-  // timeout: config.smtpQueueTimeout
+  concurrency: queueConcurrency
 });
 
-// store boolean if the job is cancelled
+logger.info(
+  `send-emails: initialized (Piscina: ${piscinaEnabled}, PQueue concurrency: ${queueConcurrency})`,
+  { hide_meta: true }
+);
+
+// Store boolean if the job is cancelled
 let isCancelled = false;
 
-// handle cancellation (this is a very simple example)
+// Handle cancellation (this is a very simple example)
 if (parentPort)
   parentPort.once('message', (message) => {
     //
@@ -63,15 +127,46 @@ if (parentPort)
     //
     if (message === 'cancel') {
       isCancelled = true;
-      // clear the queue
+      // Clear the queue
       queue.clear();
+      // Destroy Piscina if it exists
+      if (piscina) {
+        piscina.destroy().catch((err) => logger.error(err));
+      }
     }
   });
 
 graceful.listen();
 
+//
+// Process a single email using Piscina or direct processing
+//
+// @param {Object} email - The email document to process
+// @returns {Promise} - Resolves when processing is complete
+//
+async function processEmailTask(email) {
+  if (piscinaEnabled && piscina) {
+    // Use Piscina thread pool for parallel processing
+    try {
+      const result = await piscina.run({ email });
+      if (!result.success) {
+        logger.error(new Error(result.error), { email });
+      }
+    } catch (err) {
+      logger.error(err, { email });
+    }
+  } else {
+    // Fall back to direct processing (single-threaded)
+    try {
+      await processEmail({ email, resolver, client });
+    } catch (err) {
+      logger.error(err, { email });
+    }
+  }
+}
+
 async function sendEmails() {
-  // return early if the job was already cancelled
+  // Return early if the job was already cancelled
   if (isCancelled) return;
 
   if (queue.size >= config.smtpMaxQueue) {
@@ -92,7 +187,7 @@ async function sendEmails() {
   //
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
   //
-  // get list of all suspended domains
+  // Get list of all suspended domains
   // and recently blocked emails to exclude
   const [suspendedDomains, recentlyBlocked] = await Promise.all([
     Domains.aggregate([
@@ -214,22 +309,14 @@ async function sendEmails() {
     .limit(limit)
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
-    // return early if the job was already cancelled
+    // Return early if the job was already cancelled
     if (isCancelled) break;
+
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-    queue.add(
-      async () => {
-        try {
-          await processEmail({ email, resolver, client });
-        } catch (err) {
-          logger.error(err, { email });
-        }
-      },
-      {
-        // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
-        // priority: email.priority || 0
-      }
-    );
+    queue.add(() => processEmailTask(email), {
+      // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
+      // priority: email.priority || 0
+    });
   }
 
   await setTimeout(5000);
@@ -240,6 +327,15 @@ async function sendEmails() {
 
   (async function startRecursion() {
     if (isCancelled) {
+      // Clean up Piscina before exiting
+      if (piscina) {
+        try {
+          await piscina.destroy();
+        } catch (err) {
+          logger.error(err);
+        }
+      }
+
       if (parentPort) parentPort.postMessage('done');
       else process.exit(0);
       return;

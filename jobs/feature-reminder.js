@@ -47,6 +47,156 @@ if (parentPort)
 
 graceful.listen();
 
+/**
+ * Build feature lists based on what user is using vs not using
+ * @param {Object} featureUsage - Object containing feature usage booleans
+ * @param {string} locale - User's locale for links
+ * @returns {Object} - Object with 'using' and 'missing' arrays
+ */
+function buildFeatureLists(featureUsage, locale) {
+  const features = {
+    using: [],
+    missing: []
+  };
+
+  // SMTP - Outbound email sending
+  const smtpFeature = {
+    emoji: 'outbox_tray',
+    title: 'Outbound SMTP',
+    description:
+      'Send emails from your custom domain with full authentication.',
+    link: `${config.urls.web}/${locale}/guides/send-email-with-custom-domain-smtp`,
+    linkText: 'SMTP Guide',
+    external: false
+  };
+  if (featureUsage.hasSmtp) {
+    features.using.push(smtpFeature);
+  } else {
+    features.missing.push(smtpFeature);
+  }
+
+  // IMAP - Encrypted email storage
+  const imapFeature = {
+    emoji: 'inbox_tray',
+    title: '10 GB Encrypted Storage',
+    description: 'Store emails securely with quantum-resistant encryption.',
+    link: `${config.urls.web}/${locale}/blog/docs/best-quantum-safe-encrypted-email-service`,
+    linkText: 'Learn more',
+    external: false
+  };
+  if (featureUsage.hasImap) {
+    features.using.push(imapFeature);
+  } else {
+    features.missing.push(imapFeature);
+  }
+
+  // Catchall - Domain-wide email catching
+  const catchallFeature = {
+    emoji: 'envelope_with_arrow',
+    title: 'Catch-all Aliases',
+    description: 'Receive emails sent to any address at your domain.',
+    link: `${config.urls.web}/${locale}/faq#can-i-have-a-catch-all-alias`,
+    linkText: 'Learn more',
+    external: false
+  };
+  if (featureUsage.hasCatchall) {
+    features.using.push(catchallFeature);
+  } else {
+    features.missing.push(catchallFeature);
+  }
+
+  // PGP - End-to-end encryption
+  const pgpFeature = {
+    emoji: 'closed_lock_with_key',
+    title: 'PGP/OpenPGP Encryption',
+    description: 'End-to-end encryption with Web Key Directory (WKD) support.',
+    link: `${config.urls.web}/${locale}/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd`,
+    linkText: 'Learn more',
+    external: false
+  };
+  if (featureUsage.hasPgp) {
+    features.using.push(pgpFeature);
+  } else {
+    features.missing.push(pgpFeature);
+  }
+
+  // Vacation Responder
+  const vacationFeature = {
+    emoji: 'beach_umbrella',
+    title: 'Vacation Responder',
+    description: 'Automatic out-of-office replies when you are away.',
+    link: `${config.urls.web}/${locale}/my-account/domains`,
+    linkText: 'Set up',
+    external: false
+  };
+  if (featureUsage.hasVacationResponder) {
+    features.using.push(vacationFeature);
+  } else {
+    features.missing.push(vacationFeature);
+  }
+
+  // CalDAV - Calendar sync
+  const caldavFeature = {
+    emoji: 'calendar',
+    title: 'Calendar Sync (CalDAV)',
+    description: 'Sync calendars across all your devices.',
+    link: `${config.urls.web}/${locale}/faq#do-you-support-caldav`,
+    linkText: 'Learn more',
+    external: false
+  };
+  if (featureUsage.hasCalendar) {
+    features.using.push(caldavFeature);
+  } else {
+    features.missing.push(caldavFeature);
+  }
+
+  // CardDAV - Contact sync
+  const carddavFeature = {
+    emoji: 'card_index',
+    title: 'Contact Sync (CardDAV)',
+    description: 'Sync contacts across all your devices.',
+    link: `${config.urls.web}/${locale}/faq#do-you-support-carddav`,
+    linkText: 'Learn more',
+    external: false
+  };
+  if (featureUsage.hasContacts) {
+    features.using.push(carddavFeature);
+  } else {
+    features.missing.push(carddavFeature);
+  }
+
+  // Email API
+  const apiFeature = {
+    emoji: 'electric_plug',
+    title: 'Email API',
+    description: 'Programmatic access for developers to send and manage email.',
+    link: `${config.urls.web}/${locale}/email-api`,
+    linkText: 'API Docs',
+    external: false
+  };
+  if (featureUsage.hasApi) {
+    features.using.push(apiFeature);
+  } else {
+    features.missing.push(apiFeature);
+  }
+
+  // Always show these as available features if not using
+  // (they don't have specific detection)
+  if (!featureUsage.hasImap) {
+    // Mail client compatibility - only show if not using IMAP
+    features.missing.push({
+      emoji: 'iphone',
+      title: 'Works with Any Mail App',
+      description: 'Apple Mail, Outlook, Gmail, Thunderbird, and more.',
+      link: `${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`,
+      linkText: 'Setup Guide',
+      external: false
+    });
+  }
+
+  return features;
+}
+
 async function mapper(user) {
   // return early if the job was already cancelled
   if (isCancelled) return;
@@ -64,29 +214,67 @@ async function mapper(user) {
     )
       return;
 
-    // if the user is admin of a domain with smtp (and verified)
-    // and if the user has an alias with imap
-    // then return early since the user is already using new features
-    const [domainExists, aliasExists] = await Promise.all([
-      Domains.exists({
-        has_smtp: true,
-        smtp_verified_at: {
-          $exists: true
-        },
-        members: {
-          $elemMatch: {
-            user: user._id,
-            group: 'admin'
-          }
+    // Get all domains where user is admin
+    const userDomains = await Domains.find({
+      members: {
+        $elemMatch: {
+          user: user._id,
+          group: 'admin'
         }
-      }),
-      Aliases.exists({
-        user: user._id,
-        has_imap: true
-      })
-    ]);
+      }
+    }).lean();
 
-    if (domainExists && aliasExists) return;
+    // Get all aliases for this user
+    const userAliases = await Aliases.find({
+      user: user._id
+    }).lean();
+
+    // Determine feature usage
+    const featureUsage = {
+      // SMTP: user has a domain with SMTP enabled and verified
+      hasSmtp: userDomains.some((d) => d.has_smtp && d.smtp_verified_at),
+
+      // IMAP: user has an alias with IMAP enabled
+      hasImap: userAliases.some((a) => a.has_imap),
+
+      // Catchall: user has a domain with catchall enabled (has an alias named '*')
+      hasCatchall: userDomains.some((d) => d.has_catchall),
+
+      // PGP: user has an alias with PGP enabled
+      hasPgp: userAliases.some((a) => a.has_pgp && a.public_key),
+
+      // Vacation Responder: user has an alias with vacation responder enabled
+      hasVacationResponder: userAliases.some(
+        (a) => a.vacation_responder && a.vacation_responder.is_enabled
+      ),
+
+      // Calendar: check if user has any calendars (via alias with IMAP)
+      // This is a proxy - if they have IMAP they can use CalDAV
+      hasCalendar: false, // Will be detected via separate query if needed
+
+      // Contacts: check if user has any contacts (via alias with IMAP)
+      // This is a proxy - if they have IMAP they can use CardDAV
+      hasContacts: false, // Will be detected via separate query if needed
+
+      // API: check if any domain or alias was created via API
+      hasApi:
+        userDomains.some((d) => d.is_api) || userAliases.some((a) => a.is_api)
+    };
+
+    // If user is already using ALL features, we can skip sending the email
+    // (they're fully utilizing their subscription)
+    const allFeaturesUsed =
+      featureUsage.hasSmtp &&
+      featureUsage.hasImap &&
+      featureUsage.hasCatchall &&
+      featureUsage.hasPgp &&
+      featureUsage.hasVacationResponder;
+
+    if (allFeaturesUsed) return;
+
+    // Build personalized feature lists
+    const locale = user.locale || 'en';
+    const features = buildFeatureLists(featureUsage, locale);
 
     // send email
     await email({
@@ -94,7 +282,13 @@ async function mapper(user) {
       message: {
         to: user.email
       },
-      locals: { user, domainExists, aliasExists }
+      locals: {
+        user,
+        features,
+        // Keep legacy variables for backward compatibility
+        domainExists: featureUsage.hasSmtp,
+        aliasExists: featureUsage.hasImap
+      }
     });
 
     // store that we sent this email

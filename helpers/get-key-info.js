@@ -14,7 +14,7 @@
  */
 
 const Boom = require('@hapi/boom');
-const openpgp = require('openpgp/dist/node/openpgp.js');
+const openpgp = require('openpgp');
 const tools = require('@forwardemail/wildduck/lib/tools');
 
 const i18n = require('#helpers/i18n');
@@ -27,7 +27,7 @@ async function getKeyInfo(pubKeyArmored, locale = i18n.config.defaultLocale) {
 
   const publicKey = await openpgp.readKey({
     armoredKey: tools.prepareArmoredPubKey(pubKeyArmored),
-    config: { tolerant: true }
+    config: { ignoreMalformedPackets: true }
   });
 
   if (!publicKey)

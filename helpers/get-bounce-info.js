@@ -537,6 +537,18 @@ function getBounceInfo(err) {
     bounceInfo.action = 'reject';
   }
 
+  // Google "policy that prohibited the mail" is policy rejection, not blocklist
+  // e.g. "550-5.7.1 The user or domain that you are sending to (or from) has a policy that prohibited the mail"
+  // <https://support.google.com/a/answer/172179>
+  if (
+    err.truthSource === 'google.com' &&
+    response.includes('has a policy that') &&
+    response.includes('prohibited the mail')
+  ) {
+    bounceInfo.category = 'policy';
+    bounceInfo.action = 'reject';
+  }
+
   //
   // set "action" based off "category"
   //

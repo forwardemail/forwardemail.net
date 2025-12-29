@@ -424,6 +424,18 @@ module.exports = {
     'Quotes and apostrophes cannot be used as password characters.',
   INVALID_PORT: 'Invalid port number.',
   INVALID_PROVIDER: 'We do not support this authentication provider.',
+  PROVIDER_NOT_CONNECTED:
+    'The <span class="notranslate">%s</span> account is not connected to your profile.',
+  USER_UNVERIFIED_FOR_DISCONNECT:
+    'You must verify your email address before disconnecting an OAuth provider.',
+  PASSWORD_REQUIRED_FOR_DISCONNECT:
+    'You must set a password before disconnecting an OAuth provider to ensure you can still log in.',
+  OAUTH_PROVIDER_DISCONNECTED:
+    'Successfully disconnected your <span class="notranslate">%s</span> account.',
+  OAUTH_PROVIDER_DISCONNECTED_SUBJECT:
+    '%s account disconnected from your Forward Email account',
+  OAUTH_PROVIDER_DISCONNECTED_MESSAGE:
+    'Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.',
   INVALID_RECOVERY_KEY: 'Invalid recovery key.',
   INVALID_RESET_PASSWORD: 'Reset token and email were not valid together.',
   INVALID_SET_EMAIL: 'Change email token and email were not valid together.',

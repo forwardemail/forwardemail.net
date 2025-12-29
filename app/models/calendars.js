@@ -46,7 +46,17 @@ const Calendars = new mongoose.Schema(
       required: true,
       trim: true
     },
+    // RFC 4791 Section 5.2.1: xml:lang for displayname
+    nameXmlLang: {
+      type: String,
+      trim: true
+    },
     description: String,
+    // RFC 4791 Section 5.2.1: xml:lang for calendar-description
+    descriptionXmlLang: {
+      type: String,
+      trim: true
+    },
     timezone: {
       type: String,
       required: true

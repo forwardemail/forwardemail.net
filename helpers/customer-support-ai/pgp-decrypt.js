@@ -9,7 +9,7 @@ const process = require('node:process');
 const { promisify } = require('node:util');
 const { exec } = require('node:child_process');
 
-const openpgp = require('openpgp/dist/node/openpgp.js');
+const openpgp = require('openpgp');
 const logger = require('#helpers/logger');
 const isMessageEncrypted = require('#helpers/is-message-encrypted');
 

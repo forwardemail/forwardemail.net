@@ -16,12 +16,12 @@
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
-const openpgp = require('openpgp/dist/node/openpgp.js');
+const openpgp = require('openpgp');
 const tools = require('@forwardemail/wildduck/lib/tools');
 
 const config = require('#config');
 
-openpgp.config.commentstring = 'Plaintext message encrypted by Forward Email';
+openpgp.config.commentString = 'Plaintext message encrypted by Forward Email';
 openpgp.config.versionString = `Forward Email v${config.pkg.version}`;
 
 // <https://github.com/nodemailer/wildduck/blob/a15878c7d709473c5b0d4eec2062e9425c9b5e31/lib/message-handler.js#L1688>
@@ -139,7 +139,7 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
   const pubKey = isArmored
     ? await openpgp.readKey({
         armoredKey: tools.prepareArmoredPubKey(pubKeyArmored),
-        config: { tolerant: true }
+        config: { ignoreMalformedPackets: true }
       })
     : pubKeyArmored;
 

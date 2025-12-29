@@ -541,6 +541,11 @@ router
     web.myAccount.resendEmailChange
   )
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
+  .delete(
+    '/profile/disconnect/:provider',
+    rateLimit(10, 'disconnect oauth provider'),
+    web.myAccount.disconnectOAuthProvider
+  )
   .get('/timezone', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));

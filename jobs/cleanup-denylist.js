@@ -58,7 +58,7 @@ const options = {
 };
 
 //
-// Check if a key matches any of the entries
+// Check if a key matches any of the entries and return the matched entry
 //
 function keyMatchesEntries(key) {
   const keyLower = key.toLowerCase();
@@ -66,11 +66,11 @@ function keyMatchesEntries(key) {
     const entryLower = entry.toLowerCase();
     // Match pattern: denylist:*{entry}*
     if (keyLower.includes(entryLower)) {
-      return true;
+      return { matched: true, entry };
     }
   }
 
-  return false;
+  return { matched: false, entry: null };
 }
 
 //
@@ -78,6 +78,7 @@ function keyMatchesEntries(key) {
 // Truth sources are domains like gmail.com, outlook.com, etc.
 // For email addresses, we do MX lookup and check the root domain of MX records
 // Keys like denylist:spammer@gmail.com should be flagged but not deleted
+// Returns { matched: boolean, source: string, matchType: string }
 //
 async function keyMatchesTruthSource(key) {
   const keyLower = key.toLowerCase();
@@ -108,7 +109,11 @@ async function keyMatchesTruthSource(key) {
               logger.debug(
                 `Key ${key} matches truth source: MX ${mxHostname} -> root ${rootDomain} matches ${truthSource}`
               );
-              return true;
+              return {
+                matched: true,
+                source: truthSource,
+                matchType: `MX lookup (${mxHostname} → ${rootDomain})`
+              };
             }
           }
         }
@@ -124,7 +129,11 @@ async function keyMatchesTruthSource(key) {
           logger.debug(
             `Key ${key} matches truth source (fallback): domain ${domain} matches ${truthSource}`
           );
-          return true;
+          return {
+            matched: true,
+            source: truthSource,
+            matchType: `Domain match (MX lookup failed)`
+          };
         }
       }
     }
@@ -137,12 +146,16 @@ async function keyMatchesTruthSource(key) {
         value.includes(`.${truthSourceLower}`) ||
         value === truthSourceLower
       ) {
-        return true;
+        return {
+          matched: true,
+          source: truthSource,
+          matchType: 'Direct domain match'
+        };
       }
     }
   }
 
-  return false;
+  return { matched: false, source: null, matchType: null };
 }
 
 //
@@ -203,6 +216,7 @@ function delay(ms) {
     const filterStartTime = Date.now();
 
     // Separate keys that match truth sources (don't delete these unless explicitly allowlisted)
+    // Now storing objects with reason information
     const truthSourceKeys = [];
     const keysToDelete = [];
     const allowlistedKeys = [];
@@ -217,24 +231,39 @@ function delay(ms) {
         // Check if the value is allowlisted (this checks Redis allowlist:* keys,
         // hard-coded config.allowlist, config.truthSources, and performs
         // reverse DNS lookups for IPs)
-        const allowlisted = await isAllowlisted(value, client, resolver);
-        if (allowlisted) {
+        // Now returns reason string or false
+        const allowlistedReason = await isAllowlisted(value, client, resolver);
+        if (allowlistedReason) {
           // Explicitly allowlisted - always delete from denylist
           // (explicit allowlist takes precedence over truth source matching)
-          allowlistedKeys.push(key);
-          keysToDelete.push(key);
+          const keyInfo = {
+            key,
+            reason: 'Explicitly allowlisted via isAllowlisted() check',
+            source: allowlistedReason
+          };
+          allowlistedKeys.push(keyInfo);
+          keysToDelete.push(keyInfo);
           return;
         }
 
         // Check if key matches entries (config.allowlist or config.truthSources)
-        if (keyMatchesEntries(key)) {
-          const matchesTruthSource = await keyMatchesTruthSource(key);
-          if (matchesTruthSource) {
+        const entryMatch = keyMatchesEntries(key);
+        if (entryMatch.matched) {
+          const truthSourceMatch = await keyMatchesTruthSource(key);
+          if (truthSourceMatch.matched) {
             // Matches truth source via MX but NOT explicitly allowlisted
             // Preserve for manual review (could be legitimate spammer)
-            truthSourceKeys.push(key);
+            truthSourceKeys.push({
+              key,
+              reason: `Matches truth source - preserved for manual review`,
+              source: `${truthSourceMatch.source} (${truthSourceMatch.matchType})`
+            });
           } else {
-            keysToDelete.push(key);
+            keysToDelete.push({
+              key,
+              reason: `Key contains allowlist/truthSource entry`,
+              source: entryMatch.entry
+            });
           }
         }
       },
@@ -280,15 +309,15 @@ function delay(ms) {
 
         await pMap(
           chunk,
-          async (key) => {
+          async (keyInfo) => {
             try {
-              await client.del(key);
+              await client.del(keyInfo.key);
               deletedCount++;
-              deletedKeys.push(key);
+              deletedKeys.push(keyInfo);
             } catch (err) {
               errorCount++;
-              errors.push({ key, error: err.message });
-              logger.error(`Failed to delete key ${key}:`, err);
+              errors.push({ key: keyInfo.key, error: err.message });
+              logger.error(`Failed to delete key ${keyInfo.key}:`, err);
             }
           },
           { concurrency: options.deleteConcurrency }
@@ -346,9 +375,14 @@ function delay(ms) {
           ? `
 <h3>Deleted Keys (${deletedKeys.length})</h3>
 <table border="1" cellpadding="5" cellspacing="0">
-  <tr><th>#</th><th>Key</th></tr>
+  <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
   ${deletedKeys
-    .map((key, index) => `<tr><td>${index + 1}</td><td>${key}</td></tr>`)
+    .map(
+      (item, index) =>
+        `<tr><td>${index + 1}</td><td>${item.key}</td><td>${
+          item.reason
+        }</td><td>${item.source}</td></tr>`
+    )
     .join('\n  ')}
 </table>
         `.trim()
@@ -361,9 +395,14 @@ function delay(ms) {
 <p><strong>These keys match truth sources via MX lookup (e.g., gmail.com → google.com) and were preserved for manual review.</strong></p>
 <p>Truth sources may contain legitimate spammers that should remain on the denylist.</p>
 <table border="1" cellpadding="5" cellspacing="0">
-  <tr><th>#</th><th>Key</th></tr>
+  <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
   ${truthSourceKeys
-    .map((key, index) => `<tr><td>${index + 1}</td><td>${key}</td></tr>`)
+    .map(
+      (item, index) =>
+        `<tr><td>${index + 1}</td><td>${item.key}</td><td>${
+          item.reason
+        }</td><td>${item.source}</td></tr>`
+    )
     .join('\n  ')}
 </table>
         `.trim()

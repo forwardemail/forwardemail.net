@@ -1516,12 +1516,66 @@ class CalDAV extends API {
           ctx.translateError('CALENDAR_DOES_NOT_EXIST')
         );
 
+      //
+      // Sanitize updates to handle empty values appropriately
+      // Per RFC 4918, setting a property to empty value is valid,
+      // but we need to handle required fields gracefully
+      //
+      const sanitizedUpdates = {};
+
+      // Handle name/displayname (required field)
+      if (
+        'name' in updates && // Don't update required fields with empty values
+        updates.name !== ''
+      ) {
+        sanitizedUpdates.name = updates.name;
+      }
+
+      // Handle xml:lang for name (RFC 4791 Section 5.2.1)
+      if ('nameXmlLang' in updates) {
+        sanitizedUpdates.nameXmlLang = updates.nameXmlLang;
+      }
+
+      // Handle description (can be empty to clear it)
+      if ('description' in updates) {
+        sanitizedUpdates.description = updates.description;
+      }
+
+      // Handle xml:lang for description (RFC 4791 Section 5.2.1)
+      if ('descriptionXmlLang' in updates) {
+        sanitizedUpdates.descriptionXmlLang = updates.descriptionXmlLang;
+      }
+
+      // Handle timezone (required field)
+      if (
+        'timezone' in updates && // Don't update with empty value
+        updates.timezone !== ''
+      ) {
+        sanitizedUpdates.timezone = updates.timezone;
+      }
+
+      // Handle color (required field with default)
+      if ('color' in updates) {
+        // Use default color if empty
+        sanitizedUpdates.color =
+          updates.color === '' ? '#0066ff' : updates.color;
+      }
+
+      // Handle order (required field with default)
+      if ('order' in updates) {
+        // Use 0 for order if null/empty
+        sanitizedUpdates.order =
+          updates.order === null || updates.order === undefined
+            ? 0
+            : updates.order;
+      }
+
       calendar = await Calendars.findByIdAndUpdate(
         this,
         ctx.state.session,
         calendar._id,
         {
-          $set: updates
+          $set: sanitizedUpdates
         }
       );
 
@@ -2247,26 +2301,27 @@ class CalDAV extends API {
     }
 
     //
-    // NOTE: temporary logging to investigate pre-condition issue
+    // RFC 7232 Section 3.2: If-None-Match
+    // When a client sends "If-None-Match: *", the server MUST NOT perform
+    // the requested method if the target resource exists.
+    // This precondition is now handled in caldav-adapter/routes/calendar/calendar/put.js
+    // but we keep this check here as a safety measure for direct calls to updateEvent.
     //
-    if (ctx.get('if-none-match') === '*') {
-      const err = new TypeError('If none-match precondition issue');
-      err.data = JSON.stringify(
-        {
-          url: ctx.url,
-          headers: ctx.headers,
-          eventId,
-          principalId,
-          calendarId,
-          username: ctx.state.user.username,
-          existingBody: e ? e.ical : false,
-          newBody: ctx.request.body
-        },
-        null,
-        2
+    // Note: The caldav-adapter should return 412 Precondition Failed before
+    // reaching this point, but if it doesn't, we log a warning.
+    //
+    if (ctx.get('if-none-match') === '*' && e) {
+      ctx.logger.warn('If-None-Match: * received for existing event', {
+        url: ctx.url,
+        eventId,
+        principalId,
+        calendarId
+      });
+      // The caldav-adapter should have already returned 412, but if we get here,
+      // throw a proper Boom error instead of a TypeError
+      throw Boom.preconditionFailed(
+        ctx.translateError('PRECONDITION_FAILED_EVENT_EXISTS')
       );
-      err.isCodeBug = true;
-      ctx.logger.fatal(err);
     }
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));

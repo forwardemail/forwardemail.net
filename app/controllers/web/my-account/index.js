@@ -9,6 +9,7 @@ const createAlias = require('./create-alias');
 const createAliasForm = require('./create-alias-form');
 const createDomain = require('./create-domain');
 const createDomainBilling = require('./create-domain-billing');
+const disconnectOAuthProvider = require('./disconnect-oauth-provider');
 const createDomainForm = require('./create-domain-form');
 const createInvite = require('./create-invite');
 const ensureAliasAdmin = require('./ensure-alias-admin');
@@ -78,6 +79,7 @@ module.exports = {
   createDomain,
   createDomainForm,
   createDomainBilling,
+  disconnectOAuthProvider,
   createInvite,
   ensureAliasAdmin,
   ensureDomainAdmin,

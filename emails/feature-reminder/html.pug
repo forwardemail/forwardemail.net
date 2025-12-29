@@ -4,144 +4,316 @@ block content
   .container.mt-3
     .row
       .col-12
-        .card.border-dark.d-block.text-center
-          h1.h5.card-header.text-center= t("You're missing out!")
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            = emoji("rocket")
+            = " "
+            = t("Your Forward Email Account")
+            = " "
+            = emoji("rocket")
           .card-body.p-0
+            //- Hero image
             a(href=config.urls.web)
               img.img-fluid.d-block.align-top(
-                src=manifest("img/emails/domain-onboard.gif"),
-                alt=""
+                src=manifest("img/articles/tangerine-scene.jpeg"),
+                alt=t("Forward Email")
               )
+
+            //- Opening message
             .p-3
-              h2.h5= t("Did you know about these features?")
-              p.card-text= t("Your plan includes these features at no extra cost:")
-              ul.list-unstyled.text-left.mb-0.d-inline-block.mx-auto
-                li
+              p.card-text
+                | Thank you for being a Forward Email subscriber.
+                | Your plan includes powerful features designed to give you complete control over your email.
+                | Here's a personalized overview of your account.
+
+            //- Features You're Using section (only show if using at least one feature)
+            if features.using.length > 0
+              .p-3.bg-light
+                h2.h4.text-center
                   = emoji("white_check_mark")
                   = " "
-                  span(
-                    class=domainExists ? "" : "font-weight-bold text-decoration-underline"
-                  )
-                    = t("Send outbound SMTP email")
+                  = t("Features You're Using")
                   = " "
-                  a.badge.badge-dark(
+                  = emoji("white_check_mark")
+                p.card-text.text-center
+                  | Great job! You're taking advantage of these features:
+                ul.list-unstyled.mb-0
+                  each feature in features.using
+                    li.mb-2
+                      = emoji(feature.emoji)
+                      = " "
+                      strong= t(feature.title)
+                      = " – "
+                      = t(feature.description)
+
+            //- Features You're Missing section (only show if missing features)
+            if features.missing.length > 0
+              .p-3
+                h2.h4.text-center
+                  = emoji("sparkles")
+                  = " "
+                  = t("Features Included in Your Plan")
+                  = " "
+                  = emoji("sparkles")
+                p.card-text.text-center
+                  | Your subscription includes these features at no extra cost:
+                ul.list-unstyled.mb-0
+                  each feature in features.missing
+                    li.mb-2
+                      = emoji(feature.emoji)
+                      = " "
+                      strong= t(feature.title)
+                      = " – "
+                      = t(feature.description)
+                      if feature.link
+                        = " "
+                        a.badge.badge-dark(
+                          href=feature.link,
+                          target=feature.external ? "_blank" : undefined,
+                          rel=feature.external ? "noopener noreferrer" : undefined
+                        )
+                          = t(feature.linkText || "Learn more")
+                          = " "
+                          != "&rarr;"
+
+            //- Quick setup guides
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("books")
+                = " "
+                = t("Quick Setup Guides")
+                = " "
+                = emoji("books")
+              ul.list-unstyled.mb-0.text-center
+                li.mb-2
+                  a.btn.btn-outline-dark.btn-sm(
                     href=`${config.urls.web}/${locale}/guides/send-email-with-custom-domain-smtp`
                   )
-                    = t("SMTP Guide")
+                    = emoji("outbox_tray")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  span(
-                    class=aliasExists ? "" : "font-weight-bold text-decoration-underline"
-                  )
-                    = t("10 GB encrypted email storage")
-                  = " "
-                  a.badge.badge-dark(
-                    href=`${config.urls.web}/${locale}/blog/docs/best-quantum-safe-encrypted-email-service`
-                  )
-                    = t("Learn more")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Works with Apple, Outlook, Gmail, Thunderbird, Android")
-                  = " "
-                  a.badge.badge-dark(
+                    = t("SMTP Setup Guide")
+                li.mb-2
+                  a.btn.btn-outline-dark.btn-sm(
                     href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
                   )
-                    = t("Apps")
+                    = emoji("inbox_tray")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Support for E2EE/OpenPGP/WKD")
-                  = " "
-                  a.badge.badge-dark(
+                    = t("IMAP/POP3 Setup")
+                li.mb-2
+                  a.btn.btn-outline-dark.btn-sm(
                     href=`${config.urls.web}/${locale}/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd`
                   )
-                    = t("Learn more")
+                    = emoji("lock")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Easily migrate from any provider")
-                  = " "
-                  a.badge.badge-dark(
+                    = t("PGP Encryption Guide")
+                li.mb-2
+                  a.btn.btn-outline-dark.btn-sm(
                     href=`${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`
                   )
-                    = t("Learn more")
+                    = emoji("package")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
+                    = t("Migration Guide")
+
+            //- 2026 Roadmap
+            .p-3
+              h2.h4.text-center
+                = emoji("crystal_ball")
+                = " "
+                = t("Coming Soon in 2026")
+                = " "
+                = emoji("crystal_ball")
+              ul.list-unstyled.mb-0
+                li.mb-2
+                  = emoji("eu")
                   = " "
-                  = t("Enterprise-grade 99.99% uptime SLA")
+                  strong= t("EU Datacenter")
+                  = " – "
+                  | European data residency option for GDPR compliance.
+                li.mb-2
+                  = emoji("computer")
                   = " "
-                  a.badge.badge-dark(href=`${config.urls.web}/${locale}/faq`)
-                    = t("View FAQ")
-                    = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
+                  strong= t("Custom Webmail")
+                  = " – "
+                  | PWA with offline mode, desktop and mobile apps.
+                li.mb-2
+                  = emoji("mega")
                   = " "
-                  = t("Powered by bare metal servers")
+                  strong= t("Newsletter Marketing")
+                  = " – "
+                  | A full-featured alternative to Mailchimp and Klaviyo.
+                li.mb-2
+                  = emoji("mag")
                   = " "
-                  a.badge.badge-dark(
-                    href="https://status.forwardemail.net",
+                  strong= t("3rd Party Security Audit")
+                  = " – "
+                  | Independent verification of our security practices.
+
+            //- Featured Reading
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("newspaper")
+                = " "
+                = t("Featured Reading")
+                = " "
+                = emoji("newspaper")
+              p.card-text
+                strong= t("Technical Deep Dives")
+              ul.list-unstyled.mb-3
+                li.mb-1
+                  = emoji("closed_lock_with_key")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service",
                     target="_blank",
                     rel="noopener noreferrer"
+                  ) How Our Quantum-Resistant Email Service Works
+                li.mb-1
+                  = emoji("unlock")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Why Open Source Email Security & Privacy Matters
+                li.mb-1
+                  = emoji("scroll")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/technical-whitepaper.pdf",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Technical Whitepaper
+
+              p.card-text
+                strong= t("Enterprise Case Studies")
+              ul.list-unstyled.mb-0
+                li.mb-1
+                  = emoji("penguin")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/linux-foundation-email-enterprise-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) The Linux Foundation
+                li.mb-1
+                  = emoji("cd")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/canonical-ubuntu-email-enterprise-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) Canonical / Ubuntu
+                li.mb-1
+                  = emoji("mortar_board")
+                  = " "
+                  a(
+                    href="https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) University Alumni Email
+
+            //- Resources
+            .p-3
+              h2.h4.text-center
+                = emoji("toolbox")
+                = " "
+                = t("Resources")
+                = " "
+                = emoji("toolbox")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/faq`
                   )
-                    = t("Status Page")
+                    = emoji("question")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("100% open-source software")
-                  = " "
-                  a.badge.badge-dark(
+                    = t("FAQ")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/email-api`
+                  )
+                    = emoji("electric_plug")
+                    = " "
+                    = t("Email API")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
                     href="https://github.com/forwardemail",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    = t("View")
+                    = emoji("octocat")
                     = " "
                     = t("GitHub")
+
+            //- Community
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("speech_balloon")
+                = " "
+                = t("Join Our Community")
+                = " "
+                = emoji("speech_balloon")
+              p.card-text.text-center
+                | Connect with us and other Forward Email users!
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-primary(
+                    href="https://matrix.to/#/#forwardemail:matrix.org",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = emoji("globe_with_meridians")
                     = " "
-                    != "&rarr;"
-                li
-                  = emoji("white_check_mark")
-                  = " "
-                  = t("Email API designed for developers")
-                  = " "
-                  a.badge.badge-dark(href=`${config.urls.web}/email-api`)
-                    = t("Email API")
+                    = t("Matrix Chat")
+                li.list-inline-item.mb-2
+                  a.btn.btn-dark(
+                    href="https://x.com/fwdemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = emoji("bird")
                     = " "
-                    != "&rarr;"
+                    = t("Follow on X")
+
+            //- Account management
             .p-3
-              h1.h3!= t("Your Account")
-              p.card-text!= t("Manage your aliases, domains, settings, and security.")
-              a.btn.btn-lg.btn-dark(
-                href=`${config.urls.web}/${locale}/my-account`
-              )
-                = t("My Account")
-            .p-3
-              h1.h3!= t("Customer Support")
-              p.card-text!= t("Read our FAQ, submit a help request, or reply to this email.")
-              ul.list-inline.mb-0
+              h2.h4.text-center
+                = emoji("gear")
+                = " "
+                = t("Your Account")
+                = " "
+                = emoji("gear")
+              p.card-text.text-center
+                | Manage your aliases, domains, settings, and security.
+              p.card-text.text-center
+                a.btn.btn-lg.btn-dark(
+                  href=`${config.urls.web}/${locale}/my-account`
+                )
+                  = t("My Account")
+                  = " "
+                  != "&rarr;"
+
+            //- Support
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("raising_hand")
+                = " "
+                = t("Need Help?")
+                = " "
+                = emoji("raising_hand")
+              p.card-text.text-center
+                | Read our FAQ, submit a help request, or reply to this email.
+              ul.list-inline.text-center.mb-0
                 li.list-inline-item
-                  a.btn.btn-lg.btn-primary(
+                  a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/faq`
                   )
                     = t("Read FAQ")
                 li.list-inline-item
-                  a.btn.btn-lg.btn-dark(
+                  a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/help`
                   )
                     = t("Help Request")
-          .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know")
+
+          .card-footer.text-center.small.text-muted
+            = t("Privacy. Transparency. Security. Open Source. Always.")
