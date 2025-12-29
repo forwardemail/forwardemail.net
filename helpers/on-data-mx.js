@@ -1124,7 +1124,82 @@ async function forward(recipient, headers, session, body) {
             err_.statusCode === 500 ? '' : ' Error'
           } for ${address}`;
         } else if (err_.code) {
-          err.message = `${err_.code} for ${address}`;
+          // use user-friendly error messages instead of internal error codes
+          // (e.g. UND_ERR_CONNECT_TIMEOUT -> Connection Timeout)
+          let friendlyMessage;
+          switch (err_.code) {
+            case 'UND_ERR_CONNECT_TIMEOUT': {
+              friendlyMessage = 'Connection Timeout';
+              break;
+            }
+
+            case 'UND_ERR_HEADERS_TIMEOUT': {
+              friendlyMessage = 'Headers Timeout';
+              break;
+            }
+
+            case 'UND_ERR_BODY_TIMEOUT': {
+              friendlyMessage = 'Body Timeout';
+              break;
+            }
+
+            case 'UND_ERR_SOCKET': {
+              friendlyMessage = 'Socket Error';
+              break;
+            }
+
+            case 'UND_ERR_ABORTED': {
+              friendlyMessage = 'Request Aborted';
+              break;
+            }
+
+            case 'UND_ERR_DESTROYED': {
+              friendlyMessage = 'Connection Destroyed';
+              break;
+            }
+
+            case 'UND_ERR_CLOSED': {
+              friendlyMessage = 'Connection Closed';
+              break;
+            }
+
+            case 'ETIMEDOUT': {
+              friendlyMessage = 'Connection Timed Out';
+              break;
+            }
+
+            case 'ECONNRESET': {
+              friendlyMessage = 'Connection Reset';
+              break;
+            }
+
+            case 'ECONNREFUSED': {
+              friendlyMessage = 'Connection Refused';
+              break;
+            }
+
+            case 'ENOTFOUND': {
+              friendlyMessage = 'Host Not Found';
+              break;
+            }
+
+            case 'ENETUNREACH': {
+              friendlyMessage = 'Network Unreachable';
+              break;
+            }
+
+            case 'EHOSTUNREACH': {
+              friendlyMessage = 'Host Unreachable';
+              break;
+            }
+
+            default: {
+              // for other codes, use a generic message
+              friendlyMessage = 'Network Error';
+            }
+          }
+
+          err.message = `${friendlyMessage} for ${address}`;
         }
 
         // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code

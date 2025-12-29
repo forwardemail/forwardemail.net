@@ -146,6 +146,8 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
       webhook_key: webhookKey
     };
   } catch (err) {
+    // if the error is already a Boom error, re-throw it directly
+    if (err.isBoom) throw err;
     // superagent inside of the smtp-server will retry on 408 error code
     // therefore if it is a DNS error, then send that retry code
     // otherwise send a bad request error with the error

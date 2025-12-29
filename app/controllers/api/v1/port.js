@@ -82,6 +82,7 @@ async function port(ctx) {
 
     ctx.body = { port };
   } catch (err) {
+    if (err.isBoom) throw err;
     throw Boom.badRequest(err);
   }
 }

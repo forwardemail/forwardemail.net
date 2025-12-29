@@ -208,6 +208,7 @@ async function createDomain(ctx, next) {
       return;
     }
 
+    if (err.isBoom) throw err;
     throw Boom.badRequest(err);
   }
 }

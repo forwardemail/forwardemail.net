@@ -74,6 +74,7 @@ async function verifyRecords(ctx) {
         else ctx.body = { redirectTo };
       }
 
+      if (err.isBoom) throw err;
       throw Boom.badRequest(err);
     }
 

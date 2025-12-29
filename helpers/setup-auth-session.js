@@ -69,6 +69,9 @@ async function setupAuthSession(ctx, username, password) {
     );
   } catch (err) {
     ctx.logger.error(err);
+    // if the error is already a Boom error, re-throw it directly
+    // to preserve the original status code (e.g. 401 Unauthorized)
+    if (err.isBoom) throw err;
     throw Boom.unauthorized(err);
   }
 }
