@@ -32,7 +32,7 @@ const Graceful = require('@ladjs/graceful');
 const Piscina = require('piscina');
 const ms = require('ms');
 
-const config = require('#config');
+// const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
@@ -56,10 +56,12 @@ const idleTimeout = env.SMTP_IDLE_TIMEOUT
 
 // Check if Piscina should be enabled
 // Default to true in production, false in test/development for easier debugging
-const piscinaEnabled =
-  env.SMTP_PISCINA_ENABLED === undefined
-    ? config.env === 'production'
-    : env.SMTP_PISCINA_ENABLED === 'true' || env.SMTP_PISCINA_ENABLED === true;
+// const piscinaEnabled =
+//   env.SMTP_PISCINA_ENABLED === undefined
+//     ? config.env === 'production'
+//     : env.SMTP_PISCINA_ENABLED === 'true' || env.SMTP_PISCINA_ENABLED === true;
+
+const piscinaEnabled = false;
 
 logger.info(
   `SMTP bree starting (Piscina: ${
