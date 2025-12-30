@@ -20,17 +20,6 @@ async function getMessage(imapClient, info, provider) {
         // console.log('capabilities', imapClient.capabilities);
 
         try {
-          //
-          // NOTE: We issue NOOP before each fetch to refresh mailbox state.
-          // This is required for Yahoo which doesn't push EXISTS updates.
-          // Without NOOP, Yahoo returns stale mailbox data.
-          // - https://stackoverflow.com/a/71254393
-          // - https://github.com/ikvk/imap_tools/blob/master/tests/test_idle.py
-          //
-          try {
-            await imapClient.noop();
-          } catch {}
-
           for await (const message of imapClient.fetch('*', {
             headers: ['Message-ID']
           })) {
