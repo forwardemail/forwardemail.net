@@ -32,7 +32,7 @@ const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const { formatResponse } = IMAPConnection.prototype;
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 function getFlag(f) {
   return f.trim().toLowerCase();

@@ -20,7 +20,7 @@ const _ = require('#helpers/lodash');
 const TemporaryMessages = require('#models/temporary-messages');
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function syncTemporaryMailbox(session) {
   let deleted = 0;

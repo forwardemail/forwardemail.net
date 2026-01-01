@@ -323,6 +323,10 @@ localeRouter
   // recipient verification
   // Use (.*) to capture everything including forward slashes in encrypted token
   .get('/v/(.*)', web.recipientVerification)
+  // one-click unsubscribe (RFC 8058)
+  // supports both GET (user clicks link) and POST (mail client one-click)
+  .get('/unsubscribe/:token', rateLimit(50, 'unsubscribe'), web.unsubscribe)
+  .post('/unsubscribe/:token', rateLimit(50, 'unsubscribe'), web.unsubscribe)
   .get('/dashboard', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));

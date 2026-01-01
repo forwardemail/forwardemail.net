@@ -13552,5 +13552,18 @@
   "My Account - Profile": "My Account - Profile",
   "%s account disconnected from your Forward Email account": "%s account disconnected from your Forward Email account",
   "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.": "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.",
-  "Successfully disconnected your <span class=\"notranslate\">%s</span> account.": "Successfully disconnected your <span class=\"notranslate\">%s</span> account."
+  "Successfully disconnected your <span class=\"notranslate\">%s</span> account.": "Successfully disconnected your <span class=\"notranslate\">%s</span> account.",
+  "Your plan expired on <span class=\"notranslate dayjs\" data-time=\"%d\" data-time-style=\"false\">%s</span>.": "Your plan expired on <span class=\"notranslate dayjs\" data-time=\"%d\" data-time-style=\"false\">%s</span>.",
+  "Make payment immediately to avoid account termination.": "Make payment immediately to avoid account termination.",
+  "Unsubscribe Successful": "Unsubscribe Successful",
+  "You have been unsubscribed from all promotional emails.": "You have been unsubscribed from all promotional emails.",
+  "You will still receive important account-related emails.": "You will still receive important account-related emails.",
+  "Manage Email Preferences": "Manage Email Preferences",
+  "3 years ($324 USD)": "3 years ($324 USD)",
+  "2 years ($216 USD)": "2 years ($216 USD)",
+  "1 year ($108 USD)": "1 year ($108 USD)",
+  "6 months ($54 USD)": "6 months ($54 USD)",
+  "3 months ($27 USD)": "3 months ($27 USD)",
+  "2 months ($18 USD)": "2 months ($18 USD)",
+  "1 month ($9 USD)": "1 month ($9 USD)"
 }

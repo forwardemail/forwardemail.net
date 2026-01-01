@@ -43,6 +43,7 @@ const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
 const feed = require('./feed');
+const unsubscribe = require('./unsubscribe');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
@@ -670,5 +671,6 @@ module.exports = {
   search,
   ips,
   mobileConfig,
-  feed
+  feed,
+  unsubscribe
 };

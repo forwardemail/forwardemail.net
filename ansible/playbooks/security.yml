@@ -156,8 +156,12 @@
         line: install usb-storage /bin/true
 
     - name: Update initramfs
-      shell: |
-        sudo update-initramfs -u
+      shell: update-initramfs -u
+      register: initramfs_result
+      retries: 3
+      delay: 5
+      until: initramfs_result.rc == 0
+      changed_when: initramfs_result.rc == 0
 
     # TODO: Disable Accepting ICMP Redirects for All IPv4 Interfaces
     #       https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-sysctl-net-ipv4-conf-all-accept-redirects/#ansible-playbook

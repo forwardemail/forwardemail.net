@@ -26,10 +26,12 @@ const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const recursivelyParse = require('#helpers/recursively-parse');
 
 const { formatResponse } = IMAPConnection.prototype;
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
@@ -213,7 +215,8 @@ async function onExpunge(mailboxId, update, session, fn) {
     // delete attachments
     try {
       await pMapSeries(messages, async (m) => {
-        const attachmentIds = getAttachments(m.mimeTree);
+        const mimeTree = decodeMetadata(m.mimeTree, recursivelyParse);
+        const attachmentIds = getAttachments(mimeTree);
         if (attachmentIds.length > 0)
           await this.attachmentStorage.deleteMany(
             this,

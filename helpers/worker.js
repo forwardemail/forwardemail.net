@@ -64,7 +64,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 const attachmentStorage = new AttachmentStorage();
 const indexer = new Indexer({

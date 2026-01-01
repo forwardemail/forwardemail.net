@@ -203,11 +203,26 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
       if (existingContact) {
         // Check If-Match header if present
+        // Per RFC 7232, ETags should be quoted, but some clients may send
+        // unquoted values. We normalize both for comparison.
         const ifMatch = ctx.request.headers['if-match'];
-        if (ifMatch && ifMatch !== existingContact.etag)
-          throw Boom.preconditionFailed(
-            ctx.translateError('ETAG_DOES_NOT_MATCH')
-          );
+        if (ifMatch) {
+          // Normalize ETags by removing surrounding quotes for comparison
+          const normalizeEtag = (etag) => {
+            if (!etag) return '';
+            // Remove surrounding quotes if present
+            return etag.replace(/^"|"$/g, '');
+          };
+
+          const normalizedIfMatch = normalizeEtag(ifMatch);
+          const normalizedStoredEtag = normalizeEtag(existingContact.etag);
+
+          if (normalizedIfMatch !== normalizedStoredEtag) {
+            throw Boom.preconditionFailed(
+              ctx.translateError('ETAG_DOES_NOT_MATCH')
+            );
+          }
+        }
 
         // Update existing contact
         existingContact.content = vCardContent;
@@ -306,11 +321,26 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       // Check If-Match header if present
+      // Per RFC 7232, ETags should be quoted, but some clients may send
+      // unquoted values. We normalize both for comparison.
       const ifMatch = ctx.request.headers['if-match'];
-      if (ifMatch && ifMatch !== contactObj.etag)
-        throw Boom.preconditionFailed(
-          ctx.translateError('ETAG_DOES_NOT_MATCH')
-        );
+      if (ifMatch) {
+        // Normalize ETags by removing surrounding quotes for comparison
+        const normalizeEtag = (etag) => {
+          if (!etag) return '';
+          // Remove surrounding quotes if present
+          return etag.replace(/^"|"$/g, '');
+        };
+
+        const normalizedIfMatch = normalizeEtag(ifMatch);
+        const normalizedStoredEtag = normalizeEtag(contactObj.etag);
+
+        if (normalizedIfMatch !== normalizedStoredEtag) {
+          throw Boom.preconditionFailed(
+            ctx.translateError('ETAG_DOES_NOT_MATCH')
+          );
+        }
+      }
 
       // Delete contact
       await Contacts.deleteOne(ctx.instance, ctx.state.session, {
@@ -379,6 +409,9 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
                   value: '<d:collection/><card:addressbook/>'
                 },
                 { name: 'd:sync-token', value: addressBook.synctoken },
+                // getctag is used by some clients (iOS, macOS) to detect changes
+                // It should match the sync-token for consistency
+                { name: 'cs:getctag', value: addressBook.synctoken },
                 {
                   name: 'card:addressbook-description',
                   value: encodeXMLEntities(addressBook.description || '')
@@ -931,16 +964,29 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
 async function handleSyncCollection(ctx, xmlBody, addressBook) {
   const { addressbook } = ctx.params;
 
-  // Extract sync token
+  // Extract sync token - handle both string and object formats from XML parser
   let syncToken = null;
   let syncTimestamp = null;
-  if (xmlBody['sync-collection']['sync-token']) {
-    syncToken = xmlBody['sync-collection']['sync-token'];
+  const rawSyncToken = xmlBody['sync-collection']['sync-token'];
 
-    // Parse timestamp from sync token (format: http://domain.com/ns/sync-token/1234567890)
-    const match = syncToken.match(/\/sync-token\/(\d+)$/);
-    if (match && match[1]) {
-      syncTimestamp = new Date(Number.parseInt(match[1], 10));
+  // The XML parser may return the sync-token as:
+  // - A string (most common)
+  // - An object with _ property containing the text content
+  // - An empty string for initial sync
+  // - undefined/null if not present
+  if (rawSyncToken) {
+    syncToken =
+      typeof rawSyncToken === 'object' && rawSyncToken._
+        ? rawSyncToken._
+        : rawSyncToken;
+
+    // Only parse if we have a non-empty string
+    if (typeof syncToken === 'string' && syncToken.length > 0) {
+      // Parse timestamp from sync token (format: http://domain.com/ns/sync-token/1234567890)
+      const match = syncToken.match(/\/sync-token\/(\d+)$/);
+      if (match && match[1]) {
+        syncTimestamp = new Date(Number.parseInt(match[1], 10));
+      }
     }
   }
 
@@ -956,13 +1002,16 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   let changes = [];
 
   if (syncTimestamp && !Number.isNaN(syncTimestamp.getTime())) {
-    // Return only contacts modified after the sync token timestamp
+    // Return only contacts modified after or at the sync token timestamp
+    // Using $gte instead of $gt to handle edge cases where a contact
+    // is modified at the exact same millisecond as the sync token
+    // This ensures no updates are missed during rapid syncs
     const modifiedContacts = await Contacts.find(
       ctx.instance,
       ctx.state.session,
       {
         address_book: addressBook._id,
-        updated_at: { $gt: syncTimestamp }
+        updated_at: { $gte: syncTimestamp }
       }
     );
 

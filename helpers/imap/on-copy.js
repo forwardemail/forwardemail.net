@@ -26,8 +26,10 @@ const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const recursivelyParse = require('#helpers/recursively-parse');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 // eslint-disable-next-line max-params
 async function onCopy(connection, mailboxId, update, session, fn) {
@@ -226,7 +228,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             }
 
             // update attachment store magic number
-            const attachmentIds = getAttachments(m.mimeTree);
+            const mimeTree = decodeMetadata(m.mimeTree, recursivelyParse);
+            const attachmentIds = getAttachments(mimeTree);
             if (attachmentIds.length > 0) {
               const sql = builder.build({
                 type: 'update',

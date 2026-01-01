@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const Database = require('better-sqlite3-multiple-ciphers');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -19,8 +17,15 @@ const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
+const {
+  encodeAttachmentBody,
+  decodeAttachmentBody,
+  encodeMetadata,
+  decodeMetadata
+} = require('#helpers/msgpack-helpers');
 
-const builder = new Builder();
+// Enable bufferAsNative to store Buffers as native BLOB instead of hex strings
+const builder = new Builder({ bufferAsNative: true });
 
 // override to prevent developer accidentally using mongo
 // (except for a few methods)
@@ -1375,37 +1380,65 @@ function parseSchema(Model, modelName = '') {
       }
 
       case 'Array': {
-        data_type = 'text';
-        // stored as JSON (Array)
-        if (typeof obj?.options?.default !== 'undefined') {
-          default_value = safeStringify(obj.options.default);
-          _default = `DEFAULT '${default_value}'`;
-        }
+        // Check if field needs to be queryable via SQL JSON functions
+        // (e.g., json_each, json_extract) - if so, store as plain JSON text
+        if (obj?.options?.sqliteQueryable === true) {
+          data_type = 'text';
+          if (typeof obj?.options?.default !== 'undefined') {
+            default_value = safeStringify(obj.options.default);
+            _default = `DEFAULT '${default_value}'`;
+          }
 
-        getter = (v) => recursivelyParse(v);
-        setter = (v) => safeStringify(v);
+          getter = (v) => recursivelyParse(v);
+          setter = (v) => safeStringify(v);
+        } else {
+          // stored as brotli-compressed BLOB (backwards compatible with JSON text)
+          data_type = 'blob';
+          if (typeof obj?.options?.default !== 'undefined') {
+            default_value = safeStringify(obj.options.default);
+            _default = `DEFAULT '${default_value}'`;
+          }
+
+          getter = (v) => decodeMetadata(v, recursivelyParse);
+          setter = (v) => encodeMetadata(v);
+        }
 
         break;
       }
 
       case 'Mixed': {
-        data_type = 'text';
-        // stored as JSON (Object)
-        if (typeof obj?.options?.default !== 'undefined') {
-          default_value = safeStringify(obj.options.default);
-          _default = `DEFAULT '${default_value}'`;
+        // Check if field needs to be queryable via SQL JSON functions
+        // (e.g., json_each, json_extract) - if so, store as plain JSON text
+        if (obj?.options?.sqliteQueryable === true) {
+          data_type = 'text';
+          if (typeof obj?.options?.default !== 'undefined') {
+            default_value = safeStringify(obj.options.default);
+            _default = `DEFAULT '${default_value}'`;
+          }
+
+          getter = (v) => recursivelyParse(v);
+          setter = (v) => safeStringify(v);
+        } else {
+          // stored as brotli-compressed BLOB (backwards compatible with JSON text)
+          data_type = 'blob';
+          if (typeof obj?.options?.default !== 'undefined') {
+            default_value = safeStringify(obj.options.default);
+            _default = `DEFAULT '${default_value}'`;
+          }
+
+          getter = (v) => decodeMetadata(v, recursivelyParse);
+          setter = (v) => encodeMetadata(v);
         }
 
-        getter = (v) => recursivelyParse(v);
-        setter = (v) => safeStringify(v);
         break;
       }
 
       // <https://github.com/2do2go/json-sql/issues/56>
       case 'Buffer': {
+        // stored as native BLOB (backwards compatible with hex text)
         data_type = 'blob';
-        getter = (v) => Buffer.from(v, 'hex');
-        setter = (v) => v.toString('hex');
+        getter = (v) => decodeAttachmentBody(v);
+        setter = (v) => encodeAttachmentBody(v);
         break;
       }
 
@@ -1458,62 +1491,36 @@ function parseSchema(Model, modelName = '') {
 
     if (!data_type) throw new TypeError(`${name} missing type for ${key}`);
 
+    // Build the column definition
+    const columnDef = _.compact([
+      `"${key}"`,
+      data_type.toUpperCase(),
+      _default,
+      is_nullable ? '' : 'NOT NULL',
+      check
+    ]).join(' ');
+
     // add string here
     if (is_unique) {
       uniques.push(`"${key}"`);
       other_keys.push(key);
-      otherKeys.push(
-        _.compact([
-          `"${key}"`,
-          data_type.toUpperCase(),
-          _default,
-          is_nullable ? '' : 'NOT NULL',
-          check
-        ]).join(' ')
-      );
+      otherKeys.push(columnDef);
+
       //
       // NOTE: the column won't have a unique constraint (since you can't add a constraint on an existing table)
       //       however we still add a unique index which will have the same effect
       //       <https://stackoverflow.com/a/10071366>
       //       <https://stackoverflow.com/questions/15497985/how-to-add-unique-constraint-to-existing-table-in-sqlite>
       //
-      alterStatement = `ALTER TABLE ${name} ADD ${_.compact([
-        `"${key}"`,
-        data_type.toUpperCase(),
-        _default,
-        is_nullable ? '' : 'NOT NULL',
-        check
-      ]).join(' ')}`;
+      alterStatement = `ALTER TABLE ${name} ADD ${columnDef}`;
     } else if (!is_nullable && !_default) {
-      otherKeys.push(
-        _.compact([
-          `"${key}"`,
-          data_type.toUpperCase(),
-          _default,
-          'NOT NULL',
-          check
-        ]).join(' ')
-      );
+      otherKeys.push(columnDef);
       other_keys.push(key);
     } else if (_default && data_type === 'date') {
-      otherKeys.push(
-        _.compact([
-          `"${key}"`,
-          data_type.toUpperCase(),
-          _default,
-          is_nullable ? '' : 'NOT NULL',
-          check
-        ]).join(' ')
-      );
+      otherKeys.push(columnDef);
       other_keys.push(key);
     } else {
-      alterStatement = `ALTER TABLE ${name} ADD ${_.compact([
-        `"${key}"`,
-        data_type.toUpperCase(),
-        _default,
-        is_nullable ? '' : 'NOT NULL',
-        check
-      ]).join(' ')}`;
+      alterStatement = `ALTER TABLE ${name} ADD ${columnDef}`;
     }
 
     // indexes
@@ -1610,9 +1617,11 @@ function parseSchema(Model, modelName = '') {
     };
   }
 
+  const allColumns = otherKeys;
+
   const createStatement = `CREATE TABLE IF NOT EXISTS ${name} (
     "_id" TEXT NOT NULL,
-    ${otherKeys.length > 0 ? otherKeys.join(',\n') + ',' : ''}
+    ${allColumns.length > 0 ? allColumns.join(',\n') + ',' : ''}
     PRIMARY KEY ("_id"),
     ${foreignKeys.length > 0 ? foreignKeys.join(',\n') + ',' : ''}
     ${uniques.length > 0 ? `UNIQUE (${uniques.join(',')})` : ''}

@@ -17,6 +17,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { createHash, randomUUID } = require('node:crypto');
+const { setTimeout } = require('node:timers/promises');
 
 const Axe = require('axe');
 const bytes = require('@forwardemail/bytes');
@@ -1677,6 +1678,9 @@ test('large mailbox', async (t) => {
     path: 'INBOX'
   });
 
+  // Get original storage used before appending the large message
+  const originalStorageUsed = await Aliases.getStorageUsed(alias);
+
   const existingRaw = `Date: ${new Date().toISOString()}
 To: ${alias.name}@${domain.name}
 From: ${alias.name}@${domain.name}
@@ -1711,9 +1715,43 @@ ${randomString}`.trim();
 
   await imapFlow.append('INBOX', raw, [], new Date());
 
+  // Wait a bit for the background storage update
+  await setTimeout(1000);
+
+  // Get storage after append
   const storageUsed = await Aliases.getStorageUsed(alias);
-  // t.is(storageUsed, bytes(env.SMTP_MESSAGE_MAX_SIZE) * 2);
-  t.true(storageUsed >= bytes(env.SMTP_MESSAGE_MAX_SIZE) * 2);
+
+  // Log storage info for debugging
+  t.log(`Original storage: ${originalStorageUsed} bytes`);
+  t.log(`Storage after append: ${storageUsed} bytes`);
+  t.log(`Raw message size: ${raw.length} bytes`);
+
+  // Verify brotli compression is working:
+  // The raw message is ~1MB of repeated 'a' characters.
+  // Without compression, storage would increase by ~1MB.
+  // With brotli compression, the highly repetitive content compresses to almost nothing,
+  // so the storage increase should be minimal (may even fit in existing SQLite pages).
+  //
+  // Key assertion: storage should NOT increase by anywhere near the raw message size.
+  // If compression wasn't working, we'd see storage increase by ~1MB.
+  const storageIncrease = storageUsed - originalStorageUsed;
+  t.log(`Storage increase: ${storageIncrease} bytes`);
+
+  // The storage increase should be much less than the raw message size.
+  // Without compression: increase would be ~1MB (raw.length)
+  // With compression: increase should be <50KB (the compressed data + metadata)
+  t.true(
+    storageIncrease < 50000,
+    `Storage increase (${storageIncrease}) should be less than 50KB due to brotli compression of ${raw.length} byte message`
+  );
+
+  await imapFlow.mailboxOpen('INBOX');
+  const download = await imapFlow.download('*');
+  const content = await getStream(download.content);
+  // There are 8 lines with line endings. If each \n (1 byte) is converted
+  // to \r\n (2 bytes), that's 8 extra bytes.
+  t.is(content.length, raw.length + 8);
+  t.is(splitLines(content).join('\n'), splitLines(raw.toString()).join('\n'));
 
   mailbox = await Mailboxes.findById(
     t.context.imap,

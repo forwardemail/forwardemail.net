@@ -104,7 +104,7 @@ pip install ansible
 > \[!NOTE]
 > **No Ansible Galaxy dependencies required!** Our playbooks use custom installations:
 >
-> * **MongoDB 6.0.18**: Installed directly from official MongoDB repository
+> * **MongoDB 6.0.27**: Installed directly from official MongoDB repository
 > * **Valkey**: Compiled from source
 >
 > This eliminates external role dependencies and gives us full control.
@@ -167,7 +167,7 @@ Complete guide for deploying [MongoDB](https://github.com/mongodb/mongo) v6 and 
 * ✅ Security hardening
 
 > \[!WARNING]
-> **MongoDB is LOCKED to v6.0.18** - Do not upgrade to v7 or v8 due to severe performance regressions. See [MONGODB\_OPERATIONS\_GUIDE.md](docs/MONGODB_OPERATIONS_GUIDE.md) for details.
+> **MongoDB is LOCKED to v6.0.27** - Do not upgrade to v7 or v8 due to severe performance regressions. See [MONGODB\_OPERATIONS\_GUIDE.md](docs/MONGODB_OPERATIONS_GUIDE.md) for details.
 
 > \[!TIP]
 > Start here if you're deploying database services for the first time.
@@ -378,7 +378,7 @@ Automated PM2 process health monitoring for Node.js applications:
 
 Complete MongoDB operations manual:
 
-* 🔧 Version management (LOCKED to v6.0.18)
+* 🔧 Version management (LOCKED to v6.0.27)
 * 💾 Backup and restore procedures
 * 🔄 Replica set management
 * 📊 Performance monitoring

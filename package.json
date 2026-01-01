@@ -175,7 +175,7 @@
     "jquery": "3.5.1",
     "js-confetti": "0.12.0",
     "jsdom": "16.7.0",
-    "json-sql-enhanced": "2.0.6",
+    "json-sql-enhanced": "3.0.0",
     "jwk-to-pem": "2.0.7",
     "knex": "3.1.0",
     "knex-schema-inspector": "3.1.0",

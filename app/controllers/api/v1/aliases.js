@@ -17,6 +17,8 @@ function json(alias) {
   object.domain = ObjectID.isValid(alias.domain)
     ? alias.domain
     : _domainJSON(alias.domain);
+  // Exclude internal migration tracking field from API responses
+  delete object.has_storage_format_migration;
   // TODO: if alias is not on paid plan or !alias.has_recipient_verification
   //       then we should omit `alias.pending_recipients` and `alias.verified_recipients`
   return pickOriginal(

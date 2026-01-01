@@ -27,7 +27,7 @@ const config = require('#config');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 const connectionNameSymbol = Symbol.for('connection.name');
 
 let conn;

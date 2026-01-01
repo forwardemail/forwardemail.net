@@ -20,7 +20,7 @@ const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function onOpen(path, session, fn) {
   this.logger.debug('OPEN', { path, session });

@@ -894,6 +894,8 @@ module.exports = {
   CONTACT_ADDRESS_COUNTRY_INVALID:
     'Contact address country must be a valid string.',
   CONTACT_ADDRESS_TYPE_INVALID: 'Contact address type must be a valid string.',
-
+  // Unsubscribe phrases
+  INVALID_UNSUBSCRIBE_TOKEN:
+    'Invalid or expired unsubscribe link. Please manage your email preferences in your account settings.',
   ...STATUSES
 };

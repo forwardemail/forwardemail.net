@@ -35,6 +35,8 @@ const email = require('#helpers/email');
 const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const env = require('#config/env');
 const getAttachments = require('#helpers/get-attachments');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const recursivelyParse = require('#helpers/recursively-parse');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
@@ -44,7 +46,7 @@ const setupPragma = require('#helpers/setup-pragma');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 const HOSTNAME = os.hostname();
 
@@ -509,6 +511,7 @@ async function getDatabase(
     let vacuumCheck = !instance.server;
     let calendarDuplicateCheck = !instance.server;
     let highestmodseqCheck = !instance.server;
+    let storageFormatCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -519,7 +522,8 @@ async function getDatabase(
           `thread_check:${session.user.alias_id}`,
           `vacuum_check:${session.user.alias_id}`,
           `calendar_duplicate_check:${session.user.alias_id}`,
-          `highestmodseq_check:${session.user.alias_id}`
+          `highestmodseq_check:${session.user.alias_id}`,
+          `storage_format_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -528,6 +532,21 @@ async function getDatabase(
         vacuumCheck = boolean(results[4]);
         calendarDuplicateCheck = boolean(results[5]);
         highestmodseqCheck = boolean(results[6]);
+        storageFormatCheck = boolean(results[7]);
+
+        // If Redis cache miss, check the MongoDB field as fallback
+        if (!storageFormatCheck && alias.has_storage_format_migration) {
+          storageFormatCheck = true;
+          // Re-populate Redis cache from MongoDB
+          instance.client
+            .set(
+              `storage_format_check:${session.user.alias_id}`,
+              true,
+              'PX',
+              ms('30d')
+            )
+            .catch((err) => logger.warn(err));
+        }
       } catch (err) {
         logger.fatal(err);
       }
@@ -715,7 +734,8 @@ async function getDatabase(
         const hashSet = new Set();
 
         for (const message of stmt.iterate(sql.values)) {
-          const hashes = getAttachments(message.mimeTree);
+          const mimeTree = decodeMetadata(message.mimeTree, recursivelyParse);
+          const hashes = getAttachments(mimeTree);
           for (const hash of hashes) {
             hashSet.add(hash);
           }
@@ -919,6 +939,44 @@ async function getDatabase(
       }
     }
 
+    //
+    // Storage format migration: convert attachment bodies from hex to base64
+    // This is a one-time migration that saves ~33% storage on attachments
+    //
+    if (!storageFormatCheck) {
+      try {
+        await instance.client.set(
+          `storage_format_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        const {
+          migrateStorageFormat
+        } = require('#helpers/migrate-storage-format');
+        const stats = await migrateStorageFormat(instance, session);
+
+        if (stats.attachmentsMigrated > 0) {
+          logger.info('Storage format migration completed', {
+            session,
+            stats
+          });
+
+          // Update Aliases model to mark migration complete
+          try {
+            await Aliases.findByIdAndUpdate(session.user.alias_id, {
+              $set: { has_storage_format_migration: true }
+            });
+          } catch (err) {
+            logger.warn(err, { session });
+          }
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
@@ -926,7 +984,8 @@ async function getDatabase(
       !threadCheck ||
       !vacuumCheck ||
       !calendarDuplicateCheck ||
-      !highestmodseqCheck
+      !highestmodseqCheck ||
+      !storageFormatCheck
     ) {
       try {
         //

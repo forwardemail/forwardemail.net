@@ -773,6 +773,18 @@ async function checkBounceForSpam(bounce, headers, session) {
           shouldDenylist = true;
         }
 
+        //
+        // NOTE: if the session was allowlisted (e.g. the connecting IP's reverse DNS
+        //       resolved to an allowlisted domain like amazonaws.com or googleusercontent.com)
+        //       then we should NOT denylist IP addresses, hostnames, or root domains
+        //       that are part of the session metadata (remoteAddress, resolvedClientHostname, etc.)
+        //       However, we SHOULD still allow specific email addresses to be denylisted
+        //       (e.g. foo@gmail.com can be denylisted even if gmail.com is allowlisted via google.com)
+        //
+        if (shouldDenylist && session.isAllowlisted && !isEmail(attr)) {
+          shouldDenylist = false;
+        }
+
         if (shouldDenylist) {
           if (session.isAllowlisted) {
             const err = new TypeError(

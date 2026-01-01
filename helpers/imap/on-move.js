@@ -28,12 +28,14 @@ const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const recursivelyParse = require('#helpers/recursively-parse');
 
 const { formatResponse } = IMAPConnection.prototype;
 
 // const BULK_BATCH_SIZE = 150;
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
@@ -277,7 +279,7 @@ async function onMove(mailboxId, update, session, fn) {
       sourceUid.push(m.uid);
       destinationUid.push(uidNext);
 
-      const flags = JSON.parse(m.flags);
+      const flags = decodeMetadata(m.flags, recursivelyParse);
 
       // update message
       const exp = typeof retention === 'number' ? retention !== 0 : false;

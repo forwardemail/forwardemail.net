@@ -15,7 +15,7 @@
 > * [Performance Drop After Upgrade 6.0.10 → 7.0.1 (MongoDB Forums)](https://www.mongodb.com/community/forums/t/performance-drop-after-upgrade-6-0-10-7-0-1/246712/30?ref=revisit.tech)
 > * [MongoDB 8.0 Performance is 36% Higher, But There's a Catch](https://revisit.tech/blog/mongodb-8-0-performanace-is-36-percent-higher-but-there-is-a-catch/)
 >
-> **Our deployment is LOCKED to MongoDB v6.0.18 until these issues are resolved.**
+> **Our deployment is LOCKED to MongoDB v6.0.27 until these issues are resolved.**
 
 > \[!NOTE]
 > This guide covers advanced MongoDB operations including version upgrades, migrations, performance analysis, troubleshooting, and index optimization.

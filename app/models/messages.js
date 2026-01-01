@@ -100,7 +100,9 @@ const Messages = new mongoose.Schema(
     // TODO: optimize this similar to SMTP keywords for search
     headers: {
       type: mongoose.Schema.Types.Mixed,
-      required: true
+      required: true,
+      // Keep as JSON text for SQL json_each/json_extract queries in on-search.js
+      sqliteQueryable: true
     },
 
     mimeTree: {

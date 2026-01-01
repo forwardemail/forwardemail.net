@@ -33,16 +33,15 @@ const {
   sqliteVirtualDB
 } = require('#helpers/mongoose-to-sqlite');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 const Threads = new mongoose.Schema(
   {
-    ids: [
-      {
-        type: String,
-        index: true
-      }
-    ],
+    ids: {
+      type: Array,
+      // Keep as JSON text for SQL json_each queries in getThreadId
+      sqliteQueryable: true
+    },
     subject: {
       type: String,
       index: true

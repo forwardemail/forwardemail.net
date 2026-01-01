@@ -27,7 +27,7 @@ const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });

@@ -16,6 +16,7 @@ const { decode } = require('html-entities');
 const isEmail = require('./is-email');
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
+const { generateUnsubscribeLink } = require('./unsubscribe');
 const _ = require('./lodash');
 
 const config = require('#config');
@@ -137,6 +138,80 @@ module.exports = async (data) => {
           titleize(data.template)
         )} emails.`;
       throw Boom.badRequest(msg);
+    }
+
+    //
+    // Add List-Unsubscribe and List-Unsubscribe-Post headers for one-click unsubscribe (RFC 8058)
+    // This enables mail clients to show an "Unsubscribe" button
+    //
+    // Get the primary recipient email for the unsubscribe link
+    let recipientEmail;
+    if (isEmail(data?.message?.to)) {
+      recipientEmail = data.message.to;
+    } else if (_.isArray(data?.message?.to) && data.message.to.length > 0) {
+      // Get the first valid email from the array
+      for (const addr of data.message.to) {
+        if (isEmail(addr)) {
+          recipientEmail = addr;
+          break;
+        }
+      }
+    }
+
+    // Only add unsubscribe headers if we have a recipient email
+    // and this is not a critical account email (like password reset, verification, etc.)
+    const criticalTemplates = [
+      'verify',
+      'reset-password',
+      'change-email',
+      'account-update',
+      'recovery',
+      'payment',
+      'payment-reminder',
+      'alert',
+      'inquiry',
+      'inquiry-response'
+    ];
+
+    const isCriticalEmail =
+      typeof data?.template === 'string' &&
+      criticalTemplates.includes(data.template);
+
+    if (recipientEmail && !isCriticalEmail) {
+      // Determine the locale from data.locals or default to 'en'
+      const locale = data?.locals?.locale || 'en';
+
+      // Determine if this is a template-specific unsubscribe or global
+      // If template is in optOutTemplates, use template-specific unsubscribe
+      // Otherwise, use global unsubscribe (null template)
+      const template =
+        typeof data?.template === 'string' &&
+        config.optOutTemplates.includes(data.template)
+          ? data.template
+          : null;
+
+      const unsubscribeUrl = generateUnsubscribeLink(
+        recipientEmail,
+        template,
+        locale
+      );
+
+      // Initialize headers object if it doesn't exist
+      if (!_.isObject(data.message.headers)) {
+        data.message.headers = {};
+      }
+
+      // Add List-Unsubscribe header with HTTP URL (RFC 2369)
+      // Format: <URL>
+      data.message.headers['List-Unsubscribe'] = `<${unsubscribeUrl}>`;
+
+      // Add List-Unsubscribe-Post header for one-click unsubscribe (RFC 8058)
+      // This tells mail clients they can POST to the URL to unsubscribe
+      data.message.headers['List-Unsubscribe-Post'] =
+        'List-Unsubscribe=One-Click';
+
+      // Pass the unsubscribe URL to the template locals for the email footer
+      data.locals.unsubscribeUrl = unsubscribeUrl;
     }
 
     const info = await email.send(data);

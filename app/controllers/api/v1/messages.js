@@ -26,7 +26,7 @@ const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message
 const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 const attachmentStorage = new AttachmentStorage();
 const indexer = new Indexer({
   attachmentStorage

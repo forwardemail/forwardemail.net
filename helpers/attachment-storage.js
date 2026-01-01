@@ -36,7 +36,7 @@ const logger = require('#helpers/logger');
 const isRetryableError = require('#helpers/is-retryable-error');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 async function updateAttachments(attachmentIds, magic, session) {
   const sql = builder.build({

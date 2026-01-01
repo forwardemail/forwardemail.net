@@ -6,7 +6,7 @@
 > \[!NOTE]
 > We use **custom installations** for both databases:
 >
-> * **MongoDB 6.0.18**: Installed directly from official MongoDB repository (no third-party Ansible roles)
+> * **MongoDB 6.0.27**: Installed directly from official MongoDB repository (no third-party Ansible roles)
 > * **Valkey**: Compiled from source for maximum control
 >
 > This approach gives us full control over configuration and follows a consistent pattern across all database deployments.
@@ -583,14 +583,14 @@ curl -s https://forwardemail.net/ips/v4.txt?comments=false
 
 ### MongoDB Configuration
 
-* **Version**: MongoDB 6.0.18 (Community Edition)
+* **Version**: MongoDB 6.0.27 (Community Edition)
 * **Port**: 27017 (TLS required)
 * **Authentication**: Enabled
 * **Storage Engine**: WiredTiger
 * **Replication**: Not configured (standalone)
 
 > \[!WARNING]
-> **MongoDB is LOCKED to v6.0.18** - Do not upgrade to v7 or v8 due to severe performance regressions (up to 3x slower queries, increased memory overhead, degraded concurrency). See [MONGODB\_OPERATIONS\_GUIDE.md](MONGODB_OPERATIONS_GUIDE.md) for details and references.
+> **MongoDB is LOCKED to v6.0.27** - Do not upgrade to v7 or v8 due to severe performance regressions (up to 3x slower queries, increased memory overhead, degraded concurrency). See [MONGODB\_OPERATIONS\_GUIDE.md](MONGODB_OPERATIONS_GUIDE.md) for details and references.
 
 ### Redis Configuration
 

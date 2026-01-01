@@ -205,6 +205,12 @@ const Aliases = new mongoose.Schema({
     default: 0,
     index: true
   },
+  // tracks whether the alias has been migrated to base64 attachment storage
+  // (one-time migration from hex encoding to base64 for 33% storage savings)
+  has_storage_format_migration: {
+    type: Boolean,
+    default: false
+  },
   // this is an object that looks like:
   // {
   //   '50': new Date(),

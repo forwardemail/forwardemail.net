@@ -1526,7 +1526,38 @@ async function parsePayload(data, ws) {
             case 'run':
             case 'get':
             case 'all': {
-              data = stmt[op[0]](op[1]);
+              // Convert Uint8Array values to Buffer for SQLite binding
+              // (msgpackr deserializes Buffers as Uint8Array over WebSocket)
+              let values = op[1];
+              if (
+                values &&
+                typeof values === 'object' &&
+                !Array.isArray(values)
+              ) {
+                values = {};
+                for (const key of Object.keys(op[1])) {
+                  const val = op[1][key];
+                  // Check for Uint8Array (but not Buffer) or ArrayBuffer
+                  if (
+                    (val instanceof Uint8Array && !Buffer.isBuffer(val)) ||
+                    val instanceof ArrayBuffer
+                  ) {
+                    values[key] = Buffer.from(val);
+                  } else if (
+                    val &&
+                    typeof val === 'object' &&
+                    val.type === 'Buffer' &&
+                    Array.isArray(val.data)
+                  ) {
+                    // Handle serialized Buffer objects {type: 'Buffer', data: [...]}
+                    values[key] = Buffer.from(val.data);
+                  } else {
+                    values[key] = val;
+                  }
+                }
+              }
+
+              data = stmt[op[0]](values);
 
               break;
             }

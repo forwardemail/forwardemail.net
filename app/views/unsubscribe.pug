@@ -1,0 +1,23 @@
+extends layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-5
+      .row.justify-content-center
+        .col-md-8.col-lg-6
+          .card.border-themed
+            .card-body.text-center.py-5
+              if unsubscribeSuccess
+                i.fa.fa-check-circle.text-success.fa-4x.mb-4
+                h2.h4.mb-3= t("Unsubscribe Successful")
+                if unsubscribeTemplate
+                  p.text-muted.mb-4!= t('You have been unsubscribed from <strong class="notranslate">%s</strong> emails.', humanize(titleize(unsubscribeTemplate)))
+                else
+                  p.text-muted.mb-4= t("You have been unsubscribed from all promotional emails.")
+                p.small.text-muted.mb-4= t("You will still receive important account-related emails.")
+                a.btn.btn-primary(href=l("/my-account/profile"))= t("Manage Email Preferences")
+              else
+                i.fa.fa-exclamation-circle.text-warning.fa-4x.mb-4
+                h2.h4.mb-3= t("Unsubscribe")
+                p.text-muted.mb-4= t("There was an issue processing your unsubscribe request.")
+                a.btn.btn-primary(href=l("/my-account/profile"))= t("Manage Email Preferences")

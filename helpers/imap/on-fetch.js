@@ -33,7 +33,7 @@ const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 // const LIMITED_PROJECTION_KEYS = new Set(['_id', 'flags', 'modseq', 'uid']);
 // const MAX_BULK_WRITE_SIZE = 1000;
 
-const builder = new Builder();
+const builder = new Builder({ bufferAsNative: true });
 
 const { formatResponse } = IMAPConnection.prototype;
 

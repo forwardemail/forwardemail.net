@@ -288,19 +288,42 @@
         update_cache: yes
       when: gpg_key_added.changed or repo_added.changed
 
-    - name: Install MongoDB 6.0.18
+    - name: Unhold MongoDB packages before upgrade
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: install
+      loop:
+        - mongodb-org
+        - mongodb-org-database
+        - mongodb-org-server
+        - mongodb-org-mongos
+        - mongodb-org-tools
+      failed_when: false
+
+    - name: Install MongoDB 6.0.27
       apt:
         name:
-          - mongodb-org=6.0.18
-          - mongodb-org-database=6.0.18
-          - mongodb-org-server=6.0.18
-          - mongodb-org-mongos=6.0.18
-          - mongodb-org-tools=6.0.18
+          - mongodb-org=6.0.27
+          - mongodb-org-database=6.0.27
+          - mongodb-org-server=6.0.27
+          - mongodb-org-mongos=6.0.27
+          - mongodb-org-tools=6.0.27
           - mongodb-database-tools
           - numactl
         state: present
         update_cache: yes
       register: mongodb_install_result
+
+    - name: Hold MongoDB packages after installation
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - mongodb-org
+        - mongodb-org-database
+        - mongodb-org-server
+        - mongodb-org-mongos
+        - mongodb-org-tools
 
     # ========================================
     # PACKAGE STATE VERIFICATION AND REPAIR
@@ -353,11 +376,11 @@
     - name: Reinstall MongoDB packages from scratch
       apt:
         name:
-          - mongodb-org=6.0.18
-          - mongodb-org-database=6.0.18
-          - mongodb-org-server=6.0.18
-          - mongodb-org-mongos=6.0.18
-          - mongodb-org-tools=6.0.18
+          - mongodb-org=6.0.27
+          - mongodb-org-database=6.0.27
+          - mongodb-org-server=6.0.27
+          - mongodb-org-mongos=6.0.27
+          - mongodb-org-tools=6.0.27
           - mongodb-database-tools
           - numactl
         state: present

@@ -14828,5 +14828,10 @@
   "%s account disconnected from your Forward Email account": "%s account disconnected from your Forward Email account",
   "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.": "Your %s account has been disconnected from your Forward Email account. If you did not make this change, please contact us immediately.",
   "Successfully disconnected your <span class=\"notranslate\">%s</span> account.": "Successfully disconnected your <span class=\"notranslate\">%s</span> account.",
-  "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error"
+  "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error",
+  "Unsubscribe Successful": "Unsubscribe Successful",
+  "You have been unsubscribed from all promotional emails.": "You have been unsubscribed from all promotional emails.",
+  "You will still receive important account-related emails.": "You will still receive important account-related emails.",
+  "Manage Email Preferences": "Manage Email Preferences",
+  "ETag does not match.": "ETag does not match."
 }
