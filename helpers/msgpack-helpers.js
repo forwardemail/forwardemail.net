@@ -202,6 +202,18 @@ function decodeMetadata(value, recursivelyParse) {
     return value;
   }
 
+  // Already decoded: plain object or array (not Buffer/Uint8Array)
+  // This handles cases where the data was already decoded or never encoded
+  if (
+    (Array.isArray(value) && !Buffer.isBuffer(value)) ||
+    (typeof value === 'object' &&
+      !Buffer.isBuffer(value) &&
+      !(value instanceof Uint8Array) &&
+      value.constructor === Object)
+  ) {
+    return value;
+  }
+
   // Handle Uint8Array (from WebSocket/msgpackr)
   if (value instanceof Uint8Array && !Buffer.isBuffer(value)) {
     value = Buffer.from(value);

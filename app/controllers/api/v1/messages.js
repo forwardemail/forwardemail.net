@@ -24,7 +24,9 @@ const _ = require('#helpers/lodash');
 const env = require('#config/env');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const i18n = require('#helpers/i18n');
+const recursivelyParse = require('#helpers/recursively-parse');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
 
 const builder = new Builder({ bufferAsNative: true });
 const attachmentStorage = new AttachmentStorage();
@@ -183,6 +185,49 @@ function convertToPureObject(data) {
 
   // Fallback for other unexpected types (e.g., Date, RegExp)
   return data;
+}
+
+/**
+ * Decode compressed fields from raw SQL message results.
+ * Raw SQL queries bypass mongoose getters, so we need to manually decode
+ * brotli-compressed BLOB fields (mimeTree, envelope, bodystructure, attachments, flags)
+ * and JSON text fields (headers).
+ *
+ * @param {Object} message - Raw message object from SQL query
+ * @returns {Object} - Message with decoded fields
+ */
+function decodeRawMessage(message) {
+  if (!message || typeof message !== 'object') {
+    return message;
+  }
+
+  // Decode brotli-compressed BLOB fields (Mixed/Array types without sqliteQueryable)
+  // These are stored as compressed BLOBs and need decodeMetadata
+  const compressedFields = [
+    'mimeTree',
+    'envelope',
+    'bodystructure',
+    'attachments',
+    'flags'
+  ];
+
+  for (const field of compressedFields) {
+    if (message[field] !== undefined && message[field] !== null) {
+      message[field] = decodeMetadata(message[field], recursivelyParse);
+    }
+  }
+
+  // Decode JSON text fields (Mixed type with sqliteQueryable: true)
+  // These are stored as plain JSON text and just need parsing
+  if (
+    message.headers !== undefined &&
+    message.headers !== null &&
+    typeof message.headers === 'string'
+  ) {
+    message.headers = recursivelyParse(message.headers);
+  }
+
+  return message;
 }
 
 async function json(ctx, message) {
@@ -699,6 +744,12 @@ async function list(ctx) {
   for (const message of messages) {
     if (mapping[message.mailbox.toString()])
       message.mailbox = mapping[message.mailbox.toString()];
+  }
+
+  // Decode compressed fields from raw SQL results before passing to json()
+  // Raw SQL queries bypass mongoose getters, so we need to manually decode
+  for (const message of messages) {
+    decodeRawMessage(message);
   }
 
   ctx.body = await (Array.isArray(messages)
