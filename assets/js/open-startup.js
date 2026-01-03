@@ -72,6 +72,16 @@ async function loadCharts(reset = false) {
       background: 'transparent'
     });
 
+    // use browser locale for tooltip date formatting
+    // (this ensures dates are displayed in the user's local format)
+    if (chart.options.tooltip && chart.options.tooltip.x) {
+      chart.options.tooltip.x.formatter = function (value) {
+        return new Intl.DateTimeFormat(window.LOCALE, {
+          dateStyle: 'medium'
+        }).format(new Date(value));
+      };
+    }
+
     const apex = new Apex($element.get(0), chart.options);
     $element.empty();
     apex.render();

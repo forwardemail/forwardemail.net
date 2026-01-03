@@ -159,7 +159,7 @@ importers:
         version: 0.8.0(bootstrap@4.6.2(jquery@3.5.1)(popper.js@1.16.1))
       '@zainundin/mongoose-factory':
         specifier: 1.1.1
-        version: 1.1.1(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)
+        version: 1.1.1(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)
       '@zone-eu/zone-mta':
         specifier: 3.10.11
         version: 3.10.11
@@ -558,13 +558,13 @@ importers:
         version: 2.4.0
       mongodb-memory-server:
         specifier: 9.5.0
-        version: 9.5.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)
+        version: 9.5.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)
       mongodb-query-parser:
         specifier: 4.3.2
         version: 4.3.2(bson@7.0.0)
       mongodb-short-id:
         specifier: 0.3.3
-        version: 0.3.3(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)
+        version: 0.3.3(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)
       mongoose:
         specifier: 6.13.8
         version: 6.13.8
@@ -1142,8 +1142,8 @@ packages:
   '@aws-crypto/util@5.2.0':
     resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}
 
-  '@aws-sdk/client-cognito-identity@3.958.0':
-    resolution: {integrity: sha512-Sj+r1e1Hqn9/2Z3FYiOL1C7thHht3ZihEB2/yInY1hxA5WJtdWL+OKMd0m+rJy9ZzRWPYSDPFLql+NGtaMKNKQ==}
+  '@aws-sdk/client-cognito-identity@3.962.0':
+    resolution: {integrity: sha512-gQKsnvC4Rlg0uVSDZIo5Ditp/oqea21omsJsftqkAXGyFQsNVLMd1Toz0Akg0ecbLoLhrWPCMylugH6El1buYw==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/client-s3@3.844.0':
@@ -1166,8 +1166,8 @@ packages:
     resolution: {integrity: sha512-DrZgDnF1lQZv75a52nFWs6MExihJF2GZB6ETZRqr6jMwhrk2kbJPUtvgbifwcL7AYmVqHQDJBrR/MqkwwFCpiw==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-cognito-identity@3.958.0':
-    resolution: {integrity: sha512-O+j43kTMoh0jIgXU5C68aA+KWqYCpQ4MiYMIW6WahHGiKOBfk/N1EEifZkY/BIYMNTipItyFI4RROQhZhT/TxA==}
+  '@aws-sdk/credential-provider-cognito-identity@3.962.0':
+    resolution: {integrity: sha512-0B1iwgCNY3cg/s3JwWtBP1PaB4uldd0sgx6WgVVcnQ9rpyuCMOUF61enA1OcmSWgRRndylznGXjok8cva5Pw4w==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/credential-provider-env@3.844.0':
@@ -1190,20 +1190,20 @@ packages:
     resolution: {integrity: sha512-jc5ArGz2HfAx5QPXD+Ep36+QWyCKzl2TG6Vtl87/vljfLhVD0gEHv8fRsqWEp3Rc6hVfKnCjLW5ayR2HYcow9w==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-ini@3.958.0':
-    resolution: {integrity: sha512-u7twvZa1/6GWmPBZs6DbjlegCoNzNjBsMS/6fvh5quByYrcJr/uLd8YEr7S3UIq4kR/gSnHqcae7y2nL2bqZdg==}
+  '@aws-sdk/credential-provider-ini@3.962.0':
+    resolution: {integrity: sha512-h0kVnXLW2d3nxbcrR/Pfg3W/+YoCguasWz7/3nYzVqmdKarGrpJzaFdoZtLgvDSZ8VgWUC4lWOTcsDMV0UNqUQ==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-login@3.958.0':
-    resolution: {integrity: sha512-sDwtDnBSszUIbzbOORGh5gmXGl9aK25+BHb4gb1aVlqB+nNL2+IUEJA62+CE55lXSH8qXF90paivjK8tOHTwPA==}
+  '@aws-sdk/credential-provider-login@3.962.0':
+    resolution: {integrity: sha512-kHYH6Av2UifG3mPkpPUNRh/PuX6adaAcpmsclJdHdxlixMCRdh8GNeEihq480DC0GmfqdpoSf1w2CLmLLPIS6w==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/credential-provider-node@3.844.0':
     resolution: {integrity: sha512-pUqB0StTNyW0R03XjTA3wrQZcie/7FJKSXlYHue921ZXuhLOZpzyDkLNfdRsZTcEoYYWVPSmyS+Eu/g5yVsBNA==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-node@3.958.0':
-    resolution: {integrity: sha512-vdoZbNG2dt66I7EpN3fKCzi6fp9xjIiwEA/vVVgqO4wXCGw8rKPIdDUus4e13VvTr330uQs2W0UNg/7AgtquEQ==}
+  '@aws-sdk/credential-provider-node@3.962.0':
+    resolution: {integrity: sha512-CS78NsWRxLa+nWqeWBEYMZTLacMFIXs1C5WJuM9kD05LLiWL32ksljoPsvNN24Bc7rCSQIIMx/U3KGvkDVZMVg==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/credential-provider-process@3.844.0':
@@ -1230,8 +1230,8 @@ packages:
     resolution: {integrity: sha512-dgnvwjMq5Y66WozzUzxNkCFap+umHUtqMMKlr8z/vl9NYMLem/WUbWNpFFOVFWquXikc+ewtpBMR4KEDXfZ+KA==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-providers@3.958.0':
-    resolution: {integrity: sha512-HSyfH4f3uG63enBz2KOg25lcEUNPffUVIWcjQCBMIntsojBAOOHcGjuwiKvhwL5tt4nqTAoTXTMZ+drKYM5IAg==}
+  '@aws-sdk/credential-providers@3.962.0':
+    resolution: {integrity: sha512-KIFu4zkMxJ9TeBm/TWv64W9en5fSP/pPWxm3tkFMleEmyotWmC2xkihZZYcHKgLhezA3fyZxTVz2v++6DpO76A==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/lib-storage@3.844.0':
@@ -1924,8 +1924,8 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
-  '@borewit/text-codec@0.1.1':
-    resolution: {integrity: sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==}
+  '@borewit/text-codec@0.2.1':
+    resolution: {integrity: sha512-k7vvKPbf7J2fZ5klGRD9AeKfUvojuZIQ3BT5u7Jfv+puwXkUBUT5PVyMDfJZpy30CBDXGMgw7fguK/lpOMBvgw==}
 
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
@@ -7372,8 +7372,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  css-declaration-sorter@7.3.0:
-    resolution: {integrity: sha512-LQF6N/3vkAMYF4xoHLJfG718HRJh34Z8BnNhd6bosOMIVjMlhuZK5++oZa3uYAgrI5+7x2o27gUqTR2U/KjUOQ==}
+  css-declaration-sorter@7.3.1:
+    resolution: {integrity: sha512-gz6x+KkgNCjxq3Var03pRYLhyNfwhkKF1g/yoLgDNtFvVu0/fOLV9C8fFEZRjACp/XQLumjAYo7JVjzH3wLbxA==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.0.9
@@ -13406,8 +13406,8 @@ packages:
     resolution: {integrity: sha512-DlL+XwOy3NxAQ8xuC0okPgK46iuVNAK01YN7RueYBqqFeGsBjV9XmCAzAdgt+667bCl5kPh9EqKKDwnaPG1I7A==}
     engines: {node: '>=10'}
 
-  normalize-url@8.1.0:
-    resolution: {integrity: sha512-X06Mfd/5aKsRHc0O0J5CUedwnPmnDtLF2+nq+KN9KSDlJHkPuh0JUviWjEWMe0SW/9TDdSLVPuk7L5gGTIA1/w==}
+  normalize-url@8.1.1:
+    resolution: {integrity: sha512-JYc0DPlpGWB40kH5g07gGTrYuMqV653k3uBKY6uITPWds3M0ov3GaWGp9lbE3Bzngx8+XkfzgvASb9vk9JDFXQ==}
     engines: {node: '>=14.16'}
 
   notation@1.3.6:
@@ -17027,8 +17027,8 @@ packages:
   syntax-error@1.4.0:
     resolution: {integrity: sha512-YPPlu67mdnHGTup2A8ff7BC2Pjq0e0Yp/IyTFN03zWO0RcK07uLcbi7C2KpGR2FvWbaB0+bfE27a+sBKebSo7w==}
 
-  systeminformation@5.28.7:
-    resolution: {integrity: sha512-9WLwVJm2vs1m05CjSjJb0Ia9EeAVpVulWdCOVwmqcUtyW8rlujT3qDp7pCEvx1e/kfbYufMJPkcjb1E9fTo8xg==}
+  systeminformation@5.28.9:
+    resolution: {integrity: sha512-/+QlBcOBTRTGWpZMTCvvDf32dtGlECpX5TNiqOtNJhzjflGCcRQ2ADNJ05+DAO0b7ZUv/4pwMdWWCFCTDl3VPg==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -17377,8 +17377,8 @@ packages:
     resolution: {integrity: sha512-Y2fmSnZjQdDb9W4w4r1tswlMHylzWIeOKpx0aZH9BgGtACHhrk3OkT52AzwcuqTRBZtvvnTjDBh8eynMulu8Vg==}
     engines: {node: '>=14.16'}
 
-  token-types@6.1.1:
-    resolution: {integrity: sha512-kh9LVIWH5CnL63Ipf0jhlBIy0UsrMj/NJDfpsy1SqOXlLKEVyXXYrnFxFT1yOOYVGBSApeVnjPw/sBz5BfEjAQ==}
+  token-types@6.1.2:
+    resolution: {integrity: sha512-dRXchy+C0IgK8WPC6xvCHFRIWYUbqqdEIKPaKo/AcTUNzwLTK6AH7RjdLWsEZcAN/TBdtfUw3PYEgPr5VPr6ww==}
     engines: {node: '>=14.16'}
 
   toml@3.0.0:
@@ -18755,12 +18755,12 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-cognito-identity@3.958.0':
+  '@aws-sdk/client-cognito-identity@3.962.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/core': 3.957.0
-      '@aws-sdk/credential-provider-node': 3.958.0
+      '@aws-sdk/credential-provider-node': 3.962.0
       '@aws-sdk/middleware-host-header': 3.957.0
       '@aws-sdk/middleware-logger': 3.957.0
       '@aws-sdk/middleware-recursion-detection': 3.957.0
@@ -18985,9 +18985,9 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@aws-sdk/credential-provider-cognito-identity@3.958.0':
+  '@aws-sdk/credential-provider-cognito-identity@3.962.0':
     dependencies:
-      '@aws-sdk/client-cognito-identity': 3.958.0
+      '@aws-sdk/client-cognito-identity': 3.962.0
       '@aws-sdk/types': 3.957.0
       '@smithy/property-provider': 4.2.7
       '@smithy/types': 4.11.0
@@ -19058,12 +19058,12 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/credential-provider-ini@3.958.0':
+  '@aws-sdk/credential-provider-ini@3.962.0':
     dependencies:
       '@aws-sdk/core': 3.957.0
       '@aws-sdk/credential-provider-env': 3.957.0
       '@aws-sdk/credential-provider-http': 3.957.0
-      '@aws-sdk/credential-provider-login': 3.958.0
+      '@aws-sdk/credential-provider-login': 3.962.0
       '@aws-sdk/credential-provider-process': 3.957.0
       '@aws-sdk/credential-provider-sso': 3.958.0
       '@aws-sdk/credential-provider-web-identity': 3.958.0
@@ -19078,7 +19078,7 @@ snapshots:
       - aws-crt
     optional: true
 
-  '@aws-sdk/credential-provider-login@3.958.0':
+  '@aws-sdk/credential-provider-login@3.962.0':
     dependencies:
       '@aws-sdk/core': 3.957.0
       '@aws-sdk/nested-clients': 3.958.0
@@ -19109,11 +19109,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/credential-provider-node@3.958.0':
+  '@aws-sdk/credential-provider-node@3.962.0':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.957.0
       '@aws-sdk/credential-provider-http': 3.957.0
-      '@aws-sdk/credential-provider-ini': 3.958.0
+      '@aws-sdk/credential-provider-ini': 3.962.0
       '@aws-sdk/credential-provider-process': 3.957.0
       '@aws-sdk/credential-provider-sso': 3.958.0
       '@aws-sdk/credential-provider-web-identity': 3.958.0
@@ -19197,16 +19197,16 @@ snapshots:
       - aws-crt
     optional: true
 
-  '@aws-sdk/credential-providers@3.958.0':
+  '@aws-sdk/credential-providers@3.962.0':
     dependencies:
-      '@aws-sdk/client-cognito-identity': 3.958.0
+      '@aws-sdk/client-cognito-identity': 3.962.0
       '@aws-sdk/core': 3.957.0
-      '@aws-sdk/credential-provider-cognito-identity': 3.958.0
+      '@aws-sdk/credential-provider-cognito-identity': 3.962.0
       '@aws-sdk/credential-provider-env': 3.957.0
       '@aws-sdk/credential-provider-http': 3.957.0
-      '@aws-sdk/credential-provider-ini': 3.958.0
-      '@aws-sdk/credential-provider-login': 3.958.0
-      '@aws-sdk/credential-provider-node': 3.958.0
+      '@aws-sdk/credential-provider-ini': 3.962.0
+      '@aws-sdk/credential-provider-login': 3.962.0
+      '@aws-sdk/credential-provider-node': 3.962.0
       '@aws-sdk/credential-provider-process': 3.957.0
       '@aws-sdk/credential-provider-sso': 3.958.0
       '@aws-sdk/credential-provider-web-identity': 3.958.0
@@ -20304,7 +20304,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@borewit/text-codec@0.1.1': {}
+  '@borewit/text-codec@0.2.1': {}
 
   '@braintree/sanitize-url@6.0.4': {}
 
@@ -24680,9 +24680,9 @@ snapshots:
 
   '@yr/monotone-cubic-spline@1.0.3': {}
 
-  '@zainundin/mongoose-factory@1.1.1(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)':
+  '@zainundin/mongoose-factory@1.1.1(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)':
     dependencies:
-      mongoose: 8.21.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)
+      mongoose: 8.21.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -26152,7 +26152,7 @@ snapshots:
       http-cache-semantics: 4.2.0
       keyv: 4.5.4
       mimic-response: 4.0.0
-      normalize-url: 8.1.0
+      normalize-url: 8.1.1
       responselike: 3.0.0
 
   cacheable-request@2.1.4:
@@ -27162,7 +27162,7 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
 
-  css-declaration-sorter@7.3.0(postcss@8.5.6):
+  css-declaration-sorter@7.3.1(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
 
@@ -27228,7 +27228,7 @@ snapshots:
   cssnano-preset-default@6.1.2(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.1
-      css-declaration-sorter: 7.3.0(postcss@8.5.6)
+      css-declaration-sorter: 7.3.1(postcss@8.5.6)
       cssnano-utils: 4.0.2(postcss@8.5.6)
       postcss: 8.5.6
       postcss-calc: 9.0.1(postcss@8.5.6)
@@ -29432,7 +29432,7 @@ snapshots:
     dependencies:
       get-stream: 9.0.1
       strtok3: 9.1.1
-      token-types: 6.1.1
+      token-types: 6.1.2
       uint8array-extras: 1.5.0
 
   file-type@3.9.0: {}
@@ -34377,7 +34377,7 @@ snapshots:
       moment: 2.30.1
       raf: 3.4.1
 
-  mongodb-memory-server-core@9.5.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3):
+  mongodb-memory-server-core@9.5.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3):
     dependencies:
       async-mutex: 0.4.1
       camelcase: 6.3.0
@@ -34385,7 +34385,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.15.11(debug@4.4.3)
       https-proxy-agent: 7.0.6
-      mongodb: 5.9.2(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)
+      mongodb: 5.9.2(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)
       new-find-package-json: 2.0.0
       semver: 7.7.3
       tar-stream: 3.1.7
@@ -34401,9 +34401,9 @@ snapshots:
       - snappy
       - supports-color
 
-  mongodb-memory-server@9.5.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3):
+  mongodb-memory-server@9.5.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3):
     dependencies:
-      mongodb-memory-server-core: 9.5.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)
+      mongodb-memory-server-core: 9.5.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -34425,9 +34425,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mongodb-short-id@0.3.3(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7):
+  mongodb-short-id@0.3.3(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7):
     dependencies:
-      mongodb: 7.0.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)
+      mongodb: 7.0.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -34443,38 +34443,38 @@ snapshots:
       mongodb-connection-string-url: 2.6.0
       socks: 2.8.7
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.958.0
+      '@aws-sdk/credential-providers': 3.962.0
       '@mongodb-js/saslprep': 1.4.4
     transitivePeerDependencies:
       - aws-crt
 
-  mongodb@5.9.2(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3):
+  mongodb@5.9.2(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3):
     dependencies:
       bson: 5.5.1
       mongodb-connection-string-url: 2.6.0
       socks: 2.8.7
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.958.0
+      '@aws-sdk/credential-providers': 3.962.0
       '@mongodb-js/saslprep': 1.4.4
       snappy: 7.3.3
 
-  mongodb@6.20.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7):
+  mongodb@6.20.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7):
     dependencies:
       '@mongodb-js/saslprep': 1.4.4
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.958.0
+      '@aws-sdk/credential-providers': 3.962.0
       snappy: 7.3.3
       socks: 2.8.7
 
-  mongodb@7.0.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7):
+  mongodb@7.0.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7):
     dependencies:
       '@mongodb-js/saslprep': 1.4.4
       bson: 7.0.0
       mongodb-connection-string-url: 7.0.0
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.958.0
+      '@aws-sdk/credential-providers': 3.962.0
       snappy: 7.3.3
       socks: 2.8.7
 
@@ -34524,11 +34524,11 @@ snapshots:
       - aws-crt
       - supports-color
 
-  mongoose@8.21.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7):
+  mongoose@8.21.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7):
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
-      mongodb: 6.20.0(@aws-sdk/credential-providers@3.958.0)(snappy@7.3.3)(socks@2.8.7)
+      mongodb: 6.20.0(@aws-sdk/credential-providers@3.962.0)(snappy@7.3.3)(socks@2.8.7)
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
@@ -35033,7 +35033,7 @@ snapshots:
 
   normalize-url@6.1.0: {}
 
-  normalize-url@8.1.0: {}
+  normalize-url@8.1.1: {}
 
   notation@1.3.6: {}
 
@@ -36131,7 +36131,7 @@ snapshots:
       async: 3.2.6
       debug: 4.4.3(supports-color@5.5.0)
       pidusage: 2.0.21
-      systeminformation: 5.28.7
+      systeminformation: 5.28.9
       tx2: 1.0.5
     transitivePeerDependencies:
       - supports-color
@@ -39777,7 +39777,7 @@ snapshots:
     dependencies:
       acorn-node: 1.8.2
 
-  systeminformation@5.28.7:
+  systeminformation@5.28.9:
     optional: true
 
   tabbable@6.4.0: {}
@@ -40192,9 +40192,9 @@ snapshots:
       '@tokenizer/token': 0.3.0
       ieee754: 1.2.1
 
-  token-types@6.1.1:
+  token-types@6.1.2:
     dependencies:
-      '@borewit/text-codec': 0.1.1
+      '@borewit/text-codec': 0.2.1
       '@tokenizer/token': 0.3.0
       ieee754: 1.2.1
 
