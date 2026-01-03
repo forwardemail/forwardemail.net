@@ -69,8 +69,6 @@ test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupFactories);
 
-// TODO: `app.close()` for CalDAV server after each
-
 test.beforeEach(async (t) => {
   t.context.permit = await semaphore.acquire();
   const client = new Redis();
@@ -80,6 +78,7 @@ test.beforeEach(async (t) => {
   subscriber.channels.setMaxListeners(0);
 
   t.context.client = client;
+  t.context.subscriber = subscriber;
 
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
@@ -87,6 +86,7 @@ test.beforeEach(async (t) => {
 
   const sqlite = new SQLite({ client, subscriber });
   await sqlite.listen(sqlitePort);
+  t.context.sqlite = sqlite;
 
   const wsp = createWebSocketAsPromised({
     port: sqlitePort
@@ -104,6 +104,7 @@ test.beforeEach(async (t) => {
   );
   calDAV.app.server = calDAV.server;
   await calDAV.listen();
+  t.context.calDAV = calDAV;
 
   t.context.serverUrl = `http://${IP_ADDRESS}:${port}/`;
 
@@ -263,6 +264,52 @@ test.beforeEach(async (t) => {
 });
 
 test.afterEach.always(async (t) => {
+  // Helper function to close server with timeout
+  const closeServerWithTimeout = (server, timeout = 1000) =>
+    new Promise((resolve) => {
+      if (!server) {
+        resolve();
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        resolve();
+      }, timeout);
+
+      server.close(() => {
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+
+  // Close CalDAV server
+  if (t.context.calDAV) {
+    await closeServerWithTimeout(t.context.calDAV.server);
+  }
+
+  // Close SQLite server
+  if (t.context.sqlite) {
+    await closeServerWithTimeout(t.context.sqlite.server);
+  }
+
+  // Close WebSocket connection
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  // Close Redis clients
+  if (t.context.client) {
+    t.context.client.disconnect();
+  }
+
+  if (t.context.subscriber) {
+    t.context.subscriber.disconnect();
+  }
+
   await t.context.permit.release();
 });
 
@@ -1970,4 +2017,242 @@ test('VTODO with Apple-specific properties', async (t) => {
 
   // Clean up
   await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+/**
+ * Test: Event creation should complete quickly (non-blocking email)
+ *
+ * When creating an event with attendees, the CalDAV server should return
+ * immediately without waiting for the email invitation to be sent.
+ * This tests the non-blocking sendEmailWithICS optimization.
+ */
+test('event creation should complete quickly with attendees (non-blocking email)', async (t) => {
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const calendar = calendars[0];
+
+  // Create an event with attendees (which would trigger email sending)
+  const eventWithAttendees = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test//Test//EN
+BEGIN:VEVENT
+UID:nonblocking-email-test-${Date.now()}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${
+    new Date(Date.now() + 86400000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+DTEND:${
+    new Date(Date.now() + 90000000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+SUMMARY:Non-blocking Email Test Event
+ORGANIZER:mailto:${t.context.username}
+ATTENDEE;RSVP=TRUE:mailto:attendee@example.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const objectUrl = new URL(
+    `nonblocking-email-test-${Date.now()}.ics`,
+    calendar.url
+  ).href;
+
+  // Measure the time it takes to create the event
+  const startTime = Date.now();
+
+  const response = await createObject({
+    url: objectUrl,
+    data: eventWithAttendees,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  const endTime = Date.now();
+  const duration = endTime - startTime;
+
+  t.true(response.ok, 'Event creation should succeed');
+
+  // The request should complete in under 5 seconds
+  // (previously it could take 12-25 seconds waiting for email)
+  t.true(
+    duration < 5000,
+    `Event creation should complete quickly (took ${duration}ms), not wait for email sending`
+  );
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+/**
+ * Test: Event update should complete quickly (non-blocking email)
+ *
+ * When updating an event with attendees, the CalDAV server should return
+ * immediately without waiting for the email update to be sent.
+ */
+test('event update should complete quickly with attendees (non-blocking email)', async (t) => {
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const calendar = calendars[0];
+  const eventUid = `nonblocking-update-test-${Date.now()}`;
+
+  // Create an event first
+  const eventWithAttendees = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test//Test//EN
+BEGIN:VEVENT
+UID:${eventUid}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${
+    new Date(Date.now() + 86400000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+DTEND:${
+    new Date(Date.now() + 90000000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+SUMMARY:Non-blocking Update Test Event
+ORGANIZER:mailto:${t.context.username}
+ATTENDEE;RSVP=TRUE:mailto:attendee@example.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const objectUrl = new URL(`${eventUid}.ics`, calendar.url).href;
+
+  await createObject({
+    url: objectUrl,
+    data: eventWithAttendees,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 100);
+  });
+
+  // Update the event
+  const updatedEvent = eventWithAttendees.replace(
+    'Non-blocking Update Test Event',
+    'Non-blocking Update Test Event - UPDATED'
+  );
+
+  // Measure the time it takes to update the event
+  const startTime = Date.now();
+
+  const response = await updateObject({
+    url: objectUrl,
+    data: updatedEvent,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  const endTime = Date.now();
+  const duration = endTime - startTime;
+
+  t.true(response.ok, 'Event update should succeed');
+
+  // The request should complete in under 5 seconds
+  t.true(
+    duration < 5000,
+    `Event update should complete quickly (took ${duration}ms), not wait for email sending`
+  );
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+/**
+ * Test: Event deletion should complete quickly (non-blocking email)
+ *
+ * When deleting an event with attendees, the CalDAV server should return
+ * immediately without waiting for the cancellation email to be sent.
+ */
+test('event deletion should complete quickly with attendees (non-blocking email)', async (t) => {
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const calendar = calendars[0];
+  const eventUid = `nonblocking-delete-test-${Date.now()}`;
+
+  // Create an event first
+  const eventWithAttendees = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test//Test//EN
+BEGIN:VEVENT
+UID:${eventUid}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${
+    new Date(Date.now() + 86400000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+DTEND:${
+    new Date(Date.now() + 90000000)
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .split('.')[0]
+  }Z
+SUMMARY:Non-blocking Delete Test Event
+ORGANIZER:mailto:${t.context.username}
+ATTENDEE;RSVP=TRUE:mailto:attendee@example.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const objectUrl = new URL(`${eventUid}.ics`, calendar.url).href;
+
+  await createObject({
+    url: objectUrl,
+    data: eventWithAttendees,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 100);
+  });
+
+  // Measure the time it takes to delete the event
+  const startTime = Date.now();
+
+  const response = await deleteObject({
+    url: objectUrl,
+    headers: t.context.authHeaders
+  });
+
+  const endTime = Date.now();
+  const duration = endTime - startTime;
+
+  t.true(response.ok, 'Event deletion should succeed');
+
+  // The request should complete in under 5 seconds
+  t.true(
+    duration < 5000,
+    `Event deletion should complete quickly (took ${duration}ms), not wait for email sending`
+  );
 });

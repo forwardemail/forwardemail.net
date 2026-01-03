@@ -555,14 +555,11 @@ function getSyncCollectionXML(addressBook, changes, props) {
 
   for (const change of changes) {
     if (change.deleted) {
+      // Per RFC 6578 Section 3.5.2, deleted resources should have
+      // a response with status 404, NOT a propstat element
       responses.push({
         href: change.href,
-        propstat: [
-          {
-            props: [],
-            status: '404 Not Found'
-          }
-        ]
+        deleted: true
       });
     } else {
       const response = {
@@ -619,25 +616,32 @@ function getSyncCollectionXML(addressBook, changes, props) {
     const responseEl = xml.ele('d:response');
     responseEl.ele('d:href', {}, response.href);
 
-    for (const propstat of response.propstat) {
-      const propstatEl = responseEl.ele('d:propstat');
-      const propEl = propstatEl.ele('d:prop');
+    // Per RFC 6578 Section 3.5.2:
+    // For removed members, the DAV:response MUST contain one DAV:status
+    // with a value set to '404 Not Found' and MUST NOT contain any DAV:propstat element.
+    if (response.deleted) {
+      responseEl.ele('d:status', {}, 'HTTP/1.1 404 Not Found');
+    } else {
+      for (const propstat of response.propstat) {
+        const propstatEl = responseEl.ele('d:propstat');
+        const propEl = propstatEl.ele('d:prop');
 
-      for (const prop of propstat.props) {
-        if (
-          prop.value &&
-          prop.value.startsWith('<') &&
-          prop.value.endsWith('>')
-        ) {
-          // Handle XML value
-          propEl.ele(prop.name).raw(prop.value);
-        } else {
-          // Handle text value
-          propEl.ele(prop.name, {}, prop.value || '');
+        for (const prop of propstat.props) {
+          if (
+            prop.value &&
+            prop.value.startsWith('<') &&
+            prop.value.endsWith('>')
+          ) {
+            // Handle XML value
+            propEl.ele(prop.name).raw(prop.value);
+          } else {
+            // Handle text value
+            propEl.ele(prop.name, {}, prop.value || '');
+          }
         }
-      }
 
-      propstatEl.ele('d:status', {}, `HTTP/1.1 ${propstat.status}`);
+        propstatEl.ele('d:status', {}, `HTTP/1.1 ${propstat.status}`);
+      }
     }
   }
 

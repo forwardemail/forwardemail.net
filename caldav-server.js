@@ -1916,10 +1916,26 @@ class CalDAV extends API {
               );
               rruleSet = rrulestr(lines.join('\n'));
             } catch (err) {
-              err.isCodeBug = true;
-              ctx.logger.fatal(err);
-              throw err;
+              // Skip events with invalid recurrence rules (e.g., malformed UNTIL values)
+              ctx.logger.warn('Skipping event with invalid RRULE', {
+                err,
+                event: event._id,
+                calendar: calendar._id
+              });
+              continue;
             }
+          } else if (
+            err.message.includes('Invalid UNTIL value') ||
+            err.message.includes('Invalid RRULE') ||
+            err.message.includes('Invalid DTSTART')
+          ) {
+            // Skip events with invalid recurrence rules (e.g., malformed UNTIL values like "--T::")
+            ctx.logger.warn('Skipping event with invalid RRULE', {
+              err,
+              event: event._id,
+              calendar: calendar._id
+            });
+            continue;
           } else {
             err.isCodeBug = true;
             ctx.logger.fatal(err);
@@ -2026,10 +2042,26 @@ class CalDAV extends API {
                 );
                 rruleSet = rrulestr(lines.join('\n'));
               } catch (err) {
-                err.isCodeBug = true;
-                ctx.logger.fatal(err);
-                throw err;
+                // Skip tasks with invalid recurrence rules (e.g., malformed UNTIL values)
+                ctx.logger.warn('Skipping task with invalid RRULE', {
+                  err,
+                  event: event._id,
+                  calendar: calendar._id
+                });
+                continue;
               }
+            } else if (
+              err.message.includes('Invalid UNTIL value') ||
+              err.message.includes('Invalid RRULE') ||
+              err.message.includes('Invalid DTSTART')
+            ) {
+              // Skip tasks with invalid recurrence rules (e.g., malformed UNTIL values like "--T::")
+              ctx.logger.warn('Skipping task with invalid RRULE', {
+                err,
+                event: event._id,
+                calendar: calendar._id
+              });
+              continue;
             } else {
               err.isCodeBug = true;
               ctx.logger.fatal(err);
@@ -2238,8 +2270,16 @@ class CalDAV extends API {
 
     const eventCreated = await CalendarEvents.create(calendarEvent);
 
-    // already wrapped with try/catch
-    await this.sendEmailWithICS(ctx, calendar, eventCreated, 'REQUEST');
+    // Fire and forget - don't block the response waiting for email to be sent
+    // Use setImmediate to completely detach from the current execution context
+    // The sendEmailWithICS method is already wrapped with try/catch internally
+    setImmediate(() => {
+      this.sendEmailWithICS(ctx, calendar, eventCreated, 'REQUEST').catch(
+        (err) => {
+          ctx.logger.error('sendEmailWithICS error', { err });
+        }
+      );
+    });
 
     return eventCreated;
   }
@@ -2349,8 +2389,16 @@ class CalDAV extends API {
     // save event
     e = await e.save();
 
-    // already wrapped with try/catch
-    await this.sendEmailWithICS(ctx, calendar, e, 'REQUEST', oldCalStr);
+    // Fire and forget - don't block the response waiting for email to be sent
+    // Use setImmediate to completely detach from the current execution context
+    // The sendEmailWithICS method is already wrapped with try/catch internally
+    setImmediate(() => {
+      this.sendEmailWithICS(ctx, calendar, e, 'REQUEST', oldCalStr).catch(
+        (err) => {
+          ctx.logger.error('sendEmailWithICS error', { err });
+        }
+      );
+    });
 
     return e;
   }
@@ -2501,8 +2549,14 @@ class CalDAV extends API {
         }
       );
 
-      // already wrapped with try/catch
-      await this.sendEmailWithICS(ctx, calendar, event, 'CANCEL');
+      // Fire and forget - don't block the response waiting for email to be sent
+      // Use setImmediate to completely detach from the current execution context
+      // The sendEmailWithICS method is already wrapped with try/catch internally
+      setImmediate(() => {
+        this.sendEmailWithICS(ctx, calendar, event, 'CANCEL').catch((err) => {
+          ctx.logger.error('sendEmailWithICS error', { err });
+        });
+      });
     }
 
     return event;

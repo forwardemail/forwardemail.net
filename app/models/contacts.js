@@ -98,7 +98,15 @@ const Contacts = new mongoose.Schema(
           trim: true
         }
       }
-    ]
+    ],
+
+    // Soft delete timestamp for sync-collection (RFC 6578)
+    // When set, contact is considered deleted but kept for sync reporting
+    // TODO: add background job to permanently delete after 30d
+    deleted_at: {
+      type: Date,
+      index: true
+    }
   },
   dummySchemaOptions
 );

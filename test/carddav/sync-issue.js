@@ -1362,3 +1362,340 @@ test('sync token should change after contact update', async (t) => {
     headers: t.context.authHeaders
   });
 });
+
+/**
+ * Test: sync-collection should report deleted contacts with 404 status (RFC 6578)
+ *
+ * Per RFC 6578 Section 3.5.2, when a resource is deleted, the server should
+ * report it in sync-collection with a 404 Not Found status (not in propstat).
+ * This ensures clients can properly remove deleted contacts from their cache.
+ */
+test('sync-collection should report deleted contacts with 404 status (RFC 6578)', async (t) => {
+  const axios = require('axios');
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Get initial sync token
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:sync-token/>
+  </d:prop>
+</d:propfind>`
+  });
+
+  const syncTokenMatch = propfindResponse.data.match(
+    /<d:sync-token>([^<]+)<\/d:sync-token>/
+  );
+  const initialSyncToken = syncTokenMatch ? syncTokenMatch[1] : null;
+  t.truthy(initialSyncToken, 'Should have initial sync token');
+
+  // Create a contact
+  const contactUrl = new URL('delete-test-rfc6578.vcf', addressBook.url).href;
+  const createResponse = await createVCard({
+    addressBook,
+    filename: 'delete-test-rfc6578.vcf',
+    vCardString: SAMPLE_VCARD.replace(
+      '123e4567-e89b-12d3-a456-426614174000',
+      'delete-test-rfc6578-uid'
+    ),
+    headers: t.context.authHeaders
+  });
+
+  t.is(createResponse.status, 201, 'Should create contact');
+
+  // Wait a bit to ensure timestamp difference
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Get sync token after create
+  const propfindResponse2 = await axios({
+    method: 'PROPFIND',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:sync-token/>
+  </d:prop>
+</d:propfind>`
+  });
+
+  const syncToken2Match = propfindResponse2.data.match(
+    /<d:sync-token>([^<]+)<\/d:sync-token>/
+  );
+  const syncTokenAfterCreate = syncToken2Match ? syncToken2Match[1] : null;
+  t.truthy(syncTokenAfterCreate, 'Should have sync token after create');
+
+  // Delete the contact
+  const deleteResponse = await deleteVCard({
+    vCard: { url: contactUrl },
+    headers: t.context.authHeaders
+  });
+
+  t.true(
+    deleteResponse.status >= 200 && deleteResponse.status < 300,
+    'Should delete contact'
+  );
+
+  // Wait a bit to ensure timestamp difference
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Do sync-collection with the token from after create
+  // This should report the deleted contact
+  const syncResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:sync-collection xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:sync-token>${syncTokenAfterCreate}</d:sync-token>
+  <d:sync-level>1</d:sync-level>
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+</d:sync-collection>`
+  });
+
+  t.is(syncResponse.status, 207, 'Should return 207 Multi-Status');
+
+  // Check that the response contains a 404 status for the deleted contact
+  // Per RFC 6578 Section 3.5.2, deleted resources should have:
+  // <d:response>
+  //   <d:href>...</d:href>
+  //   <d:status>HTTP/1.1 404 Not Found</d:status>
+  // </d:response>
+  // NOT a propstat element
+  t.true(
+    syncResponse.data.includes('delete-test-rfc6578'),
+    'Should include deleted contact in sync response'
+  );
+  t.true(
+    syncResponse.data.includes('404') &&
+      syncResponse.data.includes('Not Found'),
+    'Should report deleted contact with 404 status'
+  );
+
+  // Verify GET request for deleted contact returns 404
+  const getResponse = await axios({
+    method: 'GET',
+    url: contactUrl,
+    headers: t.context.authHeaders,
+    validateStatus: () => true
+  });
+
+  t.is(getResponse.status, 404, 'GET for deleted contact should return 404');
+});
+
+/**
+ * Test: Initial sync-collection should not include deleted contacts (RFC 6578)
+ *
+ * Per RFC 6578 Section 3.4, when doing an initial sync (empty sync token),
+ * the server MUST NOT return any removed member URLs. Only active contacts
+ * should be returned.
+ */
+test('initial sync-collection should not include deleted contacts (RFC 6578 Section 3.4)', async (t) => {
+  const axios = require('axios');
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Create a contact
+  const contactUrl = new URL('initial-sync-test.vcf', addressBook.url).href;
+  await createVCard({
+    addressBook,
+    filename: 'initial-sync-test.vcf',
+    vCardString: SAMPLE_VCARD.replace(
+      '123e4567-e89b-12d3-a456-426614174000',
+      'initial-sync-test-uid'
+    ),
+    headers: t.context.authHeaders
+  });
+
+  // Delete the contact
+  await deleteVCard({
+    vCard: { url: contactUrl },
+    headers: t.context.authHeaders
+  });
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Do initial sync-collection (empty sync token)
+  const syncResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:sync-collection xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:sync-token/>
+  <d:sync-level>1</d:sync-level>
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+</d:sync-collection>`
+  });
+
+  t.is(syncResponse.status, 207, 'Should return 207 Multi-Status');
+
+  // The deleted contact should NOT be in the initial sync response
+  t.false(
+    syncResponse.data.includes('initial-sync-test'),
+    'Initial sync should NOT include deleted contacts per RFC 6578 Section 3.4'
+  );
+});
+
+/**
+ * Test: sync-collection should report updated contacts (e.g., photo changes)
+ *
+ * When a contact is updated (including photo changes), the sync-collection
+ * should report it so other clients can fetch the updated data.
+ */
+test('sync-collection should report updated contacts', async (t) => {
+  const axios = require('axios');
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Create a contact
+  const contactUrl = new URL('update-sync-test.vcf', addressBook.url).href;
+  await createVCard({
+    addressBook,
+    filename: 'update-sync-test.vcf',
+    vCardString: SAMPLE_VCARD.replace(
+      '123e4567-e89b-12d3-a456-426614174000',
+      'update-sync-test-uid'
+    ),
+    headers: t.context.authHeaders
+  });
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Get sync token after create
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:sync-token/>
+  </d:prop>
+</d:propfind>`
+  });
+
+  const syncTokenMatch = propfindResponse.data.match(
+    /<d:sync-token>([^<]+)<\/d:sync-token>/
+  );
+  const syncTokenAfterCreate = syncTokenMatch ? syncTokenMatch[1] : null;
+  t.truthy(syncTokenAfterCreate, 'Should have sync token after create');
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Update the contact (simulate adding a photo or changing data)
+  const updatedVCard = SAMPLE_VCARD.replace(
+    '123e4567-e89b-12d3-a456-426614174000',
+    'update-sync-test-uid'
+  )
+    .replace('John Doe', 'John Doe Updated')
+    .replace('END:VCARD', 'NOTE:Updated with photo\nEND:VCARD');
+
+  await updateVCard({
+    vCard: {
+      url: contactUrl,
+      data: updatedVCard
+    },
+    headers: t.context.authHeaders
+  });
+
+  // Wait a bit
+  await new Promise((resolve) => {
+    setTimeout(resolve, 50);
+  });
+
+  // Do sync-collection with the token from after create
+  const syncResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:sync-collection xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:sync-token>${syncTokenAfterCreate}</d:sync-token>
+  <d:sync-level>1</d:sync-level>
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+</d:sync-collection>`
+  });
+
+  t.is(syncResponse.status, 207, 'Should return 207 Multi-Status');
+
+  // The updated contact should be in the sync response with 200 status
+  t.true(
+    syncResponse.data.includes('update-sync-test'),
+    'Should include updated contact in sync response'
+  );
+  t.true(
+    syncResponse.data.includes('200 OK'),
+    'Updated contact should have 200 OK status'
+  );
+  t.true(
+    syncResponse.data.includes('Updated with photo'),
+    'Should include updated contact data'
+  );
+
+  // Clean up
+  await deleteVCard({
+    vCard: { url: contactUrl },
+    headers: t.context.authHeaders
+  });
+});

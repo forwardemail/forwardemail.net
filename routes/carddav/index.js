@@ -121,7 +121,8 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       );
 
-      if (!contactObj)
+      // Return 404 for non-existent or soft-deleted contacts
+      if (!contactObj || contactObj.deleted_at)
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       // Parse XML request body
@@ -159,7 +160,8 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       );
 
-      if (!contactObj)
+      // Return 404 for non-existent or soft-deleted contacts
+      if (!contactObj || contactObj.deleted_at)
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       ctx.type = 'text/vcard; charset=utf-8';
@@ -342,12 +344,22 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       }
 
-      // Delete contact
-      await Contacts.deleteOne(ctx.instance, ctx.state.session, {
-        _id: contactObj._id
-      });
-      // TODO: define $__remove in sqlite helper
-      // await contactObj.remove();
+      // Soft delete contact for sync-collection (RFC 6578)
+      // Instead of hard delete, set deleted_at so sync-collection
+      // can report the deletion to clients with 404 status
+      // Also update updated_at so the contact appears in sync queries
+      const now = new Date();
+      await Contacts.findByIdAndUpdate(
+        ctx.instance,
+        ctx.state.session,
+        contactObj._id,
+        {
+          $set: {
+            deleted_at: now,
+            updated_at: now
+          }
+        }
+      );
 
       // Update address book sync token
       addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
@@ -430,9 +442,16 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
       // If depth is 1, include contacts
       if (depth === '1') {
-        const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
-          address_book: addressBook._id
-        });
+        const allContacts = await Contacts.find(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id
+          }
+        );
+
+        // Filter out soft-deleted contacts
+        const contacts = allContacts.filter((c) => !c.deleted_at);
 
         for (const contact of contacts) {
           responses.push({
@@ -863,11 +882,14 @@ async function handleAddressbookQuery(ctx, xmlBody, addressBook) {
     ctx.logger.debug('Generated MongoDB query:', { query });
 
     // Execute the query using the actual Contacts model
-    const contacts = await Contacts.find(
+    const allContacts = await Contacts.find(
       ctx.instance,
       ctx.state.session,
       query
     );
+
+    // Filter out soft-deleted contacts
+    const contacts = allContacts.filter((c) => !c.deleted_at);
 
     // Format contacts for response using actual model fields
     const formattedContacts = contacts.map((contact) => ({
@@ -932,11 +954,14 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
     };
 
     // Execute the query
-    const contacts = await Contacts.find(
+    const allContacts = await Contacts.find(
       ctx.instance,
       ctx.state.session,
       query
     );
+
+    // Filter out soft-deleted contacts
+    const contacts = allContacts.filter((c) => !c.deleted_at);
 
     // Format contacts for response
     const formattedContacts = contacts.map((contact) => ({
@@ -999,14 +1024,18 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   }
 
   // Get changes since sync token
-  let changes = [];
+  const changes = [];
 
   if (syncTimestamp && !Number.isNaN(syncTimestamp.getTime())) {
     // Return only contacts modified after or at the sync token timestamp
     // Using $gte instead of $gt to handle edge cases where a contact
     // is modified at the exact same millisecond as the sync token
     // This ensures no updates are missed during rapid syncs
-    const modifiedContacts = await Contacts.find(
+    //
+    // Per RFC 6578, we need to return:
+    // 1. Changed members (new or modified) - with 200 OK status and properties
+    // 2. Removed members (deleted) - with 404 Not Found status only
+    const allModifiedContacts = await Contacts.find(
       ctx.instance,
       ctx.state.session,
       {
@@ -1015,33 +1044,49 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
       }
     );
 
-    changes = modifiedContacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
-        contact.contact_id
-      }${vcf(contact.contact_id)}`,
-      etag: contact.etag,
-      vcard: contact.content,
-      deleted: false
-    }));
-
-    // TODO: Track deleted contacts
-    // For now, we don't track deletions separately
-    // In a full implementation, you'd need a "deleted_contacts" table
-    // or a soft-delete flag with deleted_at timestamp
+    // Separate non-deleted and deleted contacts
+    for (const contact of allModifiedContacts) {
+      if (contact.deleted_at) {
+        // Deleted contact - report with 404 status per RFC 6578 Section 3.5.2
+        changes.push({
+          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+            contact.contact_id
+          }${vcf(contact.contact_id)}`,
+          deleted: true
+        });
+      } else {
+        // Active contact - report with 200 status and properties
+        changes.push({
+          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+            contact.contact_id
+          }${vcf(contact.contact_id)}`,
+          etag: contact.etag,
+          vcard: contact.content,
+          deleted: false
+        });
+      }
+    }
   } else {
-    // If no sync token or invalid token, return all contacts (initial sync)
+    // If no sync token or invalid token, return all non-deleted contacts (initial sync)
+    // Per RFC 6578 Section 3.4: "The server MUST NOT return any removed member URLs"
+    // for initial synchronization
     const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
       address_book: addressBook._id
     });
 
-    changes = contacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
-        contact.contact_id
-      }${vcf(contact.contact_id)}`,
-      etag: contact.etag,
-      vcard: contact.content,
-      deleted: false
-    }));
+    // Filter out deleted contacts for initial sync
+    for (const contact of contacts) {
+      if (!contact.deleted_at) {
+        changes.push({
+          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+            contact.contact_id
+          }${vcf(contact.contact_id)}`,
+          etag: contact.etag,
+          vcard: contact.content,
+          deleted: false
+        });
+      }
+    }
   }
 
   // Generate XML response with updated sync token
