@@ -119,6 +119,31 @@ table.table.table-hover.table-bordered.table-sm
                             != ansiHTML(log.message)
                         else
                           != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+                      //- Show error source attribution with fallback logic
+                      if log.err
+                        br
+                        small.text-muted
+                          i.fa.fa-server.mr-1
+                          = t("Error from:")
+                          = " "
+                          if log.err.truthSource
+                            span.badge.badge-info= log.err.truthSource
+                          else if log.err.target
+                            span.badge.badge-info= log.err.target
+                          else if log.err.name === 'DenylistError'
+                            span.badge.badge-secondary= "Forward Email"
+                          else if log.err.code
+                            span.badge.badge-secondary= "Forward Email"
+                          else
+                            span.badge.badge-secondary= "Forward Email"
+                        //- Show bounce reason if available
+                        if log.err.bounceInfo && log.err.bounceInfo.message && log.err.bounceInfo.message !== 'Unknown'
+                          br
+                          small.text-muted
+                            i.fa.fa-info-circle.mr-1
+                            = t("Reason:")
+                            = " "
+                            span= log.err.bounceInfo.message
                       if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0
                         ul
                           each bounce in log.err.bounces

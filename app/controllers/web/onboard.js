@@ -88,7 +88,12 @@ async function onboard(ctx, next) {
           : ctx.state.domainName
       );
 
+    //
+    // Only perform email address replacement on FAQ page
+    // This prevents unintended replacements on other pages (e.g., "administrative" -> "jamesistrative")
+    //
     if (
+      ctx.pathWithoutLocale === '/faq' &&
       ctx.state.email &&
       (!ctx.isAuthenticated() || ctx.state.user.group !== 'admin')
     ) {

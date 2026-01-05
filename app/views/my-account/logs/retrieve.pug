@@ -50,6 +50,22 @@ block body
             = t("SMTP Response")
           else
             = t("Log Message")
+          //- Show error source attribution with fallback logic
+          if log.err
+            small.ml-2.text-muted
+              = " "
+              = t("from")
+              = " "
+              if log.err.truthSource
+                span.badge.badge-info= log.err.truthSource
+              else if log.err.target
+                span.badge.badge-info= log.err.target
+              else if log.err.name === 'DenylistError'
+                span.badge.badge-secondary= "Forward Email"
+              else if log.err.code
+                span.badge.badge-secondary= "Forward Email"
+              else
+                span.badge.badge-secondary= "Forward Email"
         - let badgeClass = "badge-success";
         - let statusCode;
         if log.err && log.err.responseCode
@@ -136,6 +152,57 @@ block body
                       else if specificStatusCode >= 300
                         - specificBadgeClass = "badge-primary";
                       span.badge.badge-pill.mr-1(class=specificBadgeClass)= specificStatusCode
+
+        //- Additional error details section
+        if log.err && (log.err.bounceInfo || log.err.mx || log.err.rejected || log.err.denylistValue || log.err.command)
+          h3.h5= t("Error Details")
+          table.table.table-hover.table-bordered.table-striped
+            //- Bounce info
+            if log.err.bounceInfo && log.err.bounceInfo.message && log.err.bounceInfo.message !== 'Unknown'
+              tr
+                th= t("Reason")
+                td= log.err.bounceInfo.message
+            if log.err.bounceInfo && log.err.bounceInfo.status
+              tr
+                th= t("Enhanced Status")
+                td
+                  code= log.err.bounceInfo.status
+            //- Target and MX info
+            if log.err.target
+              tr
+                th= t("Target Domain")
+                td= log.err.target
+            if log.err.mx && log.err.mx.hostname
+              tr
+                th= t("MX Server")
+                td= log.err.mx.hostname
+            //- Rejected recipients
+            if log.err.rejected && log.err.rejected.length > 0
+              tr
+                th= t("Rejected Recipients")
+                td
+                  ul.list-inline.mb-0
+                    each recipient in log.err.rejected
+                      li.list-inline-item
+                        span.badge.badge-danger= recipient
+            //- SMTP command that failed
+            if log.err.command
+              tr
+                th= t("Failed Command")
+                td
+                  code= log.err.command
+            //- Denylist info
+            if log.err.denylistValue
+              tr
+                th= t("Denylisted Address")
+                td
+                  span.badge.badge-warning= log.err.denylistValue
+            //- Error code (like CERT_HAS_EXPIRED)
+            if log.err.code && log.err.code !== 'EENVELOPE'
+              tr
+                th= t("Error Code")
+                td
+                  code= log.err.code
 
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)
           h3.h5= t("Message Headers")

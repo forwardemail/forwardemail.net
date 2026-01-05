@@ -253,6 +253,12 @@ let jobs = [
     interval: '3h',
     timeout: 0
   },
+  // daily log alert email with activity report
+  {
+    name: 'daily-log-alert',
+    interval: '1d',
+    timeout: '1h'
+  },
   // past due relief (users that are more than 6 months past due are relieved)
   {
     name: 'past-due-relief',

@@ -446,4 +446,9 @@ a,
   .border-right {
     border-color: #dee2e6 !important;
   }
+
+  /* Hide footer in print view (issue #466) */
+  footer {
+    display: none !important;
+  }
 }

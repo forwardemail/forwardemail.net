@@ -1,0 +1,288 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            = emoji("bar_chart")
+            = " "
+            = t("Email Activity Report")
+            = " "
+            = emoji("bar_chart")
+          .card-body.p-0
+            //- Hero section with date range
+            .p-3.bg-light.text-center
+              p.card-text.mb-1
+                strong= t("Report Period")
+              p.card-text.text-muted.mb-0
+                = reportPeriod
+
+            //- Summary stats section
+            .p-3
+              h2.h4.text-center.mb-4
+                = emoji("mailbox_with_mail")
+                = " "
+                = t("Activity Summary")
+                = " "
+                = emoji("mailbox_with_mail")
+
+              //- Stats grid - responsive with proper spacing
+              .row.text-center.justify-content-center
+                //- Total processed
+                .col-6.col-sm-6.col-md-3.mb-3.px-2
+                  .card.h-100.shadow-sm
+                    .card-body.py-3
+                      h3.h2.mb-1.text-primary= stats.total.toLocaleString()
+                      small.text-muted= t("Total Processed")
+
+                //- Delivered (only if user opted in to success logs)
+                if showDelivered
+                  .col-6.col-sm-6.col-md-3.mb-3.px-2
+                    .card.h-100.shadow-sm.border-success
+                      .card-body.py-3
+                        h3.h2.mb-1(style="color: #28a745")= stats.delivered.toLocaleString()
+                        small.text-muted= t("Delivered")
+
+                //- Spam blocked
+                .col-6.col-sm-6.col-md-3.mb-3.px-2
+                  .card.h-100.shadow-sm.border-warning
+                    .card-body.py-3
+                      h3.h2.mb-1(style="color: #ffc107")= stats.spam.toLocaleString()
+                      small.text-muted= t("Spam Blocked")
+
+                //- Viruses blocked
+                .col-6.col-sm-6.col-md-3.mb-3.px-2
+                  .card.h-100.shadow-sm.border-danger
+                    .card-body.py-3
+                      h3.h2.mb-1(style="color: #dc3545")= stats.virus.toLocaleString()
+                      small.text-muted= t("Viruses Blocked")
+
+            //- Detailed breakdown section
+            if stats.bounceCategories && Object.keys(stats.bounceCategories).length > 0
+              .p-3.bg-light
+                h2.h4.text-center
+                  = emoji("mag")
+                  = " "
+                  = t("Bounce Categories")
+                  = " "
+                  = emoji("mag")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Category")
+                      th.text-right= t("Count")
+                      th.text-center= t("Action")
+                  tbody
+                    each count, category in stats.bounceCategories
+                      if count > 0
+                        tr
+                          td
+                            if category === 'spam'
+                              = emoji("no_entry_sign")
+                              = " "
+                            else if category === 'virus'
+                              = emoji("biohazard")
+                              = " "
+                            else if category === 'blocklist'
+                              = emoji("stop_sign")
+                              = " "
+                            else if category === 'dmarc'
+                              = emoji("shield")
+                              = " "
+                            else if category === 'recipient'
+                              = emoji("bust_in_silhouette")
+                              = " "
+                            else if category === 'network'
+                              = emoji("globe_with_meridians")
+                              = " "
+                            else
+                              = emoji("question")
+                              = " "
+                            = category === "dmarc" ? "DMARC" : titleize(humanize(category))
+                          td.text-right= count.toLocaleString()
+                          td.text-center
+                            a.btn.btn-sm.btn-outline-dark.mb-0(
+                              href=`${config.urls.web}/${locale}/my-account/logs?bounce_category=${category}`
+                            )
+                              = t("View Logs")
+
+            //- Response codes breakdown
+            if stats.responseCodes && Object.keys(stats.responseCodes).length > 0
+              .p-3
+                h2.h4.text-center
+                  = emoji("1234")
+                  = " "
+                  = t("Response Codes")
+                  = " "
+                  = emoji("1234")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Code")
+                      th= t("Description")
+                      th.text-right= t("Count")
+                      th.text-center= t("Action")
+                  tbody
+                    each count, code in stats.responseCodes
+                      if count > 0
+                        - const codeNum = parseInt(code, 10);
+                        tr
+                          td
+                            if codeNum >= 500
+                              span.badge(
+                                style="background-color: #dc3545; color: #fff"
+                              )= code
+                            else if codeNum >= 400
+                              span.badge(
+                                style="background-color: #ffc107; color: #212529"
+                              )= code
+                            else
+                              span.badge(
+                                style="background-color: #28a745; color: #fff"
+                              )= code
+                          td
+                            if code === '421'
+                              = t("Temporary failure (try again)")
+                            else if code === '450'
+                              = t("Mailbox unavailable (temporary)")
+                            else if code === '451'
+                              = t("Local error in processing")
+                            else if code === '452'
+                              = t("Insufficient storage")
+                            else if code === '550'
+                              = t("Mailbox unavailable (permanent)")
+                            else if code === '551'
+                              = t("User not local")
+                            else if code === '552'
+                              = t("Message too large")
+                            else if code === '553'
+                              = t("Mailbox name not allowed")
+                            else if code === '554'
+                              = t("Transaction failed")
+                            else
+                              = t("SMTP Response")
+                          td.text-right= count.toLocaleString()
+                          td.text-center
+                            a.btn.btn-sm.btn-outline-dark.mb-0(
+                              href=`${config.urls.web}/${locale}/my-account/logs?response_code=${code}`
+                            )
+                              = t("View Logs")
+
+            //- Domains section
+            if domains && domains.length > 0
+              .p-3.bg-light
+                h2.h4.text-center
+                  = emoji("globe_with_meridians")
+                  = " "
+                  = t("Your Domains")
+                  = " "
+                  = emoji("globe_with_meridians")
+                ul.list-unstyled.mb-0
+                  each domain in domains
+                    li.mb-2
+                      = emoji("link")
+                      = " "
+                      strong= domain.name
+                      if domain.logCount > 0
+                        = " "
+                        span.badge.badge-secondary= `${domain.logCount} ${t("logs")}`
+
+            //- Quick actions
+            .p-3
+              h2.h4.text-center
+                = emoji("zap")
+                = " "
+                = t("Quick Actions")
+                = " "
+                = emoji("zap")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-dark(
+                    href=`${config.urls.web}/${locale}/my-account/logs`
+                  )
+                    = emoji("scroll")
+                    = " "
+                    = t("View All Logs")
+                if stats.spam > 0 || stats.virus > 0 || Object.keys(stats.responseCodes || {}).length > 0
+                  li.list-inline-item.mb-2
+                    a.btn.btn-danger(
+                      href=`${config.urls.web}/${locale}/my-account/logs?show_errors=true`
+                    )
+                      = emoji("warning")
+                      = " "
+                      = t("View Errors Only")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/my-account/domains`
+                  )
+                    = emoji("gear")
+                    = " "
+                    = t("Manage Domains")
+
+            //- Protection summary
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("shield")
+                = " "
+                = t("Your Protection Summary")
+                = " "
+                = emoji("shield")
+              p.card-text.text-center
+                if stats.spam > 0 || stats.virus > 0
+                  = t("Forward Email protected you from")
+                  = " "
+                  if stats.spam > 0
+                    strong(style="color: #ffc107")= `${stats.spam.toLocaleString()} ${t("spam emails")}`
+                  if stats.spam > 0 && stats.virus > 0
+                    = " "
+                    = t("and")
+                    = " "
+                  if stats.virus > 0
+                    strong(style="color: #dc3545")= `${stats.virus.toLocaleString()} ${t("viruses")}`
+                  = " "
+                  = t("during this period.")
+                else
+                  = t("No threats detected during this period. Your inbox is secure!")
+                  = " "
+                  = emoji("white_check_mark")
+
+            //- Report frequency explanation
+            if frequencyInfo
+              .p-3
+                h2.h4.text-center
+                  = emoji("clock")
+                  = " "
+                  = t("Why am I getting this report?")
+                  = " "
+                  = emoji("clock")
+                .card.bg-light.border-0
+                  .card-body.py-2
+                    p.card-text.small.mb-0
+                      = frequencyInfo.explanation
+
+            //- Help section
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("raising_hand")
+                = " "
+                = t("Need Help?")
+                = " "
+                = emoji("raising_hand")
+              p.card-text.text-center
+                = t("Read our FAQ, submit a help request, or reply to this email.")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/faq`
+                  )
+                    = t("Read FAQ")
+                li.list-inline-item
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/help`
+                  )
+                    = t("Help Request")
+
+          .card-footer.text-center.small.text-muted
+            = t("Privacy. Transparency. Security. Open Source.")

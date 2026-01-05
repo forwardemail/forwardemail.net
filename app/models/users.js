@@ -87,6 +87,7 @@ const omitExtraFields = [
   config.userFields.twoFactorReminderSentAt,
   config.userFields.featureReminderSentAt,
   config.userFields.pastDueReliefSentAt,
+  config.userFields.dailyLogAlertSentAt,
   config.userFields.planSetAt,
   config.userFields.planExpiresAt,
   // fields.otpEnabled,
@@ -306,6 +307,12 @@ object[config.userFields.featureReminderSentAt] = {
 
 // Past due relief (users get 1 yr free after 6 months past due)
 object[config.userFields.pastDueReliefSentAt] = {
+  type: Date,
+  index: true
+};
+
+// Daily log alert email sent timestamp
+object[config.userFields.dailyLogAlertSentAt] = {
   type: Date,
   index: true
 };

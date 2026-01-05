@@ -287,35 +287,61 @@ async function listLogs(ctx) {
   }
 
   // response_code -> 'err.responseCode'
+  // Supports multiple codes via comma-separated string or array (e.g., ?response_codes=421,450,550)
+  const responseCodesToFilter = [];
+
+  // Handle legacy single response_code parameter
   if (
     isSANB(ctx.query.response_code) &&
     Number.parseInt(ctx.query.response_code, 10) >= 200 &&
     Number.parseInt(ctx.query.response_code, 10) < 600
   ) {
-    const code = Number.parseInt(ctx.query.response_code, 10);
+    responseCodesToFilter.push(Number.parseInt(ctx.query.response_code, 10));
+  }
+
+  // Handle new multi-select response_codes parameter (comma-separated or array)
+  if (ctx.query.response_codes) {
+    let codes = ctx.query.response_codes;
+    // If it's a string, split by comma
+    if (typeof codes === 'string') {
+      codes = codes.split(',');
+    }
+
+    // If it's an array (from multiple query params with same name)
+    if (Array.isArray(codes)) {
+      for (const c of codes) {
+        const parsed = Number.parseInt(c, 10);
+        if (
+          parsed >= 200 &&
+          parsed < 600 &&
+          !responseCodesToFilter.includes(parsed)
+        ) {
+          responseCodesToFilter.push(parsed);
+        }
+      }
+    }
+  }
+
+  if (responseCodesToFilter.length > 0) {
+    const codeFilter =
+      responseCodesToFilter.length === 1
+        ? { 'err.responseCode': responseCodesToFilter[0] }
+        : { 'err.responseCode': { $in: responseCodesToFilter } };
+
     if (query.$or) {
       query = {
         $and: [
           {
             $or: query.$or
           },
-          {
-            'err.responseCode': code
-          }
+          codeFilter
         ]
       };
     } else if (query.$and) {
-      query.$and.push({
-        'err.responseCode': code
-      });
+      query.$and.push(codeFilter);
     } else {
       query = {
-        $and: [
-          query,
-          {
-            'err.responseCode': code
-          }
-        ]
+        $and: [query, codeFilter]
       };
     }
   }
@@ -346,6 +372,54 @@ async function listLogs(ctx) {
             bounce_category: bounceCategory
           }
         ]
+      };
+    }
+  }
+
+  //
+  // show_errors filter - "Just show errors" feature request
+  // Filters to only show logs with errors (bounced/rejected emails)
+  // This includes: 4xx codes (temporary failures), 5xx codes (permanent failures),
+  // or logs with bounce_category set
+  //
+  if (ctx.query.show_errors === 'true') {
+    const errorsFilter = {
+      $or: [
+        // 4xx temporary errors (e.g., 421, 450, 451, 452)
+        {
+          'err.responseCode': {
+            $gte: 400,
+            $lt: 500
+          }
+        },
+        // 5xx permanent errors (e.g., 550, 552, 553, 554)
+        {
+          'err.responseCode': {
+            $gte: 500,
+            $lt: 600
+          }
+        },
+        // Any log with a bounce category (covers DMARC, spam, virus, etc.)
+        {
+          bounce_category: { $exists: true, $ne: null }
+        }
+      ]
+    };
+
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          errorsFilter
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push(errorsFilter);
+    } else {
+      query = {
+        $and: [query, errorsFilter]
       };
     }
   }

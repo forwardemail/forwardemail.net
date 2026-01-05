@@ -652,6 +652,7 @@ const config = {
 
   optOutTemplates: [
     // 'dmarc-issue', // TODO: need to hook this in
+    'daily-log-alert',
     'domain-configuration-issue',
     'domain-onboard',
     'domain-restrictions-reminder',
@@ -1080,7 +1081,8 @@ const config = {
     hasDenylistRequests: 'has_denylist_requests',
     approvedDomains: 'approved_domains',
     smtpLimit: 'smtp_limit',
-    maxQuotaPerAlias: 'max_quota_per_alias'
+    maxQuotaPerAlias: 'max_quota_per_alias',
+    dailyLogAlertSentAt: 'daily_log_alert_sent_at'
   },
 
   // dynamic otp routes
