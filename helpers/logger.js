@@ -198,7 +198,7 @@ async function hook(err, message, meta) {
 
     try {
       const conn = mongoose.connections.find(
-        (conn) => conn[connectionNameSymbol] === 'JOURNALS_MONGO_URI'
+        (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
       );
       if (!conn) throw new Error('Mongoose connection does not exist');
       if (!conn.models || !conn.models.Logs || !conn.models.Logs.create)

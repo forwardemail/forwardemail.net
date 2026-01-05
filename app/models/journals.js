@@ -94,7 +94,7 @@ Journals.plugin(mongooseCommonPlugin, {
 });
 
 const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'JOURNALS_MONGO_URI'
+  (conn) => conn[Symbol.for('connection.name')] === 'LOGS_MONGO_URI'
 );
 if (!conn) throw new Error('Mongoose connection does not exist');
 module.exports = conn.model('Journals', Journals);
