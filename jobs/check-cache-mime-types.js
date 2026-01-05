@@ -49,6 +49,7 @@ graceful.listen();
 
     const urls = [];
     const errors = [];
+    const keysToDelete = [];
 
     stream.on('data', (keys) => {
       if (!Array.isArray(keys) || keys.length === 0) return;
@@ -71,20 +72,43 @@ graceful.listen();
             const json = JSON.parse(value);
             const type = mime.contentType(path.extname(url));
             //
-            // TODO: eventually we should either delete it or update the `.type` property
-            //       but we're not going to do that until we can verify for sure that this happens
-            //       (e.g. we're going to wait for an email alert to get triggered below)
+            // if the expected type doesn't match the stored type,
+            // then we should delete the cached item and alert admins
             //
-            if (type && type !== json.type)
+            if (type && type !== json.type) {
               errors.push(
                 `${url} had Content-Type stored of "${json.type}" but expected "${type}"`
               );
+              // collect keys to delete (both the metadata and buffer keys)
+              keysToDelete.push(
+                `koa-cash:${url}`,
+                `buffer-gzip:koa-cash:${url}`
+              );
+            }
           } catch {
             errors.push(`${url} had invalid JSON stored`);
+            // also delete entries with invalid JSON
+            keysToDelete.push(`koa-cash:${url}`, `buffer-gzip:koa-cash:${url}`);
           }
         },
         { concurrency: config.concurrency }
       );
+    }
+
+    // delete the invalid cached items
+    if (keysToDelete.length > 0) {
+      await pMap(
+        keysToDelete,
+        async (key) => {
+          try {
+            await client.del(key);
+          } catch (err) {
+            logger.error(err);
+          }
+        },
+        { concurrency: config.concurrency }
+      );
+      logger.info(`Deleted ${keysToDelete.length} invalid cache keys`);
     }
 
     // alert admins of any content type mismatches
