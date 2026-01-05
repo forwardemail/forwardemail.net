@@ -147,6 +147,8 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
     = t("You can have this and forwarding recipients enabled at the same time.")
     = " "
     != t('If you would like to learn more about storage, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l("/blog/docs/best-quantum-safe-encrypted-email-service"))
+  .alert.alert-warning.small
+    != t('If you are using <strong class="notranslate">Thunderbird</strong> or another desktop email client, you must enable this option for your email client to connect properly.')
 
 //- if user was admin of the domain then allow them to update storage quota
 if domain && domain.group === 'admin'
