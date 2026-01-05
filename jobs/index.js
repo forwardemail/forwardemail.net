@@ -257,7 +257,7 @@ let jobs = [
   {
     name: 'daily-log-alert',
     interval: '1d',
-    timeout: '1h'
+    timeout: 0
   },
   // past due relief (users that are more than 6 months past due are relieved)
   {
