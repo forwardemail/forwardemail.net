@@ -22,12 +22,14 @@ const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');
 
 const routes = require('../routes');
+
 const cookieOptions = require('./cookies');
 const auth = require('./basic-auth');
 const env = require('./env');
 const koaCashConfig = require('./koa-cash');
 
 const config = require('.');
+const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
 const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
@@ -307,6 +309,10 @@ module.exports = (redis) => ({
     }
   },
   hookBeforeSetup(app) {
+    // Koa v3 polyfill for ctx.redirect('back')
+    // @see https://github.com/koajs/koa/releases/tag/v3.0.0
+    app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));
+
     app.context.resolver = createTangerine(
       app.context.client,
       app.context.logger

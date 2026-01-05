@@ -13,6 +13,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const routes = require('../routes');
 
 const config = require('.');
+const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
 
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
@@ -53,6 +54,10 @@ module.exports = {
   logger: cabin,
   i18n,
   hookBeforeSetup(app) {
+    // Koa v3 polyfill for ctx.redirect('back')
+    // @see https://github.com/koajs/koa/releases/tag/v3.0.0
+    app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));
+
     app.context.resolver = createTangerine(
       app.context.client,
       app.context.logger
