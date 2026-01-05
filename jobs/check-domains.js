@@ -301,55 +301,52 @@ async function mapper(id) {
     //       then we will need to modify this query
     //
     // get all non-API created domains (sorted by last_checked_at)
-    const results = await Domains.aggregate([
-      {
-        $match: {
-          $and: [
+    //
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
+    const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
+    const ids = [];
+
+    for await (const domain of Domains.find({
+      $and: [
+        {
+          $or: [
             {
-              $or: [
-                {
-                  last_checked_at: {
-                    $exists: false
-                  }
-                },
-                {
-                  last_checked_at: {
-                    $lte: dayjs().subtract(2, 'hour').toDate()
-                  }
-                }
-              ]
+              last_checked_at: {
+                $exists: false
+              }
             },
             {
-              $or: [
-                {
-                  verified_email_sent_at: {
-                    $exists: false
-                  }
-                },
-                {
-                  onboard_email_sent_at: {
-                    $exists: false
-                  }
-                }
-              ]
+              last_checked_at: {
+                $lte: twoHoursAgo
+              }
+            }
+          ]
+        },
+        {
+          $or: [
+            {
+              verified_email_sent_at: {
+                $exists: false
+              }
+            },
+            {
+              onboard_email_sent_at: {
+                $exists: false
+              }
             }
           ]
         }
-      },
-      {
-        $sort: {
-          last_checked_at: 1
-        }
-      },
-      {
-        $group: {
-          _id: '$_id'
-        }
-      }
-    ]);
-
-    // flatten array
-    const ids = results.map((r) => r._id);
+      ]
+    })
+      .sort({ last_checked_at: 1 })
+      .select('_id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      ids.push(domain._id);
+    }
 
     logger.info('checking domains', { count: ids.length });
 

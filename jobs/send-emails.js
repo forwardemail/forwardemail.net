@@ -272,36 +272,44 @@ async function sendEmails() {
   //
   // Get list of all suspended domains
   // and recently blocked emails to exclude
-  const [suspendedDomains, recentlyBlocked] = await Promise.all([
-    Domains.aggregate([
-      { $match: { is_smtp_suspended: true } },
-      { $group: { _id: '$_id' } }
-    ])
-      .allowDiskUse(true)
-      .exec(),
-    Emails.aggregate([
-      {
-        $match: {
-          updated_at: {
-            $gte: dayjs().subtract(1, 'hour').toDate(),
-            $lte: now
-          },
-          has_blocked_hashes: true,
-          blocked_hashes: {
-            $in: getBlockedHashes(IP_ADDRESS)
-          }
-        }
-      },
-      {
-        $group: { _id: '$_id' }
-      }
-    ])
-      .allowDiskUse(true)
-      .exec()
-  ]);
+  //
+  // Optimized to use cursor-based iteration instead of aggregation
+  // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+  //
+  const suspendedDomainIds = [];
+  const recentlyBlockedIds = [];
 
-  const suspendedDomainIds = suspendedDomains.map((v) => v._id);
-  const recentlyBlockedIds = recentlyBlocked.map((v) => v._id);
+  await Promise.all([
+    (async () => {
+      for await (const domain of Domains.find({
+        is_smtp_suspended: true
+      })
+        .select('_id')
+        .lean()
+        .cursor()
+        .addCursorFlag('noCursorTimeout', true)) {
+        suspendedDomainIds.push(domain._id);
+      }
+    })(),
+    (async () => {
+      for await (const email of Emails.find({
+        updated_at: {
+          $gte: dayjs().subtract(1, 'hour').toDate(),
+          $lte: now
+        },
+        has_blocked_hashes: true,
+        blocked_hashes: {
+          $in: getBlockedHashes(IP_ADDRESS)
+        }
+      })
+        .select('_id')
+        .lean()
+        .cursor()
+        .addCursorFlag('noCursorTimeout', true)) {
+        recentlyBlockedIds.push(email._id);
+      }
+    })()
+  ]);
 
   logger.info('%d suspended domain ids', suspendedDomainIds.length);
 

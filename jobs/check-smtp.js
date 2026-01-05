@@ -242,51 +242,48 @@ async function mapper(id) {
     //       then we will need to modify this query
     //
     // get all non-API created domains (sorted by last_checked_at)
-    const results = await Domains.aggregate([
-      {
-        $match: {
-          $and: [
+    //
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
+    const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
+    const ids = [];
+
+    for await (const domain of Domains.find({
+      $and: [
+        {
+          plan: {
+            $in: ['enhanced_protection', 'team']
+          }
+        },
+        {
+          $or: [
             {
-              plan: {
-                $in: ['enhanced_protection', 'team']
+              smtp_last_checked_at: {
+                $exists: false
               }
             },
             {
-              $or: [
-                {
-                  smtp_last_checked_at: {
-                    $exists: false
-                  }
-                },
-                {
-                  smtp_last_checked_at: {
-                    $lte: dayjs().subtract(2, 'hour').toDate()
-                  }
-                },
-                {
-                  smtp_verified_at: {
-                    $exists: false
-                  }
-                }
-              ]
+              smtp_last_checked_at: {
+                $lte: twoHoursAgo
+              }
+            },
+            {
+              smtp_verified_at: {
+                $exists: false
+              }
             }
           ]
         }
-      },
-      {
-        $sort: {
-          smtp_last_checked_at: 1
-        }
-      },
-      {
-        $group: {
-          _id: '$_id'
-        }
-      }
-    ]);
-
-    // flatten array
-    const ids = results.map((r) => r._id);
+      ]
+    })
+      .sort({ smtp_last_checked_at: 1 })
+      .select('_id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      ids.push(domain._id);
+    }
 
     logger.info('checking domains', { count: ids.length });
 

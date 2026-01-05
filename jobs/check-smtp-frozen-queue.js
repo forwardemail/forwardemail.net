@@ -23,7 +23,7 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const Emails = require('#models/emails');
-const Domains = require('#models/emails');
+const Domains = require('#models/domains');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -41,6 +41,10 @@ graceful.listen();
     //
     // get list of all suspended domains
     // and recently blocked emails to exclude
+    //
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
     const now = new Date();
     const suspendedDomainIds = [];
     const recentlyBlockedIds = [];
@@ -100,13 +104,19 @@ graceful.listen();
       }
     };
 
-    let ids = await Emails.aggregate([
-      { $match: query },
-      { $group: { _id: '$id' } }
-    ])
-      .allowDiskUse(true)
-      .exec();
-    ids = ids.map((v) => v.id);
+    //
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
+    const ids = [];
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    for await (const email of Emails.find(query)
+      .select('id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      ids.push(email.id);
+    }
 
     // if no ids then return early
     if (ids.length === 0) {
@@ -119,21 +129,19 @@ graceful.listen();
     await setTimeout(ms('1m'));
 
     // check if ids is the same
-    let newIds = await Emails.aggregate([
-      {
-        $match: {
-          ...query,
-          date: {
-            $lte: new Date()
-          }
-        }
-      },
-      { $group: { _id: '$id' } }
-    ])
-      .allowDiskUse(true)
-      .exec();
-
-    newIds = newIds.map((v) => v.id);
+    const newIds = [];
+    for await (const email of Emails.find({
+      ...query,
+      date: {
+        $lte: new Date()
+      }
+    })
+      .select('id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      newIds.push(email.id);
+    }
 
     // if no ids then return early
     if (newIds.length === 0) {

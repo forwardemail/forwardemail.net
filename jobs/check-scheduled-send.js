@@ -44,37 +44,44 @@ graceful.listen();
   try {
     //
     // find any email ids that are scheduled in the future
-    // (filtered from the past 24 hours)
+    // (filtered from the past week)
     //
-    let results = await Emails.aggregate([
-      {
-        $match: {
-          created_at: {
-            $gte: dayjs().subtract(1, 'week').toDate()
-          }
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          user: 1,
-          created_at: 1,
-          date: 1,
-          duration: {
-            $dateDiff: {
-              startDate: '$created_at',
-              endDate: '$date',
-              unit: 'minute'
-            }
-          }
+    // Optimized to use cursor-based iteration instead of aggregation
+    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
+    //
+    const results = [];
+    const oneWeekAgo = dayjs().subtract(1, 'week').toDate();
+
+    for await (const email of Emails.find({
+      created_at: {
+        $gte: oneWeekAgo
+      }
+    })
+      .select('_id user created_at date')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      // Calculate duration in minutes between created_at and date
+      if (email.date && email.created_at) {
+        const duration = Math.round(
+          (new Date(email.date).getTime() -
+            new Date(email.created_at).getTime()) /
+            (1000 * 60)
+        );
+        if (duration >= 2) {
+          results.push({
+            _id: email._id,
+            user: email.user,
+            created_at: email.created_at,
+            date: email.date,
+            duration
+          });
         }
       }
-    ]).option({
-      maxTimeMS: 30000
-    });
+    }
 
-    // sort results by duration (reversed) and filtered for duration >= 2m
-    results = _.sortBy(results, 'duration').reverse();
+    // sort results by duration (reversed)
+    results.sort((a, b) => b.duration - a.duration);
 
     const set = new Set();
 
