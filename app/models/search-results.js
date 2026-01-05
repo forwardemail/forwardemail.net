@@ -69,6 +69,6 @@ SearchResults.index(
 );
 
 const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'LOGS_MONGO_URI'
+  (conn) => conn[Symbol.for('connection.name')] === 'LOGS_URI'
 );
 module.exports = conn.model('SearchResults', SearchResults);

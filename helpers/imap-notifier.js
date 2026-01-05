@@ -189,7 +189,7 @@ class IMAPNotifier extends EventEmitter {
     try {
       if (!conn)
         conn = mongoose.connections.find(
-          (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
+          (conn) => conn[connectionNameSymbol] === 'LOGS_URI'
         );
       if (!conn) throw new Error('Mongoose connection does not exist');
       if (!conn.models || !conn.models.Journals || !conn.models.Journals.create)
@@ -369,7 +369,7 @@ class IMAPNotifier extends EventEmitter {
 
     if (!conn)
       conn = mongoose.connections.find(
-        (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'
+        (conn) => conn[connectionNameSymbol] === 'LOGS_URI'
       );
     if (!conn) throw new Error('Mongoose connection does not exist');
     if (!conn.models || !conn.models.Journals || !conn.models.Journals.find)
