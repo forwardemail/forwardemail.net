@@ -148,6 +148,67 @@ p.text-center.d-lg-none
             )
             td.align-middle.p-3.position-relative
               h2.h5.mb-0= domain.name
+              //- DNS Record Status Indicators
+              .small.mt-1.mb-1
+                span.mr-2(
+                  data-toggle="tooltip",
+                  data-placement="bottom",
+                  data-title=domain.has_txt_record ? t("TXT record verified") : t("TXT record missing")
+                )
+                  = "TXT "
+                  if domain.has_txt_record
+                    i.fa.fa-check-circle.text-success
+                  else
+                    i.fa.fa-times-circle.text-danger
+                span.mr-2(
+                  data-toggle="tooltip",
+                  data-placement="bottom",
+                  data-title=domain.has_mx_record ? t("MX record verified") : domain.ignore_mx_check ? t("MX check ignored") : t("MX record missing")
+                )
+                  = "MX "
+                  if domain.has_mx_record || domain.ignore_mx_check
+                    i.fa.fa-check-circle.text-success
+                    if domain.ignore_mx_check && !domain.has_mx_record
+                      sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
+                  else
+                    i.fa.fa-times-circle.text-danger
+                if domain.plan !== 'free'
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-title=domain.has_dkim_record ? t("DKIM record verified") : t("DKIM record missing")
+                  )
+                    = "DKIM "
+                    if domain.has_dkim_record
+                      i.fa.fa-check-circle.text-success
+                    else
+                      i.fa.fa-times-circle.text-danger
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-title=domain.has_spf_record ? t("SPF record verified") : t("SPF record missing (recommended)")
+                  )
+                    = "SPF "
+                    if domain.has_spf_record
+                      i.fa.fa-check-circle.text-success
+                    else
+                      i.fa.fa-exclamation-circle.text-warning
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-title=domain.has_dmarc_record ? t("DMARC record verified") : t("DMARC record missing")
+                  )
+                    = "DMARC "
+                    if domain.has_dmarc_record
+                      if domain.has_strict_dmarc
+                        i.fa.fa-check-circle.text-success
+                      else
+                        i.fa.fa-exclamation-circle.text-warning(
+                          data-toggle="tooltip",
+                          data-title=t("DMARC record found but p=reject is recommended for better security")
+                        )
+                    else
+                      i.fa.fa-times-circle.text-danger
               ul.list-inline.mt-1.mb-0
                 if !domain.is_global && domain.group === 'admin' && !domain.has_mx_record || !domain.has_txt_record
                   li.list-inline-item

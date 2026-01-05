@@ -90,6 +90,8 @@ const keys = _.sortBy([
   'has_dkim_record',
   'has_return_path_record',
   'has_dmarc_record',
+  'has_strict_dmarc',
+  'has_spf_record',
   'has_recipient_verification',
   'has_custom_verification',
   'id',

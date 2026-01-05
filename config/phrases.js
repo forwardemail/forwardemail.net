@@ -337,8 +337,9 @@ module.exports = {
   NO_REPLY_USERNAME_DISALLOWED:
     'You cannot use a "no-reply" username for an alias.',
   INVALID_DMARC_RESULT:
-    'Invalid DMARC result (policy must be <span class="notranslate">"p=none"</span>, <span class="notranslate">"p=reject"</span>, or <span class="notranslate">"p=quarantine"</span>, and <span class="notranslate">"pct"</span> must be omitted or set to 100).',
-  INVALID_SPF_RESULT: 'Invalid SPF result.',
+    'Invalid DMARC result (<span class="notranslate">"pct"</span> must be omitted or set to 100). We recommend using <span class="notranslate">"p=reject"</span> for better security.',
+  INVALID_SPF_RESULT:
+    'Invalid SPF result (must start with <span class="notranslate">"v=spf1"</span> and include <span class="notranslate">"include:spf.forwardemail.net"</span>).',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   INVALID_FROM_HEADER:
     'From header must be equal to <span class="notranslate">%s</span> (or) you can use a domain-wide catch-all password at <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',

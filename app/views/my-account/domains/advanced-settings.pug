@@ -362,6 +362,10 @@ block body
                         = emoji("tada")
                         = " "
                         != t("Congratulations &ndash; you completed setup!")
+                        if !domain.has_spf_record
+                          .small.text-muted.mt-2
+                            i.fa.fa-exclamation-triangle.text-warning.mr-1
+                            = t("SPF record missing (recommended)")
                     else
                       .alert.alert-danger!= t('You must <a href="%s" class="alert-link">complete setup</a> to send emails via SMTP and API.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`))
               //- Render setup instructions relative to the provider
@@ -382,9 +386,9 @@ block body
                     li.list-inline-item
                       a.btn.btn-sm(
                         href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
-                        class=domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record ? "btn-secondary" : "btn-danger"
+                        class=domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record && domain.has_spf_record ? "btn-secondary" : "btn-danger"
                       )
-                        if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
+                        if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record && domain.has_spf_record
                           = t("Verify Setup")
                         else
                           = t("Complete Setup")

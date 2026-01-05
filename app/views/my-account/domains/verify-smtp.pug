@@ -414,7 +414,9 @@ block body
 
                     //- DMARC (required)
                     tr
-                      td(class=domain.has_dmarc_record ? "bg-success" : "bg-danger")
+                      td(
+                        class=domain.has_dmarc_record ? (domain.has_strict_dmarc ? "bg-success" : "bg-warning") : "bg-danger"
+                      )
                       th.align-middle.text-nowrap
                         a.btn.btn-secondary.mx-2(
                           href="https://wikipedia.org/wiki/DMARC",
@@ -446,11 +448,62 @@ block body
                       td.align-middle.text-left.py-3
                         code#copy-dmarc.d-block.text-break.small
                           = `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@${config.webHost};`
-                        if !domain.has_dmarc_record
+                        if domain.has_dmarc_record && !domain.has_strict_dmarc
+                          .alert.alert-warning.small.mt-2.mb-0
+                            i.fa.fa-exclamation-triangle.mr-1
+                            = t("Your DMARC record does not have p=reject. We recommend using p=reject for better security.")
+                        if !domain.has_dmarc_record || !domain.has_strict_dmarc
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",
                             data-toggle="clipboard",
                             data-clipboard-target="#copy-dmarc"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+
+                    //- SPF (optional/recommended)
+                    tr
+                      td(class=domain.has_spf_record ? "bg-success" : "bg-warning")
+                      th.align-middle.text-nowrap
+                        a.btn.btn-secondary.mx-2(
+                          href="https://wikipedia.org/wiki/Sender_Policy_Framework",
+                          target="_blank",
+                          rel="noopener noreferrer",
+                          data-toggle="tooltip",
+                          data-placement="bottom",
+                          title=t("Learn more on Wikipedia")
+                        )
+                          | SPF
+                          = " "
+                          i.fa.fa-external-link
+                      td.align-middle.text-left
+                        code#copy-host-spf.d-block
+                          = "@"
+                          if domain.root_name !== domain.name
+                            = " or "
+                            = domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                        if !domain.has_spf_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-host-spf"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      td.align-middle: strong.px-2 TXT
+                      td.align-middle.text-left.py-3
+                        code#copy-spf.d-block.text-break.small
+                          = "v=spf1 include:spf.forwardemail.net -all"
+                        .small.text-muted.mt-1!= t('If you have an existing SPF record, add <code class="notranslate">include:spf.forwardemail.net</code> to it.')
+                        if !domain.has_spf_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-spf"
                           )
                             i.fa.fa-clipboard
                             = " "

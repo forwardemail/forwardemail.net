@@ -30,13 +30,47 @@ block content
             .px-3.py-3.py-md-4.py-lg-5.bg-dark.mt-3.text-center
               h2.display-6.mb-3.text-uppercase.text-white= t("Verification Status")
               ul.list-inline.mb-3
-                li.list-inline-item.mr-5
-                  = emoji(domain.has_mx_record ? "white_check_mark" : "x")
+                li.list-inline-item.mr-3
+                  if domain.has_mx_record
+                    = emoji("white_check_mark")
+                  else if domain.ignore_mx_check
+                    = emoji("white_check_mark")
+                    sup.text-white (i)
+                  else
+                    = emoji("x")
                   .mt-2.text-monospace.text-uppercase.text-white= t("MX")
-                li.list-inline-item
+                li.list-inline-item.mr-3
                   = emoji(domain.has_txt_record ? "white_check_mark" : "x")
                   .mt-2.text-monospace.text-uppercase.text-white= "TXT"
-              if !domain.has_mx_record || !domain.has_txt_record
+                if domain.plan !== 'free'
+                  li.list-inline-item.mr-3
+                    = emoji(domain.has_dkim_record ? "white_check_mark" : "x")
+                    .mt-2.text-monospace.text-uppercase.text-white= "DKIM"
+                  li.list-inline-item.mr-3
+                    = emoji(domain.has_spf_record ? "white_check_mark" : "warning")
+                    .mt-2.text-monospace.text-uppercase.text-white= "SPF"
+                  li.list-inline-item
+                    if domain.has_dmarc_record
+                      if domain.has_strict_dmarc
+                        = emoji("white_check_mark")
+                      else
+                        = emoji("warning")
+                    else
+                      = emoji("x")
+                    .mt-2.text-monospace.text-uppercase.text-white= "DMARC"
+              if domain.ignore_mx_check && !domain.has_mx_record
+                .small.text-white.mb-3 (i) = MX check ignored
+              if domain.plan !== 'free' && !domain.has_spf_record
+                .small.text-white.mb-3
+                  != emoji("warning")
+                  = " = "
+                  = t("SPF missing (recommended)")
+              if domain.plan !== 'free' && domain.has_dmarc_record && !domain.has_strict_dmarc
+                .small.text-white.mb-3
+                  != emoji("warning")
+                  = " = "
+                  = t("DMARC found but p=reject recommended")
+              if !domain.has_mx_record && !domain.ignore_mx_check || !domain.has_txt_record
                 a.btn.btn-lg.btn-danger(
                   href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`,
                   role="button"

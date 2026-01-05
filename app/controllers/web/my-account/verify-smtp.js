@@ -64,8 +64,16 @@ async function verifySMTP(ctx) {
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
 
-    const { ns, dkim, returnPath, dmarc, hasLegitimateHosting, errors } =
-      await Domains.verifySMTP(domain, ctx.resolver);
+    const {
+      ns,
+      dkim,
+      returnPath,
+      dmarc,
+      strictDmarc,
+      spf,
+      hasLegitimateHosting,
+      errors
+    } = await Domains.verifySMTP(domain, ctx.resolver);
 
     // skip verification since this is separate from domain forwarding setup
     domain.skip_verification = true;
@@ -275,6 +283,8 @@ async function verifySMTP(ctx) {
     domain.has_dkim_record = dkim;
     domain.has_return_path_record = returnPath;
     domain.has_dmarc_record = dmarc;
+    domain.has_strict_dmarc = strictDmarc;
+    domain.has_spf_record = spf;
     if (ns) domain.ns = ns;
 
     // save the domain
@@ -295,7 +305,7 @@ async function verifySMTP(ctx) {
       // safeguard
       ctx.logger.fatal(
         new TypeError('Edge case occurred with SMTP verification'),
-        { domain, ns, dkim, returnPath, dmarc, errors }
+        { domain, ns, dkim, returnPath, dmarc, strictDmarc, spf, errors }
       );
       throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
     }

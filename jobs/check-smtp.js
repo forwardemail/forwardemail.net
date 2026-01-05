@@ -114,10 +114,8 @@ async function mapper(id) {
     domain.locale = locale;
     domain.resolver = resolver;
 
-    const { ns, dkim, returnPath, dmarc, errors } = await Domains.verifySMTP(
-      domain,
-      resolver
-    );
+    const { ns, dkim, returnPath, dmarc, strictDmarc, spf, errors } =
+      await Domains.verifySMTP(domain, resolver);
 
     // skip verification since this is separate from domain forwarding setup
     domain.skip_verification = true;
@@ -217,6 +215,8 @@ async function mapper(id) {
     domain.has_dkim_record = dkim;
     domain.has_return_path_record = returnPath;
     domain.has_dmarc_record = dmarc;
+    domain.has_strict_dmarc = strictDmarc;
+    domain.has_spf_record = spf;
     if (ns) domain.ns = ns;
 
     // save the domain
@@ -242,48 +242,51 @@ async function mapper(id) {
     //       then we will need to modify this query
     //
     // get all non-API created domains (sorted by last_checked_at)
-    //
-    // Optimized to use cursor-based iteration instead of aggregation
-    // to avoid MongoDB MaxTimeMSExpired errors on large datasets
-    //
-    const twoHoursAgo = dayjs().subtract(2, 'hour').toDate();
-    const ids = [];
-
-    for await (const domain of Domains.find({
-      $and: [
-        {
-          plan: {
-            $in: ['enhanced_protection', 'team']
-          }
-        },
-        {
-          $or: [
+    const results = await Domains.aggregate([
+      {
+        $match: {
+          $and: [
             {
-              smtp_last_checked_at: {
-                $exists: false
+              plan: {
+                $in: ['enhanced_protection', 'team']
               }
             },
             {
-              smtp_last_checked_at: {
-                $lte: twoHoursAgo
-              }
-            },
-            {
-              smtp_verified_at: {
-                $exists: false
-              }
+              $or: [
+                {
+                  smtp_last_checked_at: {
+                    $exists: false
+                  }
+                },
+                {
+                  smtp_last_checked_at: {
+                    $lte: dayjs().subtract(2, 'hour').toDate()
+                  }
+                },
+                {
+                  smtp_verified_at: {
+                    $exists: false
+                  }
+                }
+              ]
             }
           ]
         }
-      ]
-    })
-      .sort({ smtp_last_checked_at: 1 })
-      .select('_id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      ids.push(domain._id);
-    }
+      },
+      {
+        $sort: {
+          smtp_last_checked_at: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$_id'
+        }
+      }
+    ]);
+
+    // flatten array
+    const ids = results.map((r) => r._id);
 
     logger.info('checking domains', { count: ids.length });
 

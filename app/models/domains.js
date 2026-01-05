@@ -455,6 +455,17 @@ const Domains = new mongoose.Schema({
     default: false,
     index: true
   },
+  // tracks if DMARC policy is set to p=reject (recommended)
+  has_strict_dmarc: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  has_spf_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   missing_smtp_sent_at: Date,
   restrictions_reminder_sent_at: Date,
   onboard_email_sent_at: Date,
@@ -1384,6 +1395,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
   let dkim = false;
   let returnPath = false;
   let dmarc = false;
+  let strictDmarc = false;
+  let spf = false;
   let hasLegitimateHosting = false;
   let reputableDNS = false;
   let legitimateA = false;
@@ -1408,6 +1421,11 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
       {
         // Dmarc
         domain: `_dmarc.${domain.name}`,
+        type: 'TXT'
+      },
+      {
+        // SPF
+        domain: domain.name,
         type: 'TXT'
       }
     ];
@@ -1595,10 +1613,46 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
           (typeof dmarcRecord.pct !== 'number' || dmarcRecord.pct === 100)
         ) {
           dmarc = true;
+          // track if DMARC has strict p=reject policy
+          if (dmarcRecord.p === 'reject') {
+            strictDmarc = true;
+          }
         }
       } catch (err) {
         logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        } else if (err.code !== 'ENOTFOUND') {
+          errors.push(err);
+        }
+      }
+    })(),
+
+    //
+    // fetch spf record (TXT)
+    //
+    (async function () {
+      try {
+        const records = await resolver.resolveTxt(domain.name, {
+          purgeCache: true
+        });
+        for (const record of records) {
+          const line = record.join('').toLowerCase().trim();
+          if (
+            line.startsWith('v=spf1') &&
+            line.includes('include:spf.forwardemail.net')
+          ) {
+            spf = true;
+            break;
+          }
+        }
+      } catch (err) {
+        logger.debug(err);
         if (err.code && DNS_RETRY_CODES.has(err.code)) {
           const error = Boom.badRequest(
             i18n.translateError('DNS_RETRY', domain.locale, err.code)
@@ -1650,6 +1704,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     dkim,
     returnPath,
     dmarc,
+    strictDmarc,
+    spf,
     hasLegitimateHosting,
     errors: _.uniqBy(errors, 'message')
   };

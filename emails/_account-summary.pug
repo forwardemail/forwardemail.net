@@ -8,17 +8,61 @@ if domains.length > 0
           th= t("Plan")
           th.text-center= t("MX")
           th.text-center!= t('<span class="notranslate">TXT</span>')
+          th.text-center!= t('<span class="notranslate">DKIM</span>')
+          th.text-center!= t('<span class="notranslate">SPF</span>')
+          th.text-center!= t('<span class="notranslate">DMARC</span>')
       tbody
         //- NOTE: we only want to render the first 10 in case some have huge lists
         each domain in domains.slice(0, 10)
+          - const isPaidPlan = domain.plan !== "free";
           tr
             td.align-middle
               .markdown-body.ml-0.mr-0: code= domain.name
             td.align-middle!= t(titleize(humanize(domain.plan)))
-            td.text-center.align-middle= emoji(domain.has_mx_record ? "white_check_mark" : "x")
+            td.text-center.align-middle
+              if domain.has_mx_record
+                = emoji("white_check_mark")
+              else if domain.ignore_mx_check
+                = emoji("white_check_mark")
+                sup (i)
+              else
+                = emoji("x")
             td.text-center.align-middle= emoji(domain.has_txt_record ? "white_check_mark" : "x")
+            td.text-center.align-middle
+              if isPaidPlan
+                = emoji(domain.has_dkim_record ? "white_check_mark" : "x")
+              else
+                = "-"
+            td.text-center.align-middle
+              if isPaidPlan
+                = emoji(domain.has_spf_record ? "white_check_mark" : "warning")
+              else
+                = "-"
+            td.text-center.align-middle
+              if isPaidPlan
+                if domain.has_dmarc_record
+                  if domain.has_strict_dmarc
+                    = emoji("white_check_mark")
+                  else
+                    = emoji("warning")
+                else
+                  = emoji("x")
+              else
+                = "-"
         if domains.length > 10
           tr
-            td.align-middle.text-center.text-muted(colspan=4)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
+            td.align-middle.text-center.text-muted(colspan=7)!= t('... and <span class="notranslate">%d</span> more domain names.', domains.length - 10)
     .text-muted.small.text-center
       .small!= t('Please note that MX and <span class="notranslate">TXT</span> statuses may be inaccurate.')
+      if domains.some(d => d.ignore_mx_check)
+        .small (i) = MX check ignored
+      if domains.some(d => d.plan !== 'free' && !d.has_spf_record)
+        .small
+          != emoji("warning")
+          = " = "
+          = t("SPF missing (recommended)")
+      if domains.some(d => d.plan !== 'free' && d.has_dmarc_record && !d.has_strict_dmarc)
+        .small
+          != emoji("warning")
+          = " = "
+          = t("DMARC found but p=reject recommended")

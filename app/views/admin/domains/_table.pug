@@ -19,6 +19,12 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('has_txt_record', 'TXT', '#table-domains')
         th(scope="col")
+          +sortHeader('has_dkim_record', 'DKIM', '#table-domains')
+        th(scope="col")
+          +sortHeader('has_spf_record', 'SPF', '#table-domains')
+        th(scope="col")
+          +sortHeader('has_dmarc_record', 'DMARC', '#table-domains')
+        th(scope="col")
           +sortHeader('has_smtp', 'SMTP Enabled', '#table-domains')
         th(scope="col")
           +sortHeader('has_newsletter', 'Newsletter Enabled', '#table-domains')
@@ -32,7 +38,7 @@ include ../../_pagination
       tbody
         if domains.length === 0
           tr
-            td.alert.alert-info(colspan="13")
+            td.alert.alert-info(colspan="16")
               = t("No domains exist for that search.")
         else
           each domain in domains
@@ -65,6 +71,30 @@ include ../../_pagination
               td.align-middle.text-center
                 if domain.has_txt_record
                   i.fa.fa-fw.fa-check.fa-2x.text-success
+                else
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+              td.align-middle.text-center
+                if domain.has_dkim_record
+                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                else
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+              td.align-middle.text-center
+                if domain.has_spf_record
+                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                else
+                  i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-warning(
+                    data-toggle="tooltip",
+                    data-title="SPF missing (recommended)"
+                  )
+              td.align-middle.text-center
+                if domain.has_dmarc_record
+                  if domain.has_strict_dmarc
+                    i.fa.fa-fw.fa-check.fa-2x.text-success
+                  else
+                    i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-warning(
+                      data-toggle="tooltip",
+                      data-title="DMARC found but p=reject recommended"
+                    )
                 else
                   i.fa.fa-fw.fa-times.fa-2x.text-danger
               td.align-middle.text-center
