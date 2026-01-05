@@ -391,6 +391,10 @@ Aliases.pre('validate', function (next) {
   // if storage used was below zero then set to zero
   if (this.storage_used < 0) this.storage_used = 0;
 
+  // if alias doesn't have IMAP, storage_used should be 0
+  // (non-IMAP aliases only forward emails and have no database)
+  if (!this.has_imap) this.storage_used = 0;
+
   // if name was not a string then generate a random one
   if (!isSANB(this.name)) {
     //

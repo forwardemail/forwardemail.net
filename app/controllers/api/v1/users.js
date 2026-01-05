@@ -50,10 +50,12 @@ async function retrieve(ctx) {
 
     if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
 
-    // Get storage information
-    const storageUsed = alias.storage_used || 0;
-    const maxQuotaPerAlias =
-      alias.domain.max_quota_per_alias || config.maxQuotaPerAlias;
+    // Get storage information - only meaningful for IMAP-enabled aliases
+    // If alias doesn't have IMAP, storage values should be 0 since no database exists
+    const storageUsed = alias.has_imap ? alias.storage_used || 0 : 0;
+    const maxQuotaPerAlias = alias.has_imap
+      ? alias.domain.max_quota_per_alias || config.maxQuotaPerAlias
+      : 0;
 
     // Return alias account information
     ctx.body = {
