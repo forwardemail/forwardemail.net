@@ -182,6 +182,14 @@ function generateTableRow(options) {
       }
     }
 
+    // Skip sending email if no distinct errors after deduplication
+    if (totalDistinctErrors === 0) {
+      logger.info('No distinct blocklist errors after deduplication');
+      if (parentPort) parentPort.postMessage('done');
+      else process.exit(0);
+      return;
+    }
+
     const htmlTable = `
       <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
         <thead>

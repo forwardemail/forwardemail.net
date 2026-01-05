@@ -36,7 +36,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 
 const Domains = require('#models/domains');
 const Logs = require('#models/logs');
@@ -97,12 +97,12 @@ async function getLogStats(domainIds, startDate, endDate, includeDelivered) {
   const total = await Logs.countDocuments(baseQuery);
 
   // Get delivered count (only if user opted in)
+  // This matches the analytics page logic: message: 'delivered'
   let delivered = 0;
   if (includeDelivered) {
     delivered = await Logs.countDocuments({
       ...baseQuery,
-      bounce_category: 'none',
-      'err.responseCode': { $exists: false }
+      message: 'delivered'
     });
   }
 
@@ -302,15 +302,17 @@ async function processUser(user, endDate) {
         }
       }
     })
-      .select('_id name has_smtp')
+      .select('_id name has_smtp has_delivery_logs')
       .lean();
 
     if (userDomains.length === 0) return;
 
     const domainIds = userDomains.map((d) => d._id);
 
-    // Check if user opted in to success logs (has_smtp indicates SMTP usage)
-    const includeDelivered = userDomains.some((d) => d.has_smtp);
+    // Check if any domain has SMTP enabled or has opted in to success/delivery logs
+    const includeDelivered = userDomains.some(
+      (d) => d.has_smtp || d.has_delivery_logs
+    );
 
     // First, get a quick preview of stats to determine frequency
     // Use the maximum lookback period (LOW_PRIORITY_FREQUENCY_DAYS) for initial check
@@ -468,11 +470,15 @@ async function processUser(user, endDate) {
 
       logger.info('Processing log alerts', { userCount: users.length });
 
-      // Process users sequentially to avoid overwhelming the system
-      await pMapSeries(users, async (user) => {
-        if (isCancelled) return;
-        await processUser(user, endDate);
-      });
+      // Process users with concurrency for better performance
+      await pMap(
+        users,
+        async (user) => {
+          if (isCancelled) return;
+          await processUser(user, endDate);
+        },
+        { concurrency: config.concurrency }
+      );
     }
   } catch (err) {
     await logger.error(err);
