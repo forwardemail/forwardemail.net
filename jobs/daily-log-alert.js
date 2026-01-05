@@ -136,7 +136,8 @@ async function getLogStats(domainIds, startDate, endDate, includeDelivered) {
     }
   }
 
-  // Get response codes breakdown (only for errors)
+  // Get response codes breakdown with unique error messages (only for errors)
+  // Group by response code and error message to get distinct messages per code
   const responseCodeAggregation = await Logs.aggregate([
     {
       $match: {
@@ -145,19 +146,45 @@ async function getLogStats(domainIds, startDate, endDate, includeDelivered) {
       }
     },
     {
+      // First group by code + message to get unique messages and their counts
       $group: {
-        _id: '$err.responseCode',
+        _id: {
+          code: '$err.responseCode',
+          message: '$err.message'
+        },
         count: { $sum: 1 }
       }
     },
-    { $sort: { count: -1 } },
-    { $limit: 10 }
+    { $sort: { '_id.code': 1, count: -1 } }
   ]);
 
+  // Organize by response code with up to 5 unique messages per code
+  const MAX_MESSAGES_PER_CODE = 5;
   const responseCodes = {};
+
   for (const item of responseCodeAggregation) {
-    if (item._id) {
-      responseCodes[item._id.toString()] = item.count;
+    if (item._id?.code) {
+      const code = item._id.code.toString();
+      if (!responseCodes[code]) {
+        responseCodes[code] = {
+          totalCount: 0,
+          messages: [],
+          additionalMessagesCount: 0,
+          additionalMessagesLogCount: 0
+        };
+      }
+
+      responseCodes[code].totalCount += item.count;
+
+      if (responseCodes[code].messages.length < MAX_MESSAGES_PER_CODE) {
+        responseCodes[code].messages.push({
+          text: item._id.message || null,
+          count: item.count
+        });
+      } else {
+        responseCodes[code].additionalMessagesCount++;
+        responseCodes[code].additionalMessagesLogCount += item.count;
+      }
     }
   }
 
@@ -190,7 +217,10 @@ function hasHighPriorityIssues(stats) {
   // Check for 4xx or 5xx response codes (delivery failures)
   for (const code of Object.keys(stats.responseCodes)) {
     const codeNum = Number.parseInt(code, 10);
-    if (codeNum >= 400 && stats.responseCodes[code] > 0) {
+    const codeData = stats.responseCodes[code];
+    const count =
+      codeData?.totalCount || (typeof codeData === 'number' ? codeData : 0);
+    if (codeNum >= 400 && count > 0) {
       return true;
     }
   }
@@ -378,6 +408,16 @@ async function processUser(user, endDate) {
       })
     );
 
+    // Filter domains with logs and limit to 25 for email rendering
+    const MAX_DOMAINS_IN_EMAIL = 25;
+    const domainsWithLogs = domainsWithCounts.filter((d) => d.logCount > 0);
+    const displayDomains = domainsWithLogs.slice(0, MAX_DOMAINS_IN_EMAIL);
+    const additionalDomainsCount =
+      domainsWithLogs.length - displayDomains.length;
+    const additionalDomainsLogCount = domainsWithLogs
+      .slice(MAX_DOMAINS_IN_EMAIL)
+      .reduce((sum, d) => sum + d.logCount, 0);
+
     // Get user's locale (from user preferences or domain majority locale)
     const locale = user[config.lastLocaleField] || 'en';
 
@@ -398,7 +438,9 @@ async function processUser(user, endDate) {
         locale,
         stats,
         showDelivered: includeDelivered,
-        domains: domainsWithCounts.filter((d) => d.logCount > 0),
+        domains: displayDomains,
+        additionalDomainsCount,
+        additionalDomainsLogCount,
         reportPeriod,
         frequencyInfo
       }

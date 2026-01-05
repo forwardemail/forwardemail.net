@@ -135,50 +135,79 @@ block content
                       th.text-right= t("Count")
                       th.text-center= t("Action")
                   tbody
-                    each count, code in stats.responseCodes
-                      if count > 0
+                    each codeData, code in stats.responseCodes
+                      - const totalCount = codeData?.totalCount || (typeof codeData === "number" ? codeData : 0);
+                      - const messages = codeData?.messages || [];
+                      - const additionalCount = codeData?.additionalMessagesCount || 0;
+                      - const additionalLogCount = codeData?.additionalMessagesLogCount || 0;
+                      if totalCount > 0
                         - const codeNum = parseInt(code, 10);
-                        tr
-                          td
-                            if codeNum >= 500
-                              span.badge(
-                                style="background-color: #dc3545; color: #fff"
-                              )= code
-                            else if codeNum >= 400
-                              span.badge(
-                                style="background-color: #ffc107; color: #212529"
-                              )= code
-                            else
-                              span.badge(
-                                style="background-color: #28a745; color: #fff"
-                              )= code
-                          td
-                            if code === '421'
-                              = t("Temporary failure (try again)")
-                            else if code === '450'
-                              = t("Mailbox unavailable (temporary)")
-                            else if code === '451'
-                              = t("Local error in processing")
-                            else if code === '452'
-                              = t("Insufficient storage")
-                            else if code === '550'
-                              = t("Mailbox unavailable (permanent)")
-                            else if code === '551'
-                              = t("User not local")
-                            else if code === '552'
-                              = t("Message too large")
-                            else if code === '553'
-                              = t("Mailbox name not allowed")
-                            else if code === '554'
-                              = t("Transaction failed")
-                            else
-                              = t("SMTP Response")
-                          td.text-right= count.toLocaleString()
-                          td.text-center
-                            a.btn.btn-sm.btn-outline-dark.mb-0(
-                              href=`${config.urls.web}/${locale}/my-account/logs?response_code=${code}`
-                            )
-                              = t("View Logs")
+                        //- First row shows the code badge and first message (or total if no messages)
+                        if messages.length > 0
+                          each msg, msgIndex in messages
+                            - const truncatedText = msg.text && msg.text.length > 100 ? msg.text.substring(0, 100) : msg.text;
+                            tr
+                              td
+                                if msgIndex === 0
+                                  if codeNum >= 500
+                                    span.badge(
+                                      style="background-color: #dc3545; color: #fff"
+                                    )= code
+                                  else if codeNum >= 400
+                                    span.badge(
+                                      style="background-color: #ffc107; color: #212529"
+                                    )= code
+                                  else
+                                    span.badge(
+                                      style="background-color: #28a745; color: #fff"
+                                    )= code
+                              td
+                                if msg.text
+                                  = truncatedText
+                                  if msg.text.length > 100
+                                    = "..."
+                                else
+                                  = t("SMTP Response")
+                              td.text-right= msg.count.toLocaleString()
+                              td.text-center
+                                if msgIndex === 0
+                                  a.btn.btn-sm.btn-outline-dark.mb-0(
+                                    href=`${config.urls.web}/${locale}/my-account/logs?response_code=${code}`
+                                  )
+                                    = t("View Logs")
+                          //- Show summary for additional messages beyond the limit for this code
+                          if additionalCount > 0
+                            tr.text-muted
+                              td
+                              td
+                                = emoji("heavy_plus_sign")
+                                = " "
+                                = `${additionalCount} ${t("more variations")}`
+                              td.text-right= additionalLogCount.toLocaleString()
+                              td
+                        else
+                          //- Fallback for old data structure
+                          tr
+                            td
+                              if codeNum >= 500
+                                span.badge(
+                                  style="background-color: #dc3545; color: #fff"
+                                )= code
+                              else if codeNum >= 400
+                                span.badge(
+                                  style="background-color: #ffc107; color: #212529"
+                                )= code
+                              else
+                                span.badge(
+                                  style="background-color: #28a745; color: #fff"
+                                )= code
+                            td= t("SMTP Response")
+                            td.text-right= totalCount.toLocaleString()
+                            td.text-center
+                              a.btn.btn-sm.btn-outline-dark.mb-0(
+                                href=`${config.urls.web}/${locale}/my-account/logs?response_code=${code}`
+                              )
+                                = t("View Logs")
 
             //- Domains section
             if domains && domains.length > 0
@@ -191,13 +220,24 @@ block content
                   = emoji("globe_with_meridians")
                 ul.list-unstyled.mb-0
                   each domain in domains
-                    li.mb-2
-                      = emoji("link")
-                      = " "
-                      strong= domain.name
-                      if domain.logCount > 0
+                    li.mb-2.d-flex.align-items-center.justify-content-between
+                      span
+                        = emoji("link")
                         = " "
-                        span.badge.badge-secondary= `${domain.logCount} ${t("logs")}`
+                        strong= domain.name
+                        if domain.logCount > 0
+                          = " "
+                          span.badge.badge-secondary= `${domain.logCount} ${t("logs")}`
+                      a.btn.btn-sm.btn-outline-dark.ml-2(
+                        href=`${config.urls.web}/${locale}/my-account/logs?domain=${domain.name}`
+                      )
+                        = t("View Logs")
+                  //- Show summary for additional domains beyond the limit
+                  if additionalDomainsCount > 0
+                    li.mb-2.text-muted
+                      = emoji("heavy_plus_sign")
+                      = " "
+                      = `${additionalDomainsLogCount.toLocaleString()} ${t("logs")} ${t("from")} ${additionalDomainsCount} ${t("more domains")}`
 
             //- Quick actions
             .p-3
