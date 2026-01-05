@@ -20,6 +20,13 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const HOSTNAME = os.hostname();
 
 //
+// NOTE: regex to match noreply root domains (e.g. noreply.com, noreply.net, no-reply.org)
+//       these are commonly used in Reply-To headers and should not trigger denylist checks
+//       we check the root domain to prevent bypasses like mymalicious.noreply.com
+//
+const NOREPLY_ROOT_DOMAIN_REGEX = /^no[-_]?reply\.[a-z]+$/i;
+
+//
 // NOTE: the `isAligned` option can be set to `true` if we want to
 //       only return metadata that is verified and aligned
 //       (e.g. a MAIL FROM that has aligned SPF or DKIM)
@@ -46,15 +53,26 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
     session.originalFromAddressRootDomain
   ];
 
+  //
+  // NOTE: filter out noreply domains from Reply-To to prevent false positive denylist hits
+  //       (e.g. noreply.com, noreply.net, no-reply.org are commonly used placeholder domains)
+  //       we check the root domain to prevent bypasses like mymalicious.noreply.com
+  //
+  const filteredReplyToAddresses = replyToAddresses.filter((addr) => {
+    const domain = parseHostFromDomainOrAddress(checkSRS(addr));
+    const rootDomain = parseRootDomain(domain);
+    return !NOREPLY_ROOT_DOMAIN_REGEX.test(rootDomain);
+  });
+
   const replyTo = [
     // check the Reply-To header
-    ...replyToAddresses.map((addr) => checkSRS(addr).toLowerCase()),
+    ...filteredReplyToAddresses.map((addr) => checkSRS(addr).toLowerCase()),
     // check the Reply-To header domains
-    ...replyToAddresses.map((addr) =>
+    ...filteredReplyToAddresses.map((addr) =>
       parseHostFromDomainOrAddress(checkSRS(addr))
     ),
     // check the Reply-To header root domains
-    ...replyToAddresses.map((addr) =>
+    ...filteredReplyToAddresses.map((addr) =>
       parseRootDomain(parseHostFromDomainOrAddress(checkSRS(addr)))
     )
   ];
