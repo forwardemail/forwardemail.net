@@ -5,10 +5,19 @@
 
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
+const ms = require('ms');
 const titleize = require('titleize');
 const _ = require('#helpers/lodash');
 
 const Logs = require('#models/logs');
+
+//
+// MongoDB query timeout and index hints to prevent multiplanner timeout errors
+//
+const MAX_TIME_MS = ms('10s');
+
+// Index hint for created_at queries
+const CREATED_AT_INDEX_HINT = { created_at: 1 };
 
 function makeDelimitedString(arr) {
   // <https://stackoverflow.com/a/17808731>
@@ -76,6 +85,8 @@ async function getLogsCsv(
   //
   // eslint-disable-next-line unicorn/no-array-callback-reference
   for await (const log of Logs.find(query)
+    .hint(CREATED_AT_INDEX_HINT)
+    .maxTimeMS(MAX_TIME_MS)
     .sort({ created_at: 1 })
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {

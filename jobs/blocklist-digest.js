@@ -15,6 +15,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 
@@ -34,6 +35,14 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// MongoDB query timeout and index hints to prevent multiplanner timeout errors
+//
+const MAX_TIME_MS = ms('10s');
+
+// Index hint for bounce_category + created_at queries
+const BLOCKLIST_INDEX_HINT = { bounce_category: 1, domains: 1, created_at: 1 };
 
 /**
  * Generate HTML table row for a blocklist error
@@ -117,9 +126,12 @@ function generateTableRow(options) {
 
     //
     // Use cursor with noCursorTimeout for better handling of large result sets
+    // Added maxTimeMS and hint to prevent multiplanner timeout
     //
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(filterQuery)
+      .hint(BLOCKLIST_INDEX_HINT)
+      .maxTimeMS(MAX_TIME_MS)
       .sort({ created_at: -1 })
       .lean()
       .cursor()

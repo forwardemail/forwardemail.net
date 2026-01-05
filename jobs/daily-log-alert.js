@@ -36,6 +36,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const pMap = require('p-map');
 
 const Domains = require('#models/domains');
@@ -67,6 +68,27 @@ const HIGH_PRIORITY_CATEGORIES = [
   'content'
 ];
 
+//
+// MongoDB query timeout and index hints to prevent multiplanner timeout errors
+// The multiplanner can timeout when evaluating many candidate indexes
+// Using explicit hints forces MongoDB to use specific indexes
+//
+const MAX_TIME_MS = ms('10s');
+
+const INDEX_HINTS = {
+  // For queries on domains + created_at (base query pattern)
+  domainsCreatedAt: { domains: 1, created_at: 1 },
+  // For queries with bounce_category + domains + created_at
+  bounceCategory: { bounce_category: 1, domains: 1, created_at: 1 },
+  // For queries with err.responseCode
+  responseCode: {
+    domains: 1,
+    created_at: 1,
+    'err.responseCode': 1,
+    'meta.app.hostname': 1
+  }
+};
+
 // store boolean if the job is cancelled
 let isCancelled = false;
 
@@ -92,38 +114,70 @@ async function getLogStats(domainIds, startDate, endDate) {
     }
   };
 
+  //
+  // Use aggregation with $count and index hints instead of countDocuments
+  // This prevents MongoDB multiplanner from timing out when evaluating multiple candidate indexes
+  //
+  const countWithHint = async (query, hint) => {
+    const result = await Logs.aggregate(
+      [{ $match: query }, { $count: 'total' }],
+      {
+        hint,
+        maxTimeMS: MAX_TIME_MS,
+        allowDiskUse: true
+      }
+    );
+    return result[0]?.total || 0;
+  };
+
   // Get total count
-  const total = await Logs.countDocuments(baseQuery);
+  const total = await countWithHint(baseQuery, INDEX_HINTS.domainsCreatedAt);
 
   // Get delivered count (always, to show in email with guidance if 0)
   // This matches the analytics page logic: message: 'delivered'
-  const delivered = await Logs.countDocuments({
-    ...baseQuery,
-    message: 'delivered'
-  });
+  const delivered = await countWithHint(
+    {
+      ...baseQuery,
+      message: 'delivered'
+    },
+    INDEX_HINTS.domainsCreatedAt
+  );
 
   // Get spam count
-  const spam = await Logs.countDocuments({
-    ...baseQuery,
-    bounce_category: 'spam'
-  });
+  const spam = await countWithHint(
+    {
+      ...baseQuery,
+      bounce_category: 'spam'
+    },
+    INDEX_HINTS.bounceCategory
+  );
 
   // Get virus count
-  const virus = await Logs.countDocuments({
-    ...baseQuery,
-    bounce_category: 'virus'
-  });
-
-  // Get bounce categories breakdown
-  const bounceAggregation = await Logs.aggregate([
-    { $match: baseQuery },
+  const virus = await countWithHint(
     {
-      $group: {
-        _id: '$bounce_category',
-        count: { $sum: 1 }
+      ...baseQuery,
+      bounce_category: 'virus'
+    },
+    INDEX_HINTS.bounceCategory
+  );
+
+  // Get bounce categories breakdown with index hint
+  const bounceAggregation = await Logs.aggregate(
+    [
+      { $match: baseQuery },
+      {
+        $group: {
+          _id: '$bounce_category',
+          count: { $sum: 1 }
+        }
       }
+    ],
+    {
+      hint: INDEX_HINTS.bounceCategory,
+      maxTimeMS: MAX_TIME_MS,
+      allowDiskUse: true
     }
-  ]);
+  );
 
   const bounceCategories = {};
   for (const item of bounceAggregation) {
@@ -134,25 +188,32 @@ async function getLogStats(domainIds, startDate, endDate) {
 
   // Get response codes breakdown with unique error messages (only for errors)
   // Group by response code and error message to get distinct messages per code
-  const responseCodeAggregation = await Logs.aggregate([
+  const responseCodeAggregation = await Logs.aggregate(
+    [
+      {
+        $match: {
+          ...baseQuery,
+          'err.responseCode': { $exists: true }
+        }
+      },
+      {
+        // First group by code + message to get unique messages and their counts
+        $group: {
+          _id: {
+            code: '$err.responseCode',
+            message: '$err.message'
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { '_id.code': 1, count: -1 } }
+    ],
     {
-      $match: {
-        ...baseQuery,
-        'err.responseCode': { $exists: true }
-      }
-    },
-    {
-      // First group by code + message to get unique messages and their counts
-      $group: {
-        _id: {
-          code: '$err.responseCode',
-          message: '$err.message'
-        },
-        count: { $sum: 1 }
-      }
-    },
-    { $sort: { '_id.code': 1, count: -1 } }
-  ]);
+      hint: INDEX_HINTS.responseCode,
+      maxTimeMS: MAX_TIME_MS,
+      allowDiskUse: true
+    }
+  );
 
   // Organize by response code with up to 5 unique messages per code
   const MAX_MESSAGES_PER_CODE = 5;
@@ -372,22 +433,51 @@ async function processUser(user, endDate) {
       return;
     }
 
-    // Build domains list with log counts
-    const domainsWithCounts = await Promise.all(
-      userDomains.map(async (domain) => {
-        const logCount = await Logs.countDocuments({
-          domains: domain._id,
-          created_at: {
-            $gte: startDate,
-            $lte: endDate
+    // Build domains list with log counts using aggregation with hint
+    const domainLogCounts = await Logs.aggregate(
+      [
+        {
+          $match: {
+            domains: { $in: domainIds },
+            created_at: {
+              $gte: startDate,
+              $lte: endDate
+            }
           }
-        });
-        return {
-          name: domain.name,
-          logCount
-        };
-      })
+        },
+        {
+          $unwind: '$domains'
+        },
+        {
+          $match: {
+            domains: { $in: domainIds }
+          }
+        },
+        {
+          $group: {
+            _id: '$domains',
+            logCount: { $sum: 1 }
+          }
+        }
+      ],
+      {
+        hint: INDEX_HINTS.domainsCreatedAt,
+        maxTimeMS: MAX_TIME_MS,
+        allowDiskUse: true
+      }
     );
+
+    // Create a map of domain ID to log count
+    const logCountMap = new Map();
+    for (const item of domainLogCounts) {
+      logCountMap.set(item._id.toString(), item.logCount);
+    }
+
+    // Build domains with counts
+    const domainsWithCounts = userDomains.map((domain) => ({
+      name: domain.name,
+      logCount: logCountMap.get(domain._id.toString()) || 0
+    }));
 
     // Filter domains with logs and limit to 25 for email rendering
     const MAX_DOMAINS_IN_EMAIL = 25;

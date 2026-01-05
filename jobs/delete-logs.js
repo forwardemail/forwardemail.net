@@ -31,6 +31,14 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+//
+// MongoDB query timeout and index hints to prevent multiplanner timeout errors
+//
+const MAX_TIME_MS = ms('10s');
+
+// Index hint for created_at queries (TTL index)
+const CREATED_AT_INDEX_HINT = { created_at: 1 };
+
 (async () => {
   await setupMongoose(logger);
 
@@ -38,6 +46,8 @@ graceful.listen();
     for await (const log of Logs.find({
       created_at: { $lt: Date.now() - ms(config.logRetention) }
     })
+      .hint(CREATED_AT_INDEX_HINT)
+      .maxTimeMS(MAX_TIME_MS)
       .select('_id')
       .lean()
       .cursor()

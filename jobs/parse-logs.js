@@ -15,6 +15,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -37,6 +38,18 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+//
+// MongoDB query timeout to prevent multiplanner timeout errors
+//
+const MAX_TIME_MS = ms('10s');
+
+// Index hint for parse-logs queries
+const PARSE_LOGS_INDEX_HINT = {
+  is_restricted: 1,
+  domains: 1,
+  domains_checked_at: 1
+};
 
 (async () => {
   await setupMongoose(logger);
@@ -114,6 +127,8 @@ graceful.listen();
 
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(query)
+      .hint(PARSE_LOGS_INDEX_HINT)
+      .maxTimeMS(MAX_TIME_MS)
       // .sort({ created_at: -1 })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
