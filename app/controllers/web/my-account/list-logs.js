@@ -399,9 +399,10 @@ async function listLogs(ctx) {
             $lt: 600
           }
         },
-        // Any log with a bounce category (covers DMARC, spam, virus, etc.)
+        // Any log with a bounce category set to something other than 'none'
+        // (covers DMARC, spam, virus, blocklist, etc.)
         {
-          bounce_category: { $exists: true, $ne: null }
+          bounce_category: { $exists: true, $ne: null, $nin: ['none', ''] }
         }
       ]
     };
