@@ -3166,7 +3166,7 @@ Forward Email implements numerous server hardening techniques to ensure the secu
    * IP tables firewall with strict rules
    * Fail2ban for brute force protection
    * Regular security audits and penetration testing
-   * VPN-only adm&ZeroWidthSpace;inistrative access
+   * VPN-only adm​inistrative access
 
 2. **System Hardening**:
    * Minimal package installation
