@@ -30,30 +30,27 @@ block content
 
               //- Stats grid - responsive with proper spacing
               .row.text-center.justify-content-center
-                //- Total processed
+                //- Total logs
                 .col-6.col-sm-6.col-md-3.mb-3.px-2
                   .card.h-100.shadow-sm
                     .card-body.py-3
                       h3.h2.mb-1.text-primary= stats.total.toLocaleString()
-                      small.text-muted= t("Total Processed")
+                      small.text-muted= t("Total Logs")
 
-                //- Delivered (only if user opted in to success logs)
-                if showDelivered
-                  .col-6.col-sm-6.col-md-3.mb-3.px-2
-                    .card.h-100.shadow-sm.border-success
-                      .card-body.py-3
-                        h3.h2.mb-1(style="color: #28a745")= stats.delivered.toLocaleString()
-                        small.text-muted= t("Delivered")
-                        //- Note when delivered is 0 but user has opted in
-                        if stats.delivered === 0
-                          p.small.text-muted.mt-2.mb-0
-                            = t("No successful deliveries logged yet.")
-                            = " "
-                            a(
-                              href=`${config.urls.web}/${locale}/my-account/domains`
-                            )= t("Manage your domains")
-                            = " "
-                            = t("to ensure Success Logs are enabled.")
+                //- Delivered (always show, with note if not enabled or count is 0)
+                .col-6.col-sm-6.col-md-3.mb-3.px-2
+                  .card.h-100.shadow-sm.border-success
+                    .card-body.py-3
+                      h3.h2.mb-1(style="color: #28a745")= stats.delivered.toLocaleString()
+                      small.text-muted= t("Delivered")
+                      //- Note when delivered is 0 to guide users to enable Success Logs
+                      if stats.delivered === 0
+                        p.small.text-muted.mt-2.mb-0
+                          a(
+                            href=`${config.urls.web}/${locale}/my-account/domains`
+                          )= t("Enable Success Logs")
+                          = " "
+                          = t("to track forwarding and outbound SMTP deliveries.")
 
                 //- Spam blocked
                 .col-6.col-sm-6.col-md-3.mb-3.px-2

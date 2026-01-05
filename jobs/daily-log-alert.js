@@ -81,10 +81,9 @@ if (parentPort)
  * @param {Array} domainIds - Array of domain ObjectIds
  * @param {Date} startDate - Start of the period
  * @param {Date} endDate - End of the period
- * @param {boolean} includeDelivered - Whether to include delivered count
  * @returns {Object} Statistics object
  */
-async function getLogStats(domainIds, startDate, endDate, includeDelivered) {
+async function getLogStats(domainIds, startDate, endDate) {
   const baseQuery = {
     domains: { $in: domainIds },
     created_at: {
@@ -96,15 +95,12 @@ async function getLogStats(domainIds, startDate, endDate, includeDelivered) {
   // Get total count
   const total = await Logs.countDocuments(baseQuery);
 
-  // Get delivered count (only if user opted in)
+  // Get delivered count (always, to show in email with guidance if 0)
   // This matches the analytics page logic: message: 'delivered'
-  let delivered = 0;
-  if (includeDelivered) {
-    delivered = await Logs.countDocuments({
-      ...baseQuery,
-      message: 'delivered'
-    });
-  }
+  const delivered = await Logs.countDocuments({
+    ...baseQuery,
+    message: 'delivered'
+  });
 
   // Get spam count
   const spam = await Logs.countDocuments({
@@ -332,17 +328,12 @@ async function processUser(user, endDate) {
         }
       }
     })
-      .select('_id name has_smtp has_delivery_logs')
+      .select('_id name')
       .lean();
 
     if (userDomains.length === 0) return;
 
     const domainIds = userDomains.map((d) => d._id);
-
-    // Check if any domain has SMTP enabled or has opted in to success/delivery logs
-    const includeDelivered = userDomains.some(
-      (d) => d.has_smtp || d.has_delivery_logs
-    );
 
     // First, get a quick preview of stats to determine frequency
     // Use the maximum lookback period (LOW_PRIORITY_FREQUENCY_DAYS) for initial check
@@ -350,12 +341,7 @@ async function processUser(user, endDate) {
       .subtract(LOW_PRIORITY_FREQUENCY_DAYS, 'day')
       .toDate();
 
-    const previewStats = await getLogStats(
-      domainIds,
-      maxLookbackDate,
-      endDate,
-      includeDelivered
-    );
+    const previewStats = await getLogStats(domainIds, maxLookbackDate, endDate);
 
     // Skip if no significant activity
     if (!hasSignificantActivity(previewStats)) {
@@ -379,12 +365,7 @@ async function processUser(user, endDate) {
 
     // Now get the actual stats for the report period
     const startDate = dayjs(endDate).subtract(frequencyDays, 'day').toDate();
-    const stats = await getLogStats(
-      domainIds,
-      startDate,
-      endDate,
-      includeDelivered
-    );
+    const stats = await getLogStats(domainIds, startDate, endDate);
 
     // Double-check there's still significant activity in the actual period
     if (!hasSignificantActivity(stats)) {
@@ -437,7 +418,6 @@ async function processUser(user, endDate) {
         user,
         locale,
         stats,
-        showDelivered: includeDelivered,
         domains: displayDomains,
         additionalDomainsCount,
         additionalDomainsLogCount,
