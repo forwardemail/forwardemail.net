@@ -12,8 +12,9 @@ const AddressBooks = require('#models/address-books');
 const CardDAVFilterParser = require('#helpers/carddav-filter-parser');
 const Contacts = require('#models/contacts');
 const config = require('#config');
-const setupAuthSession = require('#helpers/setup-auth-session');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
+const sendApnContacts = require('#helpers/send-apn-contacts');
+const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
 
 const { encodeXMLEntities } = xmlHelpers;
@@ -260,6 +261,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
         await addressBook.save();
 
+        // send apple push notification for contacts sync
+        sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+
         ctx.set('ETag', newEtag);
         ctx.status = 204;
       } else {
@@ -296,6 +302,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           config.urls.web
         }/ns/sync-token/${Date.now()}`;
         await addressBook.save();
+
+        // send apple push notification for contacts sync
+        sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
 
         ctx.set('ETag', newEtag);
         ctx.status = 201;
@@ -364,6 +375,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       // Update address book sync token
       addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;
       await addressBook.save();
+
+      // send apple push notification for contacts sync
+      sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
 
       ctx.status = 204;
       break;

@@ -29,6 +29,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
+const sendApnCalendar = require('#helpers/send-apn-calendar');
 const setupAuthSession = require('#helpers/setup-auth-session');
 
 const exdateRegex =
@@ -2281,6 +2282,11 @@ class CalDAV extends API {
       );
     });
 
+    // send apple push notification for calendar sync
+    sendApnCalendar(this.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+
     return eventCreated;
   }
 
@@ -2399,6 +2405,11 @@ class CalDAV extends API {
         }
       );
     });
+
+    // send apple push notification for calendar sync
+    sendApnCalendar(this.client, ctx.state.user.alias_id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
     return e;
   }
@@ -2557,6 +2568,11 @@ class CalDAV extends API {
           ctx.logger.error('sendEmailWithICS error', { err });
         });
       });
+
+      // send apple push notification for calendar sync
+      sendApnCalendar(this.client, ctx.state.user.alias_id)
+        .then()
+        .catch((err) => ctx.logger.fatal(err));
     }
 
     return event;
