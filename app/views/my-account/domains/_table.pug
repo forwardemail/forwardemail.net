@@ -149,7 +149,7 @@ p.text-center.d-lg-none
             td.align-middle.p-3.position-relative
               h2.h5.mb-0= domain.name
               //- DNS Record Status Indicators
-              .small.mt-1.mb-1
+              .small.mt-1.mb-1.position-relative(style="z-index: 2")
                 //- TXT Record Status
                 if domain.has_txt_record
                   span.mr-2(
@@ -161,7 +161,7 @@ p.text-center.d-lg-none
                     = "TXT "
                     i.fa.fa-check-circle.text-success
                 else
-                  a.mr-2.text-decoration-none(
+                  a.mr-2.text-reset(
                     href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
                     data-toggle="tooltip",
                     data-placement="bottom",
@@ -191,7 +191,7 @@ p.text-center.d-lg-none
                     i.fa.fa-check-circle.text-success
                     sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
                 else
-                  a.mr-2.text-decoration-none(
+                  a.mr-2.text-reset(
                     href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
                     data-toggle="tooltip",
                     data-placement="bottom",
@@ -212,7 +212,7 @@ p.text-center.d-lg-none
                       = "DKIM "
                       i.fa.fa-check-circle.text-success
                   else
-                    a.mr-2.text-decoration-none(
+                    a.mr-2.text-reset(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
                       data-toggle="tooltip",
                       data-placement="bottom",
@@ -232,7 +232,7 @@ p.text-center.d-lg-none
                       = "SPF "
                       i.fa.fa-check-circle.text-success
                   else
-                    a.mr-2.text-decoration-none(
+                    a.mr-2.text-reset(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
                       data-toggle="tooltip",
                       data-placement="bottom",
@@ -253,7 +253,7 @@ p.text-center.d-lg-none
                         = "DMARC "
                         i.fa.fa-check-circle.text-success
                     else
-                      a.mr-2.text-decoration-none(
+                      a.mr-2.text-reset(
                         href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
                         data-toggle="tooltip",
                         data-placement="bottom",
@@ -263,7 +263,7 @@ p.text-center.d-lg-none
                         = "DMARC "
                         i.fa.fa-exclamation-circle.text-warning
                   else
-                    a.mr-2.text-decoration-none(
+                    a.mr-2.text-reset(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
                       data-toggle="tooltip",
                       data-placement="bottom",
