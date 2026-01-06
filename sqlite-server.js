@@ -25,6 +25,8 @@ const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');

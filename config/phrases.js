@@ -92,6 +92,7 @@ const ALIAS_GENERATED_PASSWORD = `
 
 module.exports = {
   AUTHENTICATION_REQUIRED: 'Authentication is required.',
+  MAILBOX_CREATION_FAILED: 'Mailbox creation failed. Please try again.',
   IMAP_OUT_OF_SYNC_TRY_AGAIN:
     'Your client is not in sync with another process or client.',
   DENYLIST_SUBJECT,

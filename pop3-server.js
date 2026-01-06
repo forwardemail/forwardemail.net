@@ -26,6 +26,8 @@ const POP3Notifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const pop3 = require('#helpers/pop3');
 const logger = require('#helpers/logger');

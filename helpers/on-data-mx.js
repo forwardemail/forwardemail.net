@@ -181,6 +181,13 @@ async function sendSysAdminEmail(template, err, session, headers) {
 // TODO: digest email with parsed FQDN's or IP's parsed from rejected emails
 //
 async function addToDenylist(attr, headers, bounce, _session) {
+  // Check if the value is allowlisted before adding to denylist
+  // This prevents allowlisted IPs/domains from being incorrectly denylisted
+  if (await isAllowlisted(attr, this.client, logger)) {
+    logger.debug('skipping denylist for allowlisted value', { attr });
+    return;
+  }
+
   await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
   //
   // we don't need to do a caching check here for sending the email

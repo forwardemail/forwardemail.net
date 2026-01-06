@@ -151,6 +151,15 @@ function getNodemailerMessageFromRequest(ctx) {
     );
 
   // safeguard to filter out any attachments to prevent fs access
+  // first validate that all attachments are objects
+  if (
+    Array.isArray(message.attachments) &&
+    message.attachments.some((a) => typeof a !== 'object' || a === null)
+  )
+    throw Boom.badRequest(
+      '"attachments" must contain only objects; https://nodemailer.com/message/attachments/'
+    );
+
   if (
     Array.isArray(message.attachments) &&
     message.attachments.some((a) => a.path || a.href)

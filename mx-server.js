@@ -14,6 +14,8 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createTangerine = require('#helpers/create-tangerine');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const isLockingError = require('#helpers/is-locking-error');
 const isMongoError = require('#helpers/is-mongo-error');

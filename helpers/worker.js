@@ -472,7 +472,22 @@ async function backup(payload) {
     );
 
     // <https://github.com/nodejs/node/issues/38006>
-    const stats = await fs.promises.stat(storagePath);
+    let stats;
+    try {
+      stats = await fs.promises.stat(storagePath);
+    } catch (err) {
+      // Handle case where database file doesn't exist yet
+      if (err.code === 'ENOENT') {
+        logger.warn('Database file does not exist for backup', {
+          storagePath,
+          payload
+        });
+        return;
+      }
+
+      throw err;
+    }
+
     if (!stats.isFile() || stats.size === 0) {
       const err = new TypeError('Database empty');
       err.stats = stats;

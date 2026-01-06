@@ -116,6 +116,12 @@ async function create(ctx) {
       mailboxId
     );
 
+    // Handle race condition where findById returns null
+    if (!mailbox)
+      throw Boom.badRequest(
+        i18n.translate('MAILBOX_CREATION_FAILED', ctx.locale)
+      );
+
     ctx.body = json(mailbox);
   } catch (_err) {
     // since we use multiArgs from pify

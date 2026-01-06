@@ -157,15 +157,19 @@ async function onMove(mailboxId, update, session, fn) {
       );
 
     // check that destination and source are not the same
+    // RFC 6851 allows MOVE to same mailbox but doesn't mandate it
+    // This is a client-side error, not a server bug
     if (targetMailbox._id.toString() === mailboxId.toString()) {
-      // verbose for admins to investigate
-      const err = new TypeError('IMAP MOVE target and source equal');
-      err.isCodeBug = true;
-      err.mailboxId = mailboxId;
-      err.update = update;
-      err.session = session;
-      err.targetMailbox = targetMailbox;
-      this.logger.fatal(err);
+      this.logger.debug('MOVE to same mailbox attempted', {
+        mailboxId,
+        update,
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        targetMailbox
+      });
 
       throw new IMAPError(
         i18n.translate('IMAP_TARGET_AND_SOURCE_SAME', session.user.locale),

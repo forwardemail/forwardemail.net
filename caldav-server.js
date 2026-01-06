@@ -26,6 +26,8 @@ const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');

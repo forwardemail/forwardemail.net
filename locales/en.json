@@ -14886,5 +14886,6 @@
   "Need Help?": "Need Help?",
   "Read our FAQ, submit a help request, or reply to this email.": "Read our FAQ, submit a help request, or reply to this email.",
   "Read FAQ": "Read FAQ",
-  "Help Request": "Help Request"
+  "Help Request": "Help Request",
+  "Unfortunately an error occurred while sending the email.  Please try again or <a class=\"font-weight-bold\" href=\"/help\">contact us</a> for help.": "Unfortunately an error occurred while sending the email.  Please try again or <a class=\"font-weight-bold\" href=\"/help\">contact us</a> for help."
 }
