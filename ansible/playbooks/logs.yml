@@ -1330,7 +1330,7 @@
             # Extract timestamp from filename (ISO 8601 format: logs-mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
             # Filename format: logs-mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
             FILENAME=$(basename "$FILE_PATH")
-            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'logs-mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
+            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP '(logs-)?mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
 
             # Try to parse timestamp from filename first (more reliable), fallback to S3 metadata date
             if [ -n "$ISO_TIMESTAMP" ]; then
@@ -1374,7 +1374,7 @@
               fi
 
               # Track if we've already kept one backup for this date
-              STATE_FILE="/tmp/mongo-cleanup-${BACKUP_DATE}.keep"
+              STATE_FILE="/tmp/logs-mongo-cleanup-${BACKUP_DATE}.keep"
 
               if [ -f "$STATE_FILE" ]; then
                 # Already kept one backup for this date, delete this one
@@ -1399,7 +1399,7 @@
 
           # Summary report
           # Clean up state files
-          rm -f /tmp/mongo-cleanup-*.keep
+          rm -f /tmp/logs-mongo-cleanup-*.keep
 
           echo ""
           echo "=== MongoDB Backup Cleanup Summary ==="
