@@ -1737,7 +1737,10 @@ class CalDAV extends API {
             // event obj
             eventId,
             calendar: calendar._id,
-            ical
+            ical,
+            // Construct href for sync-collection responses
+            // This matches the CalDAV URL format: /cal/{principalId}/{calendarId}/{eventId}.ics
+            href: `/cal/${principalId}/${calendarId}/${eventId}.ics`
           });
         }
 
@@ -2225,7 +2228,9 @@ class CalDAV extends API {
       // event obj
       eventId,
       calendar: calendar._id,
-      ical: ctx.request.body
+      ical: ctx.request.body,
+      // Store the original request URL for sync-collection responses
+      href: ctx.url
     };
 
     //

@@ -54,6 +54,19 @@ const CalendarEvents = new mongoose.Schema(
       index: true
     },
 
+    //
+    // Original resource path (href) for CalDAV sync-collection responses.
+    // This ensures the URL in responses matches what clients originally used.
+    // See: https://www.rfc-editor.org/rfc/rfc6578.html (sync-collection)
+    //
+    // For backwards compatibility with existing events that don't have this field,
+    // the caldav-adapter will fall back to constructing the URL from eventId.
+    //
+    href: {
+      type: String,
+      index: true
+    },
+
     /*
     // <https://github.com/jens-maus/node-ical/blob/228ee19ed8af5177ab5139c82c32a15d5179f228/node-ical.d.ts#L65-L94>
     dtstamp: Date,

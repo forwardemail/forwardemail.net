@@ -494,7 +494,11 @@ async function create(ctx) {
     calendar: calendar._id,
 
     // iCal data
-    ical: body.ical
+    ical: body.ical,
+
+    // Construct href for CalDAV sync-collection responses
+    // This matches the CalDAV URL format: /cal/{principalId}/{calendarId}/{eventId}.ics
+    href: `/cal/${ctx.state.session.user.username}/${calendar.calendarId}/${eventId}.ics`
   });
 
   ctx.body = json(calendarEvent, calendar);
