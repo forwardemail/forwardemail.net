@@ -1792,20 +1792,39 @@ class CalDAV extends API {
       fullData
     });
 
-    const calendar = await this.getCalendar(ctx, {
-      calendarId,
-      principalId,
-      user
-    });
+    let calendar;
+    try {
+      calendar = await this.getCalendar(ctx, {
+        calendarId,
+        principalId,
+        user
+      });
+    } catch (err) {
+      err.isCodeBug = true;
+      err.calendarId = calendarId;
+      err.principalId = principalId;
+      ctx.logger.fatal(err);
+      throw err;
+    }
 
     if (!calendar)
       throw Boom.methodNotAllowed(
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    let events = await CalendarEvents.find(this, ctx.state.session, {
-      calendar: calendar._id
-    });
+    let events;
+    try {
+      events = await CalendarEvents.find(this, ctx.state.session, {
+        calendar: calendar._id
+      });
+    } catch (err) {
+      err.isCodeBug = true;
+      err.calendarId = calendarId;
+      err.principalId = principalId;
+      err.calendar = calendar._id;
+      ctx.logger.fatal(err);
+      throw err;
+    }
 
     // TODO: improve this with search directly on sql
     if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
@@ -2586,6 +2605,7 @@ class CalDAV extends API {
   //       and after finding numerous issues we decided to simply re-use the existing ICS file
   //
   async buildICS(ctx, events, calendar, method = false) {
+    const startTime = Date.now();
     ctx.logger.debug('buildICS', { events, calendar });
     if (!events || Array.isArray(events)) {
       // <https://github.com/kewisch/ical.js/wiki/Creating-basic-iCalendar>
@@ -2694,6 +2714,15 @@ class CalDAV extends API {
           // add to main calendar
           comp.addSubcomponent(vtodo);
         }
+      }
+
+      const duration = Date.now() - startTime;
+      if (duration > 5000) {
+        ctx.logger.warn('buildICS slow', {
+          duration,
+          eventCount: events ? events.length : 0,
+          calendarId: calendar.calendarId || calendar._id
+        });
       }
 
       return comp.toString();

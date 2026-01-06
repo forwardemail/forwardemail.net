@@ -281,8 +281,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(axe@13.0.0)
       caldav-adapter:
-        specifier: 8.3.2
-        version: 8.3.2
+        specifier: 8.3.3
+        version: 8.3.3
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
@@ -6526,8 +6526,8 @@ packages:
     resolution: {integrity: sha512-kpqOvwXnjjN44D89K5ccQC+RUrsy7jB/XLlRrx0D7/2HNcTPqzsb6XgYoErwko6QsV184CA2YgS1fxDiiDZMWA==}
     engines: {node: '>=8'}
 
-  caldav-adapter@8.3.2:
-    resolution: {integrity: sha512-9Ib6oC0lyhcMmJROEkAKaGuIjzYZ+xftbFyVGZA7BhMvvWVb7AXnWU7aalBULn61e2ldMLICTWGdyMTP3Hzerg==}
+  caldav-adapter@8.3.3:
+    resolution: {integrity: sha512-0jEKp7xbW7RwAiin28qVRLydvAHd29qpFQrKlpkucBBZYiyE7+nk3sGJP1bgfucTsjPgSGoeJYNseZh3XZQhzA==}
     engines: {node: '>=18'}
 
   call-bind-apply-helpers@1.0.2:
@@ -26173,7 +26173,7 @@ snapshots:
       package-hash: 4.0.0
       write-file-atomic: 3.0.3
 
-  caldav-adapter@8.3.2:
+  caldav-adapter@8.3.3:
     dependencies:
       '@xmldom/xmldom': 0.8.11
       basic-auth: 2.0.1
@@ -28427,7 +28427,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -41500,7 +41500,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.104.1)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
