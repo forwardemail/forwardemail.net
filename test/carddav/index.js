@@ -247,8 +247,50 @@ test.beforeEach(async (t) => {
 
 test.afterEach.always(async (t) => {
   await t.context.permit.release();
-  // await t.context.cardDAV.close();
-  // await t.context.sqlite.close();
+
+  // close CardDAV server
+  if (t.context.cardDAV) {
+    try {
+      await t.context.cardDAV.close();
+    } catch {
+      // ignore errors during cleanup
+    }
+  }
+
+  // close WebSocket connection
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch {
+      // ignore errors during cleanup
+    }
+  }
+
+  // close SQLite server
+  if (t.context.sqlite) {
+    try {
+      await t.context.sqlite.close();
+    } catch {
+      // ignore errors during cleanup
+    }
+  }
+
+  // disconnect Redis clients
+  if (t.context.client) {
+    try {
+      t.context.client.disconnect();
+    } catch {
+      // ignore errors during cleanup
+    }
+  }
+
+  if (t.context.subscriber) {
+    try {
+      t.context.subscriber.disconnect();
+    } catch {
+      // ignore errors during cleanup
+    }
+  }
 });
 
 //
