@@ -1432,7 +1432,7 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
-          TimeoutStartSec=600
+          TimeoutStartSec=1800
           TimeoutStopSec=30
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
           Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
