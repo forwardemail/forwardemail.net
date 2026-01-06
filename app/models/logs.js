@@ -364,6 +364,38 @@ Logs.index({
 });
 
 //
+// indices for admin > jobs page
+// these support the job monitoring queries that filter by message type and job metadata
+//
+Logs.index(
+  { message: 1, 'meta.job.name': 1, created_at: -1 },
+  {
+    partialFilterExpression: {
+      'meta.job.name': { $exists: true }
+    }
+  }
+);
+
+Logs.index(
+  { message: 1, 'meta.job.breeInstance': 1 },
+  {
+    partialFilterExpression: {
+      'meta.job.breeInstance': { $exists: true }
+    }
+  }
+);
+
+// compound index for job statistics aggregation
+Logs.index(
+  { message: 1, created_at: -1, 'meta.job.name': 1 },
+  {
+    partialFilterExpression: {
+      'meta.job.name': { $exists: true }
+    }
+  }
+);
+
+//
 // if we're saving a "delivered" message
 // then ensure that `resolver` is set
 // otherwise we need to throw an error

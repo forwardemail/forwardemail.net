@@ -6,7 +6,6 @@
 const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 
-const getMongoQuery = require('#helpers/get-mongo-query');
 const { Logs } = require('#models');
 
 // Job message types for filtering
@@ -17,15 +16,53 @@ const JOB_MESSAGE_TYPES = [
   'job:cancelled'
 ];
 
+// Index hint for job-related queries
+const JOB_INDEX_HINT = { message: 1, 'meta.job.name': 1, created_at: -1 };
+
 /**
  * Get all unique job names from logs
+ * Uses aggregation with hint for better performance than distinct()
  * @returns {Promise<Array>} - Array of unique job names
  */
 async function getUniqueJobNames() {
-  const jobNames = await Logs.distinct('meta.job.name', {
-    message: { $in: JOB_MESSAGE_TYPES }
-  });
-  return jobNames.filter(Boolean).sort();
+  // Use aggregation with hint instead of distinct() for better index utilization
+  // (distinct command does not support hints)
+  const results = await Logs.aggregate(
+    [
+      {
+        $match: {
+          message: { $in: JOB_MESSAGE_TYPES },
+          'meta.job.name': { $exists: true }
+        }
+      },
+      { $group: { _id: '$meta.job.name' } },
+      { $sort: { _id: 1 } }
+    ],
+    { hint: JOB_INDEX_HINT }
+  );
+  return results.map((doc) => doc._id).filter(Boolean);
+}
+
+/**
+ * Get all unique bree instances from logs
+ * Uses aggregation with hint for better performance than distinct()
+ * @returns {Promise<Array>} - Array of unique bree instance names
+ */
+async function getUniqueBreeInstances() {
+  const results = await Logs.aggregate(
+    [
+      {
+        $match: {
+          message: { $in: JOB_MESSAGE_TYPES },
+          'meta.job.breeInstance': { $exists: true }
+        }
+      },
+      { $group: { _id: '$meta.job.breeInstance' } },
+      { $sort: { _id: 1 } }
+    ],
+    { hint: { message: 1, 'meta.job.breeInstance': 1 } }
+  );
+  return results.map((doc) => doc._id).filter(Boolean);
 }
 
 /**
@@ -33,80 +70,84 @@ async function getUniqueJobNames() {
  * @returns {Promise<Array>} - Array of job statistics
  */
 async function getJobStatistics() {
-  const stats = await Logs.aggregate([
-    {
-      $match: {
-        message: { $in: JOB_MESSAGE_TYPES }
-      }
-    },
-    {
-      $sort: { created_at: -1 }
-    },
-    {
-      $group: {
-        _id: '$meta.job.name',
-        lastRun: { $first: '$created_at' },
-        lastStatus: { $first: '$message' },
-        lastDuration: { $first: '$meta.job.duration' },
-        lastError: {
-          $first: {
-            $cond: [{ $eq: ['$message', 'job:error'] }, '$err', null]
-          }
-        },
-        totalRuns: {
-          $sum: { $cond: [{ $eq: ['$message', 'job:start'] }, 1, 0] }
-        },
-        totalCompleted: {
-          $sum: { $cond: [{ $eq: ['$message', 'job:complete'] }, 1, 0] }
-        },
-        totalErrors: {
-          $sum: { $cond: [{ $eq: ['$message', 'job:error'] }, 1, 0] }
-        },
-        avgDuration: {
-          $avg: {
+  const stats = await Logs.aggregate(
+    [
+      {
+        $match: {
+          message: { $in: JOB_MESSAGE_TYPES },
+          'meta.job.name': { $exists: true }
+        }
+      },
+      {
+        $sort: { created_at: -1 }
+      },
+      {
+        $group: {
+          _id: '$meta.job.name',
+          lastRun: { $first: '$created_at' },
+          lastStatus: { $first: '$message' },
+          lastDuration: { $first: '$meta.job.duration' },
+          lastError: {
+            $first: {
+              $cond: [{ $eq: ['$message', 'job:error'] }, '$err', null]
+            }
+          },
+          totalRuns: {
+            $sum: { $cond: [{ $eq: ['$message', 'job:start'] }, 1, 0] }
+          },
+          totalCompleted: {
+            $sum: { $cond: [{ $eq: ['$message', 'job:complete'] }, 1, 0] }
+          },
+          totalErrors: {
+            $sum: { $cond: [{ $eq: ['$message', 'job:error'] }, 1, 0] }
+          },
+          avgDuration: {
+            $avg: {
+              $cond: [
+                { $eq: ['$message', 'job:complete'] },
+                '$meta.job.duration',
+                null
+              ]
+            }
+          },
+          breeInstance: { $first: '$meta.job.breeInstance' },
+          interval: { $first: '$meta.job.interval' },
+          cron: { $first: '$meta.job.cron' },
+          timeout: { $first: '$meta.job.timeout' }
+        }
+      },
+      {
+        $project: {
+          name: '$_id',
+          lastRun: 1,
+          lastStatus: 1,
+          lastDuration: 1,
+          lastError: 1,
+          totalRuns: 1,
+          totalCompleted: 1,
+          totalErrors: 1,
+          avgDuration: 1,
+          breeInstance: 1,
+          interval: 1,
+          cron: 1,
+          timeout: 1,
+          successRate: {
             $cond: [
-              { $eq: ['$message', 'job:complete'] },
-              '$meta.job.duration',
-              null
+              { $gt: ['$totalRuns', 0] },
+              {
+                $multiply: [{ $divide: ['$totalCompleted', '$totalRuns'] }, 100]
+              },
+              0
             ]
           }
-        },
-        breeInstance: { $first: '$meta.job.breeInstance' },
-        interval: { $first: '$meta.job.interval' },
-        cron: { $first: '$meta.job.cron' },
-        timeout: { $first: '$meta.job.timeout' }
-      }
-    },
-    {
-      $project: {
-        name: '$_id',
-        lastRun: 1,
-        lastStatus: 1,
-        lastDuration: 1,
-        lastError: 1,
-        totalRuns: 1,
-        totalCompleted: 1,
-        totalErrors: 1,
-        avgDuration: 1,
-        breeInstance: 1,
-        interval: 1,
-        cron: 1,
-        timeout: 1,
-        successRate: {
-          $cond: [
-            { $gt: ['$totalRuns', 0] },
-            {
-              $multiply: [{ $divide: ['$totalCompleted', '$totalRuns'] }, 100]
-            },
-            0
-          ]
         }
+      },
+      {
+        $sort: { name: 1 }
       }
-    },
-    {
-      $sort: { name: 1 }
-    }
-  ]);
+    ],
+    { hint: JOB_INDEX_HINT }
+  );
 
   return stats;
 }
@@ -118,8 +159,10 @@ async function getJobStatistics() {
  */
 async function getRecentErrors(limit = 10) {
   const errors = await Logs.find({
-    message: 'job:error'
+    message: 'job:error',
+    'meta.job.name': { $exists: true }
   })
+    .hint(JOB_INDEX_HINT)
     .sort({ created_at: -1 })
     .limit(limit)
     .lean()
@@ -139,6 +182,7 @@ async function getJobHistory(jobName, limit = 50) {
     message: { $in: JOB_MESSAGE_TYPES },
     'meta.job.name': jobName
   })
+    .hint(JOB_INDEX_HINT)
     .sort({ created_at: -1 })
     .limit(limit)
     .lean()
@@ -151,12 +195,10 @@ async function getJobHistory(jobName, limit = 50) {
  * List all jobs with statistics and filtering
  */
 async function list(ctx) {
-  const query = getMongoQuery(ctx);
-
   // Base query for job-related logs
   const baseQuery = {
     message: { $in: JOB_MESSAGE_TYPES },
-    ...query
+    'meta.job.name': { $exists: true }
   };
 
   // Apply filters
@@ -186,20 +228,17 @@ async function list(ctx) {
   ] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(baseQuery)
+      .hint(JOB_INDEX_HINT)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .sort(ctx.query.sort || '-created_at')
       .lean()
       .exec(),
-    Object.keys(baseQuery).length === 0
-      ? Logs.estimatedDocumentCount()
-      : Logs.countDocuments(baseQuery),
+    Logs.countDocuments(baseQuery).hint(JOB_INDEX_HINT),
     getJobStatistics(),
     getRecentErrors(5),
     getUniqueJobNames(),
-    Logs.distinct('meta.job.breeInstance', {
-      message: { $in: JOB_MESSAGE_TYPES }
-    })
+    getUniqueBreeInstances()
   ]);
 
   // Calculate summary statistics
@@ -226,7 +265,7 @@ async function list(ctx) {
       jobStats,
       recentErrors,
       uniqueJobNames,
-      uniqueBreeInstances: uniqueBreeInstances.filter(Boolean).sort(),
+      uniqueBreeInstances,
       summary,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
@@ -258,57 +297,60 @@ async function jobDetail(ctx) {
 
   const [history, stats] = await Promise.all([
     getJobHistory(name, 100),
-    Logs.aggregate([
-      {
-        $match: {
-          message: { $in: JOB_MESSAGE_TYPES },
-          'meta.job.name': name
+    Logs.aggregate(
+      [
+        {
+          $match: {
+            message: { $in: JOB_MESSAGE_TYPES },
+            'meta.job.name': name
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalRuns: {
+              $sum: { $cond: [{ $eq: ['$message', 'job:start'] }, 1, 0] }
+            },
+            totalCompleted: {
+              $sum: { $cond: [{ $eq: ['$message', 'job:complete'] }, 1, 0] }
+            },
+            totalErrors: {
+              $sum: { $cond: [{ $eq: ['$message', 'job:error'] }, 1, 0] }
+            },
+            avgDuration: {
+              $avg: {
+                $cond: [
+                  { $eq: ['$message', 'job:complete'] },
+                  '$meta.job.duration',
+                  null
+                ]
+              }
+            },
+            minDuration: {
+              $min: {
+                $cond: [
+                  { $eq: ['$message', 'job:complete'] },
+                  '$meta.job.duration',
+                  null
+                ]
+              }
+            },
+            maxDuration: {
+              $max: {
+                $cond: [
+                  { $eq: ['$message', 'job:complete'] },
+                  '$meta.job.duration',
+                  null
+                ]
+              }
+            },
+            lastRun: { $max: '$created_at' },
+            firstRun: { $min: '$created_at' }
+          }
         }
-      },
-      {
-        $group: {
-          _id: null,
-          totalRuns: {
-            $sum: { $cond: [{ $eq: ['$message', 'job:start'] }, 1, 0] }
-          },
-          totalCompleted: {
-            $sum: { $cond: [{ $eq: ['$message', 'job:complete'] }, 1, 0] }
-          },
-          totalErrors: {
-            $sum: { $cond: [{ $eq: ['$message', 'job:error'] }, 1, 0] }
-          },
-          avgDuration: {
-            $avg: {
-              $cond: [
-                { $eq: ['$message', 'job:complete'] },
-                '$meta.job.duration',
-                null
-              ]
-            }
-          },
-          minDuration: {
-            $min: {
-              $cond: [
-                { $eq: ['$message', 'job:complete'] },
-                '$meta.job.duration',
-                null
-              ]
-            }
-          },
-          maxDuration: {
-            $max: {
-              $cond: [
-                { $eq: ['$message', 'job:complete'] },
-                '$meta.job.duration',
-                null
-              ]
-            }
-          },
-          lastRun: { $max: '$created_at' },
-          firstRun: { $min: '$created_at' }
-        }
-      }
-    ])
+      ],
+      { hint: JOB_INDEX_HINT }
+    )
   ]);
 
   const jobStats = stats[0] || {
