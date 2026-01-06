@@ -9,12 +9,16 @@ const process = require('node:process');
 require('#helpers/polyfill-towellformed');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
+// eslint-disable-next-line import/no-unassigned-import
+require('#config/mongoose');
 
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
+const mongoose = require('mongoose');
 
 const jobs = require('./jobs');
 const logger = require('#helpers/logger');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 const bree = new Bree({ logger });
 
@@ -32,12 +36,12 @@ function getJobConfig(name) {
 }
 
 // Log job lifecycle events with ignore_hook: false to store in Logs collection
-bree.on('worker created', (name) => {
+bree.on('worker created', async (name) => {
   const startTime = Date.now();
   jobStartTimes.set(name, startTime);
   const jobConfig = getJobConfig(name);
 
-  logger.info('job:start', {
+  await logger.info('job:start', {
     ignore_hook: false,
     job: {
       name,
@@ -50,7 +54,7 @@ bree.on('worker created', (name) => {
   });
 });
 
-bree.on('worker deleted', (name) => {
+bree.on('worker deleted', async (name) => {
   const startTime = jobStartTimes.get(name);
   const endTime = Date.now();
   const duration = startTime ? endTime - startTime : null;
@@ -61,7 +65,7 @@ bree.on('worker deleted', (name) => {
   const hasError = worker && worker.exitCode && worker.exitCode !== 0;
 
   if (hasError) {
-    logger.error('job:error', {
+    await logger.error('job:error', {
       ignore_hook: false,
       job: {
         name,
@@ -80,7 +84,7 @@ bree.on('worker deleted', (name) => {
       }
     });
   } else {
-    logger.info('job:complete', {
+    await logger.info('job:complete', {
       ignore_hook: false,
       job: {
         name,
@@ -101,6 +105,7 @@ bree.on('worker deleted', (name) => {
 
 const graceful = new Graceful({
   brees: [bree],
+  mongooses: [mongoose],
   logger
 });
 graceful.listen();
@@ -108,6 +113,7 @@ graceful.listen();
 (async () => {
   try {
     await bree.start();
+    await setupMongoose(logger);
   } catch (err) {
     await logger.error(err);
     process.exit(1);
