@@ -685,6 +685,20 @@ if (
   }
 
   //
+  // due to bounce spam from sakura.ne.jp we are blocking their failure auto-replies
+  //
+  if (
+    session.resolvedRootClientHostname === 'sakura.ne.jp' &&
+    headers.hasHeader('auto-submitted') &&
+    headers.getFirst('auto-submitted').toLowerCase().trim() ===
+      'auto-generated (failure)'
+  ) {
+    throw new SMTPError(
+      'Due to bounce spam from sakura.ne.jp we have implemented bounce block restrictions'
+    );
+  }
+
+  //
   // due to microsoft and docusign scam
   //
   if (
