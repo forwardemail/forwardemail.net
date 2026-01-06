@@ -1219,7 +1219,7 @@
           fi
 
           # Timestamp and path (flat structure - no folder nesting)
-          BACKUP_NAME="mongo-backup-$(date -u +%Y-%m-%dT%H:%M:%SZ).gz.gpg"
+          BACKUP_NAME="logs-mongo-backup-$(date -u +%Y-%m-%dT%H:%M:%SZ).gz.gpg"
           S3_PATH="s3://${BACKUP_BUCKET}/mongo/${BACKUP_NAME}"
 
           echo "Backup destination: ${S3_PATH}"
@@ -1327,10 +1327,10 @@
             FILE_DATE=$(echo "$line" | awk '{print $1" "$2}')
             FILE_PATH=$(echo "$line" | awk '{print $4}')
 
-            # Extract timestamp from filename (ISO 8601 format: mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
-            # Filename format: mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
+            # Extract timestamp from filename (ISO 8601 format: logs-mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
+            # Filename format: logs-mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
             FILENAME=$(basename "$FILE_PATH")
-            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
+            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'logs-mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
 
             # Try to parse timestamp from filename first (more reliable), fallback to S3 metadata date
             if [ -n "$ISO_TIMESTAMP" ]; then
