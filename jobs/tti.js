@@ -37,10 +37,6 @@ const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const TTI = require('#models/tti');
 
-// Maximum reasonable TTI value (2 minutes)
-// Values beyond this are capped to prevent chart spikes from anomalies
-// const MAX_REASONABLE_TTI_MS = ms('2m');
-
 //
 // every 30s ensure that IMAP connection is established
 // (this ensures that all providers are always connected)
@@ -58,13 +54,7 @@ setInterval(async () => {
             return;
 
           imapClients.delete(provider.name);
-          const imapClient = new ImapFlow({
-            ...provider.config,
-            // Explicit timeouts to prevent ~15s spikes from default greetingTimeout (16s)
-            greetingTimeout: ms('30s'),
-            connectionTimeout: ms('30s'),
-            socketTimeout: ms('1d') // long-lived IMAP connections
-          });
+          const imapClient = new ImapFlow(provider.config);
           await imapClient.connect();
           await imapClient.mailboxOpen('INBOX');
           imapClients.set(provider.name, imapClient);
@@ -181,34 +171,10 @@ async function checkTTI() {
             imapClients.get(provider.name).usable
           ) {
             imapClient = imapClients.get(provider.name);
-            // Verify connection is actually healthy with a NOOP
-            try {
-              await Promise.race([
-                imapClient.noop(),
-                new Promise((resolve, reject) => {
-                  setTimeout(
-                    () => reject(new Error('IMAP NOOP timeout')),
-                    ms('5s')
-                  );
-                })
-              ]);
-            } catch (healthErr) {
-              logger.warn('IMAP health check failed, reconnecting', {
-                provider: provider.name,
-                error: healthErr.message
-              });
-              imapClients.delete(provider.name);
-              imapClient = null;
-            }
-          }
-
-          if (!imapClient) {
+          } else {
             imapClients.delete(provider.name);
             imapClient = new ImapFlow({
               ...provider.config,
-              // Explicit timeouts to prevent ~15s spikes from default greetingTimeout (16s)
-              greetingTimeout: ms('30s'),
-              connectionTimeout: ms('30s'),
               socketTimeout: ms('1d') // long-lived IMAP connections
             });
             await imapClient.connect();
@@ -281,8 +247,7 @@ Forward Email
                 const signatures = Buffer.from(signResult.signatures, 'utf8');
 
                 try {
-                  // Wrap sendEmail with timeout to prevent indefinite hanging
-                  const sendPromise = sendEmail({
+                  info = await sendEmail({
                     session: createSession({
                       envelope: {
                         from: config.supportEmail,
@@ -303,15 +268,6 @@ Forward Email
                     resolver,
                     client
                   });
-                  info = await Promise.race([
-                    sendPromise,
-                    new Promise((resolve, reject) => {
-                      setTimeout(
-                        () => reject(new Error('sendEmail timeout after 2m')),
-                        ms('2m')
-                      );
-                    })
-                  ]);
                   if (
                     Array.isArray(info.rejectedErrors) &&
                     info.rejectedErrors.length > 0
@@ -352,26 +308,13 @@ Forward Email
                   }
 
                   const signatures = Buffer.from(signResult.signatures, 'utf8');
-                  // Wrap fallback sendMail with timeout
-                  const fallbackPromise = config.email.transport.sendMail({
+                  info = await config.email.transport.sendMail({
                     envelope,
                     raw: Buffer.concat(
                       [signatures, newRaw],
                       signatures.length + newRaw.length
                     )
                   });
-                  info = await Promise.race([
-                    fallbackPromise,
-                    new Promise((resolve, reject) => {
-                      setTimeout(
-                        () =>
-                          reject(
-                            new Error('fallback sendMail timeout after 2m')
-                          ),
-                        ms('2m')
-                      );
-                    })
-                  ]);
                   if (
                     Array.isArray(info.rejectedErrors) &&
                     info.rejectedErrors.length > 0
@@ -416,26 +359,9 @@ Forward Email
                   await logger.fatal(err);
                 }
 
-                if (!_.isDate(received)) return 0;
-                const ttiMs = received.getTime() - date.getTime();
-                //
-                // NOTE: not being used but keeping here for future reference
-                //
-                // Cap extreme values to prevent chart spikes
-                //
-                /*
-                if (ttiMs > MAX_REASONABLE_TTI_MS) {
-                  logger.warn('TTI value exceeded maximum threshold, capping', {
-                    provider: provider.name,
-                    type: i === 0 ? 'direct' : 'forwarding',
-                    actualMs: ttiMs,
-                    cappedMs: MAX_REASONABLE_TTI_MS
-                  });
-                  return MAX_REASONABLE_TTI_MS;
-                }
-                */
-
-                return ttiMs;
+                return _.isDate(received)
+                  ? received.getTime() - date.getTime()
+                  : 0;
               }
             )
           );
