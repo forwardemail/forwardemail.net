@@ -71,43 +71,123 @@ logger.info(
   { hide_meta: true }
 );
 
+// SMTP Bree job configuration
+const smtpJobs = [
+  {
+    //
+    // This is a long running job, but we attempt to restart it
+    // every 30s in case errors (e.g. uncaught exception edge case causes `process.exit()`)
+    // This job is recursive and calls its main function to keep itself running (and sending emails)
+    // (for putting emails back into queue that are frozen or need to be retried, see jobs/unlock-emails)
+    //
+    name: 'send-emails',
+    interval: '30s',
+    timeout: 0,
+    //
+    // Pass Piscina configuration to the job via workerData
+    // The job will use this to determine whether to use Piscina
+    // or fall back to single-threaded PQueue processing
+    //
+    worker: {
+      workerData: {
+        piscinaEnabled,
+        maxThreads,
+        minThreads,
+        idleTimeout
+      }
+    }
+  },
+  {
+    // This is a long running job as well
+    // (with setTimeout upon completion)
+    // (so it never exits, but this is just in case it does)
+    // Time to inbox monitoring
+    name: 'tti',
+    interval: '10m',
+    timeout: 0
+  }
+];
+
 const bree = new Bree({
   logger,
-  jobs: [
-    {
-      //
-      // This is a long running job, but we attempt to restart it
-      // every 30s in case errors (e.g. uncaught exception edge case causes `process.exit()`)
-      // This job is recursive and calls its main function to keep itself running (and sending emails)
-      // (for putting emails back into queue that are frozen or need to be retried, see jobs/unlock-emails)
-      //
-      name: 'send-emails',
-      interval: '30s',
-      timeout: 0,
-      //
-      // Pass Piscina configuration to the job via workerData
-      // The job will use this to determine whether to use Piscina
-      // or fall back to single-threaded PQueue processing
-      //
-      worker: {
-        workerData: {
-          piscinaEnabled,
-          maxThreads,
-          minThreads,
-          idleTimeout
-        }
-      }
-    },
-    {
-      // This is a long running job as well
-      // (with setTimeout upon completion)
-      // (so it never exits, but this is just in case it does)
-      // Time to inbox monitoring
-      name: 'tti',
-      interval: '10m',
-      timeout: 0
+  jobs: smtpJobs
+});
+
+// Track job start times for duration calculation
+const jobStartTimes = new Map();
+
+// Get job configuration by name
+function getJobConfig(name) {
+  const job = smtpJobs.find((j) => j.name === name);
+  return job || { name };
+}
+
+// Log job lifecycle events with ignore_hook: false to store in Logs collection
+bree.on('worker created', (name) => {
+  const startTime = Date.now();
+  jobStartTimes.set(name, startTime);
+  const jobConfig = getJobConfig(name);
+
+  logger.info('job:start', {
+    ignore_hook: false,
+    job: {
+      name,
+      breeInstance: 'smtp-bree',
+      startedAt: new Date(startTime).toISOString(),
+      interval: jobConfig.interval,
+      cron: jobConfig.cron,
+      timeout: jobConfig.timeout
     }
-  ]
+  });
+});
+
+bree.on('worker deleted', (name) => {
+  const startTime = jobStartTimes.get(name);
+  const endTime = Date.now();
+  const duration = startTime ? endTime - startTime : null;
+  const jobConfig = getJobConfig(name);
+
+  // Get worker to check for errors
+  const worker = bree.workers.get(name);
+  const hasError = worker && worker.exitCode && worker.exitCode !== 0;
+
+  if (hasError) {
+    logger.error('job:error', {
+      ignore_hook: false,
+      job: {
+        name,
+        breeInstance: 'smtp-bree',
+        startedAt: startTime ? new Date(startTime).toISOString() : null,
+        finishedAt: new Date(endTime).toISOString(),
+        duration,
+        exitCode: worker.exitCode,
+        interval: jobConfig.interval,
+        cron: jobConfig.cron,
+        timeout: jobConfig.timeout
+      },
+      err: {
+        message: `Job exited with code ${worker.exitCode}`,
+        code: worker.exitCode
+      }
+    });
+  } else {
+    logger.info('job:complete', {
+      ignore_hook: false,
+      job: {
+        name,
+        breeInstance: 'smtp-bree',
+        startedAt: startTime ? new Date(startTime).toISOString() : null,
+        finishedAt: new Date(endTime).toISOString(),
+        duration,
+        exitCode: worker ? worker.exitCode : 0,
+        interval: jobConfig.interval,
+        cron: jobConfig.cron,
+        timeout: jobConfig.timeout
+      }
+    });
+  }
+
+  jobStartTimes.delete(name);
 });
 
 //

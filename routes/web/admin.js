@@ -89,6 +89,11 @@ router
   .get('/logs', paginate.middleware(10, 50), web.admin.logs.list)
   .get('/logs/:id', web.admin.logs.retrieve)
 
+  // jobs
+  .get('/jobs', paginate.middleware(10, 50), web.admin.jobs.list)
+  .get('/jobs/detail/:name', web.admin.jobs.jobDetail)
+  .get('/jobs/:id', web.admin.jobs.retrieve)
+
   // emails
   .get('/emails', paginate.middleware(10, 50), web.admin.emails.list)
   .get('/emails/:id', web.admin.emails.retrieve)

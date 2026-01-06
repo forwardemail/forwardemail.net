@@ -1,0 +1,184 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row
+      .col
+        h3.mb-4
+          i.fa.fa-cog.mr-2
+          = t("Job Details")
+          |
+          | -
+          = " "
+          code= jobName
+
+        //- Job Statistics Cards
+        .row.mb-4
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-info
+              .card-body.text-center
+                .h2.mb-0.text-info= jobStats.totalRuns || 0
+                small.text-muted= t("Total Runs")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-success
+              .card-body.text-center
+                .h2.mb-0.text-success= jobStats.totalCompleted || 0
+                small.text-muted= t("Completed")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-danger
+              .card-body.text-center
+                .h2.mb-0.text-danger= jobStats.totalErrors || 0
+                small.text-muted= t("Errors")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-primary
+              .card-body.text-center
+                - const successRate = jobStats.totalRuns > 0 ? ((jobStats.totalCompleted / jobStats.totalRuns) * 100).toFixed(1) : 0;
+                .h2.mb-0.text-primary
+                  = successRate
+                  | %
+                small.text-muted= t("Success Rate")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-secondary
+              .card-body.text-center
+                .h2.mb-0.text-secondary
+                  if jobStats.avgDuration
+                    = (jobStats.avgDuration / 1000).toFixed(2)
+                    | s
+                  else
+                    = "-"
+                small.text-muted= t("Avg Duration")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-warning
+              .card-body.text-center
+                .h2.mb-0.text-warning
+                  if jobStats.maxDuration
+                    = (jobStats.maxDuration / 1000).toFixed(2)
+                    | s
+                  else
+                    = "-"
+                small.text-muted= t("Max Duration")
+
+        .row
+          .col-md-4
+            //- Job Configuration
+            .card.mb-4
+              .card-header
+                i.fa.fa-cog.mr-2
+                = t("Job Configuration")
+              .card-body
+                table.table.table-sm.mb-0
+                  tbody
+                    tr
+                      th(scope="row")= t("Job Name")
+                      td= jobName
+                    if jobConfig.breeInstance
+                      tr
+                        th(scope="row")= t("Bree Instance")
+                        td
+                          span.badge.badge-secondary= jobConfig.breeInstance
+                    if jobConfig.interval
+                      tr
+                        th(scope="row")= t("Interval")
+                        td
+                          span.badge.badge-info= jobConfig.interval
+                    if jobConfig.cron
+                      tr
+                        th(scope="row")= t("Cron")
+                        td
+                          span.badge.badge-warning= jobConfig.cron
+                    if jobConfig.timeout !== undefined
+                      tr
+                        th(scope="row")= t("Timeout")
+                        td= jobConfig.timeout
+                    if jobStats.lastRun
+                      tr
+                        th(scope="row")= t("Last Run")
+                        td= dayjs(jobStats.lastRun).format("YYYY-MM-DD HH:mm:ss")
+                    if jobStats.firstRun
+                      tr
+                        th(scope="row")= t("First Run")
+                        td= dayjs(jobStats.firstRun).format("YYYY-MM-DD HH:mm:ss")
+                    if jobStats.minDuration
+                      tr
+                        th(scope="row")= t("Min Duration")
+                        td
+                          = (jobStats.minDuration / 1000).toFixed(3)
+                          | s
+                    if jobStats.maxDuration
+                      tr
+                        th(scope="row")= t("Max Duration")
+                        td
+                          = (jobStats.maxDuration / 1000).toFixed(3)
+                          | s
+
+          .col-md-8
+            //- Execution History
+            .card
+              .card-header
+                i.fa.fa-history.mr-2
+                = t("Execution History")
+                span.badge.badge-secondary.ml-2
+                  = history.length
+                  |
+                  | entries
+              .card-body
+                if history && history.length > 0
+                  .table-responsive
+                    table.table.table-hover.table-bordered.table-sm
+                      thead.thead-dark
+                        tr
+                          th.text-center= t("Status")
+                          th.text-center= t("Time")
+                          th.text-center= t("Duration")
+                          th= t("Details")
+                          th.text-center= t("Actions")
+                      tbody
+                        each log in history
+                          - const statusClass = log.message === "job:complete" ? "table-success" : log.message === "job:error" ? "table-danger" : log.message === "job:start" ? "table-info" : "";
+                          tr(class=statusClass)
+                            td.text-center
+                              if log.message === "job:complete"
+                                span.badge.badge-success= t("Complete")
+                              else if log.message === "job:error"
+                                span.badge.badge-danger= t("Error")
+                              else if log.message === "job:start"
+                                span.badge.badge-info= t("Started")
+                              else if log.message === "job:cancelled"
+                                span.badge.badge-warning= t("Cancelled")
+                              else
+                                span.badge.badge-secondary= log.message
+                            td.text-center.small= dayjs(log.created_at).format("YYYY-MM-DD HH:mm:ss")
+                            td.text-center
+                              if log.meta && log.meta.job && log.meta.job.duration
+                                = (log.meta.job.duration / 1000).toFixed(3)
+                                | s
+                              else
+                                = "-"
+                            td.small
+                              if log.err
+                                span.text-danger= log.err.message || t("Error")
+                              else if log.meta && log.meta.job
+                                if log.meta.job.signal
+                                  span.badge.badge-warning.mr-1
+                                    = "Signal: "
+                                    = log.meta.job.signal
+                                if log.meta.job.exitCode !== undefined && log.meta.job.exitCode !== null
+                                  span.badge.badge-info
+                                    = "Exit: "
+                                    = log.meta.job.exitCode
+                            td.text-center
+                              a.btn.btn-dark.btn-sm(
+                                href=l("/admin/jobs/" + log._id),
+                                title=t("View Details")
+                              )
+                                i.fa.fa-eye
+                else
+                  .alert.alert-info.mb-0
+                    i.fa.fa-info-circle.mr-2
+                    = t("No execution history found")
+
+        .row.mt-3
+          .col
+            a.btn.btn-secondary(href=l("/admin/jobs"))
+              i.fa.fa-arrow-left.mr-1
+              = t("Back to Jobs")

@@ -1,0 +1,84 @@
+.card-body
+  if logs && logs.length > 0
+    .table-responsive
+      table.table.table-hover.table-bordered.table-sm
+        thead.thead-dark
+          tr
+            th= t("Job Name")
+            th.text-center= t("Status")
+            th.text-center= t("Instance")
+            th.text-center= t("Started At")
+            th.text-center= t("Finished At")
+            th.text-center= t("Duration")
+            th.text-center= t("Details")
+            th.text-center= t("Actions")
+        tbody
+          each log in logs
+            - const statusClass = log.message === "job:complete" ? "table-success" : log.message === "job:error" ? "table-danger" : log.message === "job:start" ? "table-info" : "";
+            tr(class=statusClass)
+              td
+                if log.meta && log.meta.job
+                  a(href=l("/admin/jobs/detail/" + log.meta.job.name))= log.meta.job.name
+                else
+                  = "-"
+              td.align-middle.text-center
+                if log.message === "job:complete"
+                  span.badge.badge-success= t("Complete")
+                else if log.message === "job:error"
+                  span.badge.badge-danger= t("Error")
+                else if log.message === "job:start"
+                  span.badge.badge-info= t("Started")
+                else if log.message === "job:cancelled"
+                  span.badge.badge-warning= t("Cancelled")
+                else
+                  span.badge.badge-secondary= log.message
+              td.align-middle.text-center
+                if log.meta && log.meta.job && log.meta.job.breeInstance
+                  span.badge.badge-secondary= log.meta.job.breeInstance
+                else
+                  = "-"
+              td.align-middle.text-center.small
+                if log.meta && log.meta.job && log.meta.job.startedAt
+                  = dayjs(log.meta.job.startedAt).format("YYYY-MM-DD HH:mm:ss")
+                else
+                  = dayjs(log.created_at).format("YYYY-MM-DD HH:mm:ss")
+              td.align-middle.text-center.small
+                if log.meta && log.meta.job && log.meta.job.finishedAt
+                  = dayjs(log.meta.job.finishedAt).format("YYYY-MM-DD HH:mm:ss")
+                else
+                  = "-"
+              td.align-middle.text-center
+                if log.meta && log.meta.job && log.meta.job.duration
+                  = (log.meta.job.duration / 1000).toFixed(2)
+                  | s
+                else
+                  = "-"
+              td.align-middle.small
+                if log.err
+                  span.text-danger= log.err.message || t("Error")
+                  if log.err.code
+                    br
+                    span.badge.badge-dark
+                      = "Code: "
+                      = log.err.code
+                else if log.meta && log.meta.job
+                  if log.meta.job.signal
+                    span.badge.badge-warning.mr-1
+                      = "Signal: "
+                      = log.meta.job.signal
+                  if log.meta.job.exitCode !== undefined && log.meta.job.exitCode !== null
+                    span.badge.badge-info
+                      = "Exit: "
+                      = log.meta.job.exitCode
+              td.align-middle.text-center
+                a.btn.btn-dark.btn-sm(
+                  href=l("/admin/jobs/" + log.id),
+                  title=t("View Details")
+                )
+                  i.fa.fa-eye
+  else
+    .alert.alert-info.mb-0
+      i.fa.fa-info-circle.mr-2
+      = t("No job logs found")
+
+  include ../../_pagination

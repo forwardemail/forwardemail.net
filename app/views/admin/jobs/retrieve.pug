@@ -1,0 +1,144 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row
+      .col
+        h3.mb-4
+          i.fa.fa-cog.mr-2
+          = t("Job Log Details")
+
+        .card
+          .card-header
+            .d-flex.justify-content-between.align-items-center
+              span
+                i.fa.fa-info-circle.mr-2
+                = t("Log Entry")
+              a.btn.btn-secondary.btn-sm(href=l("/admin/jobs"))
+                i.fa.fa-arrow-left.mr-1
+                = t("Back to Jobs")
+          .card-body
+            .row
+              .col-md-6
+                .card.mb-3
+                  .card-header= t("Basic Information")
+                  .card-body
+                    table.table.table-sm.mb-0
+                      tbody
+                        tr
+                          th(scope="row")= t("Message")
+                          td
+                            if result.message === "job:complete"
+                              span.badge.badge-success= t("Complete")
+                            else if result.message === "job:error"
+                              span.badge.badge-danger= t("Error")
+                            else if result.message === "job:start"
+                              span.badge.badge-info= t("Started")
+                            else if result.message === "job:cancelled"
+                              span.badge.badge-warning= t("Cancelled")
+                            else
+                              span.badge.badge-secondary= result.message
+                        tr
+                          th(scope="row")= t("Created At")
+                          td= dayjs(result.created_at).format("YYYY-MM-DD HH:mm:ss")
+                        tr
+                          th(scope="row")= t("Log ID")
+                          td
+                            code= result.id
+
+              .col-md-6
+                if result.meta && result.meta.job
+                  .card.mb-3
+                    .card-header= t("Job Information")
+                    .card-body
+                      table.table.table-sm.mb-0
+                        tbody
+                          tr
+                            th(scope="row")= t("Job Name")
+                            td
+                              a(
+                                href=l("/admin/jobs/detail/" + result.meta.job.name)
+                              )= result.meta.job.name
+                          tr
+                            th(scope="row")= t("Bree Instance")
+                            td
+                              span.badge.badge-secondary= result.meta.job.breeInstance || "-"
+                          if result.meta.job.startedAt
+                            tr
+                              th(scope="row")= t("Started At")
+                              td= dayjs(result.meta.job.startedAt).format("YYYY-MM-DD HH:mm:ss")
+                          if result.meta.job.finishedAt
+                            tr
+                              th(scope="row")= t("Finished At")
+                              td= dayjs(result.meta.job.finishedAt).format("YYYY-MM-DD HH:mm:ss")
+                          if result.meta.job.duration
+                            tr
+                              th(scope="row")= t("Duration")
+                              td
+                                = (result.meta.job.duration / 1000).toFixed(3)
+                                |
+                                | seconds
+                          if result.meta.job.interval
+                            tr
+                              th(scope="row")= t("Interval")
+                              td
+                                span.badge.badge-info= result.meta.job.interval
+                          if result.meta.job.cron
+                            tr
+                              th(scope="row")= t("Cron")
+                              td
+                                span.badge.badge-warning= result.meta.job.cron
+                          if result.meta.job.timeout !== undefined
+                            tr
+                              th(scope="row")= t("Timeout")
+                              td= result.meta.job.timeout
+                          if result.meta.job.exitCode !== undefined
+                            tr
+                              th(scope="row")= t("Exit Code")
+                              td
+                                if result.meta.job.exitCode === 0
+                                  span.badge.badge-success= result.meta.job.exitCode
+                                else
+                                  span.badge.badge-danger= result.meta.job.exitCode
+                          if result.meta.job.signal
+                            tr
+                              th(scope="row")= t("Signal")
+                              td
+                                span.badge.badge-warning= result.meta.job.signal
+
+            //- Error Information
+            if result.err
+              .card.mb-3.border-danger
+                .card-header.bg-danger.text-white
+                  i.fa.fa-exclamation-triangle.mr-2
+                  = t("Error Details")
+                .card-body
+                  if result.err.message
+                    p
+                      strong
+                        = t("Message")
+                        | :
+                      |
+                      = result.err.message
+                  if result.err.code
+                    p
+                      strong
+                        = t("Code")
+                        | :
+                      |
+                      code= result.err.code
+                  if result.err.stack
+                    details
+                      summary= t("Stack Trace")
+                      pre.bg-dark.text-light.p-3.mt-2
+                        code= result.err.stack
+
+            //- Full Meta Data
+            if result.meta
+              .card
+                .card-header
+                  i.fa.fa-code.mr-2
+                  = t("Full Meta Data")
+                .card-body
+                  pre.bg-dark.text-light.p-3.mb-0
+                    code= JSON.stringify(result.meta, null, 2)

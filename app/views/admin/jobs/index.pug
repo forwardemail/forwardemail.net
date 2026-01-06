@@ -1,0 +1,207 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row
+      .col
+        h3.mb-4
+          i.fa.fa-cogs.mr-2
+          = t("Jobs Dashboard")
+
+        //- Summary Cards
+        .row.mb-4
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-primary
+              .card-body.text-center
+                .h2.mb-0.text-primary= summary.totalJobs
+                small.text-muted= t("Total Jobs")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-success
+              .card-body.text-center
+                .h2.mb-0.text-success= summary.totalCompleted
+                small.text-muted= t("Completed")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-danger
+              .card-body.text-center
+                .h2.mb-0.text-danger= summary.totalErrors
+                small.text-muted= t("Errors")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-warning
+              .card-body.text-center
+                .h2.mb-0.text-warning= summary.jobsWithErrors
+                small.text-muted= t("Jobs with Errors")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-info
+              .card-body.text-center
+                .h2.mb-0.text-info= summary.totalRuns
+                small.text-muted= t("Total Runs")
+          .col-md-2.col-sm-4.col-6.mb-3
+            .card.h-100.border-secondary
+              .card-body.text-center
+                .h2.mb-0.text-secondary
+                  = summary.avgSuccessRate.toFixed(1)
+                  | %
+                small.text-muted= t("Avg Success Rate")
+
+        //- Recent Errors Alert
+        if recentErrors && recentErrors.length > 0
+          .alert.alert-danger.mb-4
+            h5.alert-heading
+              i.fa.fa-exclamation-triangle.mr-2
+              = t("Recent Errors")
+            ul.mb-0
+              each error in recentErrors
+                li
+                  strong= error.meta && error.meta.job ? error.meta.job.name : t("Unknown Job")
+                  |
+                  | -
+                  = " "
+                  = dayjs(error.created_at).format("YYYY-MM-DD HH:mm:ss")
+                  if error.err && error.err.message
+                    br
+                    small.text-danger
+                      - const errMsg = error.err.message;
+                      - const truncatedMsg = errMsg.length > 100 ? errMsg.substring(0, 100) : errMsg;
+                      = truncatedMsg
+                      if errMsg.length > 100
+                        | ...
+
+        //- Filter Form
+        form.ajax-form.table-ajax-form.card.mb-3(
+          action=l("/admin/jobs"),
+          method="GET",
+          data-table="#table-jobs"
+        )
+          .card-header
+            i.fa.fa-filter.mr-2
+            = t("Filters")
+          .card-body
+            .row
+              .col-md-3.mb-2
+                label.form-label(for="job_name")= t("Job Name")
+                select#job_name.form-control(name="job_name")
+                  option(value="")= t("All Jobs")
+                  each jobName in uniqueJobNames
+                    option(
+                      value=jobName,
+                      selected=ctx.query.job_name === jobName
+                    )= jobName
+              .col-md-3.mb-2
+                label.form-label(for="status")= t("Status")
+                select#status.form-control(name="status")
+                  option(value="")= t("All Statuses")
+                  option(value="start", selected=ctx.query.status === "start")= t("Started")
+                  option(
+                    value="complete",
+                    selected=ctx.query.status === "complete"
+                  )= t("Completed")
+                  option(value="error", selected=ctx.query.status === "error")= t("Error")
+                  option(
+                    value="cancelled",
+                    selected=ctx.query.status === "cancelled"
+                  )= t("Cancelled")
+              .col-md-3.mb-2
+                label.form-label(for="bree_instance")= t("Bree Instance")
+                select#bree_instance.form-control(name="bree_instance")
+                  option(value="")= t("All Instances")
+                  each instance in uniqueBreeInstances
+                    option(
+                      value=instance,
+                      selected=ctx.query.bree_instance === instance
+                    )= instance
+              .col-md-3.mb-2
+                label.form-label(for="errors_only")= t("Show Only")
+                .form-check.mt-2
+                  input#errors_only.form-check-input(
+                    type="checkbox",
+                    name="errors_only",
+                    value="true",
+                    checked=ctx.query.errors_only === "true"
+                  )
+                  label.form-check-label(for="errors_only")= t("Errors Only")
+            .row.mt-2
+              .col
+                button.btn.btn-primary.mr-2(type="submit")
+                  i.fa.fa-search.mr-1
+                  = t("Filter")
+                a.btn.btn-secondary(href=l("/admin/jobs"))
+                  i.fa.fa-times.mr-1
+                  = t("Clear")
+
+        //- Job Statistics Table
+        if jobStats && jobStats.length > 0
+          .card.mb-4
+            .card-header
+              i.fa.fa-chart-bar.mr-2
+              = t("Job Statistics")
+            .card-body
+              .table-responsive
+                table.table.table-hover.table-bordered.table-sm
+                  thead.thead-dark
+                    tr
+                      th= t("Job Name")
+                      th.text-center= t("Instance")
+                      th.text-center= t("Last Status")
+                      th.text-center= t("Last Run")
+                      th.text-center= t("Runs")
+                      th.text-center= t("Completed")
+                      th.text-center= t("Errors")
+                      th.text-center= t("Success Rate")
+                      th.text-center= t("Avg Duration")
+                      th.text-center= t("Schedule")
+                  tbody
+                    each job in jobStats
+                      - const statusClass = job.lastStatus === "job:complete" ? "table-success" : job.lastStatus === "job:error" ? "table-danger" : job.lastStatus === "job:start" ? "table-info" : "";
+                      tr(class=statusClass)
+                        td
+                          a(href=l("/admin/jobs/detail/" + job.name))= job.name
+                        td.text-center
+                          span.badge.badge-secondary= job.breeInstance || "-"
+                        td.text-center
+                          if job.lastStatus === "job:complete"
+                            span.badge.badge-success= t("Complete")
+                          else if job.lastStatus === "job:error"
+                            span.badge.badge-danger= t("Error")
+                          else if job.lastStatus === "job:start"
+                            span.badge.badge-info= t("Running")
+                          else
+                            span.badge.badge-secondary= job.lastStatus || "-"
+                        td.text-center.small
+                          if job.lastRun
+                            = dayjs(job.lastRun).format("YYYY-MM-DD HH:mm:ss")
+                          else
+                            = "-"
+                        td.text-center= job.totalRuns
+                        td.text-center.text-success= job.totalCompleted
+                        td.text-center
+                          if job.totalErrors > 0
+                            span.text-danger.font-weight-bold= job.totalErrors
+                          else
+                            = "0"
+                        td.text-center
+                          - const successClass = job.successRate >= 90 ? "text-success" : job.successRate >= 70 ? "text-warning" : "text-danger";
+                          span(class=successClass)
+                            = job.successRate.toFixed(1)
+                            | %
+                        td.text-center
+                          if job.avgDuration
+                            = (job.avgDuration / 1000).toFixed(2)
+                            | s
+                          else
+                            = "-"
+                        td.text-center
+                          if job.interval
+                            span.badge.badge-info= job.interval
+                          else if job.cron
+                            span.badge.badge-warning= job.cron
+                          else
+                            = "-"
+
+        //- Job Logs Table
+        .card
+          .card-header
+            i.fa.fa-list.mr-2
+            = t("Job Execution Logs")
+            span.badge.badge-secondary.ml-2= itemCount
+          #table-jobs
+            include _table

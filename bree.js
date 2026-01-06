@@ -13,9 +13,91 @@ require('#config/env');
 const Bree = require('bree');
 const Graceful = require('@ladjs/graceful');
 
+const jobs = require('./jobs');
 const logger = require('#helpers/logger');
 
 const bree = new Bree({ logger });
+
+// Track job start times for duration calculation
+const jobStartTimes = new Map();
+
+// Get job configuration by name
+function getJobConfig(name) {
+  const job = jobs.find((j) =>
+    typeof j === 'string' ? j === name : j.name === name
+  );
+  if (!job) return {};
+  if (typeof job === 'string') return { name: job };
+  return job;
+}
+
+// Log job lifecycle events with ignore_hook: false to store in Logs collection
+bree.on('worker created', (name) => {
+  const startTime = Date.now();
+  jobStartTimes.set(name, startTime);
+  const jobConfig = getJobConfig(name);
+
+  logger.info('job:start', {
+    ignore_hook: false,
+    job: {
+      name,
+      breeInstance: 'bree',
+      startedAt: new Date(startTime).toISOString(),
+      interval: jobConfig.interval,
+      cron: jobConfig.cron,
+      timeout: jobConfig.timeout
+    }
+  });
+});
+
+bree.on('worker deleted', (name) => {
+  const startTime = jobStartTimes.get(name);
+  const endTime = Date.now();
+  const duration = startTime ? endTime - startTime : null;
+  const jobConfig = getJobConfig(name);
+
+  // Get worker to check for errors
+  const worker = bree.workers.get(name);
+  const hasError = worker && worker.exitCode && worker.exitCode !== 0;
+
+  if (hasError) {
+    logger.error('job:error', {
+      ignore_hook: false,
+      job: {
+        name,
+        breeInstance: 'bree',
+        startedAt: startTime ? new Date(startTime).toISOString() : null,
+        finishedAt: new Date(endTime).toISOString(),
+        duration,
+        exitCode: worker.exitCode,
+        interval: jobConfig.interval,
+        cron: jobConfig.cron,
+        timeout: jobConfig.timeout
+      },
+      err: {
+        message: `Job exited with code ${worker.exitCode}`,
+        code: worker.exitCode
+      }
+    });
+  } else {
+    logger.info('job:complete', {
+      ignore_hook: false,
+      job: {
+        name,
+        breeInstance: 'bree',
+        startedAt: startTime ? new Date(startTime).toISOString() : null,
+        finishedAt: new Date(endTime).toISOString(),
+        duration,
+        exitCode: worker ? worker.exitCode : 0,
+        interval: jobConfig.interval,
+        cron: jobConfig.cron,
+        timeout: jobConfig.timeout
+      }
+    });
+  }
+
+  jobStartTimes.delete(name);
+});
 
 const graceful = new Graceful({
   brees: [bree],
