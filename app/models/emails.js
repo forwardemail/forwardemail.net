@@ -1793,7 +1793,7 @@ Emails.statics.queue = async function (
 };
 
 const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'EMAILS_MONGO_URI'
+  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
 if (!conn) throw new Error('Mongoose connection does not exist');
 module.exports = conn.model('Emails', Emails);

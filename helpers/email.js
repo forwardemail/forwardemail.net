@@ -24,7 +24,7 @@ const env = require('#config/env');
 
 /*
 const emailConn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'EMAILS_MONGO_URI'
+  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
 if (!emailConn) throw new Error('Mongoose connection does not exist');
 const emailTemplates = new EmailTemplates(config.email);

@@ -29,7 +29,7 @@ const initialConnection = mongoose.connections.find((conn) => conn.id === 0);
 if (initialConnection) initialConnection.destroy();
 
 // <https://github.com/Automattic/mongoose/issues/12970>
-for (const name of ['MONGO_URI', 'LOGS_URI', 'EMAILS_MONGO_URI']) {
+for (const name of ['MONGO_URI', 'LOGS_URI']) {
   const uri = env[name];
   if (mongoose.connections.some((conn) => conn._connectionString === uri))
     continue;
