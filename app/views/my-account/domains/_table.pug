@@ -150,64 +150,127 @@ p.text-center.d-lg-none
               h2.h5.mb-0= domain.name
               //- DNS Record Status Indicators
               .small.mt-1.mb-1
-                span.mr-2(
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  data-title=domain.has_txt_record ? t("TXT record verified") : t("TXT record missing")
-                )
-                  = "TXT "
-                  if domain.has_txt_record
+                //- TXT Record Status
+                if domain.has_txt_record
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-html="true",
+                    data-title=t("TXT record verified. Your domain ownership has been confirmed and email forwarding is properly configured.")
+                  )
+                    = "TXT "
                     i.fa.fa-check-circle.text-success
-                  else
+                else
+                  a.mr-2.text-decoration-none(
+                    href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-html="true",
+                    data-title=t("TXT record missing. This record is required to verify domain ownership and configure email forwarding. Click to complete setup.")
+                  )
+                    = "TXT "
                     i.fa.fa-times-circle.text-danger
-                span.mr-2(
-                  data-toggle="tooltip",
-                  data-placement="bottom",
-                  data-title=domain.has_mx_record ? t("MX record verified") : domain.ignore_mx_check ? t("MX check ignored") : t("MX record missing")
-                )
-                  = "MX "
-                  if domain.has_mx_record || domain.ignore_mx_check
+                //- MX Record Status
+                if domain.has_mx_record
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-html="true",
+                    data-title=t("MX record verified. Your domain is correctly configured to receive emails through our mail servers.")
+                  )
+                    = "MX "
                     i.fa.fa-check-circle.text-success
-                    if domain.ignore_mx_check && !domain.has_mx_record
-                      sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
-                  else
+                else if domain.ignore_mx_check
+                  span.mr-2(
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-html="true",
+                    data-title=t("MX check ignored. You have configured advanced MX settings. Ensure your mail routing is properly set up.")
+                  )
+                    = "MX "
+                    i.fa.fa-check-circle.text-success
+                    sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
+                else
+                  a.mr-2.text-decoration-none(
+                    href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+                    data-toggle="tooltip",
+                    data-placement="bottom",
+                    data-html="true",
+                    data-title=t("MX record missing. This record is required to route incoming emails to our servers. Click to complete setup.")
+                  )
+                    = "MX "
                     i.fa.fa-times-circle.text-danger
                 if domain.plan !== 'free'
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-title=domain.has_dkim_record ? t("DKIM record verified") : t("DKIM record missing")
-                  )
-                    = "DKIM "
-                    if domain.has_dkim_record
+                  //- DKIM Record Status
+                  if domain.has_dkim_record
+                    span.mr-2(
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      data-html="true",
+                      data-title=t("DKIM record verified. Your outbound emails are cryptographically signed to prevent tampering and improve deliverability.")
+                    )
+                      = "DKIM "
                       i.fa.fa-check-circle.text-success
-                    else
+                  else
+                    a.mr-2.text-decoration-none(
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      data-html="true",
+                      data-title=t("DKIM record missing. This record is required for outbound SMTP to cryptographically sign your emails and improve deliverability. Click to configure.")
+                    )
+                      = "DKIM "
                       i.fa.fa-times-circle.text-danger
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-title=domain.has_spf_record ? t("SPF record verified") : t("SPF record missing (recommended)")
-                  )
-                    = "SPF "
-                    if domain.has_spf_record
+                  //- SPF Record Status
+                  if domain.has_spf_record
+                    span.mr-2(
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      data-html="true",
+                      data-title=t("SPF record verified. Receiving mail servers can verify that emails from your domain are sent from authorized servers.")
+                    )
+                      = "SPF "
                       i.fa.fa-check-circle.text-success
-                    else
+                  else
+                    a.mr-2.text-decoration-none(
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      data-html="true",
+                      data-title=t("SPF record missing. Without SPF, your emails may be marked as spam or rejected. This record authorizes our servers to send email on your behalf. Click to configure.")
+                    )
+                      = "SPF "
                       i.fa.fa-exclamation-circle.text-warning
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-title=domain.has_dmarc_record ? t("DMARC record verified") : t("DMARC record missing")
-                  )
-                    = "DMARC "
-                    if domain.has_dmarc_record
-                      if domain.has_strict_dmarc
+                  //- DMARC Record Status
+                  if domain.has_dmarc_record
+                    if domain.has_strict_dmarc
+                      span.mr-2(
+                        data-toggle="tooltip",
+                        data-placement="bottom",
+                        data-html="true",
+                        data-title=t("DMARC record verified with p=reject policy. Your domain has maximum protection against email spoofing and impersonation.")
+                      )
+                        = "DMARC "
                         i.fa.fa-check-circle.text-success
-                      else
-                        i.fa.fa-exclamation-circle.text-warning(
-                          data-toggle="tooltip",
-                          data-title=t("DMARC record found but p=reject is recommended for better security")
-                        )
                     else
+                      a.mr-2.text-decoration-none(
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+                        data-toggle="tooltip",
+                        data-placement="bottom",
+                        data-html="true",
+                        data-title=t("DMARC record found but p=reject is recommended. Without p=reject, attackers can still impersonate your domain which may negatively impact your domain reputation. Click to update.")
+                      )
+                        = "DMARC "
+                        i.fa.fa-exclamation-circle.text-warning
+                  else
+                    a.mr-2.text-decoration-none(
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      data-html="true",
+                      data-title=t("DMARC record missing. Without DMARC, your domain can be easily impersonated by attackers, potentially damaging your reputation and enabling phishing attacks. Click to configure.")
+                    )
+                      = "DMARC "
                       i.fa.fa-times-circle.text-danger
               ul.list-inline.mt-1.mb-0
                 if !domain.is_global && domain.group === 'admin' && !domain.has_mx_record || !domain.has_txt_record

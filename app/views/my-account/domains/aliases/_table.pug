@@ -470,7 +470,8 @@ p.text-center.d-lg-none
                   type="button",
                   data-placement="bottom",
                   data-toggle="tooltip",
-                  data-title=alias.is_enabled ? t("Enabled") : t("Disabled"),
+                  data-html="true",
+                  data-title=alias.is_enabled ? t("Alias is enabled and actively receiving/forwarding emails.") : t("Alias is disabled. Emails sent to this address will be silently discarded."),
                   class=alias.is_enabled ? "text-success" : "text-danger"
                 )
                   i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
@@ -537,7 +538,10 @@ p.text-center.d-lg-none
                   if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntuRelatedAlias || domain.group === 'admin')
                     li.list-inline-item
                       span.badge.text-nowrap.text-uppercase(
-                        class=alias.has_imap ? "badge-success" : "badge-secondary"
+                        class=alias.has_imap ? "badge-success" : "badge-secondary",
+                        data-toggle="tooltip",
+                        data-html="true",
+                        data-title=alias.has_imap ? t("IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.") : t("IMAP/POP3/CalDAV/CardDAV disabled. Generate a password to enable email client access.")
                       )
                         i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                         = " "
@@ -714,7 +718,8 @@ p.text-center.d-lg-none
                 type="button",
                 data-placement="bottom",
                 data-toggle="tooltip",
-                data-title=alias.is_enabled ? t("Enabled") : t("Disabled"),
+                data-html="true",
+                data-title=alias.is_enabled ? t("Alias is enabled and actively receiving/forwarding emails.") : t("Alias is disabled. Emails sent to this address will be silently discarded."),
                 class=alias.is_enabled ? "text-success" : "text-danger"
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
@@ -726,7 +731,10 @@ p.text-center.d-lg-none
                 if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntuRelatedAlias || domain.group === 'admin')
                   li.list-inline-item
                     span.badge.text-nowrap.text-uppercase(
-                      class=alias.has_imap ? "badge-success" : "badge-secondary"
+                      class=alias.has_imap ? "badge-success" : "badge-secondary",
+                      data-toggle="tooltip",
+                      data-html="true",
+                      data-title=alias.has_imap ? t("IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.") : t("IMAP/POP3/CalDAV/CardDAV disabled. Generate a password to enable email client access.")
                     )
                       i.fa(class=alias.has_imap ? "fa-check-circle" : "fa-times")
                       = " "

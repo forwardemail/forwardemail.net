@@ -449,7 +449,12 @@ block body
                         code#copy-dmarc.d-block.text-break.small
                           = `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@${config.webHost};`
                         if domain.has_dmarc_record && !domain.has_strict_dmarc
-                          .alert.alert-warning.small.mt-2.mb-0
+                          .alert.alert-warning.small.mt-2.mb-0(
+                            data-toggle="tooltip",
+                            data-html="true",
+                            data-placement="top",
+                            data-title=t("Without p=reject policy, attackers can still send emails impersonating your domain. This can damage your domain reputation and enable phishing attacks against your contacts.")
+                          )
                             i.fa.fa-exclamation-triangle.mr-1
                             = t("Your DMARC record does not have p=reject. We recommend using p=reject for better security.")
                         if !domain.has_dmarc_record || !domain.has_strict_dmarc

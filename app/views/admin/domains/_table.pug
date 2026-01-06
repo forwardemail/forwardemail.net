@@ -65,38 +65,76 @@ include ../../_pagination
                 = t(titleize(humanize(domain.plan)))
               td.align-middle.text-center
                 if domain.has_mx_record
-                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                  i.fa.fa-fw.fa-check.fa-2x.text-success(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("MX record verified. Domain is correctly configured to receive emails through our mail servers.")
+                  )
                 else
-                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("MX record missing. This record is required to route incoming emails to our servers.")
+                  )
               td.align-middle.text-center
                 if domain.has_txt_record
-                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                  i.fa.fa-fw.fa-check.fa-2x.text-success(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("TXT record verified. Domain ownership has been confirmed and email forwarding is properly configured.")
+                  )
                 else
-                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("TXT record missing. This record is required to verify domain ownership and configure email forwarding.")
+                  )
               td.align-middle.text-center
                 if domain.has_dkim_record
-                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                  i.fa.fa-fw.fa-check.fa-2x.text-success(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("DKIM record verified. Outbound emails are cryptographically signed to prevent tampering and improve deliverability.")
+                  )
                 else
-                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("DKIM record missing. This record is required for outbound SMTP to cryptographically sign emails and improve deliverability.")
+                  )
               td.align-middle.text-center
                 if domain.has_spf_record
-                  i.fa.fa-fw.fa-check.fa-2x.text-success
+                  i.fa.fa-fw.fa-check.fa-2x.text-success(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("SPF record verified. Receiving mail servers can verify that emails from this domain are sent from authorized servers.")
+                  )
                 else
                   i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-warning(
                     data-toggle="tooltip",
-                    data-title="SPF missing (recommended)"
+                    data-html="true",
+                    data-title=t("SPF record missing. Without SPF, emails may be marked as spam or rejected. This record authorizes our servers to send email on behalf of this domain.")
                   )
               td.align-middle.text-center
                 if domain.has_dmarc_record
                   if domain.has_strict_dmarc
-                    i.fa.fa-fw.fa-check.fa-2x.text-success
+                    i.fa.fa-fw.fa-check.fa-2x.text-success(
+                      data-toggle="tooltip",
+                      data-html="true",
+                      data-title=t("DMARC record verified with p=reject policy. Domain has maximum protection against email spoofing and impersonation.")
+                    )
                   else
                     i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-warning(
                       data-toggle="tooltip",
-                      data-title="DMARC found but p=reject recommended"
+                      data-html="true",
+                      data-title=t("DMARC record found but p=reject is recommended. Without p=reject, attackers can still impersonate this domain which may negatively impact domain reputation.")
                     )
                 else
-                  i.fa.fa-fw.fa-times.fa-2x.text-danger
+                  i.fa.fa-fw.fa-times.fa-2x.text-danger(
+                    data-toggle="tooltip",
+                    data-html="true",
+                    data-title=t("DMARC record missing. Without DMARC, this domain can be easily impersonated by attackers, potentially damaging reputation and enabling phishing attacks.")
+                  )
               td.align-middle.text-center
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),

@@ -363,7 +363,12 @@ block body
                         = " "
                         != t("Congratulations &ndash; you completed setup!")
                         if !domain.has_spf_record
-                          .small.text-muted.mt-2
+                          a.small.text-muted.mt-2.d-block.text-decoration-none(
+                            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+                            data-toggle="tooltip",
+                            data-html="true",
+                            data-title=t("SPF record missing. Without SPF, your emails may be marked as spam or rejected. This record authorizes our servers to send email on your behalf. Click to configure.")
+                          )
                             i.fa.fa-exclamation-triangle.text-warning.mr-1
                             = t("SPF record missing (recommended)")
                     else

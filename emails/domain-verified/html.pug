@@ -73,10 +73,10 @@ block content
                 .small.text-white.mb-3
                   != emoji("warning")
                   = " = "
-                  = t("SPF missing (recommended)")
+                  = t("SPF missing - without SPF, your emails may be marked as spam or rejected")
               if domain.plan !== 'free' && domain.has_dmarc_record && !domain.has_strict_dmarc
                 .small.text-white.mb-3
                   != emoji("warning")
                   = " = "
-                  = t("DMARC found but p=reject recommended")
+                  = t("DMARC found but p=reject recommended - without p=reject, attackers can impersonate your domain")
           .card-footer.small.text-muted= t("If you have any questions or comments, then please let us know")
