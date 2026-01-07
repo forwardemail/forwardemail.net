@@ -2009,3 +2009,1116 @@ Test REQUIRETLS propagation through MX
   await server.close();
   await smtp.close();
 });
+
+//
+// Tests for recursive forwarding to domains with TXT records but different MX
+//
+// These tests verify the fix for the bug where forwarding to a domain that has
+// Forward Email TXT records but uses a different MX provider would result in
+// "Invalid recipients" error instead of delivering to that domain's MX.
+//
+
+test('recursive forward: self-referential catch-all should deliver to target MX', async (t) => {
+  // Scenario: source.com forwards to user@target.com
+  // target.com has TXT: forward-email=user@target.com (catch-all self-referential)
+  // target.com MX points to different server (not Forward Email)
+  // Expected: email should be delivered to target.com's MX
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  // This server simulates the target domain's MX (different provider like Fastmail)
+  const targetMxPort = await getPort();
+  const targetMxServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(targetMxServer.listen.bind(targetMxServer))(targetMxPort);
+
+  // Create user
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // Source domain (configured with Forward Email MX)
+  const sourceDomain = await t.context.domainFactory
+    .withState({
+      name: `source-self-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  // Target domain - exists in DB with smtp_port set to our test server
+  const targetDomain = await t.context.domainFactory
+    .withState({
+      name: `target-self-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  // Create alias on source domain that forwards to target domain
+  await t.context.aliasFactory
+    .withState({
+      name: 'sender',
+      user: user._id,
+      domain: sourceDomain._id,
+      recipients: [`user@${targetDomain.name}`]
+    })
+    .create();
+
+  // Spoof DNS records
+  const map = new Map();
+
+  // Source domain MX points to Forward Email (our test server)
+  map.set(
+    `mx:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Source domain TXT for verification
+  map.set(
+    `txt:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'TXT',
+      [`${config.paidPrefix}${sourceDomain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Target domain MX points to our test server (simulating different provider)
+  map.set(
+    `mx:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Target domain A record for delivery
+  map.set(
+    `a:${targetDomain.name}`,
+    resolver.spoofPacket(targetDomain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  // Target domain has Forward Email TXT records (self-referential catch-all)
+  // The site-verification links to the domain in DB which has smtp_port set
+  map.set(
+    `txt:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'TXT',
+      [
+        `${config.paidPrefix}${targetDomain.verification_record}`,
+        `forward-email=user@${targetDomain.name}` // catch-all points to same domain
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Send email
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // This should NOT throw "Invalid recipients" error
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'external@test.com',
+        to: `sender@${sourceDomain.name}`
+      },
+      raw: `
+To: sender@${sourceDomain.name}
+From: external@test.com
+Subject: test self-referential forward
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test self-referential forwarding to domain with different MX
+`.trim()
+    })
+  );
+
+  // Wait for email to be delivered
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('15s') });
+
+  t.is(receivedEmails.length, 1, 'Email should be delivered to target MX');
+  t.true(
+    receivedEmails[0].to.some((r) => r.address === `user@${targetDomain.name}`),
+    `Email should be addressed to user@${targetDomain.name}`
+  );
+
+  await targetMxServer.close();
+  await smtp.close();
+});
+
+test('recursive forward: different address same domain should deliver to target MX', async (t) => {
+  // Scenario: source.com forwards to user@target.com
+  // target.com has TXT: forward-email=user:other@target.com (different address, same domain)
+  // target.com MX points to different server
+  // Expected: email should be delivered to target.com's MX (not follow the chain)
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  const targetMxPort = await getPort();
+  const targetMxServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(targetMxServer.listen.bind(targetMxServer))(targetMxPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const sourceDomain = await t.context.domainFactory
+    .withState({
+      name: `source-diff-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  const targetDomain = await t.context.domainFactory
+    .withState({
+      name: `target-diff-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'sender',
+      user: user._id,
+      domain: sourceDomain._id,
+      recipients: [`user@${targetDomain.name}`]
+    })
+    .create();
+
+  const map = new Map();
+
+  map.set(
+    `mx:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'TXT',
+      [`${config.paidPrefix}${sourceDomain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `mx:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `a:${targetDomain.name}`,
+    resolver.spoofPacket(targetDomain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  // Target domain TXT: user forwards to other@target (different address, same domain)
+  map.set(
+    `txt:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'TXT',
+      [
+        `${config.paidPrefix}${targetDomain.verification_record}`,
+        `forward-email=user:other@${targetDomain.name}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'external@test.com',
+        to: `sender@${sourceDomain.name}`
+      },
+      raw: `
+To: sender@${sourceDomain.name}
+From: external@test.com
+Subject: test different address same domain forward
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test forwarding to different address on same domain with different MX
+`.trim()
+    })
+  );
+
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('15s') });
+
+  t.is(receivedEmails.length, 1, 'Email should be delivered to target MX');
+  t.true(
+    receivedEmails[0].to.some((r) => r.address === `user@${targetDomain.name}`),
+    `Email should be addressed to original user@${targetDomain.name}`
+  );
+
+  await targetMxServer.close();
+  await smtp.close();
+});
+
+test('recursive forward: external domain should still forward normally', async (t) => {
+  // Scenario: source.com forwards to user@target.com
+  // target.com has TXT: forward-email=user:external@gmail.com (forwards to external domain)
+  // target.com MX points to different server
+  // Expected: email should be forwarded to gmail.com (legitimate external forward)
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  // This server simulates gmail.com's MX
+  const externalMxPort = await getPort();
+  const externalMxServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(externalMxServer.listen.bind(externalMxServer))(externalMxPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const sourceDomain = await t.context.domainFactory
+    .withState({
+      name: `source-ext-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: externalMxPort.toString()
+    })
+    .create();
+
+  const targetDomain = await t.context.domainFactory
+    .withState({
+      name: `target-ext-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: externalMxPort.toString()
+    })
+    .create();
+
+  const externalDomain = `external-${Date.now()}.com`;
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'sender',
+      user: user._id,
+      domain: sourceDomain._id,
+      recipients: [`user@${targetDomain.name}`]
+    })
+    .create();
+
+  const map = new Map();
+
+  map.set(
+    `mx:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'TXT',
+      [`${config.paidPrefix}${sourceDomain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `mx:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Target domain TXT: forwards to external domain
+  map.set(
+    `txt:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'TXT',
+      [
+        `${config.paidPrefix}${targetDomain.verification_record}`,
+        `forward-email=user:external@${externalDomain}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  // External domain MX
+  map.set(
+    `mx:${externalDomain}`,
+    resolver.spoofPacket(
+      externalDomain,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `a:${externalDomain}`,
+    resolver.spoofPacket(externalDomain, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'external@test.com',
+        to: `sender@${sourceDomain.name}`
+      },
+      raw: `
+To: sender@${sourceDomain.name}
+From: external@test.com
+Subject: test external domain forward
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test forwarding to external domain should work normally
+`.trim()
+    })
+  );
+
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('15s') });
+
+  t.is(
+    receivedEmails.length,
+    1,
+    'Email should be forwarded to external domain'
+  );
+  t.true(
+    receivedEmails[0].to.some(
+      (r) => r.address === `external@${externalDomain}`
+    ),
+    `Email should be addressed to external@${externalDomain}`
+  );
+
+  await externalMxServer.close();
+  await smtp.close();
+});
+
+test('recursive forward: mixed same-domain and external should forward to external only', async (t) => {
+  // Scenario: source.com forwards to user@target.com
+  // target.com has TXT: forward-email=user:user@target.com,backup@external.com
+  // target.com MX points to different server
+  // Expected: email should be forwarded to external.com only
+  // (same-domain address is dropped because there's an external destination)
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  const externalMxPort = await getPort();
+  const externalMxServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(externalMxServer.listen.bind(externalMxServer))(externalMxPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const sourceDomain = await t.context.domainFactory
+    .withState({
+      name: `source-mixed-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: externalMxPort.toString()
+    })
+    .create();
+
+  const targetDomain = await t.context.domainFactory
+    .withState({
+      name: `target-mixed-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: externalMxPort.toString()
+    })
+    .create();
+
+  const externalDomain = `backup-${Date.now()}.com`;
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'sender',
+      user: user._id,
+      domain: sourceDomain._id,
+      recipients: [`user@${targetDomain.name}`]
+    })
+    .create();
+
+  const map = new Map();
+
+  map.set(
+    `mx:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'TXT',
+      [`${config.paidPrefix}${sourceDomain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `mx:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Target domain TXT: forwards to both same-domain AND external
+  // Using two separate forward-email records for the same alias
+  map.set(
+    `txt:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'TXT',
+      [
+        `${config.paidPrefix}${targetDomain.verification_record}`,
+        `forward-email=user:user@${targetDomain.name}`,
+        `forward-email=user:backup@${externalDomain}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `mx:${externalDomain}`,
+    resolver.spoofPacket(
+      externalDomain,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `a:${externalDomain}`,
+    resolver.spoofPacket(externalDomain, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'external@test.com',
+        to: `sender@${sourceDomain.name}`
+      },
+      raw: `
+To: sender@${sourceDomain.name}
+From: external@test.com
+Subject: test mixed forward
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test mixed forwarding (same-domain + external)
+`.trim()
+    })
+  );
+
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('15s') });
+
+  t.is(receivedEmails.length, 1, 'Email should be forwarded');
+  t.true(
+    receivedEmails[0].to.some((r) => r.address === `backup@${externalDomain}`),
+    `Email should be addressed to backup@${externalDomain}`
+  );
+  // Same-domain address should NOT be in the recipients (it's dropped when there's an external)
+  t.false(
+    receivedEmails[0].to.some((r) => r.address === `user@${targetDomain.name}`),
+    'Same-domain address should not be in recipients when external exists'
+  );
+
+  await externalMxServer.close();
+  await smtp.close();
+});
+
+test('recursive forward: chain on same domain should deliver to target MX', async (t) => {
+  // Scenario: source.com forwards to user@target.com
+  // target.com has TXT:
+  //   forward-email=user:other@target.com
+  //   forward-email=other:another@target.com
+  // target.com MX points to different server
+  // Expected: email should be delivered to target.com's MX (chain is broken)
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+
+  const targetMxPort = await getPort();
+  const targetMxServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(targetMxServer.listen.bind(targetMxServer))(targetMxPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const sourceDomain = await t.context.domainFactory
+    .withState({
+      name: `source-chain-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  const targetDomain = await t.context.domainFactory
+    .withState({
+      name: `target-chain-${Date.now()}.com`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: targetMxPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'sender',
+      user: user._id,
+      domain: sourceDomain._id,
+      recipients: [`user@${targetDomain.name}`]
+    })
+    .create();
+
+  const map = new Map();
+
+  map.set(
+    `mx:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${sourceDomain.name}`,
+    resolver.spoofPacket(
+      sourceDomain.name,
+      'TXT',
+      [`${config.paidPrefix}${sourceDomain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `mx:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `a:${targetDomain.name}`,
+    resolver.spoofPacket(targetDomain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  // Target domain TXT: chain of forwards all on same domain
+  map.set(
+    `txt:${targetDomain.name}`,
+    resolver.spoofPacket(
+      targetDomain.name,
+      'TXT',
+      [
+        `${config.paidPrefix}${targetDomain.verification_record}`,
+        `forward-email=user:other@${targetDomain.name}`,
+        `forward-email=other:another@${targetDomain.name}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'external@test.com',
+        to: `sender@${sourceDomain.name}`
+      },
+      raw: `
+To: sender@${sourceDomain.name}
+From: external@test.com
+Subject: test chain forward
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test chain forwarding on same domain should deliver to MX
+`.trim()
+    })
+  );
+
+  await pWaitFor(() => receivedEmails.length > 0, { timeout: ms('15s') });
+
+  t.is(receivedEmails.length, 1, 'Email should be delivered to target MX');
+  // The original address should be preserved (chain is broken at first same-domain hop)
+  t.true(
+    receivedEmails[0].to.some((r) => r.address === `user@${targetDomain.name}`),
+    `Email should be addressed to original user@${targetDomain.name}`
+  );
+
+  await targetMxServer.close();
+  await smtp.close();
+});
