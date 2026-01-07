@@ -59,13 +59,24 @@ const options = {
 
 //
 // Check if a key matches any of the entries and return the matched entry
+// Uses exact domain matching: the value must equal the entry or be a subdomain of it
+// e.g., "stripe.com" matches "stripe.com" and "sub.stripe.com" but NOT "loanstripe.com"
 //
 function keyMatchesEntries(key) {
   const keyLower = key.toLowerCase();
+  // Remove 'denylist:' prefix to get the value
+  const value = keyLower.replace(/^denylist:/, '');
+
+  // Extract domain from value (could be email, domain, or IP)
+  const emailMatch = value.match(/@([^@]+)$/);
+  // It's an email address - extract domain part
+  // else it's a domain, subdomain, or IP
+  const domain = emailMatch ? emailMatch[1] : value;
+
   for (const entry of entries) {
     const entryLower = entry.toLowerCase();
-    // Match pattern: denylist:*{entry}*
-    if (keyLower.includes(entryLower)) {
+    // Exact domain match: domain equals entry OR is a subdomain (ends with .entry)
+    if (domain === entryLower || domain.endsWith(`.${entryLower}`)) {
       return { matched: true, entry };
     }
   }
