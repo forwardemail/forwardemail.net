@@ -37,7 +37,7 @@
     "@forwardemail/uuid-by-string": "5.0.0",
     "@forwardemail/validator": "14.0.0",
     "@forwardemail/whois-rdap": "2.0.0",
-    "@forwardemail/wildduck": "4.0.1",
+    "@forwardemail/wildduck": "4.0.2",
     "@google-cloud/translate": "9.2.0",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",
