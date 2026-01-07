@@ -26,8 +26,21 @@ async function retrieveAliases(ctx, next) {
       : { $and: [{ domain: ctx.state.domain._id, user: ctx.state.user._id }] };
 
   if (isSANB(ctx.query.q)) {
+    // Get the search filter (defaults to 'everything' for backwards compatibility)
+    const searchFilter = ctx.query.search_filter || 'everything';
+
     if (ctx.state.domain.is_catchall_regex_disabled) {
-      if (isEmail(ctx.query.q)) {
+      // Handle search based on filter when catchall regex is disabled
+      if (searchFilter === 'name') {
+        query.$and.push({
+          name: ctx.query.q.split('@')[0].trim().toLowerCase()
+        });
+      } else if (searchFilter === 'recipients') {
+        query.$and.push({
+          recipients: ctx.query.q.trim().toLowerCase()
+        });
+      } else if (isEmail(ctx.query.q)) {
+        // 'everything' filter with email input
         query.$and.push({
           $or: [
             {
@@ -39,11 +52,37 @@ async function retrieveAliases(ctx, next) {
           ]
         });
       } else {
+        // 'everything' filter with non-email input
         query.$and.push({
           name: ctx.query.q.split('@')[0].trim().toLowerCase()
         });
       }
+    } else if (searchFilter === 'name') {
+      // Search only by name
+      query.$and.push({
+        name:
+          ctx.query.q.trim() === '*'
+            ? {
+                $eq: '*'
+              }
+            : isEmail(ctx.query.q) &&
+              ctx.query.q.endsWith(`@${ctx.state.domain.name}`)
+            ? { $eq: ctx.query.q.split('@')[0] }
+            : {
+                $regex: _.escapeRegExp(ctx.query.q.trim().split('@')[0]),
+                $options: 'i'
+              }
+      });
+    } else if (searchFilter === 'recipients') {
+      // Search only by recipients
+      query.$and.push({
+        recipients: {
+          $regex: _.escapeRegExp(ctx.query.q.trim()),
+          $options: 'i'
+        }
+      });
     } else {
+      // 'everything' filter - search across all fields (original behavior)
       query.$and.push({
         $or: [
           {

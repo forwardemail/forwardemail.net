@@ -237,10 +237,27 @@ block body
             action=ctx.path,
             method="GET",
             data-table="#table-aliases",
-            data-search-params="q,new"
+            data-search-params="q,new,search_filter"
           )
             input(type="hidden", name="new", value="")
             .input-group.mb-3
+              .input-group-prepend
+                select#select-search-filter.form-control(
+                  name="search_filter",
+                  aria-label=t("Search Filter")
+                )
+                  option(
+                    value="everything",
+                    selected=!ctx.query.search_filter || ctx.query.search_filter === "everything"
+                  )= t("Everything")
+                  option(
+                    value="name",
+                    selected=ctx.query.search_filter === "name"
+                  )= t("Name")
+                  option(
+                    value="recipients",
+                    selected=ctx.query.search_filter === "recipients"
+                  )= t("Recipients")
               input#input-keyword-search.form-control(
                 type="text",
                 value=ctx.query.q ? ctx.query.q : "",
