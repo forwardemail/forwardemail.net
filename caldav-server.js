@@ -2612,7 +2612,17 @@ class CalDAV extends API {
   async buildICS(ctx, events, calendar, method = false) {
     const startTime = Date.now();
     ctx.logger.debug('buildICS', { events, calendar });
-    if (!events || Array.isArray(events)) {
+
+    // Always normalize events to an array to ensure consistent VCALENDAR output
+    // This is critical for Apple clients (iOS/macOS) which require proper
+    // VCALENDAR wrapper with VERSION:2.0 and PRODID properties per RFC 5545
+    const eventArray = events
+      ? Array.isArray(events)
+        ? events
+        : [events]
+      : [];
+
+    {
       // <https://github.com/kewisch/ical.js/wiki/Creating-basic-iCalendar>
       const comp = new ICAL.Component(['vcalendar', [], []]);
 
@@ -2690,7 +2700,7 @@ class CalDAV extends API {
       }
 
       // add all VEVENTS and VTODOS
-      for (const event of events) {
+      for (const event of eventArray) {
         const eventComp = new ICAL.Component(ICAL.parse(event.ical));
         const vevents = eventComp.getAllSubcomponents('vevent');
         const vtodos = eventComp.getAllSubcomponents('vtodo');
@@ -2725,16 +2735,13 @@ class CalDAV extends API {
       if (duration > 5000) {
         ctx.logger.warn('buildICS slow', {
           duration,
-          eventCount: events ? events.length : 0,
+          eventCount: eventArray.length,
           calendarId: calendar.calendarId || calendar._id
         });
       }
 
       return comp.toString();
     }
-
-    // events = single event if not an Array
-    return events.ical;
   }
 
   // we need to return UUID of a calendar here
