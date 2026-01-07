@@ -3,7 +3,9 @@
  SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
 const RE2 = require('re2');
+const addressParser = require('nodemailer/lib/addressparser');
 const confusables = require('confusables');
 const isSANB = require('is-string-and-not-blank');
 const { fromUrl, parseDomain } = require('parse-domain');
@@ -758,7 +760,6 @@ if (
       // check for IDN homograph attacks using confusables library
       else {
         // decode punycode if present
-        const punycode = require('node:punycode');
         let decoded = fromDomain.toLowerCase();
         try {
           if (decoded.includes('xn--')) {
@@ -796,6 +797,84 @@ if (
         throw new SMTPError(
           `Blocked spoofing, please forward this to ${config.abuseEmail}`
         );
+      }
+    }
+
+    //
+    // check for display name impersonation in the From header
+    // this catches attacks like: From: forwardemail.net<aaa@xyz.com>
+    // where the display name is used to impersonate our service
+    //
+    // we check for:
+    // 1. exact matches (case-insensitive): "forwardemail", "forwardemail.net"
+    // 2. variations with spaces: "forward email", "Forward Email"
+    // 3. IDN homograph attacks using confusables library
+    //
+    if (isSANB(from)) {
+      const parsed = addressParser(from);
+      if (parsed.length > 0 && isSANB(parsed[0].name)) {
+        const displayName = parsed[0].name;
+
+        // normalize: remove spaces and convert to lowercase
+        const normalizedName = displayName.replace(/\s+/g, '').toLowerCase();
+
+        // check for exact brand name matches
+        let isDisplayNameImpersonation = false;
+
+        // check if normalized name contains our domain or brand name
+        if (
+          normalizedName.includes(domainWithoutTLD.toLowerCase()) ||
+          normalizedName.includes(
+            env.APP_NAME.replace(/\s+/g, '').toLowerCase()
+          )
+        ) {
+          isDisplayNameImpersonation = true;
+        }
+
+        // check for IDN homograph attacks in display name
+        if (!isDisplayNameImpersonation) {
+          // decode punycode if present in display name
+          let decoded = displayName.toLowerCase();
+          try {
+            if (decoded.includes('xn--')) {
+              decoded = punycode.toUnicode(decoded);
+            }
+          } catch {
+            // if decoding fails, use original
+          }
+
+          // convert confusable characters to ASCII equivalents
+          // e.g., Cyrillic 'а' -> Latin 'a', Greek 'ο' -> Latin 'o'
+          const skeleton = confusables.remove(decoded);
+
+          // normalize skeleton: remove spaces
+          const normalizedSkeleton = skeleton.replace(/\s+/g, '').toLowerCase();
+
+          // check if skeleton contains our brand name
+          if (
+            normalizedSkeleton.includes(domainWithoutTLD.toLowerCase()) ||
+            normalizedSkeleton.includes(
+              env.APP_NAME.replace(/\s+/g, '').toLowerCase()
+            )
+          ) {
+            isDisplayNameImpersonation = true;
+          }
+        }
+
+        // if display name impersonation detected, block it
+        // only allow if the authenticated domain is actually our domain
+        if (isDisplayNameImpersonation) {
+          const isAuthenticatedAsUs =
+            (session.hadAlignedAndPassingDKIM ||
+              session.spfFromHeader.status.result === 'pass') &&
+            session.originalFromAddressRootDomain === env.WEB_HOST;
+
+          if (!isAuthenticatedAsUs) {
+            throw new SMTPError(
+              `Blocked display name spoofing, please forward this to ${config.abuseEmail}`
+            );
+          }
+        }
       }
     }
   }
