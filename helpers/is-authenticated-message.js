@@ -127,14 +127,42 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   //
 
   //
-  // only reject if ARC was not passing
+  // check if the ARC chain was sealed by a truth source
+  // by examining the ARC-Message-Signature signing domain
+  // <https://datatracker.ietf.org/doc/html/rfc8617>
+  // <https://learn.microsoft.com/en-us/defender-office-365/email-authentication-arc-configure>
+  //
+  // session.arc.signature contains the latest ARC-Message-Signature result
+  // with signingDomain being the d= value from the ARC-Message-Signature header
+  //
+  let isTruthSource = false;
+  if (
+    session.arc &&
+    session.arc.status &&
+    session.arc.status.result === 'pass' &&
+    session.arc.signature &&
+    isSANB(session.arc.signature.signingDomain)
+  ) {
+    const sealerDomain = parseRootDomain(session.arc.signature.signingDomain);
+    if (config.truthSources.has(sealerDomain)) {
+      isTruthSource = true;
+    }
+  }
+
+  //
+  // only reject if ARC was not passing from a truth source
   // and DMARC fail with p=reject policy
+  //
+  // trust ARC chain from truth source senders (RFC 8617 Section 7.2.1)
+  // this allows DMARC local policy override when the ARC chain passes
+  // and was sealed by a trusted intermediary (e.g., Google, Microsoft)
   //
   if (
     session.dmarc &&
     session.dmarc.status &&
     session.dmarc.status.result === 'fail' &&
-    session.dmarc.policy === 'reject'
+    session.dmarc.policy === 'reject' &&
+    !isTruthSource
   ) {
     throw new SMTPError(
       "The email sent has failed DMARC validation and is rejected due to the domain's DMARC policy",
@@ -153,6 +181,12 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     session.dmarc.status &&
     session.dmarc.status.result === 'none' &&
     !session.hadAlignedAndPassingDKIM &&
+    //
+    // trust ARC chain from truth source senders (RFC 8617 Section 7.2.1)
+    // this allows DMARC local policy override when the ARC chain passes
+    // and was sealed by a trusted intermediary (e.g., Google, Microsoft)
+    //
+    !isTruthSource &&
     // NOTE: this is an exception for Ubuntu since they have custom postfix setup
     (!session.resolvedRootClientHostname ||
       !UBUNTU_DOMAINS.includes(session.resolvedRootClientHostname))
