@@ -748,6 +748,7 @@ async function sri() {
         '!build/**/*.{css,js}',
         '!build/fonts/**/*',
         '!build/robots.txt',
+        '!build/llms.txt',
         '!build/browserconfig.xml',
         '!build/opensearch.xml',
         '!build/technical-whitepaper.pdf',

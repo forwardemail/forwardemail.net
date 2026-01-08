@@ -200,6 +200,7 @@ module.exports = (redis) => ({
           '/browserconfig.xml',
           '/opensearch.xml',
           '/robots.txt',
+          '/llms.txt',
           '/site.webmanifest'
         ]
       }

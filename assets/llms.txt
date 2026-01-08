@@ -1,0 +1,29 @@
+# Forward Email
+
+> Forward Email is a 100% open-source and privacy-focused email service. We provide free email forwarding for custom domains, along with a full suite of tools for developers and businesses, including a comprehensive API, webhooks, and robust security features.
+
+Important notes:
+
+- We are a privacy-first company and do not store or read your emails.
+- Our service is built on open-source software, and our code is available on GitHub.
+- We support modern email standards, including SPF, DKIM, DMARC, and MTA-STS.
+
+## Documentation
+
+- [Quick Start Guide](https://forwardemail.net/faq): Learn how to set up email forwarding in minutes.
+- [Frequently Asked Questions](https://forwardemail.net/faq): Find answers to common questions about our service.
+- [Developer Documentation](https://forwardemail.net/blog/docs): Explore our developer resources, including guides and tutorials.
+
+## API
+
+- [API Reference](https://forwardemail.net/email-api): Detailed documentation for our RESTful API.
+- [OpenAPI Specification](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/api-spec.json): The full OpenAPI v3 specification for our API.
+
+## Community
+
+- [GitHub Repository](https://github.com/forwardemail/forwardemail.net): Our main open-source repository.
+
+## Optional
+
+- [Technical Whitepaper](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/technical-whitepaper.pdf): A deep dive into our quantum-resistant encrypted email service.
+- [Self-Hosting Guide](https://github.com/forwardemail/forwardemail.net/blob/master/SELFHOSTING.md): Instructions for self-hosting our email stack.
