@@ -850,93 +850,11 @@ async function getForwardingAddresses(
       if (data.softRejected) continue;
       if (data.hardRejected) continue;
 
-      //
-      // Handle the case where a domain has TXT records but different MX.
-      //
-      // If the recursive lookup returns addresses on the SAME domain,
-      // AND that domain's MX does NOT point to Forward Email,
-      // we should preserve the original forwardingAddress for delivery
-      // to that domain's actual MX server.
-      //
-      // Example: example.com has TXT with *@example.com -> user@example.com
-      // but MX points to Fastmail. We should deliver to Fastmail's MX,
-      // not reject with "Invalid recipients".
-      //
-      const forwardingAddressDomain =
-        parseHostFromDomainOrAddress(forwardingAddress);
-
-      // Filter out addresses that are on the same domain as forwardingAddress
-      const sameDomainAddresses = [];
-      const differentDomainAddresses = [];
-
-      for (const element of data.addresses) {
-        // Skip URLs, FQDNs, and IPs - they're handled differently
-        if (
-          isURL(element, config.isURLOptions) ||
-          isFQDN(element) ||
-          isIP(element)
-        ) {
-          differentDomainAddresses.push(element);
-          continue;
-        }
-
-        const elementDomain = parseHostFromDomainOrAddress(element);
-        if (
-          elementDomain.toLowerCase() === forwardingAddressDomain.toLowerCase()
-        ) {
-          sameDomainAddresses.push(element);
-        } else {
-          differentDomainAddresses.push(element);
-        }
-      }
-
-      //
-      // Check if the forwardingAddress domain's MX points to Forward Email.
-      // If it does NOT, and all returned addresses are on the same domain,
-      // we should preserve the original address for delivery to that MX.
-      //
-      let hasFEMX = true; // default to true (assume Forward Email MX)
-      if (
-        sameDomainAddresses.length > 0 &&
-        differentDomainAddresses.length === 0 &&
-        !data.hasIMAP
-      ) {
-        try {
-          const mxRecords = await this.resolver.resolveMx(
-            forwardingAddressDomain
-          );
-          if (mxRecords && mxRecords.length > 0) {
-            hasFEMX = mxRecords.some((record) =>
-              config.exchanges.some(
-                (exchange) =>
-                  record.exchange.toLowerCase() === exchange.toLowerCase()
-              )
-            );
-          }
-        } catch {
-          // If MX lookup fails, assume it's not Forward Email MX
-          hasFEMX = false;
-        }
-      }
-
-      //
-      // Only mark the original forwardingAddress for removal if:
-      // 1. There are addresses on DIFFERENT domains to forward to, OR
-      // 2. The target has IMAP enabled (delivery to our servers), OR
-      // 3. The target domain's MX points to Forward Email (recursive processing is correct)
-      //
-      // If ALL returned addresses are on the SAME domain AND MX is different,
-      // keep the original forwardingAddress so it gets delivered to that domain's MX.
-      //
-      const hasNewDestinations =
-        differentDomainAddresses.length > 0 || data.hasIMAP || hasFEMX;
-
-      if (hasNewDestinations)
+      // if it was recursive then remove the original
+      if (data.addresses.length > 0 || data.hasIMAP)
         recursivelyForwardedAddresses.push(forwardingAddress);
-
-      // Only add addresses that are on different domains
-      // Same-domain addresses would either loop or should go to that domain's MX
-      for (const element of differentDomainAddresses) {
+      // add the recursively forwarded addresses
+      for (const element of data.addresses) {
         forwardingAddresses.push(element);
       }
     } catch (err) {
