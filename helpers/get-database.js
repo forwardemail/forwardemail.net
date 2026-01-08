@@ -35,16 +35,17 @@ const email = require('#helpers/email');
 const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const env = require('#config/env');
 const getAttachments = require('#helpers/get-attachments');
-const { decodeMetadata } = require('#helpers/msgpack-helpers');
-const recursivelyParse = require('#helpers/recursively-parse');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
+const recursivelyParse = require('#helpers/recursively-parse');
 const setupPragma = require('#helpers/setup-pragma');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
 
 const builder = new Builder({ bufferAsNative: true });
 
@@ -512,6 +513,7 @@ async function getDatabase(
     let calendarDuplicateCheck = !instance.server;
     let highestmodseqCheck = !instance.server;
     let storageFormatCheck = !instance.server;
+    let caldavHrefCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -523,7 +525,8 @@ async function getDatabase(
           `vacuum_check:${session.user.alias_id}`,
           `calendar_duplicate_check:${session.user.alias_id}`,
           `highestmodseq_check:${session.user.alias_id}`,
-          `storage_format_check:${session.user.alias_id}`
+          `storage_format_check:${session.user.alias_id}`,
+          `caldav_href_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -533,6 +536,7 @@ async function getDatabase(
         calendarDuplicateCheck = boolean(results[5]);
         highestmodseqCheck = boolean(results[6]);
         storageFormatCheck = boolean(results[7]);
+        caldavHrefCheck = boolean(results[8]);
 
         // If Redis cache miss, check the MongoDB field as fallback
         if (!storageFormatCheck && alias.has_storage_format_migration) {
@@ -977,6 +981,34 @@ async function getDatabase(
       }
     }
 
+    //
+    // Fix CalDAV href values and restore soft-deleted events from the bad patch window.
+    // This is a one-time migration that:
+    // 1. Clears href for events modified during the window
+    // 2. Restores events that were soft-deleted during the window
+    //
+    if (!caldavHrefCheck) {
+      try {
+        await instance.client.set(
+          `caldav_href_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        const stats = await fixCalDAVHref(instance, session);
+
+        if (stats.hrefCleared > 0 || stats.eventsRestored > 0) {
+          logger.info('CalDAV href fix and event recovery completed', {
+            session,
+            stats
+          });
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
@@ -985,7 +1017,8 @@ async function getDatabase(
       !vacuumCheck ||
       !calendarDuplicateCheck ||
       !highestmodseqCheck ||
-      !storageFormatCheck
+      !storageFormatCheck ||
+      !caldavHrefCheck
     ) {
       try {
         //
