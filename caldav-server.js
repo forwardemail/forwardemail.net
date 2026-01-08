@@ -1832,6 +1832,34 @@ class CalDAV extends API {
     // TODO: improve this with search directly on sql
     if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
 
+    //
+    // Backfill href for events that don't have it set.
+    // This is necessary for events created before the href field was added.
+    // The href is required for sync-collection responses to work correctly
+    // with Apple Calendar clients (RFC 6578 compliance).
+    //
+    const eventsToUpdate = events.filter((e) => !e.href);
+    if (eventsToUpdate.length > 0) {
+      ctx.logger.debug('Backfilling href for events', {
+        count: eventsToUpdate.length
+      });
+      await Promise.all(
+        eventsToUpdate.map(async (e) => {
+          const href = `/cal/${principalId}/${calendarId}/${e.eventId}.ics`;
+          e.href = href;
+          // Update in database
+          await CalendarEvents.findByIdAndUpdate(
+            this,
+            ctx.state.session,
+            e._id,
+            {
+              $set: { href }
+            }
+          );
+        })
+      );
+    }
+
     ctx.logger.debug('events', { events });
 
     return events;
@@ -2165,6 +2193,24 @@ class CalDAV extends API {
       });
     }
 
+    //
+    // Backfill href if not set (for events created before href field was added).
+    // This ensures sync-collection responses work correctly with Apple clients.
+    //
+    if (event && !event.href) {
+      const href = `/cal/${principalId}/${calendarId}/${event.eventId}.ics`;
+      event.href = href;
+      // Update in database asynchronously (fire and forget)
+      CalendarEvents.findByIdAndUpdate(this, ctx.state.session, event._id, {
+        $set: { href }
+      }).catch((err) => {
+        ctx.logger.error('Failed to backfill href for event', {
+          eventId: event._id,
+          err
+        });
+      });
+    }
+
     return event;
   }
 
@@ -2418,6 +2464,14 @@ class CalDAV extends API {
     // console.log('UPDATING BODY', ctx.request.body);
     e.ical = ctx.request.body;
 
+    //
+    // Backfill href if not set (for events created before href field was added).
+    // This ensures sync-collection responses work correctly with Apple clients.
+    //
+    if (!e.href) {
+      e.href = `/cal/${principalId}/${calendarId}/${e.eventId}.ics`;
+    }
+
     // save event
     e = await e.save();
 
@@ -2575,14 +2629,26 @@ class CalDAV extends API {
       // await CalendarEvents.deleteOne(this, ctx.state.session, {
       //   _id: event._id
       // });
+      //
+      // Backfill href if not set before marking as deleted.
+      // This is critical for sync-collection responses to return the correct
+      // URL for deleted events, which Apple Calendar clients need to match
+      // against their local cache (RFC 6578 compliance).
+      //
+      const updateFields = {
+        deleted_at: new Date()
+      };
+      if (!event.href) {
+        updateFields.href = `/cal/${principalId}/${calendarId}/${event.eventId}.ics`;
+        event.href = updateFields.href;
+      }
+
       await CalendarEvents.findByIdAndUpdate(
         this,
         ctx.state.session,
         event._id,
         {
-          $set: {
-            deleted_at: new Date()
-          }
+          $set: updateFields
         }
       );
 
