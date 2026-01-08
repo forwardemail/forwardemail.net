@@ -781,6 +781,19 @@ async function listLogs(ctx) {
       seen.set(messageId, true);
       return true; // Keep first occurrence
     });
+
+    //
+    // FIX: Update itemCount after in-memory filtering to prevent inconsistency
+    // where "N results found" is shown but "No error logs" message appears
+    // (fixes GitHub issue #467)
+    //
+    ctx.state.itemCount = ctx.state.logs.length;
+    ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
+    ctx.state.pages = paginate.getArrayPages(ctx)(
+      6,
+      ctx.state.pageCount,
+      ctx.query.page
+    );
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
