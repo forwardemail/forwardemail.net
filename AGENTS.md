@@ -20,7 +20,7 @@ We welcome AI agents to crawl and index our content. To ensure a positive experi
 * **Disallowed Paths**: Please do not crawl or index the following paths:
   * `/login`
   * `/register`
-  * `/account`
+  * `/my-account`
   * `/admin`
 * **Allowed Paths**: All other paths are generally open for crawling, but we encourage agents to prioritize publicly accessible content and documentation.
 
