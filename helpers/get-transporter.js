@@ -261,12 +261,17 @@ async function getTransporter(options = {}, err) {
   )
     truthSource = parseRootDomain(mx.hostname);
 
-  const requireTLS = Boolean(
-    envelope?.requireTLS ||
-      Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
-      (truthSource && OUTLOOK_HOSTS.has(truthSource)) ||
-      (truthSource && truthSource === 'google.com')
-  );
+  //
+  // RFC 8689 Section 5: TLS-Required: No header overrides requireTLS
+  //
+  const requireTLS = envelope?.tlsOptional
+    ? false
+    : Boolean(
+        envelope?.requireTLS ||
+          Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
+          (truthSource && OUTLOOK_HOSTS.has(truthSource)) ||
+          (truthSource && truthSource === 'google.com')
+      );
 
   //
   // attempt to send the email with TLS

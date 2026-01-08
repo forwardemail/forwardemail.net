@@ -2004,7 +2004,7 @@ Test REQUIRETLS propagation through MX
   );
 
   t.regex(err.message, /Server does not support REQUIRETLS extension/);
-  t.is(err.responseCode, 550);
+  t.is(err.responseCode, 421);
 
   await server.close();
   await smtp.close();

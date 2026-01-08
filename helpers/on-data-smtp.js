@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
+const parseTLSRequiredHeader = require('#helpers/parse-tls-required-header');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
@@ -329,10 +330,16 @@ async function onDataSMTP(session, date, headers, body) {
       else if (session.envelope.dsn.ret === 'HDRS') dsn.return = 'headers';
     }
 
+    //
+    // RFC 8689 Section 5: Parse TLS-Required header
+    //
+    const raw = Buffer.concat([headers.build(), body]);
+    const { tlsOptional } = parseTLSRequiredHeader(raw);
+
     email = await Emails.queue({
       message: {
         envelope,
-        raw: Buffer.concat([headers.build(), body])
+        raw
       },
       alias,
       domain,
@@ -342,7 +349,8 @@ async function onDataSMTP(session, date, headers, body) {
       isPending: true,
       rcptTo: session.envelope.rcptTo,
       dsn,
-      requireTLS: session.envelope.requireTLS
+      requireTLS: session.envelope.requireTLS,
+      tlsOptional
     });
 
     if (!_.isDate(domain.smtp_suspended_sent_at)) {

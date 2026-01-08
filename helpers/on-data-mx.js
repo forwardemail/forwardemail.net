@@ -80,6 +80,7 @@ const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const parseTLSRequiredHeader = require('#helpers/parse-tls-required-header');
 const parseUsername = require('#helpers/parse-username');
 const retryRequest = require('#helpers/retry-request');
 const sendEmail = require('#helpers/send-email');
@@ -1702,6 +1703,15 @@ function updateMXHeaders(headers, session) {
 }
 
 async function onDataMX(session, headers, body) {
+  //
+  // RFC 8689 Section 5: Parse TLS-Required header
+  //
+  const raw = Buffer.concat([headers.build(), body]);
+  const { tlsOptional } = parseTLSRequiredHeader(raw);
+  if (tlsOptional) {
+    session.tlsOptional = true;
+  }
+
   // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)

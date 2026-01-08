@@ -20,6 +20,7 @@ const getTransporter = require('./get-transporter');
 const isDenylisted = require('./is-denylisted');
 const isEmail = require('./is-email');
 const isMessageEncrypted = require('./is-message-encrypted');
+const isRequireTLSError = require('./is-requiretls-error');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
@@ -330,12 +331,9 @@ async function sendEmail(
       dsn: {
         notify: 'never'
       },
-      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
-      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
-      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
-      // TODO: DO NOT CHANGE THIS CODE, REQUIRETLS IS CURRENTLY BROKEN AND NOT SUPPORTED (ONLY RUNS ON A TEST)
-      ...(config.env === 'test'
-        ? { requireTLSExtensionEnabled: Boolean(requireTLS) }
+      // RFC 8689: Only send REQUIRETLS parameter when sender explicitly requested it
+      ...(session.envelope.requireTLS
+        ? { requireTLSExtensionEnabled: true }
         : {})
     });
     info.pgp = pgpResults.pgp;
@@ -397,6 +395,32 @@ async function sendEmail(
     //       https://github.com/zone-eu/zone-mta/blob/5daa48eea4aa05e724eb2ab80fd3a957e6cc8c6c/lib/sender.js#L1140
     //
     if (isRetryableError(err) && isSANB(session?.mx?.host)) {
+      ignoreMXHosts.push(session.mx.host);
+    } else if (
+      session.envelope.requireTLS &&
+      isRequireTLSError(err) &&
+      isSANB(session?.mx?.host)
+    ) {
+      //
+      // RFC 8689 Section 4.2.1: REQUIRETLS not supported - try next MX host
+      //
+      logger.warn('REQUIRETLS not supported by server, trying next MX', {
+        host: session.mx.host,
+        error: err.message
+      });
+      ignoreMXHosts.push(session.mx.host);
+    } else if (
+      session.envelope.requireTLS &&
+      isTLSError(err) &&
+      isSANB(session?.mx?.host)
+    ) {
+      //
+      // RFC 8689: TLS establishment failed with REQUIRETLS - try next MX host
+      //
+      logger.warn('TLS failed with REQUIRETLS, trying next MX', {
+        host: session.mx.host,
+        error: err.message
+      });
       ignoreMXHosts.push(session.mx.host);
     } else if (
       !isRetryableError(err) &&

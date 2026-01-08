@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isRequireTLSError = require('./is-requiretls-error');
 const isTimeoutError = require('./is-timeout-error');
 const isSocketError = require('./is-socket-error');
 
@@ -91,6 +92,9 @@ const MAIL_RETRY_ERROR_CODES = new Set([
 function isRetryableError(err) {
   if (isTimeoutError(err)) return true;
   if (isSocketError(err)) return true;
+
+  // RFC 8689: REQUIRETLS errors should be retried (try other MX hosts)
+  if (isRequireTLSError(err)) return true;
 
   // Error {
   //   address: '192.168.1.16',
