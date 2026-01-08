@@ -652,5 +652,31 @@ module.exports = (redis) => ({
 
       return next();
     });
+
+    // EU referrer notification for users coming from forwardemail.eu
+    app.use(async (ctx, next) => {
+      if (
+        ctx.method === 'GET' &&
+        ctx.accepts('html') &&
+        ctx.session &&
+        !ctx.session._eu_referrer_shown
+      ) {
+        const referrer = ctx.get('Referer') || ctx.get('Referrer') || '';
+        if (referrer.includes('forwardemail.eu')) {
+          ctx.session._eu_referrer_shown = true;
+          ctx.flash('custom', {
+            title: `🇪🇺 ${ctx.request.t('EU Servers Coming Soon')}`,
+            html: `<small>${ctx.translate('EU_REFERRER_NOTIFICATION')}</small>`,
+            type: 'info',
+            toast: true,
+            showConfirmButton: false,
+            position: 'top',
+            timer: 15000
+          });
+        }
+      }
+
+      return next();
+    });
   }
 });

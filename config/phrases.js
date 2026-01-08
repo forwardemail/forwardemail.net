@@ -896,6 +896,9 @@ module.exports = {
   CONTACT_ADDRESS_COUNTRY_INVALID:
     'Contact address country must be a valid string.',
   CONTACT_ADDRESS_TYPE_INVALID: 'Contact address type must be a valid string.',
+  // EU referrer notification
+  EU_REFERRER_NOTIFICATION:
+    'Our EU servers are coming soon! Sign up for an account to auto-subscribe to our newsletter, or <a href="https://github.com/orgs/forwardemail/discussions/336" target="_blank" rel="noopener noreferrer" class="alert-link">subscribe to our GitHub discussion</a> to get notified when they\'re available.',
   // Unsubscribe phrases
   INVALID_UNSUBSCRIBE_TOKEN:
     'Invalid or expired unsubscribe link. Please manage your email preferences in your account settings.',
