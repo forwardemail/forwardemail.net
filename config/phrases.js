@@ -330,7 +330,14 @@ module.exports = {
   EMAIL_DOES_NOT_EXIST: 'Email does not exist.',
   LOG_DOWNLOAD_IN_PROGRESS: 'Your report will be emailed to you shortly.',
   EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
-  INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
+  EMAIL_NOT_SCHEDULED:
+    'Only emails with scheduled status can be updated. This email has already been sent or is currently being processed.',
+  EMAIL_LOCKED:
+    'Email is currently locked for processing and cannot be modified.',
+  EMAIL_OWNER_REQUIRED:
+    'You must be the email owner or a domain administrator to perform this action.',
+  INVALID_EMAIL_STATUS:
+    'Email status must be pending, queued, deferred, or scheduled.',
   EMAIL_ALREADY_EXISTS:
     'Email already exists with the same Message-ID, Date, and Envelope.',
   NO_REPLY_USERNAME_NO_SMTP:
@@ -395,6 +402,14 @@ module.exports = {
   INVALID_API_TOKEN: 'Invalid API token.',
   INVALID_EMAIL: 'Email address was invalid.',
   INVALID_FILE: 'File upload was invalid.',
+  INVALID_DATE: 'Date was invalid or not in the correct format.',
+  INVALID_UPDATE_FIELDS:
+    'Invalid fields for update: <span class="notranslate">%s</span>. Only the date field can be updated.',
+  DATE_REQUIRED: 'Date field is required for this operation.',
+  DATE_MUST_BE_FUTURE:
+    'Scheduled send date must be in the future (at least 1 minute from now).',
+  DATE_TOO_FAR_FUTURE:
+    'Scheduled send date cannot be more than <span class="notranslate">%s</span> in the future.',
   INVALID_DENYLIST_VALUE:
     'Invalid domain name, IP address, email address. Please correct your denylist removal request and try again.',
   INVALID_DENYLIST_REQUEST: 'Value was not currently found in our denylist.',

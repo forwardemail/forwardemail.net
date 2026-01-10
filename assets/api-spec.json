@@ -1238,6 +1238,16 @@
           },
           "status": {
             "type": "string",
+            "enum": [
+              "pending",
+              "queued",
+              "sent",
+              "partially_sent",
+              "deferred",
+              "bounced",
+              "rejected"
+            ],
+            "description": "The current status of the email. Scheduling is determined by the `date` field.",
             "example": "sent"
           },
           "is_locked": {
@@ -1264,7 +1274,8 @@
           },
           "date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The email's Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Maximum 30 days in the future from creation."
           },
           "subject": {
             "type": "string"
@@ -1512,7 +1523,8 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. Cannot be more than 30 days in the future."
+            "description": "Optional Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Cannot be more than 30 days in the future from creation.",
+            "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
             "type": "object",
@@ -2367,7 +2379,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID",
+        "description": "Email ID or Message-ID. You can pass either the unique email ID (e.g., '683fbe4d5baef1b583a11e54') or the email's Message-ID header value (e.g., '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net').",
         "schema": {
           "type": "string"
         }
@@ -4399,7 +4411,7 @@
     "/v1/emails": {
       "get": {
         "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
+        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the Retrieve email endpoint with an email ID or Message-ID.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password.",
         "tags": [
           "Emails"
         ],
@@ -4423,6 +4435,14 @@
             "description": "Search for emails by domain name.",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "is_scheduled",
+            "in": "query",
+            "description": "Filter for scheduled emails (emails with future send date). Set to 'true' to show only emails scheduled to be sent in the future.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4477,7 +4497,7 @@
       },
       "post": {
         "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "Emails"
         ],
@@ -4567,7 +4587,7 @@
       ],
       "get": {
         "summary": "Retrieve outbound SMTP email",
-        "description": "Retrieve a specific outbound SMTP email.",
+        "description": "Retrieve a specific outbound SMTP email by ID or Message-ID. You can pass either the email's unique ID or its Message-ID header value.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Emails"
         ],
@@ -4600,7 +4620,7 @@
       },
       "delete": {
         "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Emails"
         ],
@@ -5916,4 +5936,3 @@
     }
   ]
 }
-

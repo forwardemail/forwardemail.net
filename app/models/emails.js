@@ -691,7 +691,7 @@ Emails.pre('save', function (next) {
       this.created_at.getTime() + MAX_DAYS_IN_ADVANCE_TO_MS
     )
       throw Boom.badRequest(
-        `Date header must not be more than ${HUMAN_MAX_DAYS_IN_ADVANCE} in the future.`
+        'Date header must not be more than 30 days in the future.'
       );
 
     next();
@@ -1767,10 +1767,13 @@ Emails.statics.queue = async function (
     }
   }
 
-  const status =
-    _.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true
-      ? 'pending'
-      : 'queued';
+  // Determine status based on domain suspension
+  let status = 'queued';
+
+  // If domain is suspended or explicitly marked as pending
+  if (_.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true) {
+    status = 'pending';
+  }
 
   const email = await this.create({
     alias: !options.catchall && alias ? alias._id : undefined,
