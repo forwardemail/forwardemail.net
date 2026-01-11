@@ -104,7 +104,17 @@ const omitExtraFields = [
   config.userFields.smtpLimit,
 
   config.userFields.apiPastDueSentAt,
-  config.userFields.apiRestrictedSentAt
+  config.userFields.apiRestrictedSentAt,
+
+  // Signup attribution fields (analytics)
+  'signup_referrer',
+  'signup_referrer_source',
+  'signup_landing_page',
+  'signup_utm_source',
+  'signup_utm_medium',
+  'signup_utm_campaign',
+  'signup_utm_content',
+  'signup_utm_term'
 ];
 
 function isNameValue(value) {
@@ -213,6 +223,45 @@ const Users = new mongoose.Schema({
     type: String,
     default: 'UTC'
   },
+
+  // Signup attribution (where the user originally came from)
+  // These fields are set once at signup and never modified
+  signup_referrer: {
+    type: String,
+    maxlength: 255 // Domain only, not full URL for privacy
+  },
+  signup_referrer_source: {
+    type: String,
+    maxlength: 50, // Categorized: 'search', 'social', 'direct', etc.
+    index: true
+  },
+  signup_landing_page: {
+    type: String,
+    maxlength: 500 // The first page the user landed on
+  },
+  signup_utm_source: {
+    type: String,
+    maxlength: 100,
+    index: true
+  },
+  signup_utm_medium: {
+    type: String,
+    maxlength: 100
+  },
+  signup_utm_campaign: {
+    type: String,
+    maxlength: 100,
+    index: true
+  },
+  signup_utm_content: {
+    type: String,
+    maxlength: 100
+  },
+  signup_utm_term: {
+    type: String,
+    maxlength: 100
+  },
+
   // Passkeys
   passkeys: [Passkey],
   // Plan

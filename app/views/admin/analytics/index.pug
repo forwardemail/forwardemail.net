@@ -1,0 +1,391 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/admin-analytics.js"),
+    integrity=manifest("js/admin-analytics.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .container.py-3
+    .row
+      .col
+        include ../../_breadcrumbs
+
+    //- Period selector and filters
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            form.form-inline.flex-wrap.justify-content-between(
+              method="GET",
+              action=""
+            )
+              .form-group.mr-2.mb-2
+                label.mr-2(for="period")= t("Period")
+                select#period.form-control(name="period")
+                  option(value="24h", selected=analytics.period === "24h")= t("Last 24 hours")
+                  option(value="7d", selected=analytics.period === "7d")= t("Last 7 days")
+                  option(value="30d", selected=analytics.period === "30d")= t("Last 30 days")
+              .form-group.mr-2.mb-2
+                label.mr-2(for="service")= t("Service")
+                select#service.form-control(name="service")
+                  option(
+                    value="all",
+                    selected=!analytics.filters.service || analytics.filters.service === "all"
+                  )= t("All Services")
+                  each svc in analytics.availableServices
+                    option(
+                      value=svc,
+                      selected=analytics.filters.service === svc
+                    )= svc.toUpperCase()
+              .form-group.mr-2.mb-2
+                label.mr-2(for="device_type")= t("Device")
+                select#device_type.form-control(name="device_type")
+                  option(
+                    value="all",
+                    selected=!analytics.filters.device_type || analytics.filters.device_type === "all"
+                  )= t("All Devices")
+                  option(
+                    value="desktop",
+                    selected=analytics.filters.device_type === "desktop"
+                  )= t("Desktop")
+                  option(
+                    value="mobile",
+                    selected=analytics.filters.device_type === "mobile"
+                  )= t("Mobile")
+                  option(
+                    value="tablet",
+                    selected=analytics.filters.device_type === "tablet"
+                  )= t("Tablet")
+              button.btn.btn-primary.mb-2(type="submit")
+                i.fa.fa-filter.mr-1
+                = t("Apply Filters")
+              a.btn.btn-outline-secondary.ml-2.mb-2(
+                href=`/${locale}/admin/analytics`
+              )
+                i.fa.fa-times.mr-1
+                = t("Clear Filters")
+
+    //- Overview stats cards
+    .row.mb-3
+      .col-md-3.col-sm-6.mb-3
+        .card.h-100.border-primary
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Current Visitors")
+            h2#current-visitors.card-title.text-primary.mb-0= analytics.currentVisitors
+            small.text-muted= t("Last 5 minutes")
+      .col-md-3.col-sm-6.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Unique Visitors")
+            h2.card-title.mb-0= analytics.overview.unique_visitors.toLocaleString()
+      .col-md-3.col-sm-6.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Total Events")
+            h2.card-title.mb-0= analytics.overview.total_events.toLocaleString()
+      .col-md-3.col-sm-6.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Success Rate")
+            h2.card-title.mb-0
+              = Math.round(analytics.overview.success_rate * 100) / 100
+              | %
+
+    //- Visitors over time chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title= t("Visitors Over Time")
+            #visitors-chart(
+              data-chart=JSON.stringify(analytics.chartData.visitors)
+            )
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+
+    //- Service breakdown and device types
+    .row.mb-3
+      .col-lg-8.mb-3.mb-lg-0
+        .card.h-100
+          .card-body
+            h5.card-title= t("Events by Service")
+            #services-chart(
+              data-chart=JSON.stringify(analytics.chartData.services)
+            )
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+      .col-lg-4
+        .card.h-100
+          .card-body
+            h5.card-title= t("Device Types")
+            #devices-chart(
+              data-chart=JSON.stringify(analytics.chartData.deviceTypes)
+            )
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+
+    //- Top browsers and operating systems
+    .row.mb-3
+      .col-lg-6.mb-3.mb-lg-0
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Browsers")
+            if analytics.topBrowsers.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Browser")
+                      th.text-right= t("Visitors")
+                      th.text-right= t("Events")
+                  tbody
+                    each item in analytics.topBrowsers
+                      tr
+                        td= item.browser
+                        td.text-right= item.visitors.toLocaleString()
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No data available")
+      .col-lg-6
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Operating Systems")
+            if analytics.topOS.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Operating System")
+                      th.text-right= t("Visitors")
+                      th.text-right= t("Events")
+                  tbody
+                    each item in analytics.topOS
+                      tr
+                        td= item.os
+                        td.text-right= item.visitors.toLocaleString()
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No data available")
+
+    //- Top email clients
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title= t("Top Email Clients")
+            if analytics.topClientApps.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Client App")
+                      th.text-right= t("Visitors")
+                      th.text-right= t("Events")
+                  tbody
+                    each item in analytics.topClientApps
+                      tr
+                        td= item.client_app
+                        td.text-right= item.visitors.toLocaleString()
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No email client data available")
+
+    //- Top referrers and pages
+    .row.mb-3
+      .col-lg-6.mb-3.mb-lg-0
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Referrers")
+            if analytics.topReferrers.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Referrer")
+                      th= t("Source")
+                      th.text-right= t("Visitors")
+                  tbody
+                    each item in analytics.topReferrers
+                      tr
+                        td
+                          small= item.referrer
+                        td
+                          span.badge.badge-secondary= item.source || "referral"
+                        td.text-right= item.visitors.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No referrer data available")
+      .col-lg-6
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Pages")
+            if analytics.topPages.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Page")
+                      th.text-right= t("Visitors")
+                      th.text-right= t("Views")
+                  tbody
+                    each item in analytics.topPages.slice(0, 10)
+                      tr
+                        td
+                          small= item.pathname
+                        td.text-right= item.visitors.toLocaleString()
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No page data available")
+
+    //- Landing pages
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title
+              i.fa.fa-sign-in-alt.mr-2.text-success
+              = t("Top Landing Pages")
+            if analytics.topLandingPages && analytics.topLandingPages.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Page")
+                      th.text-right= t("Visitors")
+                      th.text-right= t("Entries")
+                  tbody
+                    each item in analytics.topLandingPages
+                      tr
+                        td
+                          small= item.pathname
+                        td.text-right= item.visitors.toLocaleString()
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No landing page data available")
+
+    //- Signup Attribution Section
+    .row.mb-3
+      .col
+        .card.border-info
+          .card-header.bg-info.text-white
+            h5.mb-0
+              i.fa.fa-user-plus.mr-2
+              = t("Signup Attribution")
+          .card-body
+            p.text-muted= t("Track where new users came from when they signed up. This data is stored permanently on user accounts.")
+            .row
+              .col-lg-4.mb-3.mb-lg-0
+                h6= t("Top Signup Referrers")
+                if analytics.signupReferrers && analytics.signupReferrers.length > 0
+                  .table-responsive
+                    table.table.table-sm.table-hover.mb-0
+                      thead
+                        tr
+                          th= t("Referrer")
+                          th= t("Source")
+                          th.text-right= t("Signups")
+                      tbody
+                        each item in analytics.signupReferrers
+                          tr
+                            td
+                              small= item.referrer
+                            td
+                              span.badge.badge-secondary= item.source || "referral"
+                            td.text-right= item.count.toLocaleString()
+                else
+                  p.text-muted.text-center.mb-0= t("No signup referrer data")
+              .col-lg-4.mb-3.mb-lg-0
+                h6= t("Top Signup Landing Pages")
+                if analytics.signupLandingPages && analytics.signupLandingPages.length > 0
+                  .table-responsive
+                    table.table.table-sm.table-hover.mb-0
+                      thead
+                        tr
+                          th= t("Page")
+                          th.text-right= t("Signups")
+                      tbody
+                        each item in analytics.signupLandingPages
+                          tr
+                            td
+                              small= item.landing_page
+                            td.text-right= item.count.toLocaleString()
+                else
+                  p.text-muted.text-center.mb-0= t("No signup landing page data")
+              .col-lg-4
+                h6= t("Top UTM Campaigns")
+                if analytics.signupUTMSources && analytics.signupUTMSources.length > 0
+                  .table-responsive
+                    table.table.table-sm.table-hover.mb-0
+                      thead
+                        tr
+                          th= t("Source / Medium / Campaign")
+                          th.text-right= t("Signups")
+                      tbody
+                        each item in analytics.signupUTMSources
+                          tr
+                            td
+                              small
+                                = item.source
+                                if item.medium
+                                  = " / "
+                                  = item.medium
+                                if item.campaign
+                                  = " / "
+                                  = item.campaign
+                            td.text-right= item.count.toLocaleString()
+                else
+                  p.text-muted.text-center.mb-0= t("No UTM campaign data")
+
+    //- Success rate over time
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title= t("Success Rate Over Time")
+            #success-rate-chart(
+              data-chart=JSON.stringify(analytics.chartData.successRate)
+            )
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+
+    //- Service breakdown links
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title= t("Service Details")
+            .d-flex.flex-wrap
+              each svc in analytics.availableServices
+                a.btn.btn-outline-primary.mr-2.mb-2(
+                  href=`/${locale}/admin/analytics/service/${svc}`
+                )
+                  i.fa.fa-chart-bar.mr-1
+                  = svc.toUpperCase()
+
+    //- Export and privacy notice
+    .row.mb-3
+      .col-md-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body
+            h5.card-title= t("Export Data")
+            p.card-text= t("Download analytics data as JSON for the selected period.")
+            a.btn.btn-outline-secondary(
+              href=`/${locale}/admin/analytics/export?period=${analytics.period}`
+            )
+              i.fa.fa-download.mr-1
+              = t("Export JSON")
+      .col-md-6
+        .card.h-100.border-success
+          .card-body
+            h5.card-title.text-success
+              i.fa.fa-shield-alt.mr-2
+              = t("Privacy Notice")
+            ul.mb-0
+              li= t("No IP addresses are stored")
+              li= t("User agents are parsed, raw data discarded")
+              li= t("No cookies or persistent identifiers for analytics")
+              li= t("Data automatically expires after 30 days")
+              li= t("Session hashes rotate daily")

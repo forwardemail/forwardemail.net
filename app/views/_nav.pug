@@ -817,6 +817,10 @@ nav.navbar(class=navbarClasses.join(" "))
                       href=l("/admin/jobs")
                     )= t("Jobs")
                     a.dropdown-item(
+                      class=ctx.pathWithoutLocale.startsWith("/admin/analytics") ? "active" : "",
+                      href=l("/admin/analytics")
+                    )= t("Analytics")
+                    a.dropdown-item(
                       class=ctx.pathWithoutLocale.startsWith("/admin/allowlist") ? "active" : "",
                       href=l("/admin/allowlist")
                     )= t("Allowlist")

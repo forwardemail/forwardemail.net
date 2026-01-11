@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const analytics = require('./analytics');
 const users = require('./users');
 const domains = require('./domains');
 const dashboard = require('./dashboard');
@@ -15,6 +16,7 @@ const payments = require('./payments');
 const jobs = require('./jobs');
 
 module.exports = {
+  analytics,
   dashboard,
   users,
   domains,

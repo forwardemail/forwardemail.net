@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const AnalyticsEvents = require('./analytics-events');
 const Attachments = require('./attachments');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
@@ -26,6 +27,7 @@ const Contacts = require('./contacts');
 const TTI = require('./tti');
 
 module.exports = {
+  AnalyticsEvents,
   Attachments,
   Aliases,
   Domains,

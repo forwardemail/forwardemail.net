@@ -104,6 +104,12 @@ router
   .get('/payments', paginate.middleware(10, 50), web.admin.payments.list)
   .get('/payments/:id', web.admin.payments.retrieve)
   .post('/payments/:id/refund', web.admin.payments.refund)
-  .post('/free-credit', web.admin.payments.freeCredit);
+  .post('/free-credit', web.admin.payments.freeCredit)
+
+  // analytics
+  .get('/analytics', web.admin.analytics.dashboard)
+  .get('/analytics/realtime', web.admin.analytics.realtime)
+  .get('/analytics/export', web.admin.analytics.exportData)
+  .get('/analytics/service/:service', web.admin.analytics.byService);
 
 module.exports = router;

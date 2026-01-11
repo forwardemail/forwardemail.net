@@ -38,6 +38,7 @@ const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const analyticsMiddleware = require('#helpers/analytics-middleware');
 
 const octokit = new Octokit({
   auth: env.GITHUB_OCTOKIT_TOKEN
@@ -480,6 +481,9 @@ module.exports = (redis) => ({
 
       return next();
     });
+
+    // Analytics middleware for tracking page views (excludes bots)
+    app.use(analyticsMiddleware({ service: 'web', trackPageViews: true }));
 
     // remove nonce used in headers for helmet compatibility (old req/res approach)
     app.use((ctx, next) => {

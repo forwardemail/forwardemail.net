@@ -219,6 +219,21 @@ async function hook(err, message, meta) {
         delete meta.resolver;
       }
 
+      // Check if this is an analytics event
+      if (message === 'analytics:event' && meta.analytics) {
+        // Handle analytics events separately
+        if (conn.models && conn.models.AnalyticsEvents) {
+          return conn.models.AnalyticsEvents.create(meta.analytics)
+            .then()
+            .catch((analyticsErr) => {
+              // Don't let analytics errors affect the main application
+              console.error('Analytics save error:', analyticsErr.message);
+            });
+        }
+
+        return;
+      }
+
       const log = new conn.models.Logs({ err, message, meta });
       if (resolver) log.resolver = resolver;
 

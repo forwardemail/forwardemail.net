@@ -25,6 +25,7 @@ const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
+const analytics = require('#helpers/analytics');
 const Domains = require('#models/domains');
 const config = require('#config');
 const env = require('#config/env');
@@ -816,6 +817,26 @@ async function onAuth(auth, session, fn) {
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
     fn(null, { user });
+
+    // Track successful authentication for analytics
+    // Privacy-focused: IP used for session hash only, not stored
+    {
+      let service = 'smtp';
+      if (isIMAP) service = 'imap';
+      else if (isPOP3) service = 'pop3';
+      else if (isCalDAV) service = 'caldav';
+      else if (isCardDAV) service = 'carddav';
+      else if (isAPI) service = 'api';
+
+      analytics.trackAuth({
+        service,
+        ip: session.remoteAddress,
+        ua: session.clientHostname || '',
+        user_id: user.id,
+        domain_id: user.domain_id,
+        success: true
+      });
+    }
 
     //
     // if we're on IMAP, POP3, or CalDAV server then sync messages with user

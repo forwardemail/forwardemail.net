@@ -1,0 +1,119 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/admin-analytics.js"),
+    integrity=manifest("js/admin-analytics.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .container.py-3
+    .row
+      .col
+        include ../../_breadcrumbs
+
+    //- Service header
+    .row.mb-3
+      .col
+        .d-flex.align-items-center.justify-content-between
+          h2.mb-0
+            i.fa.fa-chart-line.mr-2
+            = analytics.service.toUpperCase()
+            |
+            | Analytics
+          a.btn.btn-outline-secondary(href=`/${locale}/admin/analytics`)
+            i.fa.fa-arrow-left.mr-1
+            = t("Back to Dashboard")
+
+    //- Period selector
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            form.form-inline(method="GET", action="")
+              .form-group.mr-2
+                label.mr-2(for="period")= t("Period")
+                select#period.form-control(name="period")
+                  option(value="24h", selected=analytics.period === "24h")= t("Last 24 hours")
+                  option(value="7d", selected=analytics.period === "7d")= t("Last 7 days")
+                  option(value="30d", selected=analytics.period === "30d")= t("Last 30 days")
+              button.btn.btn-primary(type="submit")
+                i.fa.fa-filter.mr-1
+                = t("Apply")
+
+    //- Overview stats
+    .row.mb-3
+      .col-md-4.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Unique Visitors")
+            h2.card-title.mb-0= analytics.overview.unique_visitors.toLocaleString()
+      .col-md-4.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Total Events")
+            h2.card-title.mb-0= analytics.overview.total_events.toLocaleString()
+      .col-md-4.mb-3
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Success Rate")
+            h2.card-title.mb-0
+              = Math.round(analytics.overview.success_rate * 100) / 100
+              | %
+
+    //- Events over time chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h5.card-title= t("Events Over Time")
+            #service-over-time-chart(
+              data-chart=JSON.stringify(
+                analytics.overTime.map(function (d) {
+                  return { x: d.date, visitors: d.visitors, events: d.events };
+                })
+              )
+            )
+              .text-center.py-5
+                i.fa.fa-spin.fa-spinner.fa-2x.text-muted
+
+    //- Top browsers and client apps
+    .row.mb-3
+      .col-lg-6.mb-3.mb-lg-0
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Browsers")
+            if analytics.topBrowsers.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Browser")
+                      th.text-right= t("Events")
+                  tbody
+                    each item in analytics.topBrowsers
+                      tr
+                        td= item._id
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No data available")
+      .col-lg-6
+        .card.h-100
+          .card-body
+            h5.card-title= t("Top Email Clients")
+            if analytics.topClientApps.length > 0
+              .table-responsive
+                table.table.table-sm.table-hover.mb-0
+                  thead
+                    tr
+                      th= t("Client")
+                      th.text-right= t("Events")
+                  tbody
+                    each item in analytics.topClientApps
+                      tr
+                        td= item._id
+                        td.text-right= item.count.toLocaleString()
+            else
+              p.text-muted.text-center.mb-0= t("No data available")

@@ -19,6 +19,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const analyticsMiddleware = require('#helpers/analytics-middleware');
 
 const sharedAPIConfig = sharedConfig('API');
 
@@ -98,6 +99,9 @@ module.exports = {
 
       return next();
     });
+
+    // Analytics middleware for tracking API calls (excludes bots)
+    app.use(analyticsMiddleware({ service: 'api', trackAPICalls: true }));
   },
   bodyParserIgnoredPathGlobs: ['/v1/log', '/v1/emails']
 };

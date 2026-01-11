@@ -366,6 +366,43 @@ async function register(ctx, next) {
     locale: ctx.locale
   };
 
+  // Capture signup attribution from session or request
+  // These are set by the analytics middleware when user first visits
+  if (ctx.session) {
+    if (ctx.session.signup_referrer) {
+      query.signup_referrer = ctx.session.signup_referrer;
+    }
+
+    if (ctx.session.signup_referrer_source) {
+      query.signup_referrer_source = ctx.session.signup_referrer_source;
+    }
+
+    if (ctx.session.signup_landing_page) {
+      query.signup_landing_page = ctx.session.signup_landing_page;
+    }
+
+    // Capture UTM parameters
+    if (ctx.session.signup_utm_source) {
+      query.signup_utm_source = ctx.session.signup_utm_source;
+    }
+
+    if (ctx.session.signup_utm_medium) {
+      query.signup_utm_medium = ctx.session.signup_utm_medium;
+    }
+
+    if (ctx.session.signup_utm_campaign) {
+      query.signup_utm_campaign = ctx.session.signup_utm_campaign;
+    }
+
+    if (ctx.session.signup_utm_content) {
+      query.signup_utm_content = ctx.session.signup_utm_content;
+    }
+
+    if (ctx.session.signup_utm_term) {
+      query.signup_utm_term = ctx.session.signup_utm_term;
+    }
+  }
+
   if (config.env === 'development' || config.isSelfHosted) {
     const count = await Users.countDocuments({ group: 'admin' });
     if (count === 0) {

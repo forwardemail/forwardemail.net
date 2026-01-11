@@ -805,6 +805,7 @@ const config = {
 
   emailRetention: env.EMAIL_RETENTION,
   logRetention: env.LOG_RETENTION,
+  analyticsRetention: env.ANALYTICS_RETENTION || '30d',
 
   // custom rate limiting lookup for allowing whitelisted customers
   rateLimit: {
