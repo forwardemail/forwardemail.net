@@ -93,7 +93,9 @@ async function retrieveLog(ctx, next) {
   if (
     (log?.email ||
       log?.meta?.email ||
-      log?.meta?.app?.hostname === env.SMTP_HOST) && // validation safeguard
+      log?.meta?.app?.hostname === env.SMTP_HOST ||
+      log?.meta?.app?.hostname === env.MX1_HOST ||
+      log?.meta?.app?.hostname === env.MX2_HOST) && // validation safeguard
     isSANB(log.meta.session.envelope.mailFrom.address) &&
     isEmail(log.meta.session.envelope.mailFrom.address)
   ) {
