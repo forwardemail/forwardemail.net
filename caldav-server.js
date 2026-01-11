@@ -2416,6 +2416,15 @@ class CalDAV extends API {
 
     // TODO: is this not updating?
     // console.log('UPDATING BODY', ctx.request.body);
+
+    //
+    // Set href if not already set (for events created before href field was added).
+    // This ensures sync-collection responses use the correct URL.
+    //
+    if (!e.href) {
+      e.href = ctx.url;
+    }
+
     e.ical = ctx.request.body;
 
     // save event
@@ -2575,14 +2584,25 @@ class CalDAV extends API {
       // await CalendarEvents.deleteOne(this, ctx.state.session, {
       //   _id: event._id
       // });
+
+      //
+      // Set href if not already set before marking as deleted.
+      // This ensures sync-collection responses return the correct URL for
+      // deleted events, matching what the client used to delete it.
+      //
+      const updateFields = {
+        deleted_at: new Date()
+      };
+      if (!event.href) {
+        updateFields.href = ctx.url;
+      }
+
       await CalendarEvents.findByIdAndUpdate(
         this,
         ctx.state.session,
         event._id,
         {
-          $set: {
-            deleted_at: new Date()
-          }
+          $set: updateFields
         }
       );
 
