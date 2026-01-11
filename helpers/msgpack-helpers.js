@@ -43,6 +43,9 @@ const ATTACHMENT_MAGIC = Buffer.from('FEBR');
 /**
  * Check if a value is an old hex-encoded string
  * Hex strings only contain lowercase a-f and 0-9, and have even length
+ *
+ * Note: Uses iterative character checking instead of regex to avoid
+ * "Maximum call stack size exceeded" errors on very large strings
  */
 function isOldHexFormat(value) {
   if (
@@ -53,7 +56,19 @@ function isOldHexFormat(value) {
     return false;
   }
 
-  return /^[\da-f]+$/.test(value);
+  // Use iterative approach to avoid stack overflow on large strings
+  // Regex can cause "Maximum call stack size exceeded" on very large inputs
+  for (let i = 0; i < value.length; i++) {
+    const code = value.codePointAt(i);
+    // Valid hex chars: 0-9 (48-57), a-f (97-102)
+    const isDigit = code >= 48 && code <= 57;
+    const isLowerHex = code >= 97 && code <= 102;
+    if (!isDigit && !isLowerHex) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**

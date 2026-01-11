@@ -99,7 +99,12 @@ if (parentPort)
   });
 
 /**
- * Get log statistics for a user's domains
+ * Get log statistics for a user's domains using cursor-based iteration
+ *
+ * Uses cursor with noCursorTimeout for better handling of large result sets.
+ * This approach streams documents one at a time and accumulates statistics
+ * incrementally, avoiding aggregation timeout errors.
+ *
  * @param {Array} domainIds - Array of domain ObjectIds
  * @param {Date} startDate - Start of the period
  * @param {Date} endDate - End of the period
@@ -114,133 +119,90 @@ async function getLogStats(domainIds, startDate, endDate) {
     }
   };
 
-  //
-  // Use aggregation with $count and index hints instead of countDocuments
-  // This prevents MongoDB multiplanner from timing out when evaluating multiple candidate indexes
-  //
-  const countWithHint = async (query, hint) => {
-    const result = await Logs.aggregate(
-      [{ $match: query }, { $count: 'total' }],
-      {
-        hint,
-        maxTimeMS: MAX_TIME_MS,
-        allowDiskUse: true
-      }
-    );
-    return result[0]?.total || 0;
-  };
-
-  // Get total count
-  const total = await countWithHint(baseQuery, INDEX_HINTS.domainsCreatedAt);
-
-  // Get delivered count (always, to show in email with guidance if 0)
-  // This matches the analytics page logic: message: 'delivered'
-  const delivered = await countWithHint(
-    {
-      ...baseQuery,
-      message: 'delivered'
-    },
-    INDEX_HINTS.domainsCreatedAt
-  );
-
-  // Get spam count
-  const spam = await countWithHint(
-    {
-      ...baseQuery,
-      bounce_category: 'spam'
-    },
-    INDEX_HINTS.bounceCategory
-  );
-
-  // Get virus count
-  const virus = await countWithHint(
-    {
-      ...baseQuery,
-      bounce_category: 'virus'
-    },
-    INDEX_HINTS.bounceCategory
-  );
-
-  // Get bounce categories breakdown with index hint
-  const bounceAggregation = await Logs.aggregate(
-    [
-      { $match: baseQuery },
-      {
-        $group: {
-          _id: '$bounce_category',
-          count: { $sum: 1 }
-        }
-      }
-    ],
-    {
-      hint: INDEX_HINTS.bounceCategory,
-      maxTimeMS: MAX_TIME_MS,
-      allowDiskUse: true
-    }
-  );
-
+  // Initialize counters
+  let total = 0;
+  let delivered = 0;
+  let spam = 0;
+  let virus = 0;
   const bounceCategories = {};
-  for (const item of bounceAggregation) {
-    if (item._id && item._id !== 'none') {
-      bounceCategories[item._id] = item.count;
+
+  // Track response codes with unique error messages
+  // Key: responseCode, Value: Map of message -> count
+  const responseCodeMessages = new Map();
+
+  //
+  // Use cursor with noCursorTimeout for better handling of large result sets
+  // This prevents aggregation timeout errors by streaming documents
+  //
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  for await (const log of Logs.find(baseQuery)
+    .hint(INDEX_HINTS.domainsCreatedAt)
+    .maxTimeMS(MAX_TIME_MS)
+    .select('message bounce_category err')
+    .lean()
+    .cursor()
+    .addCursorFlag('noCursorTimeout', true)) {
+    // Check for cancellation
+    if (isCancelled) break;
+
+    total++;
+
+    // Count delivered messages
+    if (log.message === 'delivered') {
+      delivered++;
+    }
+
+    // Count bounce categories
+    const category = log.bounce_category;
+    if (category && category !== 'none') {
+      bounceCategories[category] = (bounceCategories[category] || 0) + 1;
+      if (category === 'spam') spam++;
+      if (category === 'virus') virus++;
+    }
+
+    // Track response codes with error messages
+    const responseCode = log.err?.responseCode;
+    if (responseCode) {
+      const code = responseCode.toString();
+      if (!responseCodeMessages.has(code)) {
+        responseCodeMessages.set(code, new Map());
+      }
+
+      const messageMap = responseCodeMessages.get(code);
+      const errMessage = log.err?.message || null;
+      const messageKey = errMessage || '__null__';
+      messageMap.set(messageKey, (messageMap.get(messageKey) || 0) + 1);
     }
   }
 
-  // Get response codes breakdown with unique error messages (only for errors)
-  // Group by response code and error message to get distinct messages per code
-  const responseCodeAggregation = await Logs.aggregate(
-    [
-      {
-        $match: {
-          ...baseQuery,
-          'err.responseCode': { $exists: true }
-        }
-      },
-      {
-        // First group by code + message to get unique messages and their counts
-        $group: {
-          _id: {
-            code: '$err.responseCode',
-            message: '$err.message'
-          },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { '_id.code': 1, count: -1 } }
-    ],
-    {
-      hint: INDEX_HINTS.responseCode,
-      maxTimeMS: MAX_TIME_MS,
-      allowDiskUse: true
-    }
-  );
-
-  // Organize by response code with up to 5 unique messages per code
+  // Organize response codes with up to 5 unique messages per code
   const MAX_MESSAGES_PER_CODE = 5;
   const responseCodes = {};
 
-  for (const item of responseCodeAggregation) {
-    if (item._id?.code) {
-      const code = item._id.code.toString();
-      if (!responseCodes[code]) {
-        responseCodes[code] = {
-          totalCount: 0,
-          messages: [],
-          additionalMessagesCount: 0,
-          additionalMessagesLogCount: 0
-        };
-      }
+  for (const [code, messageMap] of responseCodeMessages) {
+    // Sort messages by count descending
+    const sortedMessages = [...messageMap.entries()].sort(
+      (a, b) => b[1] - a[1]
+    );
 
-      responseCodes[code].totalCount += item.count;
+    responseCodes[code] = {
+      totalCount: 0,
+      messages: [],
+      additionalMessagesCount: 0,
+      additionalMessagesLogCount: 0
+    };
+
+    for (const [messageKey, count] of sortedMessages) {
+      responseCodes[code].totalCount += count;
 
       if (responseCodes[code].messages.length < MAX_MESSAGES_PER_CODE) {
         responseCodes[code].messages.push({
-          text: item._id.message || null,
-          count: item.count
+          text: messageKey === '__null__' ? null : messageKey,
+          count
         });
       } else {
         responseCodes[code].additionalMessagesCount++;
-        responseCodes[code].additionalMessagesLogCount += item.count;
+        responseCodes[code].additionalMessagesLogCount += count;
       }
     }
   }
@@ -433,44 +395,33 @@ async function processUser(user, endDate) {
       return;
     }
 
-    // Build domains list with log counts using aggregation with hint
-    const domainLogCounts = await Logs.aggregate(
-      [
-        {
-          $match: {
-            domains: { $in: domainIds },
-            created_at: {
-              $gte: startDate,
-              $lte: endDate
-            }
-          }
-        },
-        {
-          $unwind: '$domains'
-        },
-        {
-          $match: {
-            domains: { $in: domainIds }
-          }
-        },
-        {
-          $group: {
-            _id: '$domains',
-            logCount: { $sum: 1 }
-          }
-        }
-      ],
-      {
-        hint: INDEX_HINTS.domainsCreatedAt,
-        maxTimeMS: MAX_TIME_MS,
-        allowDiskUse: true
-      }
-    );
-
-    // Create a map of domain ID to log count
+    // Build domains list with log counts using cursor-based iteration
+    // This avoids aggregation timeout errors by streaming documents
     const logCountMap = new Map();
-    for (const item of domainLogCounts) {
-      logCountMap.set(item._id.toString(), item.logCount);
+    const domainIdSet = new Set(domainIds.map((id) => id.toString()));
+
+    for await (const log of Logs.find({
+      domains: { $in: domainIds },
+      created_at: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    })
+      .hint(INDEX_HINTS.domainsCreatedAt)
+      .maxTimeMS(MAX_TIME_MS)
+      .select('domains')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      if (isCancelled) break;
+
+      // Count each domain in this log that belongs to the user
+      for (const domainId of log.domains || []) {
+        const domainIdStr = domainId.toString();
+        if (domainIdSet.has(domainIdStr)) {
+          logCountMap.set(domainIdStr, (logCountMap.get(domainIdStr) || 0) + 1);
+        }
+      }
     }
 
     // Build domains with counts
