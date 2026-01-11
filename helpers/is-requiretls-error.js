@@ -12,9 +12,9 @@ function isRequireTLSError(err) {
   if (!err) return false;
 
   // Check error message for REQUIRETLS-specific strings
-  const message = err.message || '';
-  const response = err.response || '';
-  const reason = err.reason || '';
+  const message = typeof err.message === 'string' ? err.message : '';
+  const response = typeof err.response === 'string' ? err.response : '';
+  const reason = typeof err.reason === 'string' ? err.reason : '';
 
   // RFC 8689 Section 4.2: Server doesn't support REQUIRETLS extension
   if (
