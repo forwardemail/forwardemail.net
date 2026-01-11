@@ -1666,6 +1666,12 @@ async function getBody(ctx) {
           ? numeral(totalSubscriptions).format('0,0')
           : '-'
       },
+      {
+        selector: '#metrics-platform-subscriptions',
+        value: totalSubscriptions
+          ? numeral(totalSubscriptions).format('0,0')
+          : '-'
+      },
       // New SaaS metrics
       {
         selector: '#metrics-mrr',
