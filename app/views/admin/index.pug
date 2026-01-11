@@ -13,6 +13,188 @@ block body
     .row
       .col
         include ../_breadcrumbs
+
+    //- SaaS Metrics Header Section
+    .row.mb-4
+      .col
+        h2.h4.mb-3= t("SaaS Metrics Dashboard")
+        p.text-muted.small= t("Real-time subscription analytics powered by Stripe and PayPal data")
+
+    //- Primary Revenue Metrics Row
+    .row.mb-3
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100.border-primary
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("MRR")
+            #metrics-mrr.h3.font-weight-bold.text-primary: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Monthly Recurring Revenue")
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100.border-success
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("ARR")
+            #metrics-arr.h3.font-weight-bold.text-success: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Annual Run Rate")
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100.border-info
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("MRR Growth")
+            #metrics-mrr-growth.h3.font-weight-bold.text-info: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Month over Month")
+      .col-md-3.col-sm-6
+        .card.h-100.border-warning
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Quick Ratio")
+            #metrics-quick-ratio.h3.font-weight-bold.text-warning: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Growth Efficiency")
+
+    //- Customer & Churn Metrics Row
+    .row.mb-3
+      .col-md-2.col-sm-4.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("Active Customers")
+            #metrics-active-customers.h5.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .col-md-2.col-sm-4.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("New Customers")
+            #metrics-new-customers.h5.font-weight-bold.text-success.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .col-md-2.col-sm-4.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("Churned")
+            #metrics-churned-customers.h5.font-weight-bold.text-danger.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .col-md-2.col-sm-4.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("Reactivations")
+            #metrics-reactivations.h5.font-weight-bold.text-info.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .col-md-2.col-sm-4.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("Upgrades")
+            #metrics-upgrades.h5.font-weight-bold.text-success.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .col-md-2.col-sm-4
+        .card.h-100
+          .card-body.text-center.py-2
+            h6.card-subtitle.mb-1.text-muted.small= t("Downgrades")
+            #metrics-downgrades.h5.font-weight-bold.text-warning.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+
+    //- Churn & Retention Metrics Row
+    .row.mb-3
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("User Churn")
+            #metrics-user-churn.h4.font-weight-bold.text-danger: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Last 30 days")
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Revenue Churn")
+            #metrics-revenue-churn.h4.font-weight-bold.text-danger: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Last 30 days")
+      .col-md-3.col-sm-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Net Revenue Retention")
+            #metrics-nrr.h4.font-weight-bold.text-success: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("NRR %")
+      .col-md-3.col-sm-6
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Refunds")
+            #metrics-refunds.h4.font-weight-bold.text-warning: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Last 30 days")
+
+    //- Unit Economics Row
+    .row.mb-3
+      .col-md-4.col-sm-6.mb-3.mb-md-0
+        .card.h-100.border-info
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("LTV")
+            #metrics-ltv.h3.font-weight-bold.text-info: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Customer Lifetime Value")
+      .col-md-4.col-sm-6.mb-3.mb-md-0
+        .card.h-100.border-primary
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("ARPU")
+            #metrics-arpu.h3.font-weight-bold.text-primary: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Average Revenue Per User")
+      .col-md-4.col-sm-6
+        .card.h-100.border-success
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Subscriptions")
+            #metrics-total-subscriptions.h3.font-weight-bold.text-success: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Active Subscriptions")
+
+    //- MRR Chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h4.text-center.mb-0= t("Monthly Recurring Revenue (MRR)")
+            #mrr-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- ARR Chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h4.text-center.mb-0= t("Annual Run Rate (ARR)")
+            #arr-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Forecast Chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h4.text-center.mb-0= t("MRR Forecast (12 Months)")
+            #forecast-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Churn Chart
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h4.text-center.mb-0= t("Churn Rate Trends")
+            #churn-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Quick Ratio & NRR Charts Row
+    .row.mb-3
+      .col-md-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body
+            h2.h5.text-center.mb-0= t("Quick Ratio")
+            p.text-center.text-muted.small.mb-2= t("(New + Expansion) / (Churn + Contraction)")
+            #quick-ratio-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+      .col-md-6
+        .card.h-100
+          .card-body
+            h2.h5.text-center.mb-0= t("Net Revenue Retention")
+            p.text-center.text-muted.small.mb-2= t("Revenue from existing customers")
+            #nrr-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- LTV & ARPU Charts Row
+    .row.mb-3
+      .col-md-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body
+            h2.h5.text-center.mb-0= t("Customer Lifetime Value (LTV)")
+            #ltv-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+      .col-md-6
+        .card.h-100
+          .card-body
+            h2.h5.text-center.mb-0= t("Average Revenue Per User (ARPU)")
+            #arpu-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Divider for Original Metrics
+    .row.mb-3.mt-5
+      .col
+        hr
+        h3.h5.text-muted.text-center= t("Platform Metrics")
+
+    //- Original Metrics Row
     .row.mb-3
       .col
         .d-flex.flex-wrap.rounded.border.bg-white.bg-themed.text-center
@@ -28,24 +210,32 @@ block body
           .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
             h2.h4.text-center= t("Subscriptions")
             #metrics-total-subscriptions.display-4.font-weight-bold: i.fa.fa-spin.fa-spinner.small.text-muted
+
+    //- Growth Chart
     .row.mb-3
       .col
         .card
           .card-body
             h2.h4.text-center.mb-0= t("Growth for past year")
             #growth-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Deliverability Chart
     .row.mb-3
       .col
         .card
           .card-body
             h2.h4.text-center.mb-0= t("Deliverability for past 7 days")
             #deliverability-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Growth Since Launch Chart
     .row.mb-3
       .col
         .card
           .card-body
             h2.h4.text-center.mb-0= t("Growth since launch")
             #line-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- One-time Revenue Chart
     .row.mb-3
       .col
         .card
@@ -53,6 +243,7 @@ block body
             h2.h4.text-center.mb-0= t("One-time payment revenue since launch")
             #one-time-revenue-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
 
+    //- Subscription Revenue Chart
     .row.mb-3
       .col
         .card
@@ -60,25 +251,23 @@ block body
             h2.h4.text-center.mb-0= t("Subscription payment revenue since launch")
             #subscription-revenue-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
 
+    //- Total Revenue Chart
     .row.mb-3
       .col
         .card
           .card-body
             h2.h4.text-center.mb-0= t("Total revenue since launch")
             #revenue-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
-    //-.
-      .row.mb-3
-        .col
-          .card
-            .card-body
-              h2.h4.text-center.mb-0= t("Daily new users")
-              #heatmap: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Plan Distribution Chart
     .row.mb-3
       .col
         .card
           .card-body
             h2.h4.text-center.mb-0= t("Plan distribution")
             #pie-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+    //- Locale Distribution Chart
     .row.mb-3
       .col
         .card
