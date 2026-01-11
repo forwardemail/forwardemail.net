@@ -416,9 +416,10 @@
             fi
 
             # Check if saved process list differs from current
+            # Note: We filter out PM2 modules (like pm2-logrotate) which appear in jlist but not in dump.pm2
             if [ -f /home/deploy/.pm2/dump.pm2 ]; then
               SAVED_PROCESSES=$(cat /home/deploy/.pm2/dump.pm2 | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
-              CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
+              CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.pmx_module != true) | .name' | sort | tr '\n' ',' | sed 's/,$//')
 
               if [ "$SAVED_PROCESSES" != "$CURRENT_PROCESSES" ]; then
                 ALERT_NEEDED=1
