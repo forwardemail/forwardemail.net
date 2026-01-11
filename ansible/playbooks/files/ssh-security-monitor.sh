@@ -136,7 +136,14 @@ send_alert() {
 # Get last check timestamp
 get_last_check() {
     if [ -f "$LAST_CHECK_FILE" ]; then
-        cat "$LAST_CHECK_FILE"
+        local value
+        value=$(cat "$LAST_CHECK_FILE" 2>/dev/null)
+        # Return 0 if file is empty or contains non-numeric value
+        if [ -z "$value" ] || ! [[ "$value" =~ ^[0-9]+$ ]]; then
+            echo "0"
+        else
+            echo "$value"
+        fi
     else
         echo "0"
     fi

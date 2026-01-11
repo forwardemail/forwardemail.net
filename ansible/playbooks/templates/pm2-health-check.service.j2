@@ -1,0 +1,14 @@
+[Unit]
+Description=PM2 Health Check
+After=pm2-deploy.service
+
+[Service]
+Type=oneshot
+Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+ExecStart=/usr/local/bin/pm2-health-check.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pm2-health-check
+
+[Install]
+WantedBy=multi-user.target

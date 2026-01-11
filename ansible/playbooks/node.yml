@@ -363,75 +363,76 @@
         mode: '0755'
         content: |
           #!/bin/bash
-          set -e
 
           # PM2 Health Check Script
           # Checks: uptime, errors, stopped processes, and drift from saved state
 
-          MSMTP_RCPTS="${MSMTP_RCPTS:-security@forwardemail.net}"
           ALERT_NEEDED=0
           ALERT_MESSAGE=""
 
           echo "[$(date -Iseconds)] Starting PM2 health check..."
 
-          # Check if PM2 is installed
-          if ! command -v pm2 &> /dev/null; then
-            echo "[$(date -Iseconds)] ERROR: PM2 is not installed"
-            exit 1
-          fi
-
-          # Get PM2 process list in JSON format
-          PM2_JSON=$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 jlist' 2>/dev/null || echo "[]")
-
-          # Check if any processes exist
-          PROCESS_COUNT=$(echo "$PM2_JSON" | jq '. | length')
-
-          if [ "$PROCESS_COUNT" -eq 0 ]; then
+          # Check if PM2 is installed (use absolute path since it's installed for deploy user)
+          if ! [ -x "/home/deploy/n/bin/pm2" ]; then
             ALERT_NEEDED=1
-            ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  NO PM2 PROCESSES DETECTED\n"
-            echo "[$(date -Iseconds)] ERROR: No PM2 processes detected"
+            ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️ PM2 is not installed or not executable at /home/deploy/n/bin/pm2\n"
+            echo "[$(date -Iseconds)] ERROR: PM2 is not installed or not executable at /home/deploy/n/bin/pm2"
           fi
 
-          # Check each process for errors, stopped status, and uptime
-          if [ "$PROCESS_COUNT" -gt 0 ]; then
-            echo "[$(date -Iseconds)] Found $PROCESS_COUNT PM2 process(es)"
+          if [ "$ALERT_NEEDED" -eq 0 ]; then
+            # Get PM2 process list in JSON format (use absolute path)
+            PM2_JSON=$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 jlist' 2>/dev/null || echo "[]")
 
-            ERRORED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "errored") | .name' | tr '\n' ', ' | sed 's/,$//')
-            STOPPED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "stopped") | .name' | tr '\n' ', ' | sed 's/,$//')
+            # Check if any processes exist
+            PROCESS_COUNT=$(echo "$PM2_JSON" | jq '. | length')
 
-            if [ -n "$ERRORED_PROCESSES" ]; then
+            if [ "$PROCESS_COUNT" -eq 0 ]; then
               ALERT_NEEDED=1
-              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  ERRORED PROCESSES: $ERRORED_PROCESSES\n"
-              echo "[$(date -Iseconds)] ERROR: Processes in errored state: $ERRORED_PROCESSES"
+              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  NO PM2 PROCESSES DETECTED\n"
+              echo "[$(date -Iseconds)] ERROR: No PM2 processes detected"
             fi
 
-            if [ -n "$STOPPED_PROCESSES" ]; then
-              ALERT_NEEDED=1
-              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  STOPPED PROCESSES: $STOPPED_PROCESSES\n"
-              echo "[$(date -Iseconds)] ERROR: Processes in stopped state: $STOPPED_PROCESSES"
+            # Check each process for errors, stopped status, and uptime
+            if [ "$PROCESS_COUNT" -gt 0 ]; then
+              echo "[$(date -Iseconds)] Found $PROCESS_COUNT PM2 process(es)"
+
+              ERRORED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "errored") | .name' | tr '\n' ', ' | sed 's/,$//')
+              STOPPED_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[] | select(.pm2_env.status == "stopped") | .name' | tr '\n' ', ' | sed 's/,$//')
+
+              if [ -n "$ERRORED_PROCESSES" ]; then
+                ALERT_NEEDED=1
+                ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  ERRORED PROCESSES: $ERRORED_PROCESSES\n"
+                echo "[$(date -Iseconds)] ERROR: Processes in errored state: $ERRORED_PROCESSES"
+              fi
+
+              if [ -n "$STOPPED_PROCESSES" ]; then
+                ALERT_NEEDED=1
+                ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  STOPPED PROCESSES: $STOPPED_PROCESSES\n"
+                echo "[$(date -Iseconds)] ERROR: Processes in stopped state: $STOPPED_PROCESSES"
+              fi
+
+              # Display uptime for all processes
+              echo "$PM2_JSON" | jq -r '.[] | "\(.name): \(.pm2_env.status) (uptime: \(.pm2_env.pm_uptime | tonumber / 1000 | floor) seconds)"'
             fi
 
-            # Display uptime for all processes
-            echo "$PM2_JSON" | jq -r '.[] | "\(.name): \(.pm2_env.status) (uptime: \(.pm2_env.pm_uptime | tonumber / 1000 | floor) seconds)"'
-          fi
+            # Check if saved process list differs from current
+            if [ -f /home/deploy/.pm2/dump.pm2 ]; then
+              SAVED_PROCESSES=$(cat /home/deploy/.pm2/dump.pm2 | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
+              CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
 
-          # Check if saved process list differs from current
-          if [ -f /home/deploy/.pm2/dump.pm2 ]; then
-            SAVED_PROCESSES=$(cat /home/deploy/.pm2/dump.pm2 | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
-            CURRENT_PROCESSES=$(echo "$PM2_JSON" | jq -r '.[].name' | sort | tr '\n' ',' | sed 's/,$//')
-
-            if [ "$SAVED_PROCESSES" != "$CURRENT_PROCESSES" ]; then
-              ALERT_NEEDED=1
-              ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  PROCESS LIST DRIFT DETECTED\n"
-              ALERT_MESSAGE="${ALERT_MESSAGE}Saved:   $SAVED_PROCESSES\n"
-              ALERT_MESSAGE="${ALERT_MESSAGE}Current: $CURRENT_PROCESSES\n"
-              echo "[$(date -Iseconds)] WARNING: Process list differs from saved state"
-              echo "  Saved:   $SAVED_PROCESSES"
-              echo "  Current: $CURRENT_PROCESSES"
+              if [ "$SAVED_PROCESSES" != "$CURRENT_PROCESSES" ]; then
+                ALERT_NEEDED=1
+                ALERT_MESSAGE="${ALERT_MESSAGE}\n⚠️  PROCESS LIST DRIFT DETECTED\n"
+                ALERT_MESSAGE="${ALERT_MESSAGE}Saved:   $SAVED_PROCESSES\n"
+                ALERT_MESSAGE="${ALERT_MESSAGE}Current: $CURRENT_PROCESSES\n"
+                echo "[$(date -Iseconds)] WARNING: Process list differs from saved state"
+                echo "  Saved:   $SAVED_PROCESSES"
+                echo "  Current: $CURRENT_PROCESSES"
+              fi
+            else
+              echo "[$(date -Iseconds)] WARNING: No saved PM2 state found (/home/deploy/.pm2/dump.pm2)"
+              echo "  Run 'pm2 save' to create baseline"
             fi
-          else
-            echo "[$(date -Iseconds)] WARNING: No saved PM2 state found (/home/deploy/.pm2/dump.pm2)"
-            echo "  Run 'pm2 save' to create baseline"
           fi
 
           # Send alert email if needed
@@ -442,10 +443,14 @@
             EMAIL_BODY="${EMAIL_BODY}Timestamp: $(date -Iseconds)\n"
             EMAIL_BODY="${EMAIL_BODY}\n${ALERT_MESSAGE}\n"
             EMAIL_BODY="${EMAIL_BODY}Full PM2 Status:\n"
-            EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && pm2 list')\n"
+            EMAIL_BODY="${EMAIL_BODY}$(sudo -u deploy bash -c 'source /home/deploy/.bashrc && /home/deploy/n/bin/pm2 list' 2>/dev/null || echo 'Unable to get PM2 status')\n"
 
-            echo -e "$EMAIL_BODY" | mail -s "[ALERT] PM2 Health Check Failed on $(hostname)" "$MSMTP_RCPTS" || \
-              echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            if [ -x "/usr/local/bin/send-rate-limited-email.sh" ]; then
+              /usr/local/bin/send-rate-limited-email.sh "pm2-health-check" "[ALERT] PM2 Health Check Failed on $(hostname)" "$EMAIL_BODY"
+            else
+              echo -e "$EMAIL_BODY" | sendmail -t "$MSMTP_RCPTS" || \
+                echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            fi
 
             exit 1
           else
@@ -465,6 +470,7 @@
 
           [Service]
           Type=oneshot
+          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/pm2-health-check.sh
           StandardOutput=journal
           StandardError=journal

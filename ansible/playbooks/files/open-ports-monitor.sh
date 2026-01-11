@@ -162,9 +162,12 @@ send_port_alert() {
     local closed_ports="$2"
     local all_ports="$3"
 
-    local new_count=$(echo -e "$new_ports" | grep -c "." || echo "0")
-    local closed_count=$(echo -e "$closed_ports" | grep -c "." || echo "0")
-    local total_count=$(echo -e "$all_ports" | grep -c "." || echo "0")
+    local new_count
+    local closed_count
+    local total_count
+    new_count=$(echo -e "$new_ports" | grep -c "." 2>/dev/null) || new_count=0
+    closed_count=$(echo -e "$closed_ports" | grep -c "." 2>/dev/null) || closed_count=0
+    total_count=$(echo -e "$all_ports" | grep -c "." 2>/dev/null) || total_count=0
 
     # Determine severity
     local color="#5bc0de"  # Blue (info)
@@ -319,9 +322,11 @@ main() {
     local new=$(echo "$changes" | cut -d'|' -f1)
     local closed=$(echo "$changes" | cut -d'|' -f2)
 
-    # Count changes
-    local new_count=$(echo -e "$new" | grep -c "." || echo "0")
-    local closed_count=$(echo -e "$closed" | grep -c "." || echo "0")
+    # Count changes (handle empty strings properly)
+    local new_count
+    local closed_count
+    new_count=$(echo -e "$new" | grep -c "." 2>/dev/null) || new_count=0
+    closed_count=$(echo -e "$closed" | grep -c "." 2>/dev/null) || closed_count=0
     local total_changes=$((new_count + closed_count))
 
     if [ "$total_changes" -eq 0 ]; then

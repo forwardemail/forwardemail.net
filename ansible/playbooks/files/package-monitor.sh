@@ -136,9 +136,12 @@ send_package_alert() {
     local removed="$2"
     local upgraded="$3"
 
-    local installed_count=$(echo -e "$installed" | grep -c "." || echo "0")
-    local removed_count=$(echo -e "$removed" | grep -c "." || echo "0")
-    local upgraded_count=$(echo -e "$upgraded" | grep -c "." || echo "0")
+    local installed_count
+    local removed_count
+    local upgraded_count
+    installed_count=$(echo -e "$installed" | grep -c "." 2>/dev/null) || installed_count=0
+    removed_count=$(echo -e "$removed" | grep -c "." 2>/dev/null) || removed_count=0
+    upgraded_count=$(echo -e "$upgraded" | grep -c "." 2>/dev/null) || upgraded_count=0
 
     # Determine severity
     local color="#5bc0de"  # Blue (info)
@@ -238,10 +241,13 @@ main() {
     local removed=$(echo "$changes" | cut -d'|' -f2)
     local upgraded=$(echo "$changes" | cut -d'|' -f3)
 
-    # Count changes
-    local installed_count=$(echo -e "$installed" | grep -c "." || echo "0")
-    local removed_count=$(echo -e "$removed" | grep -c "." || echo "0")
-    local upgraded_count=$(echo -e "$upgraded" | grep -c "." || echo "0")
+    # Count changes (handle empty strings properly)
+    local installed_count
+    local removed_count
+    local upgraded_count
+    installed_count=$(echo -e "$installed" | grep -c "." 2>/dev/null) || installed_count=0
+    removed_count=$(echo -e "$removed" | grep -c "." 2>/dev/null) || removed_count=0
+    upgraded_count=$(echo -e "$upgraded" | grep -c "." 2>/dev/null) || upgraded_count=0
     local total_changes=$((installed_count + removed_count + upgraded_count))
 
     if [ "$total_changes" -eq 0 ]; then
