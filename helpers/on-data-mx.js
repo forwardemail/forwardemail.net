@@ -184,7 +184,7 @@ async function sendSysAdminEmail(template, err, session, headers) {
 async function addToDenylist(attr, headers, bounce, _session) {
   // Check if the value is allowlisted before adding to denylist
   // This prevents allowlisted IPs/domains from being incorrectly denylisted
-  if (await isAllowlisted(attr, this.client, logger)) {
+  if (await isAllowlisted(attr, this.client, this.resolver)) {
     logger.debug('skipping denylist for allowlisted value', { attr });
     return;
   }
