@@ -66,7 +66,29 @@ const EMAIL_CLIENT_PATTERNS = [
   { pattern: /getmail/i, name: 'getmail' },
   { pattern: /offlineimap/i, name: 'OfflineIMAP' },
   { pattern: /isync|mbsync/i, name: 'isync/mbsync' },
-  { pattern: /davmail/i, name: 'DavMail' }
+  { pattern: /davmail/i, name: 'DavMail' },
+
+  // Apple clients (macOS/iOS) - must be before generic calendar/contacts patterns
+  { pattern: /macos/i, name: 'macOS' },
+  { pattern: /ios\/\d/i, name: 'iOS' },
+  { pattern: /dataaccessd/i, name: 'iOS Data Access' },
+  { pattern: /calendaragent/i, name: 'Calendar Agent' },
+  { pattern: /accountsd/i, name: 'macOS Accounts' },
+  { pattern: /contactsd/i, name: 'macOS Contacts' },
+
+  // CalDAV/CardDAV clients
+  { pattern: /caldavsynchronizer/i, name: 'CalDAV Synchronizer' },
+  { pattern: /caldav/i, name: 'CalDAV Client' },
+  { pattern: /carddav/i, name: 'CardDAV Client' },
+  { pattern: /davx5/i, name: 'DAVx5' },
+  { pattern: /baikal/i, name: 'Baïkal' },
+  { pattern: /busycal/i, name: 'BusyCal' },
+  { pattern: /fantastical/i, name: 'Fantastical' },
+  { pattern: /gnome.?calendar/i, name: 'GNOME Calendar' },
+  { pattern: /contacts/i, name: 'Contacts' },
+  { pattern: /addressbook/i, name: 'Address Book' },
+  { pattern: /calendar/i, name: 'Calendar' },
+  { pattern: /reminders/i, name: 'Reminders' }
 ];
 
 // Browser patterns for detection
@@ -103,7 +125,7 @@ const BROWSER_PATTERNS = [
   { pattern: /yabrowser\/(\d+)/i, name: 'Yandex Browser', versionIndex: 1 }
 ];
 
-// OS patterns for detection
+// OS patterns for detection - order matters for correct matching
 const OS_PATTERNS = [
   { pattern: /windows nt 10\.0/i, name: 'Windows', version: '10/11' },
   { pattern: /windows nt 6\.3/i, name: 'Windows', version: '8.1' },
@@ -112,10 +134,13 @@ const OS_PATTERNS = [
   { pattern: /windows nt 6\.0/i, name: 'Windows', version: 'Vista' },
   { pattern: /windows nt 5\.1/i, name: 'Windows', version: 'XP' },
   { pattern: /windows/i, name: 'Windows', version: '' },
+  // iOS/iPadOS must come before macOS since they contain "Mac OS X" in UA
+  { pattern: /iphone.*os (\d+)[._](\d+)/i, name: 'iOS', versionIndex: [1, 2] },
+  { pattern: /iphone os (\d+)/i, name: 'iOS', versionIndex: 1 },
+  { pattern: /ipad.*os (\d+)[._](\d+)/i, name: 'iPadOS', versionIndex: [1, 2] },
+  { pattern: /ipad.*os (\d+)/i, name: 'iPadOS', versionIndex: 1 },
   { pattern: /mac os x (\d+)[._](\d+)/i, name: 'macOS', versionIndex: [1, 2] },
   { pattern: /macintosh|mac os/i, name: 'macOS', version: '' },
-  { pattern: /iphone os (\d+)/i, name: 'iOS', versionIndex: 1 },
-  { pattern: /ipad.*os (\d+)/i, name: 'iPadOS', versionIndex: 1 },
   { pattern: /android (\d+)/i, name: 'Android', versionIndex: 1 },
   { pattern: /android/i, name: 'Android', version: '' },
   { pattern: /linux/i, name: 'Linux', version: '' },
@@ -498,6 +523,7 @@ function trackAuth(options) {
  * @param {Object} ctx - Koa context
  * @param {Object} options - Additional options
  * @param {boolean} [options.is_landing_page=false] - Whether this is a landing page
+ * @param {string} [options.pathWithoutLocale] - Path without locale prefix for consistent storage
  */
 function trackPageView(ctx, options = {}) {
   return trackEvent({
@@ -506,7 +532,9 @@ function trackPageView(ctx, options = {}) {
     ip: ctx.ip,
     ua: ctx.get('user-agent'),
     referrer: ctx.get('referer') || ctx.get('referrer'),
-    pathname: ctx.path,
+    // Use pathWithoutLocale if provided for consistent pathname storage
+    // This ensures /en/faq, /de/faq, /zh/faq all map to /faq
+    pathname: options.pathWithoutLocale || ctx.pathWithoutLocale || ctx.path,
     query: ctx.query,
     user_id: ctx.state?.user?.id,
     success: ctx.status < 400,
@@ -531,6 +559,49 @@ function trackAPICall(ctx) {
   });
 }
 
+/**
+ * Parse IMAP client ID object to a User-Agent-like string
+ * IMAP clients send identification via the ID command (RFC 2971)
+ * which contains fields like name, version, vendor, etc.
+ *
+ * @param {Object} clientId - IMAP client ID object from session.clientId
+ * @returns {string} - User-Agent-like string for analytics parsing
+ */
+function parseIMAPClientId(clientId) {
+  if (!clientId || typeof clientId !== 'object') return '';
+
+  // Build a User-Agent-like string from IMAP ID fields
+  // Common fields: name, version, vendor, os, os-version, support-url
+  const parts = [];
+
+  // Add name and version (most important)
+  if (clientId.name) {
+    let nameVersion = clientId.name;
+    if (clientId.version) {
+      nameVersion += `/${clientId.version}`;
+    }
+
+    parts.push(nameVersion);
+  }
+
+  // Add vendor if different from name
+  if (clientId.vendor && clientId.vendor !== clientId.name) {
+    parts.push(`(${clientId.vendor})`);
+  }
+
+  // Add OS information
+  if (clientId.os) {
+    let osInfo = clientId.os;
+    if (clientId['os-version']) {
+      osInfo += ` ${clientId['os-version']}`;
+    }
+
+    parts.push(osInfo);
+  }
+
+  return parts.join(' ');
+}
+
 module.exports = {
   trackEvent,
   trackAuth,
@@ -540,6 +611,7 @@ module.exports = {
   parseOS,
   parseDeviceType,
   parseEmailClient,
+  parseIMAPClientId,
   categorizeReferrer,
   extractReferrerDomain,
   generateSessionHash,

@@ -828,10 +828,31 @@ async function onAuth(auth, session, fn) {
       else if (isCardDAV) service = 'carddav';
       else if (isAPI) service = 'api';
 
+      // Determine User-Agent based on service type:
+      // - IMAP: Use session.clientId (from IMAP ID command, RFC 2971)
+      // - POP3: No standard client identification (protocol limitation)
+      // - CalDAV/CardDAV/API: Use HTTP User-Agent header from session.request
+      // - SMTP: Use session.hostNameAppearsAs (EHLO/HELO hostname sent by client)
+      let ua = '';
+      if (isIMAP && session.clientId) {
+        // IMAP ID command provides client identification (RFC 2971)
+        ua = analytics.parseIMAPClientId(session.clientId);
+      } else if ((isCalDAV || isCardDAV || isAPI) && session.request) {
+        // HTTP-based protocols have User-Agent header
+        ua = session.request.get?.('user-agent') || '';
+      } else if (session.hostNameAppearsAs) {
+        // SMTP uses EHLO/HELO hostname (what client sends, not resolved hostname)
+        ua = session.hostNameAppearsAs;
+      } else if (session.clientHostname) {
+        // Fallback to resolved hostname if EHLO/HELO not available
+        ua = session.clientHostname;
+      }
+      // Note: POP3 has no standard client identification mechanism
+
       analytics.trackAuth({
         service,
         ip: session.remoteAddress,
-        ua: session.clientHostname || '',
+        ua,
         user_id: user.id,
         domain_id: user.domain_id,
         success: true

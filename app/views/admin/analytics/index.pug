@@ -102,7 +102,8 @@ block body
           .card-body
             h5.card-title= t("Visitors Over Time")
             #visitors-chart(
-              data-chart=JSON.stringify(analytics.chartData.visitors)
+              data-visitors=JSON.stringify(analytics.chartData.visitors),
+              data-events=JSON.stringify(analytics.chartData.events)
             )
               .text-center.py-5
                 i.fa.fa-spin.fa-spinner.fa-2x.text-muted

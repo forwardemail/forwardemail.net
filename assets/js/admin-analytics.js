@@ -77,8 +77,12 @@ function initVisitorsOverTimeChart() {
   const $element = $('#visitors-chart');
   if ($element.length === 0) return;
 
-  const data = $element.data('chart');
-  if (!data || data.length === 0) {
+  const visitorsData = $element.data('visitors');
+  const eventsData = $element.data('events');
+  if (
+    (!visitorsData || visitorsData.length === 0) &&
+    (!eventsData || eventsData.length === 0)
+  ) {
     $element.html(
       '<p class="text-muted text-center py-5">No data available</p>'
     );
@@ -91,14 +95,14 @@ function initVisitorsOverTimeChart() {
     series: [
       {
         name: 'Visitors',
-        data: data.map(function (d) {
-          return { x: d.x, y: d.visitors };
+        data: (visitorsData || []).map(function (d) {
+          return { x: d.x, y: d.y };
         })
       },
       {
         name: 'Events',
-        data: data.map(function (d) {
-          return { x: d.x, y: d.events };
+        data: (eventsData || []).map(function (d) {
+          return { x: d.x, y: d.y };
         })
       }
     ],

@@ -20,7 +20,7 @@ const analytics = require('#helpers/analytics');
  * @param {string} [options.service='web'] - Service type ('web' or 'api')
  * @param {boolean} [options.trackPageViews=true] - Whether to track page views
  * @param {boolean} [options.trackAPICalls=false] - Whether to track API calls
- * @param {string[]} [options.excludePaths=[]] - Paths to exclude from tracking
+ * @param {string[]} [options.excludePaths=[]] - Paths to exclude from tracking (without locale prefix)
  * @returns {Function} Koa middleware
  */
 function analyticsMiddleware(options = {}) {
@@ -32,6 +32,7 @@ function analyticsMiddleware(options = {}) {
   } = options;
 
   // Default paths to exclude (static assets, health checks, etc.)
+  // These are matched against pathWithoutLocale to handle all locale variants
   const defaultExcludePaths = [
     '/health',
     '/healthcheck',
@@ -39,7 +40,10 @@ function analyticsMiddleware(options = {}) {
     '/robots.txt',
     '/sitemap.xml',
     '/_health',
-    '/api/v1/health'
+    '/api/v1/health',
+    // Exclude TTI (Time-To-Inbox) monitoring routes
+    // These generate excessive events and are not meaningful page views
+    '/tti'
   ];
 
   const allExcludePaths = [...defaultExcludePaths, ...excludePaths];
@@ -51,13 +55,17 @@ function analyticsMiddleware(options = {}) {
       return next();
     }
 
-    // Skip excluded paths
+    // Use pathWithoutLocale if available (set by @ladjs/i18n middleware)
+    // This ensures we match paths regardless of locale prefix (e.g., /en/tti, /de/tti, /zh/tti)
+    const pathToCheck = ctx.pathWithoutLocale || ctx.path;
+
+    // Skip excluded paths (checked against path without locale)
     const shouldExclude = allExcludePaths.some((path) => {
       if (path.endsWith('*')) {
-        return ctx.path.startsWith(path.slice(0, -1));
+        return pathToCheck.startsWith(path.slice(0, -1));
       }
 
-      return ctx.path === path;
+      return pathToCheck === path;
     });
 
     if (shouldExclude) {
@@ -95,8 +103,8 @@ function analyticsMiddleware(options = {}) {
       service === 'web' && // Only capture on first visit (when landing page is not set)
       !ctx.session.signup_landing_page
     ) {
-      // Store the landing page
-      ctx.session.signup_landing_page = ctx.path;
+      // Store the landing page (use pathWithoutLocale for consistency)
+      ctx.session.signup_landing_page = pathToCheck;
 
       // Store the referrer
       const referrer = ctx.get('referer') || ctx.get('referrer');
@@ -136,7 +144,7 @@ function analyticsMiddleware(options = {}) {
     const isLandingPage =
       ctx.session &&
       service === 'web' &&
-      ctx.session.signup_landing_page === ctx.path &&
+      ctx.session.signup_landing_page === pathToCheck &&
       !ctx.session._analytics_page_count;
 
     // Increment page count for session
@@ -159,7 +167,11 @@ function analyticsMiddleware(options = {}) {
         ctx.type &&
         ctx.type.includes('text/html')
       ) {
-        analytics.trackPageView(ctx, { is_landing_page: isLandingPage });
+        // Pass pathWithoutLocale to trackPageView for consistent pathname storage
+        analytics.trackPageView(ctx, {
+          is_landing_page: isLandingPage,
+          pathWithoutLocale: pathToCheck
+        });
       }
 
       // Track API calls
