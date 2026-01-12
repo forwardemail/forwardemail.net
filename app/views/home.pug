@@ -112,7 +112,7 @@ block body
         )
         .col-12
           if isBot(ctx.get('User-Agent'))
-            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domains")
+            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domain Domain")
           else
             h1.mb-1.display-3.font-weight-normal!= t("All-in-one Email Solution")
       if isBot(ctx.get('User-Agent'))
@@ -124,6 +124,18 @@ block body
                 target="_blank",
                 rel="noopener noreferrer"
               )= t(phrase)
+        .row.mb-3
+          .col-12
+            p.lead.text-white.mb-0= t("The best free email forwarding service for custom domains. Create unlimited email aliases, forward to any inbox, and send as your custom domain email address. 100% open-source and privacy-focused.")
+        .row.mb-3
+          .col-12
+            h3.h6.font-weight-normal.mb-2= t("Why choose Forward Email for custom domain email?")
+            ul.list-unstyled.text-white
+              li= t("Free email forwarding with unlimited aliases")
+              li= t("Custom domain email hosting with SMTP, IMAP, and POP3")
+              li= t("Send and receive email as you@yourdomain.com")
+              li= t("100% open-source and privacy-first")
+              li= t("No ads, no tracking, no data selling")
       else
         .row.mb-3
           .col-12
