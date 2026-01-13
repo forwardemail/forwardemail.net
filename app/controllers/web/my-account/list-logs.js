@@ -783,17 +783,16 @@ async function listLogs(ctx) {
     });
 
     //
-    // FIX: Update itemCount after in-memory filtering to prevent inconsistency
-    // where "N results found" is shown but "No error logs" message appears
-    // (fixes GitHub issue #467)
+    // NOTE: We intentionally do NOT update itemCount here.
+    // The itemCount from the database query represents the total matching logs,
+    // while ctx.state.logs.length is only the filtered logs on the current page.
+    // Setting itemCount = logs.length would break pagination by making it think
+    // there are only N logs total (where N is the current page count).
     //
-    ctx.state.itemCount = ctx.state.logs.length;
-    ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
-    ctx.state.pages = paginate.getArrayPages(ctx)(
-      6,
-      ctx.state.pageCount,
-      ctx.query.page
-    );
+    // The original fix (commit 1b0cc07) for GitHub issue #467 was incorrect.
+    // The UI inconsistency ("N results found" with "No error logs" message)
+    // should be fixed in the view layer, not by corrupting the pagination count.
+    //
   }
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
