@@ -12,6 +12,7 @@ const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
+const splitByComma = require('#helpers/split-by-comma');
 
 const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
@@ -130,9 +131,7 @@ async function validateDomain(ctx, next) {
         const rcpts = _.compact(
           _.uniq(
             _.map(
-              splitLines(ctx.request.body.catchall)
-                .join(' ')
-                .split(',')
+              splitByComma(splitLines(ctx.request.body.catchall).join(' '))
                 .join(' ')
                 .split(' '),
               (recipient) => recipient.trim()

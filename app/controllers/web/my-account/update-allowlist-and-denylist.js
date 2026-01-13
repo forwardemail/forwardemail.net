@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const splitLines = require('split-lines');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('#helpers/lodash');
+const splitByComma = require('#helpers/split-by-comma');
 
 const { Domains } = require('#models');
 
@@ -23,9 +24,7 @@ async function updateAllowlistAndDenylist(ctx, next) {
     ctx.state.domain[kind] = _.compact(
       _.uniq(
         _.map(
-          splitLines(ctx.request.body[kind])
-            .join(' ')
-            .split(',')
+          splitByComma(splitLines(ctx.request.body[kind]).join(' '))
             .join(' ')
             .split(' '),
           (v) => v.toLowerCase()

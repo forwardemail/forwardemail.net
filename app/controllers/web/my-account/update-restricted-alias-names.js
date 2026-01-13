@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const splitLines = require('split-lines');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('#helpers/lodash');
+const splitByComma = require('#helpers/split-by-comma');
 
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -21,9 +22,9 @@ async function updateRestrictedAliasNames(ctx, next) {
     ctx.state.domain.restricted_alias_names = _.compact(
       _.uniq(
         _.map(
-          splitLines(ctx.request.body.restricted_alias_names)
-            .join(' ')
-            .split(',')
+          splitByComma(
+            splitLines(ctx.request.body.restricted_alias_names).join(' ')
+          )
             .join(' ')
             .split(' '),
           (v) => v.toLowerCase()

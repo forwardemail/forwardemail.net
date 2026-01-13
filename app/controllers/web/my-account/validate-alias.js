@@ -16,6 +16,7 @@ const { boolean } = require('boolean');
 
 const ensureDomainAdmin = require('./ensure-domain-admin');
 const _ = require('#helpers/lodash');
+const splitByComma = require('#helpers/split-by-comma');
 
 const config = require('#config');
 
@@ -87,7 +88,7 @@ function validateAlias(ctx, next) {
     body.labels = _.compact(
       _.uniq(
         _.map(
-          splitLines(body.labels).join(' ').split(',').join(' ').split(' '),
+          splitByComma(splitLines(body.labels).join(' ')).join(' ').split(' '),
           (label) => slug(label.trim())
         )
       )
@@ -146,7 +147,9 @@ function validateAlias(ctx, next) {
     body.recipients = _.compact(
       _.uniq(
         _.map(
-          splitLines(body.recipients).join(' ').split(',').join(' ').split(' '),
+          splitByComma(splitLines(body.recipients).join(' '))
+            .join(' ')
+            .split(' '),
           (recipient) => recipient.trim()
         )
       )
