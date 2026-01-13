@@ -9,6 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 
 const SMTPError = require('#helpers/smtp-error');
 const i18n = require('#helpers/i18n');
+const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 const config = require('#config');
 
@@ -32,6 +33,7 @@ function validateDomain(domain, domainName) {
 
   //
   // validate that at least one paying, non-banned admin on >= same plan without expiration
+  // or within the 15-day grace period for paid users
   //
   const validPlans =
     domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
@@ -46,7 +48,9 @@ function validateDomain(domain, domainName) {
         (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
           Date.now() ||
           isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
-          isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
+          isSANB(m.user[config.userFields.paypalSubscriptionID]) ||
+          // Allow access during 15-day grace period for paid users
+          isWithinGracePeriod(m.user)) &&
         m.group === 'admin'
     )
   )

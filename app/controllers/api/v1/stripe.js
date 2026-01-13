@@ -611,7 +611,57 @@ async function processEvent(ctx, event) {
       break;
     }
 
-    // TODO: handle other events
+    //
+    // Handle invoice payment failed - this triggers when a subscription payment fails
+    // Stripe will automatically retry the payment according to the dunning settings
+    // We send a notification to the user about the failed payment
+    //
+    case 'invoice.payment_failed': {
+      if (event.data.object.object !== 'invoice')
+        throw new Error('Event object was not an invoice');
+
+      const invoice = event.data.object;
+
+      // Only process subscription invoices
+      if (!invoice.subscription) break;
+
+      // Find the user with this subscription
+      const user = await Users.findOne({
+        [config.userFields.stripeSubscriptionID]: invoice.subscription
+      }).lean();
+
+      if (user) {
+        // Send payment failed notification email
+        try {
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: user[config.userFields.receiptEmail] || user.email,
+              ...(user[config.userFields.receiptEmail]
+                ? { cc: user.email }
+                : {}),
+              subject: 'Payment failed - action required'
+            },
+            locals: {
+              message: `<p>We were unable to process your subscription payment.</p>
+                <p>We will automatically retry the payment over the next few days. To avoid any service interruption, please update your payment method.</p>
+                <p>You have a 15-day grace period during which your services will remain active.</p>
+                <p><a href="${config.urls.web}/my-account/billing/update-card" class="btn btn-dark btn-lg">Update Payment Method</a></p>`,
+              locale: user[config.lastLocaleField]
+            }
+          });
+
+          ctx.logger.info(
+            `Sent payment failed notification to ${user.email} for Stripe subscription`
+          );
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+      }
+
+      break;
+    }
+
     default:
   }
 }

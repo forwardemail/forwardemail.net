@@ -10,6 +10,7 @@ const _ = require('#helpers/lodash');
 
 const emailHelper = require('#helpers/email');
 const config = require('#config');
+const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 async function ensurePaidToDate(ctx, next) {
   // short-circuit if in self-hosted mode
@@ -33,10 +34,11 @@ async function ensurePaidToDate(ctx, next) {
           _.isArray(d.aliases) &&
           d.aliases.some((a) => a.is_enabled)
       )) ||
-      // or the user was on paid plan, plan expired, and had some domains
+      // or the user was on paid plan, plan expired, not in grace period, and had some domains
       (ctx.state.user.plan !== 'free' &&
         new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
           Date.now() &&
+        !isWithinGracePeriod(ctx.state.user) &&
         ctx.state.domains.some(
           (d) =>
             d.is_global &&
@@ -72,7 +74,9 @@ async function ensurePaidToDate(ctx, next) {
       Date.now() ||
     // or if the user has a subscription then don't show the error
     isSANB(ctx.state.user[config.userFields.stripeSubscriptionID]) ||
-    isSANB(ctx.state.user[config.userFields.paypalSubscriptionID])
+    isSANB(ctx.state.user[config.userFields.paypalSubscriptionID]) ||
+    // or if the user is within the 15-day grace period
+    isWithinGracePeriod(ctx.state.user)
   )
     return next();
 

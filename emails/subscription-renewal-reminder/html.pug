@@ -1,0 +1,36 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            = t("Upcoming Subscription Renewal")
+          .card-body.p-0
+            a(href=`${config.urls.web}/${locale}/my-account/billing`)
+              img.img-fluid.d-block.align-top(
+                src=manifest(`img/emails/${_.sample(["domain-onboard", "domain-verified", "self-test", "welcome"])}.gif`),
+                alt=""
+              )
+            .p-3.text-center
+              p.card-text
+                != t('Your subscription will automatically renew on <strong class="text-primary notranslate">%s</strong>.', dayjs(renewalDate).locale(locale).format("LL"))
+              p.card-text.mb-0
+                != t('You will be charged <strong class="notranslate">%s</strong> for your <strong class="notranslate">%s</strong> subscription.', formattedAmount, frequency)
+              p.card-text.text-muted.small
+                = t("No action is required. Your subscription will renew automatically using your saved payment method.")
+              ul.list-inline.text-center.mb-0
+                if isSANB(user[config.userFields.stripeSubscriptionID])
+                  li.list-inline-item.mt-3
+                    a.btn.btn-md.btn-dark(
+                      href=`${config.urls.web}/${locale}/my-account/billing/update-card`
+                    )= t("Update Payment Method")
+                li.list-inline-item.mt-3
+                  a.btn.btn-md.btn-primary(
+                    href=`${config.urls.web}/${locale}/my-account/billing`
+                  )= t("Manage Billing")
+            include ../_account-summary
+
+          .card-footer.text-center.small.text-muted
+            = t("If you wish to cancel your subscription, you can do so from your billing page before the renewal date.")

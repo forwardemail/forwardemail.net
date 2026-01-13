@@ -118,8 +118,55 @@ async function processEvent(ctx) {
       break;
     }
 
+    //
+    // Handle payment failure - send notification but don't cancel immediately
+    // PayPal will retry the payment automatically
+    // User has 15-day grace period during which services remain active
+    //
+    case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED': {
+      if (!isSANB(body.resource.id)) throw new Error('Subscription ID missing');
+
+      const user = await Users.findOne({
+        [config.userFields.paypalSubscriptionID]: body.resource.id
+      });
+
+      if (user) {
+        // Send payment failed notification email
+        try {
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: user[config.userFields.receiptEmail] || user.email,
+              ...(user[config.userFields.receiptEmail]
+                ? { cc: user.email }
+                : {}),
+              subject: 'Payment failed - action required'
+            },
+            locals: {
+              message: `<p>We were unable to process your subscription payment.</p>
+                <p>PayPal will automatically retry the payment. To avoid any service interruption, please ensure your payment method is up to date.</p>
+                <p>You have a 15-day grace period during which your services will remain active.</p>
+                <p><a href="${config.urls.web}/my-account/billing" class="btn btn-dark btn-lg">Manage Billing</a></p>`,
+              locale: user[config.lastLocaleField]
+            }
+          });
+
+          ctx.logger.info(
+            `Sent payment failed notification to ${user.email} for PayPal subscription`
+          );
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+      }
+
+      break;
+    }
+
+    //
+    // Handle subscription cancellation/expiration/suspension
+    // These events indicate the subscription is no longer active
+    //
     case 'BILLING.SUBSCRIPTION.EXPIRED':
-    case 'BILLING.SUBSCRIPTION.PAYMENT.FAILED':
     case 'BILLING.SUBSCRIPTION.SUSPENDED':
     case 'BILLING.SUBSCRIPTION.CANCELLED': {
       // body.resource.subscriber.email_address

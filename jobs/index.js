@@ -153,6 +153,12 @@ let jobs = [
     interval: '1h',
     timeout: 0
   },
+  // Send renewal reminders 7 days before subscription renewal for annual/6-month plans
+  {
+    name: 'subscription-renewal-reminder',
+    interval: '1h',
+    timeout: 0
+  },
   {
     name: 'update-uceprotect',
     interval: '1h',
