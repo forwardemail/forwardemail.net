@@ -4362,6 +4362,15 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "always_send_email",
+            "in": "query",
+            "description": "If set to `true` or `1`, an email will always be sent even if no logs are found. The email will indicate that no logs were available and will not contain an attachment.",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false", "1", "0"]
+            }
           }
         ],
         "responses": {

@@ -459,6 +459,9 @@ async function listLogs(ctx) {
   ) {
     // download in background and email to users
     const now = new Date();
+    const alwaysSendEmail =
+      ctx.query.always_send_email === 'true' ||
+      ctx.query.always_send_email === '1';
     // KEEP: Updated getLogsCsv call with additional parameters for BCC filtering
     getLogsCsv(
       now,
@@ -468,8 +471,8 @@ async function listLogs(ctx) {
       nonAdminDomainsToAliases
     )
       .then((results) => {
-        // if no results return early
-        if (!ctx.api && results.count === 0) return;
+        // if no results return early (unless always_send_email is set)
+        if (!ctx.api && !alwaysSendEmail && results.count === 0) return;
         // email the spreadsheet to admins
         emailHelper({
           template: 'alert',
