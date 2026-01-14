@@ -501,7 +501,8 @@ async function getRefunds(days = 30) {
     {
       $match: {
         updated_at: { $gte: startDate },
-        amount_refunded: { $gt: 0 }
+        amount_refunded: { $gt: 0 },
+        method: { $nin: ['free_beta_program', 'plan_conversion'] }
       }
     },
     {
