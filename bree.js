@@ -114,6 +114,7 @@ graceful.listen();
   try {
     await bree.start();
     await setupMongoose(logger);
+    if (process.send) process.send('ready');
   } catch (err) {
     await logger.error(err);
     process.exit(1);
