@@ -1959,6 +1959,296 @@ const useCases = {
   '/email-air-gap-security-solution': [
     'Email Air-Gap Security Solution',
     'Air-gapped email security for isolated networks. Secure email processing in environments requiring complete network isolation.'
+  ],
+
+  // Email Privacy & Anonymous Services (15 NEW pages)
+  '/anonymous-email-forwarding-service': [
+    'Anonymous Email Forwarding Service',
+    'Protect your identity with anonymous email forwarding. No personal information required, complete privacy protection for all communications.'
+  ],
+  '/burner-email-address-service': [
+    'Burner Email Address Service',
+    'Create temporary burner email addresses for online signups. Protect your real email from spam and unwanted marketing.'
+  ],
+  '/disposable-email-alias-generator': [
+    'Disposable Email Alias Generator',
+    'Generate unlimited disposable email aliases instantly. Perfect for online shopping, newsletters, and protecting your primary inbox.'
+  ],
+  '/email-privacy-protection-service': [
+    'Email Privacy Protection Service',
+    'Comprehensive email privacy protection with encrypted forwarding. Hide your real email address from trackers and data collectors.'
+  ],
+  '/anti-spam-email-filtering': [
+    'Anti-Spam Email Filtering Service',
+    'Advanced anti-spam filtering with machine learning. Block unwanted emails before they reach your inbox.'
+  ],
+  '/email-tracker-blocking-service': [
+    'Email Tracker Blocking Service',
+    'Block email tracking pixels and read receipts. Protect your privacy from email surveillance and analytics.'
+  ],
+  '/private-email-relay-service': [
+    'Private Email Relay Service',
+    'Relay emails through private servers for enhanced anonymity. No logs, no tracking, complete email privacy.'
+  ],
+  '/encrypted-email-forwarding-pgp': [
+    'Encrypted Email Forwarding with PGP',
+    'Forward emails with PGP encryption for maximum security. End-to-end encrypted email forwarding for sensitive communications.'
+  ],
+  '/email-alias-management-platform': [
+    'Email Alias Management Platform',
+    'Centralized platform for managing all your email aliases. Create, organize, and control unlimited email addresses from one dashboard.'
+  ],
+  '/catch-all-email-address-setup': [
+    'Catch-All Email Address Setup',
+    'Set up catch-all email addresses for your domain. Never miss an email with wildcard forwarding to your inbox.'
+  ],
+  '/email-masking-for-online-shopping': [
+    'Email Masking for Online Shopping',
+    'Protect your email when shopping online. Create unique masked addresses for each store to prevent spam and data breaches.'
+  ],
+  '/email-forwarding-with-spam-filter': [
+    'Email Forwarding with Spam Filter',
+    'Forward emails with built-in spam filtering. Clean, spam-free emails delivered to your preferred inbox.'
+  ],
+  '/temporary-email-for-signups': [
+    'Temporary Email for Website Signups',
+    'Create temporary email addresses for website registrations. Avoid spam and protect your primary email address.'
+  ],
+  '/email-privacy-for-journalists': [
+    'Email Privacy for Journalists and Whistleblowers',
+    'Secure email communication for journalists and sources. Anonymous email forwarding with no logs or tracking.'
+  ],
+  '/email-privacy-for-activists': [
+    'Email Privacy for Activists and Advocates',
+    'Protect your identity with private email forwarding. Secure communications for activists, advocates, and organizers.'
+  ],
+
+  // Industry-Specific Email Solutions (20 NEW pages)
+  '/law-firm-email-hosting': [
+    'Email Hosting for Law Firms and Attorneys',
+    'Professional email hosting for law firms with client confidentiality. Secure, compliant email for legal professionals.'
+  ],
+  '/medical-practice-email-hosting': [
+    'Email Hosting for Medical Practices',
+    'HIPAA-ready email hosting for medical practices. Secure patient communication with encrypted email forwarding.'
+  ],
+  '/accounting-firm-email-service': [
+    'Email Service for Accounting Firms',
+    'Professional email for CPAs and accounting firms. Secure client communication with custom domain email.'
+  ],
+  '/real-estate-agency-email': [
+    'Email for Real Estate Agencies',
+    'Professional email addresses for real estate agents and brokers. Build credibility with custom domain email.'
+  ],
+  '/restaurant-email-marketing': [
+    'Email Marketing for Restaurants',
+    'Email marketing and forwarding for restaurants and food service. Engage customers with professional email communications.'
+  ],
+  '/hotel-email-management': [
+    'Email Management for Hotels and Hospitality',
+    'Professional email hosting for hotels and hospitality businesses. Guest communication and booking confirmations made easy.'
+  ],
+  '/fitness-studio-email': [
+    'Email for Fitness Studios and Gyms',
+    'Professional email for fitness businesses. Member communication, class schedules, and marketing emails.'
+  ],
+  '/salon-spa-email-service': [
+    'Email Service for Salons and Spas',
+    'Professional email for beauty businesses. Appointment confirmations, promotions, and client communication.'
+  ],
+  '/construction-company-email': [
+    'Email for Construction Companies',
+    'Professional email hosting for construction and contracting businesses. Project communication and client updates.'
+  ],
+  '/manufacturing-email-service': [
+    'Email Service for Manufacturing Companies',
+    'Enterprise email for manufacturing businesses. Supplier communication, order management, and team collaboration.'
+  ],
+  '/retail-store-email-hosting': [
+    'Email Hosting for Retail Stores',
+    'Professional email for retail businesses. Customer service, order notifications, and marketing campaigns.'
+  ],
+  '/automotive-dealer-email': [
+    'Email for Automotive Dealerships',
+    'Professional email hosting for car dealerships. Customer inquiries, service appointments, and sales follow-ups.'
+  ],
+  '/insurance-agency-email': [
+    'Email for Insurance Agencies',
+    'Secure email hosting for insurance professionals. Client communication, policy updates, and claims processing.'
+  ],
+  '/financial-advisor-email': [
+    'Email for Financial Advisors',
+    'Compliant email hosting for financial advisors. Secure client communication with archiving and encryption.'
+  ],
+  '/property-management-email': [
+    'Email for Property Management Companies',
+    'Professional email for property managers. Tenant communication, maintenance requests, and lease management.'
+  ],
+  '/veterinary-clinic-email': [
+    'Email for Veterinary Clinics',
+    'Professional email hosting for veterinary practices. Appointment reminders, pet health updates, and client communication.'
+  ],
+  '/dental-practice-email': [
+    'Email for Dental Practices',
+    'Professional email hosting for dentists. Appointment scheduling, patient reminders, and practice communication.'
+  ],
+  '/photography-business-email': [
+    'Email for Photography Businesses',
+    'Professional email for photographers. Client booking, gallery delivery, and portfolio inquiries.'
+  ],
+  '/event-planning-email': [
+    'Email for Event Planning Companies',
+    'Professional email hosting for event planners. Vendor coordination, client communication, and event updates.'
+  ],
+  '/consulting-firm-email': [
+    'Email for Consulting Firms',
+    'Professional email hosting for consultants. Client engagement, project updates, and proposal delivery.'
+  ],
+
+  // Technology & Developer Email Solutions (15 NEW pages)
+  '/developer-email-api-service': [
+    'Email API Service for Developers',
+    'RESTful email API for developers and applications. Send, receive, and manage emails programmatically.'
+  ],
+  '/saas-application-email': [
+    'Email Infrastructure for SaaS Applications',
+    'Reliable email infrastructure for SaaS products. Transactional emails, notifications, and user communication.'
+  ],
+  '/mobile-app-email-service': [
+    'Email Service for Mobile Applications',
+    'Email integration for iOS and Android apps. User verification, notifications, and in-app messaging.'
+  ],
+  '/webhook-email-notifications': [
+    'Webhook Email Notifications Service',
+    'Trigger email notifications via webhooks. Integrate email alerts with your existing systems and workflows.'
+  ],
+  '/email-api-for-automation': [
+    'Email API for Workflow Automation',
+    'Automate email workflows with our powerful API. Integrate with Zapier, Make, and custom automation tools.'
+  ],
+  '/headless-email-service': [
+    'Headless Email Service for Developers',
+    'API-first email service for modern applications. No UI required, full programmatic control over email.'
+  ],
+  '/email-microservice-architecture': [
+    'Email Microservice Architecture',
+    'Scalable email microservices for distributed systems. Containerized email processing with Kubernetes support.'
+  ],
+  '/serverless-email-functions': [
+    'Serverless Email Functions',
+    'Email processing with serverless architecture. AWS Lambda, Google Cloud Functions, and Azure Functions integration.'
+  ],
+  '/email-queue-processing-service': [
+    'Email Queue Processing Service',
+    'Reliable email queue processing with guaranteed delivery. Handle high-volume email with automatic retry and failover.'
+  ],
+  '/email-template-api': [
+    'Email Template API Service',
+    'Dynamic email templates with API access. Create, manage, and render email templates programmatically.'
+  ],
+  '/email-analytics-api': [
+    'Email Analytics API',
+    'Track email metrics via API. Opens, clicks, bounces, and delivery status for all your emails.'
+  ],
+  '/email-validation-api': [
+    'Email Validation API Service',
+    'Validate email addresses in real-time via API. Reduce bounces and improve deliverability with email verification.'
+  ],
+  '/email-parsing-api': [
+    'Email Parsing API Service',
+    'Parse incoming emails and extract data via API. Automate data extraction from email content and attachments.'
+  ],
+  '/inbound-email-processing': [
+    'Inbound Email Processing Service',
+    'Process incoming emails programmatically. Parse, route, and respond to emails automatically.'
+  ],
+  '/outbound-email-api': [
+    'Outbound Email API Service',
+    'Send transactional and marketing emails via API. High deliverability with detailed analytics and reporting.'
+  ],
+
+  // Email Migration & Integration (10 NEW pages)
+  '/google-workspace-migration': [
+    'Google Workspace Email Migration',
+    'Migrate from Google Workspace to Forward Email. Keep your emails, contacts, and calendars with zero downtime.'
+  ],
+  '/office-365-email-migration': [
+    'Office 365 Email Migration Service',
+    'Migrate from Microsoft 365 to Forward Email. Seamless transition with full data preservation.'
+  ],
+  '/godaddy-email-migration': [
+    'GoDaddy Email Migration Service',
+    'Migrate from GoDaddy email to Forward Email. Better features, better privacy, better value.'
+  ],
+  '/zoho-mail-migration': [
+    'Zoho Mail Migration Service',
+    'Migrate from Zoho Mail to Forward Email. Open-source alternative with better privacy protection.'
+  ],
+  '/fastmail-migration': [
+    'Fastmail Migration Service',
+    'Migrate from Fastmail to Forward Email. More features, open-source transparency, competitive pricing.'
+  ],
+  '/protonmail-migration': [
+    'ProtonMail Migration Service',
+    'Migrate from ProtonMail to Forward Email. Open-source email with custom domain support and better flexibility.'
+  ],
+  '/email-consolidation-service': [
+    'Email Consolidation Service',
+    'Consolidate multiple email accounts into one. Forward all your emails to a single inbox for easy management.'
+  ],
+  '/email-backup-export-service': [
+    'Email Backup and Export Service',
+    'Backup and export all your emails. Download your email archive in standard formats for safekeeping.'
+  ],
+  '/email-import-service': [
+    'Email Import Service',
+    'Import emails from any provider. Migrate your email history to Forward Email with full preservation.'
+  ],
+  '/multi-provider-email-aggregation': [
+    'Multi-Provider Email Aggregation',
+    'Aggregate emails from multiple providers. View and manage all your email accounts in one place.'
+  ],
+
+  // Geographic & Regional Email (10 NEW pages)
+  '/email-hosting-europe-gdpr': [
+    'Email Hosting in Europe - GDPR Compliant',
+    'European email hosting with full GDPR compliance. Data residency in EU with privacy-first infrastructure.'
+  ],
+  '/email-hosting-canada': [
+    'Email Hosting in Canada - PIPEDA Compliant',
+    'Canadian email hosting with PIPEDA compliance. Data sovereignty with Canadian privacy law protection.'
+  ],
+  '/email-hosting-australia': [
+    'Email Hosting in Australia',
+    'Australian email hosting with local data residency. Privacy-focused email for Australian businesses.'
+  ],
+  '/email-hosting-uk': [
+    'Email Hosting in United Kingdom',
+    'UK email hosting with local compliance. GDPR and UK data protection compliant email services.'
+  ],
+  '/email-hosting-germany': [
+    'Email Hosting in Germany',
+    'German email hosting with strict privacy standards. GDPR compliant with German data protection.'
+  ],
+  '/email-hosting-switzerland': [
+    'Email Hosting in Switzerland',
+    'Swiss email hosting with legendary privacy protection. Neutral jurisdiction with strong data protection laws.'
+  ],
+  '/email-hosting-asia-pacific': [
+    'Email Hosting in Asia Pacific',
+    'Asia Pacific email hosting with regional optimization. Fast, reliable email for APAC businesses.'
+  ],
+  '/email-hosting-latin-america': [
+    'Email Hosting in Latin America',
+    'Latin American email hosting with local language support. Professional email for LATAM businesses.'
+  ],
+  '/email-hosting-middle-east': [
+    'Email Hosting in Middle East',
+    'Middle Eastern email hosting with regional compliance. Professional email for MENA businesses.'
+  ],
+  '/email-hosting-africa': [
+    'Email Hosting in Africa',
+    'African email hosting with local optimization. Reliable email infrastructure for African businesses.'
   ]
 };
 
@@ -2052,7 +2342,386 @@ const nouns = [
   'Worship Centers',
   'Yoga Studios',
   'Youth Groups',
-  'Youth Teams'
+  'Youth Teams',
+  // NEW: Additional high-value audience segments
+  'Accountants',
+  'Architects',
+  'Attorneys and Law Firms',
+  'Automotive Dealers',
+  'Beauty Salons',
+  'Bloggers',
+  'Cafes and Coffee Shops',
+  'Chiropractors',
+  'Cleaning Services',
+  'Construction Companies',
+  'Consultants',
+  'Coworking Spaces',
+  'Credit Unions',
+  'Daycare Centers',
+  'Dental Practices',
+  'Digital Agencies',
+  'Doctors and Physicians',
+  'Dog Trainers',
+  'Event Planners',
+  'Family Offices',
+  'Financial Advisors',
+  'Florists',
+  'Food Trucks',
+  'Funeral Homes',
+  'Hair Salons',
+  'Home Inspectors',
+  'HVAC Companies',
+  'Immigration Lawyers',
+  'Insurance Agencies',
+  'Interior Designers',
+  'Investment Clubs',
+  'IT Consultants',
+  'Landscaping Companies',
+  'Laundromats',
+  'Life Coaches',
+  'Marketing Agencies',
+  'Massage Therapists',
+  'Medical Practices',
+  'Mortgage Brokers',
+  'Moving Companies',
+  'Music Teachers',
+  'Notaries',
+  'Nutritionists',
+  'Optometrists',
+  'Painters',
+  'Pest Control',
+  'Pet Groomers',
+  'Pet Stores',
+  'Pharmacies',
+  'Photographers',
+  'Physical Therapists',
+  'Plumbers',
+  'Podcasters',
+  'PR Agencies',
+  'Private Investigators',
+  'Property Managers',
+  'Psychologists',
+  'Real Estate Investors',
+  'Recruiters',
+  'Roofing Companies',
+  'SaaS Companies',
+  'Security Companies',
+  'SEO Agencies',
+  'Social Media Managers',
+  'Software Developers',
+  'Solar Installers',
+  'Spas',
+  'Sports Coaches',
+  'Staffing Agencies',
+  'Tattoo Parlors',
+  'Tax Preparers',
+  'Tech Startups',
+  'Tour Operators',
+  'Translators',
+  'Travel Agents',
+  'Trucking Companies',
+  'Veterinarians',
+  'Video Production',
+  'Virtual Assistants',
+  'Web Designers',
+  'Wedding Planners',
+  'Wine Clubs',
+  'Writers and Authors',
+  // NEW: Additional high-value audience segments (50+ more)
+  'Acupuncturists',
+  'Aerospace Companies',
+  'Agricultural Businesses',
+  'Air Conditioning Services',
+  'Antique Dealers',
+  'Appliance Repair',
+  'Art Galleries',
+  'Auction Houses',
+  'Auto Body Shops',
+  'Bakeries',
+  'Bankruptcy Attorneys',
+  'Barber Shops',
+  'Bed and Breakfasts',
+  'Bicycle Shops',
+  'Biotech Companies',
+  'Boat Dealers',
+  'Bookkeepers',
+  'Breweries',
+  'Bridal Shops',
+  'Cabinet Makers',
+  'Campgrounds',
+  'Car Washes',
+  'Carpet Cleaners',
+  'Catering Companies',
+  'Cell Phone Repair',
+  'Charter Schools',
+  'Childcare Centers',
+  'Chiropractic Clinics',
+  'Cigar Shops',
+  'Cleaning Companies',
+  'Coin Dealers',
+  'Comic Book Stores',
+  'Community Centers',
+  'Computer Repair',
+  'Concrete Contractors',
+  'Counseling Services',
+  'Craft Breweries',
+  'Credit Repair',
+  'Cryptocurrency Exchanges',
+  'Custom Jewelers',
+  'Dance Studios',
+  'Data Centers',
+  'Delivery Services',
+  'Dermatologists',
+  'Dietitians',
+  'Distilleries',
+  'Driving Schools',
+  'Dry Cleaners',
+  'E-Learning Platforms',
+  'Electricians',
+  'Electronics Stores',
+  'Emergency Services',
+  'Employment Agencies',
+  'Engineering Firms',
+  'Environmental Consultants',
+  'Escape Rooms',
+  'Estate Planning',
+  'Executive Coaches',
+  'Fabrication Shops',
+  'Family Law Attorneys',
+  'Farm Equipment',
+  'Fashion Designers',
+  'Fence Contractors',
+  'Film Production',
+  'Financial Planners',
+  'Fire Protection',
+  'Fishing Charters',
+  'Floor Installers',
+  'Flower Shops',
+  'Food Distributors',
+  'Franchise Businesses',
+  'Freight Companies',
+  'Furniture Stores',
+  'Garden Centers',
+  'Gas Stations',
+  'General Contractors',
+  'Gift Shops',
+  'Glass Companies',
+  'Golf Instructors',
+  'Graphic Designers',
+  'Greenhouse Operators',
+  'Grocery Stores',
+  'Gun Shops',
+  'Handyman Services',
+  'Hardware Stores',
+  'Health Clinics',
+  'Hearing Aid Centers',
+  'Heating Companies',
+  'Hobby Shops',
+  'Home Builders',
+  'Home Health Care',
+  'Home Staging',
+  'Hospice Care',
+  'Hot Tub Dealers',
+  'Ice Cream Shops',
+  'Import Export',
+  'Industrial Suppliers',
+  'Influencers',
+  'Insulation Contractors',
+  'Irrigation Services',
+  'Janitorial Services',
+  'Jewelry Stores',
+  'Junk Removal',
+  'Kennel Services',
+  'Kitchen Remodeling',
+  'Lab Services',
+  'Language Schools',
+  'Laser Clinics',
+  'Lawn Care',
+  'Leather Goods',
+  'Legal Services',
+  'Limousine Services',
+  'Liquor Stores',
+  'Locksmith Services',
+  'Logistics Companies',
+  'Machine Shops',
+  'Maid Services',
+  'Mail Order',
+  'Managed IT Services',
+  'Marina Services',
+  'Market Research',
+  'Martial Arts Schools',
+  'Masonry Contractors',
+  'Mattress Stores',
+  'Meal Prep Services',
+  'Meat Markets',
+  'Media Companies',
+  'Medical Equipment',
+  'Medical Spas',
+  'Mental Health Services',
+  'Metal Fabricators',
+  'Microbreweries',
+  'Mobile App Developers',
+  'Montessori Schools',
+  'Motorcycle Dealers',
+  'Music Schools',
+  'Nail Salons',
+  'Nanny Services',
+  'Naturopaths',
+  'Network Engineers',
+  'Nursing Homes',
+  'Office Supplies',
+  'Oil Change Services',
+  'Online Retailers',
+  'Ophthalmologists',
+  'Organic Farms',
+  'Orthodontists',
+  'Outdoor Recreation',
+  'Packaging Companies',
+  'Paint Stores',
+  'Party Planners',
+  'Pawn Shops',
+  'Payroll Services',
+  'Pediatricians',
+  'Personal Trainers',
+  'Pest Management',
+  'Pet Boarding',
+  'Pet Sitting',
+  'Pharmaceutical Companies',
+  'Phone Repair',
+  'Piano Teachers',
+  'Picture Framing',
+  'Pilates Studios',
+  'Pizza Shops',
+  'Plastic Surgeons',
+  'Podiatrists',
+  'Pool Services',
+  'Portrait Studios',
+  'Power Washing',
+  'Preschools',
+  'Print Shops',
+  'Private Schools',
+  'Product Designers',
+  'Professional Organizers',
+  'Promotional Products',
+  'Psychiatrists',
+  'Public Relations',
+  'Publishing Companies',
+  'Quilting Shops',
+  'Radiologists',
+  'Ranches',
+  'Real Estate Appraisers',
+  'Recording Studios',
+  'Recreation Centers',
+  'Recycling Services',
+  'Rehabilitation Centers',
+  'Reiki Practitioners',
+  'Rental Services',
+  'Repair Services',
+  'Research Firms',
+  'Resorts',
+  'Restoration Companies',
+  'Retirement Communities',
+  'RV Dealers',
+  'Safety Consultants',
+  'Sailing Schools',
+  'Sandwich Shops',
+  'Scaffolding Companies',
+  'Screen Printing',
+  'Scuba Diving',
+  'Seamstresses',
+  'Security Services',
+  'Self Storage',
+  'Senior Care',
+  'Septic Services',
+  'Sewing Shops',
+  'Shipping Companies',
+  'Shoe Repair',
+  'Sign Companies',
+  'Skating Rinks',
+  'Ski Resorts',
+  'Skin Care Clinics',
+  'Sleep Clinics',
+  'Small Engine Repair',
+  'Smoke Shops',
+  'Snow Removal',
+  'Social Workers',
+  'Software Companies',
+  'Sound Engineers',
+  'Specialty Foods',
+  'Speech Therapists',
+  'Sporting Goods',
+  'Stationery Stores',
+  'Storage Facilities',
+  'Structural Engineers',
+  'Stucco Contractors',
+  'Substance Abuse',
+  'Sunglasses Shops',
+  'Supplement Stores',
+  'Surveyors',
+  'Sushi Restaurants',
+  'Tailors',
+  'Tanning Salons',
+  'Tarot Readers',
+  'Tax Attorneys',
+  'Tea Shops',
+  'Technical Writers',
+  'Telecommunications',
+  'Temp Agencies',
+  'Tennis Clubs',
+  'Textile Companies',
+  'Thai Restaurants',
+  'Theater Companies',
+  'Thrift Stores',
+  'Tile Contractors',
+  'Tire Shops',
+  'Title Companies',
+  'Tobacco Shops',
+  'Tool Rental',
+  'Towing Services',
+  'Toy Stores',
+  'Trade Schools',
+  'Trailer Dealers',
+  'Training Centers',
+  'Translation Services',
+  'Transportation Services',
+  'Travel Agencies',
+  'Tree Services',
+  'Trophy Shops',
+  'Truck Rental',
+  'Tutoring Centers',
+  'Uniform Suppliers',
+  'Upholstery Services',
+  'Urgent Care',
+  'Used Car Dealers',
+  'Utility Companies',
+  'Vacation Rentals',
+  'Vape Shops',
+  'Vegan Restaurants',
+  'Vending Services',
+  'Ventilation Services',
+  'Video Game Stores',
+  'Vintage Shops',
+  'Vinyl Installers',
+  'Vision Centers',
+  'Voice Coaches',
+  'Volunteer Organizations',
+  'Warehouse Services',
+  'Watch Repair',
+  'Water Damage',
+  'Water Treatment',
+  'Wealth Management',
+  'Web Hosting',
+  'Welding Services',
+  'Wellness Centers',
+  'Wholesale Distributors',
+  'Window Cleaning',
+  'Window Installation',
+  'Wineries',
+  'Woodworking',
+  'Worship Groups',
+  'Yoga Instructors',
+  'Youth Organizations',
+  'Zoos and Aquariums'
 ];
 
 for (const noun of nouns) {
@@ -2066,7 +2735,13 @@ for (const noun of nouns) {
     'Free Email Masking',
     'Free Email Marketing',
     'Free Bulk Email Service',
-    'Free Mass Email Service'
+    'Free Mass Email Service',
+    // NEW: Additional title variations (5 more)
+    'Free Email Automation',
+    'Free Email Security',
+    'Free Email Management',
+    'Free Email Platform',
+    'Free Email Solutions'
   ]) {
     let desc = title.toLowerCase().replace('free', '').trim();
     if (desc === 'email api') desc = 'an email api';

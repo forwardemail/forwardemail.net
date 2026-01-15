@@ -112,10 +112,11 @@ block body
         )
         .col-12
           if isBot(ctx.get('User-Agent'))
-            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domain Domain")
+            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domains")
           else
             h1.mb-1.display-3.font-weight-normal!= t("All-in-one Email Solution")
       if isBot(ctx.get('User-Agent'))
+        //- Primary navigation links for crawlers
         .row.mb-3
           each phrase in ['Private business email', 'Custom domain email hosting', 'Open-source email hosting service']
             .col-md-4
@@ -124,9 +125,11 @@ block body
                 target="_blank",
                 rel="noopener noreferrer"
               )= t(phrase)
+        //- Main description paragraph
         .row.mb-3
           .col-12
             p.lead.text-white.mb-0= t("The best free email forwarding service for custom domains. Create unlimited email aliases, forward to any inbox, and send as your custom domain email address. 100% open-source and privacy-focused.")
+        //- Why choose section
         .row.mb-3
           .col-12
             h3.h6.font-weight-normal.mb-2= t("Why choose Forward Email for custom domain email?")
@@ -136,6 +139,60 @@ block body
               li= t("Send and receive email as you@yourdomain.com")
               li= t("100% open-source and privacy-first")
               li= t("No ads, no tracking, no data selling")
+        //- Additional SEO content sections for crawlers
+        .row.mb-4
+          .col-12
+            h3.h5.font-weight-normal.mb-3= t("Email Forwarding Features")
+            p.text-white.mb-2= t("Forward Email provides enterprise-grade email forwarding with unlimited custom domain aliases. Our service supports catch-all addresses, regex pattern matching, and webhook integrations for developers.")
+        .row.mb-4
+          .col-md-6
+            h4.h6.font-weight-normal.mb-2= t("For Businesses")
+            p.text-white.small= t("Professional email addresses for your company with custom domains. SMTP, IMAP, and POP3 access with enterprise security features.")
+          .col-md-6
+            h4.h6.font-weight-normal.mb-2= t("For Developers")
+            p.text-white.small= t("RESTful email API for sending and receiving emails. Webhook support, DNS verification, and comprehensive documentation.")
+        .row.mb-4
+          .col-md-6
+            h4.h6.font-weight-normal.mb-2= t("For Privacy")
+            p.text-white.small= t("Zero-knowledge encryption, no tracking, no ads. Your emails are protected with quantum-resistant encryption algorithms.")
+          .col-md-6
+            h4.h6.font-weight-normal.mb-2= t("Open Source")
+            p.text-white.small= t("100% open-source codebase on GitHub. Audit our code, self-host, or contribute to the project.")
+        //- Popular use cases links
+        .row.mb-4
+          .col-12
+            h3.h5.font-weight-normal.mb-3= t("Popular Email Solutions")
+            .row
+              each useCase in ['/startup-company-email-solution', '/freelancer-professional-email-address', '/small-business-email-hosting-free', '/nonprofit-organization-email-setup', '/education-email-hosting-forwarding', '/healthcare-email-hosting-forwarding-hipaa']
+                .col-md-4.col-6.mb-2
+                  if useCases[useCase]
+                    a.text-white.small(href=l(useCase))= t(useCases[useCase][0])
+        //- Competitor alternatives section
+        .row.mb-4
+          .col-12
+            h3.h5.font-weight-normal.mb-3= t("Email Service Alternatives")
+            p.text-white.small.mb-2= t("Looking for alternatives to expensive email providers? Forward Email offers free and affordable plans compared to Google Workspace, Microsoft 365, ProtonMail, and other email services.")
+            .row
+              each alt in ['/gmail-alternative-open-source', '/protonmail-alternative-open-source', '/improvmx-alternative-better-features', '/postmark-alternative-open-source']
+                .col-md-3.col-6.mb-2
+                  if useCases[alt]
+                    a.text-white.small(href=l(alt))= t(useCases[alt][0])
+        //- Technical features section
+        .row.mb-4
+          .col-12
+            h3.h5.font-weight-normal.mb-3= t("Technical Email Features")
+            ul.list-unstyled.text-white.small
+              li= t("DKIM, SPF, DMARC, and BIMI authentication")
+              li= t("TLS encryption for all email transmission")
+              li= t("PGP/GPG encrypted email forwarding")
+              li= t("Regex-based email filtering and routing")
+              li= t("Webhook notifications for incoming emails")
+              li= t("REST API for programmatic email management")
+        //- Trust signals section
+        .row.mb-3
+          .col-12
+            h3.h5.font-weight-normal.mb-3= t("Trusted by Organizations Worldwide")
+            p.text-white.small= t("Forward Email is trusted by millions of users including The Linux Foundation, Ubuntu, Netflix Games, Disney, US Naval Academy, Carnegie Mellon University, and thousands of businesses worldwide.")
       else
         .row.mb-3
           .col-12

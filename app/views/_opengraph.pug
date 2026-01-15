@@ -2,29 +2,48 @@
 //- integrity=manifest(`og${ctx.path}.png`, "integrity"),
 - ogImage = ogImage || meta.image || `${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === "/" ? "/index" : ""}.png?v=${config.env === "test" ? 0 : Date.now()}`;
 link(rel="image_src", type="image/png", href=ogImage, crossorigin="anonymous")
+
+//- Core Open Graph tags
 meta(property="og:locale", content=locale)
-meta(property="og:type", content="article")
+meta(
+  property="og:type",
+  content=ctx.pathWithoutLocale === "/" ? "website" : "article"
+)
 meta(property="og:title", content=striptags(convert(meta.title)))
 meta(property="og:description", content=striptags(convert(meta.description)))
 meta(property="og:url", content=`${config.urls.web}${ctx.path}`)
 meta(property="og:site_name", content=config.appName)
+
+//- Article section based on page type
 if ctx.pathWithoutLocale.startsWith('/faq')
   meta(property="article:section", content=t("Frequently Asked Questions"))
 else if ctx.pathWithoutLocale.startsWith('/guides')
   meta(property="article:section", content=t("Guides"))
+else if ctx.pathWithoutLocale.startsWith('/blog')
+  meta(property="article:section", content=t("Blog"))
+
+//- Article tags for better categorization (translated)
+if ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale.includes('email-forwarding')
+  meta(property="article:tag", content=t("email forwarding"))
+  meta(property="article:tag", content=t("custom domain email"))
+  meta(property="article:tag", content=t("free email"))
+if ctx.pathWithoutLocale.includes('privacy') || ctx.pathWithoutLocale.includes('secure')
+  meta(property="article:tag", content=t("email privacy"))
+  meta(property="article:tag", content=t("secure email"))
+if ctx.pathWithoutLocale.includes('open-source')
+  meta(property="article:tag", content=t("open source"))
+  meta(property="article:tag", content=t("transparent email"))
+
+//- Image tags
 meta(property="og:image:alt", content=striptags(convert(meta.title)))
-//-.
-  if gif
-    meta(property="og:image:type", content="image/gif")
-    meta(property="og:image", content=manifest(`img/guides/${gif}.gif`))
-    meta(property="og:image:secure_url", content=manifest(`img/guides/${gif}.gif`))
-    meta(property="og:image:width", content="960")
-    meta(property="og:image:height", content="540")
 meta(property="og:image", content=ogImage)
 meta(property="og:image:secure_url", content=ogImage)
-//- meta(property="og:image:type", content="image/png")
-//- meta(property="og:image:width", content="1200")
-//- meta(property="og:image:height", content="630")
+meta(
+  property="og:image:type",
+  content=ogImage.includes(".png") ? "image/png" : "image/webp"
+)
+meta(property="og:image:width", content="1200")
+meta(property="og:image:height", content="630")
 
 if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) || ctx.pathWithoutLocale.startsWith('/blog/docs') || ctx.pathWithoutLocale.startsWith('/guides')
   //- in order for snapshots to be consistent we need the same date to be used
@@ -40,6 +59,7 @@ if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-
     property="article:modified_time",
     content=config.env === "test" ? "2023-01-01T00:00:00.000Z" : publishedISOString ? publishedISOString : dayjs().startOf("day").toDate().toISOString()
   )
+  meta(property="article:author", content="Forward Email Team")
 
 if !video
   //- og video tag
@@ -60,15 +80,30 @@ if !video
 
 if video
   meta(property="og:video", content=video)
+  meta(property="og:video:type", content="text/html")
+  meta(property="og:video:width", content="1280")
+  meta(property="og:video:height", content="720")
 
-meta(property="twitter:title", content=striptags(convert(meta.title)))
-meta(
-  property="twitter:description",
-  content=striptags(convert(meta.description))
-)
-meta(property="twitter:image", content=ogImage)
+//- Enhanced Twitter Card tags
+meta(name="twitter:card", content="summary_large_image")
+meta(name="twitter:site", content="@fwdemail")
+meta(name="twitter:creator", content="@fwdemail")
+meta(name="twitter:title", content=striptags(convert(meta.title)))
+meta(name="twitter:description", content=striptags(convert(meta.description)))
+meta(name="twitter:image", content=ogImage)
+meta(name="twitter:image:alt", content=striptags(convert(meta.title)))
+
+//- Twitter additional metadata
 if ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business-email' && !Object.keys(useCases).includes(ctx.pathWithoutLocale) && isNotPrivateRoute
   meta(name="twitter:label1", content=t("Written by"))
   meta(name="twitter:data1", content=config.appName + " " + t("Team"))
   meta(name="twitter:label2", content=t("Time to read"))
   meta(name="twitter:data2", content=t("Less than 5 minutes"))
+else if ctx.pathWithoutLocale === '/'
+  meta(name="twitter:label1", content=t("Price"))
+  meta(name="twitter:data1", content=t("Free"))
+  meta(name="twitter:label2", content=t("Users"))
+  meta(name="twitter:data2", content="500,000+")
+
+//- Facebook App ID (if available)
+//- meta(property="fb:app_id", content="YOUR_FB_APP_ID")

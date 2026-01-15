@@ -44,436 +44,365 @@ module.exports = function (config, isSitemap = false) {
   // otherwise we'd have `| Lad` below, which is SEO standard
   // so instead we need to use `&#124;` which is the html entity
   // which gets decoded to a `|` in the helper.meta function
-  const lad = config.metaTitleAffix;
+  const currentYear = dayjs(now).format('YYYY');
   const meta = {
     // note that we don't do `Home ${lad}` because if we forget to define
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      'Free Email Forwarding for Custom Domains',
-      'Get free email forwarding for your custom domain. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.'
-      // TODO: 'img/articles/faq.webp'
+      `Free Email Forwarding for Custom Domains - #1 Open Source Email Service ${currentYear}`,
+      `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage, IMAP/POP3/SMTP & 100% open-source security. Trusted by 500K+ users. Setup in 2 minutes.`
     ],
     '/about': [
-      'History of Forward Email',
-      `Learn more about ${config.appName} and the history of our service.`,
+      `About Forward Email - Our Story & Mission | Privacy-First Email Since 2017`,
+      `Learn about Forward Email's journey from open-source project to the most trusted privacy-focused email service. Discover our commitment to transparency, security, and user privacy.`,
       'img/articles/about.webp'
     ],
     '/press': [
-      'Press & Media Kit',
-      'Learn more about Forward Email for journalists and the press, and download Forward Email graphics, branding, and media kit.',
+      `Press & Media Kit - Forward Email Brand Assets & Resources`,
+      `Download Forward Email logos, brand guidelines, screenshots, and media assets. Press inquiries welcome. Get official graphics and branding for articles and publications.`,
       'img/articles/press.webp'
     ],
     '/private-business-email': [
-      'Private Business Email for Custom Domains',
-      'Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.'
+      `Private Business Email for Custom Domains - Encrypted & Secure ${currentYear}`,
+      `Create private, encrypted business email for your custom domain. End-to-end encryption, zero-knowledge architecture, GDPR compliant. Professional email addresses like <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with enterprise security.`
     ],
     '/tti': [
-      'Time to Inbox Monitoring & Deliverability',
-      'Time to inbox ("TTI") is the duration it takes from when an email is sent until it is delivered to the user\'s mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).',
+      `Email Deliverability & Time to Inbox Monitoring - Live Performance Stats`,
+      `Real-time email deliverability monitoring and time-to-inbox metrics. Compare Forward Email's delivery speed vs Gmail, Outlook, Yahoo, and iCloud. Transparent performance data updated every minute.`,
       'img/articles/tti.webp'
     ],
     '/faq': [
-      'Frequently Asked Questions',
-      'How to configure email for custom domain names, outbound SMTP service, and more.',
+      `Email Forwarding FAQ - Complete Setup Guide & Troubleshooting ${currentYear}`,
+      `Answers to all your email forwarding questions. DNS configuration, SMTP setup, custom domains, troubleshooting, and advanced features. Step-by-step guides with video tutorials.`,
       'img/articles/faq.webp'
     ],
     '/encrypt': [
-      'Encrypt Plaintext TXT Record',
-      'Encrypt your plaintext TXT record from being publicly searchable in DNS records.'
+      `Encrypt DNS TXT Records - Protect Email Forwarding Addresses`,
+      `Encrypt your email forwarding TXT records to prevent public DNS lookups from exposing your email addresses. Free encryption tool for enhanced privacy protection.`
     ],
     '/email-api': [
-      'Developer Email API for Custom Domains and Webhooks',
-      'Developers love our RESTful email forwarding API for custom domains.',
+      `Email API for Developers - RESTful API with Webhooks & SMTP ${currentYear}`,
+      `Powerful RESTful email API for developers. Send transactional emails, manage domains, create aliases programmatically. Comprehensive documentation, SDKs, and code examples.`,
       'img/articles/email-api.webp'
     ],
     '/free-email-webhooks': [
-      'Free Email Webhooks for Developers and Custom Domains',
-      'Send email with HTTP using our developer webhooks and DNS email forwarding service.'
+      `Free Email Webhooks - HTTP Callbacks for Incoming Email ${currentYear}`,
+      `Receive email via HTTP webhooks. Forward incoming emails to your API endpoint as JSON. Perfect for helpdesks, CRMs, and automation. No server required.`
     ],
     '/email-forwarding-regex-pattern-filter': [
-      'Email Forwarding Regular Expression for Custom Domains',
-      'Send email with regular expression matching and DNS email forwarding service.'
+      `Email Regex Filtering - Advanced Pattern Matching for Custom Domains`,
+      `Filter and route emails using regular expressions. Create complex forwarding rules with regex patterns. Support for wildcards, catch-all, and conditional routing.`
     ],
     '/terms': [
-      'Terms of Service',
-      'Read our terms and conditions of use for our email forwarding service.',
+      `Terms of Service - Forward Email User Agreement`,
+      `Read Forward Email's terms of service, acceptable use policy, and user agreement. Transparent policies for our privacy-focused email forwarding service.`,
       'img/articles/terms.webp'
     ],
     '/gdpr': [
-      'GDPR Compliance',
-      'Read how our service is GDPR compliant.',
+      `GDPR Compliance - EU Data Protection & Privacy Standards`,
+      `Forward Email is fully GDPR compliant. Learn about our data protection practices, user rights, data processing, and EU privacy law compliance.`,
       'img/articles/gdpr.webp'
     ],
     '/security': [
-      'Security Practices',
-      "We've implemented comprehensive security measures to protect your email communications and personal data."
+      `Security Practices - How We Protect Your Email ${currentYear}`,
+      `Comprehensive security measures protecting your email. TLS encryption, SPF/DKIM/DMARC authentication, zero-knowledge architecture, regular security audits, and bug bounty program.`
     ],
     '/dpa': [
-      'Data Processing Agreement',
-      'Read our data processing agreement, terms of service, and how our service is GDPR compliant.',
+      `Data Processing Agreement (DPA) - GDPR Compliance Documentation`,
+      `Download Forward Email's Data Processing Agreement for GDPR compliance. Standard contractual clauses, data protection terms, and processor obligations.`,
       'img/articles/dpa.webp'
     ],
     '/report-abuse': [
-      'Report Abuse',
-      'Information on how to report abuse for the general public and law enforcement.',
+      `Report Abuse - Spam, Phishing & Security Incident Reporting`,
+      `Report spam, phishing, abuse, or security incidents. Information for the public and law enforcement. We respond to all reports within 24 hours.`,
       'img/articles/report-abuse.webp'
     ],
     '/privacy': [
-      'Privacy Policy',
-      'Read our privacy policy for our email forwarding service.',
+      `Privacy Policy - How We Protect Your Data & Email`,
+      `Read Forward Email's privacy policy. We collect minimal data, never sell your information, and provide complete transparency about data handling.`,
       'img/articles/privacy.webp'
     ],
     '/help': [
-      'Help',
-      'Ask a question and get support from our team.',
+      `Help & Support - Get Answers Fast ${currentYear}`,
+      `Get help with Forward Email. Search our knowledge base, contact support, or join our community. Average response time under 4 hours.`,
       'img/articles/help.webp'
     ],
     '/denylist': [
-      'Denylist Removal',
-      'Submit your email, domain, or IP address for DNS denylist removal.'
+      `Denylist Removal - Unblock Your Email, Domain, or IP Address`,
+      `Request removal from Forward Email's denylist. Submit your email address, domain, or IP for review. Most requests processed within 24 hours.`
     ],
-    '/logout': [`Sign out of ${lad}`, 'Sign out of your account now.'],
+    '/logout': [
+      `Sign Out - Forward Email`,
+      `Securely sign out of your Forward Email account. Your session will be terminated on all devices.`
+    ],
     '/register': [
-      `Sign up ${lad}`,
-      'Get a free account for custom domain email forwarding service.'
+      `Create Free Account - Start Email Forwarding in 2 Minutes`,
+      `Sign up for free email forwarding. No credit card required. Get unlimited aliases, custom domain support, and 10GB storage. Setup takes just 2 minutes.`
     ],
     '/disposable-addresses': [
-      'Disposable Email Addresses for Custom Domains',
-      'Get disposable email forwarding addresses using your custom domain name.'
+      `Disposable Email Addresses - Temporary Aliases for Custom Domains`,
+      `Create disposable email addresses with your custom domain. Generate unlimited temporary aliases for signups, trials, and spam protection. Auto-expire or keep forever.`
     ],
     '/self-hosted': [
-      'Self Hosted',
-      'Check out our complete self hosted setup.'
+      `Self-Hosted Email Server - Complete Open Source Setup Guide`,
+      `Deploy your own email server with Forward Email's open-source code. Docker, Kubernetes, and bare-metal installation guides. Full control over your email infrastructure.`
     ],
     '/resources': [
-      `Free Startup and Developer Email Tools List in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Get free startup and developer email tools, bundles, resources, guides, tutorials, code samples, and more.'
+      `Free Email Tools & Resources for Developers ${currentYear}`,
+      `Curated collection of free email tools, APIs, libraries, and resources for developers and startups. DNS tools, SMTP testers, deliverability checkers, and more.`
     ],
     '/blog/docs': [
-      `Free Email Developer Tools and Resources in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Free email developer tools and resources for startups and businesses. See our complete RESTful email API reference and manage your custom domains and aliases.'
+      `Email Developer Documentation & API Reference ${currentYear}`,
+      `Complete developer documentation for Forward Email. RESTful API reference, code examples, SDKs, webhooks, and integration guides for all major languages.`
     ],
-    // TODO: put a number in here
     '/guides': [
-      `Top Email Hosting and Email Forwarding Setup Tutorials in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Follow our free email forwarding and hosting guides to send and receive mail with your custom domain. We publish an email hosting guide list of the most popular website and DNS providers.'
+      `Email Setup Guides & Tutorials - Step-by-Step Instructions ${currentYear}`,
+      `Comprehensive email setup guides for all major DNS providers and registrars. Video tutorials, screenshots, and troubleshooting tips. Setup email forwarding in minutes.`
     ],
     '/guides/send-email-with-custom-domain-smtp': [
-      `How to Setup Email for Custom Domain Name in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration setup guide.'
+      `How to Setup Custom Domain Email with SMTP - Complete Guide ${currentYear}`,
+      `Step-by-step guide to setup email with your custom domain. Configure DNS, SMTP, IMAP, and POP3. Works with Gmail, Outlook, Apple Mail, and all email clients.`
     ],
     '/guides/newsletter-with-listmonk': [
-      `Create and Manage Newsletters with Listmonk in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'setting up a newsletter and mailing list system using Listmonk for campaign management and Forward Email as the SMTP provider for secure and reliable email delivery.'
+      `Listmonk Newsletter Setup with Forward Email SMTP ${currentYear}`,
+      `Create and manage newsletters using Listmonk with Forward Email as your SMTP provider. Self-hosted newsletter solution with reliable email delivery.`
     ],
     '/guides/selfhosted-on-debian': [
-      `Setup Self-hosted Forward Email on Debian in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Setting up self-hosted forward email on Debian OS.'
+      `Self-Hosted Forward Email on Debian - Installation Guide ${currentYear}`,
+      `Complete guide to self-hosting Forward Email on Debian Linux. Docker and bare-metal installation, configuration, and maintenance instructions.`
     ],
     '/guides/selfhosted-on-ubuntu': [
-      `Setup Self-hosted Forward Email on Ubuntu in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Setting up self-hosted forward email on Ubuntu OS.'
+      `Self-Hosted Forward Email on Ubuntu - Installation Guide ${currentYear}`,
+      `Complete guide to self-hosting Forward Email on Ubuntu Linux. Docker and bare-metal installation, configuration, and maintenance instructions.`
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
-      `How to Send Mail As for Gmail Alias <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
+      `Gmail Send Mail As - Use Custom Domain with Gmail ${currentYear}`,
+      `Setup Gmail to send and receive email from your custom domain. Step-by-step guide with video tutorial. Fix "Send Mail As" not working issues.`
     ],
     '/guides/smtp-integration': [
-      'SMTP Integration Examples',
-      "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications."
+      `SMTP Integration Examples - Code Samples for All Languages`,
+      `SMTP integration examples for Node.js, Python, PHP, Ruby, Go, Java, and more. Copy-paste code samples for reliable email sending with Forward Email.`
     ],
-
     '/guides/port-25-blocked-by-isp-workaround': [
-      'Port 25 blocked by ISP',
-      'Workaround port blocking set by your Internet Service Provider on port 25.'
+      `Port 25 Blocked by ISP - Workaround Solutions ${currentYear}`,
+      `Fix ISP blocking port 25 for email. Alternative SMTP ports, relay solutions, and workarounds for residential and business internet connections.`
     ],
     '/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility':
       [
-        'Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025',
-        'Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.'
+        `Printer & Scanner Email Setup - SMTP Configuration Guide ${currentYear}`,
+        `Fix scan-to-email on HP, Canon, Brother, Epson printers. Complete SMTP setup for IP cameras, fax machines, and legacy TLS 1.0 devices.`
       ],
     '/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas': [
-      'NAS Email Setup Guide: SMTP Configuration for All Devices 2025',
-      'Complete NAS email notification setup guide for Synology, QNAP, TrueNAS, ReadyNAS & more. Fix TLS compatibility issues with Forward Email SMTP server.'
+      `NAS Email Notifications - SMTP Setup for Synology, QNAP, TrueNAS ${currentYear}`,
+      `Configure email notifications on your NAS device. Complete SMTP setup guide for Synology DSM, QNAP QTS, TrueNAS, ReadyNAS, and more.`
     ],
     '/guides/raspberry-pi-ftp-server-email-relay-security-camera': [
-      'Raspberry Pi FTP Server with Email Relay for Security Cameras',
-      'Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.'
+      `Raspberry Pi Email Relay for Security Cameras - FTP Server Setup`,
+      `Build a Raspberry Pi FTP server with email relay for security cameras. Receive motion alerts via email. Works with all IP cameras and Pi models.`
     ],
     '/domain-registration': [
-      'Register Custom Domain for Email',
-      'Buy a custom domain name for email forwarding.'
+      `Register Domain for Email - Find Your Perfect Domain Name`,
+      `Search and register domain names for email. Instant DNS setup for email forwarding. Free WHOIS privacy and SSL certificates included.`
     ],
     '/reserved-email-addresses': [
-      'Reserved Email Addresses For Administrators',
-      'List of 1250+ email addresses reserved for security concerns.'
+      `Reserved Email Addresses - 1250+ Blocked Addresses for Security`,
+      `Complete list of reserved email addresses blocked for security. Protect your domain from abuse, phishing, and impersonation attacks.`
     ],
     '/my-account': [
-      'My Account',
-      `Manage your ${config.appName} account, domains, and email forwarding aliases.`
+      `My Account - Manage Domains & Email Forwarding`,
+      `Manage your Forward Email account, domains, aliases, and settings. View analytics, update billing, and configure security options.`
     ],
     '/my-account/analytics': [
-      'My Analytics',
-      `View your ${config.appName} analytics.`
+      `Email Analytics - Track Forwarding & Delivery Stats`,
+      `View your email forwarding analytics. Track delivery rates, bounce rates, and usage statistics for all your domains and aliases.`
     ],
     '/my-account/domains': [
-      'My Domains',
-      `Manage your ${config.appName} domains.`
+      `Manage Domains - Add, Configure & Verify Custom Domains`,
+      `Manage your custom domains for email forwarding. Add new domains, configure DNS, verify settings, and manage aliases.`
     ],
     '/my-account/emails': [
-      'My Emails',
-      `Manage your ${config.appName} emails.`
+      `Manage Emails - View & Search Your Email History`,
+      `View and search your email history. Track sent and received messages, check delivery status, and manage your mailbox.`
     ],
-    '/my-account/logs': ['My Logs', `Manage your ${config.appName} logs.`],
+    '/my-account/logs': [
+      `Email Logs - Detailed Delivery & Error Tracking`,
+      `View detailed email logs for troubleshooting. Track delivery attempts, errors, bounces, and spam filtering decisions.`
+    ],
     '/my-account/profile': [
-      'My Profile',
-      `Manage your ${config.appName} profile.`
+      `Profile Settings - Update Account Information`,
+      `Update your Forward Email profile. Change email, password, notification preferences, and account settings.`
     ],
     '/my-account/billing': [
-      'My Billing',
-      `Manage your ${config.appName} billing.`
+      `Billing & Subscription - Manage Your Plan`,
+      `Manage your Forward Email subscription. View invoices, update payment methods, and change your plan.`
     ],
     '/my-account/security': [
-      'My Security',
-      `Manage your ${config.appName} security.`,
+      `Security Settings - Two-Factor Authentication & API Keys`,
+      `Manage your account security. Enable two-factor authentication, manage API keys, and review login history.`,
       'img/articles/security.webp'
     ],
-    '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin.`],
+    '/admin': [
+      `Admin Dashboard - Forward Email`,
+      `Access your Forward Email admin dashboard for advanced management and configuration.`
+    ],
     '/forgot-password': [
-      'Forgot Password',
-      'Reset your account password to regain access to your account.'
+      `Reset Password - Recover Your Forward Email Account`,
+      `Reset your Forward Email password. Enter your email to receive a secure password reset link.`
     ],
     '/ips': [
-      'IP Addresses',
-      'We publish and automatically update the IP addresses used by our server infrastructure.'
+      `IP Addresses - Forward Email Server Infrastructure`,
+      `Complete list of Forward Email IP addresses for SPF records and firewall whitelisting. Automatically updated and always current.`
     ],
-    '/reset-password': ['Reset Password', 'Confirm your password reset token.'],
-    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.'],
+    '/reset-password': [
+      `Confirm Password Reset - Forward Email`,
+      `Confirm your password reset and create a new secure password for your Forward Email account.`
+    ],
+    '/auth': [
+      `Authenticate - Forward Email Login`,
+      `Complete authentication to access your Forward Email account.`
+    ],
     '/ubuntu': [
-      'Ubuntu @ubuntu.com email',
-      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @ubuntu.com email address.'
+      `Ubuntu @ubuntu.com Email - Official Ubuntu Member Email`,
+      `Manage email forwarding and SMTP for your @ubuntu.com email address. Log in with your Ubuntu One account.`
     ],
     '/kubuntu': [
-      'Kubuntu @kubuntu.org email',
-      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @kubuntu.org email address.'
+      `Kubuntu @kubuntu.org Email - Official Kubuntu Member Email`,
+      `Manage email forwarding and SMTP for your @kubuntu.org email address. Log in with your Ubuntu One account.`
     ],
     '/lubuntu': [
-      'Lubuntu @lubuntu.me email',
-      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @lubuntu.me email address.'
+      `Lubuntu @lubuntu.me Email - Official Lubuntu Member Email`,
+      `Manage email forwarding and SMTP for your @lubuntu.me email address. Log in with your Ubuntu One account.`
     ],
     '/edubuntu': [
-      'Edubuntu @edubuntu.org email',
-      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @edubuntu.org email address.'
+      `Edubuntu @edubuntu.org Email - Official Edubuntu Member Email`,
+      `Manage email forwarding and SMTP for your @edubuntu.org email address. Log in with your Ubuntu One account.`
     ],
     '/ubuntu-studio': [
-      'Ubuntu Studio @ubuntustudio.com email',
-      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @ubuntustudio.com email address.'
+      `Ubuntu Studio @ubuntustudio.com Email - Official Member Email`,
+      `Manage email forwarding and SMTP for your @ubuntustudio.com email address. Log in with your Ubuntu One account.`
     ]
   };
 
   // guides for each provider (39 total at time of this writing)
   for (const [x, provider] of nsProviders.entries()) {
     const name = `<span class="notranslate">${provider.name}</span>`;
+    const year = `<span class="notranslate">${currentYear}</span>`;
 
-    const year = `<span class="notranslate">${dayjs(now).format(
-      'YYYY'
-    )}</span>`;
+    // Rotate through SEO-optimized title patterns
+    const titlePatterns = [
+      `${name} Email Setup - Free Custom Domain Email Guide ${year}`,
+      `How to Setup Email with ${name} - Complete DNS Guide ${year}`,
+      `${name} Email Forwarding - Step-by-Step Tutorial ${year}`,
+      `Free Email Hosting for ${name} Domains ${year}`,
+      `${name} DNS Email Configuration - Quick Setup Guide ${year}`,
+      `Setup Custom Domain Email with ${name} ${year}`,
+      `${name} Email Guide - Forward & Send Email Free ${year}`,
+      `Email Forwarding for ${name} - 2-Minute Setup ${year}`,
+      `${name} Custom Domain Email - Complete Setup ${year}`,
+      `How to Get Free Email with ${name} Domain ${year}`,
+      `${name} Email DNS Setup - Video Tutorial ${year}`,
+      `Free ${name} Email Forwarding Guide ${year}`,
+      `${name} Domain Email Setup Made Easy ${year}`
+    ];
 
-    let title = `Free Email Setup for ${name} in ${year}`;
-    let description = `How to send and receive emails with ${name} DNS and setup free email forwarding for ${name} with video and step by step instructions.`;
+    const descPatterns = [
+      `Complete guide to setup free email forwarding with ${provider.name}. Step-by-step DNS configuration, video tutorial, and troubleshooting tips. Works with Gmail, Outlook, and all email clients.`,
+      `Setup custom domain email with ${provider.name} in minutes. Free email forwarding, SMTP, IMAP, and POP3 configuration. Includes video walkthrough and DNS verification tool.`,
+      `Learn how to configure email for your ${provider.name} domain. Free email hosting with unlimited aliases. Complete DNS setup guide with screenshots and video.`,
+      `Free email forwarding setup guide for ${provider.name}. Configure MX, TXT, and SPF records. Send and receive email from your custom domain in minutes.`,
+      `Step-by-step ${provider.name} email setup tutorial. Free custom domain email with SMTP access. Works with Gmail Send Mail As feature.`
+    ];
 
-    if (x >= 3 && x < 6) {
-      title = `Free Email Forwarding for ${name}`;
-      description = `Setup free email forwarding with ${name} DNS records in seconds.`;
-    } else if (x < 9) {
-      title = `${year} Email Hosting Guide for ${name}`;
-      description = `Learn about how to setup free email hosting for ${name} using ${name} DNS records.`;
-    } else if (x < 12) {
-      title = `Setup Free Email for ${name} in ${year}`;
-      description = `Free email forwarding and setup guide for ${name} with step by step instructions.`;
-    } else if (x < 15) {
-      title = `Free ${year} Email Guide for ${name}`;
-      description = `Follow our free email setup guide for ${name} and configure DNS records in minutes.`;
-    } else if (x < 18) {
-      title = `Free Email Forwarding in ${year} for ${name}`;
-      description = `Learn how to setup free email forwarding for ${name} in minutes with our step by step guide.`;
-    } else if (x < 21) {
-      title = `Step by Step ${year} Email Guide for ${name}`;
-      description = `Follow our step by step email setup guide for ${name} and setup email forwarding in minutes.`;
-    } else if (x < 24) {
-      title = `${year} Email Setup Instructions for ${name}`;
-      description = `Quick and easy email setup instructions for ${name} to setup email forwarding and hosting.`;
-    } else if (x < 27) {
-      title = `Free Email Hosting for ${name} ${year}`;
-      description = `Learn how to setup free email hosting and forwarding for ${name} using our step by step guide.`;
-    } else if (x < 30) {
-      title = `Email Hosting DNS Setup for ${name}`;
-      description = `Need to configure your DNS records to setup email for ${name}?  Follow our step by step email hosting DNS setup guide.`;
-    } else if (x < 33) {
-      title = `Simple Email Setup for ${name} in ${year}`;
-      description = `Simple and painless email setup guide for ${name}, which will let you setup email forwarding in minutes.`;
-    } else if (x < 36) {
-      title = `Easy Email Forwarding for ${name} (${year})`;
-      description = `The easiest to follow guide for setting up email forwarding and hosting for ${name}.`;
-    } else if (x < 39) {
-      title = `(${year}) Quick Email Setup for ${name}`;
-      description = `Quickly setup email in minutes for ${name} using our instructional guide and verification tool.`;
-    }
+    const titleIndex = x % titlePatterns.length;
+    const descIndex = x % descPatterns.length;
 
-    meta[`/guides/${provider.slug}`] = [title, description];
+    meta[`/guides/${provider.slug}`] = [
+      titlePatterns[titleIndex],
+      descPatterns[descIndex]
+    ];
   }
 
   if (platforms.length > 0) {
     meta['/blog/open-source'] = [
-      `Top ${
-        platforms.length
-      } Open Source Email Clients and Servers in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      'Open-source email client and server reviews, side by side comparisons, screenshots, and step by step setup tutorial guides.'
-      // `Open-source email client and server reviews, side by side comparisons, screenshots, and step by step setup tutorial guides for ${arrayJoinConjunction(
-      //   [
-      //     'Linux',
-      //     ...platforms.filter((p) => !p.toLowerCase().includes('linux'))
-      //   ]
-      // )}.`
+      `${platforms.length} Best Open Source Email Clients & Servers ${currentYear}`,
+      `Comprehensive reviews of the best open-source email clients and servers. Side-by-side comparisons, screenshots, features, and setup guides for Linux, Windows, macOS, Android, and iOS.`
     ];
   }
 
   for (const [i, platform] of platforms.entries()) {
-    let sample;
-    if (i < 3) {
-      sample = 'Top';
-    } else if (i < 6) {
-      sample = 'Best';
-    } else if (i < 9) {
-      sample = 'Top-Rated';
-    } else if (i < 12) {
-      sample = 'Most Popular';
-    } else if (i < 15) {
-      sample = 'Highest-Rated';
-    } else if (i < 18) {
-      sample = 'Greatest';
-    } else if (i < 21) {
-      sample = 'Amazing';
-    } else if (i < 24) {
-      sample = 'Excellent';
-    } else if (i < 27) {
-      sample = 'Favorited';
-    } else if (i < 30) {
-      sample = 'Notable';
-    } else if (i < 33) {
-      sample = 'Leading';
-    } else if (i < 36) {
-      sample = 'Outstanding';
-    } else if (i < 39) {
-      sample = 'Important';
-    } else if (i < 41) {
-      sample = 'Mighty';
-    } else if (i < 44) {
-      sample = 'Best';
-    } else {
-      sample = 'Top';
-    }
+    // Rotate through power words for variety
+    const powerWords = [
+      'Best',
+      'Top',
+      'Top-Rated',
+      'Most Popular',
+      'Highest-Rated',
+      'Leading',
+      'Outstanding',
+      'Excellent',
+      'Notable',
+      'Amazing',
+      'Greatest',
+      'Favorited',
+      'Important',
+      'Mighty'
+    ];
+    const sample = powerWords[i % powerWords.length];
 
     // email server
     const serverCount = getServersOrClientsList(platform, false).length;
     meta[`/blog/open-source/${dashify(platform)}-email-server`] = [
-      `${serverCount} ${sample} Open Source Email Servers for <span class="notranslate">${platform}</span> in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      `The ${serverCount} ${sample.toLowerCase()} free and open-source email servers for <span class="notranslate">${platform}</span> with setup guides, tutorials, videos, and instructions.`
+      `${serverCount} ${sample} Open Source Email Servers for <span class="notranslate">${platform}</span> ${currentYear}`,
+      `Compare the ${serverCount} ${sample.toLowerCase()} open-source email servers for ${platform}. Features, performance, security, and step-by-step setup guides with screenshots.`
     ];
 
     // email client
     const clientCount = getServersOrClientsList(platform, true).length;
     meta[`/blog/open-source/${dashify(platform)}-email-clients`] = [
-      `${clientCount} ${sample} Open Source Email Clients for <span class="notranslate">${platform}</span> in <span class="notranslate">${dayjs(
-        now
-      ).format('YYYY')}</span>`,
-      `Reviews, comparison, screenshots and more for the ${clientCount} ${sample.toLowerCase()} open-source email clients for <span class="notranslate">${platform}</span>.`
+      `${clientCount} ${sample} Open Source Email Clients for <span class="notranslate">${platform}</span> ${currentYear}`,
+      `Reviews and comparison of the ${clientCount} ${sample.toLowerCase()} open-source email clients for ${platform}. Screenshots, features, pros/cons, and installation guides.`
     ];
   }
 
   meta[`/blog/best-email-service`] = [
-    `${
-      alternatives.length
-    } Best Email Services in <span class="notranslate">${dayjs(now).format(
-      'YYYY'
-    )}</span>`,
-    `Reviews, comparison, screenshots and more for the ${alternatives.length} best email services.`
+    `${alternatives.length} Best Email Services Compared - Honest Reviews ${currentYear}`,
+    `In-depth comparison of ${alternatives.length} email services. Pricing, features, privacy, security, and performance. Find the perfect email provider for your needs.`
   ];
 
   meta[`/blog/best-private-email-service`] = [
     `${
       alternatives.filter((a) => a.e2ee || a.openpgp || a.wkd).length
-    } Best Private Email Services in <span class="notranslate">${dayjs(
-      now
-    ).format('YYYY')}</span>`,
-    `Reviews, comparison, screenshots and more for the ${
-      alternatives.filter((a) => a.e2ee || a.openpgp || a.wkd).length
-    } best private email services.`
+    } Best Private Email Services - End-to-End Encrypted ${currentYear}`,
+    `Compare the most private and secure email services with end-to-end encryption. Features, pricing, and privacy analysis. Protect your communications.`
   ];
 
   meta[`/blog/best-open-source-email-service`] = [
     `${
       alternatives.filter((a) => a.oss).length
-    } Best Open-Source Email Services in <span class="notranslate">${dayjs(
-      now
-    ).format('YYYY')}</span>`,
-    `Reviews, comparison, screenshots and more for the ${
-      alternatives.filter((a) => a.oss).length
-    } best open-source email services.`
+    } Best Open-Source Email Services - Transparent & Auditable ${currentYear}`,
+    `Reviews of open-source email services you can trust. Full source code transparency, security audits, and community-driven development.`
   ];
 
   meta[`/blog/best-transactional-email-service`] = [
     `${
       alternatives.filter((a) => a.api).length
-    } Best Transactional Email Services in <span class="notranslate">${dayjs(
-      now
-    ).format('YYYY')}</span>`,
-    `Reviews, comparison, screenshots and more for the ${
-      alternatives.filter((a) => a.api).length
-    } best transactional email services.`
+    } Best Transactional Email Services for Developers ${currentYear}`,
+    `Compare transactional email APIs for developers. Deliverability, pricing, features, and integration guides. Send password resets, receipts, and notifications.`
   ];
 
   meta[`/blog/best-email-api-developer-service`] = [
     `${
       alternatives.filter((a) => a.api).length
-    } Best Email API's for Developers in <span class="notranslate">${dayjs(
-      now
-    ).format('YYYY')}</span>`,
-    `Reviews, comparison, screenshots and more for the ${
-      alternatives.filter((a) => a.api).length
-    } best email service API's for developers.`
+    } Best Email APIs for Developers - Complete Comparison ${currentYear}`,
+    `In-depth comparison of email APIs for developers. RESTful APIs, SDKs, webhooks, and code examples. Find the best email API for your application.`
   ];
 
   meta['/blog/best-email-spam-filtering-service'] = [
     `${
       alternatives.filter((a) => a.api).length
-    } Best Email Spam Filtering Services in <span class="notranslate">${dayjs(
-      now
-    ).format('YYYY')}</span>`,
-    `Reviews, comparison, screenshots and more for the ${
-      alternatives.filter((a) => a.api).length
-    } best email spam filtering services.`
+    } Best Email Spam Filtering Services - Stop Spam ${currentYear}`,
+    `Compare spam filtering services to protect your inbox. Machine learning detection, false positive rates, and integration options. Block spam without losing legitimate email.`
   ];
 
   // developer docs
@@ -482,34 +411,30 @@ module.exports = function (config, isSitemap = false) {
       meta[doc.slug] = [
         doc.noYearAffix
           ? doc.title
-          : `${doc.title} in <span class="notranslate">${dayjs(now).format(
-              'YYYY'
-            )}</span>`,
+          : `${doc.title} - Complete Guide ${currentYear}`,
         doc.description
       ];
     } else {
       meta[doc.slug] = [
         doc.noYearAffix
           ? doc.title
-          : `${doc.title} Code Example in <span class="notranslate">${dayjs(
-              now
-            ).format('YYYY')}</span>`,
+          : `${doc.title} - Code Example & Tutorial ${currentYear}`,
         doc.description
       ];
     }
   }
 
   meta[config.loginRoute] = [
-    `Log in ${lad}`,
-    'Log in to your free email forwarding service account.'
+    `Log In to Forward Email - Access Your Account`,
+    `Sign in to your Forward Email account. Manage domains, aliases, and email forwarding settings.`
   ];
   meta[config.verifyRoute] = [
-    `Verify email ${lad}`,
-    `Verify your ${config.appName} email address.`
+    `Verify Email Address - Confirm Your Forward Email Account`,
+    `Verify your email address to activate your Forward Email account and start using email forwarding.`
   ];
   meta[config.otpRoutePrefix] = [
-    `Two Factor Auth ${lad}`,
-    'Authenticate yourself with optional OTP to log in.'
+    `Two-Factor Authentication - Secure Login Verification`,
+    `Enter your two-factor authentication code to complete login. Protect your account with 2FA security.`
   ];
 
   if (isSitemap) {

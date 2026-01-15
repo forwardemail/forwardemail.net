@@ -6,6 +6,76 @@ if meta && meta.description
   meta(name="description", content=striptags(convert(meta.description)))
 meta(name="viewport", content="width=device-width, initial-scale=1")
 
+//- Additional SEO meta tags
+meta(
+  name="robots",
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+)
+meta(name="author", content="Forward Email LLC")
+meta(name="publisher", content="Forward Email")
+meta(name="copyright", content="Forward Email LLC")
+meta(name="rating", content="general")
+meta(name="distribution", content="global")
+meta(name="revisit-after", content="7 days")
+
+//- Keywords meta tag (translated for each locale)
+if ctx.pathWithoutLocale === '/'
+  meta(
+    name="keywords",
+    content=t("email forwarding") + ", " + t("custom domain email") + ", " + t("free email hosting") + ", " + t("email aliases") + ", SMTP, IMAP, POP3, " + t("open source email") + ", " + t("privacy email") + ", " + t("secure email") + ", " + t("business email") + ", " + t("professional email")
+  )
+else if ctx.pathWithoutLocale && ctx.pathWithoutLocale.startsWith('/guides/')
+  meta(
+    name="keywords",
+    content=t("email setup guide") + ", " + t("DNS configuration") + ", " + t("MX records") + ", " + t("email forwarding tutorial") + ", " + t("custom domain email setup") + ", " + t("SMTP configuration")
+  )
+else if ctx.pathWithoutLocale && ctx.pathWithoutLocale.startsWith('/blog/')
+  meta(
+    name="keywords",
+    content=t("email service comparison") + ", " + t("email provider review") + ", " + t("open source email") + ", " + t("privacy email") + ", " + t("secure email service")
+  )
+
+//- Geo meta tags for local SEO (dynamic based on locale)
+-
+  const localeGeoMap = {
+    'ar': { region: 'SA', placename: 'Saudi Arabia' },
+    'cs': { region: 'CZ', placename: 'Czech Republic' },
+    'da': { region: 'DK', placename: 'Denmark' },
+    'de': { region: 'DE', placename: 'Germany' },
+    'en': { region: 'US', placename: 'United States' },
+    'es': { region: 'ES', placename: 'Spain' },
+    'fi': { region: 'FI', placename: 'Finland' },
+    'fr': { region: 'FR', placename: 'France' },
+    'he': { region: 'IL', placename: 'Israel' },
+    'hu': { region: 'HU', placename: 'Hungary' },
+    'id': { region: 'ID', placename: 'Indonesia' },
+    'it': { region: 'IT', placename: 'Italy' },
+    'ja': { region: 'JP', placename: 'Japan' },
+    'ko': { region: 'KR', placename: 'South Korea' },
+    'nl': { region: 'NL', placename: 'Netherlands' },
+    'no': { region: 'NO', placename: 'Norway' },
+    'pl': { region: 'PL', placename: 'Poland' },
+    'pt': { region: 'BR', placename: 'Brazil' },
+    'ru': { region: 'RU', placename: 'Russia' },
+    'sv': { region: 'SE', placename: 'Sweden' },
+    'th': { region: 'TH', placename: 'Thailand' },
+    'tr': { region: 'TR', placename: 'Turkey' },
+    'uk': { region: 'UA', placename: 'Ukraine' },
+    'vi': { region: 'VN', placename: 'Vietnam' },
+    'zh': { region: 'CN', placename: 'China' }
+  };
+  const geoData = localeGeoMap[locale] || localeGeoMap['en'];
+meta(name="geo.region", content=geoData.region)
+meta(name="geo.placename", content=t(geoData.placename))
+
+//- Mobile app meta tags
+meta(name="mobile-web-app-capable", content="yes")
+meta(name="apple-mobile-web-app-capable", content="yes")
+meta(name="apple-mobile-web-app-status-bar-style", content="default")
+
+//- Format detection
+meta(name="format-detection", content="telephone=no")
+
 //- Add preconnect for key domains to establish early connections
 //- link(rel="preconnect", href="https://www.youtube-nocookie.com")
 //- link(rel="preconnect", href=config.urls.web)
