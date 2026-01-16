@@ -73,7 +73,7 @@ async function fixCalDAVHref(instance, session) {
     } else {
       hrefResult = session.db
         .prepare(clearHrefSql.query)
-        .run(...clearHrefSql.values);
+        .run(clearHrefSql.values);
       stats.hrefCleared = hrefResult?.changes || 0;
     }
 
@@ -112,7 +112,7 @@ async function fixCalDAVHref(instance, session) {
     } else {
       restoreResult = session.db
         .prepare(restoreEventsSql.query)
-        .run(...restoreEventsSql.values);
+        .run(restoreEventsSql.values);
       stats.eventsRestored = restoreResult?.changes || 0;
     }
 
