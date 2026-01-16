@@ -175,8 +175,6 @@ async function login(ctx, next) {
           ctx.locale = ctx.request.locale;
         }
 
-        let redirectTo = await parseLoginSuccessRedirect(ctx);
-
         const greeting = 'Welcome back';
 
         if (user) {
@@ -203,12 +201,29 @@ async function login(ctx, next) {
           ctx.state.user.qrcode = await qrcode.toDataURL(uri);
           ctx.state.user = await ctx.state.user.save();
 
+          //
+          // NOTE: if OTP is required, redirect to OTP page without calling
+          // parseLoginSuccessRedirect() to preserve ctx.session.returnTo
+          // for after OTP verification completes
+          //
           if (
             user[config.passport.fields.otpEnabled] &&
             ctx.session &&
             !ctx.session.otp
-          )
-            redirectTo = ctx.state.l(config.loginOtpRoute);
+          ) {
+            const redirectTo = ctx.state.l(config.loginOtpRoute);
+            if (ctx.accepts('html')) {
+              ctx.redirect(redirectTo);
+            } else {
+              ctx.body = { redirectTo };
+            }
+
+            return;
+          }
+
+          // only call parseLoginSuccessRedirect when authentication is complete
+          // (this consumes and deletes ctx.session.returnTo)
+          const redirectTo = await parseLoginSuccessRedirect(ctx);
 
           if (ctx.accepts('html')) {
             ctx.redirect(redirectTo);
@@ -218,6 +233,10 @@ async function login(ctx, next) {
 
           return;
         }
+
+        // NOTE: this code path is unreachable since we check !user above
+        // and return early, but keeping for safety
+        const redirectTo = await parseLoginSuccessRedirect(ctx);
 
         ctx.flash('custom', {
           title: `${ctx.translate('HELLO')} ${ctx.state.emoji('wave')}`,
