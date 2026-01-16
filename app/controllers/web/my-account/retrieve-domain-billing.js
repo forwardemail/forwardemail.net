@@ -15,6 +15,7 @@ const pMapSeries = require('p-map-series');
 const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const striptags = require('striptags');
 const _ = require('#helpers/lodash');
 
@@ -672,10 +673,8 @@ async function retrieveDomainBilling(ctx) {
               : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -721,10 +720,8 @@ async function retrieveDomainBilling(ctx) {
                 } for ${ctx.state.user.email}`
               },
               locals: {
-                message: `<pre><code>${safeStringify(
-                  parseErr(err),
-                  null,
-                  2
+                message: `<pre><code>${encode(
+                  safeStringify(parseErr(err), null, 2)
                 )}</code></pre>`
               }
             })
@@ -808,10 +805,8 @@ async function retrieveDomainBilling(ctx) {
               subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             }
           })
@@ -833,10 +828,8 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -904,10 +897,8 @@ async function retrieveDomainBilling(ctx) {
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             }
           })
@@ -1033,7 +1024,7 @@ User Email: ${ctx.state.user.email}
 Retry Count: ${err.retryCount || 0}/${err.maxRetries || 0}
 Error Status: ${err.status || err.statusCode || 'Unknown'}
 
-${safeStringify(parseErr(err), null, 2)}</code></pre>`
+${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
             }
           })
             .then()
@@ -1093,10 +1084,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
             subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -1117,10 +1106,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -1174,10 +1161,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             }
           })
@@ -1325,10 +1310,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
               subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             }
           })
@@ -1350,10 +1333,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -1415,10 +1396,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             }
           })
@@ -1506,10 +1485,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
                     } for ${ctx.state.user.email}`
                   },
                   locals: {
-                    message: `<pre><code>${safeStringify(
-                      parseErr(err),
-                      null,
-                      2
+                    message: `<pre><code>${encode(
+                      safeStringify(parseErr(err), null, 2)
                     )}</code></pre>`
                   }
                 })
@@ -1540,10 +1517,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
                     } for ${ctx.state.user.email}`
                   },
                   locals: {
-                    message: `<pre><code>${safeStringify(
-                      parseErr(err),
-                      null,
-                      2
+                    message: `<pre><code>${encode(
+                      safeStringify(parseErr(err), null, 2)
                     )}</code></pre>`
                   }
                 })
@@ -1627,10 +1602,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })
@@ -1694,10 +1667,8 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         })

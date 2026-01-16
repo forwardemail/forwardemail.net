@@ -16,6 +16,7 @@ const pMapSeries = require('p-map-series');
 const pRetry = require('p-retry');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 
@@ -1247,16 +1248,10 @@ function retryGetDatabase(...args) {
               subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
             },
             locals: {
-              message: `<p>${
-                error.dbFilePath
-              }</p><hr /><pre><code>${safeStringify(
-                error.stats,
-                null,
-                2
-              )}</code></pre><pre><code>${safeStringify(
-                parseErr(error),
-                null,
-                2
+              message: `<p>${error.dbFilePath}</p><hr /><pre><code>${encode(
+                safeStringify(error.stats, null, 2)
+              )}</code></pre><pre><code>${encode(
+                safeStringify(parseErr(error), null, 2)
               )}</code></pre>`
             }
           })

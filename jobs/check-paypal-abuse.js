@@ -18,6 +18,7 @@ const mongoose = require('mongoose');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -634,10 +635,8 @@ function levenshteinDistance(str1, str2) {
         subject: 'PayPal Fraud Alert Error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

@@ -19,6 +19,7 @@ const mongoose = require('mongoose');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -684,10 +685,8 @@ function generateHTMLReport(reports, severity, severityConfig) {
         subject: 'User Domain Abuse Detection Error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

@@ -17,6 +17,7 @@ const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const splitLines = require('split-lines');
 const validator = require('@forwardemail/validator');
 const { ungzip } = require('node-gzip');
@@ -99,10 +100,8 @@ async function mapper(list) {
         subject: 'Update UCEPROTECT had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

@@ -15,6 +15,7 @@ const pMap = require('p-map');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const syncStripePayments = require('./sync-stripe-payments');
 const fraudCheck = require('./fraud-check');
@@ -52,10 +53,8 @@ graceful.listen();
         subject: 'Error with job for Stripe fraud check'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });
@@ -78,10 +77,8 @@ graceful.listen();
         subject: 'Error with job for Stripe checking subscription accuracy'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });
@@ -148,10 +145,8 @@ graceful.listen();
         subject: 'Error with job for Stripe syncing of deleted subscriptions'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });
@@ -196,10 +191,8 @@ graceful.listen();
           'Error with job for Stripe checking of duplicate payment intent IDs'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });
@@ -220,10 +213,8 @@ graceful.listen();
         subject: 'Error with job for Stripe syncing of payments'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

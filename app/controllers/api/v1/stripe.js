@@ -13,6 +13,7 @@ const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
 const titleize = require('titleize');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const _ = require('#helpers/lodash');
 
 const { Users, Domains } = require('#models');
@@ -703,10 +704,8 @@ async function webhook(ctx) {
           subject: `Error with Stripe Webhook (Event ID ${event.id})`
         },
         locals: {
-          message: `<pre><code>${safeStringify(
-            parseErr(err),
-            null,
-            2
+          message: `<pre><code>${encode(
+            safeStringify(parseErr(err), null, 2)
           )}</code></pre>`
         }
       })

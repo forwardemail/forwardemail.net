@@ -6,6 +6,7 @@
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const emailHelper = require('#helpers/email');
 const Payments = require('#models/payments');
@@ -45,10 +46,8 @@ async function syncPayPalOrderPayments() {
         subject: 'Sync PayPal Orders had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

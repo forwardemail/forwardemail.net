@@ -19,6 +19,7 @@ const pMap = require('p-map');
 const parseErr = require('parse-err');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const splitLines = require('split-lines');
 // const twilio = require('twilio');
 const { boolean } = require('boolean');
@@ -1124,7 +1125,9 @@ Logs.post('save', async (doc, next) => {
         subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
       },
       locals: {
-        message: `<pre><code>${safeStringify(doc, null, 2)}</code></pre>`
+        message: `<pre><code>${encode(
+          safeStringify(doc, null, 2)
+        )}</code></pre>`
       }
     });
     next();

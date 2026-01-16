@@ -14,6 +14,7 @@ const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -303,10 +304,8 @@ graceful.listen();
         subject: 'PayPal Automated Capture Retry Error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

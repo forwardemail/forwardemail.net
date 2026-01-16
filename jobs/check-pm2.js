@@ -23,6 +23,7 @@ const pm2 = require('pm2');
 const prettyMilliseconds = require('pretty-ms');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -242,10 +243,8 @@ function isProcessRunning(pid) {
         subject: 'Check PM2 had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

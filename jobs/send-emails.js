@@ -38,6 +38,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
 const { default: PQueue } = require('p-queue');
 
@@ -453,10 +454,8 @@ async function sendEmails() {
           subject: 'Send emails had an error'
         },
         locals: {
-          message: `<pre><code>${safeStringify(
-            parseErr(err),
-            null,
-            2
+          message: `<pre><code>${encode(
+            safeStringify(parseErr(err), null, 2)
           )}</code></pre>`
         }
       })

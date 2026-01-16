@@ -25,6 +25,7 @@ const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
@@ -384,10 +385,8 @@ async function checkDate(date) {
         subject: 'Update Umbrella had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });
@@ -489,10 +488,8 @@ async function checkDate(date) {
         subject: 'Allowlist cleanup had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

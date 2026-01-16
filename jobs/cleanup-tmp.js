@@ -22,6 +22,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const { getDirSize } = require('fast-dir-size');
 
 const config = require('#config');
@@ -117,10 +118,8 @@ graceful.listen();
         subject: 'Cleanup tmp had an error'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

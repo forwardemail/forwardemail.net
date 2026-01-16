@@ -19,6 +19,7 @@ const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -86,10 +87,8 @@ graceful.listen();
         subject: 'Email Deliverability Report Issue'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

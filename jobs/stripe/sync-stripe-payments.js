@@ -12,6 +12,7 @@ const pMap = require('p-map');
 const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const getAllStripePaymentIntents = require('./get-all-stripe-payment-intents');
 const config = require('#config');
@@ -71,10 +72,8 @@ async function syncStripePayments() {
           subject: `Problem syncing billing history for ${user.email} - could not retrieve customer payments`
         },
         locals: {
-          message: `<pre><code>${safeStringify(
-            parseErr(err),
-            null,
-            2
+          message: `<pre><code>${encode(
+            safeStringify(parseErr(err), null, 2)
           )}</code></pre>`
         },
         err
@@ -184,10 +183,8 @@ async function syncStripePayments() {
           subject: `${user.email} has stripe payments that were not synced by the sync-payment-histories job`
         },
         locals: {
-          message: `<pre><code>${safeStringify(
-            parseErr(err),
-            null,
-            2
+          message: `<pre><code>${encode(
+            safeStringify(parseErr(err), null, 2)
           )}</code></pre>`
         },
         err

@@ -9,6 +9,7 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const emailHelper = require('./email');
 const logger = require('./logger');
@@ -309,10 +310,8 @@ async function syncPayPalSubscriptionPaymentsByUser(
                 subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
               },
               locals: {
-                message: `<pre><code>${safeStringify(
-                  parseErr(err),
-                  null,
-                  2
+                message: `<pre><code>${encode(
+                  safeStringify(parseErr(err), null, 2)
                 )}</code></pre>`
               },
               err
@@ -368,10 +367,8 @@ async function syncPayPalSubscriptionPaymentsByUser(
               subject: `${customer.email} has an issue syncing all payments from paypal subscription ${subscriptionId} that were not synced by the sync-payment-histories job`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
+              message: `<pre><code>${encode(
+                safeStringify(parseErr(err), null, 2)
               )}</code></pre>`
             },
             err
@@ -395,10 +392,8 @@ async function syncPayPalSubscriptionPaymentsByUser(
             subject: `Sync PayPal payment histories hit ${config.paypalErrorThreshold} errors during the script`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         });

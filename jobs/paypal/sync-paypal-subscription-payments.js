@@ -6,6 +6,7 @@
 const pReduce = require('p-reduce');
 const isSANB = require('is-string-and-not-blank');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const Users = require('#models/users');
 const Payments = require('#models/payments');
@@ -429,7 +430,9 @@ async function syncPayPalSubscriptionPayments() {
           },
           locals: {
             message: `<p>The following PayPal subscriptions were found in the PayPal API but could not be matched to any user in the database:</p>
-<pre><code>${safeStringify(unmatchedSubscriptions, null, 2)}</code></pre>
+<pre><code>${encode(
+              safeStringify(unmatchedSubscriptions, null, 2)
+            )}</code></pre>
 <p><strong>Total unmatched:</strong> ${unmatchedSubscriptions.length}</p>
 <p><strong>Possible reasons:</strong></p>
 <ul>

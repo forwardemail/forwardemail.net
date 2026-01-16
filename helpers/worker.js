@@ -28,6 +28,7 @@ const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const {
@@ -1023,10 +1024,8 @@ async function backup(payload) {
         )
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

@@ -14,6 +14,7 @@ const Graceful = require('@ladjs/graceful');
 const parseErr = require('parse-err');
 const pMap = require('p-map');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const mongoose = require('mongoose');
 const config = require('#config');
@@ -70,10 +71,8 @@ async function mapper(id) {
         subject: 'Duplicate PayPal Transactions Detected'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

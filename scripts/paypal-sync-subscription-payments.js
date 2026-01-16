@@ -20,6 +20,7 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const mongoose = require('mongoose');
 const Payments = require('#models/payments');
@@ -290,10 +291,8 @@ async function syncSubscriptionPayments(
             subject: `${customer.email} had an issue syncing transaction ${transaction.id} from PayPal subscription ${subscriptionId}`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           },
           err
@@ -357,10 +356,8 @@ async function syncSubscriptionPayments(
           subject: `Error syncing PayPal subscription ${subscriptionId} with ${agentType} agent`
         },
         locals: {
-          message: `<pre><code>${safeStringify(
-            parseErr(err),
-            null,
-            2
+          message: `<pre><code>${encode(
+            safeStringify(parseErr(err), null, 2)
           )}</code></pre>`
         },
         err
@@ -424,10 +421,8 @@ async function syncAllSubscriptions() {
             subject: `PayPal subscription sync hit ${config.paypalErrorThreshold} errors`
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         });

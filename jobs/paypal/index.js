@@ -12,6 +12,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const mongoose = require('mongoose');
 const syncPayPalOrderPayments = require('./sync-paypal-order-payments');
@@ -49,10 +50,8 @@ graceful.listen();
             subject: 'Error with job for PayPal syncing of order payments'
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         });
@@ -75,10 +74,8 @@ graceful.listen();
               'Error with job for PayPal syncing of subscription payments'
           },
           locals: {
-            message: `<pre><code>${safeStringify(
-              parseErr(err),
-              null,
-              2
+            message: `<pre><code>${encode(
+              safeStringify(parseErr(err), null, 2)
             )}</code></pre>`
           }
         });

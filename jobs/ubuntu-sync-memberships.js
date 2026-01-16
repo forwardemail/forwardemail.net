@@ -19,6 +19,7 @@ const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
 const safeStringify = require('fast-safe-stringify');
+const { encode } = require('html-entities');
 
 const Users = require('#models/users');
 const config = require('#config');
@@ -96,10 +97,8 @@ const resolver = createTangerine(client, logger);
         subject: 'Ubuntu Sync Memberships Issue'
       },
       locals: {
-        message: `<pre><code>${safeStringify(
-          parseErr(err),
-          null,
-          2
+        message: `<pre><code>${encode(
+          safeStringify(parseErr(err), null, 2)
         )}</code></pre>`
       }
     });

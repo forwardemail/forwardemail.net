@@ -286,11 +286,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
                   },
                   locals: {
                     message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
-                    // message: `<pre><code>${safeStringify(
+                    // message: `<pre><code>${encode(safeStringify(
                     //   parseErr(err),
                     //   null,
                     //   2
-                    // )}</code></pre>`,
+                    // ))}</code></pre>`,
                     locale: session.user.locale
                   }
                 })
