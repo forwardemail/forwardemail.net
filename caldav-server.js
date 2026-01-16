@@ -461,6 +461,29 @@ function calendarSupportsComponent(calendar, componentType) {
   return false;
 }
 
+//
+// Helper function to get eventId variants for flexible lookup.
+// This ensures backwards compatibility by searching for both
+// eventId with and without .ics extension.
+//
+// For example, if eventId is "abc123", it will search for:
+// - "abc123"
+// - "abc123.ics"
+//
+// If eventId is "abc123.ics", it will search for:
+// - "abc123.ics"
+// - "abc123"
+//
+function getEventIdVariants(eventId) {
+  if (typeof eventId !== 'string') return [eventId];
+
+  if (eventId.endsWith('.ics')) {
+    return [eventId, eventId.slice(0, -4)];
+  }
+
+  return [eventId, `${eventId}.ics`];
+}
+
 // TODO: support SMS reminders for VALARM
 
 //
@@ -1686,22 +1709,27 @@ class CalDAV extends API {
           const vc = new ICAL.Component(['vcalendar', [], []]);
           vc.addSubcomponent(vevent);
 
-          // check if the event already exists, and if so, then simply update it
+          // Check if the event already exists, and if so, then simply update it.
+          // Search for both eventId variants (with and without .ics) for backwards compatibility.
+          const eventIdVariants = getEventIdVariants(eventId);
+          let existingEvent = null;
 
-          let existingEvent = await CalendarEvents.findOne(
-            this,
-            ctx.state.session,
-            { eventId, calendar: calendar._id }
-          );
+          for (const variant of eventIdVariants) {
+            existingEvent = await CalendarEvents.findOne(
+              this,
+              ctx.state.session,
+              { eventId: variant, calendar: calendar._id }
+            );
+            if (existingEvent) break;
+          }
 
-          // if uid was an email e.g. "xyz@google.com" then
-          // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
-          if (!existingEvent && isEmail(eventId)) {
+          // Also check for email-based eventId with @ replaced by _
+          if (!existingEvent && isEmail(eventIdVariants[0])) {
             existingEvent = await CalendarEvents.findOne(
               this,
               ctx.state.session,
               {
-                eventId: eventId.replace('@', '_'),
+                eventId: eventIdVariants[0].replace('@', '_'),
                 calendar: calendar._id
               }
             );
@@ -2151,16 +2179,22 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    let event = await CalendarEvents.findOne(this, ctx.state.session, {
-      eventId,
-      calendar: calendar._id
-    });
+    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    const eventIdVariants = getEventIdVariants(eventId);
+    let event = null;
 
-    // if uid was an email e.g. "xyz@google.com" then
-    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
-    if (!event && isEmail(eventId)) {
+    for (const variant of eventIdVariants) {
       event = await CalendarEvents.findOne(this, ctx.state.session, {
-        eventId: eventId.replace('@', '_'),
+        eventId: variant,
+        calendar: calendar._id
+      });
+      if (event) break;
+    }
+
+    // Also check for email-based eventId with @ replaced by _
+    if (!event && isEmail(eventIdVariants[0])) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id
       });
     }
@@ -2204,11 +2238,18 @@ class CalDAV extends API {
       );
     }
 
-    // check if there is an event with same calendar ID already
-    const exists = await CalendarEvents.findOne(this, ctx.state.session, {
-      eventId,
-      calendar: calendar._id
-    });
+    // Check if there is an event with same calendar ID already.
+    // Search for both eventId variants (with and without .ics) for backwards compatibility.
+    const eventIdVariants = getEventIdVariants(eventId);
+    let exists = null;
+
+    for (const variant of eventIdVariants) {
+      exists = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: variant,
+        calendar: calendar._id
+      });
+      if (exists) break;
+    }
 
     if (exists)
       throw Boom.badRequest(ctx.translateError('EVENT_ALREADY_EXISTS'));
@@ -2358,16 +2399,22 @@ class CalDAV extends API {
       );
     }
 
-    let e = await CalendarEvents.findOne(this, ctx.state.session, {
-      eventId,
-      calendar: calendar._id
-    });
+    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    const eventIdVariants = getEventIdVariants(eventId);
+    let e = null;
 
-    // if uid was an email e.g. "xyz@google.com" then
-    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
-    if (!e && isEmail(eventId)) {
+    for (const variant of eventIdVariants) {
       e = await CalendarEvents.findOne(this, ctx.state.session, {
-        eventId: eventId.replace('@', '_'),
+        eventId: variant,
+        calendar: calendar._id
+      });
+      if (e) break;
+    }
+
+    // Also check for email-based eventId with @ replaced by _
+    if (!e && isEmail(eventIdVariants[0])) {
+      e = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id
       });
     }
@@ -2539,16 +2586,22 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    let event = await CalendarEvents.findOne(this, ctx.state.session, {
-      eventId,
-      calendar: calendar._id
-    });
+    // Search for both eventId variants (with and without .ics) for backwards compatibility
+    const eventIdVariants = getEventIdVariants(eventId);
+    let event = null;
 
-    // if uid was an email e.g. "xyz@google.com" then
-    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
-    if (!event && isEmail(eventId)) {
+    for (const variant of eventIdVariants) {
       event = await CalendarEvents.findOne(this, ctx.state.session, {
-        eventId: eventId.replace('@', '_'),
+        eventId: variant,
+        calendar: calendar._id
+      });
+      if (event) break;
+    }
+
+    // Also check for email-based eventId with @ replaced by _
+    if (!event && isEmail(eventIdVariants[0])) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventIdVariants[0].replace('@', '_'),
         calendar: calendar._id
       });
     }
