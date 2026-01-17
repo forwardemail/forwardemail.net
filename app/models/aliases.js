@@ -651,6 +651,14 @@ Aliases.virtual('is_update')
 Aliases.pre('save', async function (next) {
   const alias = this;
   try {
+    const domainId =
+      alias.domain && typeof alias.domain === 'object'
+        ? alias.domain._id || alias.domain.id || alias.domain
+        : alias.domain;
+    const userId =
+      alias.user && typeof alias.user === 'object'
+        ? alias.user._id || alias.user.id || alias.user
+        : alias.user;
     // domain and user must exist
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
@@ -658,12 +666,12 @@ Aliases.pre('save', async function (next) {
       conn.models.Domains.findOne({
         $or: [
           {
-            _id: alias.domain,
+            _id: domainId,
             // virtual helper from `jobs/ubuntu-sync-memberships.js`
-            ...(alias.virtual_member ? {} : { 'members.user': alias.user })
+            ...(alias.virtual_member ? {} : { 'members.user': userId })
           },
           {
-            _id: alias.domain,
+            _id: domainId,
             is_global: true
           }
         ]
@@ -672,7 +680,7 @@ Aliases.pre('save', async function (next) {
         .lean()
         .exec(),
       conn.models.Users.findOne({
-        _id: alias.user,
+        _id: userId,
         [config.userFields.isBanned]: false
       })
         .lean()
