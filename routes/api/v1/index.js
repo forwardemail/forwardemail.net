@@ -196,13 +196,13 @@ router
   //
   .get('/lookup', api.v1.restricted, api.v1.lookup)
   .get('/port', api.v1.restricted, api.v1.port)
-  .get('/settings', api.v1.restricted, api.v1.settings)
   .get(
     '/max-forwarded-addresses',
     api.v1.restricted,
     api.v1.maxForwardedAddresses
   )
   .post('/self-test', api.v1.restricted, api.v1.selfTest)
+  .get('/settings', api.v1.restricted, api.v1.settings)
   .post('/upgrade', api.v1.restricted, api.v1.upgrade)
 
   //
@@ -242,11 +242,23 @@ router
   )
   .put(
     '/account',
-    policies.ensureApiToken,
-    policies.checkVerifiedEmail,
-    web.myAccount.ensureNotBanned,
-    api.v1.enforcePaidPlan,
-    web.myAccount.ensurePaidToDate,
+    ensureApiTokenOrAliasAuth,
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await policies.checkVerifiedEmail(ctx, next);
+    },
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await web.myAccount.ensureNotBanned(ctx, next);
+    },
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await api.v1.enforcePaidPlan(ctx, next);
+    },
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await web.myAccount.ensurePaidToDate(ctx, next);
+    },
     api.v1.users.update
   );
 
