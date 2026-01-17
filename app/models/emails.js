@@ -448,17 +448,6 @@ Emails.index({ domain: 1, status: 1, created_at: -1 });
 Emails.index({ alias: 1, status: 1, created_at: -1 });
 Emails.index({ user: 1, status: 1, created_at: -1 });
 
-// Indexes for envelope.from and envelope.to queries (admin emails page)
-// These support queries like { 'envelope.from': 'support@forwardemail.net' }
-Emails.index({ 'envelope.from': 1, created_at: -1 });
-
-// For envelope.to queries - since envelope.to is an array, MongoDB will create
-// a multikey index that efficiently supports queries on array elements
-Emails.index({ 'envelope.to': 1, created_at: -1 });
-
-// Compound index for queries filtering by both envelope.from and status
-Emails.index({ 'envelope.from': 1, status: 1, created_at: -1 });
-
 // DSN
 Emails.pre('validate', function (next) {
   if (this.dsn === undefined) return next();
@@ -1778,13 +1767,10 @@ Emails.statics.queue = async function (
     }
   }
 
-  // Determine status based on domain suspension
-  let status = 'queued';
-
-  // If domain is suspended or explicitly marked as pending
-  if (_.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true) {
-    status = 'pending';
-  }
+  const status =
+    _.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true
+      ? 'pending'
+      : 'queued';
 
   const email = await this.create({
     alias: !options.catchall && alias ? alias._id : undefined,

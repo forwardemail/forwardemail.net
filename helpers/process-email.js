@@ -104,8 +104,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         $set: {
           is_locked: true,
           locked_by: IP_ADDRESS,
-          locked_at: now,
-          status: 'queued'
+          locked_at: now
         }
       },
       {

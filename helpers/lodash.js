@@ -52,7 +52,6 @@ const uniqBy = require('lodash/uniqBy');
 const without = require('lodash/without');
 const zipObject = require('lodash/zipObject');
 const countBy = require('lodash/countBy');
-const every = require('lodash/every');
 const maxBy = require('lodash/maxBy');
 const toPairs = require('lodash/toPairs');
 
@@ -106,7 +105,6 @@ module.exports = {
   without,
   zipObject,
   countBy,
-  every,
   maxBy,
   toPairs
 };

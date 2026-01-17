@@ -792,65 +792,6 @@ Test`.trim()
   t.is(res.body.subject, `${emoji('blush')} testing this`);
 });
 
-test('lists, retrieves, and deletes emails with alias auth', async (t) => {
-  const { api } = t.context;
-  const { alias, domain, pass } = await createTestAlias(t);
-
-  const createRes = await api
-    .post('/v1/emails')
-    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json')
-    .send({
-      from: `${alias.name}@${domain.name}`,
-      to: 'foo@bar.com',
-      subject: 'Alias Email Test',
-      text: 'This is an alias email'
-    });
-
-  t.is(createRes.status, 200);
-  t.true(typeof createRes.body.id === 'string');
-
-  const listRes = await api
-    .get('/v1/emails')
-    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .set('Accept', 'application/json');
-
-  t.is(listRes.status, 200);
-  t.true(Array.isArray(listRes.body));
-  t.true(listRes.body.some((email) => email.id === createRes.body.id));
-
-  const retrieveRes = await api
-    .get(`/v1/emails/${createRes.body.id}`)
-    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .set('Accept', 'application/json');
-
-  t.is(retrieveRes.status, 200);
-  t.is(retrieveRes.body.id, createRes.body.id);
-
-  const deleteRes = await api
-    .delete(`/v1/emails/${createRes.body.id}`)
-    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .set('Accept', 'application/json');
-
-  t.is(deleteRes.status, 200);
-  t.is(deleteRes.body.status, 'rejected');
-});
-
-test('gets email limit with alias auth', async (t) => {
-  const { api } = t.context;
-  const { alias, domain, pass } = await createTestAlias(t);
-
-  const res = await api
-    .get('/v1/emails/limit')
-    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .set('Accept', 'application/json');
-
-  t.is(res.status, 200);
-  t.true(Number.isFinite(res.body.count));
-  t.true(Number.isFinite(res.body.limit));
-});
-
 //
 // Messages Tests
 //

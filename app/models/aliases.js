@@ -107,133 +107,6 @@ APS.plugin(mongooseCommonPlugin, {
   locale: false
 });
 
-const COLOR_REGEX = /^#([A-Fa-f\d]{6}|[A-Fa-f\d]{8})$/;
-// Allow standard atom characters plus leading "\" or "$" so we can return reserved conflicts instead of 400s
-const KEYWORD_REGEX = /^([A-Za-z\d]|[\\$])[\w.-]*$/;
-const normalizeLabelKeyword = (keyword) =>
-  String(keyword || '')
-    .trim()
-    .toLowerCase();
-const isValidLabelKeyword = (keyword) =>
-  isSANB(keyword) && KEYWORD_REGEX.test(normalizeLabelKeyword(keyword));
-const isValidLabelColor = (color) => COLOR_REGEX.test(String(color).trim());
-
-function getLocale(doc) {
-  if (!doc) return undefined;
-  if (doc.locale) return doc.locale;
-  if (typeof doc.ownerDocument === 'function') {
-    const owner = doc.ownerDocument();
-    if (owner?.locale) return owner.locale;
-  }
-
-  return i18n.config.defaultLocale;
-}
-
-function validateLabelSettingsMinimal(value) {
-  if (value === undefined || value === null) return true;
-  if (!_.isPlainObject(value)) return false;
-  return _.every(value, (item, keyword) => {
-    if (!isValidLabelKeyword(keyword)) return false;
-    if (!_.isPlainObject(item)) return false;
-    if (item.color === undefined || item.color === null) return true;
-    return isValidLabelColor(item.color);
-  });
-}
-
-const AliasSettings = new mongoose.Schema(
-  {
-    mail: {
-      archive_folder: {
-        type: String,
-        trim: true,
-        default: null,
-        validate: {
-          validator(value) {
-            return value === null || value === undefined || isSANB(value);
-          },
-          message() {
-            return i18n.translateError(
-              'SETTINGS_ARCHIVE_FOLDER_INVALID',
-              getLocale(this)
-            );
-          }
-        }
-      },
-      sent_folder: {
-        type: String,
-        trim: true,
-        default: null,
-        validate: {
-          validator(value) {
-            return value === null || value === undefined || isSANB(value);
-          },
-          message() {
-            return i18n.translateError(
-              'SETTINGS_SENT_FOLDER_INVALID',
-              getLocale(this)
-            );
-          }
-        }
-      },
-      drafts_folder: {
-        type: String,
-        trim: true,
-        default: null,
-        validate: {
-          validator(value) {
-            return value === null || value === undefined || isSANB(value);
-          },
-          message() {
-            return i18n.translateError(
-              'SETTINGS_DRAFTS_FOLDER_INVALID',
-              getLocale(this)
-            );
-          }
-        }
-      }
-    },
-    label_settings: {
-      type: Object,
-      default: () => ({}),
-      validate: {
-        validator(value) {
-          return validateLabelSettingsMinimal(value);
-        },
-        message() {
-          return i18n.translateError(
-            'SETTINGS_LABEL_KEYWORD_INVALID',
-            getLocale(this)
-          );
-        }
-      }
-    },
-    aliases: {
-      defaults: {
-        type: Object,
-        default: () => ({}),
-        set(value) {
-          this.__aliasesDefaultsWasArray = Array.isArray(value);
-          return value;
-        },
-        validate: {
-          validator(value) {
-            if (value === undefined || value === null) return true;
-            if (this.__aliasesDefaultsWasArray) return false;
-            return value instanceof Map || _.isPlainObject(value);
-          },
-          message() {
-            return i18n.translateError(
-              'SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT',
-              getLocale(this)
-            );
-          }
-        }
-      }
-    }
-  },
-  { _id: false, minimize: false }
-);
-
 const Aliases = new mongoose.Schema({
   // if a rekey operation is being performed then don't allow auth or read/write
   is_rekey: {
@@ -422,7 +295,6 @@ const Aliases = new mongoose.Schema({
     default: false,
     index: true
   },
-  settings: AliasSettings,
   // recipients that are verified (ones that have clicked email link)
   // the API endpoint for lookups uses this as well as the UI on FE front-end side
   verified_recipients: [
@@ -779,14 +651,6 @@ Aliases.virtual('is_update')
 Aliases.pre('save', async function (next) {
   const alias = this;
   try {
-    const domainId =
-      alias.domain && typeof alias.domain === 'object'
-        ? alias.domain._id || alias.domain.id || alias.domain
-        : alias.domain;
-    const userId =
-      alias.user && typeof alias.user === 'object'
-        ? alias.user._id || alias.user.id || alias.user
-        : alias.user;
     // domain and user must exist
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
@@ -794,12 +658,12 @@ Aliases.pre('save', async function (next) {
       conn.models.Domains.findOne({
         $or: [
           {
-            _id: domainId,
+            _id: alias.domain,
             // virtual helper from `jobs/ubuntu-sync-memberships.js`
-            ...(alias.virtual_member ? {} : { 'members.user': userId })
+            ...(alias.virtual_member ? {} : { 'members.user': alias.user })
           },
           {
-            _id: domainId,
+            _id: alias.domain,
             is_global: true
           }
         ]
@@ -808,7 +672,7 @@ Aliases.pre('save', async function (next) {
         .lean()
         .exec(),
       conn.models.Users.findOne({
-        _id: userId,
+        _id: alias.user,
         [config.userFields.isBanned]: false
       })
         .lean()

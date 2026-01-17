@@ -12,7 +12,6 @@ const config = require('#config');
 const createSession = require('#helpers/create-session');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const toObject = require('#helpers/to-object');
-const { Users } = require('#models');
 
 const REJECTED_ERROR_KEYS = [
   'recipient',
@@ -87,28 +86,6 @@ async function retrieve(ctx) {
 }
 
 async function limit(ctx) {
-  const isAliasAuth = Boolean(ctx.state?.session?.db);
-
-  // For alias auth, we need to look up the actual user to get their ID and limits
-  // Rate limiting is always per-user, not per-alias
-  if (isAliasAuth) {
-    const user = await Users.findById(ctx.state.user.alias_user_id)
-      .select(`id ${config.userFields.smtpLimit}`)
-      .lean()
-      .exec();
-    if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
-
-    const count = await ctx.client.zcard(
-      `${config.smtpLimitNamespace}:${user.id}`
-    );
-    ctx.body = {
-      count,
-      limit: user[config.userFields.smtpLimit] || config.smtpLimitMessages
-    };
-    return;
-  }
-
-  // Standard user auth - use ctx.state.user directly
   const count = await ctx.client.zcard(
     `${config.smtpLimitNamespace}:${ctx.state.user.id}`
   );
