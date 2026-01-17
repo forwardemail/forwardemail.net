@@ -14,6 +14,8 @@ async function retrieveDomains(ctx, next) {
   ctx.state.domains = [];
   ctx.state.adminTeams = [];
 
+  if (ctx.state?.session?.db) return next();
+
   if (!ctx.isAuthenticated()) return next();
 
   //

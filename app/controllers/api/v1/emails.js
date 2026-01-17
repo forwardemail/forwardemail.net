@@ -12,6 +12,7 @@ const config = require('#config');
 const createSession = require('#helpers/create-session');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const toObject = require('#helpers/to-object');
+const { Users } = require('#models');
 
 const REJECTED_ERROR_KEYS = [
   'recipient',
@@ -86,13 +87,26 @@ async function retrieve(ctx) {
 }
 
 async function limit(ctx) {
+  const isAliasAuth = Boolean(ctx.state?.session?.db);
+  let userId = ctx.state.user.id;
+  let smtpLimit =
+    ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+  if (isAliasAuth) {
+    userId = ctx.state.user.alias_user_id;
+    const user = await Users.findById(userId)
+      .select(`id ${config.userFields.smtpLimit}`)
+      .lean()
+      .exec();
+    smtpLimit = user?.[config.userFields.smtpLimit] || config.smtpLimitMessages;
+  }
+
   const count = await ctx.client.zcard(
-    `${config.smtpLimitNamespace}:${ctx.state.user.id}`
+    `${config.smtpLimitNamespace}:${userId}`
   );
   ctx.body = {
     count,
-    limit:
-      ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages
+    limit: smtpLimit
   };
 }
 
