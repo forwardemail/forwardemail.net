@@ -5,13 +5,13 @@
 
 const punycode = require('node:punycode');
 
-const POP3Server = require('@forwardemail/wildduck/lib/pop3/server');
+const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
-const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
+const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
 
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');

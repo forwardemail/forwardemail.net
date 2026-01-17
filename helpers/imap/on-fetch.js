@@ -14,12 +14,12 @@
  */
 
 const getStream = require('get-stream');
-const tools = require('@forwardemail/wildduck/lib/tools');
+const tools = require('@zone-eu/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const {
   IMAPConnection
-} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
-const { imapHandler } = require('@forwardemail/wildduck/imap-core');
+} = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
+const { imapHandler } = require('@zone-eu/wildduck/imap-core');
 const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');

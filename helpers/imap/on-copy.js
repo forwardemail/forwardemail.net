@@ -15,7 +15,7 @@
 
 const mongoose = require('mongoose');
 const ms = require('ms');
-const tools = require('@forwardemail/wildduck/lib/tools');
+const tools = require('@zone-eu/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 
