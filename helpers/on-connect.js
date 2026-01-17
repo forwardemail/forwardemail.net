@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const os = require('node:os');
+// const os = require('node:os');
 const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
@@ -17,7 +17,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
 const env = require('#config/env');
 const isAllowlisted = require('#helpers/is-allowlisted');
-const logger = require('#helpers/logger');
+// const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -44,7 +44,7 @@ function processHostname(hostname) {
   };
 }
 
-const HOSTNAME = os.hostname();
+// const HOSTNAME = os.hostname();
 
 /**
  * Parse client IP from SMTP EHLO message
@@ -364,14 +364,14 @@ async function onConnect(session, fn) {
 
   // safeguard in case we recursively connect to our own server
   // (this should NOT happen, and can result in OOM/CPU issues)
-  if (session.resolvedRootClientHostname === env.WEB_HOST) {
-    const err = new TypeError(
-      `${HOSTNAME} detected recursive connection from ${session.resolvedClientHostname} (${session.remoteAddress})`
-    );
-    err.isCodeBug = true;
-    err.session = session;
-    logger.fatal(err);
-  }
+  // if (session.resolvedRootClientHostname === env.WEB_HOST) {
+  //   const err = new TypeError(
+  //     `${HOSTNAME} detected recursive connection from ${session.resolvedClientHostname} (${session.remoteAddress})`
+  //   );
+  //   err.isCodeBug = true;
+  //   err.session = session;
+  //   logger.fatal(err);
+  // }
 
   try {
     // TODO: we need to use rate limiting concept here where it's rolling as opposed to fix
@@ -392,18 +392,18 @@ async function onConnect(session, fn) {
       .exec();
 
     // NOTE if more than 200 connections open in 3m then alert admins
-    if (count >= 200 && session.isAllowlisted) {
-      const err = new TypeError(
-        `${HOSTNAME} detected 50+ connections from ${
-          session.resolvedRootClientHostname ||
-          session.resolvedClientHostname ||
-          session.remoteAddress
-        } (${session.allowlistValue})`
-      );
-      err.isCodeBug = true;
-      err.session = session;
-      logger.fatal(err);
-    }
+    // if (count >= 200 && session.isAllowlisted) {
+    //   const err = new TypeError(
+    //     `${HOSTNAME} detected 50+ connections from ${
+    //       session.resolvedRootClientHostname ||
+    //       session.resolvedClientHostname ||
+    //       session.remoteAddress
+    //     } (${session.allowlistValue})`
+    //   );
+    //   err.isCodeBug = true;
+    //   err.session = session;
+    //   logger.fatal(err);
+    // }
 
     //
     // NOTE: we do not check in onConnect for denylist/silent/backscatter in MX server
