@@ -12,17 +12,27 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const routes = require('../routes');
 
+const env = require('./env');
+
 const config = require('.');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
 
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const denylistMiddleware = require('#helpers/denylist-request');
 
 const sharedCardDAVConfig = sharedConfig('CARDDAV');
 
 // setup our Cabin instance
 const cabin = new Cabin({ logger });
+
+const RATELIMIT_ALLOWLIST =
+  typeof env.RATELIMIT_ALLOWLIST === 'string'
+    ? env.RATELIMIT_ALLOWLIST.split(',')
+    : Array.isArray(env.RATELIMIT_ALLOWLIST)
+    ? env.RATELIMIT_ALLOWLIST
+    : [];
 
 const rateLimit = {
   ...sharedCardDAVConfig.rateLimit,
@@ -62,6 +72,10 @@ module.exports = {
       app.context.client,
       app.context.logger
     );
+
+    // Denylist middleware: checks referer, IP, user email, and resolved hostname
+    // Also handles IPv6 to IPv4 conversion and PTR lookup for allowlist
+    app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
   }
   // TODO: do we need this (?)
   // Timeout configuration
