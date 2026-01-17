@@ -211,7 +211,7 @@
     "mongodb-query-parser": "4.3.2",
     "mongodb-short-id": "0.3.3",
     "mongoose": "6.13.8",
-    "mongoose-common-plugin": "4.0.0",
+    "mongoose-common-plugin": "4.0.1",
     "mongoose-omit-common-fields": "0.0.6",
     "mongoose-unique-validator": "3.1.0",
     "mongoose-validation-error-transform": "0.0.6",
