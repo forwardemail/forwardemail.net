@@ -569,8 +569,8 @@ importers:
         specifier: 6.13.8
         version: 6.13.8
       mongoose-common-plugin:
-        specifier: 4.0.1
-        version: 4.0.1(mongoose@6.13.8)
+        specifier: 4.0.0
+        version: 4.0.0(mongoose@6.13.8)
       mongoose-omit-common-fields:
         specifier: 0.0.6
         version: 0.0.6
@@ -12974,8 +12974,8 @@ packages:
       socks:
         optional: true
 
-  mongoose-common-plugin@4.0.1:
-    resolution: {integrity: sha512-S69LaLeA9j+/TybeeenksXq5xH1x+fb/brYaktc7pab2/33/9Qggs7kFRC7Zpyw2CavZ2iUCIil1bqeci9P7ow==}
+  mongoose-common-plugin@4.0.0:
+    resolution: {integrity: sha512-UPnECmvUkGzY1F9zSl/IDDpavSVEqBGGOpALVvF3owF0UdWXUEXRKee1NeL66uaRhFqhdCdmTr+kIpLv+iB2/g==}
     engines: {node: '>=14'}
 
   mongoose-hidden@1.9.1:
@@ -28429,7 +28429,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -34437,7 +34437,7 @@ snapshots:
       snappy: 7.3.3
       socks: 2.8.7
 
-  mongoose-common-plugin@4.0.1(mongoose@6.13.8):
+  mongoose-common-plugin@4.0.0(mongoose@6.13.8):
     dependencies:
       '@ladjs/mongoose-error-messages': 1.0.0(mongoose@6.13.8)
       '@ladjs/mongoose-unique-validator': 5.0.0(mongoose@6.13.8)
@@ -41502,7 +41502,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.104.1)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)

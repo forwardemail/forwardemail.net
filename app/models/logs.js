@@ -226,14 +226,7 @@ Logs.virtual('skip_duplicate_check')
 
 Logs.plugin(mongooseCommonPlugin, {
   object: 'log',
-  locale: false,
-  //
-  // NOTE: we disable unique validator because the Logs collection is very large
-  //       and the countDocuments() query used by mongoose-unique-validator times out
-  //       MongoDB's native unique index will handle duplicate prevention via E11000 errors
-  //       (which are caught and silently ignored in helpers/logger.js)
-  //
-  uniqueValidator: false
+  locale: false
 });
 
 // index the domains array
