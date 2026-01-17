@@ -14,39 +14,89 @@ const Emails = require('#models/emails');
 const createSession = require('#helpers/create-session');
 const getMongoQuery = require('#helpers/get-mongo-query');
 
+// Index hints for envelope queries to ensure optimal index usage
+const ENVELOPE_FROM_INDEX_HINT = { 'envelope.from': 1, created_at: -1 };
+const ENVELOPE_TO_INDEX_HINT = { 'envelope.to': 1, created_at: -1 };
+
+// Maximum time for query execution (30 seconds)
+const MAX_TIME_MS = 30_000;
+
+// Cap count at 10,000 to improve performance on large collections
+const MAX_COUNT_LIMIT = 10_000;
+
+/**
+ * Determines the appropriate index hint based on the query structure
+ * @param {Object} query - MongoDB query object
+ * @returns {Object|null} - Index hint object or null if no specific hint needed
+ */
+function getIndexHint(query) {
+  if (!query || typeof query !== 'object') return null;
+
+  // Check for envelope.from query
+  if (query['envelope.from']) {
+    return ENVELOPE_FROM_INDEX_HINT;
+  }
+
+  // Check for envelope.to query
+  if (query['envelope.to']) {
+    return ENVELOPE_TO_INDEX_HINT;
+  }
+
+  return null;
+}
+
 async function list(ctx) {
   const query = getMongoQuery(ctx);
 
-  // TODO: $query should be filtered for partial indices only
+  // Determine if we should use an index hint for envelope queries
+  const indexHint = getIndexHint(query);
 
-  const [emails, itemCount] = await Promise.all([
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    Emails.find(query)
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
-      .select('-message -headers -accepted -rejectedErrors')
-      .lean()
-      .exec(),
-    _.isEmpty(query)
-      ? Emails.estimatedDocumentCount()
-      : Emails.countDocuments(query)
-  ]);
+  // Build the find query with optimizations
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  let findQuery = Emails.find(query)
+    .limit(ctx.query.limit)
+    .skip(ctx.paginate.skip)
+    .sort(ctx.query.sort || '-created_at')
+    .select('-message -headers -accepted -rejectedErrors')
+    .lean()
+    .maxTimeMS(MAX_TIME_MS);
 
-  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+  // Apply index hint if available for envelope queries
+  if (indexHint) {
+    findQuery = findQuery.hint(indexHint);
+  }
+
+  // Build the count query with optimizations
+  let countQuery;
+  if (_.isEmpty(query)) {
+    // Use estimatedDocumentCount for empty queries (much faster)
+    countQuery = Emails.estimatedDocumentCount();
+  } else {
+    // Use countDocuments with maxTimeMS and optional hint
+    countQuery = Emails.countDocuments(query).maxTimeMS(MAX_TIME_MS);
+    if (indexHint) {
+      countQuery = countQuery.hint(indexHint);
+    }
+  }
+
+  const [emails, itemCount] = await Promise.all([findQuery.exec(), countQuery]);
+
+  // Cap the item count to prevent UI issues with very large result sets
+  const cappedItemCount = Math.min(itemCount, MAX_COUNT_LIMIT);
+  const pageCount = Math.ceil(cappedItemCount / ctx.query.limit);
 
   if (ctx.accepts('html'))
     return ctx.render('admin/emails', {
       emails,
       pageCount,
-      itemCount,
+      itemCount: cappedItemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   const table = await ctx.render('admin/emails/_table', {
     emails,
     pageCount,
-    itemCount,
+    itemCount: cappedItemCount,
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   });
 
