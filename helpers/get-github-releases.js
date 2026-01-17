@@ -9,13 +9,16 @@ require('#helpers/polyfill-towellformed');
 const ms = require('ms');
 const undici = require('undici');
 
+const env = require('#config/env');
 const logger = require('#helpers/logger');
 
 // Redis cache key for GitHub releases
 const CACHE_KEY = 'event_feed:github_releases';
 
 // Cache duration - 6 hours to match X posts and reduce API calls
-const CACHE_DURATION = ms('6h');
+const CACHE_DURATION = env.X_API_CACHE_DURATION
+  ? ms(env.X_API_CACHE_DURATION)
+  : ms('6h');
 const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
 
 // GitHub API base URL
