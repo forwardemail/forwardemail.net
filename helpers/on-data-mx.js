@@ -760,20 +760,21 @@ async function checkBounceForSpam(bounce, headers, session) {
       // return early if it was not a spam bounce
       if (bounce.err.bounceInfo.category !== 'spam') return;
 
-      if (isAttributeAllowlisted && count >= 10) {
-        const err = new TypeError(
-          `${config.views.locals.emoji(
-            'canned_food'
-          )} ${config.views.locals.emoji(
-            'rotating_light'
-          )} ${attr} was allowlisted and sent 10+ spam`
-        );
-        err.bounce = bounce;
-        err.session = session;
-        err.isCodeBug = true;
-        err.headers = headers;
-        logger.fatal(err);
-      } else if (!isAttributeAllowlisted) {
+      // if (isAttributeAllowlisted && count >= 10) {
+      //   const err = new TypeError(
+      //     `${config.views.locals.emoji(
+      //       'canned_food'
+      //     )} ${config.views.locals.emoji(
+      //       'rotating_light'
+      //     )} ${attr} was allowlisted and sent 10+ spam`
+      //   );
+      //   err.bounce = bounce;
+      //   err.session = session;
+      //   err.isCodeBug = true;
+      //   err.headers = headers;
+      //   logger.fatal(err);
+      // } else if (!isAttributeAllowlisted) {
+      if (!isAttributeAllowlisted) {
         let shouldDenylist = false;
         if (isEmail(attr) && count >= 5) {
           shouldDenylist = true;
