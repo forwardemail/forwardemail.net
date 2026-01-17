@@ -56,7 +56,7 @@ graceful.listen();
       created_at: {
         $gte: oneWeekAgo
       },
-      status: { $ne: 'scheduled' }
+      status: { $in: ['queued', 'pending'] }
     })
       .select('_id user created_at date status')
       .lean()

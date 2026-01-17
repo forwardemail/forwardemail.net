@@ -43,10 +43,9 @@ async function listEmails(ctx, next) {
       throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
     if (!alias.user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
-    const smtpUserId = ctx.state.user.alias_user_id;
-    count = await ctx.client.zcard(
-      `${config.smtpLimitNamespace}:${smtpUserId}`
-    );
+    // Rate limiting is per-user, not per-alias - use the user's ID
+    const userId = alias.user.id;
+    count = await ctx.client.zcard(`${config.smtpLimitNamespace}:${userId}`);
 
     ctx.state.dailySMTPLimit =
       alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
@@ -186,6 +185,13 @@ async function listEmails(ctx, next) {
     }
   }
 
+  // Determine sort field
+  const sortField = isSANB(ctx.query.sort)
+    ? ctx.query.sort
+    : ctx.api
+    ? 'created_at'
+    : '-created_at';
+
   // For search queries: fetch emails and do comprehensive search in memory
   if (isSANB(ctx.query.q)) {
     const searchQuery = ctx.query.q.trim();
@@ -197,12 +203,6 @@ async function listEmails(ctx, next) {
     // Validate searchQueryObj is not empty
     if (!searchQueryObj || Object.keys(searchQueryObj).length === 0) {
       throw Boom.badRequest('Invalid search query');
-    }
-
-    // Determine sort field
-    let sortField = ctx.api ? 'created_at' : '-created_at';
-    if (isSANB(ctx.query.sort)) {
-      sortField = ctx.query.sort;
     }
 
     // Fetch up to MAX_COUNT_LIMIT emails matching user's aliases/domains
@@ -297,11 +297,6 @@ async function listEmails(ctx, next) {
     ctx.state.itemCount = filteredEmails.length;
   } else {
     // No search: use the fast .find() approach
-    let sortField = ctx.api ? 'created_at' : '-created_at';
-    if (isSANB(ctx.query.sort)) {
-      sortField = ctx.query.sort;
-    }
-
     const [emails, itemCount] = await Promise.all([
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Emails.find(query)

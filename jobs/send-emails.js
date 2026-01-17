@@ -330,7 +330,7 @@ async function sendEmails() {
   const query = {
     _id: { $nin: recentlyBlockedIds },
     is_locked: false,
-    status: { $in: ['queued', 'scheduled'] },
+    status: 'queued',
     domain: {
       $nin: suspendedDomainIds
     },

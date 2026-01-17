@@ -88,26 +88,34 @@ async function retrieve(ctx) {
 
 async function limit(ctx) {
   const isAliasAuth = Boolean(ctx.state?.session?.db);
-  let userId = ctx.state.user.id;
-  let smtpLimit =
-    ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
 
+  // For alias auth, we need to look up the actual user to get their ID and limits
+  // Rate limiting is always per-user, not per-alias
   if (isAliasAuth) {
-    userId = ctx.state.user.alias_user_id;
-    const user = await Users.findById(userId)
+    const user = await Users.findById(ctx.state.user.alias_user_id)
       .select(`id ${config.userFields.smtpLimit}`)
       .lean()
       .exec();
     if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
-    smtpLimit = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+    const count = await ctx.client.zcard(
+      `${config.smtpLimitNamespace}:${user.id}`
+    );
+    ctx.body = {
+      count,
+      limit: user[config.userFields.smtpLimit] || config.smtpLimitMessages
+    };
+    return;
   }
 
+  // Standard user auth - use ctx.state.user directly
   const count = await ctx.client.zcard(
-    `${config.smtpLimitNamespace}:${userId}`
+    `${config.smtpLimitNamespace}:${ctx.state.user.id}`
   );
   ctx.body = {
     count,
-    limit: smtpLimit
+    limit:
+      ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages
   };
 }
 
