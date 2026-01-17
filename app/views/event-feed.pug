@@ -278,9 +278,11 @@ block body
               class=event.type === "incident" ? (event.status === "resolved" ? "border-success" : "border-danger") : event.type === "release" ? "border-info" : ""
             )
               .card-body
-                .d-flex.align-items-start
+                .d-flex.flex-column.flex-md-row.align-items-start
                   //- Event type icon
-                  .mr-3.text-center(style="min-width: 50px")
+                  .mb-3.mb-md-0.mr-md-3.text-center.align-self-center.align-self-md-start(
+                    style="min-width: 50px"
+                  )
                     if event.type === "xpost"
                       .rounded-circle.bg-dark.text-white.d-flex.align-items-center.justify-content-center(
                         style="width: 50px; height: 50px"
@@ -306,9 +308,9 @@ block body
                         i.fa.fa-file-alt.fa-lg
 
                   //- Event content
-                  .flex-grow-1
+                  .flex-grow-1.w-100.overflow-hidden
                     //- Category badge and date
-                    .d-flex.justify-content-between.align-items-center.mb-2
+                    .d-flex.flex-column.flex-sm-row.justify-content-sm-between.align-items-sm-center.mb-2
                       .d-flex.align-items-center
                         span.badge.mr-2(
                           class=event.type === "xpost" ? "badge-dark" : event.type === "incident" ? (event.status === "resolved" ? "badge-success" : "badge-danger") : event.type === "release" ? "badge-info" : "badge-primary"
@@ -317,7 +319,7 @@ block body
                           span.badge.badge-warning= t("Pre-release")
                         if event.type === "release" && event.tagName
                           span.badge.badge-secondary= event.tagName
-                      .small.text-muted
+                      .small.text-muted.mt-1.mt-sm-0
                         .dayjs(
                           data-time=event.date.getTime(),
                           data-time-style="long"
@@ -328,7 +330,7 @@ block body
                             = dayjs(event.date).format("MMM D, YYYY h:mm A")
 
                     //- Title
-                    h5.card-title.mb-2
+                    h5.card-title.mb-2.text-break
                       a.text-decoration-none(
                         href=event.link,
                         target=event.type === "xpost" || event.type === "incident" || event.type === "release" ? "_blank" : "_self",
@@ -338,7 +340,7 @@ block body
                     //- Description
                     if event.type === "xpost"
                       //- X post with special formatting
-                      p.card-text.text-pre-wrap.mb-2= event.description
+                      p.card-text.text-pre-wrap.text-break.mb-2= event.description
                       //- Media thumbnails
                       if event.media && event.media.length > 0
                         .d-flex.flex-wrap.mb-2
@@ -400,25 +402,25 @@ block body
 
                     else if event.type === "release"
                       //- GitHub release
-                      p.card-text.mb-2= event.description
+                      p.card-text.text-break.mb-2= event.description
                       //- Download links
-                      .small.mt-2
+                      .small.mt-2.d-flex.flex-wrap.align-items-center
                         if event.author
-                          span.mr-3
+                          span.mr-3.mb-1
                             i.fa.fa-user.mr-1
                             a(
                               href=event.author.htmlUrl,
                               target="_blank",
                               rel="noopener noreferrer"
                             )= event.author.login
-                        a.mr-3(
+                        a.mr-3.mb-1(
                           href=event.zipballUrl,
                           target="_blank",
                           rel="noopener noreferrer"
                         )
                           i.fa.fa-download.mr-1
                           = t("Source (zip)")
-                        a(
+                        a.mb-1(
                           href=event.tarballUrl,
                           target="_blank",
                           rel="noopener noreferrer"
@@ -444,7 +446,7 @@ block body
 
                   //- External link indicator
                   if event.type === "xpost" || event.type === "incident" || event.type === "release"
-                    .ml-2
+                    .ml-md-2.mt-2.mt-md-0.align-self-center.align-self-md-start
                       a.text-muted(
                         href=event.link,
                         target="_blank",
