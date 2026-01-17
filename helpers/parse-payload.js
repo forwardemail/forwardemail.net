@@ -719,7 +719,7 @@ async function parsePayload(data, ws) {
                 await Aliases.isOverQuota(alias, 0, this.client);
 
               if (isOverQuota) {
-                const err = new TypeError(
+                const err = new Error(
                   `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
@@ -741,7 +741,7 @@ async function parsePayload(data, ws) {
               const exceedsQuota = storageUsed + byteLength > maxQuotaPerAlias;
 
               if (exceedsQuota) {
-                const err = new TypeError(
+                const err = new Error(
                   `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
@@ -798,7 +798,6 @@ async function parsePayload(data, ws) {
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
-                      err.isCodeBug = true;
                       err.payload = payload;
                       throw err;
                     }
@@ -817,7 +816,6 @@ async function parsePayload(data, ws) {
                           )} from ${count} messages`,
                           { responseCode: 421 }
                         );
-                        err.isCodeBug = true;
                         err.payload = payload;
                         throw err;
                       }
@@ -829,7 +827,6 @@ async function parsePayload(data, ws) {
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
-                      err.isCodeBug = true;
                       err.payload = payload;
                       throw err;
                     }
@@ -842,7 +839,6 @@ async function parsePayload(data, ws) {
                     )} from ${count} messages`,
                     { responseCode: 421 }
                   );
-                  err.isCodeBug = true;
                   err.payload = payload;
                   throw err;
                 }
@@ -868,7 +864,6 @@ async function parsePayload(data, ws) {
                       responseCode: 421
                     }
                   );
-                  err.isCodeBug = true;
                   err.payload = payload;
                   throw err;
                 }
@@ -944,7 +939,6 @@ async function parsePayload(data, ws) {
                       byteLength
                     );
                   } catch (err) {
-                    err.isCodeBug = true;
                     err.payload = _.omit(payload, 'raw');
                     logger.fatal(err);
                   }
