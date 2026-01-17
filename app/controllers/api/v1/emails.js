@@ -98,7 +98,8 @@ async function limit(ctx) {
       .select(`id ${config.userFields.smtpLimit}`)
       .lean()
       .exec();
-    smtpLimit = user?.[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+    smtpLimit = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
   }
 
   const count = await ctx.client.zcard(

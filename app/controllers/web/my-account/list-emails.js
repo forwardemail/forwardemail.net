@@ -41,6 +41,7 @@ async function listEmails(ctx, next) {
     if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
     if (!alias.domain)
       throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+    if (!alias.user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
     const smtpUserId = ctx.state.user.alias_user_id;
     count = await ctx.client.zcard(
@@ -48,7 +49,7 @@ async function listEmails(ctx, next) {
     );
 
     ctx.state.dailySMTPLimit =
-      alias.user?.[config.userFields.smtpLimit] || config.smtpLimitMessages;
+      alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
     ctx.state.dailySMTPMessages = count;
     ctx.state.domains = [alias.domain];
     ctx.state.domain = alias.domain;

@@ -115,8 +115,6 @@ async function fixCalDAVHref(instance, session) {
         .run(restoreEventsSql.values);
       stats.eventsRestored = restoreResult?.changes || 0;
     }
-
-    console.log('restored events', session.user.username, stats.eventsRestored);
   } catch (err) {
     err.isCodeBug = true;
     logger.error(err, { session });

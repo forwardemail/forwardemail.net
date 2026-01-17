@@ -691,7 +691,7 @@ Emails.pre('save', function (next) {
       this.created_at.getTime() + MAX_DAYS_IN_ADVANCE_TO_MS
     )
       throw Boom.badRequest(
-        'Date header must not be more than 30 days in the future.'
+        `Date header must not be more than ${HUMAN_MAX_DAYS_IN_ADVANCE} in the future.`
       );
 
     next();

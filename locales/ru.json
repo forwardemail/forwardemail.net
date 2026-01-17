@@ -13633,5 +13633,12 @@
   "email service comparison": "email service comparison",
   "email provider review": "email provider review",
   "secure email service": "secure email service",
-  "Blog": "Blog"
+  "Blog": "Blog",
+  "Archive folder must be a non-empty string or null.": "Archive folder must be a non-empty string or null.",
+  "Sent folder must be a non-empty string or null.": "Sent folder must be a non-empty string or null.",
+  "Drafts folder must be a non-empty string or null.": "Drafts folder must be a non-empty string or null.",
+  "Alias defaults must be provided as an object.": "Alias defaults must be provided as an object.",
+  "Error: alias defaults must be provided as an object.": "Error: alias defaults must be provided as an object.",
+  "Label keyword must follow IMAP atom rules (letters, numbers, underscores, hyphens, dots).": "Label keyword must follow IMAP atom rules (letters, numbers, underscores, hyphens, dots).",
+  "Error: label keyword must follow imap atom rules (letters, numbers, underscores, hyphens, dots).": "Error: label keyword must follow imap atom rules (letters, numbers, underscores, hyphens, dots)."
 }

@@ -80,6 +80,8 @@ async function updateAliasSettingsForContext(ctx, body) {
     .exec();
   if (!alias)
     throw Boom.unauthorized(ctx.translateError('SETTINGS_INVALID_ALIAS_ID'));
+  if (!alias.domain)
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   const updates = {};
   if (body?.settings && _.isPlainObject(body.settings)) {
@@ -144,6 +146,9 @@ async function retrieve(ctx) {
       .exec();
 
     if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
+    if (!alias.domain)
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+    if (!alias.user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
     ctx.body = serializeAliasResponse(alias, ctx);
   } else {
