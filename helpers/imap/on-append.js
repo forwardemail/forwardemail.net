@@ -22,7 +22,7 @@ const mongoose = require('mongoose');
 // const splitLines = require('split-lines');
 const {
   IMAPConnection
-} = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 // const { convert } = require('html-to-text');
 const { readKey } = require('openpgp');
 

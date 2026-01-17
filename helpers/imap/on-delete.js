@@ -13,7 +13,7 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-// const imapTools = require('@zone-eu/wildduck/imap-core/lib/imap-tools');
+// const imapTools = require('@forwardemail/wildduck/imap-core/lib/imap-tools');
 const pify = require('pify');
 
 const onMove = require('./on-move');

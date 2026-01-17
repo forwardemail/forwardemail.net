@@ -16,7 +16,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('@forwardemail/bytes');
 const mongoose = require('mongoose');
@@ -24,7 +24,7 @@ const pRetry = require('p-retry');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const ms = require('ms');
-const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
+const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');

@@ -15,7 +15,7 @@
 
 const Boom = require('@hapi/boom');
 const openpgp = require('openpgp');
-const tools = require('@zone-eu/wildduck/lib/tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 
 const i18n = require('#helpers/i18n');
 

@@ -13,12 +13,12 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const imapTools = require('@zone-eu/wildduck/imap-core/lib/imap-tools');
-const tools = require('@zone-eu/wildduck/lib/tools');
+const imapTools = require('@forwardemail/wildduck/imap-core/lib/imap-tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const {
   IMAPConnection
-} = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

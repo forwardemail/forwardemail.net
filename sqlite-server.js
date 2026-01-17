@@ -11,7 +11,7 @@ const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
-const MessageHandler = require('@zone-eu/wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const Piscina = require('piscina');
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');

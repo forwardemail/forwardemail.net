@@ -13,12 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const process = require('node:process');
-
-const bytes = require('@forwardemail/bytes');
 const intoStream = require('into-stream');
 const mongoose = require('mongoose');
-const LimitedFetch = require('@zone-eu/wildduck/lib/limited-fetch');
 
 const Messages = require('#models/messages');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -80,28 +76,7 @@ async function onFetchMessage(message, session, fn) {
     )
       obj.value = intoStream(obj.value);
 
-    //
-    // Wrap the stream with LimitedFetch using skipCounter: true
-    // as recommended in https://github.com/zone-eu/wildduck/pull/946
-    // This explicitly skips rate limiting counters for custom implementations
-    //
-    const limiter = new LimitedFetch({
-      key: 'pdw:' + session.user.alias_id,
-      maxBytes: bytes(process.env.POP3_MAX_DOWNLOAD_SIZE || '1GB'),
-      skipCounter: true // explicitly skip rate limiting for Forward Email
-    });
-
-    obj.value.pipe(limiter);
-    obj.value.once('error', (err) => limiter.emit('error', err));
-
-    // ends all streams and cleans up
-    limiter.abort = () => {
-      if (typeof obj.value.abort === 'function') obj.value.abort();
-      obj.value.unpipe(limiter);
-      limiter.end();
-    };
-
-    fn(null, limiter);
+    fn(null, obj.value);
   } catch (err) {
     fn(refineAndLogError(err, session, false, this));
   }

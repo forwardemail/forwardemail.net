@@ -16,7 +16,7 @@
 const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
-const tools = require('@zone-eu/wildduck/lib/tools');
+const tools = require('@forwardemail/wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const _ = require('#helpers/lodash');
 

@@ -22,7 +22,7 @@ const pify = require('pify');
 const revHash = require('rev-hash');
 const { Builder } = require('json-sql-enhanced');
 
-const WildDuckAttachmentStorage = require('@zone-eu/wildduck/lib/attachment-storage');
+const WildDuckAttachmentStorage = require('@forwardemail/wildduck/lib/attachment-storage');
 const _ = require('#helpers/lodash');
 
 //

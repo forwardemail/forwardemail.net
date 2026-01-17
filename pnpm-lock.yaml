@@ -46,6 +46,9 @@ importers:
       '@forwardemail/whois-rdap':
         specifier: 2.0.0
         version: 2.0.0
+      '@forwardemail/wildduck':
+        specifier: 4.0.3
+        version: 4.0.3
       '@google-cloud/translate':
         specifier: 9.2.0
         version: 9.2.0
@@ -157,9 +160,6 @@ importers:
       '@zainundin/mongoose-factory':
         specifier: 1.1.1
         version: 1.1.1(@aws-sdk/credential-providers@3.971.0)(snappy@7.3.3)(socks@2.8.7)
-      '@zone-eu/wildduck':
-        specifier: 1.46.15
-        version: 1.46.15
       '@zone-eu/zone-mta':
         specifier: 3.10.11
         version: 3.10.11
@@ -2416,6 +2416,10 @@ packages:
   '@forwardemail/whois-rdap@2.0.0':
     resolution: {integrity: sha512-hdUdVLW9nmqorZ5JEm5qKbENECP2lQpMKzFM+LpWIgiw3raJ35F0rUuxxB1+bkQDytvRXsxNtqFnY0JHOrNnwg==}
     engines: {node: '>= 18'}
+
+  '@forwardemail/wildduck@4.0.3':
+    resolution: {integrity: sha512-TwGHiu0KZ+eExc3HlGPfDjEJMPBtqybFa9wfSfS7ws4rSAcEiHGlywyEjVwMRQbr9ZuE5bPgbF4vlb0HFxo0UQ==}
+    engines: {node: '>=16.0.0'}
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -5368,10 +5372,6 @@ packages:
 
   '@zone-eu/wild-plugins@1.0.5':
     resolution: {integrity: sha512-lnKZLVu3qq8b7GFuzQV9hIHQjMGaVFtQP8luFZpK+/qNZYouXGvKoCA6+64W6IjXAH4Lo6g9EP67OYDjN7vHHQ==}
-
-  '@zone-eu/wildduck@1.46.15':
-    resolution: {integrity: sha512-CpbOzMIlHhgRV39CipRV2GCyfdxK7360GyAYilbXOqI6LPaV8DKyxVe9d7nkWY1VVMmlo939KY53Ru8N+dxu2A==}
-    engines: {node: '>=16.0.0'}
 
   '@zone-eu/zone-mta@3.10.10':
     resolution: {integrity: sha512-YALg7uJotiYdcFmGnaqIaEYY1klklj1vvYZjkW1S2LgD70hldBQgPb91JBU8z9auDhcM9ISt0HrI1foQVmEktQ==}
@@ -20928,6 +20928,76 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@forwardemail/wildduck@4.0.3':
+    dependencies:
+      '@fidm/x509': 1.2.1
+      '@opensearch-project/opensearch': 3.5.1
+      '@phc/pbkdf2': 1.1.14
+      '@postalsys/vmc': 1.1.2
+      '@root/acme': 3.1.0
+      '@root/csr': 0.8.1
+      '@zone-eu/mailsplit': 5.4.8
+      '@zone-eu/mobileconfig': 2.4.3
+      '@zone-eu/seq-index': 1.1.3
+      '@zone-eu/wild-config': 1.7.3
+      '@zone-eu/wild-plugins': 1.0.5
+      '@zone-eu/zone-mta': 3.10.10
+      accesscontrol: 2.2.1
+      axios: 1.13.2
+      base32.js: 0.1.0
+      bcryptjs: 3.0.3
+      bson: 7.0.0
+      bullmq: 5.65.1
+      fido2-lib: 3.5.5
+      gelf: 2.0.1
+      generate-password: 1.7.1
+      hash-wasm: 4.12.0
+      he: 1.2.0
+      html-to-text: 9.0.5
+      http-parser-js: 0.5.10
+      humanname: 0.2.2
+      iconv-lite: 0.7.0
+      ioredfour: 1.3.0-ioredis-07
+      ioredis: 5.8.2
+      ipaddr.js: 2.3.0
+      isemail: 3.2.0
+      joi: 18.0.2
+      js-yaml: 4.1.1
+      key-fingerprint: 1.1.0
+      libbase64: 1.3.0
+      libmime: 5.3.7
+      libqp: 2.1.1
+      logic-query-parser: 0.0.5
+      mailauth: 4.11.0
+      mongo-cursor-pagination: 8.1.3
+      mongodb: 4.17.2
+      mongodb-extended-json: 1.11.1
+      msgpack5: 6.0.2
+      node-forge: 1.3.3
+      node-html-parser: 7.0.1
+      nodemailer: 7.0.11
+      npmlog: 7.0.1
+      openpgp: 5.11.2
+      pem-jwk: 2.0.0
+      punycode.js: 2.3.1
+      qrcode: 1.5.4
+      restify: 11.1.0
+      restify-cors-middleware2: 2.2.1(restify@11.1.0)
+      restify-errors: 8.1.0
+      restify-logger: 2.0.1
+      restifyapigenerate: 1.2.4
+      search-string: 4.1.0
+      smtp-server: 3.16.1
+      speakeasy: 2.0.0
+      undici: 7.12.0
+      unix-crypt-td-js: 1.1.4
+      unixcrypt: 1.2.0
+      yargs: 18.0.0
+    transitivePeerDependencies:
+      - aws-crt
+      - debug
+      - supports-color
+
   '@gar/promisify@1.1.3': {}
 
   '@google-cloud/common@4.0.3(encoding@0.1.13)':
@@ -24641,76 +24711,6 @@ snapshots:
       nodemailer: 7.0.11
       npmlog: 7.0.1
       punycode.js: 2.3.1
-
-  '@zone-eu/wildduck@1.46.15':
-    dependencies:
-      '@fidm/x509': 1.2.1
-      '@opensearch-project/opensearch': 3.5.1
-      '@phc/pbkdf2': 1.1.14
-      '@postalsys/vmc': 1.1.2
-      '@root/acme': 3.1.0
-      '@root/csr': 0.8.1
-      '@zone-eu/mailsplit': 5.4.8
-      '@zone-eu/mobileconfig': 2.4.3
-      '@zone-eu/seq-index': 1.1.3
-      '@zone-eu/wild-config': 1.7.3
-      '@zone-eu/wild-plugins': 1.0.5
-      '@zone-eu/zone-mta': 3.10.10
-      accesscontrol: 2.2.1
-      axios: 1.13.2
-      base32.js: 0.1.0
-      bcryptjs: 3.0.3
-      bson: 7.0.0
-      bullmq: 5.65.1
-      fido2-lib: 3.5.5
-      gelf: 2.0.1
-      generate-password: 1.7.1
-      hash-wasm: 4.12.0
-      he: 1.2.0
-      html-to-text: 9.0.5
-      http-parser-js: 0.5.10
-      humanname: 0.2.2
-      iconv-lite: 0.7.0
-      ioredfour: 1.3.0-ioredis-07
-      ioredis: 5.8.2
-      ipaddr.js: 2.3.0
-      isemail: 3.2.0
-      joi: 18.0.2
-      js-yaml: 4.1.1
-      key-fingerprint: 1.1.0
-      libbase64: 1.3.0
-      libmime: 5.3.7
-      libqp: 2.1.1
-      logic-query-parser: 0.0.5
-      mailauth: 4.11.0
-      mongo-cursor-pagination: 8.1.3
-      mongodb: 4.17.2
-      mongodb-extended-json: 1.11.1
-      msgpack5: 6.0.2
-      node-forge: 1.3.3
-      node-html-parser: 7.0.1
-      nodemailer: 7.0.11
-      npmlog: 7.0.1
-      openpgp: 5.11.2
-      pem-jwk: 2.0.0
-      punycode.js: 2.3.1
-      qrcode: 1.5.4
-      restify: 11.1.0
-      restify-cors-middleware2: 2.2.1(restify@11.1.0)
-      restify-errors: 8.1.0
-      restify-logger: 2.0.1
-      restifyapigenerate: 1.2.4
-      search-string: 4.1.0
-      smtp-server: 3.16.1
-      speakeasy: 2.0.0
-      undici: 7.12.0
-      unix-crypt-td-js: 1.1.4
-      unixcrypt: 1.2.0
-      yargs: 18.0.0
-    transitivePeerDependencies:
-      - aws-crt
-      - debug
-      - supports-color
 
   '@zone-eu/zone-mta@3.10.10':
     dependencies:
@@ -28429,7 +28429,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -41502,7 +41502,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.104.1)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
