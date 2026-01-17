@@ -1,0 +1,471 @@
+extends layout
+
+block body
+  .py-5.position-relative.bg-dark.bg-fixed.lazyload(
+    data-src=manifest("img/art/stars.svg")
+  )
+    .container
+      .row
+        .col-12
+          .text-center(class=isBot(ctx.get("User-Agent")) ? "" : "text-white")
+            h1= t("Event Feed")
+            p!= t("Stay up to date with %s news, X posts, releases, status incidents, and developer articles.", config.appName)
+            include _author
+
+      //- Filter buttons
+      .row.mt-4.no-search
+        .col-12.text-center
+          .btn-group.btn-group-toggle.flex-wrap(
+            role="group",
+            aria-label=t("Filter events")
+          )
+            a.btn.btn-outline-light(
+              href=l("/event-feed"),
+              class=currentFilter === "all" ? "active" : ""
+            )
+              i.fa.fa-list.mr-1
+              = t("All")
+              span.badge.badge-secondary.ml-1= allEvents.length
+            a.btn.btn-outline-light(
+              href=l("/event-feed?filter=xposts"),
+              class=currentFilter === "xposts" ? "active" : ""
+            )
+              i.fab.fa-x-twitter.mr-1
+              = t("X Posts")
+              span.badge.badge-secondary.ml-1= xPostsCount
+            a.btn.btn-outline-light(
+              href=l("/event-feed?filter=releases"),
+              class=currentFilter === "releases" ? "active" : ""
+            )
+              i.fab.fa-github.mr-1
+              = t("Releases")
+              span.badge.badge-secondary.ml-1= releasesCount
+            a.btn.btn-outline-light(
+              href=l("/event-feed?filter=incidents"),
+              class=currentFilter === "incidents" ? "active" : ""
+            )
+              i.fa.fa-exclamation-circle.mr-1
+              = t("Status")
+              span.badge.badge-secondary.ml-1= incidentsCount
+            a.btn.btn-outline-light(
+              href=l("/event-feed?filter=articles"),
+              class=currentFilter === "articles" ? "active" : ""
+            )
+              i.fa.fa-file-alt.mr-1
+              = t("Articles")
+              span.badge.badge-secondary.ml-1= articlesCount
+
+      //- Feed subscription links
+      .row.mt-3.no-search
+        .col-12.text-center
+          .small(class=isBot(ctx.get("User-Agent")) ? "" : "text-white-50")
+            span.mr-2= t("Subscribe:")
+            a.mr-2(
+              href=l("/blog/feed/rss"),
+              title=t("RSS Feed"),
+              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+            )
+              i.fa.fa-rss.mr-1
+              = "RSS"
+            a.mr-2(
+              href=l("/blog/feed/atom"),
+              title=t("Atom Feed"),
+              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+            )
+              i.fa.fa-rss-square.mr-1
+              = "Atom"
+            a.mr-2(
+              href=l("/blog/feed/json"),
+              title=t("JSON Feed"),
+              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+            )
+              i.fa.fa-code.mr-1
+              = "JSON"
+            a(
+              href=l("/calendar.ics"),
+              title=t("Calendar"),
+              class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+            )
+              i.fa.fa-calendar.mr-1
+              = "iCal"
+
+      //- Add to calendar button
+      .row.mt-3.no-search
+        .col-12.text-center
+          button.btn.btn-outline-light(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-add-calendar"
+          )
+            i.fa.fa-calendar-plus.mr-2
+            = t("Add to calendar")
+
+  //- Add to Calendar Modal
+  #modal-add-calendar.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-add-calendar-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h4#modal-add-calendar-title.d-inline-block.ml-4
+            i.fa.fa-calendar-alt.mr-2
+            = t("Add to Calendar")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          //- Calendar URL copy section
+          .mb-4
+            label.font-weight-bold.mb-2(for="calendar-url")
+              i.fa.fa-link.mr-1
+              = t("Calendar URL")
+            .input-group.input-group-lg
+              input#calendar-url.form-control(
+                type="text",
+                readonly,
+                value=`${config.urls.web}/calendar.ics`
+              )
+              .input-group-append
+                button.btn.btn-primary(
+                  type="button",
+                  data-toggle="clipboard",
+                  data-clipboard-target="#calendar-url"
+                )
+                  i.fa.fa-clipboard.mr-1
+                  = t("Copy")
+
+          hr
+
+          //- Instructions for different calendar apps
+          #calendar-instructions.accordion
+            //- Apple Calendar
+            .card
+              #heading-apple.card-header.p-0
+                h5.mb-0
+                  button.btn.btn-link.btn-block.text-left.d-flex.align-items-center(
+                    type="button",
+                    data-toggle="collapse",
+                    data-target="#collapse-apple",
+                    aria-expanded="true",
+                    aria-controls="collapse-apple"
+                  )
+                    i.fab.fa-apple.fa-lg.mr-3
+                    span= t("Apple Calendar (macOS / iOS)")
+              #collapse-apple.collapse.show(
+                aria-labelledby="heading-apple",
+                data-parent="#calendar-instructions"
+              )
+                .card-body
+                  h6.font-weight-bold= t("macOS:")
+                  ol.mb-3
+                    li= t("Open Calendar app")
+                    li= t("Go to File → New Calendar Subscription...")
+                    li= t("Paste the calendar URL above")
+                    li= t("Click Subscribe")
+                    li= t("Adjust refresh frequency (recommended: Every hour)")
+                  h6.font-weight-bold= t("iOS / iPadOS:")
+                  ol.mb-0
+                    li= t("Open Settings → Calendar → Accounts")
+                    li= t("Tap Add Account → Other → Add Subscribed Calendar")
+                    li= t("Paste the calendar URL above")
+                    li= t("Tap Next and then Save")
+
+            //- Google Calendar
+            .card
+              #heading-google.card-header.p-0
+                h5.mb-0
+                  button.btn.btn-link.btn-block.text-left.collapsed.d-flex.align-items-center(
+                    type="button",
+                    data-toggle="collapse",
+                    data-target="#collapse-google",
+                    aria-expanded="false",
+                    aria-controls="collapse-google"
+                  )
+                    i.fab.fa-google.fa-lg.mr-3
+                    span= t("Google Calendar")
+              #collapse-google.collapse(
+                aria-labelledby="heading-google",
+                data-parent="#calendar-instructions"
+              )
+                .card-body
+                  ol.mb-0
+                    li= t("Open Google Calendar in your browser")
+                    li
+                      = t('Click the + next to "Other calendars" in the left sidebar')
+                    li= t('Select "From URL"')
+                    li= t("Paste the calendar URL above")
+                    li= t('Click "Add calendar"')
+                  .alert.alert-info.small.mt-3.mb-0
+                    i.fa.fa-info-circle.mr-1
+                    = t("Note: Google Calendar may take up to 24 hours to refresh external calendars.")
+
+            //- Microsoft Outlook
+            .card
+              #heading-outlook.card-header.p-0
+                h5.mb-0
+                  button.btn.btn-link.btn-block.text-left.collapsed.d-flex.align-items-center(
+                    type="button",
+                    data-toggle="collapse",
+                    data-target="#collapse-outlook",
+                    aria-expanded="false",
+                    aria-controls="collapse-outlook"
+                  )
+                    i.fab.fa-microsoft.fa-lg.mr-3
+                    span= t("Microsoft Outlook")
+              #collapse-outlook.collapse(
+                aria-labelledby="heading-outlook",
+                data-parent="#calendar-instructions"
+              )
+                .card-body
+                  h6.font-weight-bold= t("Outlook.com / Microsoft 365:")
+                  ol.mb-3
+                    li= t("Open Outlook Calendar in your browser")
+                    li= t('Click "Add calendar" in the left sidebar')
+                    li= t('Select "Subscribe from web"')
+                    li= t("Paste the calendar URL above")
+                    li= t('Give it a name and click "Import"')
+                  h6.font-weight-bold= t("Outlook Desktop (Windows):")
+                  ol.mb-0
+                    li= t("Go to File → Account Settings → Account Settings")
+                    li= t('Click the "Internet Calendars" tab')
+                    li= t('Click "New..." and paste the calendar URL')
+                    li= t('Click "Add" and then "Close"')
+
+            //- Mozilla Thunderbird
+            .card
+              #heading-thunderbird.card-header.p-0
+                h5.mb-0
+                  button.btn.btn-link.btn-block.text-left.collapsed.d-flex.align-items-center(
+                    type="button",
+                    data-toggle="collapse",
+                    data-target="#collapse-thunderbird",
+                    aria-expanded="false",
+                    aria-controls="collapse-thunderbird"
+                  )
+                    i.fa.fa-envelope.fa-lg.mr-3
+                    span= t("Mozilla Thunderbird")
+              #collapse-thunderbird.collapse(
+                aria-labelledby="heading-thunderbird",
+                data-parent="#calendar-instructions"
+              )
+                .card-body
+                  ol.mb-0
+                    li= t("Open Thunderbird and go to the Calendar tab")
+                    li= t('Right-click in the calendar list and select "New Calendar..."')
+                    li= t('Select "On the Network" and click Next')
+                    li= t('Select "iCalendar (ICS)" format')
+                    li= t("Paste the calendar URL above")
+                    li= t("Give it a name and click Next, then Finish")
+
+        .modal-footer
+          a.btn.btn-outline-secondary(
+            href=l("/calendar.ics"),
+            download="forwardemail-events.ics"
+          )
+            i.fa.fa-download.mr-1
+            = t("Download .ics file")
+          button.btn.btn-secondary(type="button", data-dismiss="modal")= t("Close")
+
+  //- Events list
+  .container.py-5
+    if events && events.length > 0
+      .row
+        each event, index in events
+          .col-12.mb-4
+            .card.shadow-sm.h-100(
+              class=event.type === "incident" ? (event.status === "resolved" ? "border-success" : "border-danger") : event.type === "release" ? "border-info" : ""
+            )
+              .card-body
+                .d-flex.align-items-start
+                  //- Event type icon
+                  .mr-3.text-center(style="min-width: 50px")
+                    if event.type === "xpost"
+                      .rounded-circle.bg-dark.text-white.d-flex.align-items-center.justify-content-center(
+                        style="width: 50px; height: 50px"
+                      )
+                        i.fab.fa-x-twitter.fa-lg
+                    else if event.type === "incident"
+                      .rounded-circle.d-flex.align-items-center.justify-content-center(
+                        style="width: 50px; height: 50px",
+                        class=event.status === "resolved" ? "bg-success text-white" : "bg-danger text-white"
+                      )
+                        i.fa.fa-lg(
+                          class=event.status === "resolved" ? "fa-check" : "fa-exclamation"
+                        )
+                    else if event.type === "release"
+                      .rounded-circle.bg-info.text-white.d-flex.align-items-center.justify-content-center(
+                        style="width: 50px; height: 50px"
+                      )
+                        i.fab.fa-github.fa-lg
+                    else
+                      .rounded-circle.bg-primary.text-white.d-flex.align-items-center.justify-content-center(
+                        style="width: 50px; height: 50px"
+                      )
+                        i.fa.fa-file-alt.fa-lg
+
+                  //- Event content
+                  .flex-grow-1
+                    //- Category badge and date
+                    .d-flex.justify-content-between.align-items-center.mb-2
+                      .d-flex.align-items-center
+                        span.badge.mr-2(
+                          class=event.type === "xpost" ? "badge-dark" : event.type === "incident" ? (event.status === "resolved" ? "badge-success" : "badge-danger") : event.type === "release" ? "badge-info" : "badge-primary"
+                        )= event.category
+                        if event.type === "release" && event.prerelease
+                          span.badge.badge-warning= t("Pre-release")
+                        if event.type === "release" && event.tagName
+                          span.badge.badge-secondary= event.tagName
+                      .small.text-muted
+                        .dayjs(
+                          data-time=event.date.getTime(),
+                          data-time-style="long"
+                        )
+                          if user
+                            = dayjs(event.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("MMM D, YYYY h:mm A z")
+                          else
+                            = dayjs(event.date).format("MMM D, YYYY h:mm A")
+
+                    //- Title
+                    h5.card-title.mb-2
+                      a.text-decoration-none(
+                        href=event.link,
+                        target=event.type === "xpost" || event.type === "incident" || event.type === "release" ? "_blank" : "_self",
+                        rel=event.type === "xpost" || event.type === "incident" || event.type === "release" ? "noopener noreferrer" : false
+                      )!= event.title
+
+                    //- Description
+                    if event.type === "xpost"
+                      //- X post with special formatting
+                      p.card-text.text-pre-wrap.mb-2= event.description
+                      //- Media thumbnails
+                      if event.media && event.media.length > 0
+                        .d-flex.flex-wrap.mb-2
+                          each media in event.media
+                            if media.type === "photo"
+                              a.mr-2.mb-2(
+                                href=event.link,
+                                target="_blank",
+                                rel="noopener noreferrer"
+                              )
+                                img.rounded(
+                                  src=media.url,
+                                  alt=t("Post image"),
+                                  style="max-height: 150px; max-width: 200px; object-fit: cover",
+                                  loading="lazy"
+                                )
+                      //- Metrics
+                      if event.metrics
+                        .small.text-muted
+                          span.mr-3
+                            i.fa.fa-heart.mr-1
+                            = event.metrics.likes
+                          span.mr-3
+                            i.fa.fa-retweet.mr-1
+                            = event.metrics.retweets
+                          span
+                            i.fa.fa-comment.mr-1
+                            = event.metrics.replies
+
+                    else if event.type === "incident"
+                      //- Status incident
+                      p.card-text.mb-2= event.description
+                      //- Duration and status
+                      .small
+                        if event.status === "resolved" && event.closedDate
+                          span.text-success.mr-3
+                            i.fa.fa-check-circle.mr-1
+                            = t("Resolved")
+                          if event.duration
+                            span.text-muted
+                              i.fa.fa-clock.mr-1
+                              - const durationMins = Math.round(event.duration / 60000);
+                              if durationMins < 60
+                                = t("%d minutes", durationMins)
+                              else
+                                - const hours = Math.floor(durationMins / 60);
+                                - const mins = durationMins % 60;
+                                = t("%d hours %d minutes", hours, mins)
+                        else
+                          span.text-danger
+                            i.fa.fa-exclamation-circle.mr-1
+                            = t("Ongoing")
+                      //- Service labels
+                      if event.labels && event.labels.length > 0
+                        .mt-2
+                          each label in event.labels
+                            if label !== "status"
+                              span.badge.badge-secondary.mr-1= label
+
+                    else if event.type === "release"
+                      //- GitHub release
+                      p.card-text.mb-2= event.description
+                      //- Download links
+                      .small.mt-2
+                        if event.author
+                          span.mr-3
+                            i.fa.fa-user.mr-1
+                            a(
+                              href=event.author.htmlUrl,
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )= event.author.login
+                        a.mr-3(
+                          href=event.zipballUrl,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          i.fa.fa-download.mr-1
+                          = t("Source (zip)")
+                        a(
+                          href=event.tarballUrl,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          i.fa.fa-download.mr-1
+                          = t("Source (tar.gz)")
+                      //- Assets
+                      if event.assets && event.assets.length > 0
+                        .mt-2
+                          .small.text-muted.mb-1= t("Assets:")
+                          each asset in event.assets
+                            a.badge.badge-light.mr-1.mb-1(
+                              href=asset.browserDownloadUrl,
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              i.fa.fa-file.mr-1
+                              = asset.name
+
+                    else
+                      //- Developer article
+                      p.card-text.mb-2!= t(event.description)
+
+                  //- External link indicator
+                  if event.type === "xpost" || event.type === "incident" || event.type === "release"
+                    .ml-2
+                      a.text-muted(
+                        href=event.link,
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        title=t("Open in new tab")
+                      )
+                        i.fa.fa-external-link-alt
+
+    else
+      .row
+        .col-12.text-center
+          .alert.alert-info
+            i.fa.fa-info-circle.mr-2
+            = t("No events found.")
+
+  //- Load more / pagination could be added here
+  .container.pb-5
+    .row
+      .col-12.text-center
+        .small.text-muted
+          = t("Showing %d events", events.length)
+          if currentFilter !== "all"
+            = " "
+            = t("(filtered)")

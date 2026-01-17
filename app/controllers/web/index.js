@@ -43,6 +43,8 @@ const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
 const feed = require('./feed');
+const calendar = require('./calendar');
+const eventFeed = require('./event-feed');
 const unsubscribe = require('./unsubscribe');
 const _ = require('#helpers/lodash');
 
@@ -654,6 +656,8 @@ module.exports = {
   api,
   auth,
   breadcrumbs,
+  calendar,
+  eventFeed,
   encryptTxt,
   faq,
   help,

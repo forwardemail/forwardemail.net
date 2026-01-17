@@ -503,6 +503,23 @@ footer.mt-auto(aria-label=t("Footer"))
             hr.d-lg-none.w-100
             h2.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3
+              li
+                a.d-block.text-white.py-2.py-md-0(href=l("/event-feed"))
+                  = t("Event Feed")
+                  = " "
+                  if eventFeedBadgeCount && eventFeedBadgeCount > 0
+                    if eventFeedHasNew
+                      span.badge.badge-pill.badge-danger(
+                        data-toggle="tooltip",
+                        data-placement="right",
+                        title=eventFeedBadgeTooltip
+                      )= eventFeedBadgeCount
+                    else
+                      span.badge.badge-pill.badge-secondary(
+                        data-toggle="tooltip",
+                        data-placement="right",
+                        title=eventFeedBadgeTooltip
+                      )= eventFeedBadgeCount
               li: a.d-block.text-white.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/security"))= t("Security")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/privacy"))= t("Privacy")

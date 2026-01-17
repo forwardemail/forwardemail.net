@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { execSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const punycode = require('node:punycode');
@@ -584,8 +585,35 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
     continue;
   }
 
-  // get mtime for post date
-  const stats = fs.statSync(path.join(dirPath, 'index.pug'));
+  // get dates from git history for accurate article dates
+  const indexPugPath = path.join(dirPath, 'index.pug');
+  const stats = fs.statSync(indexPugPath);
+
+  // Try to get git dates, fall back to filesystem dates
+  let gitCreatedDate = stats.ctime;
+  let gitModifiedDate = stats.mtime;
+
+  try {
+    // Get the first commit date (when the file was created)
+    const firstCommitDate = execSync(
+      `git log --follow --format="%aI" --diff-filter=A -- "${indexPugPath}" 2>/dev/null | tail -1`,
+      { encoding: 'utf8', cwd: path.join(__dirname, '..') }
+    ).trim();
+    if (firstCommitDate) {
+      gitCreatedDate = new Date(firstCommitDate);
+    }
+
+    // Get the last commit date (when the file was last modified)
+    const lastCommitDate = execSync(
+      `git log -1 --format="%aI" -- "${indexPugPath}" 2>/dev/null`,
+      { encoding: 'utf8', cwd: path.join(__dirname, '..') }
+    ).trim();
+    if (lastCommitDate) {
+      gitModifiedDate = new Date(lastCommitDate);
+    }
+  } catch {
+    // Git not available or not a git repo, use filesystem dates
+  }
 
   try {
     const c = require(path.join(dirPath, 'config.js'));
@@ -606,8 +634,8 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
       continue;
     }
 
-    c.mtime = stats.mtime; // published/last updated
-    c.ctime = stats.ctime; // initially created
+    c.mtime = gitModifiedDate; // published/last updated (from git)
+    c.ctime = gitCreatedDate; // initially created (from git)
 
     developerDocs.push(c);
   } catch {

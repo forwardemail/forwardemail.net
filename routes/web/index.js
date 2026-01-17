@@ -102,6 +102,10 @@ router
   .get('/blog/feed/atom', web.feed)
   .get('/blog/feed/rss', web.feed)
   .get('/blog/feed/json', web.feed)
+  // calendar
+  .get('/calendar.ics', web.calendar)
+  // event feed
+  .get('/event-feed', web.eventFeed, render('event-feed'))
   // report URI support (not locale specific)
   .post('/report', web.report)
 
@@ -445,6 +449,10 @@ localeRouter
   .get('/blog/feed/atom', web.feed)
   .get('/blog/feed/rss', web.feed)
   .get('/blog/feed/json', web.feed)
+  // calendar
+  .get('/calendar.ics', web.calendar)
+  // event feed
+  .get('/event-feed', web.eventFeed, render('event-feed'))
   .get('/blog/docs', render('docs'))
   .get('/guides/send-mail-as-using-gmail', (ctx) => {
     ctx.status = 301;

@@ -40,6 +40,10 @@ const logger = require('#helpers/logger');
 const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 const noindexQueryStrings = require('#helpers/noindex-query-strings');
+const {
+  getRecentEventsStats,
+  buildBadgeTooltip
+} = require('#controllers/web/event-feed');
 
 const octokit = new Octokit({
   auth: env.GITHUB_OCTOKIT_TOKEN
@@ -540,6 +544,58 @@ module.exports = (redis) => ({
         if (config.env !== 'test') ctx.state.freddyCss = freddyCss;
 
         ctx.state.tti = false;
+      }
+
+      return next();
+    });
+
+    // Event feed navbar badge middleware
+    app.use(async (ctx, next) => {
+      // Skip for bots and non-HTML requests
+      if (
+        ctx.api ||
+        ctx.method !== 'GET' ||
+        !ctx.accepts('html') ||
+        isbot(ctx.get('User-Agent'))
+      ) {
+        return next();
+      }
+
+      try {
+        // Get the last visit time from session
+        const lastVisit = ctx.session?.eventFeedLastVisit
+          ? new Date(ctx.session.eventFeedLastVisit)
+          : null;
+
+        // Get recent events stats, passing Redis client for caching
+        const stats = await getRecentEventsStats(ctx.client, lastVisit);
+
+        // Show badge with new events count (red) or total events (grey)
+        ctx.state.eventFeedStats = stats;
+        if (stats.total > 0) {
+          // New events since last visit - show red badge
+          ctx.state.eventFeedBadgeCount = stats.total;
+          ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
+            stats,
+            true,
+            ctx.request.t
+          );
+          ctx.state.eventFeedHasNew = true;
+        } else {
+          // No new events - show grey badge with total count
+          ctx.state.eventFeedBadgeCount = stats.totalEvents;
+          ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
+            stats,
+            false,
+            ctx.request.t
+          );
+          ctx.state.eventFeedHasNew = false;
+        }
+      } catch (err) {
+        logger.error(err, {
+          extra: { message: 'Failed to get event feed stats' }
+        });
+        ctx.state.eventFeedBadgeCount = 0;
       }
 
       return next();

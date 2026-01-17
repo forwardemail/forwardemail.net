@@ -136,6 +136,26 @@ nav.navbar(class=navbarClasses.join(" "))
         span.m-0.align-middle.no-js.ml-2(
           class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
         )= "Forward Email"
+    //- Event Feed Badge (only for non-bots)
+    //- Red badge for new events, grey outline badge for total events when no new
+    if !isBot(ctx.get("User-Agent")) && eventFeedBadgeCount && eventFeedBadgeCount > 0
+      if eventFeedHasNew
+        a.ml-3.d-inline-block.m-0.badge.badge-danger.rounded-lg.rounded(
+          href=l("/event-feed"),
+          data-toggle="tooltip",
+          data-container="body",
+          data-placement="bottom",
+          title=eventFeedBadgeTooltip
+        )= eventFeedBadgeCount
+      //-.
+        else
+          a.ml-3.d-inline-block.m-0.badge.badge-secondary.rounded-lg.rounded(
+            href=l("/event-feed"),
+            data-toggle="tooltip",
+            data-container="body",
+            data-placement="bottom",
+            title=eventFeedBadgeTooltip
+          )= eventFeedBadgeCount
 
     - const isUbuntu = (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale);
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${punycode.toASCII(domain.name)}/billing` : false;
@@ -671,7 +691,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Company
           if !isBot(ctx.get('User-Agent'))
-            - const companyPages = ["/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
+            - const companyPages = ["/event-feed", "/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
             - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
             li.nav-item.dropdown.no-js
               form.mb-0
@@ -694,6 +714,22 @@ nav.navbar(class=navbarClasses.join(" "))
                         = t("GDPR")
                       else if companyPage === '/dpa'
                         = t("DPA")
+                      else if companyPage === '/event-feed'
+                        = t("Event Feed")
+                        = " "
+                        if eventFeedBadgeCount && eventFeedBadgeCount > 0
+                          if eventFeedHasNew
+                            span.badge.badge-pill.badge-danger.ml-1(
+                              data-toggle="tooltip",
+                              data-placement="right",
+                              title=eventFeedBadgeTooltip
+                            )= eventFeedBadgeCount
+                          else
+                            span.badge.badge-pill.badge-secondary.ml-1(
+                              data-toggle="tooltip",
+                              data-placement="right",
+                              title=eventFeedBadgeTooltip
+                            )= eventFeedBadgeCount
                       else
                         = t(titleize(humanize(companyPage.replace("/", ""))))
                   a.dropdown-item(
