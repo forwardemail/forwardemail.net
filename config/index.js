@@ -1372,7 +1372,7 @@ const config = {
     'ac.in',
     'edu.in',
     'mil.in',
-    'ac.jp',
+    // 'ac.jp',
     'ed.jp',
     'lg.jp',
     'ac.za',
