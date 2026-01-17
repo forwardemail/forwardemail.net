@@ -299,6 +299,7 @@ async function hook(err, message, meta) {
             // eslint-disable-next-line n/prefer-global/process
             process.env.NODE_ENV === 'test' &&
             (isErrorConstructorName(err, 'MongoNotConnectedError') ||
+              isErrorConstructorName(err, 'MongooseError') ||
               (isErrorConstructorName(err, 'ValidationError') &&
                 isMongoError(err)))
           ) {

@@ -88,7 +88,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-22.04
         node_version:
           - "18.20.4"
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
