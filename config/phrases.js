@@ -902,5 +902,18 @@ module.exports = {
   // Unsubscribe phrases
   INVALID_UNSUBSCRIBE_TOKEN:
     'Invalid or expired unsubscribe link. Please manage your email preferences in your account settings.',
+  // Settings validation phrases
+  SETTINGS_ALIAS_AUTH_REQUIRED: 'Alias authentication required.',
+  SETTINGS_INVALID_ALIAS_ID: 'Invalid alias ID.',
+  SETTINGS_LABEL_KEYWORD_INVALID:
+    'Label keyword must follow IMAP atom rules (letters, numbers, underscores, hyphens, dots).',
+  SETTINGS_ARCHIVE_FOLDER_INVALID:
+    'Archive folder must be a non-empty string or null.',
+  SETTINGS_SENT_FOLDER_INVALID:
+    'Sent folder must be a non-empty string or null.',
+  SETTINGS_DRAFTS_FOLDER_INVALID:
+    'Drafts folder must be a non-empty string or null.',
+  SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT:
+    'Alias defaults must be provided as an object.',
   ...STATUSES
 };

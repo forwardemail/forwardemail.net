@@ -6,6 +6,7 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
+const { boolean } = require('boolean');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
@@ -19,25 +20,62 @@ const { Domains, Emails, Aliases } = require('#models');
 const MAX_COUNT_LIMIT = 10_000;
 
 async function listEmails(ctx, next) {
-  // user must be domain admin or alias owner of the email
-  const [domains, aliases, count] = await Promise.all([
-    Domains.distinct('_id', {
-      members: {
-        $elemMatch: {
-          user: ctx.state.user._id,
-          group: 'admin'
-        }
-      }
-    }),
-    Aliases.distinct('_id', {
-      user: ctx.state.user._id
-    }),
-    ctx.client.zcard(`${config.smtpLimitNamespace}:${ctx.state.user.id}`)
-  ]);
+  const isAliasAuth = Boolean(ctx.state?.session?.db);
+  let domains = [];
+  let aliases = [];
+  let count = 0;
 
-  ctx.state.dailySMTPLimit =
-    ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-  ctx.state.dailySMTPMessages = count;
+  if (isAliasAuth) {
+    const alias = await Aliases.findById(ctx.state.user.alias_id)
+      .populate(
+        'user',
+        `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+      )
+      .populate(
+        'domain',
+        'id name plan max_quota_per_alias has_smtp has_dkim_record has_return_path_record has_dmarc_record is_global'
+      )
+      .lean()
+      .exec();
+
+    if (!alias) throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
+    if (!alias.domain)
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+    if (!alias.user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+
+    // Rate limiting is per-user, not per-alias - use the user's ID
+    const userId = alias.user.id;
+    count = await ctx.client.zcard(`${config.smtpLimitNamespace}:${userId}`);
+
+    ctx.state.dailySMTPLimit =
+      alias.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    ctx.state.dailySMTPMessages = count;
+    ctx.state.domains = [alias.domain];
+    ctx.state.domain = alias.domain;
+
+    domains = [alias.domain._id];
+    aliases = [alias._id];
+  } else {
+    // user must be domain admin or alias owner of the email
+    [domains, aliases, count] = await Promise.all([
+      Domains.distinct('_id', {
+        members: {
+          $elemMatch: {
+            user: ctx.state.user._id,
+            group: 'admin'
+          }
+        }
+      }),
+      Aliases.distinct('_id', {
+        user: ctx.state.user._id
+      }),
+      ctx.client.zcard(`${config.smtpLimitNamespace}:${ctx.state.user.id}`)
+    ]);
+
+    ctx.state.dailySMTPLimit =
+      ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+    ctx.state.dailySMTPMessages = count;
+  }
 
   // TODO: status filter
 
@@ -55,16 +93,20 @@ async function listEmails(ctx, next) {
     return;
   }
 
-  let query = {
-    $or: [
-      {
+  let query = isAliasAuth
+    ? {
         alias: { $in: aliases }
-      },
-      {
-        domain: { $in: domains }
       }
-    ]
-  };
+    : {
+        $or: [
+          {
+            alias: { $in: aliases }
+          },
+          {
+            domain: { $in: domains }
+          }
+        ]
+      };
 
   // find matching domain otherwise error if does not have access or suspended
   if (isSANB(ctx.query.domain)) {
@@ -134,6 +176,22 @@ async function listEmails(ctx, next) {
     };
   }
 
+  // Filter by is_scheduled (Boolean) - emails with future date
+  if (isSANB(ctx.query.is_scheduled)) {
+    const isScheduled = boolean(ctx.query.is_scheduled);
+    if (isScheduled) {
+      const now = new Date();
+      query.date = { $gt: now };
+    }
+  }
+
+  // Determine sort field
+  const sortField = isSANB(ctx.query.sort)
+    ? ctx.query.sort
+    : ctx.api
+    ? 'created_at'
+    : '-created_at';
+
   // For search queries: fetch emails and do comprehensive search in memory
   if (isSANB(ctx.query.q)) {
     const searchQuery = ctx.query.q.trim();
@@ -145,12 +203,6 @@ async function listEmails(ctx, next) {
     // Validate searchQueryObj is not empty
     if (!searchQueryObj || Object.keys(searchQueryObj).length === 0) {
       throw Boom.badRequest('Invalid search query');
-    }
-
-    // Determine sort field
-    let sortField = ctx.api ? 'created_at' : '-created_at';
-    if (isSANB(ctx.query.sort)) {
-      sortField = ctx.query.sort;
     }
 
     // Fetch up to MAX_COUNT_LIMIT emails matching user's aliases/domains
@@ -245,11 +297,6 @@ async function listEmails(ctx, next) {
     ctx.state.itemCount = filteredEmails.length;
   } else {
     // No search: use the fast .find() approach
-    let sortField = ctx.api ? 'created_at' : '-created_at';
-    if (isSANB(ctx.query.sort)) {
-      sortField = ctx.query.sort;
-    }
-
     const [emails, itemCount] = await Promise.all([
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Emails.find(query)
