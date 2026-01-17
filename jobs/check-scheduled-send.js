@@ -55,10 +55,9 @@ graceful.listen();
     for await (const email of Emails.find({
       created_at: {
         $gte: oneWeekAgo
-      },
-      status: { $in: ['queued', 'pending'] }
+      }
     })
-      .select('_id user created_at date status')
+      .select('_id user created_at date')
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
