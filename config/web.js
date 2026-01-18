@@ -41,7 +41,7 @@ const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 const noindexQueryStrings = require('#helpers/noindex-query-strings');
 const {
-  getRecentEventsStats,
+  getStatsForUser,
   buildBadgeTooltip
 } = require('#controllers/web/event-feed');
 
@@ -549,8 +549,44 @@ module.exports = (redis) => ({
       return next();
     });
 
-    // Event feed navbar badge middleware
-    app.use(async (ctx, next) => {
+    // Add twimg.com to CSP for event-feed page only
+    app.use((ctx, next) => {
+      if (ctx.pathWithoutLocale === '/event-feed') {
+        const csp = ctx.response.get('Content-Security-Policy');
+        if (csp) {
+          let updatedCsp = csp;
+          // Add *.twimg.com to img-src
+          updatedCsp = updatedCsp.replace(
+            /img-src ([^;]+)/,
+            'img-src $1 https://*.twimg.com'
+          );
+          // Add *.twimg.com to connect-src
+          updatedCsp = updatedCsp.replace(
+            /connect-src ([^;]+)/,
+            'connect-src $1 https://*.twimg.com'
+          );
+          // Add video-src with *.twimg.com if not present, or append to existing
+          if (updatedCsp.includes('video-src')) {
+            updatedCsp = updatedCsp.replace(
+              /video-src ([^;]+)/,
+              'video-src $1 https://*.twimg.com'
+            );
+          } else {
+            updatedCsp = updatedCsp.replace(
+              /img-src ([^;]+)/,
+              "img-src $1; video-src 'self' https://*.twimg.com"
+            );
+          }
+
+          ctx.response.set('Content-Security-Policy', updatedCsp);
+        }
+      }
+
+      return next();
+    });
+
+    // Event feed navbar badge middleware (synchronous - reads from global memory)
+    app.use((ctx, next) => {
       // Skip for bots and non-HTML requests
       if (
         ctx.api ||
@@ -561,41 +597,34 @@ module.exports = (redis) => ({
         return next();
       }
 
-      try {
-        // Get the last visit time from session
-        const lastVisit = ctx.session?.eventFeedLastVisit
-          ? new Date(ctx.session.eventFeedLastVisit)
-          : null;
+      // Get the last visit time from session
+      const lastVisit = ctx.session?.eventFeedLastVisit
+        ? new Date(ctx.session.eventFeedLastVisit)
+        : null;
 
-        // Get recent events stats, passing Redis client for caching
-        const stats = await getRecentEventsStats(ctx.client, lastVisit);
+      // Get stats synchronously from global in-memory cache based on user's lastVisit
+      const stats = getStatsForUser(lastVisit);
 
-        // Show badge with new events count (red) or total events (grey)
-        ctx.state.eventFeedStats = stats;
-        if (stats.total > 0) {
-          // New events since last visit - show red badge
-          ctx.state.eventFeedBadgeCount = stats.total;
-          ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
-            stats,
-            true,
-            ctx.request.t
-          );
-          ctx.state.eventFeedHasNew = true;
-        } else {
-          // No new events - show grey badge with total count
-          ctx.state.eventFeedBadgeCount = stats.totalEvents;
-          ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
-            stats,
-            false,
-            ctx.request.t
-          );
-          ctx.state.eventFeedHasNew = false;
-        }
-      } catch (err) {
-        logger.error(err, {
-          extra: { message: 'Failed to get event feed stats' }
-        });
-        ctx.state.eventFeedBadgeCount = 0;
+      // Show badge with new events count (red) or total events (grey)
+      ctx.state.eventFeedStats = stats;
+      if (stats.total > 0) {
+        // New events since last visit - show red badge
+        ctx.state.eventFeedBadgeCount = stats.total;
+        ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
+          stats,
+          true,
+          ctx.request.t
+        );
+        ctx.state.eventFeedHasNew = true;
+      } else {
+        // No new events - show grey badge with total count
+        ctx.state.eventFeedBadgeCount = stats.totalEvents;
+        ctx.state.eventFeedBadgeTooltip = buildBadgeTooltip(
+          stats,
+          false,
+          ctx.request.t
+        );
+        ctx.state.eventFeedHasNew = false;
       }
 
       return next();

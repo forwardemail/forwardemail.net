@@ -21,6 +21,19 @@ const CACHE_DURATION = ms('5m'); // Cache for 5 minutes
 // Time window for "recent" events (72 hours)
 const RECENT_WINDOW = ms('72h');
 
+// Global in-memory cached stats (refreshed by setInterval)
+let cachedStats = {
+  total: 0,
+  totalEvents: 0,
+  xPosts: 0,
+  releases: 0,
+  incidents: 0,
+  articles: 0
+};
+
+// Global in-memory cached events (refreshed by setInterval)
+let cachedEvents = [];
+
 /**
  * Get all events (X posts, status incidents, developer docs, GitHub releases) sorted by date
  * @param {Object} client - Redis client for caching (optional)
@@ -262,79 +275,155 @@ function buildBadgeTooltip(stats, isNew, t) {
 }
 
 /**
- * Event Feed page controller
+ * Event Feed page controller (synchronous - reads from global memory)
  */
-async function eventFeed(ctx, next) {
-  try {
-    // Pass Redis client for caching
-    const events = await getAllEvents(ctx.client);
+function eventFeed(ctx, next) {
+  // Get events synchronously from global in-memory cache (no async, no blocking)
+  const events = getCachedEvents();
 
-    // Group events by type for filtering
-    const xPosts = events.filter((e) => e.type === 'xpost');
-    const incidents = events.filter((e) => e.type === 'incident');
-    const articles = events.filter((e) => e.type === 'article');
-    const releases = events.filter((e) => e.type === 'release');
+  // Group events by type for filtering
+  const xPosts = events.filter((e) => e.type === 'xpost');
+  const incidents = events.filter((e) => e.type === 'incident');
+  const articles = events.filter((e) => e.type === 'article');
+  const releases = events.filter((e) => e.type === 'release');
 
-    // Get filter from query string
-    const filter = ctx.query.filter || 'all';
+  // Get filter from query string
+  const filter = ctx.query.filter || 'all';
 
-    let filteredEvents = events;
-    switch (filter) {
-      case 'xposts': {
-        filteredEvents = xPosts;
+  let filteredEvents = events;
+  switch (filter) {
+    case 'xposts': {
+      filteredEvents = xPosts;
 
-        break;
-      }
-
-      case 'incidents': {
-        filteredEvents = incidents;
-
-        break;
-      }
-
-      case 'articles': {
-        filteredEvents = articles;
-
-        break;
-      }
-
-      case 'releases': {
-        filteredEvents = releases;
-
-        break;
-      }
-      // No default
+      break;
     }
 
-    // Update session to mark that user has viewed the event feed
-    // This is used to determine whether to show the navbar badge
-    if (ctx.session) {
-      ctx.session.eventFeedLastVisit = new Date().toISOString();
+    case 'incidents': {
+      filteredEvents = incidents;
+
+      break;
     }
 
-    ctx.state.events = filteredEvents;
-    ctx.state.allEvents = events;
-    ctx.state.xPostsCount = xPosts.length;
-    ctx.state.incidentsCount = incidents.length;
-    ctx.state.articlesCount = articles.length;
-    ctx.state.releasesCount = releases.length;
-    ctx.state.currentFilter = filter;
+    case 'articles': {
+      filteredEvents = articles;
 
-    // Set page metadata
-    ctx.state.meta = {
-      title: `Event Feed - ${config.appName}`,
-      description: `Stay up to date with ${config.appName} news, X posts, status incidents, releases, and developer articles.`
-    };
+      break;
+    }
 
-    return next();
-  } catch (err) {
-    logger.error(err, { extra: { message: 'Failed to load event feed' } });
-    ctx.throw(500, ctx.translateError('UNKNOWN_ERROR'));
+    case 'releases': {
+      filteredEvents = releases;
+
+      break;
+    }
+    // No default
   }
+
+  // Update session to mark that user has viewed the event feed
+  // This is used to determine whether to show the navbar badge
+  if (ctx.session) {
+    ctx.session.eventFeedLastVisit = new Date().toISOString();
+  }
+
+  ctx.state.events = filteredEvents;
+  ctx.state.allEvents = events;
+  ctx.state.xPostsCount = xPosts.length;
+  ctx.state.incidentsCount = incidents.length;
+  ctx.state.articlesCount = articles.length;
+  ctx.state.releasesCount = releases.length;
+  ctx.state.currentFilter = filter;
+
+  // Set page metadata
+  ctx.state.meta = {
+    title: `Event Feed - ${config.appName}`,
+    description: `Stay up to date with ${config.appName} news, X posts, status incidents, releases, and developer articles.`
+  };
+
+  return next();
+}
+
+/**
+ * Get cached stats synchronously from global memory
+ * @returns {Object} - Cached stats object
+ */
+function getCachedStats() {
+  return cachedStats;
+}
+
+/**
+ * Get cached events synchronously from global memory
+ * @returns {Array} - Cached events array
+ */
+function getCachedEvents() {
+  return cachedEvents;
+}
+
+/**
+ * Get stats for a specific user based on their lastVisit timestamp
+ * Calculates new events since the user's last visit synchronously from cached events
+ * @param {Date|null} lastVisit - User's last visit timestamp
+ * @returns {Object} - Stats object with counts since lastVisit
+ */
+function getStatsForUser(lastVisit) {
+  const events = cachedEvents;
+  const now = Date.now();
+  const cutoffDate = lastVisit || new Date(now - RECENT_WINDOW);
+
+  // Filter events that are newer than the cutoff date
+  const recentEvents = events.filter((e) => e.date > cutoffDate);
+
+  return {
+    total: recentEvents.length,
+    totalEvents: events.length,
+    xPosts: recentEvents.filter((e) => e.type === 'xpost').length,
+    releases: recentEvents.filter((e) => e.type === 'release').length,
+    incidents: recentEvents.filter((e) => e.type === 'incident').length,
+    articles: recentEvents.filter((e) => e.type === 'article').length
+  };
+}
+
+/**
+ * Refresh the global cached stats and events (called by setInterval)
+ */
+async function refreshCachedStats() {
+  try {
+    // Use in-memory cache (no Redis client needed for background refresh)
+    const events = await getAllEvents(null);
+    const now = Date.now();
+    const cutoffDate = new Date(now - RECENT_WINDOW);
+
+    const recentEvents = events.filter((e) => e.date > cutoffDate);
+
+    // Update cached events
+    cachedEvents = events;
+
+    // Update cached stats
+    cachedStats = {
+      total: recentEvents.length,
+      totalEvents: events.length,
+      xPosts: recentEvents.filter((e) => e.type === 'xpost').length,
+      releases: recentEvents.filter((e) => e.type === 'release').length,
+      incidents: recentEvents.filter((e) => e.type === 'incident').length,
+      articles: recentEvents.filter((e) => e.type === 'article').length
+    };
+  } catch (err) {
+    logger.debug('Failed to refresh cached stats', {
+      extra: { message: err.message }
+    });
+  }
+}
+
+// Refresh stats immediately on module load and then every 5 minutes
+if (config.env !== 'test') {
+  refreshCachedStats();
+  setInterval(refreshCachedStats, CACHE_DURATION);
 }
 
 module.exports = eventFeed;
 module.exports.getAllEvents = getAllEvents;
 module.exports.getRecentEventsStats = getRecentEventsStats;
+module.exports.getCachedStats = getCachedStats;
+module.exports.getCachedEvents = getCachedEvents;
+module.exports.getStatsForUser = getStatsForUser;
+module.exports.refreshCachedStats = refreshCachedStats;
 module.exports.buildBadgeTooltip = buildBadgeTooltip;
 module.exports.RECENT_WINDOW = RECENT_WINDOW;
