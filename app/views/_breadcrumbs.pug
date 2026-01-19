@@ -40,6 +40,16 @@ if breadcrumbs.length > 1
             if domain.group === 'admin'
               li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
+                  href=domain.plan === "free" ? "#" : l(`/my-account/dmarc-reports?domains=${domain.name}`),
+                  role=domain.plan === "free" ? "button" : false,
+                  data-target=domain.plan === "free" ? "#modal-upgrade-analytics" : false,
+                  data-toggle=domain.plan === "free" ? "modal" : false
+                )
+                  i.fa.fa-fw.fa-shield-alt
+                  = " "
+                  = t("DMARC Reports")
+              li.list-inline-item.mb-1
+                a.btn.btn-sm.btn-outline-dark(
                   href=domain.plan === "free" ? "#" : l(`/my-account/analytics?domains=${domain.name}`),
                   role=domain.plan === "free" ? "button" : false,
                   data-target=domain.plan === "free" ? "#modal-upgrade-analytics" : false,
@@ -306,6 +316,22 @@ if breadcrumbs.length > 1
                       = " "
                       i.fa.fas.fa-plus-circle
                 if domains.length > 0 || isSANB(ctx.query.q)
+                  li.list-inline-item.mb-1
+                    if user.plan === 'free'
+                      button.btn.btn-dark(
+                        type="button",
+                        data-target="#modal-upgrade-analytics",
+                        data-toggle="modal"
+                      )
+                        i.fa.fa-fw.fa-shield-alt
+                        = " "
+                        = t("DMARC Reports")
+                    else
+                      a.btn.btn-dark(href=l("/my-account/dmarc-reports"))
+                        i.fa.fa-fw.fa-shield-alt
+                        = " "
+                        = t("DMARC Reports")
+
                   li.list-inline-item.mb-1
                     if user.plan === 'free'
                       button.btn.btn-dark(

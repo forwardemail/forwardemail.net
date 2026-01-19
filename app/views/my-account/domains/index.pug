@@ -48,17 +48,6 @@ block body
           if domains.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
             .alert.alert-info.text-center= t("No domains exist yet.")
           else
-            //- Action buttons row
-            .d-flex.flex-wrap.gap-2.mb-3
-              a.btn.btn-outline-primary(href=l("/my-account/analytics"))
-                i.fa.fa-chart-line.me-1
-                = t("Analytics")
-              a.btn.btn-outline-primary(href=l("/my-account/dmarc-reports"))
-                i.fa.fa-shield-alt.me-1
-                = t("DMARC Reports")
-              a.btn.btn-outline-primary(href=l("/my-account/logs"))
-                i.fa.fa-list.me-1
-                = t("Logs")
             .d-flex.flex-wrap.rounded.border.bg-white.bg-themed.text-center.mb-3
               .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
                 h2.h4.text-center= t("Domains")
