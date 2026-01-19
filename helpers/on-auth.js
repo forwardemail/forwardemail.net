@@ -818,8 +818,10 @@ async function onAuth(auth, session, fn) {
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
     fn(null, { user });
 
-    // Track successful authentication for analytics
+    // Track successful authentication for analytics (with deduplication)
     // Privacy-focused: IP used for session hash only, not stored
+    // Deduplication prevents email clients that reconnect frequently from
+    // flooding the analytics database (e.g., IMAP IDLE reconnects every few minutes)
     {
       let service = 'smtp';
       if (isIMAP) service = 'imap';
@@ -849,14 +851,34 @@ async function onAuth(auth, session, fn) {
       }
       // Note: POP3 has no standard client identification mechanism
 
-      analytics.trackAuth({
-        service,
-        ip: session.remoteAddress,
-        ua,
-        user_id: user.id,
-        domain_id: user.domain_id,
-        success: true
-      });
+      // Generate session hash for deduplication
+      const sessionHash = analytics.generateSessionHash(
+        session.remoteAddress,
+        ua
+      );
+      const dedupKey = `analytics_auth_dedup:${sessionHash}:${service}`;
+
+      // Only track one auth event per session/service per hour
+      this.client
+        .get(dedupKey)
+        .then(async (exists) => {
+          if (!exists) {
+            // Set dedup key with 1 hour TTL before tracking
+            await this.client.set(dedupKey, '1', 'PX', ms('1h'));
+            analytics.trackAuth({
+              service,
+              ip: session.remoteAddress,
+              ua,
+              user_id: user.id,
+              domain_id: user.domain_id,
+              success: true
+            });
+          }
+        })
+        .catch((err) => {
+          // Don't let analytics dedup errors affect authentication
+          this.logger.debug('Analytics dedup check error', { err });
+        });
     }
 
     //
