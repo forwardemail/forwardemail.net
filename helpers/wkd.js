@@ -87,13 +87,48 @@ function WKD(resolver, client) {
             }
           })
     });
-    const response = await undici.fetch(url, {
-      signal: abortController.signal,
-      dispatcher
-      // TODO: may need `dispatcher.destroy()`, but not sure since we use `undici.fetch` vs `undici.request`
-    });
-    clearTimeout(t);
-    return response;
+    try {
+      const response = await undici.fetch(url, {
+        signal: abortController.signal,
+        dispatcher
+        // TODO: may need `dispatcher.destroy()`, but not sure since we use `undici.fetch` vs `undici.request`
+      });
+      clearTimeout(t);
+      return response;
+    } catch (err) {
+      clearTimeout(t);
+      //
+      // Enhanced error logging for WKD fetch failures
+      // Log the underlying cause for "TypeError: fetch failed" errors
+      // <https://github.com/nodejs/undici/issues/1248>
+      //
+      if (err.cause) {
+        err.underlyingCause = {
+          message: err.cause.message,
+          code: err.cause.code,
+          name: err.cause.name,
+          ...(err.cause.hostname ? { hostname: err.cause.hostname } : {}),
+          ...(err.cause.address ? { address: err.cause.address } : {}),
+          ...(err.cause.port ? { port: err.cause.port } : {}),
+          ...(err.cause.syscall ? { syscall: err.cause.syscall } : {})
+        };
+      }
+
+      err.wkdContext = {
+        url,
+        timeout: DURATION
+      };
+
+      // Log fetch failures with context for debugging
+      if (err.message === 'fetch failed' || err.name === 'TypeError') {
+        logger.error(err, {
+          url,
+          cause: err.underlyingCause
+        });
+      }
+
+      throw err;
+    }
   };
 
   // override lookup so we can implement caching

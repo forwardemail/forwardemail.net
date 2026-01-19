@@ -89,6 +89,31 @@ const MAIL_RETRY_ERROR_CODES = new Set([
   'EPROTOCOL'
 ]);
 
+//
+// TLS/SSL related error codes that should be retried
+// These can occur due to transient TLS handshake failures
+// <https://nodejs.org/api/tls.html>
+//
+const TLS_RETRY_ERROR_CODES = new Set([
+  'CERT_HAS_EXPIRED',
+  'DEPTH_ZERO_SELF_SIGNED_CERT',
+  'SELF_SIGNED_CERT_IN_CHAIN',
+  'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+  'UNABLE_TO_GET_ISSUER_CERT',
+  'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
+  'ERR_TLS_CERT_ALTNAME_INVALID',
+  'CERT_CHAIN_TOO_LONG',
+  'CERT_NOT_YET_VALID',
+  'CERT_REJECTED',
+  'CERT_SIGNATURE_FAILURE',
+  'CERT_UNTRUSTED',
+  'CRL_HAS_EXPIRED',
+  'CRL_NOT_YET_VALID',
+  'CRL_SIGNATURE_FAILURE',
+  'ERR_SSL_WRONG_VERSION_NUMBER',
+  'ERR_SSL_PROTOCOL_ERROR'
+]);
+
 function isRetryableError(err) {
   if (isTimeoutError(err)) return true;
   if (isSocketError(err)) return true;
@@ -113,7 +138,25 @@ function isRetryableError(err) {
     typeof err.code === 'string' &&
     (DNS_RETRY_CODES.has(err.code) ||
       HTTP_RETRY_ERROR_CODES.has(err.code) ||
-      MAIL_RETRY_ERROR_CODES.has(err.code))
+      MAIL_RETRY_ERROR_CODES.has(err.code) ||
+      TLS_RETRY_ERROR_CODES.has(err.code))
+  )
+    return true;
+
+  //
+  // Handle "TypeError: fetch failed" errors from undici/Node.js fetch
+  // These errors wrap the underlying cause in err.cause
+  // <https://github.com/nodejs/undici/issues/1248>
+  // <https://github.com/nodejs/node/issues/48318>
+  //
+  if (
+    err.message === 'fetch failed' &&
+    err.cause &&
+    typeof err.cause.code === 'string' &&
+    (DNS_RETRY_CODES.has(err.cause.code) ||
+      HTTP_RETRY_ERROR_CODES.has(err.cause.code) ||
+      MAIL_RETRY_ERROR_CODES.has(err.cause.code) ||
+      TLS_RETRY_ERROR_CODES.has(err.cause.code))
   )
     return true;
 

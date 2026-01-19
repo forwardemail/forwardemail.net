@@ -9,6 +9,7 @@ const ms = require('ms');
 
 const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');
+const logger = require('./logger');
 
 const config = require('#config');
 
@@ -93,6 +94,50 @@ async function retryRequest(url, opts = {}, count = 1) {
     response.signal = opts.signal;
     return response;
   } catch (err) {
+    //
+    // Enhanced error logging for fetch failures
+    // This helps diagnose "TypeError: fetch failed" errors by logging
+    // the underlying cause (e.g., DNS resolution, TLS, connection issues)
+    //
+    // <https://github.com/nodejs/undici/issues/1248>
+    // <https://github.com/nodejs/node/issues/48318>
+    //
+    if (err.cause) {
+      err.underlyingCause = {
+        message: err.cause.message,
+        code: err.cause.code,
+        name: err.cause.name,
+        ...(err.cause.hostname ? { hostname: err.cause.hostname } : {}),
+        ...(err.cause.address ? { address: err.cause.address } : {}),
+        ...(err.cause.port ? { port: err.cause.port } : {}),
+        ...(err.cause.syscall ? { syscall: err.cause.syscall } : {}),
+        ...(err.cause.errno ? { errno: err.cause.errno } : {})
+      };
+    }
+
+    // Add request context to the error for better debugging
+    err.requestContext = {
+      url: typeof url === 'string' ? url : url?.toString?.(),
+      method: opts.method || 'GET',
+      timeout: opts.timeout,
+      retryCount: count,
+      maxRetries: opts.retries
+    };
+
+    // Log fetch failures with full context for debugging
+    if (
+      err.message === 'fetch failed' ||
+      err.name === 'TypeError' ||
+      err.code?.startsWith?.('UND_ERR')
+    ) {
+      logger.error(err, {
+        url: err.requestContext?.url,
+        method: err.requestContext?.method,
+        cause: err.underlyingCause,
+        retryCount: count
+      });
+    }
+
     if (count >= opts.retries || !isRetryableError(err)) throw err;
     const ms = opts.calculateDelay(count);
     if (ms) await timers.setTimeout(ms);

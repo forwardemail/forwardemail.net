@@ -36,6 +36,44 @@ import('@forwardemail/whois-rdap').then((obj) => {
 // });
 
 //
+// Wrapped fetch function that logs errors with underlying cause
+// This helps diagnose "TypeError: fetch failed" errors
+// <https://github.com/nodejs/undici/issues/1248>
+//
+async function wrappedFetch(url, options) {
+  try {
+    return await undici.fetch(url, options);
+  } catch (err) {
+    // Enhanced error logging for fetch failures
+    if (err.cause) {
+      err.underlyingCause = {
+        message: err.cause.message,
+        code: err.cause.code,
+        name: err.cause.name,
+        ...(err.cause.hostname ? { hostname: err.cause.hostname } : {}),
+        ...(err.cause.address ? { address: err.cause.address } : {}),
+        ...(err.cause.port ? { port: err.cause.port } : {}),
+        ...(err.cause.syscall ? { syscall: err.cause.syscall } : {})
+      };
+    }
+
+    err.whoisContext = {
+      url: typeof url === 'string' ? url : url?.toString?.()
+    };
+
+    // Log fetch failures with context for debugging
+    if (err.message === 'fetch failed' || err.name === 'TypeError') {
+      logger.error(err, {
+        url: err.whoisContext?.url,
+        cause: err.underlyingCause
+      });
+    }
+
+    throw err;
+  }
+}
+
+//
 // NOTE: this only gets run for domains on the free plan via MX server
 //       and for newly created domains (when being created)
 //
@@ -82,7 +120,7 @@ async function isExpiredOrNewlyCreated(input, client) {
   // if no cache then perform a WHOIS lookup
   if (!response) {
     response = await whois(domain, {
-      fetch: undici.fetch
+      fetch: wrappedFetch
     });
     // store to cache the WHOIS lookup for 24 hours
     await client.set(
