@@ -73,6 +73,11 @@ router
   )
   .get('/analytics', web.myAccount.listAnalytics)
   .get(
+    '/dmarc-reports',
+    paginate.middleware(25, 100),
+    web.myAccount.listDmarcReports
+  )
+  .get(
     '/billing',
     web.myAccount.retrieveBilling,
     web.myAccount.setConversionAndRefundStateHelpers,

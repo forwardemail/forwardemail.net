@@ -1,0 +1,114 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/dmarc-reports.js"),
+    integrity=manifest("js/dmarc-reports.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../../_breadcrumbs
+          h1.h3.mb-3= t("DMARC Reports")
+          p.text-muted.mb-3= t("Monitor your email authentication performance over time. DMARC reports are sent by receiving mail servers to help you understand how your emails are being authenticated.")
+
+      //- Domain filter
+      .row.mb-3
+        .col
+          form#domain-filter-form.d-flex.align-items-center.flex-wrap.gap-2(
+            method="GET"
+          )
+            label.me-2.mb-0(for="domain-select")
+              strong= t("Filter by Domain:")
+            select#domain-select.form-select.form-select-sm(
+              name="domains",
+              style="max-width: 300px"
+            )
+              option(value="")= t("All domains")
+              each domain in filteredDomains
+                option(
+                  value=domain.name,
+                  selected=domainList && domainList.includes(domain.name)
+                )= domain.name
+            button.btn.btn-sm.btn-primary(type="submit")= t("Apply")
+
+      if filteredDomains && filteredDomains.length > 0
+        if domainList && domainList.length > 0
+          .row.mb-3
+            .col
+              .alert.alert-info.small
+                if domainList.length === 1
+                  strong= t("Filtered for domain:")
+                else
+                  strong= t("Filtered for domains:")
+                = " "
+                each domainName, index in domainList
+                  if index > 0
+                    = ", "
+                  = domainName
+
+        //- Metrics cards
+        .row.mb-3
+          .col
+            .d-flex.flex-wrap.rounded.border.bg-white.bg-themed.text-center
+              .p-3.p-md-3.d-flex.flex-column.flex-grow-1.justify-content-center
+                h2.h5.text-center= t("Reports")
+                #metrics-reports.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+              .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+                h2.h5.text-center= t("Messages")
+                #metrics-messages.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+              .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+                h2.h5.text-center= t("SPF Aligned")
+                #metrics-spf-aligned.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+              .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+                h2.h5.text-center= t("DKIM Aligned")
+                #metrics-dkim-aligned.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+              .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+                h2.h5.text-center= t("Pass Rate")
+                #metrics-pass-rate.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+
+        //- Charts
+        .row.mb-3
+          .col-lg-8
+            .card.h-100
+              .card-body
+                h2.h4.text-center.mb-0= t("Messages Over Time")
+                #messages-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+          .col-lg-4
+            .card.h-100
+              .card-body
+                h2.h4.text-center.mb-0= t("Alignment Summary")
+                #alignment-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+        .row.mb-3
+          .col
+            .card
+              .card-body
+                h2.h4.text-center.mb-0= t("Message Disposition")
+                #disposition-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+
+        //- Reports table
+        .row.mb-3
+          .col
+            .card
+              .card-header
+                h2.h5.mb-0= t("Recent Reports")
+              .card-body
+                #reports-table
+                  .text-center.py-4: i.fa.fa-2x.fa-spin.fa-spinner.text-muted
+                #reports-pagination.d-flex.justify-content-center.mt-3
+
+      else
+        .row
+          .col
+            .alert.alert-warning
+              h4.alert-heading= t("No Paid Domains")
+              p.mb-0= t("DMARC Reports are available for paid plans only. Please upgrade to a paid plan to view DMARC reports for your domains.")
+              hr
+              p.mb-0
+                a.btn.btn-warning(href=l("/my-account/domains"))= t("Manage Domains")

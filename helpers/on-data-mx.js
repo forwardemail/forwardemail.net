@@ -89,6 +89,10 @@ const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { encoder } = require('#helpers/encoder-decoder');
+const {
+  processDmarcReport,
+  hasDmarcReportRecipient
+} = require('#helpers/process-dmarc-report');
 
 const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 const HOSTNAME = os.hostname();
@@ -1865,6 +1869,41 @@ async function onDataMX(session, headers, body) {
   // additional headers to add specifically for MX
   // (this also does a friendly-from rewrite if necessary)
   updateMXHeaders(headers, session);
+
+  //
+  // Process DMARC reports if this email is sent to a DMARC report address
+  // (e.g., dmarc-{domainId}@forwardemail.net)
+  //
+  if (hasDmarcReportRecipient(session)) {
+    try {
+      // Pass Redis client for rate limiting
+      const dmarcReport = await processDmarcReport(
+        session,
+        raw,
+        this.resolver,
+        this.client
+      );
+      if (dmarcReport) {
+        logger.debug('DMARC report processed successfully', {
+          domainId: dmarcReport.domain_id,
+          domainName: dmarcReport.domain_name,
+          reportId: dmarcReport.report_metadata?.report_id,
+          session,
+          resolver: this.resolver
+        });
+        // Return early after processing DMARC report
+        // The report has been logged and we don't need to forward it
+        return;
+      }
+    } catch (err) {
+      logger.error('Failed to process DMARC report', {
+        err,
+        session,
+        resolver: this.resolver
+      });
+      // Continue with normal processing if DMARC report parsing fails
+    }
+  }
 
   // this is the core logic that determines where to forward and deliver emails to
   // TODO: re-enable spam scanner once v7 released

@@ -204,6 +204,11 @@ const Logs = new mongoose.Schema({
     type: Boolean,
     default: true,
     index: true
+  },
+  is_dmarc_report: {
+    type: Boolean,
+    default: false,
+    index: true
   }
 });
 
@@ -392,6 +397,37 @@ Logs.index(
   {
     partialFilterExpression: {
       'meta.job.name': { $exists: true }
+    }
+  }
+);
+
+// DMARC report indices for efficient querying
+// Main index for DMARC reports by domain and date
+Logs.index(
+  { is_dmarc_report: 1, domains: 1, created_at: -1 },
+  {
+    partialFilterExpression: {
+      is_dmarc_report: true
+    }
+  }
+);
+
+// Index for DMARC report aggregations by user
+Logs.index(
+  { is_dmarc_report: 1, user: 1, created_at: -1 },
+  {
+    partialFilterExpression: {
+      is_dmarc_report: true
+    }
+  }
+);
+
+// Index for DMARC report aggregations with domain filtering
+Logs.index(
+  { is_dmarc_report: 1, user: 1, domains: 1, created_at: -1 },
+  {
+    partialFilterExpression: {
+      is_dmarc_report: true
     }
   }
 );
