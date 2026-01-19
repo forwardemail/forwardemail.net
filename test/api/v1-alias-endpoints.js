@@ -1251,6 +1251,243 @@ test('messages create validates fields', async (t) => {
   t.truthy(res.body.message);
 });
 
+test('creates message with single label as string', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Label',
+    text: 'This message has a single label',
+    labels: 'work'
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.is(res.body.object, 'message');
+  t.true(Array.isArray(res.body.labels));
+  t.is(res.body.labels.length, 1);
+  t.is(res.body.labels[0], 'work');
+});
+
+test('creates message with multiple labels as array', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Multiple Labels',
+    text: 'This message has multiple labels',
+    labels: ['work', 'important', 'follow-up']
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.is(res.body.object, 'message');
+  t.true(Array.isArray(res.body.labels));
+  t.is(res.body.labels.length, 3);
+  t.deepEqual(res.body.labels, ['work', 'important', 'follow-up']);
+});
+
+test('normalizes labels to lowercase', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Mixed Case Labels',
+    text: 'Labels should be normalized',
+    labels: ['Work', 'IMPORTANT', 'Follow-Up']
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.deepEqual(res.body.labels, ['work', 'important', 'follow-up']);
+});
+
+test('removes duplicate labels', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Duplicate Labels',
+    text: 'Duplicates should be removed',
+    labels: ['work', 'work', 'important', 'Work']
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.is(res.body.labels.length, 2);
+  t.deepEqual(res.body.labels, ['work', 'important']);
+});
+
+test('enforces max 10 labels limit', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Too Many Labels',
+    text: 'Should be limited to 10 labels',
+    labels: [
+      'label1',
+      'label2',
+      'label3',
+      'label4',
+      'label5',
+      'label6',
+      'label7',
+      'label8',
+      'label9',
+      'label10',
+      'label11',
+      'label12'
+    ]
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.is(res.body.labels.length, 10);
+});
+
+test('filters out invalid label keywords', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const messageData = {
+    to: [falso.randEmail()],
+    subject: 'Test Message with Invalid Labels',
+    text: 'Invalid labels should be filtered',
+    labels: [
+      'valid-label',
+      '',
+      '   ',
+      'another-valid',
+      '!invalid',
+      'good_label'
+    ]
+  };
+
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send(messageData);
+
+  t.is(res.status, 200);
+  t.is(res.body.labels.length, 3);
+  t.deepEqual(res.body.labels, ['valid-label', 'another-valid', 'good_label']);
+});
+
+test('updates message labels', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create message
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      to: [falso.randEmail()],
+      subject: 'Test Message for Label Update',
+      text: 'This message will have its labels updated',
+      labels: ['initial-label']
+    });
+
+  t.is(createRes.status, 200);
+  t.deepEqual(createRes.body.labels, ['initial-label']);
+
+  // Update labels
+  const updateRes = await api
+    .put(`/v1/messages/${createRes.body.id}`)
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      labels: ['updated', 'new-labels']
+    });
+
+  t.is(updateRes.status, 200);
+  t.is(updateRes.body.labels.length, 2);
+  t.deepEqual(updateRes.body.labels, ['updated', 'new-labels']);
+});
+
+test('updates message with single label as string', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create message
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      to: [falso.randEmail()],
+      subject: 'Test Message',
+      text: 'Test'
+    });
+
+  t.is(createRes.status, 200);
+
+  // Update with single label
+  const updateRes = await api
+    .put(`/v1/messages/${createRes.body.id}`)
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      labels: 'single-label'
+    });
+
+  t.is(updateRes.status, 200);
+  t.deepEqual(updateRes.body.labels, ['single-label']);
+});
+
+test('clears message labels with empty array', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create message with labels
+  const createRes = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      to: [falso.randEmail()],
+      subject: 'Test Message',
+      text: 'Test',
+      labels: ['work', 'important']
+    });
+
+  t.is(createRes.status, 200);
+  t.is(createRes.body.labels.length, 2);
+
+  // Clear labels
+  const updateRes = await api
+    .put(`/v1/messages/${createRes.body.id}`)
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      labels: []
+    });
+
+  t.is(updateRes.status, 200);
+  t.is(updateRes.body.labels.length, 0);
+});
+
 test('calendars create validates required fields', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

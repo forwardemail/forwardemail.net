@@ -832,6 +832,21 @@ async function create(ctx) {
   if (typeof body.flags === 'string') flags.push(body.flags);
   else if (Array.isArray(body.flags)) flags.push(...body.flags);
 
+  // Parse labels from request body (similar to flags handling)
+  let labels = [];
+  if (body.labels !== undefined) {
+    if (isSANB(body.labels)) {
+      labels = [body.labels];
+    } else if (Array.isArray(body.labels)) {
+      // must be [] or [ label, label, label ]
+      if (!_.isEmpty(body.labels) && body.labels.every((l) => !isSANB(l)))
+        throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+      labels = body.labels;
+    } else {
+      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+    }
+  }
+
   try {
     const [, response] = await onAppendPromise.call(
       ctx.instance,
@@ -854,6 +869,18 @@ async function create(ctx) {
 
     if (!message) {
       throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
+    }
+
+    // Apply labels if provided
+    // (validation, normalization, and max limit enforcement happens in model's pre-validate hook)
+    if (labels.length > 0) {
+      message.labels = labels;
+      message.remoteAddress = ctx.ip;
+      message.transaction = 'API';
+      message.instance = ctx.instance;
+      message.session = ctx.state.session;
+      message.isNew = false;
+      await message.save();
     }
 
     ctx.body = await json(ctx, message);

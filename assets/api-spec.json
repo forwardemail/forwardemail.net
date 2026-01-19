@@ -1242,6 +1242,21 @@
               }
             ],
             "description": "IMAP flags to set on the message"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": ["work", "important"]
           }
         }
       },
@@ -4304,7 +4319,7 @@
           "Messages"
         ],
         "summary": "Create message",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder, initial flags, and labels. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "createMessage",
         "security": [
           {
