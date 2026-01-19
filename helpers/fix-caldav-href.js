@@ -4,6 +4,7 @@
  */
 
 const { Builder } = require('json-sql-enhanced');
+const dayjs = require('dayjs-with-plugins');
 
 const logger = require('#helpers/logger');
 
@@ -12,8 +13,8 @@ const builder = new Builder({ bufferAsNative: true });
 //
 // Add buffer time to be safe (extended to catch any delayed syncs):
 //
-const BAD_WINDOW_START = new Date('2026-01-07T10:00:00.000Z');
-const BAD_WINDOW_END = new Date('2026-01-08T23:00:00.000Z');
+const BAD_WINDOW_START = dayjs('2026-01-06').toDate();
+const BAD_WINDOW_END = dayjs('2026-01-08').endOf('day').toDate();
 
 /**
  * Fix CalDAV href values and restore soft-deleted events from the bad patch window.
