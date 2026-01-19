@@ -99,13 +99,19 @@ async function listDmarcReports(ctx) {
     }
   }
 
-  // Filter to paid domains only
-  const filteredDomains =
+  // Filter to paid domains only and exclude global domains for non-admin users
+  // (only site admins should see DMARC reports for global/vanity domains)
+  const filteredDomains = (
     domains.size > 0
       ? ctx.state.domains.filter(
           (d) => d.plan !== 'free' && domains.has(d.name)
         )
-      : ctx.state.domains.filter((d) => d.plan !== 'free');
+      : ctx.state.domains.filter((d) => d.plan !== 'free')
+  ).filter((domain) => {
+    if (!domain.is_global) return true;
+    // only site admins can see global domains
+    return ctx.state.user.group === 'admin';
+  });
 
   if (filteredDomains.length === 0) {
     if (ctx.accepts('html')) {
