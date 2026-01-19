@@ -394,7 +394,7 @@ p.text-center.d-lg-none
                       form.confirm-prompt(
                         action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
                         data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
+                        data-confirm-prompt-html=t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
                         method="GET"
                       )
                         input(type="hidden", name="plan", value=user.plan)
@@ -474,37 +474,6 @@ p.text-center.d-lg-none
                       = " "
                       = t("Logs")
 
-                //- DMARC Reports
-                li.list-inline-item.d-block.d-lg-inline-block
-                  if domain.plan === 'free'
-                    if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed(
-                        type="button",
-                        data-target="#modal-upgrade-logs",
-                        data-toggle="modal"
-                      )
-                        i.fa.fa-fw.fa-shield-alt
-                        = " "
-                        = t("DMARC")
-                    else
-                      form.confirm-prompt(
-                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                        data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
-                        method="GET"
-                      )
-                        input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-themed(type="submit")
-                          i.fa.fa-fw.fa-shield-alt
-                          = " "
-                          = t("DMARC")
-                  else
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/dmarc-reports?domains=${domain.name}`)
-                    )
-                      i.fa.fa-fw.fa-shield-alt
-                      = " "
-                      = t("DMARC")
                 if domain.group === 'admin'
                   li.list-inline-item.d-block.d-lg-inline-block
                     a.btn.btn-sm.btn-link(
