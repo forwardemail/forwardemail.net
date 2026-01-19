@@ -27,11 +27,7 @@ block body
         //- Domain filter form
         .row.mb-3
           .col
-            form#domain-filter-form.ajax-form.table-ajax-form(
-              action=ctx.path,
-              method="GET",
-              data-search-params="domains"
-            )
+            form#domain-filter-form(action=ctx.path, method="GET")
               .input-group.mb-3
                 .input-group-prepend
                   span.input-group-text= t("Filter by Domain")
