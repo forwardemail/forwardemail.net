@@ -529,6 +529,59 @@ module.exports = (redis) => ({
 
       return next();
     });
+
+    //
+    // Preferred locale middleware - allows users to set their language preference
+    // When a user has set preferred_locale, redirect to the correct locale URL
+    // and override automatic locale detection
+    //
+    app.use(async (ctx, next) => {
+      if (
+        ctx.isAuthenticated() &&
+        ctx.state.user &&
+        isSANB(ctx.state.user.preferred_locale) &&
+        i18n.config.locales.includes(ctx.state.user.preferred_locale)
+      ) {
+        const preferredLocale = ctx.state.user.preferred_locale;
+
+        // Check if the current URL locale matches the user's preferred locale
+        // ctx.pathWithoutLocale is set by @ladjs/i18n middleware
+        const urlLocale = ctx.path.split('/')[1];
+        const hasLocaleInUrl = i18n.config.locales.includes(urlLocale);
+
+        // If URL has a locale that doesn't match preferred, redirect
+        if (
+          hasLocaleInUrl &&
+          urlLocale !== preferredLocale &&
+          ctx.method === 'GET' &&
+          ctx.accepts('html')
+        ) {
+          // Build the redirect URL with the preferred locale
+          const pathWithoutLocale =
+            ctx.pathWithoutLocale ||
+            ctx.path.slice(urlLocale.length + 1) ||
+            '/';
+          let redirectUrl = `/${preferredLocale}${
+            pathWithoutLocale === '/' ? '' : pathWithoutLocale
+          }`;
+          if (ctx.querystring) {
+            redirectUrl += `?${ctx.querystring}`;
+          }
+
+          ctx.status = 302;
+          return ctx.redirect(redirectUrl);
+        }
+
+        // Override the detected locale with user's preference for rendering
+        ctx.locale = preferredLocale;
+        ctx.request.locale = preferredLocale;
+        if (typeof ctx.request.setLocale === 'function') {
+          ctx.request.setLocale(preferredLocale);
+        }
+      }
+
+      return next();
+    });
   },
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {

@@ -116,17 +116,12 @@ class SMTP {
       // <https://github.com/nodemailer/wildduck/issues/563>
       // hide8BITMIME: true,
 
-      //
       // Enable REQUIRETLS support (RFC 8689)
       //
-      // NOTE: currently disabled until we have ensured full compliance
-      //       tests still use this though so we're keeping it for now
-      //       we need to add TLS-Required: No header support
-      //       and also fallback so it rotates through MX servers and retries
-      //       and also double check that we're RFC compliant in other edge cases
-      //       <https://www.rfc-editor.org/rfc/rfc8689.pdf>
+      // NOTE: REQUIRETLS is now enabled in production to support
+      //       security vendors that require this extension
       //
-      hideREQUIRETLS: config.env !== 'test',
+      hideREQUIRETLS: false,
 
       // keys and TLS options together
       ...(config.env === 'production'

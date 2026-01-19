@@ -15,21 +15,70 @@ block body
             = t("Filtered for:")
             = " "
             = ctx.query.domains
-        //- TODO: search by date
         form.ajax-form.table-ajax-form(
           action=ctx.path,
           method="GET",
           data-table="#table-logs",
-          data-search-params="q"
+          data-search-params="q,start_date,end_date,response_codes,bounce_category,show_errors"
         )
-          .input-group.mb-3
-            input#input-keyword-search.form-control(
-              type="text",
-              value=ctx.query.q ? ctx.query.q : "",
-              name="q",
-              placeholder=t("Search")
-            )
-            .input-group-append
+          .row.mb-3
+            .col-md-6
+              .input-group
+                input#input-keyword-search.form-control(
+                  type="text",
+                  value=ctx.query.q ? ctx.query.q : "",
+                  name="q",
+                  placeholder=t("Search by email, domain, IP, subject, or date (M/D/YY)")
+                )
+            .col-md-3
+              .input-group
+                .input-group-prepend
+                  span.input-group-text= t("From")
+                input#input-start-date.form-control(
+                  type="date",
+                  name="start_date",
+                  value=ctx.query.start_date ? ctx.query.start_date : ""
+                )
+            .col-md-3
+              .input-group
+                .input-group-prepend
+                  span.input-group-text= t("To")
+                input#input-end-date.form-control(
+                  type="date",
+                  name="end_date",
+                  value=ctx.query.end_date ? ctx.query.end_date : ""
+                )
+          .row.mb-3
+            .col-md-3
+              select#select-response-codes.form-control(name="response_codes")
+                option(value="", selected=!ctx.query.response_codes)= t("All Response Codes")
+                if responseCodes && responseCodes.length > 0
+                  each code in responseCodes
+                    option(
+                      value=code,
+                      selected=ctx.query.response_codes && ctx.query.response_codes.toString() === code.toString()
+                    )= code
+            .col-md-3
+              select#select-bounce-category.form-control(
+                name="bounce_category"
+              )
+                option(value="", selected=!ctx.query.bounce_category)= t("All Bounce Categories")
+                if bounceCategories && bounceCategories.length > 0
+                  each cat in bounceCategories
+                    option(
+                      value=cat,
+                      selected=ctx.query.bounce_category === cat
+                    )= titleize(humanize(cat))
+            .col-md-3
+              .form-check.mt-2
+                input#input-show-errors.form-check-input(
+                  type="checkbox",
+                  name="show_errors",
+                  value="true",
+                  checked=ctx.query.show_errors === "true"
+                )
+                label.form-check-label(for="input-show-errors")= t("Show errors only")
+            .col-md-3.text-right
               button.btn.btn-success(type="submit")= t("Search")
         #table-logs
           include ./_table

@@ -412,9 +412,16 @@ async function refreshCachedStats() {
   }
 }
 
-// Refresh stats immediately on module load and then every 5 minutes
+// Refresh stats in background on module load and then every 5 minutes
+// Use setImmediate to avoid blocking app startup
 if (config.env !== 'test') {
-  refreshCachedStats();
+  setImmediate(() => {
+    refreshCachedStats().catch((err) => {
+      logger.debug('Initial event feed refresh failed', {
+        extra: { message: err.message }
+      });
+    });
+  });
   setInterval(refreshCachedStats, CACHE_DURATION);
 }
 

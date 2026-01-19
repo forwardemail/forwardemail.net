@@ -1124,6 +1124,14 @@ Emails.pre('save', async function (next) {
   // if it's not a new email then no need to check for credits
   if (!this._isNew) return next();
 
+  //
+  // Skip rate limiting for bounce/DSN emails
+  // Bounce emails (e.g., from mailer-daemon) should not count against
+  // the user's outbound SMTP limit since they are system-generated
+  // responses, not user-initiated emails
+  //
+  if (this.is_bounce === true) return next();
+
   try {
     const [user, domain] = await Promise.all([
       // TODO: limit fields returned
@@ -1196,6 +1204,12 @@ Emails.pre('save', async function (next) {
 Emails.post('save', async function (email, next) {
   // if it's not a new email then no need to deduct credits
   if (!email._isNew) return next();
+
+  //
+  // Skip rate limit deduction for bounce/DSN emails
+  // Bounce emails should not count against the user's outbound SMTP limit
+  //
+  if (email.is_bounce === true) return next();
 
   try {
     const [user, domain] = await Promise.all([

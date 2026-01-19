@@ -13885,5 +13885,15 @@
   "Messages Over Time": "Messages Over Time",
   "Alignment Summary": "Alignment Summary",
   "Message Disposition": "Message Disposition",
-  "Recent Reports": "Recent Reports"
+  "Recent Reports": "Recent Reports",
+  "%d X posts": "%d X posts",
+  "Email Forwarding FAQ - Complete Setup Guide & Troubleshooting 2026": "Email Forwarding FAQ - Complete Setup Guide & Troubleshooting 2026",
+  "Answers to all your email forwarding questions. DNS configuration, SMTP setup, custom domains, troubleshooting, and advanced features. Step-by-step guides with video tutorials.": "Answers to all your email forwarding questions. DNS configuration, SMTP setup, custom domains, troubleshooting, and advanced features. Step-by-step guides with video tutorials.",
+  "Search Filter": "Search Filter",
+  "Everything": "Everything",
+  "Alias is enabled and actively receiving/forwarding emails.": "Alias is enabled and actively receiving/forwarding emails.",
+  "IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.": "IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.",
+  "Require TLS for Inbound Connections": "Require TLS for Inbound Connections",
+  "When enabled, inbound emails not sent over a TLS-encrypted connection will be rejected with a 530 error. This enforces encryption for all incoming mail to your domain.": "When enabled, inbound emails not sent over a TLS-encrypted connection will be rejected with a 530 error. This enforces encryption for all incoming mail to your domain.",
+  "SPF record missing (recommended)": "SPF record missing (recommended)"
 }

@@ -49,6 +49,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
     let hasPhishingProtection = true;
     let hasExecutableProtection = true;
     let hasVirusProtection = true;
+    let requireTlsInbound = false;
     let allowlist = [];
     let denylist = [];
     let webhookKey;
@@ -75,7 +76,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         verification_record: verifications[0]
       })
         .select(
-          'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection webhook_key'
+          'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection require_tls_inbound webhook_key'
         )
         .lean()
         .exec();
@@ -86,6 +87,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         hasPhishingProtection = domain.has_phishing_protection;
         hasExecutableProtection = domain.has_executable_protection;
         hasVirusProtection = domain.has_virus_protection;
+        requireTlsInbound = domain.require_tls_inbound === true;
         webhookKey = domain.webhook_key;
         //
         // if domain does not yet have a webhook key then create one for it
@@ -141,6 +143,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
       has_phishing_protection: hasPhishingProtection,
       has_executable_protection: hasExecutableProtection,
       has_virus_protection: hasVirusProtection,
+      require_tls_inbound: requireTlsInbound,
       allowlist,
       denylist,
       webhook_key: webhookKey

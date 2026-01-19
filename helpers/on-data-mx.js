@@ -1031,6 +1031,10 @@ async function forward(recipient, headers, session, body) {
       )
         await response.body.dump();
 
+      //
+      // Log webhook delivery with request/response details
+      // for debugging and verification purposes
+      //
       logger.info('delivered', {
         // spoofing nodemailer info object
         info: {
@@ -1044,6 +1048,18 @@ async function forward(recipient, headers, session, body) {
         },
         // TODO: use `is_webhook` later in the future
         is_webhook: true,
+        // Webhook logging details for debugging
+        webhook_log: {
+          endpoint: recipient.webhook.replace(
+            /\/\/([^:]+):([^@]+)@/,
+            '//$1:***@'
+          ), // hide password if present
+          method: 'POST',
+          status_code: response.statusCode,
+          response_text:
+            text.length > 1024 ? text.slice(0, 1024) + '...' : text,
+          timestamp: new Date().toISOString()
+        },
         ignore_hook: false,
         resolver: this.resolver,
         session
@@ -1076,6 +1092,20 @@ async function forward(recipient, headers, session, body) {
 
       // preserve webhook for admins to inspect if user needs help
       err_.webhook = recipient.webhook;
+      //
+      // Add webhook error logging details for debugging
+      //
+      err_.webhook_log = {
+        endpoint: recipient.webhook.replace(
+          /\/\/([^:]+):([^@]+)@/,
+          '//$1:***@'
+        ), // hide password if present
+        method: 'POST',
+        status_code: err_.statusCode || err_.status || null,
+        error_code: err_.code || null,
+        error_message: err_.message,
+        timestamp: new Date().toISOString()
+      };
       logger.error(err_, { session, resolver: this.resolver });
 
       // determine if code or status is retryable here and set it as `err._responseCode`

@@ -248,6 +248,44 @@ async function listLogs(ctx) {
   }
 
   //
+  // Date range filtering via start_date and end_date query parameters
+  // Supports ISO 8601 format (e.g., 2024-01-15) or common date formats
+  //
+  let startDate;
+  let endDate;
+
+  if (isSANB(ctx.query.start_date)) {
+    const parsed = dayjs(ctx.query.start_date);
+    if (parsed.isValid()) {
+      startDate = parsed.startOf('day').toDate();
+    }
+  }
+
+  if (isSANB(ctx.query.end_date)) {
+    const parsed = dayjs(ctx.query.end_date);
+    if (parsed.isValid()) {
+      endDate = parsed.endOf('day').toDate();
+    }
+  }
+
+  // Apply date range filter if either start_date or end_date is provided
+  if (startDate || endDate) {
+    const dateRangeFilter = {};
+    if (startDate) dateRangeFilter.$gte = startDate;
+    if (endDate) dateRangeFilter.$lte = endDate;
+
+    if (query.$or) {
+      query = {
+        $and: [{ $or: query.$or }, { created_at: dateRangeFilter }]
+      };
+    } else if (query.$and) {
+      query.$and.push({ created_at: dateRangeFilter });
+    } else {
+      query.created_at = dateRangeFilter;
+    }
+  }
+
+  //
   // FIX: Use MongoDB $regex for subject search instead of in-memory filtering
   // This is the key performance fix - the in-memory approach was causing timeouts
   // for users with 200-300K logs
@@ -531,11 +569,20 @@ async function listLogs(ctx) {
   //
   const MAX_COUNT_LIMIT = 10_000;
 
+  //
+  // FIX: Cap the skip value to prevent accessing pages beyond MAX_COUNT_LIMIT
+  // This prevents empty pages when users manually enter high page numbers
+  //
+  const cappedSkip = Math.min(
+    ctx.paginate.skip,
+    MAX_COUNT_LIMIT - ctx.query.limit
+  );
+
   const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(query)
       .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
+      .skip(Math.max(0, cappedSkip))
       .sort(
         isSANB(ctx.query.sort)
           ? ctx.query.sort
@@ -572,7 +619,16 @@ async function listLogs(ctx) {
     .filter((cat) => cat !== null && cat !== undefined)
     .sort();
 
-  ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
+  //
+  // FIX: Cap page count based on MAX_COUNT_LIMIT to prevent pagination
+  // from showing pages that have no data (due to capped count)
+  // This prevents empty pages when capped count is reached
+  //
+  const maxPageCount = Math.ceil(MAX_COUNT_LIMIT / ctx.query.limit);
+  ctx.state.pageCount = Math.min(
+    Math.ceil(ctx.state.itemCount / ctx.query.limit),
+    maxPageCount
+  );
   ctx.state.pages = paginate.getArrayPages(ctx)(
     6,
     ctx.state.pageCount,

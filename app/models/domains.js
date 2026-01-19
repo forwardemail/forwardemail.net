@@ -472,6 +472,17 @@ const Domains = new mongoose.Schema({
   verified_email_sent_at: Date,
   missing_txt_sent_at: Date,
   multiple_exchanges_sent_at: Date,
+  //
+  // Require TLS for inbound connections
+  // When enabled, the server will reject emails that are not sent over TLS
+  // This provides enhanced security for domains that require encrypted connections
+  //
+  require_tls_inbound: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+
   // Default option to require `has_recipient_verification`
   // on all aliases for verification emails to send
   has_recipient_verification: {

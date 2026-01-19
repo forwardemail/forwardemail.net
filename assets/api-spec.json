@@ -99,6 +99,10 @@
           "locale": {
             "type": "string"
           },
+          "preferred_locale": {
+            "type": "string",
+            "description": "User's preferred language setting that overrides automatic detection"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -1721,6 +1725,10 @@
           },
           "has_custom_verification": {
             "type": "boolean"
+          },
+          "require_tls_inbound": {
+            "type": "boolean",
+            "description": "When enabled, reject inbound emails not sent over TLS"
           },
           "verification_record": {
             "type": "string"

@@ -86,7 +86,8 @@ async function updateDomain(ctx, next) {
       'has_virus_protection',
       'has_recipient_verification',
       'ignore_mx_check',
-      'has_delivery_logs'
+      'has_delivery_logs',
+      'require_tls_inbound'
     ]) {
       if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
         ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
@@ -194,6 +195,26 @@ async function updateDomain(ctx, next) {
           );
         ctx.state.domain.has_delivery_logs = boolean(
           ctx.request.body.has_delivery_logs
+        );
+
+        break;
+      }
+
+      case 'require_tls_inbound': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+        ctx.state.domain.require_tls_inbound = boolean(
+          ctx.request.body.require_tls_inbound
         );
 
         break;

@@ -169,6 +169,19 @@ block body
                       data-toggle="modal",
                       data-target="#modal-change-password"
                     )= t("Need to change your password?")
+                hr
+                .alert.alert-info.small= t("Set your preferred language to override automatic detection based on your browser settings.")
+                .form-group.floating-label
+                  select#input-preferred-locale.form-control(
+                    name="preferred_locale"
+                  )
+                    option(value="", selected=!user.preferred_locale)= t("Auto-detect (browser default)")
+                    each locale in config.i18n.locales
+                      option(
+                        value=locale,
+                        selected=user.preferred_locale === locale
+                      )= locale === "en" ? "English" : locale === "ar" ? "العربية" : locale === "cs" ? "Čeština" : locale === "da" ? "Dansk" : locale === "de" ? "Deutsch" : locale === "es" ? "Español" : locale === "fi" ? "Suomi" : locale === "fr" ? "Français" : locale === "he" ? "עברית" : locale === "hu" ? "Magyar" : locale === "id" ? "Bahasa Indonesia" : locale === "it" ? "Italiano" : locale === "ja" ? "日本語" : locale === "ko" ? "한국어" : locale === "nl" ? "Nederlands" : locale === "no" ? "Norsk" : locale === "pl" ? "Polski" : locale === "pt" ? "Português" : locale === "ru" ? "Русский" : locale === "sv" ? "Svenska" : locale === "th" ? "ไทย" : locale === "tr" ? "Türkçe" : locale === "uk" ? "Українська" : locale === "vi" ? "Tiếng Việt" : locale === "zh" ? "中文" : locale
+                  label(for="input-preferred-locale")= t("Preferred Language")
                 if domains && domains.filter(domain => !domain.is_global).length > 0
                   hr
                   .alert.alert-info.small= t("If you set a default domain, then you will be redirected to its section after login.")

@@ -112,6 +112,14 @@ table.table.table-hover.table-bordered.table-sm
                             = t("Webhook")
                             = ")"
                             = " "
+                            //- Show webhook response details if available
+                            if log.meta.webhook_log
+                              br
+                              small.text-muted
+                                i.fa.fa-check-circle.mr-1
+                                = t("Status:")
+                                = " "
+                                span.badge.badge-success= log.meta.webhook_log.status_code
                           //- TODO: log more details from `log.info`, e.g. EHLO etc
                           if log.meta && log.meta.info && log.meta.info.response
                             != ansiHTML(log.meta.info.response)
@@ -136,6 +144,18 @@ table.table.table-hover.table-bordered.table-sm
                             span.badge.badge-secondary= "Forward Email"
                           else
                             span.badge.badge-secondary= "Forward Email"
+                        //- Show webhook error details if available
+                        if log.err.webhook_log
+                          br
+                          small.text-muted
+                            i.fa.fa-globe.mr-1
+                            = t("Webhook:")
+                            = " "
+                            if log.err.webhook_log.status_code
+                              span.badge.badge-warning= log.err.webhook_log.status_code
+                              = " "
+                            if log.err.webhook_log.error_code
+                              span.badge.badge-danger= log.err.webhook_log.error_code
                         //- Show bounce reason if available
                         if log.err.bounceInfo && log.err.bounceInfo.message && log.err.bounceInfo.message !== 'Unknown'
                           br

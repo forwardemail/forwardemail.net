@@ -602,6 +602,16 @@ object[config.lastLocaleField] = {
 };
 
 //
+// Preferred locale setting - allows users to explicitly set their language preference
+// When set, this overrides automatic locale detection from browser headers
+//
+object.preferred_locale = {
+  type: String,
+  enum: ['', ...i18n.config.locales],
+  default: ''
+};
+
+//
 // company information
 //
 object[config.userFields.companyName] = {

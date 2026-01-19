@@ -314,6 +314,48 @@ block body
                       disabled=isDisabled
                     )= t("Save")
 
+      //- Require TLS Inbound
+      if domain.group === 'admin' && !domain.is_global
+        #require-tls-inbound.row
+          .col
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(
+                type="hidden",
+                name="_section",
+                value="require_tls_inbound"
+              )
+              h2.h6.card-header= t("Require TLS for Inbound Connections")
+              .card-body
+                +planRequired(false)
+                .form-group.form-check.mb-0
+                  input#input-require-tls-inbound.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="require_tls_inbound",
+                    value="true",
+                    checked=domain.require_tls_inbound
+                  )
+                  label.form-check-label(for="input-require-tls-inbound")= t("Require TLS for Inbound Connections")
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t("When enabled, inbound emails not sent over a TLS-encrypted connection will be rejected with a 530 error. This enforces encryption for all incoming mail to your domain.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
       //- Catch-all Passwords
       if domain.group === 'admin' && !domain.is_global
         #catch-all-passwords.row

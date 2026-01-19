@@ -77,4 +77,8 @@ mixin paginate(tableSelector)
   if itemCount && itemCount > 1
     p.small.text-muted.text-center(
       class=pageCount && pageCount > 1 ? false : "mt-3 mt-md-0"
-    )!= t('<span class="notranslate">%d</span> results found', itemCount)
+    )
+      if itemCount >= 10000
+        != t('<span class="notranslate">%d+</span> results found (showing first 10,000)', itemCount)
+      else
+        != t('<span class="notranslate">%d</span> results found', itemCount)

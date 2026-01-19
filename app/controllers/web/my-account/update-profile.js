@@ -89,6 +89,19 @@ async function updateProfile(ctx) {
     if (_.isString(body[config.passport.fields.givenName]))
       ctx.state.user[config.passport.fields.givenName] =
         body[config.passport.fields.givenName];
+
+    //
+    // Language preference - allows users to set their preferred locale
+    // When set, this overrides automatic locale detection
+    //
+    if (
+      _.isString(body.preferred_locale) && // Allow empty string to reset to auto-detect, or valid locale
+      (body.preferred_locale === '' ||
+        config.i18n.locales.includes(body.preferred_locale))
+    ) {
+      ctx.state.user.preferred_locale = body.preferred_locale;
+    }
+
     if (_.isString(body[config.passport.fields.familyName]))
       ctx.state.user[config.passport.fields.familyName] =
         body[config.passport.fields.familyName];

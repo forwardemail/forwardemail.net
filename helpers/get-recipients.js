@@ -104,6 +104,20 @@ async function getRecipients(session, scan) {
           if (Array.isArray(body.denylist)) customDenylist = body.denylist;
 
           if (isSANB(body.webhook_key)) webhookKey = body.webhook_key;
+
+          //
+          // Check if domain requires TLS for inbound connections
+          // If require_tls_inbound is enabled and connection is not secure, reject
+          //
+          if (body.require_tls_inbound === true && !session.secure) {
+            throw new SMTPError(
+              `Domain ${domain} requires TLS for inbound connections. Please use STARTTLS or connect to port 465.`,
+              {
+                responseCode: 530,
+                ignoreHook: true
+              }
+            );
+          }
         }
 
         //
