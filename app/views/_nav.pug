@@ -886,6 +886,10 @@ nav.navbar(class=navbarClasses.join(" "))
                     href=l("/my-account/emails")
                   )= t("Emails")
                   a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/my-account/dmarc-reports") ? "active" : "",
+                    href=l("/my-account/dmarc-reports")
+                  )= t("DMARC Reports")
+                  a.dropdown-item(
                     class=ctx.pathWithoutLocale.startsWith("/my-account/analytics") ? "active" : "",
                     href=l("/my-account/analytics")
                   )= t("Analytics")
