@@ -694,7 +694,7 @@ const config = {
     'SQLITE_BUSY_TIMEOUT',
     'SQLITE_LOCKED'
   ]),
-  INITIAL_DB_SIZE: 290816,
+  INITIAL_DB_SIZE: 294912,
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',
   returnPath: 'fe-bounces',
