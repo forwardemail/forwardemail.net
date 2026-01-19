@@ -189,18 +189,33 @@ if (
 */
 
   //
-  // NOTE: due to unprecendented spam from Microsoft's "onmicrosoft.com" domain
+  // NOTE: due to unprecedented spam from Microsoft's "onmicrosoft.com" domain
   //       we had to implement arbitrary rule to block spam from them
   //
   // <https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/>
   // <https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c>
   // <https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/>
   //
+  // IMPROVED APPROACH:
+  // ------------------
+  // Instead of blocking ALL Microsoft bounces, we now check Microsoft's own
+  // spam classification (X-Forefront-Antispam-Report header) to distinguish
+  // between legitimate bounces and spam bounces (backscatter).
   //
-  // due to high amount of Microsoft spam we are blocking their bounces
-  // if from postmaster@outlook.com and message is "Undeliverable: "
+  // Legitimate bounces from Microsoft will have:
+  // - SFV:NSPM (Not Spam) verdict
+  // - Low SCL (0-2) spam confidence level
+  // - No spam categories (CAT:OSPM, CAT:SPM, etc.)
   //
-  if (
+  // Spam bounces (backscatter) will have:
+  // - High SCL (>=5)
+  // - Spam verdicts (SFV:SPM, SFV:SKB, SFV:SKS)
+  // - Spam categories (CAT:OSPM, CAT:SPM, CAT:PHSH, etc.)
+  //
+  // This allows legitimate NDRs through while still blocking spam bounces.
+  //
+  // Check if this is a Microsoft bounce message
+  const isMicrosoftBounce =
     (session.originalFromAddress === 'postmaster@outlook.com' ||
       (session.resolvedClientHostname &&
         session.resolvedClientHostname.endsWith(
@@ -211,11 +226,80 @@ if (
     isAutoReplyOrMailingList(headers) &&
     subject &&
     (subject.startsWith('Undeliverable: ') ||
-      subject.startsWith('No se puede entregar: '))
-  ) {
-    throw new SMTPError(
-      'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
-    );
+      subject.startsWith('No se puede entregar: '));
+
+  if (isMicrosoftBounce) {
+    // Check Microsoft's own spam classification to determine if this is a spam bounce
+    const forefrontHeader = headers.getFirst('x-forefront-antispam-report');
+
+    // Default to blocking if no Forefront header (can't verify legitimacy)
+    let isSpamBounce = true;
+
+    if (forefrontHeader) {
+      const lowerForefrontHeader = forefrontHeader.toLowerCase();
+
+      // Extract SCL (Spam Confidence Level) - scale 0-9
+      const sclMatch = lowerForefrontHeader.match(/scl:(-?\d+)/);
+      const scl = sclMatch ? Number.parseInt(sclMatch[1], 10) : null;
+
+      // Check for spam verdicts
+      // SFV:SPM - Message marked as spam by spam filtering
+      // SFV:SKB - Message blocked because sender is in blocked senders/domains list
+      // SFV:SKS - Message marked as spam before filtering (e.g., by mail flow rule)
+      const hasSpamVerdict =
+        lowerForefrontHeader.includes('sfv:spm') ||
+        lowerForefrontHeader.includes('sfv:skb') ||
+        lowerForefrontHeader.includes('sfv:sks');
+
+      // Check for spam categories
+      // CAT:OSPM - Outbound spam (from compromised Microsoft tenants)
+      // CAT:SPM - Spam
+      // CAT:PHSH - Phishing
+      // CAT:HPHSH/HPHISH - High confidence phishing
+      // CAT:HSPM - High confidence spam
+      // CAT:MALW - Malware
+      // CAT:SPOOF - Spoofing
+      const hasSpamCategory =
+        lowerForefrontHeader.includes('cat:ospm') ||
+        lowerForefrontHeader.includes('cat:spm') ||
+        lowerForefrontHeader.includes('cat:phsh') ||
+        lowerForefrontHeader.includes('cat:hphsh') ||
+        lowerForefrontHeader.includes('cat:hphish') ||
+        lowerForefrontHeader.includes('cat:hspm') ||
+        lowerForefrontHeader.includes('cat:malw') ||
+        lowerForefrontHeader.includes('cat:spoof');
+
+      // Check for non-spam verdict
+      // SFV:NSPM - Spam filtering marked the message as non-spam
+      const isNotSpam = lowerForefrontHeader.includes('sfv:nspm');
+
+      // Determine if this is a spam bounce:
+      // 1. If Microsoft explicitly says NOT spam (SFV:NSPM) with low SCL and no spam categories -> legitimate
+      // 2. If has spam verdict or spam category -> spam bounce
+      // 3. If high SCL (>=5) -> spam bounce
+      // 4. If low SCL (<=2) without spam markers -> likely legitimate
+      if (isNotSpam && scl !== null && scl <= 2 && !hasSpamCategory) {
+        // Microsoft explicitly marked as non-spam with low confidence - allow through
+        isSpamBounce = false;
+      } else if (
+        hasSpamVerdict ||
+        hasSpamCategory ||
+        (scl !== null && scl >= 5)
+      ) {
+        // Has spam indicators - block
+        isSpamBounce = true;
+      } else if (scl !== null && scl <= 2) {
+        // Low SCL without explicit spam markers - allow through
+        isSpamBounce = false;
+      }
+      // else: no clear indicators, default to blocking (isSpamBounce = true)
+    }
+
+    if (isSpamBounce) {
+      throw new SMTPError(
+        'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
+      );
+    }
   }
 
   //
