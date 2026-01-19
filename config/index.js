@@ -990,6 +990,7 @@ const config = {
     locals: {
       // i18n default locale
       defaultLocale: i18n.defaultLocale,
+      locales: i18n.locales,
       // Even though pug deprecates this, we've added `pretty`
       // in `koa-views` package, so this option STILL works
       // <https://github.com/queckezz/koa-views/pull/111>

@@ -176,7 +176,7 @@ block body
                     name="preferred_locale"
                   )
                     option(value="", selected=!user.preferred_locale)= t("Auto-detect (browser default)")
-                    each locale in config.i18n.locales
+                    each locale in locales
                       option(
                         value=locale,
                         selected=user.preferred_locale === locale

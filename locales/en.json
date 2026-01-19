@@ -15184,5 +15184,13 @@
   "IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.": "IMAP/POP3/CalDAV/CardDAV enabled. You can access emails, calendar, and contacts using any email client.",
   "Require TLS for Inbound Connections": "Require TLS for Inbound Connections",
   "When enabled, inbound emails not sent over a TLS-encrypted connection will be rejected with a 530 error. This enforces encryption for all incoming mail to your domain.": "When enabled, inbound emails not sent over a TLS-encrypted connection will be rejected with a 530 error. This enforces encryption for all incoming mail to your domain.",
-  "SPF record missing (recommended)": "SPF record missing (recommended)"
+  "SPF record missing (recommended)": "SPF record missing (recommended)",
+  "1 new update in 72h": "1 new update in 72h",
+  "Profile Settings - Update Account Information": "Profile Settings - Update Account Information",
+  "Update your Forward Email profile. Change email, password, notification preferences, and account settings.": "Update your Forward Email profile. Change email, password, notification preferences, and account settings.",
+  "Daily log alert emails": "Daily log alert emails",
+  "Weekly dmarc report emails": "Weekly dmarc report emails",
+  "Set your preferred language to override automatic detection based on your browser settings.": "Set your preferred language to override automatic detection based on your browser settings.",
+  "Auto-detect (browser default)": "Auto-detect (browser default)",
+  "Preferred Language": "Preferred Language"
 }
