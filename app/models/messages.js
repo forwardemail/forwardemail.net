@@ -15,6 +15,7 @@
 
 const mongoose = require('mongoose');
 const validationErrorTransform = require('mongoose-validation-error-transform');
+const isSANB = require('is-string-and-not-blank');
 
 const Mailboxes = require('./mailboxes');
 const Threads = require('./threads');
@@ -33,6 +34,18 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 // <https://github.com/Automattic/mongoose/issues/7150#issuecomment-524419675>
 const Str = mongoose.Schema.Types.String;
 Str.checkRequired((v) => v !== null);
+
+// Label validation (same pattern as aliases.js label_settings)
+const MAX_LABELS_PER_MESSAGE = 10;
+const KEYWORD_REGEX = /^([A-Za-z\d]|[\\$])[\w.-]*$/;
+
+const normalizeLabelKeyword = (keyword) =>
+  String(keyword || '')
+    .trim()
+    .toLowerCase();
+
+const isValidLabelKeyword = (keyword) =>
+  isSANB(keyword) && KEYWORD_REGEX.test(normalizeLabelKeyword(keyword));
 
 const Messages = new mongoose.Schema(
   {
@@ -86,6 +99,13 @@ const Messages = new mongoose.Schema(
     flags: {
       type: Array,
       required: true,
+      index: true
+    },
+
+    // user-defined labels (e.g. "work", "important", "project-x")
+    labels: {
+      type: Array,
+      default: [],
       index: true
     },
 
@@ -291,6 +311,22 @@ Messages.pre('validate', async function (next) {
 Messages.pre('validate', function (next) {
   // make flags unique
   this.flags = _.uniq(this.flags);
+
+  // normalize and validate labels
+  if (Array.isArray(this.labels)) {
+    // normalize (lowercase, trim) and filter valid labels
+    this.labels = this.labels
+      .map((label) => normalizeLabelKeyword(label))
+      .filter((label) => isValidLabelKeyword(label));
+
+    // make unique
+    this.labels = _.uniq(this.labels);
+
+    // enforce max limit
+    if (this.labels.length > MAX_LABELS_PER_MESSAGE) {
+      this.labels = this.labels.slice(0, MAX_LABELS_PER_MESSAGE);
+    }
+  }
 
   // replace "@wildduck.email" in msgid
   if (this.isNew && typeof this.msgid === 'string')

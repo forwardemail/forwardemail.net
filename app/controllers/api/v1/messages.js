@@ -902,6 +902,7 @@ async function retrieve(ctx) {
 //
 // NOTE: this supports modifying the message through the following fields:
 //       - flags
+//       - labels
 //       - folder
 //
 async function update(ctx) {
@@ -1011,6 +1012,16 @@ async function update(ctx) {
     message.undeleted = !message.flags.includes('\\Deleted');
     message.draft = message.flags.includes('\\Draft');
     message.searchable = !message.flags.includes('\\Deleted');
+  }
+
+  if (_.isArray(body.labels)) {
+    // must be [] or [ label, label, label ]
+    if (!_.isEmpty(body.labels) && body.labels.every((l) => !isSANB(l)))
+      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+
+    // validation, normalization, and max limit enforcement
+    // happens in the model's pre-validate hook
+    message.labels = body.labels;
   }
 
   message.remoteAddress = ctx.ip;

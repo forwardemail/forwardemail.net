@@ -867,6 +867,7 @@ module.exports = {
   MESSAGE_INVALID_ID: 'Invalid message ID.',
   MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
   MESSAGE_FLAGS_INVALID: 'Message flags invalid.',
+  MESSAGE_LABELS_INVALID: 'Message labels invalid.',
 
   // Contact validation phrases
   CONTACT_ID_REQUIRED: 'Contact ID is required.',
