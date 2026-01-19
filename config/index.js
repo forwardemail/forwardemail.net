@@ -660,6 +660,7 @@ const config = {
     'feature-reminder',
     'phishing-alert',
     'two-factor-reminder',
+    'weekly-dmarc-report',
     'welcome'
   ],
 

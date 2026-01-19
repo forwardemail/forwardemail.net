@@ -38,45 +38,28 @@ block content
                 = " "
                 = emoji("bar_chart")
 
-              //- Stats grid
-              .row.text-center.justify-content-center
-                //- Total reports
-                .col-6.col-sm-4.col-md-2.mb-3.px-2
-                  .card.h-100.shadow-sm
-                    .card-body.py-3
-                      h3.h2.mb-1.text-primary= stats.totalReports.toLocaleString()
-                      small.text-muted= t("Reports")
-
-                //- Total messages
-                .col-6.col-sm-4.col-md-2.mb-3.px-2
-                  .card.h-100.shadow-sm
-                    .card-body.py-3
-                      h3.h2.mb-1.text-primary= stats.totalMessages.toLocaleString()
-                      small.text-muted= t("Messages")
-
-                //- SPF Aligned
-                .col-6.col-sm-4.col-md-2.mb-3.px-2
-                  - const spfColor = parseFloat(stats.spfAlignedPct) >= 90 ? "#28a745" : parseFloat(stats.spfAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
-                  .card.h-100.shadow-sm
-                    .card-body.py-3
-                      h3.h2.mb-1(style=`color: ${spfColor}`)= `${stats.spfAlignedPct}%`
-                      small.text-muted= t("SPF Aligned")
-
-                //- DKIM Aligned
-                .col-6.col-sm-4.col-md-2.mb-3.px-2
-                  - const dkimColor = parseFloat(stats.dkimAlignedPct) >= 90 ? "#28a745" : parseFloat(stats.dkimAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
-                  .card.h-100.shadow-sm
-                    .card-body.py-3
-                      h3.h2.mb-1(style=`color: ${dkimColor}`)= `${stats.dkimAlignedPct}%`
-                      small.text-muted= t("DKIM Aligned")
-
-                //- Pass Rate
-                .col-6.col-sm-4.col-md-2.mb-3.px-2
-                  - const passColor = parseFloat(stats.passRate) >= 90 ? "#28a745" : parseFloat(stats.passRate) >= 70 ? "#ffc107" : "#dc3545";
-                  .card.h-100.shadow-sm.border-success
-                    .card-body.py-3
-                      h3.h2.mb-1(style=`color: ${passColor}`)= `${stats.passRate}%`
-                      small.text-muted= t("Pass Rate")
+              //- Stats table - simple and clean like daily-log-alert
+              table.table.table-bordered.text-center.mb-0
+                thead.thead-light
+                  tr
+                    th= t("Reports")
+                    th= t("Messages")
+                    th= t("SPF Aligned")
+                    th= t("DKIM Aligned")
+                tbody
+                  tr
+                    td
+                      strong.text-primary= stats.totalReports.toLocaleString()
+                    td
+                      strong.text-primary= stats.totalMessages.toLocaleString()
+                    td
+                      - const spfPct = Math.round(parseFloat(stats.spfAlignedPct));
+                      - const spfColor = spfPct >= 90 ? "#28a745" : spfPct >= 70 ? "#ffc107" : "#dc3545";
+                      strong(style=`color: ${spfColor}`)= `${spfPct}%`
+                    td
+                      - const dkimPct = Math.round(parseFloat(stats.dkimAlignedPct));
+                      - const dkimColor = dkimPct >= 90 ? "#28a745" : dkimPct >= 70 ? "#ffc107" : "#dc3545";
+                      strong(style=`color: ${dkimColor}`)= `${dkimPct}%`
 
             //- Message disposition breakdown
             if stats.totalMessages > 0
@@ -101,7 +84,7 @@ block content
                         = t("Accepted")
                       td.text-right(style="color: #28a745")= stats.accepted.toLocaleString()
                       td.text-right(style="color: #28a745")
-                        = stats.totalMessages > 0 ? ((stats.accepted / stats.totalMessages) * 100).toFixed(1) : 0
+                        = stats.totalMessages > 0 ? Math.round((stats.accepted / stats.totalMessages) * 100) : 0
                         = "%"
                     if stats.quarantined > 0
                       tr
@@ -111,7 +94,7 @@ block content
                           = t("Quarantined")
                         td.text-right(style="color: #ffc107")= stats.quarantined.toLocaleString()
                         td.text-right(style="color: #ffc107")
-                          = ((stats.quarantined / stats.totalMessages) * 100).toFixed(1)
+                          = Math.round((stats.quarantined / stats.totalMessages) * 100)
                           = "%"
                     if stats.rejected > 0
                       tr
@@ -121,7 +104,7 @@ block content
                           = t("Rejected")
                         td.text-right(style="color: #dc3545")= stats.rejected.toLocaleString()
                         td.text-right(style="color: #dc3545")
-                          = ((stats.rejected / stats.totalMessages) * 100).toFixed(1)
+                          = Math.round((stats.rejected / stats.totalMessages) * 100)
                           = "%"
 
             //- Domains section
@@ -149,11 +132,13 @@ block content
                           strong= domain.name
                         td.text-right= domain.messages.toLocaleString()
                         td.text-right
-                          - const domSpfColor = parseFloat(domain.spfAlignedPct) >= 90 ? "#28a745" : parseFloat(domain.spfAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
-                          span(style=`color: ${domSpfColor}`)= `${domain.spfAlignedPct}%`
+                          - const domSpfPct = Math.round(parseFloat(domain.spfAlignedPct));
+                          - const domSpfColor = domSpfPct >= 90 ? "#28a745" : domSpfPct >= 70 ? "#ffc107" : "#dc3545";
+                          span(style=`color: ${domSpfColor}`)= `${domSpfPct}%`
                         td.text-right
-                          - const domDkimColor = parseFloat(domain.dkimAlignedPct) >= 90 ? "#28a745" : parseFloat(domain.dkimAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
-                          span(style=`color: ${domDkimColor}`)= `${domain.dkimAlignedPct}%`
+                          - const domDkimPct = Math.round(parseFloat(domain.dkimAlignedPct));
+                          - const domDkimColor = domDkimPct >= 90 ? "#28a745" : domDkimPct >= 70 ? "#ffc107" : "#dc3545";
+                          span(style=`color: ${domDkimColor}`)= `${domDkimPct}%`
                     if additionalDomainsCount > 0
                       tr.text-muted
                         td(colspan="4")
@@ -296,21 +281,18 @@ block content
                 = " "
                 = emoji("raising_hand")
               p.card-text.text-center
-                = t("If you have questions about your DMARC reports or need help improving your email authentication, our support team is here to help.")
+                = t("Read our FAQ, submit a help request, or reply to this email.")
               ul.list-inline.text-center.mb-0
-                li.list-inline-item.mb-2
+                li.list-inline-item
                   a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/faq`
                   )
-                    = emoji("question")
-                    = " "
-                    = t("FAQ")
-                li.list-inline-item.mb-2
+                    = t("Read FAQ")
+                li.list-inline-item
                   a.btn.btn-outline-dark(
                     href=`${config.urls.web}/${locale}/help`
                   )
-                    = emoji("envelope")
-                    = " "
-                    = t("Contact Support")
+                    = t("Help Request")
 
-  include ../_footer
+          .card-footer.text-center.small.text-muted
+            = t("Privacy. Transparency. Security. Open Source.")
