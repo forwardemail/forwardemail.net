@@ -345,6 +345,7 @@ async function json(ctx, message) {
     subject: message.subject,
 
     flags: message.flags,
+    labels: message.labels || [],
     size: message.size,
     uid: message.uid,
     modseq: message.modseq,
