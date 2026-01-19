@@ -1014,14 +1014,22 @@ async function update(ctx) {
     message.searchable = !message.flags.includes('\\Deleted');
   }
 
-  if (_.isArray(body.labels)) {
+  if (body.labels !== undefined) {
+    // convert string to array for single label support
+    let { labels } = body;
+    if (isSANB(labels)) {
+      labels = [labels];
+    } else if (!_.isArray(labels)) {
+      throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
+    }
+
     // must be [] or [ label, label, label ]
-    if (!_.isEmpty(body.labels) && body.labels.every((l) => !isSANB(l)))
+    if (!_.isEmpty(labels) && labels.every((l) => !isSANB(l)))
       throw Boom.badRequest(ctx.translateError('MESSAGE_LABELS_INVALID'));
 
     // validation, normalization, and max limit enforcement
     // happens in the model's pre-validate hook
-    message.labels = body.labels;
+    message.labels = labels;
   }
 
   message.remoteAddress = ctx.ip;

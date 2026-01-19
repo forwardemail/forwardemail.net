@@ -973,6 +973,7 @@
           "header_date",
           "subject",
           "flags",
+          "labels",
           "size",
           "uid",
           "modseq",
@@ -1069,6 +1070,14 @@
               "type": "string"
             },
             "description": "IMAP flags"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "User-defined labels (lowercase, max 10)",
+            "example": ["work", "important", "follow-up"]
           },
           "size": {
             "type": "integer",
@@ -1245,6 +1254,21 @@
               "type": "string"
             },
             "description": "IMAP flags to set on the message"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": ["work", "important"]
           },
           "folder": {
             "type": "string",
@@ -4413,7 +4437,7 @@
           "Messages"
         ],
         "summary": "Update message",
-        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "description": "Update an existing message. You can modify the message flags, labels, or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "updateMessage",
         "security": [
           {
