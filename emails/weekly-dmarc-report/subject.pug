@@ -1,0 +1,4 @@
+if hasIssues
+  = `⚠️ ${t("Weekly DMARC Report")}: ${t("Action Required")}`
+else
+  = `✅ ${t("Weekly DMARC Report")}: ${stats.passRate}% ${t("Pass Rate")}`

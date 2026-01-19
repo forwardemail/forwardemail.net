@@ -14,43 +14,42 @@ block body
       .row
         .col
           include ../../_breadcrumbs
-          h1.h3.mb-3= t("DMARC Reports")
-          p.text-muted.mb-3= t("Monitor your email authentication performance over time. DMARC reports are sent by receiving mail servers to help you understand how your emails are being authenticated.")
-
-      //- Domain filter
-      .row.mb-3
-        .col
-          form#domain-filter-form.d-flex.align-items-center.flex-wrap.gap-2(
-            method="GET"
-          )
-            label.me-2.mb-0(for="domain-select")
-              strong= t("Filter by Domain:")
-            select#domain-select.form-select.form-select-sm(
-              name="domains",
-              style="max-width: 300px"
-            )
-              option(value="")= t("All domains")
-              each domain in filteredDomains
-                option(
-                  value=domain.name,
-                  selected=domainList && domainList.includes(domain.name)
-                )= domain.name
-            button.btn.btn-sm.btn-primary(type="submit")= t("Apply")
+          if domainList && domainList.length > 0
+            if domainList.length === 1
+              strong= t("Filtered for domain:")
+            else
+              strong= t("Filtered for domains:")
+            ul.list-inline
+              each domainName in domainList
+                li.list-inline-item= domainName
 
       if filteredDomains && filteredDomains.length > 0
-        if domainList && domainList.length > 0
-          .row.mb-3
-            .col
-              .alert.alert-info.small
-                if domainList.length === 1
-                  strong= t("Filtered for domain:")
-                else
-                  strong= t("Filtered for domains:")
-                = " "
-                each domainName, index in domainList
-                  if index > 0
-                    = ", "
-                  = domainName
+        //- Domain filter form
+        .row.mb-3
+          .col
+            form#domain-filter-form.ajax-form.table-ajax-form(
+              action=ctx.path,
+              method="GET",
+              data-search-params="domains"
+            )
+              .input-group.mb-3
+                .input-group-prepend
+                  span.input-group-text= t("Filter by Domain")
+                select#domain-select.form-control(
+                  name="domains",
+                  aria-label=t("Filter by Domain")
+                )
+                  option(
+                    value="",
+                    selected=!domainList || domainList.length === 0
+                  )= t("All domains")
+                  each domain in filteredDomains
+                    option(
+                      value=domain.name,
+                      selected=domainList && domainList.includes(domain.name)
+                    )= domain.name
+                .input-group-append
+                  button.btn.btn-success(type="submit")= t("Apply")
 
         //- Metrics cards
         .row.mb-3

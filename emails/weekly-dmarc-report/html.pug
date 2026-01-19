@@ -1,0 +1,316 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            = emoji("shield")
+            = " "
+            = t("Weekly DMARC Report")
+            = " "
+            = emoji("shield")
+          .card-body.p-0
+            //- Hero section with date range
+            .p-3.bg-light.text-center
+              p.card-text.mb-1
+                strong= t("Report Period")
+              p.card-text.text-muted.mb-0
+                = reportPeriod
+
+            //- Alert banner if there are issues
+            if hasIssues
+              .p-3.bg-warning.text-dark
+                p.card-text.mb-0.text-center
+                  = emoji("warning")
+                  = " "
+                  strong= t("Attention Required")
+                  = ": "
+                  = t("Some emails failed DMARC authentication or were rejected. Review the details below.")
+
+            //- Summary stats section
+            .p-3
+              h2.h4.text-center.mb-4
+                = emoji("bar_chart")
+                = " "
+                = t("DMARC Summary")
+                = " "
+                = emoji("bar_chart")
+
+              //- Stats grid
+              .row.text-center.justify-content-center
+                //- Total reports
+                .col-6.col-sm-4.col-md-2.mb-3.px-2
+                  .card.h-100.shadow-sm
+                    .card-body.py-3
+                      h3.h2.mb-1.text-primary= stats.totalReports.toLocaleString()
+                      small.text-muted= t("Reports")
+
+                //- Total messages
+                .col-6.col-sm-4.col-md-2.mb-3.px-2
+                  .card.h-100.shadow-sm
+                    .card-body.py-3
+                      h3.h2.mb-1.text-primary= stats.totalMessages.toLocaleString()
+                      small.text-muted= t("Messages")
+
+                //- SPF Aligned
+                .col-6.col-sm-4.col-md-2.mb-3.px-2
+                  - const spfColor = parseFloat(stats.spfAlignedPct) >= 90 ? "#28a745" : parseFloat(stats.spfAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
+                  .card.h-100.shadow-sm
+                    .card-body.py-3
+                      h3.h2.mb-1(style=`color: ${spfColor}`)= `${stats.spfAlignedPct}%`
+                      small.text-muted= t("SPF Aligned")
+
+                //- DKIM Aligned
+                .col-6.col-sm-4.col-md-2.mb-3.px-2
+                  - const dkimColor = parseFloat(stats.dkimAlignedPct) >= 90 ? "#28a745" : parseFloat(stats.dkimAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
+                  .card.h-100.shadow-sm
+                    .card-body.py-3
+                      h3.h2.mb-1(style=`color: ${dkimColor}`)= `${stats.dkimAlignedPct}%`
+                      small.text-muted= t("DKIM Aligned")
+
+                //- Pass Rate
+                .col-6.col-sm-4.col-md-2.mb-3.px-2
+                  - const passColor = parseFloat(stats.passRate) >= 90 ? "#28a745" : parseFloat(stats.passRate) >= 70 ? "#ffc107" : "#dc3545";
+                  .card.h-100.shadow-sm.border-success
+                    .card-body.py-3
+                      h3.h2.mb-1(style=`color: ${passColor}`)= `${stats.passRate}%`
+                      small.text-muted= t("Pass Rate")
+
+            //- Message disposition breakdown
+            if stats.totalMessages > 0
+              .p-3.bg-light
+                h2.h4.text-center
+                  = emoji("inbox_tray")
+                  = " "
+                  = t("Message Disposition")
+                  = " "
+                  = emoji("inbox_tray")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Disposition")
+                      th.text-right= t("Count")
+                      th.text-right= t("Percentage")
+                  tbody
+                    tr
+                      td
+                        = emoji("white_check_mark")
+                        = " "
+                        = t("Accepted")
+                      td.text-right(style="color: #28a745")= stats.accepted.toLocaleString()
+                      td.text-right(style="color: #28a745")
+                        = stats.totalMessages > 0 ? ((stats.accepted / stats.totalMessages) * 100).toFixed(1) : 0
+                        = "%"
+                    if stats.quarantined > 0
+                      tr
+                        td
+                          = emoji("warning")
+                          = " "
+                          = t("Quarantined")
+                        td.text-right(style="color: #ffc107")= stats.quarantined.toLocaleString()
+                        td.text-right(style="color: #ffc107")
+                          = ((stats.quarantined / stats.totalMessages) * 100).toFixed(1)
+                          = "%"
+                    if stats.rejected > 0
+                      tr
+                        td
+                          = emoji("x")
+                          = " "
+                          = t("Rejected")
+                        td.text-right(style="color: #dc3545")= stats.rejected.toLocaleString()
+                        td.text-right(style="color: #dc3545")
+                          = ((stats.rejected / stats.totalMessages) * 100).toFixed(1)
+                          = "%"
+
+            //- Domains section
+            if domains && domains.length > 0
+              .p-3
+                h2.h4.text-center
+                  = emoji("globe_with_meridians")
+                  = " "
+                  = t("Your Domains")
+                  = " "
+                  = emoji("globe_with_meridians")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Domain")
+                      th.text-right= t("Messages")
+                      th.text-right= t("SPF")
+                      th.text-right= t("DKIM")
+                  tbody
+                    each domain in domains
+                      tr
+                        td
+                          = emoji("link")
+                          = " "
+                          strong= domain.name
+                        td.text-right= domain.messages.toLocaleString()
+                        td.text-right
+                          - const domSpfColor = parseFloat(domain.spfAlignedPct) >= 90 ? "#28a745" : parseFloat(domain.spfAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
+                          span(style=`color: ${domSpfColor}`)= `${domain.spfAlignedPct}%`
+                        td.text-right
+                          - const domDkimColor = parseFloat(domain.dkimAlignedPct) >= 90 ? "#28a745" : parseFloat(domain.dkimAlignedPct) >= 70 ? "#ffc107" : "#dc3545";
+                          span(style=`color: ${domDkimColor}`)= `${domain.dkimAlignedPct}%`
+                    if additionalDomainsCount > 0
+                      tr.text-muted
+                        td(colspan="4")
+                          = emoji("heavy_plus_sign")
+                          = " "
+                          = `${additionalDomainsCount} ${t("more domains")}`
+
+            //- Top reporters section
+            if topReporters && topReporters.length > 0
+              .p-3.bg-light
+                h2.h4.text-center
+                  = emoji("office")
+                  = " "
+                  = t("Top Reporters")
+                  = " "
+                  = emoji("office")
+                p.text-center.text-muted.small.mb-3
+                  = t("Organizations that sent DMARC reports about your domains")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Organization")
+                      th.text-right= t("Reports")
+                      th.text-right= t("Messages")
+                  tbody
+                    each reporter in topReporters
+                      tr
+                        td= reporter.name
+                        td.text-right= reporter.reports.toLocaleString()
+                        td.text-right= reporter.messages.toLocaleString()
+
+            //- Source IP issues section
+            if topIpIssues && topIpIssues.length > 0
+              .p-3
+                h2.h4.text-center
+                  = emoji("mag")
+                  = " "
+                  = t("IPs with Alignment Issues")
+                  = " "
+                  = emoji("mag")
+                p.text-center.text-muted.small.mb-3
+                  = t("These IP addresses sent emails that failed SPF or DKIM alignment")
+                table.table.table-sm.table-bordered.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("IP Address")
+                      th.text-right= t("Count")
+                      th.text-center= t("SPF")
+                      th.text-center= t("DKIM")
+                      th.text-center= t("Action")
+                  tbody
+                    each issue in topIpIssues
+                      tr
+                        td
+                          code= issue.ip
+                        td.text-right= issue.count.toLocaleString()
+                        td.text-center
+                          if issue.spfResult === 'pass' && issue.spfAligned === 'pass'
+                            span(style="color: #28a745")= emoji("white_check_mark")
+                          else
+                            span(style="color: #dc3545")= emoji("x")
+                        td.text-center
+                          if issue.dkimResult === 'pass' && issue.dkimAligned === 'pass'
+                            span(style="color: #28a745")= emoji("white_check_mark")
+                          else
+                            span(style="color: #dc3545")= emoji("x")
+                        td.text-center
+                          if issue.disposition === 'reject'
+                            span.badge(
+                              style="background-color: #dc3545; color: #fff"
+                            )= t("Rejected")
+                          else if issue.disposition === 'quarantine'
+                            span.badge(
+                              style="background-color: #ffc107; color: #212529"
+                            )= t("Quarantined")
+                          else
+                            span.badge(
+                              style="background-color: #28a745; color: #fff"
+                            )= t("Accepted")
+
+            //- Actionable tips
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("bulb")
+                = " "
+                = t("Tips for Better Deliverability")
+                = " "
+                = emoji("bulb")
+              ul.mb-0
+                li
+                  strong= t("SPF Alignment")
+                  = ": "
+                  = t("Ensure your SPF record includes all IP addresses that send email on your behalf.")
+                li
+                  strong= t("DKIM Alignment")
+                  = ": "
+                  = t("Configure DKIM signing for all your sending services and ensure the domain in the signature matches your From address.")
+                li
+                  strong= t("Monitor Regularly")
+                  = ": "
+                  = t("Check your DMARC reports weekly to catch issues before they affect deliverability.")
+
+            //- Quick actions
+            .p-3
+              h2.h4.text-center
+                = emoji("zap")
+                = " "
+                = t("Quick Actions")
+                = " "
+                = emoji("zap")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-dark(
+                    href=`${config.urls.web}/${locale}/my-account/dmarc-reports`
+                  )
+                    = emoji("bar_chart")
+                    = " "
+                    = t("View Full Dashboard")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/my-account/domains`
+                  )
+                    = emoji("gear")
+                    = " "
+                    = t("Manage Domains")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/faq#how-do-i-set-up-dmarc-for-forward-email`
+                  )
+                    = emoji("book")
+                    = " "
+                    = t("DMARC Setup Guide")
+
+            //- Help section
+            .p-3.bg-light
+              h2.h4.text-center
+                = emoji("raising_hand")
+                = " "
+                = t("Need Help?")
+                = " "
+                = emoji("raising_hand")
+              p.card-text.text-center
+                = t("If you have questions about your DMARC reports or need help improving your email authentication, our support team is here to help.")
+              ul.list-inline.text-center.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/faq`
+                  )
+                    = emoji("question")
+                    = " "
+                    = t("FAQ")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href=`${config.urls.web}/${locale}/help`
+                  )
+                    = emoji("envelope")
+                    = " "
+                    = t("Contact Support")
+
+  include ../_footer

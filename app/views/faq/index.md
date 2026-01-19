@@ -46,6 +46,7 @@
   * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
   * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
   * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
+  * [How do I view DMARC Reports](#how-do-i-view-dmarc-reports)
   * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
   * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
   * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
@@ -1883,6 +1884,64 @@ Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noop
 ### How do I set up DMARC for Forward Email
 
 Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+
+### How do I view DMARC Reports
+
+Forward Email provides a comprehensive DMARC Reports dashboard that allows you to monitor your email authentication performance across all your domains from a single interface.
+
+**What are DMARC Reports?**
+
+DMARC (Domain-based Message Authentication, Reporting, and Conformance) reports are XML files sent by receiving mail servers that tell you how your emails are being authenticated. These reports help you understand:
+
+* How many emails are being sent from your domain
+* Whether those emails are passing SPF and DKIM authentication
+* What actions receiving servers are taking (accept, quarantine, or reject)
+* Which IP addresses are sending email on behalf of your domain
+
+**How to Access DMARC Reports**
+
+Go to <a href="/my-account/dmarc-reports" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> DMARC Reports</a> to view your dashboard. You can also access domain-specific reports from <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> by clicking the "DMARC" button next to any domain.
+
+**Dashboard Features**
+
+The DMARC Reports dashboard provides:
+
+* **Summary Metrics**: Total reports received, total messages analyzed, SPF alignment rate, DKIM alignment rate, and overall pass rate
+* **Messages Over Time Chart**: Visual trend of email volume and authentication rates over the past 30 days
+* **Alignment Summary**: Donut chart showing SPF vs DKIM alignment distribution
+* **Message Disposition**: Stacked bar chart showing how receiving servers handled your emails (accepted, quarantined, or rejected)
+* **Recent Reports Table**: Detailed list of individual DMARC reports with filtering and pagination
+* **Domain Filtering**: Filter reports by specific domain when managing multiple domains
+
+**Why This Matters**
+
+For organizations managing multiple domains (like enterprises, non-profits, or agencies), DMARC reports are essential for:
+
+* **Identifying unauthorized senders**: Detect if someone is spoofing your domain
+* **Improving deliverability**: Ensure your legitimate emails pass authentication
+* **Monitoring email infrastructure**: Track which services and IPs are sending on your behalf
+* **Compliance**: Maintain visibility into email authentication for security audits
+
+Unlike other services that require separate DMARC monitoring tools, Forward Email includes DMARC report processing and visualization as part of your account at no additional cost.
+
+**Requirements**
+
+* DMARC Reports are available for paid plans only
+* Your domain must have DMARC configured (see [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email))
+* Reports are automatically collected when receiving mail servers send them to your configured DMARC reporting address
+
+**Weekly Email Reports**
+
+Paid plan users automatically receive weekly DMARC report summaries via email. These emails include:
+
+* Summary statistics for all your domains
+* SPF and DKIM alignment rates
+* Message disposition breakdown (accepted, quarantined, rejected)
+* Top reporting organizations (Google, Microsoft, Yahoo, etc.)
+* IP addresses with alignment issues that may need attention
+* Direct links to your DMARC Reports dashboard
+
+Weekly reports are sent automatically and cannot be disabled separately from other email notifications.
 
 ### How do I connect and configure my contacts
 

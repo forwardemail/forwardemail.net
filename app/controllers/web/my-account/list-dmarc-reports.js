@@ -184,13 +184,15 @@ async function listDmarcReports(ctx) {
   }
 
   // Base match for DMARC reports
+  // Use is_dmarc_report: true to leverage the partial index
   const baseMatch = {
-    message: 'dmarc_report',
+    is_dmarc_report: true,
     created_at: { $gte: THIRTY_DAYS_AGO },
     $or: domainOrQuery
   };
 
-  const baseHint = { message: 1, domains: 1, created_at: 1 };
+  // Use the partial index on is_dmarc_report
+  const baseHint = { is_dmarc_report: 1, domains: 1, created_at: -1 };
 
   // Run aggregations in parallel
   const [dailyStats, totalStats, recentReports] = await Promise.all([
@@ -371,16 +373,23 @@ async function listDmarcReports(ctx) {
   };
 
   // Alignment pie chart
+  // Handle empty data by showing placeholder values to avoid rendering issues
+  const hasAlignmentData = stats.spf_aligned > 0 || stats.dkim_aligned > 0;
   const alignmentChart = {
-    series: [stats.spf_aligned, stats.dkim_aligned],
+    series: hasAlignmentData ? [stats.spf_aligned, stats.dkim_aligned] : [1, 1],
     chart: {
       type: 'donut',
       height: 250
     },
     labels: ['SPF Aligned', 'DKIM Aligned'],
-    colors: [green, blue],
+    colors: hasAlignmentData ? [green, blue] : ['#6c757d', '#6c757d'],
     legend: {
       position: 'bottom'
+    },
+    noData: {
+      text: 'No data available',
+      align: 'center',
+      verticalAlign: 'middle'
     },
     plotOptions: {
       pie: {
@@ -390,7 +399,10 @@ async function listDmarcReports(ctx) {
             total: {
               show: true,
               label: 'Total Messages',
-              formatter: () => numeral(stats.total_messages).format('0,0')
+              formatter: () =>
+                hasAlignmentData
+                  ? numeral(stats.total_messages).format('0,0')
+                  : '0'
             }
           }
         }

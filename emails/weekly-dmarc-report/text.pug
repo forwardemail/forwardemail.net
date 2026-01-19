@@ -1,0 +1,159 @@
+= t("Weekly DMARC Report")
+= "\n"
+= "="
+= "\n\n"
+
+= t("Report Period")
+= ": "
+= reportPeriod
+= "\n\n"
+
+if hasIssues
+  = "⚠️ "
+  = t("Attention Required")
+  = ": "
+  = t("Some emails failed DMARC authentication or were rejected.")
+  = "\n\n"
+
+= t("DMARC Summary")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= t("Reports")
+= ": "
+= stats.totalReports.toLocaleString()
+= "\n"
+= t("Messages")
+= ": "
+= stats.totalMessages.toLocaleString()
+= "\n"
+= t("SPF Aligned")
+= ": "
+= stats.spfAlignedPct
+= "%\n"
+= t("DKIM Aligned")
+= ": "
+= stats.dkimAlignedPct
+= "%\n"
+= t("Pass Rate")
+= ": "
+= stats.passRate
+= "%\n\n"
+
+= t("Message Disposition")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= t("Accepted")
+= ": "
+= stats.accepted.toLocaleString()
+= "\n"
+if stats.quarantined > 0
+  = t("Quarantined")
+  = ": "
+  = stats.quarantined.toLocaleString()
+  = "\n"
+if stats.rejected > 0
+  = t("Rejected")
+  = ": "
+  = stats.rejected.toLocaleString()
+  = "\n"
+= "\n"
+
+if domains && domains.length > 0
+  = t("Your Domains")
+  = "\n"
+  = "-".repeat(40)
+  = "\n"
+  each domain in domains
+    = domain.name
+    = " - "
+    = domain.messages.toLocaleString()
+    = " "
+    = t("messages")
+    = " (SPF: "
+    = domain.spfAlignedPct
+    = "%, DKIM: "
+    = domain.dkimAlignedPct
+    = "%)\n"
+  if additionalDomainsCount > 0
+    = "+ "
+    = additionalDomainsCount
+    = " "
+    = t("more domains")
+    = "\n"
+  = "\n"
+
+if topReporters && topReporters.length > 0
+  = t("Top Reporters")
+  = "\n"
+  = "-".repeat(40)
+  = "\n"
+  each reporter in topReporters
+    = reporter.name
+    = ": "
+    = reporter.reports.toLocaleString()
+    = " "
+    = t("reports")
+    = ", "
+    = reporter.messages.toLocaleString()
+    = " "
+    = t("messages")
+    = "\n"
+  = "\n"
+
+if topIpIssues && topIpIssues.length > 0
+  = t("IPs with Alignment Issues")
+  = "\n"
+  = "-".repeat(40)
+  = "\n"
+  each issue in topIpIssues
+    = issue.ip
+    = " - "
+    = issue.count.toLocaleString()
+    = " "
+    = t("messages")
+    = " ("
+    = issue.disposition
+    = ")\n"
+  = "\n"
+
+= t("Quick Actions")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= t("View Full Dashboard")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/my-account/dmarc-reports\n"
+= t("Manage Domains")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/my-account/domains\n"
+= t("DMARC Setup Guide")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/faq#how-do-i-set-up-dmarc-for-forward-email\n\n"
+
+= t("Need Help?")
+= "\n"
+= "-".repeat(40)
+= "\n"
+= t("FAQ")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/faq\n"
+= t("Contact Support")
+= ": "
+= config.urls.web
+= "/"
+= locale
+= "/help\n"
