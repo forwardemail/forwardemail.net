@@ -265,6 +265,13 @@ let jobs = [
     interval: '1d',
     timeout: 0
   },
+  // weekly DMARC report email with authentication stats
+  // runs hourly but uses Redis to ensure only sent once per week per user
+  {
+    name: 'weekly-dmarc-report',
+    interval: '1h',
+    timeout: 0
+  },
   // past due relief (users that are more than 6 months past due are relieved)
   {
     name: 'past-due-relief',
