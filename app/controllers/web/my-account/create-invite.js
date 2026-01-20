@@ -8,6 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 const isEmail = require('#helpers/is-email');
 
 const emailHelper = require('#helpers/email');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 const { Users, Domains } = require('#models');
 
 async function createInvite(ctx, next) {
@@ -105,6 +106,14 @@ async function createInvite(ctx, next) {
   ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
 
+  // generate encrypted invite token containing domain_id and email
+  const inviteToken = encrypt(
+    JSON.stringify({
+      d: ctx.state.domain.id,
+      e: email.toLowerCase()
+    })
+  );
+
   // send an email
   try {
     await emailHelper({
@@ -113,7 +122,8 @@ async function createInvite(ctx, next) {
         to: email.toLowerCase()
       },
       locals: {
-        domain: { id: ctx.state.domain.id, name: ctx.state.domain.name }
+        domain: { name: ctx.state.domain.name },
+        inviteToken
       }
     });
   } catch (err) {

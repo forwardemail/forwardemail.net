@@ -9,7 +9,7 @@ block content
           .card-body
             p.card-text= t("Click the button below to accept your invite.")
             a.btn.btn-lg.btn-block.btn-success(
-              href=`${config.urls.web}/${locale}/my-account/domains/${domain.id}/invites`,
+              href=`${config.urls.web}/${locale}/my-account/domains/${inviteToken}/invites`,
               role="button"
             )= t("Accept invite")
           .card-footer.small.text-muted= t("If you did not expect to receive this invite, then please reply to let us know.")

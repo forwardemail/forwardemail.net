@@ -541,6 +541,8 @@ module.exports = {
   INVITE_DOES_NOT_EXIST:
     'Invite does not exist with your email address for this domain.',
   DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
+  DOMAIN_ALREADY_EXISTS_REMOVE_FIRST:
+    'Domain already exists on your account. Please remove it first and then try accepting the invite again.',
   ASYNC_PAYMENT:
     'Thank you for completing your checkout session. <strong>Please note that your payment is still pending.</strong> Once it has been successfully processed, then we will notify you by email. Please wait until you receive this email &ndash; and then you can visit our website and refresh the page for the most updated account information.',
   ACCOUNT_DELETE_HAS_DOMAINS:
@@ -609,6 +611,8 @@ module.exports = {
     'You have successfully accepted the invite to this domain and are an admin.',
   INVITE_ACCEPTED_USER:
     'You have successfully accepted the invite to this domain and you can now create your first alias.',
+  INVITE_EMAIL_MISMATCH:
+    'Note: This invite was originally sent to %s, which differs from your account email address.',
   INVITE_EMAIL_ERROR:
     'An error occurred while emailing the invite link.  Please manually copy the the invite link and share it with this person if needed.',
   INVALID_GROUP: 'Group was invalid, must be either admin or user.',
