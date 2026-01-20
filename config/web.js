@@ -19,6 +19,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const openpgp = require('openpgp');
 const sharedConfig = require('@ladjs/shared-config');
+const { Octokit } = require('@octokit/core');
 
 const routes = require('../routes');
 
@@ -39,15 +40,14 @@ const logger = require('#helpers/logger');
 const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 const noindexQueryStrings = require('#helpers/noindex-query-strings');
-const retryRequest = require('#helpers/retry-request');
 const {
   getStatsForUser,
   buildBadgeTooltip
 } = require('#controllers/web/event-feed');
 
-// GitHub API base URL for status page (public, no auth required)
-const GITHUB_STATUS_API =
-  'https://api.github.com/repos/forwardemail/status.forwardemail.net/issues';
+const octokit = new Octokit({
+  auth: env.GITHUB_OCTOKIT_TOKEN
+});
 
 let ACTIVE_GITHUB_ISSUES = {};
 
@@ -108,22 +108,16 @@ try {
 
 async function checkGitHubIssues() {
   try {
-    // Use unauthenticated request (public repo, 60 req/hour limit)
-    // With retryRequest for automatic retry on network/rate limit errors
-    const response = await retryRequest(GITHUB_STATUS_API, {
-      method: 'GET',
-      headers: {
-        accept: 'application/vnd.github+json',
-        'user-agent': 'ForwardEmail/1.0',
-        'x-github-api-version': '2022-11-28'
-      },
-      timeout: ms('30s'),
-      retries: 3
-    });
-
-    const data = await response.body.json();
-    ACTIVE_GITHUB_ISSUES = { data };
-
+    ACTIVE_GITHUB_ISSUES = await octokit.request(
+      'GET /repos/{owner}/{repo}/issues',
+      {
+        owner: 'forwardemail',
+        repo: 'status.forwardemail.net',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    );
     if (
       typeof ACTIVE_GITHUB_ISSUES === 'object' &&
       Array.isArray(ACTIVE_GITHUB_ISSUES.data)
@@ -132,24 +126,16 @@ async function checkGitHubIssues() {
         (obj) => obj.user.login === 'titanism'
       );
   } catch (err) {
-    // Log at debug level for rate limits (expected with unauthenticated requests)
-    // Log at fatal level for other failures
-    if (err.statusCode === 403 || err.statusCode === 429) {
-      logger.debug('GitHub API rate limit hit for status issues', {
-        extra: { status: err.statusCode, message: err.message }
-      });
-    } else {
-      logger.fatal(err);
-    }
+    logger.fatal(err);
   }
 }
 
-// GitHub API is limited to 60 requests per hour for unauthenticated requests
-// (if we check every minute, then that is 60 requests per hour - at the limit)
-// (if we check every 2 minutes, then that is 30 requests per hour - safe)
+// GitHub API is limited to 5K requests per hour
+// (if we check every 10 seconds, then that is 360 requests per hour)
+// (if we check every minute, then that is 60 requests per hour)
 if (config.env !== 'test') {
   checkGitHubIssues();
-  setInterval(checkGitHubIssues, ms('2m'));
+  setInterval(checkGitHubIssues, 60000);
 }
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
