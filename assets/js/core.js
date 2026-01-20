@@ -434,6 +434,15 @@ window.addEventListener(
       $(this).find('input[type="search"]:visible').focus();
     });
 
+    // Handle copy invite link modal - update input with the invite-specific link
+    $body.on('show.bs.modal', '#modal-copy-invite', function (ev) {
+      const $button = $(ev.relatedTarget);
+      const inviteLink = $button.data('invite-link');
+      if (inviteLink) {
+        $(this).find('#invite-link').val(inviteLink);
+      }
+    });
+
     //
     // any modals with embedded <iframe> we can assume need reset
     // (this also supports lazyframe lazy loaded videos)

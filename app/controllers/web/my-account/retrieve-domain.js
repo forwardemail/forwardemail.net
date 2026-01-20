@@ -18,6 +18,7 @@ const _ = require('#helpers/lodash');
 
 const { Domains, Aliases } = require('#models');
 const config = require('#config');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -128,6 +129,18 @@ async function retrieveDomain(ctx, next) {
         return member;
       })
     );
+    // set domain_id on each invite so the link virtual can generate encrypted tokens
+    if (Array.isArray(domain.invites)) {
+      for (const invite of domain.invites) {
+        invite.link = encrypt(
+          JSON.stringify({
+            d: domain.id,
+            e: invite.email
+          })
+        );
+      }
+    }
+
     ctx.state.domain = domain;
   }
 

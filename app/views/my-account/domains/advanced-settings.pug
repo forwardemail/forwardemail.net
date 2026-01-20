@@ -248,11 +248,7 @@ block body
             .text-center
               +planRequired(true)
             .input-group.input-group-lg
-              input#invite-link.form-control(
-                type="text",
-                readonly,
-                value=isTeamDisabled ? false : `${config.urls.web}/my-account/domains/${domain.id}/invites`
-              )
+              input#invite-link.form-control(type="text", readonly, value="")
               .input-group-append
                 button.btn.btn-primary(
                   type="button",
@@ -830,10 +826,11 @@ block body
                                 ul.list-inline.mb-0
                                   //- copy invite link
                                   li.list-inline-item
-                                    button.btn.btn-primary(
+                                    button.btn.btn-primary.copy-invite-btn(
                                       type="button",
                                       data-toggle="modal",
                                       data-target="#modal-copy-invite",
+                                      data-invite-link=`${config.urls.web}/my-account/domains/${invite.link}/invites`,
                                       disabled=isTeamDisabled
                                     )
                                       i.fa.fa-clipboard
