@@ -1,6 +1,6 @@
 # Caso práctico: Cómo el reenvío de correo electrónico impulsa las soluciones de correo electrónico para exalumnos de las mejores universidades {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

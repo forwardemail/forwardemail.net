@@ -1,6 +1,6 @@
 # 隐私政策 {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email privacy policy" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

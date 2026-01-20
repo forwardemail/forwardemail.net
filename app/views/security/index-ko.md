@@ -1,6 +1,6 @@
 # 보안 관행 {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

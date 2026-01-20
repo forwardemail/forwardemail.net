@@ -1,6 +1,6 @@
 # 보도자료 및 미디어 키트 {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email press and media kit" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

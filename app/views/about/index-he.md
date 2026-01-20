@@ -1,6 +1,6 @@
 # אודות העברת דוא"ל {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # אודות העברת דוא"ל {#about-forward-email-1}
 
@@ -138,4 +138,4 @@
 
 הפלטפורמה ממשיכה להתפתח עם מהדורות קבועות של תכונות ושיפורי תשתית, תוך שמירה על מעמדה כשירות הדוא"ל היחיד הזמין כיום, המוצפן בקוד פתוח לחלוטין, שקוף ועמיד בפני תהליכים קוונטיים, וממוקד בפרטיות.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

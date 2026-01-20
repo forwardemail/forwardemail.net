@@ -1,6 +1,6 @@
 # Acerca del reenvío de correo electrónico {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Acerca del reenvío de correo electrónico {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ A partir de 2025, Forward Email presta servicio a más de 500 000 dominios en to
 
 La plataforma continúa evolucionando con lanzamientos regulares de funciones y mejoras de infraestructura, manteniendo su posición como el único servicio de correo electrónico 100% de código abierto, encriptado, centrado en la privacidad, transparente y resistente a la tecnología cuántica disponible en la actualidad.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

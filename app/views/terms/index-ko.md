@@ -1,6 +1,6 @@
 # 용어 {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

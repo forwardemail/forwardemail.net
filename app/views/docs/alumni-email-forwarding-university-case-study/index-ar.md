@@ -1,6 +1,6 @@
 # دراسة حالة: كيف يُمكّن البريد الإلكتروني المُرسَل حلول البريد الإلكتروني للخريجين في أفضل الجامعات {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

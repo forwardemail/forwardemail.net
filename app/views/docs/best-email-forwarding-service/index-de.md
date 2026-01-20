@@ -1,6 +1,6 @@
 # Wie Forward Email Ihre Privatsphäre, Ihre Domain und Ihre Sicherheit schützt: Der technische Deep Dive {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

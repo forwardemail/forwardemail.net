@@ -1,6 +1,6 @@
 # Esettanulmány: Hogyan segíti a továbbított e-mail az öregdiákoknak szóló e-mail-megoldásokat a vezető egyetemek számára {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

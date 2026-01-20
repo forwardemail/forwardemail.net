@@ -1,6 +1,6 @@
 # Conditions {#terms}
 
-<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="Forward Email terms of service" class="rounded-lg" />
 
 ## Table des matières {#table-of-contents}
 

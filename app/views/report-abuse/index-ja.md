@@ -1,6 +1,6 @@
 # 不正行為を報告する {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

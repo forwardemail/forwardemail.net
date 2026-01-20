@@ -101,7 +101,7 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/gdpr': [
       `GDPR Compliance - EU Data Protection & Privacy Standards`,
-      `Forward Email is fully GDPR compliant. Learn about our data protection practices, user rights, data processing, and EU privacy law compliance.`,
+      `Forward Email is fully GDPR compliant. Learn about our data protection practices, user rights, data processing, EU privacy law compliance, and how we safeguard your information.`,
       'img/articles/gdpr.webp'
     ],
     '/security': [
@@ -120,12 +120,12 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/privacy': [
       `Privacy Policy - How We Protect Your Data & Email`,
-      `Read Forward Email's privacy policy. We collect minimal data, never sell your information, and provide complete transparency about data handling.`,
+      `Read Forward Email's privacy policy. We collect minimal data, never sell your information, and provide complete transparency about data handling practices and user rights.`,
       'img/articles/privacy.webp'
     ],
     '/help': [
       `Help & Support - Get Answers Fast ${currentYear}`,
-      `Get help with Forward Email. Search our knowledge base, contact support, or join our community. Average response time under 4 hours.`,
+      `Get help with Forward Email. Search our knowledge base, contact support, or join our community. Average response time under 4 hours. Find answers to all your email questions.`,
       'img/articles/help.webp'
     ],
     '/denylist': [
@@ -134,7 +134,7 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/logout': [
       `Sign Out - Forward Email`,
-      `Securely sign out of your Forward Email account. Your session will be terminated on all devices.`
+      `Securely sign out of your Forward Email account. Your session will be terminated on all devices for maximum security. Return anytime to manage your email forwarding.`
     ],
     '/register': [
       `Create Free Account - Start Email Forwarding in 2 Minutes`,
@@ -166,121 +166,121 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/guides/newsletter-with-listmonk': [
       `Listmonk Newsletter Setup with Forward Email SMTP ${currentYear}`,
-      `Create and manage newsletters using Listmonk with Forward Email as your SMTP provider. Self-hosted newsletter solution with reliable email delivery.`
+      `Create and manage newsletters using Listmonk with Forward Email as your SMTP provider. Self-hosted newsletter solution with reliable email delivery and high deliverability.`
     ],
     '/guides/selfhosted-on-debian': [
       `Self-Hosted Forward Email on Debian - Installation Guide ${currentYear}`,
-      `Complete guide to self-hosting Forward Email on Debian Linux. Docker and bare-metal installation, configuration, and maintenance instructions.`
+      `Complete guide to self-hosting Forward Email on Debian Linux. Docker and bare-metal installation, configuration, and maintenance instructions. Full control over your email.`
     ],
     '/guides/selfhosted-on-ubuntu': [
       `Self-Hosted Forward Email on Ubuntu - Installation Guide ${currentYear}`,
-      `Complete guide to self-hosting Forward Email on Ubuntu Linux. Docker and bare-metal installation, configuration, and maintenance instructions.`
+      `Complete guide to self-hosting Forward Email on Ubuntu Linux. Docker and bare-metal installation, configuration, and maintenance instructions. Full control over your email.`
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `Gmail Send Mail As - Use Custom Domain with Gmail ${currentYear}`,
-      `Setup Gmail to send and receive email from your custom domain. Step-by-step guide with video tutorial. Fix "Send Mail As" not working issues.`
+      `Setup Gmail to send and receive email from your custom domain. Step-by-step guide with video tutorial. Fix "Send Mail As" not working issues. Works with all Gmail accounts.`
     ],
     '/guides/smtp-integration': [
       `SMTP Integration Examples - Code Samples for All Languages`,
-      `SMTP integration examples for Node.js, Python, PHP, Ruby, Go, Java, and more. Copy-paste code samples for reliable email sending with Forward Email.`
+      `SMTP integration examples for Node.js, Python, PHP, Ruby, Go, Java, and more. Copy-paste code samples for reliable email sending with Forward Email. Production-ready code.`
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 Blocked by ISP - Workaround Solutions ${currentYear}`,
-      `Fix ISP blocking port 25 for email. Alternative SMTP ports, relay solutions, and workarounds for residential and business internet connections.`
+      `Fix ISP blocking port 25 for email. Alternative SMTP ports, relay solutions, and workarounds for residential and business internet connections. Send email from home.`
     ],
     '/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility':
       [
         `Printer & Scanner Email Setup - SMTP Configuration Guide ${currentYear}`,
-        `Fix scan-to-email on HP, Canon, Brother, Epson printers. Complete SMTP setup for IP cameras, fax machines, and legacy TLS 1.0 devices.`
+        `Fix scan-to-email on HP, Canon, Brother, Epson printers. Complete SMTP setup for IP cameras, fax machines, and scanners with TLS support. Works with all devices.`
       ],
     '/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas': [
       `NAS Email Notifications - SMTP Setup for Synology, QNAP, TrueNAS ${currentYear}`,
-      `Configure email notifications on your NAS device. Complete SMTP setup guide for Synology DSM, QNAP QTS, TrueNAS, ReadyNAS, and more.`
+      `Configure email notifications on your NAS device. Complete SMTP setup guide for Synology DSM, QNAP QTS, TrueNAS, ReadyNAS, and more. Get alerts for all NAS events.`
     ],
     '/guides/raspberry-pi-ftp-server-email-relay-security-camera': [
       `Raspberry Pi Email Relay for Security Cameras - FTP Server Setup`,
-      `Build a Raspberry Pi FTP server with email relay for security cameras. Receive motion alerts via email. Works with all IP cameras and Pi models.`
+      `Build a Raspberry Pi FTP server with email relay for security cameras. Receive motion alerts via email. Works with all IP cameras and Pi models. Complete DIY guide.`
     ],
     '/domain-registration': [
       `Register Domain for Email - Find Your Perfect Domain Name`,
-      `Search and register domain names for email. Instant DNS setup for email forwarding. Free WHOIS privacy and SSL certificates included.`
+      `Search and register domain names for email. Instant DNS setup for email forwarding. Free WHOIS privacy and SSL certificates included. Start your custom domain email today.`
     ],
     '/reserved-email-addresses': [
       `Reserved Email Addresses - 1250+ Blocked Addresses for Security`,
-      `Complete list of reserved email addresses blocked for security. Protect your domain from abuse, phishing, and impersonation attacks.`
+      `Complete list of reserved email addresses blocked for security. Protect your domain from abuse, phishing, and impersonation attacks. Essential for domain administrators.`
     ],
     '/my-account': [
       `My Account - Manage Domains & Email Forwarding`,
-      `Manage your Forward Email account, domains, aliases, and settings. View analytics, update billing, and configure security options.`
+      `Manage your Forward Email account, domains, aliases, and settings. View analytics, update billing, configure security options, and control all your email forwarding.`
     ],
     '/my-account/analytics': [
       `Email Analytics - Track Forwarding & Delivery Stats`,
-      `View your email forwarding analytics. Track delivery rates, bounce rates, and usage statistics for all your domains and aliases.`
+      `View your email forwarding analytics. Track delivery rates, bounce rates, and usage statistics for all your domains and aliases. Monitor performance in real-time.`
     ],
     '/my-account/domains': [
       `Manage Domains - Add, Configure & Verify Custom Domains`,
-      `Manage your custom domains for email forwarding. Add new domains, configure DNS, verify settings, and manage aliases.`
+      `Manage your custom domains for email forwarding. Add new domains, configure DNS, verify settings, manage aliases, and control all your email routing in one place.`
     ],
     '/my-account/emails': [
       `Manage Emails - View & Search Your Email History`,
-      `View and search your email history. Track sent and received messages, check delivery status, and manage your mailbox.`
+      `View and search your email history. Track sent and received messages, check delivery status, manage your mailbox, and access your complete email archive securely.`
     ],
     '/my-account/logs': [
       `Email Logs - Detailed Delivery & Error Tracking`,
-      `View detailed email logs for troubleshooting. Track delivery attempts, errors, bounces, and spam filtering decisions.`
+      `View detailed email logs for troubleshooting. Track delivery attempts, errors, bounces, and spam filtering decisions. Debug email issues with comprehensive logs.`
     ],
     '/my-account/profile': [
       `Profile Settings - Update Account Information`,
-      `Update your Forward Email profile. Change email, password, notification preferences, and account settings.`
+      `Update your Forward Email profile. Change email, password, notification preferences, and account settings. Customize your experience and manage your personal information.`
     ],
     '/my-account/billing': [
       `Billing & Subscription - Manage Your Plan`,
-      `Manage your Forward Email subscription. View invoices, update payment methods, and change your plan.`
+      `Manage your Forward Email subscription. View invoices, update payment methods, change your plan, and access your complete billing history. Flexible payment options available.`
     ],
     '/my-account/security': [
       `Security Settings - Two-Factor Authentication & API Keys`,
-      `Manage your account security. Enable two-factor authentication, manage API keys, and review login history.`,
+      `Manage your account security. Enable two-factor authentication, manage API keys, review login history, and protect your email with advanced security features.`,
       'img/articles/security.webp'
     ],
     '/admin': [
       `Admin Dashboard - Forward Email`,
-      `Access your Forward Email admin dashboard for advanced management and configuration.`
+      `Access your Forward Email admin dashboard for advanced management and configuration. Monitor system health, manage users, and control all administrative settings.`
     ],
     '/forgot-password': [
       `Reset Password - Recover Your Forward Email Account`,
-      `Reset your Forward Email password. Enter your email to receive a secure password reset link.`
+      `Reset your Forward Email password. Enter your email to receive a secure password reset link. Regain access to your account quickly and safely with our recovery process.`
     ],
     '/ips': [
       `IP Addresses - Forward Email Server Infrastructure`,
-      `Complete list of Forward Email IP addresses for SPF records and firewall whitelisting. Automatically updated and always current.`
+      `Complete list of Forward Email IP addresses for SPF records and firewall whitelisting. Automatically updated and always current. Essential for DNS configuration.`
     ],
     '/reset-password': [
       `Confirm Password Reset - Forward Email`,
-      `Confirm your password reset and create a new secure password for your Forward Email account.`
+      `Confirm your password reset and create a new secure password for your Forward Email account. Choose a strong password to keep your email forwarding secure.`
     ],
     '/auth': [
       `Authenticate - Forward Email Login`,
-      `Complete authentication to access your Forward Email account.`
+      `Complete authentication to access your Forward Email account. Secure login process with multiple authentication options including passkeys, OAuth, and two-factor verification.`
     ],
     '/ubuntu': [
       `Ubuntu @ubuntu.com Email - Official Ubuntu Member Email`,
-      `Manage email forwarding and SMTP for your @ubuntu.com email address. Log in with your Ubuntu One account.`
+      `Manage email forwarding and SMTP for your @ubuntu.com email address. Log in with your Ubuntu One account. Exclusive email service for official Ubuntu community members.`
     ],
     '/kubuntu': [
       `Kubuntu @kubuntu.org Email - Official Kubuntu Member Email`,
-      `Manage email forwarding and SMTP for your @kubuntu.org email address. Log in with your Ubuntu One account.`
+      `Manage email forwarding and SMTP for your @kubuntu.org email address. Log in with your Ubuntu One account. Exclusive email service for official Kubuntu community members.`
     ],
     '/lubuntu': [
       `Lubuntu @lubuntu.me Email - Official Lubuntu Member Email`,
-      `Manage email forwarding and SMTP for your @lubuntu.me email address. Log in with your Ubuntu One account.`
+      `Manage email forwarding and SMTP for your @lubuntu.me email address. Log in with your Ubuntu One account. Exclusive email service for official Lubuntu community members.`
     ],
     '/edubuntu': [
       `Edubuntu @edubuntu.org Email - Official Edubuntu Member Email`,
-      `Manage email forwarding and SMTP for your @edubuntu.org email address. Log in with your Ubuntu One account.`
+      `Manage email forwarding and SMTP for your @edubuntu.org email address. Log in with your Ubuntu One account. Exclusive email service for official Edubuntu community members.`
     ],
     '/ubuntu-studio': [
       `Ubuntu Studio @ubuntustudio.com Email - Official Member Email`,
-      `Manage email forwarding and SMTP for your @ubuntustudio.com email address. Log in with your Ubuntu One account.`
+      `Manage email forwarding and SMTP for your @ubuntustudio.com email address. Log in with your Ubuntu One account. Exclusive email for Ubuntu Studio community members.`
     ]
   };
 
@@ -426,15 +426,15 @@ module.exports = function (config, isSitemap = false) {
 
   meta[config.loginRoute] = [
     `Log In to Forward Email - Access Your Account`,
-    `Sign in to your Forward Email account. Manage domains, aliases, and email forwarding settings.`
+    `Sign in to your Forward Email account. Manage domains, aliases, and email forwarding settings. Secure login with passkeys, OAuth, and two-factor authentication.`
   ];
   meta[config.verifyRoute] = [
     `Verify Email Address - Confirm Your Forward Email Account`,
-    `Verify your email address to activate your Forward Email account and start using email forwarding.`
+    `Verify your email address to activate your Forward Email account and start using email forwarding. Complete verification to unlock all features and start forwarding.`
   ];
   meta[config.otpRoutePrefix] = [
     `Two-Factor Authentication - Secure Login Verification`,
-    `Enter your two-factor authentication code to complete login. Protect your account with 2FA security.`
+    `Enter your two-factor authentication code to complete login. Protect your account with 2FA security. Supports authenticator apps, SMS, and hardware security keys.`
   ];
 
   if (isSitemap) {

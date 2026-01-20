@@ -1,6 +1,6 @@
 # メール転送について {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # メール転送について {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email は創業以来、プライバシーとセキュリティの原則
 
 このプラットフォームは、定期的な機能リリースとインフラストラクチャの改善により進化を続け、現在利用可能な唯一の 100% オープンソースで暗号化され、プライバシー重視、透明性があり、量子耐性を備えた電子メール サービスとしての地位を維持しています。
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

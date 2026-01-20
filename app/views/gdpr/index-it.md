@@ -1,6 +1,6 @@
 # Conformità al GDPR {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

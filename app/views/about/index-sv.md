@@ -1,6 +1,6 @@
 # Om vidarebefordran av e-post {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Om vidarebefordran av e-post {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Från och med 2025 betjänar Forward Email över 500 000 domäner världen över
 
 Plattformen fortsätter att utvecklas med regelbundna funktionslanseringar och infrastrukturförbättringar, och behåller sin position som den enda e-posttjänsten med 100 % öppen källkod, krypterad, integritetsfokuserad, transparent och kvantumresistent som finns tillgänglig idag.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

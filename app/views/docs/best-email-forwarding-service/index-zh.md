@@ -1,6 +1,6 @@
 # Forward Email 如何保护您的隐私、域名和安全：技术深度探究 {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

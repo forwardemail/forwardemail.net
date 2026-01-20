@@ -1,6 +1,6 @@
 # Segnala abuso {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

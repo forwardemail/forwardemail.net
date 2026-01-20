@@ -1,6 +1,6 @@
 # เกี่ยวกับการส่งต่ออีเมล {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # เกี่ยวกับการส่งต่ออีเมล {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 แพลตฟอร์มยังคงพัฒนาอย่างต่อเนื่องด้วยการเปิดตัวคุณลักษณะใหม่และการปรับปรุงโครงสร้างพื้นฐานอย่างสม่ำเสมอ โดยยังคงรักษาตำแหน่งบริการอีเมลแบบโอเพ่นซอร์ส 100% เข้ารหัส เน้นความเป็นส่วนตัว โปร่งใส และต้านทานควอนตัมเพียงรายเดียวที่มีอยู่ในปัจจุบัน
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

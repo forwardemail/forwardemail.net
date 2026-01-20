@@ -1,6 +1,6 @@
 # Om videresending av e-post {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Om videresending av e-post {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Fra og med 2025 betjener Forward Email over 500 000 domener over hele verden, in
 
 Plattformen fortsetter å utvikle seg med regelmessige funksjonsutgivelser og forbedringer av infrastrukturen, og opprettholder sin posisjon som den eneste 100 % åpen kildekode, krypterte, personvernfokuserte, transparente og kvantebestandige e-posttjenesten som er tilgjengelig i dag.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

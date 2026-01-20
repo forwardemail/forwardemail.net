@@ -1,6 +1,6 @@
 # 전달 이메일 정보 {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" 클래스="둥근-lg" />
 
 # 전달 이메일 정보 {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email은 창립 이래로 개인정보 보호 및 보안 원칙을 확�
 
 이 플랫폼은 정기적인 기능 릴리스와 인프라 개선을 통해 지속적으로 발전하고 있으며, 현재 이용 가능한 유일한 100% 오픈 소스, 암호화, 개인 정보 보호 중심, 투명성 및 양자 방어 기능을 갖춘 이메일 서비스라는 입지를 유지하고 있습니다.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" 클래스="둥근-lg" />

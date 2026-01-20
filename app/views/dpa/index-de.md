@@ -2,7 +2,7 @@
 
 <!-- v1.0 von <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email data processing agreement" class="rounded-lg" />
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

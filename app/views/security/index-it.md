@@ -1,6 +1,6 @@
 # Pratiche di sicurezza {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

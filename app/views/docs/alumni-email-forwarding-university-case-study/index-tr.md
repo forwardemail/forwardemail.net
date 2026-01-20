@@ -1,6 +1,6 @@
 # Vaka Çalışması: Yönlendirme E-postası, En İyi Üniversiteler İçin Mezun E-posta Çözümlerini Nasıl Güçlendiriyor? {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 

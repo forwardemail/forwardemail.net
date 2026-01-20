@@ -1,6 +1,6 @@
 # Forward Email이 개인 정보, 도메인 및 보안을 보호하는 방법: 기술 심층 분석 {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

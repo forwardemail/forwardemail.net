@@ -1,6 +1,6 @@
 # Informacje o przekazywaniu wiadomości e-mail {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Informacje o przekazywaniu wiadomości e-mail {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Od 2025 roku Forward Email obsługuje ponad 500 000 domen na całym świecie, w 
 
 Platforma jest stale rozwijana dzięki regularnym aktualizacjom funkcji i udoskonaleniom infrastruktury, utrzymując swoją pozycję jedynej w 100% otwartej, szyfrowanej, nastawionej na prywatność, przejrzystej i odpornej na ataki kwantowe usługi poczty e-mail dostępnej obecnie na rynku.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

@@ -1,6 +1,6 @@
 # Biztonsági gyakorlatok {#security-practices}
 
-<img loading="lazy" src="/img/articles/security.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="Forward Email security practices" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

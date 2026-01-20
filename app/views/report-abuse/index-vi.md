@@ -1,6 +1,6 @@
 # Báo cáo lạm dụng {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

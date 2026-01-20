@@ -1,6 +1,6 @@
 # À propos du transfert d'e-mail {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # À propos du transfert d'e-mail {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ En 2025, Forward Email dessert plus de 500 000 domaines dans le monde, y compri
 
 La plateforme continue d'évoluer avec des versions régulières de fonctionnalités et des améliorations d'infrastructure, maintenant sa position de seul service de messagerie électronique 100 % open source, crypté, axé sur la confidentialité, transparent et résistant aux attaques quantiques disponible aujourd'hui.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

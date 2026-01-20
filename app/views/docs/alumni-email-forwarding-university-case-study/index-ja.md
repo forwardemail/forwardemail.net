@@ -1,6 +1,6 @@
 # ケーススタディ: Forward Email がトップ大学の卒業生向けメールソリューションをどのように強化しているか {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

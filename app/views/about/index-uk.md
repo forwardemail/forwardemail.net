@@ -1,6 +1,6 @@
 # Про пересилання електронної пошти {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Про пересилання електронної пошти {#about-forward-email-1}
 
@@ -138,4 +138,4 @@
 
 Платформа продовжує розвиватися з регулярними випусками функцій та вдосконаленнями інфраструктури, зберігаючи свою позицію єдиного доступного сьогодні сервісу електронної пошти зі 100% відкритим кодом, зашифрованим, орієнтованим на конфіденційність, прозорим та квантово-стійким кодом.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

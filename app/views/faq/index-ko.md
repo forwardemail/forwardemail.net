@@ -1,6 +1,6 @@
 # Frequently Asked Questions {#frequently-asked-questions}
 
-<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="Forward Email frequently asked questions" class="rounded-lg" />
 
 ## Table of Contents {#table-of-contents}
 

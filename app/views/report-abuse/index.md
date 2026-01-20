@@ -1,6 +1,6 @@
 # Report Abuse
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" class="rounded-lg" />
 
 
 ## Table of Contents

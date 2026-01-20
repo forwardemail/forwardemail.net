@@ -1,6 +1,6 @@
 # Nghiên cứu điển hình: Cách Forward Email hỗ trợ giải pháp email cho cựu sinh viên tại các trường đại học hàng đầu {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

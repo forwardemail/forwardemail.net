@@ -1,6 +1,6 @@
 # นโยบายความเป็นส่วนตัว {#privacy-policy}
 
-<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="Forward Email privacy policy" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

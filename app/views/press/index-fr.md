@@ -1,6 +1,6 @@
 # Dossier de presse et médias {#press--media-kit}
 
-<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="Forward Email press and media kit" class="rounded-lg" />
 
 ## Table des matières {#table-of-contents}
 

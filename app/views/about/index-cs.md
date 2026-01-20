@@ -1,6 +1,6 @@
 # O přeposílaném e-mailu {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # O přeposílaném e-mailu {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ V roce 2025 služba Forward Email obsluhuje více než 500 000 domén po celém 
 
 Platforma se neustále vyvíjí s pravidelnými vydáváním funkcí a vylepšeními infrastruktury a udržuje si tak pozici jediné 100% open-source, šifrované, na soukromí zaměřené, transparentní a kvantově odolné e-mailové služby, která je dnes k dispozici.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

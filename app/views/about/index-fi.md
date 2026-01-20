@@ -1,6 +1,6 @@
 # Tietoja sähköpostin edelleenlähetyksestä {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Tietoja sähköpostin edelleenlähetyksestä {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Vuodesta 2025 lähtien Forward Email palvelee yli 500 000 verkkotunnusta maailma
 
 Alusta kehittyy jatkuvasti säännöllisten ominaisuusjulkaisujen ja infrastruktuuriparannusten myötä, säilyttäen asemansa ainoana tällä hetkellä saatavilla olevana 100 % avoimen lähdekoodin, salattuna, yksityisyyteen keskittyvänä, läpinäkyvänä ja kvanttiteknisesti kestävänä sähköpostipalveluna.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

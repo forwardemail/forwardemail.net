@@ -1,6 +1,6 @@
 # Over het doorsturen van e-mail {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Over het doorsturen van e-mail {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email bedient in 2025 wereldwijd meer dan 500.000 domeinen, waaronder be
 
 Het platform blijft zich ontwikkelen met regelmatige nieuwe functies en verbeteringen aan de infrastructuur. Zo behoudt het zijn positie als de enige 100% open-source, gecodeerde, privacygerichte, transparante en kwantumbestendige e-mailservice die vandaag de dag beschikbaar is.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

@@ -1,6 +1,6 @@
 # 학대 신고 {#report-abuse}
 
-<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="Report abuse and spam to Forward Email" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # E-postayı İletme Hakkında {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # E-postayı İletme Hakkında {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email, kurulduğu günden bu yana gizlilik ve güvenlik ilkelerine karar
 
 Platform, düzenli özellik sürümleri ve altyapı iyileştirmeleriyle gelişmeye devam ediyor ve bugün mevcut olan %100 açık kaynaklı, şifreli, gizliliğe odaklı, şeffaf ve kuantum dirençli tek e-posta hizmeti olma konumunu koruyor.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

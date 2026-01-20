@@ -2,7 +2,7 @@
 
 <!-- v1.0 จาก <https://github.com/CommonPaper/DPA> -->
 
-<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="Forward Email data processing agreement" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

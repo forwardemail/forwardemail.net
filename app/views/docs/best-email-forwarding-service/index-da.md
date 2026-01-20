@@ -1,6 +1,6 @@
 # Hvordan videresendt e-mail beskytter dit privatliv, domæne og sikkerhed: Den tekniske dybdegående undersøgelse {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="Best email forwarding service comparison" class="rounded-lg" />
 
 ## Indholdsfortegnelse {#table-of-contents}
 

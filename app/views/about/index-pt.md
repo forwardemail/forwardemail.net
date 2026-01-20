@@ -1,6 +1,6 @@
 # Sobre encaminhamento de e-mail {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Sobre encaminhamento de e-mail {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Em 2025, a Forward Email atendia mais de 500.000 domínios no mundo todo, inclui
 
 A plataforma continua a evoluir com lançamentos regulares de recursos e melhorias de infraestrutura, mantendo sua posição como o único serviço de e-mail 100% de código aberto, criptografado, focado em privacidade, transparente e resistente a quantum disponível hoje.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

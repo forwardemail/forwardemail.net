@@ -1,6 +1,6 @@
 # О пересылке электронной почты {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # О пересылке электронной почты {#about-forward-email-1}
 
@@ -138,4 +138,4 @@
 
 Платформа продолжает развиваться, регулярно выпуская новые функции и совершенствуя инфраструктуру, сохраняя свои позиции единственного на сегодняшний день сервиса электронной почты с полностью открытым исходным кодом, шифрованием, конфиденциальностью, прозрачностью и устойчивостью к квантовым вычислениям.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

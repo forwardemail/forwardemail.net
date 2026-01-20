@@ -1,6 +1,6 @@
 # AVG-naleving {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" class="rounded-lg" />
 
 ## Inhoudsopgave {#table-of-contents}
 

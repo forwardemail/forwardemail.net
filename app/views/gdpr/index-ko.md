@@ -1,6 +1,6 @@
 # GDPR 준수 {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

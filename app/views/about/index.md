@@ -1,6 +1,6 @@
 # About Forward Email
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # About Forward Email
 
@@ -144,4 +144,4 @@ As of 2025, Forward Email serves over 500,000 domains worldwide, including notab
 
 The platform continues to evolve with regular feature releases and infrastructure improvements, maintaining its position as the only 100% open-source, encrypted, privacy-focused, transparent, and quantum-resistant email service available today.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

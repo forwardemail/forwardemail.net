@@ -1,6 +1,6 @@
 # Informazioni su Inoltra email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" classe="arrotondato-lg" />
 
 # Informazioni su Inoltra email {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Nel 2025, Forward Email serviva oltre 500.000 domini in tutto il mondo, tra cui 
 
 La piattaforma continua a evolversi con rilasci regolari di funzionalità e miglioramenti dell'infrastruttura, mantenendo la sua posizione di unico servizio di posta elettronica 100% open source, crittografato, incentrato sulla privacy, trasparente e resistente alla tecnologia quantistica disponibile oggi.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" classe="arrotondato-lg" />

@@ -1,6 +1,6 @@
 # Tentang Email Teruskan {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Tentang Email Teruskan {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Pada tahun 2025, Forward Email melayani lebih dari 500.000 domain di seluruh dun
 
 Platform ini terus berkembang dengan rilis fitur rutin dan peningkatan infrastruktur, mempertahankan posisinya sebagai satu-satunya layanan email 100% sumber terbuka, terenkripsi, berfokus pada privasi, transparan, dan tahan kuantum yang tersedia saat ini.
 
-<img loading="lazy" src="/img/articles/tentang-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/tentang-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />

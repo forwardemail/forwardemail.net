@@ -1,6 +1,6 @@
 # GDPR megfelelőség {#gdpr-compliance}
 
-<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="Forward Email GDPR compliance" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

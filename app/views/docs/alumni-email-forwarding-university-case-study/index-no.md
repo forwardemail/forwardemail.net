@@ -1,6 +1,6 @@
 # Casestudie: Hvordan videresendt e-post styrker e-postløsninger for alumni for toppuniversiteter {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Innholdsfortegnelse {#table-of-contents}
 

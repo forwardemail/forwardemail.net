@@ -1,6 +1,6 @@
 # Studi Kasus: Bagaimana Email Terusan Mendukung Solusi Email Alumni untuk Universitas Terkemuka {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 

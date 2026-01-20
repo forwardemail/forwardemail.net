@@ -1,6 +1,6 @@
 # Fallstudie: Hur vidarebefordran av e-post ger e-postlösningar för alumner på toppuniversitet {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="University alumni email forwarding case study" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 

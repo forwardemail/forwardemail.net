@@ -1,6 +1,6 @@
 # Az e-mail továbbításáról {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="lekerekített-lg" />
 
 # Az e-mail továbbításáról {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ A Forward Email megalakulása óta rendíthetetlenül elkötelezett az adatvéde
 
 A platform folyamatosan fejlődik a rendszeres funkciókiadásoknak és az infrastrukturális fejlesztéseknek köszönhetően, miközben továbbra is az egyetlen 100%-ban nyílt forráskódú, titkosított, adatvédelmet biztosító, átlátható és kvantum-rezisztens e-mail szolgáltatásként őrzi meg pozícióját.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="lekerekített-lg" />

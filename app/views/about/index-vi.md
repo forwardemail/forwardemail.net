@@ -1,6 +1,6 @@
 # Giới thiệu về Chuyển tiếp Email {#about-forward-email}
 
-<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="Forward Email team and company story" class="rounded-lg" />
 
 # Giới thiệu về Chuyển tiếp Email {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Tính đến năm 2025, Forward Email phục vụ hơn 500.000 tên miền trên
 
 Nền tảng này tiếp tục phát triển với các bản phát hành tính năng thường xuyên và cải tiến cơ sở hạ tầng, duy trì vị thế là dịch vụ email duy nhất hiện nay có mã nguồn mở 100%, được mã hóa, tập trung vào quyền riêng tư, minh bạch và chống lượng tử.
 
-<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="Forward Email privacy-focused email service" class="rounded-lg" />
