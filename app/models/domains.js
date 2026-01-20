@@ -533,7 +533,30 @@ const Domains = new mongoose.Schema({
       validate: (value) => isIP(value) || isFQDN(value)
     }
   ],
-  tokens: [Token]
+  tokens: [Token],
+
+  //
+  // Domain audit log for tracking setting changes
+  // Batched and sent to domain admins periodically
+  //
+  domain_updates: [
+    {
+      fieldName: String,
+      current: mongoose.Schema.Types.Mixed,
+      previous: mongoose.Schema.Types.Mixed,
+      redacted: Boolean,
+      changedAt: Date,
+      // Audit metadata
+      changedBy: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Users'
+      },
+      changedByEmail: String,
+      ip: String,
+      userAgent: String
+    }
+  ],
+  domain_updates_sent_at: Date
 });
 
 // Domain compound index for auth query
@@ -1267,6 +1290,90 @@ Domains.pre('save', async function (next) {
 // if `ignore_mx_check` is true then set `has_mx_record` to `true`
 Domains.pre('save', function (next) {
   if (this.ignore_mx_check === true) this.has_mx_record = true;
+  next();
+});
+
+//
+// Track domain setting changes for audit log
+// Changes are batched and sent to domain admins periodically
+//
+Domains.post('init', (doc) => {
+  // Store original values for change detection
+  for (const field of config.domainUpdateFields) {
+    const value = doc[field];
+    // Deep clone arrays to detect changes properly
+    doc[`__${field}`] = Array.isArray(value) ? [...value] : value;
+  }
+});
+
+Domains.pre('save', function (next) {
+  // Skip if domain is new (no previous values to compare)
+  if (this.isNew) return next();
+
+  // Build set of redacted field names for quick lookup
+  const redactedFieldNames = new Set(config.domainUpdateRedactedFields);
+
+  // Track changes for each monitored field
+  for (const field of config.domainUpdateFields) {
+    const previousValue = this[`__${field}`];
+    const currentValue = this[field];
+
+    // Check if value has changed
+    let hasChanged = false;
+    if (Array.isArray(currentValue) && Array.isArray(previousValue)) {
+      // Compare arrays by converting to sorted JSON strings
+      hasChanged =
+        JSON.stringify([...currentValue].sort()) !==
+        JSON.stringify([...previousValue].sort());
+    } else {
+      hasChanged = previousValue !== currentValue;
+    }
+
+    if (hasChanged) {
+      const isRedacted = redactedFieldNames.has(field);
+
+      // Initialize domain_updates array if needed
+      if (!Array.isArray(this.domain_updates)) {
+        this.domain_updates = [];
+      }
+
+      // Build update entry with audit metadata
+      // Metadata is set via domain.__audit_metadata before save
+      const updateEntry = {
+        fieldName: field,
+        current: isRedacted ? '[REDACTED]' : currentValue,
+        previous: isRedacted ? '[REDACTED]' : previousValue,
+        redacted: isRedacted,
+        changedAt: new Date()
+      };
+
+      // Add audit metadata if available
+      if (this.__audit_metadata) {
+        if (this.__audit_metadata.user) {
+          updateEntry.changedBy =
+            this.__audit_metadata.user._id || this.__audit_metadata.user;
+          updateEntry.changedByEmail =
+            this.__audit_metadata.user.email || this.__audit_metadata.email;
+        }
+
+        if (this.__audit_metadata.ip) {
+          updateEntry.ip = this.__audit_metadata.ip;
+        }
+
+        if (this.__audit_metadata.userAgent) {
+          updateEntry.userAgent = this.__audit_metadata.userAgent;
+        }
+      }
+
+      this.domain_updates.push(updateEntry);
+
+      // Update stored value to prevent duplicate detection
+      this[`__${field}`] = Array.isArray(currentValue)
+        ? [...currentValue]
+        : currentValue;
+    }
+  }
+
   next();
 });
 

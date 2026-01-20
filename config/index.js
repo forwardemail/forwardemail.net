@@ -1018,7 +1018,53 @@ const config = {
     'userFields.addressState',
     'userFields.addressZip',
     'userFields.companyVAT',
-    'userFields.addressCountry'
+    'userFields.addressCountry',
+    // Additional fields for comprehensive audit logging
+    'userFields.defaultDomain',
+    'userFields.smtpLimit',
+    'userFields.maxQuotaPerAlias'
+  ],
+
+  // user fields that should be redacted in account update emails (security-sensitive)
+  accountUpdateRedactedFields: [
+    'userFields.apiToken',
+    'userFields.otpToken',
+    'userFields.otpRecoveryKeys',
+    'userFields.resetToken',
+    'userFields.resetTokenExpiresAt',
+    'userFields.verificationPin',
+    'userFields.verificationPinExpiresAt',
+    'userFields.verificationPinSentAt',
+    'userFields.pendingRecovery'
+  ],
+
+  // domain fields whose updates create an action (e.g. email to domain admins)
+  domainUpdateFields: [
+    'bounce_webhook',
+    'has_delivery_logs',
+    'max_quota_per_alias',
+    'retention_days',
+    'has_adult_content_protection',
+    'has_phishing_protection',
+    'has_executable_protection',
+    'has_virus_protection',
+    'is_catchall_regex_disabled',
+    'has_smtp',
+    'has_newsletter',
+    'ignore_mx_check',
+    'webhook_key',
+    'allowlist',
+    'denylist',
+    'restricted_alias_names'
+  ],
+
+  // domain fields that should be redacted in domain update emails (security-sensitive)
+  domainUpdateRedactedFields: [
+    'webhook_key',
+    'tokens',
+    'verification_record',
+    'dkim_private_key',
+    'return_path'
   ],
 
   // reference crypto random

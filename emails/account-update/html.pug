@@ -12,9 +12,31 @@ block content
               ul
                 each field in accountUpdates
                   if field.name === config.passport.fields.otpEnabled
-                    li= t(`Two-factor authentication has been ${field.current ? "enabled" : "disabled"}.`)
-                  else if field.name === config.userFields.apiToken
-                    li= t("API token has been reset.")
+                    li
+                      = t(`Two-factor authentication has been ${field.current ? "enabled" : "disabled"}.`)
+                      = " "
+                      code.small.text-muted= field.name
+                  else if field.redacted
+                    //- Security-sensitive fields show only that they were changed
+                    li
+                      != t('<span class="notranslate">%s</span> has been updated.', t(field.text))
+                      = " "
+                      code.small.text-muted= field.name
+                  else if typeof field.current === 'boolean'
+                    //- Boolean fields show enabled/disabled status
+                    li
+                      != t('<span class="notranslate">%s</span> has been %s.', t(field.text), field.current ? t("enabled") : t("disabled"))
+                      = " "
+                      code.small.text-muted= field.name
+                  else if Array.isArray(field.current)
+                    //- Array fields show count of items
+                    li
+                      != t('<span class="notranslate">%s</span> has been updated (%d items).', t(field.text), field.current.length)
+                      = " "
+                      code.small.text-muted= field.name
                   else
-                    li!= t('<span class="notranslate">%s</span> has changed from <span class="notranslate">%s</span> to <span class="notranslate">%s</span>', t(field.text), striptags(field.previous), striptags(field.current))
+                    li
+                      != t('<span class="notranslate">%s</span> has changed from <span class="notranslate">%s</span> to <span class="notranslate">%s</span>', t(field.text), striptags(String(field.previous || t("(empty)"))), striptags(String(field.current || t("(empty)"))))
+                      = " "
+                      code.small.text-muted= field.name
           .card-footer.text-center.small.text-muted= t("If you did not make these changes, then please contact us immediately.")

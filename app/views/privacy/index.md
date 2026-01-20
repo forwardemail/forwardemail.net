@@ -16,6 +16,9 @@
   * [Rate Limiting](#rate-limiting)
   * [Connection Tracking](#connection-tracking)
   * [Authentication Attempts](#authentication-attempts)
+* [Audit Logs](#audit-logs)
+  * [Account Changes](#account-changes)
+  * [Domain Settings Changes](#domain-settings-changes)
 * [Cookies and Sessions](#cookies-and-sessions)
 * [Analytics](#analytics)
 * [Information Shared](#information-shared)
@@ -104,6 +107,45 @@ The following data is processed temporarily in-memory or Redis and is **not** pe
 * Failed authentication attempts are tracked per IP address in Redis.
 * This data expires automatically (typically within 24 hours).
 * Used to prevent brute-force attacks on user accounts.
+
+
+## Audit Logs
+
+To help you monitor and secure your account and domains, we maintain audit logs for certain changes. These logs are used to send notification emails to account holders and domain administrators.
+
+### Account Changes
+
+* We track changes to important account settings (e.g., two-factor authentication, display name, timezone).
+* When changes are detected, we send an email notification to your registered email address.
+* Sensitive fields (e.g., password, API tokens, recovery keys) are tracked but their values are redacted in notifications.
+* Audit log entries are cleared after the notification email is sent.
+
+### Domain Settings Changes
+
+For domains with multiple administrators, we provide detailed audit logging to help teams track configuration changes:
+
+**What we track:**
+
+* Changes to domain settings (e.g., bounce webhooks, spam filtering, DKIM configuration)
+* Who made the change (email address of the user)
+* When the change was made (timestamp)
+* The IP address from which the change was made
+* The browser/client user-agent string
+
+**How it works:**
+
+* All domain administrators receive a single consolidated email notification when settings change.
+* The notification includes a table showing each change with the user who made it, their IP address, and timestamp.
+* Sensitive fields (e.g., webhook keys, API tokens, DKIM private keys) are tracked but their values are redacted.
+* User-agent information is included in a collapsible "Technical Details" section.
+* Audit log entries are cleared after the notification email is sent.
+
+**Why we collect this:**
+
+* To help domain administrators maintain security oversight
+* To enable teams to audit who made configuration changes
+* To assist with troubleshooting if unexpected changes occur
+* To provide accountability for shared domain management
 
 
 ## Cookies and Sessions

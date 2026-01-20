@@ -492,36 +492,23 @@ async function mapper(customer) {
     nextBillDate.getTime() > Date.now() &&
     days > 0
   ) {
-    // cannot be more than 730 days from now (2 years), otherwise set to 720 days from now
+    // Stripe's maximum trial period is 730 days (2 years) from NOW
+    // Cap trial_end to the maximum allowed to prevent API errors
+    const maxTrialEnd = dayjs().add(730, 'days').toDate();
     let trialEnd = dayjs(user[config.userFields.planExpiresAt]).toDate();
-    try {
-      await stripe.subscriptions.update(
-        user[config.userFields.stripeSubscriptionID],
-        {
-          trial_end: dayjs(trialEnd).unix(),
-          proration_behavior: 'none'
-        }
-      );
-    } catch (err) {
-      if (
-        err.stack &&
-        !err.stack.includes('The maximum number of trial period days is 730')
-      )
-        throw err;
-      if (!subscription.billing_cycle_anchor) throw err;
-      // billing_cycle_anchor + 2 years
-      trialEnd = dayjs
-        .unix(subscription.billing_cycle_anchor)
-        .add(730, 'days')
-        .toDate();
-      await stripe.subscriptions.update(
-        user[config.userFields.stripeSubscriptionID],
-        {
-          trial_end: dayjs(trialEnd).unix(),
-          proration_behavior: 'none'
-        }
-      );
+
+    // Cap trial_end to the maximum allowed
+    if (trialEnd.getTime() > maxTrialEnd.getTime()) {
+      trialEnd = maxTrialEnd;
     }
+
+    await stripe.subscriptions.update(
+      user[config.userFields.stripeSubscriptionID],
+      {
+        trial_end: dayjs(trialEnd).unix(),
+        proration_behavior: 'none'
+      }
+    );
 
     // send an email here
     const locale = user[config.lastLocaleField] || i18n.config.defaultLocale;

@@ -214,6 +214,24 @@
               i.fa.fa-fw.fas.fa-chart-area.text-themed.mr-3
               = " "
               != t("Email analytics &amp; insights")
+            li.list-group-item.d-flex.align-items-center.font-weight-bold
+              i.fa.fa-fw.fas.fa-shield-alt.text-themed.mr-3
+              = " "
+              a.font-weight-bold.text-decoration-underline.text-themed(
+                href=l("/my-account/dmarc-reports")
+              )
+                = t("DMARC Reporting")
+              if !isBot(ctx.get("User-Agent"))
+                = " "
+                button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
+                  type="button",
+                  aria-label=t("DMARC Reporting"),
+                  data-confirm-type="info",
+                  data-confirm-show-cancel-button="false",
+                  data-confirm-prompt-title=t("DMARC Reporting"),
+                  data-confirm-prompt-html=t("Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues.")
+                )
+                  i.fa.fa-info-circle
             li.list-group-item.d-flex.align-items-center
               i.fa.fa-fw.fa-plus.text-themed.mr-3
               a.font-weight-bold.text-themed.text-decoration-underline(
@@ -370,38 +388,38 @@ section.py-5.bg-dark
   .container
     .row.justify-content-center
       .col-lg-10
-        h2.text-center.display-4.mb-5= t("Frequently Asked Questions")
+        h2.text-center.display-4.mb-5.text-white.font-weight-normal= t("Frequently Asked Questions")
         .row
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("What's the difference between Enhanced Protection and Team plans?")
-                p.card-text= t("Enhanced Protection ($3/month) is perfect for individuals who need professional email with sending/receiving capabilities, 10GB storage, and API access. Team plan ($9/month) adds collaborative features like team member management, shared organizational access, and priority support - ideal for families, groups, and businesses.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("What's the difference between Enhanced Protection and Team plans?")
+                p.card-text.text-sans-serif.text-themed= t("Enhanced Protection ($3/month) is perfect for individuals who need professional email with sending/receiving capabilities, 10GB storage, and API access. Team plan ($9/month) adds collaborative features like team member management, shared organizational access, and priority support - ideal for families, groups, and businesses.")
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("Can I send and receive emails with the Free plan?")
-                p.card-text= t("No, the Free plan only supports email forwarding. You can receive emails at your custom domain and forward them to your existing email address, but you cannot send emails directly from your custom domain or store emails on our servers.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("Can I send and receive emails with the Free plan?")
+                p.card-text.text-sans-serif.text-themed= t("No, the Free plan only supports email forwarding. You can receive emails at your custom domain and forward them to your existing email address, but you cannot send emails directly from your custom domain or store emails on our servers.")
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("Who should choose the Team plan?")
-                p.card-text= t("The Team plan is perfect for families sharing a domain (like @smithfamily.com), small businesses with multiple employees, organizations needing shared email management, or any group that requires collaborative access to email accounts with proper permission controls.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("Who should choose the Team plan?")
+                p.card-text.text-sans-serif.text-themed= t("The Team plan is perfect for families sharing a domain (like @smithfamily.com), small businesses with multiple employees, organizations needing shared email management, or any group that requires collaborative access to email accounts with proper permission controls.")
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("What does 'unlimited domains' mean?")
-                p.card-text= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service extremely cost-effective for users managing multiple websites or businesses.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("What does 'unlimited domains' mean?")
+                p.card-text.text-sans-serif.text-themed= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service extremely cost-effective for users managing multiple websites or businesses.")
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("Do you charge per user/alias like other services?")
-                p.card-text= t("No! Unlike other email services that charge per user or alias, we include unlimited aliases in our Enhanced Protection and Team plans. Create as many email addresses as you need (info@, sales@, support@, etc.) without additional fees.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("Do you charge per user/alias like other services?")
+                p.card-text.text-sans-serif.text-themed= t("No! Unlike other email services that charge per user or alias, we include unlimited aliases in our Enhanced Protection and Team plans. Create as many email addresses as you need (info@, sales@, support@, etc.) without additional fees.")
           .col-md-6.mb-4
-            .card.h-100
+            .card.h-100.bg-themed.border-themed
               .card-body
-                h5.card-title= t("Can I upgrade or downgrade my plan anytime?")
-                p.card-text= t("Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at your next billing cycle, and you'll retain access to paid features until then.")
+                h5.card-title.text-sans-serif.font-weight-bold.text-themed= t("Can I upgrade or downgrade my plan anytime?")
+                p.card-text.text-sans-serif.text-themed= t("Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at your next billing cycle, and you'll retain access to paid features until then.")
         .row.mb-4
           .col.text-center
             a.btn.btn-primary.btn-lg(href=l("/faq"))

@@ -654,7 +654,8 @@ nav.navbar(class=navbarClasses.join(" "))
                       )
                         - let title = config.meta[`/blog/${str}`][0];
                         if !isBot(ctx.get("User-Agent"))
-                          - title = title.split("Best ")[1].split(" in")[0];
+                          //- Strip the number prefix, "Best " prefix, and year suffix for cleaner display
+                          - title = title.replace(/^\d+\s+/, '').replace(/^Best\s+/i, '').replace(/\s+\d{4}$/, '').split(' - ')[0];
                         != striptags(t(title))
                 if developerDocs.length > 0
                   hr.dropdown-divider

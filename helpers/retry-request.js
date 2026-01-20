@@ -15,6 +15,27 @@ const config = require('#config');
 
 async function retryRequest(url, opts = {}, count = 1) {
   try {
+    // Validate URL before making request to prevent ERR_INVALID_URL errors
+    // This can happen when redirects have malformed Location headers
+    try {
+      const parsedUrl = new URL(url);
+      // Ensure the URL has a valid hostname (not just protocol)
+      if (!parsedUrl.hostname) {
+        const err = new TypeError(`Invalid URL: missing hostname`);
+        err.code = 'ERR_INVALID_URL';
+        err.input = url;
+        throw err;
+      }
+    } catch (urlErr) {
+      // Re-throw with additional context
+      urlErr.requestContext = {
+        url: String(url),
+        method: opts.method || 'GET',
+        retryCount: count
+      };
+      throw urlErr;
+    }
+
     opts.timeout = opts.timeout || ms('30s');
     opts.retries = opts.retries || 2;
 
@@ -116,13 +137,17 @@ async function retryRequest(url, opts = {}, count = 1) {
     }
 
     // Add request context to the error for better debugging
-    err.requestContext = {
-      url: typeof url === 'string' ? url : url?.toString?.(),
-      method: opts.method || 'GET',
-      timeout: opts.timeout,
-      retryCount: count,
-      maxRetries: opts.retries
-    };
+    // Only add if not already set (e.g., from URL validation)
+    if (!err.requestContext) {
+      err.requestContext = {
+        url: typeof url === 'string' ? url : String(url || ''),
+        method: opts.method || 'GET',
+        timeout: opts.timeout,
+        retryCount: count,
+        maxRetries: opts.retries,
+        redirectCount: opts.redirectCount || 0
+      };
+    }
 
     // Log fetch failures with full context for debugging
     if (

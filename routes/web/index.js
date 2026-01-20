@@ -471,35 +471,49 @@ localeRouter
   .get(
     '/guides/smtp-integration',
     web.onboard,
+    hasSidebar,
     render('guides/smtp-integration')
   )
   .get(
     '/guides/port-25-blocked-by-isp-workaround',
     web.onboard,
+    hasSidebar,
     render('guides/port-25-blocked-by-isp-workaround')
   )
   .get(
     '/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas',
+    hasSidebar,
     render(
       'guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas'
     )
   )
   .get(
     '/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility',
+    hasSidebar,
     render(
       'guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility'
     )
   )
   .get(
     '/guides/raspberry-pi-ftp-server-email-relay-security-camera',
+    hasSidebar,
     render('guides/raspberry-pi-ftp-server-email-relay-security-camera')
   )
   .get(
     '/guides/newsletter-with-listmonk',
+    hasSidebar,
     render('guides/newsletter-with-listmonk')
   )
-  .get('/guides/selfhosted-on-debian', render('guides/selfhosted-on-debian'))
-  .get('/guides/selfhosted-on-ubuntu', render('guides/selfhosted-on-ubuntu'))
+  .get(
+    '/guides/selfhosted-on-debian',
+    hasSidebar,
+    render('guides/selfhosted-on-debian')
+  )
+  .get(
+    '/guides/selfhosted-on-ubuntu',
+    hasSidebar,
+    render('guides/selfhosted-on-ubuntu')
+  )
   .get('/donate', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));

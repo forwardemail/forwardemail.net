@@ -165,6 +165,7 @@ module.exports = async (data) => {
       'reset-password',
       'change-email',
       'account-update',
+      'domain-update',
       'recovery',
       'payment',
       'payment-reminder',

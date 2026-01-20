@@ -45,18 +45,26 @@ async function mapper(user) {
     return;
   }
 
+  // Build set of redacted field names for quick lookup
+  const redactedFieldNames = new Set(
+    config.accountUpdateRedactedFields.map((field) => _.get(config, field))
+  );
+
   // merge and map to actionable email
   const accountUpdates = user[config.userFields.accountUpdates].map(
     (update) => {
       const { fieldName, current, previous } = update;
+      const isRedacted = redactedFieldNames.has(fieldName);
       return {
         name: fieldName,
         text: i18n.api.t({
           phrase: titleize(humanize(fieldName)),
           locale: user[config.lastLocaleField]
         }),
-        current,
-        previous
+        // Redact sensitive field values for security
+        current: isRedacted ? '[REDACTED]' : current,
+        previous: isRedacted ? '[REDACTED]' : previous,
+        redacted: isRedacted
       };
     }
   );

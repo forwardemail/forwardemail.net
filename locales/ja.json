@@ -18197,5 +18197,22 @@
   "Free Email Management for Software Developers": "Free Email Management for Software Developers",
   "We provide email management for software developers and more. Sign up today for free and setup email hosting and forwarding in seconds.": "We provide email management for software developers and more. Sign up today for free and setup email hosting and forwarding in seconds.",
   "Free Email Solutions for Window Installation": "Free Email Solutions for Window Installation",
-  "We provide email solutions for window installation and more. Sign up today for free and setup email hosting and forwarding in seconds.": "We provide email solutions for window installation and more. Sign up today for free and setup email hosting and forwarding in seconds."
+  "We provide email solutions for window installation and more. Sign up today for free and setup email hosting and forwarding in seconds.": "We provide email solutions for window installation and more. Sign up today for free and setup email hosting and forwarding in seconds.",
+  "Email Services Compared": "Email Services Compared",
+  "Transactional Email Services for Developers": "Transactional Email Services for Developers",
+  "Email APIs for Developers": "Email APIs for Developers",
+  "DMARC Reporting": "DMARC Reporting",
+  "Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues.": "Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues.",
+  "Has Delivery Logs": "Has Delivery Logs",
+  "Webhook Key": "Webhook Key",
+  "Ignore Mx Check": "Ignore Mx Check",
+  "Bounce Webhook": "Bounce Webhook",
+  "Domain settings update for %s": "Domain settings update for %s",
+  "Domain settings update": "Domain settings update",
+  "Settings have been changed for your domain <span class=\"notranslate\">%s</span>:": "Settings have been changed for your domain <span class=\"notranslate\">%s</span>:",
+  "Change": "Change",
+  "Changed By": "Changed By",
+  "Time": "Time",
+  "(redacted)": "(redacted)",
+  "If you did not make these changes, then please contact us immediately.": "If you did not make these changes, then please contact us immediately."
 }

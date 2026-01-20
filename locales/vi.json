@@ -18157,5 +18157,22 @@
   "About Forward Email - Our Story & Mission | Privacy-First Email Since 2017": "About Forward Email - Our Story & Mission | Privacy-First Email Since 2017",
   "Denylist Removal - Unblock Your Email, Domain, or IP Address": "Denylist Removal - Unblock Your Email, Domain, or IP Address",
   "Request removal from Forward Email's denylist. Submit your email address, domain, or IP for review. Most requests processed within 24 hours.": "Request removal from Forward Email's denylist. Submit your email address, domain, or IP for review. Most requests processed within 24 hours.",
-  "Free Email Management for Transportation Services": "Free Email Management for Transportation Services"
+  "Free Email Management for Transportation Services": "Free Email Management for Transportation Services",
+  "Email Services Compared": "Email Services Compared",
+  "Transactional Email Services for Developers": "Transactional Email Services for Developers",
+  "Email APIs for Developers": "Email APIs for Developers",
+  "DMARC Reporting": "DMARC Reporting",
+  "Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues.": "Get deliverability insights across all your domains with DMARC aggregate reports. Monitor email authentication (SPF, DKIM, DMARC) compliance and identify potential spoofing or configuration issues.",
+  "Has Delivery Logs": "Has Delivery Logs",
+  "Webhook Key": "Webhook Key",
+  "Ignore Mx Check": "Ignore Mx Check",
+  "Bounce Webhook": "Bounce Webhook",
+  "Domain settings update for %s": "Domain settings update for %s",
+  "Domain settings update": "Domain settings update",
+  "Settings have been changed for your domain <span class=\"notranslate\">%s</span>:": "Settings have been changed for your domain <span class=\"notranslate\">%s</span>:",
+  "Change": "Change",
+  "Changed By": "Changed By",
+  "Time": "Time",
+  "(redacted)": "(redacted)",
+  "If you did not make these changes, then please contact us immediately.": "If you did not make these changes, then please contact us immediately."
 }

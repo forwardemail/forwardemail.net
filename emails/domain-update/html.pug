@@ -1,0 +1,62 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center= t("Domain settings update")
+          .card-body
+            .card-text
+              p!= t('Settings have been changed for your domain <span class="notranslate">%s</span>:', domain.name)
+              table.table.table-bordered.table-sm
+                thead
+                  tr
+                    th= t("Setting")
+                    th= t("Change")
+                    th= t("Changed By")
+                    th= t("Time")
+                tbody
+                  each field in domainUpdates
+                    tr
+                      td
+                        span= t(field.text)
+                        br
+                        code.small.text-muted= field.name
+                      td
+                        if field.redacted
+                          em.text-muted= t("(redacted)")
+                        else if typeof field.current === 'boolean'
+                          span= field.current ? t("Enabled") : t("Disabled")
+                        else if Array.isArray(field.current)
+                          span= t("%d items", field.current.length)
+                        else
+                          if field.previous
+                            span.text-muted
+                              del= striptags(String(field.previous))
+                            = " → "
+                          span= striptags(String(field.current || t("(empty)")))
+                      td
+                        if field.changedByEmail
+                          span.notranslate= field.changedByEmail
+                          if field.ip
+                            br
+                            small.text-muted IP: #{ field.ip }
+                        else
+                          em.text-muted= t("Unknown")
+                      td
+                        if field.changedAt
+                          span= new Date(field.changedAt).toLocaleString(locale || "en")
+                        else
+                          em.text-muted= t("Unknown")
+              if domainUpdates.some(f => f.userAgent)
+                details.mt-2
+                  summary.small.text-muted= t("Technical Details")
+                  .small.text-muted.mt-1
+                    each field in domainUpdates
+                      if field.userAgent
+                        p.mb-1
+                          strong= field.name
+                          = ": "
+                          span= field.userAgent
+          .card-footer.text-center.small.text-muted= t("If you did not make these changes, then please contact us immediately.")

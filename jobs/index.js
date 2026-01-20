@@ -113,6 +113,11 @@ let jobs = [
     timeout: 0
   },
   {
+    name: 'domain-updates',
+    interval: '1m',
+    timeout: 0
+  },
+  {
     name: 'cleanup-database',
     interval: '1h',
     timeout: 0

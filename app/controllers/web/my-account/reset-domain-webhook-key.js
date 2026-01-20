@@ -17,6 +17,14 @@ async function resetDomainWebhookKey(ctx, next) {
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
+
+  // Set audit metadata for domain update tracking
+  ctx.state.domain.__audit_metadata = {
+    user: ctx.state.user,
+    ip: ctx.ip,
+    userAgent: ctx.get('User-Agent')
+  };
+
   ctx.state.domain = await ctx.state.domain.save();
 
   // clear cache for settings (used by SMTP)

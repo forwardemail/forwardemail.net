@@ -37,6 +37,14 @@ async function updateRestrictedAliasNames(ctx, next) {
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
+
+  // Set audit metadata for domain update tracking
+  ctx.state.domain.__audit_metadata = {
+    user: ctx.state.user,
+    ip: ctx.ip,
+    userAgent: ctx.get('User-Agent')
+  };
+
   ctx.state.domain = await ctx.state.domain.save();
 
   // check if any aliases match one of the restricted alias names

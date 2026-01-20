@@ -743,6 +743,21 @@ async function checkBounceForSpam(bounce, headers, session) {
         logger.fatal(err, { session });
 
         // add to the denylist or email the affected customer (e.g. they may need DMARC)
+        // Skip denylisting session-level attributes if session is allowlisted
+        // (e.g., the IP's reverse DNS resolved to an allowlisted domain)
+        if (
+          session.isAllowlisted &&
+          !isEmail(attr) &&
+          (attr === session.remoteAddress ||
+            attr === session.resolvedClientHostname ||
+            attr === session.resolvedRootClientHostname)
+        ) {
+          logger.debug('skipping denylist for session-allowlisted attribute', {
+            attr
+          });
+          return;
+        }
+
         try {
           await addToDenylist.call(this, attr, headers, bounce, session);
         } catch (err) {
