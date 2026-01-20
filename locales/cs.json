@@ -13903,5 +13903,8 @@
   "Weekly dmarc report emails": "Weekly dmarc report emails",
   "Set your preferred language to override automatic detection based on your browser settings.": "Set your preferred language to override automatic detection based on your browser settings.",
   "Auto-detect (browser default)": "Auto-detect (browser default)",
-  "Preferred Language": "Preferred Language"
+  "Preferred Language": "Preferred Language",
+  "Manage your custom domains for email forwarding. Add new domains, configure DNS, verify settings, manage aliases, and control all your email routing in one place.": "Manage your custom domains for email forwarding. Add new domains, configure DNS, verify settings, manage aliases, and control all your email routing in one place.",
+  "Read Forward Email's privacy policy. We collect minimal data, never sell your information, and provide complete transparency about data handling practices and user rights.": "Read Forward Email's privacy policy. We collect minimal data, never sell your information, and provide complete transparency about data handling practices and user rights.",
+  "Enter your two-factor authentication code to complete login. Protect your account with 2FA security. Supports authenticator apps, SMS, and hardware security keys.": "Enter your two-factor authentication code to complete login. Protect your account with 2FA security. Supports authenticator apps, SMS, and hardware security keys."
 }

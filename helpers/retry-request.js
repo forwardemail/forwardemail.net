@@ -13,7 +13,13 @@ const logger = require('./logger');
 
 const config = require('#config');
 
-async function retryRequest(url, opts = {}, count = 1) {
+// Maximum number of redirects to follow
+const MAX_REDIRECTS = 5;
+
+// HTTP redirect status codes that should be followed
+const REDIRECT_STATUS_CODES = new Set([301, 302, 303, 307, 308]);
+
+async function retryRequest(url, opts = {}, count = 1, redirectCount = 0) {
   try {
     opts.timeout = opts.timeout || ms('30s');
     opts.retries = opts.retries || 2;
@@ -71,6 +77,57 @@ async function retryRequest(url, opts = {}, count = 1) {
     const response = await undici.request(url, opts);
     clearTimeout(t);
 
+    // Handle redirects (301, 302, 303, 307, 308)
+    if (REDIRECT_STATUS_CODES.has(response.statusCode)) {
+      // Consume the body to prevent memory leaks
+      await response.body.text();
+
+      // Check if we've exceeded max redirects
+      if (redirectCount >= MAX_REDIRECTS) {
+        const err = new undici.errors.ResponseError(
+          `Too many redirects (max ${MAX_REDIRECTS})`,
+          response.statusCode,
+          { headers: response.headers }
+        );
+        err.url = url;
+        err.options = opts;
+        throw err;
+      }
+
+      // Get the redirect location
+      const { location } = response.headers;
+      if (!location) {
+        const err = new undici.errors.ResponseError(
+          `Redirect response missing Location header`,
+          response.statusCode,
+          { headers: response.headers }
+        );
+        err.url = url;
+        err.options = opts;
+        throw err;
+      }
+
+      // Resolve relative URLs against the original URL
+      const redirectUrl = new URL(location, url).toString();
+
+      logger.debug(`Following redirect from ${url} to ${redirectUrl}`, {
+        extra: {
+          statusCode: response.statusCode,
+          redirectCount: redirectCount + 1
+        }
+      });
+
+      // For 303, always use GET method; for 307/308, preserve original method
+      const redirectOpts = { ...opts };
+      if (response.statusCode === 303) {
+        redirectOpts.method = 'GET';
+        delete redirectOpts.body;
+      }
+
+      // Follow the redirect (reset retry count but increment redirect count)
+      return retryRequest(redirectUrl, redirectOpts, 1, redirectCount + 1);
+    }
+
     // <https://github.com/nodejs/undici/issues/3353#issuecomment-2184635954>
     // the error code is between 200-400 (e.g. 302 redirect)
     // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
@@ -121,7 +178,8 @@ async function retryRequest(url, opts = {}, count = 1) {
       method: opts.method || 'GET',
       timeout: opts.timeout,
       retryCount: count,
-      maxRetries: opts.retries
+      maxRetries: opts.retries,
+      redirectCount
     };
 
     // Log fetch failures with full context for debugging
@@ -141,7 +199,7 @@ async function retryRequest(url, opts = {}, count = 1) {
     if (count >= opts.retries || !isRetryableError(err)) throw err;
     const ms = opts.calculateDelay(count);
     if (ms) await timers.setTimeout(ms);
-    return retryRequest(url, opts, count + 1);
+    return retryRequest(url, opts, count + 1, redirectCount);
   } finally {
     // if (opts.dispatcher) opts.dispatcher.destroy();
   }

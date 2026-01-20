@@ -484,11 +484,14 @@ async function regenerateAliasPassword(ctx) {
       throw new Error('Alias does not have any generated passwords');
 
     // validate emailed_instructions is set and an email
+    // This field is required for password regeneration to know where to send the new password
     if (
       !isSANB(alias.emailed_instructions) ||
       !isEmail(alias.emailed_instructions)
     )
-      throw new Error('Emailed instructions was not set');
+      throw new Error(
+        'Emailed instructions email address was not configured for this alias'
+      );
 
     // validate password
     // ensure that the token is valid
