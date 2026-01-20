@@ -7,7 +7,7 @@
 require('#helpers/polyfill-towellformed');
 
 const ms = require('ms');
-const { Octokit } = require('@octokit/core');
+const undici = require('undici');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
@@ -21,36 +21,11 @@ const CACHE_DURATION = env.X_API_CACHE_DURATION
   : ms('6h');
 const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
 
+// GitHub API base URL
+const GITHUB_API_BASE = 'https://api.github.com';
+
 // Default repository
 const DEFAULT_REPO = 'forwardemail/forwardemail.net';
-
-// Retry configuration for non-blocking retries
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff: 1s, 2s, 4s
-
-// Create Octokit instance with authentication (if token is available)
-// Authenticated requests get 5,000 requests/hour vs 60/hour unauthenticated
-let octokit = null;
-function getOctokit() {
-  if (!octokit) {
-    octokit = new Octokit({
-      auth: env.GITHUB_OCTOKIT_TOKEN || undefined
-    });
-  }
-
-  return octokit;
-}
-
-/**
- * Sleep for a given number of milliseconds (non-blocking)
- * @param {number} ms - Milliseconds to sleep
- * @returns {Promise<void>}
- */
-function sleep(milliseconds) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, milliseconds);
-  });
-}
 
 /**
  * Parse a GitHub release into a standardized format
@@ -93,77 +68,8 @@ function parseRelease(release) {
 }
 
 /**
- * Fetch releases from GitHub with retry logic
- * Uses Octokit for authenticated requests (5,000 req/hour vs 60/hour)
- * @param {string} owner - Repository owner
- * @param {string} repo - Repository name
- * @param {number} perPage - Number of releases per page
- * @param {number} retryCount - Current retry attempt
- * @returns {Promise<Array>} - Array of release objects from GitHub API
- */
-async function fetchReleasesWithRetry(owner, repo, perPage, retryCount = 0) {
-  try {
-    const client = getOctokit();
-    const response = await client.request(
-      'GET /repos/{owner}/{repo}/releases',
-      {
-        owner,
-        repo,
-        per_page: perPage,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28'
-        }
-      }
-    );
-
-    return response.data;
-  } catch (err) {
-    // Check if error is retryable (network errors, rate limits, server errors)
-    const isRetryable =
-      err.status === 403 || // Rate limit
-      err.status === 429 || // Too many requests
-      err.status === 500 || // Server error
-      err.status === 502 || // Bad gateway
-      err.status === 503 || // Service unavailable
-      err.status === 504 || // Gateway timeout
-      err.message === 'fetch failed' ||
-      err.code === 'ECONNRESET' ||
-      err.code === 'ETIMEDOUT' ||
-      err.code === 'ENOTFOUND' ||
-      err.code === 'UND_ERR_CONNECT_TIMEOUT' ||
-      err.code === 'UND_ERR_SOCKET';
-
-    if (isRetryable && retryCount < MAX_RETRIES) {
-      const delay = RETRY_DELAYS[retryCount] || RETRY_DELAYS.at(-1);
-      logger.debug(
-        `GitHub releases fetch failed, retrying in ${delay}ms (attempt ${
-          retryCount + 1
-        }/${MAX_RETRIES})`,
-        { extra: { error: err.message, status: err.status } }
-      );
-      await sleep(delay);
-      return fetchReleasesWithRetry(owner, repo, perPage, retryCount + 1);
-    }
-
-    // Log the error with context
-    logger.error(err, {
-      extra: {
-        message: 'GitHub releases fetch failed after retries',
-        owner,
-        repo,
-        retryCount,
-        status: err.status
-      }
-    });
-
-    throw err;
-  }
-}
-
-/**
  * Fetch releases from a GitHub repository
  * Uses Redis for caching to share cache across all processes
- * Uses Octokit for authenticated requests to avoid rate limiting
  * @param {Object} options - Options for fetching releases
  * @param {Object} options.client - Redis client (required for caching)
  * @param {string} options.repo - Repository in format 'owner/repo' (default: forwardemail/forwardemail.net)
@@ -197,19 +103,33 @@ async function getGitHubReleases(options = {}) {
     }
   }
 
-  // Check if GitHub token is configured
-  if (!env.GITHUB_OCTOKIT_TOKEN) {
-    logger.warn(
-      'GITHUB_OCTOKIT_TOKEN not configured, GitHub API requests will be rate limited (60/hour)'
-    );
-  }
-
   try {
-    const [owner, repoName] = repo.split('/');
-    const perPage = Math.min(count, 100);
+    const url = `${GITHUB_API_BASE}/repos/${repo}/releases?per_page=${Math.min(
+      count,
+      100
+    )}`;
 
-    // Fetch releases using Octokit with retry logic
-    const data = await fetchReleasesWithRetry(owner, repoName, perPage);
+    const response = await undici.fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'ForwardEmail/1.0',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logger.error(
+        new Error(
+          `GitHub API error: ${response.status} ${response.statusText}`
+        ),
+        { extra: { errorText, repo } }
+      );
+      return [];
+    }
+
+    const data = await response.json();
 
     if (!Array.isArray(data)) {
       logger.warn('GitHub API returned unexpected data format', {

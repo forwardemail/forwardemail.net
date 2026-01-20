@@ -412,8 +412,7 @@ async function mobileConfig(ctx, next) {
     if (!mongoose.isObjectIdOrHexString(ctx.query.a)) return next(); // 404
 
     // ?p = encrypted password
-    // Handle invalid password parameter (e.g., 'undefined' string or missing)
-    if (!isSANB(ctx.query.p) || ctx.query.p === 'undefined') return next(); // 404
+    if (!isSANB(ctx.query.p)) return next(); // 404
 
     const alias = await Aliases.findById(ctx.query.a)
       .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')

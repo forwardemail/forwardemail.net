@@ -8,14 +8,13 @@ require('#helpers/polyfill-towellformed');
 
 const ms = require('ms');
 const undici = require('undici');
-const { Octokit } = require('@octokit/core');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
-// GitHub repository for status page
-const STATUS_REPO_OWNER = 'forwardemail';
-const STATUS_REPO_NAME = 'status.forwardemail.net';
+// GitHub API base URL for status page incidents
+const GITHUB_API_BASE =
+  'https://api.github.com/repos/forwardemail/status.forwardemail.net';
 
 // Redis cache keys
 const CACHE_KEY_INCIDENTS = 'event_feed:status_incidents';
@@ -26,34 +25,6 @@ const CACHE_DURATION = env.X_API_CACHE_DURATION
   ? ms(env.X_API_CACHE_DURATION)
   : ms('6h');
 const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
-
-// Retry configuration for non-blocking retries
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff: 1s, 2s, 4s
-
-// Create Octokit instance with authentication (if token is available)
-// Authenticated requests get 5,000 requests/hour vs 60/hour unauthenticated
-let octokit = null;
-function getOctokit() {
-  if (!octokit) {
-    octokit = new Octokit({
-      auth: env.GITHUB_OCTOKIT_TOKEN || undefined
-    });
-  }
-
-  return octokit;
-}
-
-/**
- * Sleep for a given number of milliseconds (non-blocking)
- * @param {number} ms - Milliseconds to sleep
- * @returns {Promise<void>}
- */
-function sleep(milliseconds) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, milliseconds);
-  });
-}
 
 /**
  * Parse a GitHub issue into a status incident object
@@ -92,75 +63,8 @@ function parseIncident(issue) {
 }
 
 /**
- * Fetch issues from GitHub with retry logic
- * Uses Octokit for authenticated requests (5,000 req/hour vs 60/hour)
- * @param {string} state - Issue state filter: 'all', 'open', 'closed'
- * @param {number} perPage - Number of issues per page
- * @param {number} retryCount - Current retry attempt
- * @returns {Promise<Array>} - Array of issue objects from GitHub API
- */
-async function fetchIssuesWithRetry(state, perPage, retryCount = 0) {
-  try {
-    const client = getOctokit();
-    const response = await client.request('GET /repos/{owner}/{repo}/issues', {
-      owner: STATUS_REPO_OWNER,
-      repo: STATUS_REPO_NAME,
-      state,
-      labels: 'status',
-      per_page: perPage,
-      sort: 'created',
-      direction: 'desc',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
-
-    return response.data;
-  } catch (err) {
-    // Check if error is retryable (network errors, rate limits, server errors)
-    const isRetryable =
-      err.status === 403 || // Rate limit
-      err.status === 429 || // Too many requests
-      err.status === 500 || // Server error
-      err.status === 502 || // Bad gateway
-      err.status === 503 || // Service unavailable
-      err.status === 504 || // Gateway timeout
-      err.message === 'fetch failed' ||
-      err.code === 'ECONNRESET' ||
-      err.code === 'ETIMEDOUT' ||
-      err.code === 'ENOTFOUND' ||
-      err.code === 'UND_ERR_CONNECT_TIMEOUT' ||
-      err.code === 'UND_ERR_SOCKET';
-
-    if (isRetryable && retryCount < MAX_RETRIES) {
-      const delay = RETRY_DELAYS[retryCount] || RETRY_DELAYS.at(-1);
-      logger.debug(
-        `Status incidents fetch failed, retrying in ${delay}ms (attempt ${
-          retryCount + 1
-        }/${MAX_RETRIES})`,
-        { extra: { error: err.message, status: err.status } }
-      );
-      await sleep(delay);
-      return fetchIssuesWithRetry(state, perPage, retryCount + 1);
-    }
-
-    // Log the error with context
-    logger.error(err, {
-      extra: {
-        message: 'Status incidents fetch failed after retries',
-        retryCount,
-        status: err.status
-      }
-    });
-
-    throw err;
-  }
-}
-
-/**
  * Fetch status page incidents from GitHub issues
  * Uses Redis for caching to share cache across all processes
- * Uses Octokit for authenticated requests to avoid rate limiting
  * @param {Object} options - Options for fetching
  * @param {Object} options.client - Redis client (required for caching)
  * @param {number} options.count - Number of incidents to fetch (default: 50)
@@ -189,18 +93,33 @@ async function getStatusIncidents(options = {}) {
     }
   }
 
-  // Check if GitHub token is configured
-  if (!env.GITHUB_OCTOKIT_TOKEN) {
-    logger.warn(
-      'GITHUB_OCTOKIT_TOKEN not configured, GitHub API requests will be rate limited (60/hour)'
-    );
-  }
-
   try {
-    const perPage = Math.min(count, 100);
+    const url = new URL(`${GITHUB_API_BASE}/issues`);
+    url.searchParams.set('state', state);
+    url.searchParams.set('labels', 'status');
+    url.searchParams.set('per_page', String(Math.min(count, 100)));
+    url.searchParams.set('sort', 'created');
+    url.searchParams.set('direction', 'desc');
 
-    // Fetch issues using Octokit with retry logic
-    const issues = await fetchIssuesWithRetry(state, perPage);
+    const response = await undici.request(url.toString(), {
+      method: 'GET',
+      headers: {
+        accept: 'application/vnd.github+json',
+        'user-agent': 'ForwardEmail/1.0',
+        'x-github-api-version': '2022-11-28'
+      },
+      headersTimeout: ms('30s'),
+      bodyTimeout: ms('30s')
+    });
+
+    if (response.statusCode !== 200) {
+      const body = await response.body.text();
+      throw new Error(
+        `GitHub API returned status ${response.statusCode}: ${body}`
+      );
+    }
+
+    const issues = await response.body.json();
 
     // Parse all issues into incidents
     const incidents = issues.map((issue) => parseIncident(issue));
