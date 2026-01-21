@@ -189,7 +189,7 @@ function buildFeatureLists(featureUsage, locale) {
     features.missing.push({
       emoji: 'iphone',
       title: 'Works with Any Mail App',
-      description: 'Apple Mail, Outlook, Gmail, Betterbird, and more.',
+      description: 'Apple Mail, Outlook, Gmail, Thunderbird, and more.',
       link: `${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`,
       linkText: 'Setup Guide',
       external: false

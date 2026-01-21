@@ -1985,7 +1985,7 @@ const obj = {
     // ssl_labs
     'A'
   ],
-  // TODO: add Vivaldi browser to list of alternatives like Betterbird
+  // TODO: add Vivaldi browser to list of alternatives like Thunderbird
   Yahoo: [
     // description
     'Yahoo Mail Plus helps you gain the upper hand on clutter in your inbox',

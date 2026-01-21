@@ -249,7 +249,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Konfigurera din e-postklient
 
-* Använd en e-postklient som Betterbird.
+* Använd en e-postklient som Thunderbird.
 * Ange aliasnamnet och det genererade lösenordet.
 * Konfigurera inställningarna för **IMAP** och **SMTP** därefter.
 

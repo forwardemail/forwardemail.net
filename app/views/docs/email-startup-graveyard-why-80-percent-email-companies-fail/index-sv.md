@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [1 GB+ minnesanvändning](https://github.com/nylas/nylas-mail/issues/3501) före avstängning
 * **[Brevlåda](https://www.postbox-inc.com/)**: [300 MB+ tomgångsminne](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Kanarieposten](https://canarymail.io/)**: [Frekventa krascher på grund av minnesproblem](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Betterbird](https://betterbird.eu/)**: [Hög RAM-användning upp till 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) av systemminnet
+* **[Thunderbird](https://www.thunderbird.net/)**: [Hög RAM-användning upp till 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) av systemminnet
 
 > \[!WARNING]
 > **Electrons prestandakris**: Moderna e-postklienter byggda med Electron och React Native lider av allvarliga minnesbrist och prestandaproblem. Dessa plattformsoberoende ramverk, även om de är praktiska för utvecklare, skapar resurskrävande applikationer som förbrukar hundratals megabyte till gigabyte RAM för grundläggande e-postfunktionalitet.

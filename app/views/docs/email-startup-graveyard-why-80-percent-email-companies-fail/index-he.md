@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [שימוש בזיכרון של 1GB+](https://github.com/nylas/nylas-mail/issues/3501) לפני הכיבוי
 * **[תיבת דואר](https://www.postbox-inc.com/)**: [זיכרון במצב סרק של 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[קנרי מייל](https://canarymail.io/)**: [קריסות תכופות עקב בעיות זיכרון](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[ת'אנדרברד](https://betterbird.eu/)**: [ניצול RAM גבוה עד 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) של זיכרון המערכת
+* **[ת'אנדרברד](https://www.thunderbird.net/)**: [ניצול RAM גבוה עד 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) של זיכרון המערכת
 
 > \[!WARNING]
 > **משבר ביצועי Electron**: לקוחות דוא"ל מודרניים שנבנו עם Electron ו-React Native סובלים מבעיות זיכרון וביצועים חמורים. מסגרות חוצות פלטפורמות אלו, למרות שהן נוחות למפתחים, יוצרות יישומים עתירי משאבים הצורכים מאות מגה-בייט עד ג'יגה-בייט של זיכרון RAM עבור פונקציונליות בסיסית של דוא"ל.

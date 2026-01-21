@@ -317,7 +317,7 @@ graph LR
 * **Пошта Найласа**: [Використання пам'яті понад 1 ГБ](https://github.com/nylas/nylas-mail/issues/3501) до вимкнення
 * **[Поштова скринька](https://www.postbox-inc.com/)**: [300+ МБ вільної пам'яті](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Канарська пошта](https://canarymail.io/)**: [Часті збої через проблеми з пам'яттю](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Тандерберд](https://betterbird.eu/)**: [Високе використання оперативної пам'яті до 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) системної пам'яті
+* **[Тандерберд](https://www.thunderbird.net/)**: [Високе використання оперативної пам'яті до 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) системної пам'яті
 
 > \[!WARNING]
 > **Криза продуктивності Electron**: Сучасні поштові клієнти, створені за допомогою Electron та React Native, страждають від серйозного перевантаження пам'яті та проблем із продуктивністю. Ці кросплатформні фреймворки, хоча й зручні для розробників, створюють ресурсомісткі програми, які споживають сотні мегабайтів або гігабайт оперативної пам'яті для базової функціональності електронної пошти.

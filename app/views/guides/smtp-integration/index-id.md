@@ -20,7 +20,7 @@
 * [Integrasi Java](#java-integration)
   * [Menggunakan Java Mail API](#using-javamail-api)
 * [Konfigurasi Klien Email](#email-client-configuration)
-  * [Burung Guntur](#betterbird)
+  * [Burung Guntur](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Kirim Email Sebagai)](#gmail-send-mail-as)
 * [Pemecahan Masalah](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Konfigurasi Klien Email {#email-client-configuration}
 
-### Betterbird {#betterbird}
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Betterbird] --> B[Account Settings]
+    A[Open Thunderbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Buka Betterbird dan buka Pengaturan Akun
+1. Buka Thunderbird dan buka Pengaturan Akun
 2. Klik "Tindakan Akun" dan pilih "Tambahkan Akun Email"
 3. Masukkan nama, alamat email, dan kata sandi Anda
 4. Klik "Konfigurasi Manual" dan masukkan detail berikut:

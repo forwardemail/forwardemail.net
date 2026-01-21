@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Cấu hình máy khách email của bạn
 
-* Sử dụng ứng dụng email như Betterbird.
+* Sử dụng ứng dụng email như Thunderbird.
 * Nhập tên bí danh và mật khẩu đã tạo.
 * Cấu hình cài đặt **IMAP** và **SMTP** cho phù hợp.
 

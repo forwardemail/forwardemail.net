@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [1GB+ geheugengebruik](https://github.com/nylas/nylas-mail/issues/3501) vóór afsluiting
 * **[Brievenbus](https://www.postbox-inc.com/)**: [300 MB+ inactief geheugen](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Canarische post](https://canarymail.io/)**: [Regelmatige crashes vanwege geheugenproblemen](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Dondervogel](https://betterbird.eu/)**: [Hoog RAM-gebruik tot 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) van het systeemgeheugen
+* **[Dondervogel](https://www.thunderbird.net/)**: [Hoog RAM-gebruik tot 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) van het systeemgeheugen
 
 > \[!WARNING]
 > **Electron-prestatiecrisis**: Moderne e-mailclients die gebouwd zijn met Electron en React Native kampen met ernstige geheugenproblemen en prestatieproblemen. Deze platformonafhankelijke frameworks zijn weliswaar handig voor ontwikkelaars, maar creëren applicaties die veel resources verbruiken en honderden megabytes tot gigabytes RAM verbruiken voor basisfunctionaliteit voor e-mail.

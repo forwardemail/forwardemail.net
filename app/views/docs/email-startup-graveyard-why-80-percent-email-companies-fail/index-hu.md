@@ -314,7 +314,7 @@ graph LR
 * **Nylas Mail**: [1 GB+ memóriahasználat](https://github.com/nylas/nylas-mail/issues/3501) leállítás előtt
 * **[Postaláda](https://www.postbox-inc.com/)**: [300 MB+ szabad memória](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Kanári posta](https://canarymail.io/)**: [Gyakori összeomlások memóriaproblémák miatt](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Betterbird](https://betterbird.eu/)**: [Magas RAM-használat, akár 90%-ig](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) a rendszermemóriából
+* **[Thunderbird](https://www.thunderbird.net/)**: [Magas RAM-használat, akár 90%-ig](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) a rendszermemóriából
 
 > \[!WARNING]
 > **Electron teljesítményválság**: A modern, Electronnal és React Native-nal készült e-mail kliensek súlyos memória-túlterheléssel és teljesítményproblémákkal küzdenek. Ezek a többplatformos keretrendszerek, bár kényelmesek a fejlesztők számára, erőforrás-igényes alkalmazásokat hoznak létre, amelyek az alapvető e-mail funkciókhoz több száz megabájttól gigabájtig terjedő RAM-ot fogyasztanak.

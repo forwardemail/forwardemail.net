@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [Sử dụng bộ nhớ 1GB+](https://github.com/nylas/nylas-mail/issues/3501) trước khi tắt máy
 * **[Hộp thư](https://www.postbox-inc.com/)**: [Bộ nhớ nhàn rỗi 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Canary Mail](https://canarymail.io/)**: [Thường xuyên xảy ra sự cố do vấn đề bộ nhớ](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Chim Sấm Sét](https://betterbird.eu/)**: [Sử dụng RAM cao lên đến 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) bộ nhớ hệ thống
+* **[Chim Sấm Sét](https://www.thunderbird.net/)**: [Sử dụng RAM cao lên đến 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) bộ nhớ hệ thống
 
 > \[!WARNING]
 > **Khủng hoảng Hiệu suất Electron**: Các ứng dụng email hiện đại được xây dựng bằng Electron và React Native gặp phải tình trạng quá tải bộ nhớ nghiêm trọng và các vấn đề về hiệu suất. Các nền tảng đa nền tảng này, mặc dù tiện lợi cho các nhà phát triển, nhưng lại tạo ra các ứng dụng nặng về tài nguyên, tiêu tốn hàng trăm megabyte đến hàng gigabyte RAM cho các chức năng email cơ bản.

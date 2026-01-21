@@ -78,7 +78,7 @@ const SMTP_HEADERS = [
   'x-priority', // Non-standard priority (e.g., x-priority: 1)
   'x-msmail-priority', // Microsoft-specific priority (e.g., x-msmail-priority: high)
   'x-mimeole', // Microsoft-specific MIME header (e.g., x-mimeole: produced by microsoft mimeole v6.0)
-  'x-mailer', // Email client identifier (e.g., x-mailer: betterbird 91.0)
+  'x-mailer', // Email client identifier (e.g., x-mailer: thunderbird 91.0)
 
   // Uncommon SMTP Headers
   'delivered-to', // Final delivery address (e.g., delivered-to: final@example.com)

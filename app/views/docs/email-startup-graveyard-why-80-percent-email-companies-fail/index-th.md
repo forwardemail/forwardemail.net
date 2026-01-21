@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [การใช้หน่วยความจำ 1GB+](https://github.com/nylas/nylas-mail/issues/3501) ก่อนปิดระบบ
 * **[ตู้ไปรษณีย์](https://www.postbox-inc.com/)**: [หน่วยความจำว่าง 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[จดหมายนกขมิ้น](https://canarymail.io/)**: [เกิดการขัดข้องบ่อยครั้งเนื่องจากปัญหาหน่วยความจำ](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[ธันเดอร์เบิร์ด](https://betterbird.eu/)**: [การใช้ RAM สูงถึง 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) ของหน่วยความจำระบบ
+* **[ธันเดอร์เบิร์ด](https://www.thunderbird.net/)**: [การใช้ RAM สูงถึง 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) ของหน่วยความจำระบบ
 
 > \[!WARNING]
 > **วิกฤตการณ์ด้านประสิทธิภาพของ Electron**: ไคลเอ็นต์อีเมลสมัยใหม่ที่สร้างด้วย Electron และ React Native ประสบปัญหาหน่วยความจำล้นและปัญหาด้านประสิทธิภาพอย่างรุนแรง เฟรมเวิร์กข้ามแพลตฟอร์มเหล่านี้แม้จะสะดวกสำหรับนักพัฒนา แต่ก็สร้างแอปพลิเคชันที่ใช้ทรัพยากรจำนวนมาก ซึ่งใช้ RAM หลายร้อยเมกะไบต์ถึงกิกะไบต์สำหรับฟังก์ชันการทำงานพื้นฐานของอีเมล

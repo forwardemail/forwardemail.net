@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Configureer uw e-mailclient
 
-* Gebruik een e-mailclient zoals Betterbird.
+* Gebruik een e-mailclient zoals Thunderbird.
 * Voer de aliasnaam en het gegenereerde wachtwoord in.
 * Configureer de **IMAP**- en **SMTP**-instellingen dienovereenkomstig.
 

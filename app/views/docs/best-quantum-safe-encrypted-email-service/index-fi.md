@@ -229,7 +229,7 @@ Tässä on taulukko, jossa esitetään lähdekoodissamme ja kehitysprosessissamm
 | [SQLite](https://www.sqlite.org/about.html) | Upotettu tietokantakerros skaalautuvaa, itsenäistä, nopeaa ja vikasietoista IMAP-tallennusta varten. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js-roskapostin, sähköpostin suodatuksen ja tietojenkalastelunestotyökalu (vaihtoehtomme [Spam Assassin](https://spamassassin.apache.org/)- ja [rspamd](https://github.com/rspamd/rspamd)-työkaluille). |
 | [Tangerine](https://tangeri.ne) | DNS HTTPS-pyyntöjen kautta Node.js:n avulla ja välimuisti Redisin avulla – mikä varmistaa globaalin yhdenmukaisuuden ja paljon muuta. |
-| [Betterbird](https://betterbird.eu/) | Kehitystiimimme käyttää tätä (ja suosittelee myös) **suositeltuna sähköpostiohjelmana sähköpostin edelleenlähetyksen kanssa**. |
+| [Thunderbird](https://www.thunderbird.net/) | Kehitystiimimme käyttää tätä (ja suosittelee myös) **suositeltuna sähköpostiohjelmana sähköpostin edelleenlähetyksen kanssa**. |
 | [UTM](https://github.com/utmapp/UTM) | Kehitystiimimme käyttää tätä virtuaalikoneiden luomiseen iOS:lle ja macOS:lle testatakseen erilaisia sähköpostiohjelmia (rinnakkain) IMAP- ja SMTP-palvelimiemme kanssa. |
 | [Ubuntu](https://ubuntu.com/download/server) | Moderni avoimen lähdekoodin Linux-pohjainen palvelinkäyttöjärjestelmä, joka pyörittää kaikkea infrastruktuuriamme. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP-palvelinkirjasto – katso sen huomautukset [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) ja [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) -kirjastoista. |

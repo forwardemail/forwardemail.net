@@ -47,7 +47,7 @@
 
 ## 작동 원리 {#how-does-it-work}
 
-1. Apple Mail, Betterbird, Gmail 또는 Outlook과 같은 이메일 클라이언트를 사용하여 사용자 이름과 비밀번호를 사용하여 보안 [IMAP](/faq#do-you-support-receiving-email-with-imap) 서버에 연결합니다.
+1. Apple Mail, Thunderbird, Gmail 또는 Outlook과 같은 이메일 클라이언트를 사용하여 사용자 이름과 비밀번호를 사용하여 보안 [IMAP](/faq#do-you-support-receiving-email-with-imap) 서버에 연결합니다.
 
 * 사용자 이름은 `hello@example.com`과 같은 도메인의 전체 별칭입니다.
 * 비밀번호는 무작위로 생성되며, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 <strong class="text-success"><i class="fa fa-key"></i>비밀번호 생성</strong>을 클릭할 때만 30초 동안 표시됩니다.
@@ -223,7 +223,7 @@
 | [SQLite](https://www.sqlite.org/about.html) | 확장 가능하고, 독립적이고, 빠르고, 탄력적인 IMAP 스토리지를 위한 내장형 데이터베이스 계층입니다. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js 스팸 방지, 이메일 필터링 및 피싱 방지 도구([Spam Assassin](https://spamassassin.apache.org/) 및 [rspamd](https://github.com/rspamd/rspamd)에 대한 대안). |
 | [Tangerine](https://tangeri.ne) | Node.js를 사용한 HTTPS 요청을 통한 DNS 및 Redis를 사용한 캐싱 - 이를 통해 글로벌 일관성을 보장하고 더 많은 기능을 제공합니다. |
-| [Betterbird](https://betterbird.eu/) | 저희 개발팀에서는 이 이메일을 **Forward Email과 함께 사용할 기본 이메일 클라이언트**로 사용하고 있습니다(또한 이 클라이언트를 권장합니다). |
+| [Thunderbird](https://www.thunderbird.net/) | 저희 개발팀에서는 이 이메일을 **Forward Email과 함께 사용할 기본 이메일 클라이언트**로 사용하고 있습니다(또한 이 클라이언트를 권장합니다). |
 | [UTM](https://github.com/utmapp/UTM) | 저희 개발팀은 iOS와 macOS용 가상 머신을 만들어서 다양한 이메일 클라이언트를 저희의 IMAP 및 SMTP 서버와 병렬로 테스트합니다. |
 | [Ubuntu](https://ubuntu.com/download/server) | 모든 인프라를 구동하는 최신 오픈소스 Linux 기반 서버 운영 체제입니다. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP 서버 라이브러리 – [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) 및 [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md)에 대한 참고 사항을 참조하세요. |

@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [1GB以上のメモリ使用量](https://github.com/nylas/nylas-mail/issues/3501) (シャットダウン前)
 * **[郵便ポスト](https://www.postbox-inc.com/)**: [300MB以上のアイドルメモリ](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[カナリアメール](https://canarymail.io/)**: [メモリの問題による頻繁なクラッシュ](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[サンダーバード](https://betterbird.eu/)**: システムメモリの[RAM使用率が最大90%まで上昇](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
+* **[サンダーバード](https://www.thunderbird.net/)**: システムメモリの[RAM使用率が最大90%まで上昇](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
 
 > \[!WARNING]
 > **Electron のパフォーマンス危機**：Electron と React Native で構築された最新のメールクライアントは、深刻なメモリ肥大化とパフォーマンスの問題を抱えています。これらのクロスプラットフォームフレームワークは開発者にとって便利な一方で、基本的なメール機能を実行するだけで数百メガバイトからギガバイト単位の RAM を消費する、リソースを大量に消費するアプリケーションを生み出します。

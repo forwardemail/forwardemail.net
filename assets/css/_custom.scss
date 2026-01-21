@@ -23,7 +23,7 @@
 }
 
 // NOTE: we have to use class name here otherwise emails get a padding on top
-//       which is especially annoying in email clients like Betterbird where it pads the top of composition window
+//       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
 body.app {
   padding-top: 60px;
   text-rendering: optimizeLegibility;

@@ -20,7 +20,7 @@
 * [Integração Java](#java-integration)
   * [Usando a API Java Mail](#using-javamail-api)
 * [Configuração do cliente de e-mail](#email-client-configuration)
-  * [Pássaro Trovão](#betterbird)
+  * [Pássaro Trovão](#thunderbird)
   * [Correio da Apple](#apple-mail)
   * [Gmail (Enviar e-mail como)](#gmail-send-mail-as)
 * [Solução de problemas](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Configuração do cliente de e-mail {#email-client-configuration}
 
-### Betterbird {#betterbird}
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Betterbird] --> B[Account Settings]
+    A[Open Thunderbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Abra o Betterbird e acesse Configurações da Conta
+1. Abra o Thunderbird e acesse Configurações da Conta
 2. Clique em "Ações da Conta" e selecione "Adicionar Conta de E-mail"
 3. Insira seu nome, endereço de e-mail e senha
 4. Clique em "Configuração Manual" e insira os seguintes dados:

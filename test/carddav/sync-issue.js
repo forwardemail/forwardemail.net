@@ -5,8 +5,8 @@
 
 /**
  * Tests for CardDAV sync issues reported by users:
- * - Changes made in Betterbird not being pushed to other clients
- * - Duplicate contacts appearing on iPhone but not in Betterbird
+ * - Changes made in Thunderbird not being pushed to other clients
+ * - Duplicate contacts appearing on iPhone but not in Thunderbird
  *
  * These tests specifically target the sync-collection REPORT and
  * ETag handling to ensure proper synchronization between clients.
@@ -300,7 +300,7 @@ test.afterEach.always(async (t) => {
  * Test: ETag should be properly quoted per RFC 7232
  *
  * ETags must be quoted strings. If the server returns unquoted ETags,
- * clients like Betterbird may fail to match them correctly during
+ * clients like Thunderbird may fail to match them correctly during
  * If-Match comparisons, causing sync failures.
  */
 test('ETag should be properly quoted in responses', async (t) => {
@@ -429,7 +429,7 @@ test('If-Match header should work with quoted ETags', async (t) => {
  *
  * When a contact is updated, the sync-collection REPORT should return
  * the updated contact when using the old sync token. This ensures that
- * changes made on one client (e.g., Betterbird) are visible to other
+ * changes made on one client (e.g., Thunderbird) are visible to other
  * clients (e.g., iPhone).
  */
 test('sync-collection should detect contact updates', async (t) => {
@@ -621,7 +621,7 @@ test('contact ID should be normalized regardless of .vcf extension', async (t) =
  *
  * When a client makes multiple rapid updates to contacts, all changes
  * should be tracked and returned by sync-collection. This simulates
- * the scenario where a user edits multiple contacts quickly in Betterbird.
+ * the scenario where a user edits multiple contacts quickly in Thunderbird.
  */
 test('sync-collection should track multiple rapid updates', async (t) => {
   const axios = require('axios');

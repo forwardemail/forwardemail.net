@@ -20,7 +20,7 @@
 * [Integrace Javy](#java-integration)
   * [Používání rozhraní Java Mail API](#using-javamail-api)
 * [Konfigurace e-mailového klienta](#email-client-configuration)
-  * [Betterbird](#betterbird)
+  * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Odesílat poštu jako)](#gmail-send-mail-as)
 * [Odstraňování problémů](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Konfigurace e-mailového klienta {#email-client-configuration}
 
-### Betterbird {#betterbird}
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Betterbird] --> B[Account Settings]
+    A[Open Thunderbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Otevřete Betterbird a přejděte do Nastavení účtu.
+1. Otevřete Thunderbird a přejděte do Nastavení účtu.
 2. Klikněte na „Akce účtu“ a vyberte „Přidat poštovní účet“.
 3. Zadejte své jméno, e-mailovou adresu a heslo.
 4. Klikněte na „Ruční konfigurace“ a zadejte následující údaje:

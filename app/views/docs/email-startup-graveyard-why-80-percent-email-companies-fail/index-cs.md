@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [Využití paměti 1 GB+](https://github.com/nylas/nylas-mail/issues/3501) před vypnutím
 * **[Poštovní schránka](https://www.postbox-inc.com/)**: [300 MB+ volné paměti](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Kanárská pošta](https://canarymail.io/)**: [Časté pády kvůli problémům s pamětí](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Betterbird](https://betterbird.eu/)**: [Vysoké využití RAM až 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) systémové paměti
+* **[Thunderbird](https://www.thunderbird.net/)**: [Vysoké využití RAM až 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) systémové paměti
 
 > \[!WARNING]
 > **Krize výkonu Electronu**: Moderní e-mailoví klienti vytvoření pomocí Electronu a React Native trpí vážným zahlcením pamětí a problémy s výkonem. Tyto multiplatformní frameworky, ačkoli jsou pro vývojáře pohodlné, vytvářejí aplikace náročné na zdroje, které spotřebovávají stovky megabajtů až gigabajtů RAM pro základní e-mailové funkce.

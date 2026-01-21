@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: 关机前的 [1GB+内存使用量](https://github.com/nylas/nylas-mail/issues/3501)
 * **[邮箱](https://www.postbox-inc.com/)**: [300MB+ 空闲内存](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[金丝雀邮件](https://canarymail.io/)**: [由于内存问题而频繁崩溃](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[雷鸟](https://betterbird.eu/)**: 系统内存的 [RAM 使用率高达 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
+* **[雷鸟](https://www.thunderbird.net/)**: 系统内存的 [RAM 使用率高达 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
 
 > \[!WARNING]
 > **Electron 性能危机**：使用 Electron 和 React Native 构建的现代电子邮件客户端存在严重的内存膨胀和性能问题。这些跨平台框架虽然为开发者提供了便利，但却会创建资源密集型应用程序，为了实现基本的电子邮件功能，会消耗数百兆到数千兆的内存。

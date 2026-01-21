@@ -250,7 +250,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Konfigurer din e-mailklient
 
-* Brug en e-mailklient som Betterbird.
+* Brug en e-mailklient som Thunderbird.
 * Indtast aliasnavnet og den genererede adgangskode.
 * Konfigurer indstillingerne for **IMAP** og **SMTP** i overensstemmelse hermed.
 

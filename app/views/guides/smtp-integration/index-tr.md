@@ -20,7 +20,7 @@
 * [Java Entegrasyonu](#java-integration)
   * [Java Mail API'sini kullanma](#using-javamail-api)
 * [E-posta İstemcisi Yapılandırması](#email-client-configuration)
-  * [Betterbird](#betterbird)
+  * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Postaları Şu Şekilde Gönder)](#gmail-send-mail-as)
 * [Sorun giderme](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## E-posta İstemcisi Yapılandırması {#email-client-configuration}
 
-### Betterbird {#betterbird}
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
-    A[Open Betterbird] --> B[Account Settings]
+    A[Open Thunderbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Betterbird'ü açın ve Hesap Ayarları'na gidin.
+1. Thunderbird'ü açın ve Hesap Ayarları'na gidin.
 2. "Hesap İşlemleri"ne tıklayın ve "Posta Hesabı Ekle"yi seçin.
 3. Adınızı, e-posta adresinizi ve parolanızı girin.
 4. "Manuel Yapılandırma"ya tıklayın ve aşağıdaki bilgileri girin:

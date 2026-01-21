@@ -47,7 +47,7 @@
 
 ## 如何运作 {#how-does-it-work}
 
-1. 使用您的电子邮件客户端（例如 Apple Mail、Betterbird、Gmail 或 Outlook）– 使用您的用户名和密码连接到我们安全的 [IMAP](/faq#do-you-support-receiving-email-with-imap) 服务器：
+1. 使用您的电子邮件客户端（例如 Apple Mail、Thunderbird、Gmail 或 Outlook）– 使用您的用户名和密码连接到我们安全的 [IMAP](/faq#do-you-support-receiving-email-with-imap) 服务器：
 
 * 您的用户名是您域名的完整别名，例如 `hello@example.com`。
 * 您的密码是随机生成的，并且仅在您点击<strong class="text-success"><i class="fa fa-key"></i>从<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的帐户<i class="fa fa-angle-right"></i>域</a> <i class="fa fa-angle-right"></i>别名生成密码时显示 30 秒。
@@ -75,7 +75,7 @@
 
 * 当您使用电子邮件客户端连接到我们的 IMAP 服务器时，您的密码将被加密并存储在内存中，用于读写您的邮箱。只有使用此密码才能读写您的邮箱。请注意，由于您是唯一拥有此密码的人，因此在您访问邮箱时，**只有您**才能读写您的邮箱。下次您的电子邮件客户端尝试轮询邮件或同步时，您的新邮件将从此临时邮箱传输到您的实际邮箱文件中，并使用您提供的密码进行存储。请注意，此临时邮箱随后将被清除并删除，因此只有您受密码保护的邮箱才能保留这些邮件。
 
-* **如果您已连接到 IMAP（例如使用 Apple Mail 或 Betterbird 等电子邮件客户端），则我们无需写入临时磁盘存储。我们会提取并使用您内存中加密的 IMAP 密码。实时情况下，当邮件尝试发送给您时，我们会向所有 IMAP 服务器发送 WebSocket 请求，询问它们是否有您的活动会话（这是提取部分），然后会将该加密的内存密码传递给服务器——因此，我们无需写入临时邮箱，而是可以使用您的加密密码写入您实际的加密邮箱。**
+* **如果您已连接到 IMAP（例如使用 Apple Mail 或 Thunderbird 等电子邮件客户端），则我们无需写入临时磁盘存储。我们会提取并使用您内存中加密的 IMAP 密码。实时情况下，当邮件尝试发送给您时，我们会向所有 IMAP 服务器发送 WebSocket 请求，询问它们是否有您的活动会话（这是提取部分），然后会将该加密的内存密码传递给服务器——因此，我们无需写入临时邮箱，而是可以使用您的加密密码写入您实际的加密邮箱。**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@
 | [SQLite](https://www.sqlite.org/about.html) | 嵌入式数据库层，用于可扩展、独立、快速且有弹性的 IMAP 存储。 |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js 反垃圾邮件、电子邮件过滤和网络钓鱼预防工具（我们对 [Spam Assassin](https://spamassassin.apache.org/) 和 [rspamd](https://github.com/rspamd/rspamd) 的替代品）。 |
 | [Tangerine](https://tangeri.ne) | 使用 Node.js 通过 HTTPS 请求进行 DNS 处理并使用 Redis 进行缓存 - 从而确保全局一致性等等。 |
-| [Betterbird](https://betterbird.eu/) | 我们的开发团队使用它（并且也推荐它）作为**转发电子邮件的首选电子邮件客户端**。 |
+| [Thunderbird](https://www.thunderbird.net/) | 我们的开发团队使用它（并且也推荐它）作为**转发电子邮件的首选电子邮件客户端**。 |
 | [UTM](https://github.com/utmapp/UTM) | 我们的开发团队使用它为 iOS 和 macOS 创建虚拟机，以便使用我们的 IMAP 和 SMTP 服务器（并行）测试不同的电子邮件客户端。 |
 | [Ubuntu](https://ubuntu.com/download/server) | 基于现代开源 Linux 的服务器操作系统，为我们所有的基础设施提供支持。 |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP 服务器库 – 请参阅其关于 [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) 和 [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) 的注释。 |

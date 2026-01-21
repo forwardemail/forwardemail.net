@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: 종료 전 [1GB 이상 메모리 사용량](https://github.com/nylas/nylas-mail/issues/3501)
 * **[우체통](https://www.postbox-inc.com/)**: [300MB 이상의 유휴 메모리](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[카나리아 메일](https://canarymail.io/)**: [메모리 문제로 인한 잦은 충돌](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[천둥새](https://betterbird.eu/)**: 시스템 메모리의 [최대 90%의 높은 RAM 사용량](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
+* **[천둥새](https://www.thunderbird.net/)**: 시스템 메모리의 [최대 90%의 높은 RAM 사용량](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
 
 > \[!WARNING]
 > **Electron 성능 위기**: Electron과 React Native로 개발된 최신 이메일 클라이언트는 심각한 메모리 팽창 및 성능 문제를 겪고 있습니다. 이러한 크로스 플랫폼 프레임워크는 개발자에게는 편리하지만, 기본적인 이메일 기능을 위해 수백 메가바이트에서 기가바이트의 RAM을 소모하는 리소스 집약적인 애플리케이션을 생성합니다.

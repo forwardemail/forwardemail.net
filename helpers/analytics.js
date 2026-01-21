@@ -14,7 +14,7 @@ const logger = require('#helpers/logger');
 // Common email client patterns for detection
 const EMAIL_CLIENT_PATTERNS = [
   // Desktop clients
-  { pattern: /betterbird/i, name: 'Betterbird' },
+  { pattern: /thunderbird/i, name: 'Thunderbird' },
   { pattern: /outlook/i, name: 'Outlook' },
   { pattern: /apple.?mail/i, name: 'Apple Mail' },
   { pattern: /mail\.app/i, name: 'Apple Mail' },

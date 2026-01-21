@@ -247,7 +247,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Nakonfigurujte si e-mailového klienta
 
-* Použijte e-mailového klienta, jako je Betterbird. * Zadejte alias a vygenerované heslo. * Nakonfigurujte nastavení **IMAP** a **SMTP** odpovídajícím způsobem.
+* Použijte e-mailového klienta, jako je Thunderbird. * Zadejte alias a vygenerované heslo. * Nakonfigurujte nastavení **IMAP** a **SMTP** odpovídajícím způsobem.
 
 #### Nastavení e-mailového serveru {#email-server-settings}
 

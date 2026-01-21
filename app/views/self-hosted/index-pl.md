@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Skonfiguruj swojego klienta poczty e-mail
 
-* Użyj klienta poczty e-mail, takiego jak Betterbird.
+* Użyj klienta poczty e-mail, takiego jak Thunderbird.
 * Wprowadź nazwę aliasu i wygenerowane hasło.
 * Skonfiguruj odpowiednio ustawienia **IMAP** i **SMTP**.
 

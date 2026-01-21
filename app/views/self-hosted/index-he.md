@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. הגדרת תוכנת הדוא"ל שלך
 
-* השתמש בתוכנת דוא"ל כמו Betterbird.
+* השתמש בתוכנת דוא"ל כמו Thunderbird.
 * הזן את שם הכינוי ואת הסיסמה שנוצרה.
 * קבע את הגדרות **IMAP** ו- **SMTP** בהתאם.
 

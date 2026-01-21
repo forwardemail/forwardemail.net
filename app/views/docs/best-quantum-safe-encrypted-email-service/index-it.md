@@ -47,7 +47,7 @@ Siamo l'unico fornitore di servizi di posta elettronica open source al 100% e in
 
 ## Come funziona {#how-does-it-work}
 
-1. Utilizzando il tuo client di posta elettronica come Apple Mail, Betterbird, Gmail o Outlook, ti connetti ai nostri server sicuri [IMAP](/faq#do-you-support-receiving-email-with-imap) utilizzando il tuo nome utente e password:
+1. Utilizzando il tuo client di posta elettronica come Apple Mail, Thunderbird, Gmail o Outlook, ti connetti ai nostri server sicuri [IMAP](/faq#do-you-support-receiving-email-with-imap) utilizzando il tuo nome utente e password:
 
 * Il tuo nome utente è il tuo alias completo con il tuo dominio, ad esempio `hello@example.com`.
 * La tua password viene generata casualmente e ti viene mostrata solo per 30 secondi quando clicchi su <strong class="text-success"><i class="fa fa-key"></i>Genera password</strong> da <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Domini <i class="fa fa-angle-right"></i> del mio account</a> <i class="fa fa-angle-right"></i> Alias.
@@ -75,7 +75,7 @@ Siamo l'unico fornitore di servizi di posta elettronica open source al 100% e in
 
 * Quando ti connetti al nostro server IMAP con il tuo client di posta elettronica, la tua password viene crittografata in memoria e utilizzata per leggere e scrivere nella tua casella di posta. La tua casella di posta può essere letta e scritta solo con questa password. Tieni presente che, poiché sei l'unico a conoscere questa password, **solo tu** puoi leggere e scrivere nella tua casella di posta quando vi accedi. La prossima volta che il tuo client di posta elettronica tenterà di interrogare la posta o di sincronizzare, i nuovi messaggi verranno trasferiti da questa casella di posta temporanea e archiviati nel file della casella di posta effettiva utilizzando la password fornita. Tieni presente che questa casella di posta temporanea verrà successivamente eliminata, in modo che solo la tua casella di posta protetta da password contenga i messaggi.
 
-* **Se sei connesso a IMAP (ad esempio, utilizzando un client di posta elettronica come Apple Mail o Betterbird), non abbiamo bisogno di scrivere su un disco di archiviazione temporaneo. La tua password IMAP crittografata in memoria viene invece recuperata e utilizzata. In tempo reale, quando un messaggio tenta di esserti recapitato, inviamo una richiesta WebSocket a tutti i server IMAP chiedendo loro se hanno una sessione attiva per te (questa è la fase di recupero), e successivamente inoltriamo la password crittografata in memoria, quindi non abbiamo bisogno di scrivere su una casella di posta temporanea, possiamo scrivere sulla tua casella di posta crittografata effettiva utilizzando la tua password crittografata.**
+* **Se sei connesso a IMAP (ad esempio, utilizzando un client di posta elettronica come Apple Mail o Thunderbird), non abbiamo bisogno di scrivere su un disco di archiviazione temporaneo. La tua password IMAP crittografata in memoria viene invece recuperata e utilizzata. In tempo reale, quando un messaggio tenta di esserti recapitato, inviamo una richiesta WebSocket a tutti i server IMAP chiedendo loro se hanno una sessione attiva per te (questa è la fase di recupero), e successivamente inoltriamo la password crittografata in memoria, quindi non abbiamo bisogno di scrivere su una casella di posta temporanea, possiamo scrivere sulla tua casella di posta crittografata effettiva utilizzando la tua password crittografata.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Ecco una tabella che riassume i progetti che utilizziamo nel nostro codice sorge
 | [SQLite](https://www.sqlite.org/about.html) | Livello di database incorporato per un'archiviazione IMAP scalabile, autonoma, veloce e resiliente. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Strumento anti-spam, di filtraggio delle email e di prevenzione del phishing di Node.js (la nostra alternativa a [Spam Assassin](https://spamassassin.apache.org/) e [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Richieste DNS su HTTPS con Node.js e memorizzazione nella cache tramite Redis, che garantisce coerenza globale e molto altro. |
-| [Betterbird](https://betterbird.eu/) | Il nostro team di sviluppo lo utilizza (e lo consiglia) come **client di posta elettronica preferito da utilizzare con Forward Email**. |
+| [Thunderbird](https://www.thunderbird.net/) | Il nostro team di sviluppo lo utilizza (e lo consiglia) come **client di posta elettronica preferito da utilizzare con Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Il nostro team di sviluppo utilizza questa tecnologia per creare macchine virtuali per iOS e macOS per testare diversi client di posta elettronica (in parallelo) con i nostri server IMAP e SMTP. |
 | [Ubuntu](https://ubuntu.com/download/server) | Moderno sistema operativo server open source basato su Linux che alimenta tutta la nostra infrastruttura. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Libreria del server IMAP: vedere le note su [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) e [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

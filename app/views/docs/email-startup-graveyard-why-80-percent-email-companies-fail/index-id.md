@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [Penggunaan memori 1GB+](https://github.com/nylas/nylas-mail/issues/3501) sebelum dimatikan
 * **[Kotak pos](https://www.postbox-inc.com/)**: [Memori idle 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Surat Canary](https://canarymail.io/)**: [Sering terjadi crash karena masalah memori](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Burung Guntur](https://betterbird.eu/)**: [Penggunaan RAM tinggi hingga 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) dari memori sistem
+* **[Burung Guntur](https://www.thunderbird.net/)**: [Penggunaan RAM tinggi hingga 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) dari memori sistem
 
 > \[!WARNING]
 > **Krisis Performa Electron**: Klien email modern yang dibangun dengan Electron dan React Native mengalami pembengkakan memori dan masalah performa yang parah. Kerangka kerja lintas platform ini, meskipun nyaman bagi pengembang, menciptakan aplikasi yang membutuhkan banyak sumber daya dan menghabiskan ratusan megabita hingga gigabita RAM untuk fungsionalitas email dasar.
