@@ -2536,6 +2536,16 @@ To configure S/MIME encryption for your alias:
      </span>
    </div>
 
+   <div class="alert my-3 alert-warning">
+     <i class="fa fa-exclamation-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Important:
+     </strong>
+     <span>
+       S/MIME encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject. If you require S/MIME encryption on <em>all</em> mail then we suggest to use our IMAP service and configure your S/MIME certificate for your alias for inbound mail.
+     </span>
+   </div>
+
 The following email clients have built-in S/MIME support:
 
 | Email Client      | Platform | Notes                                                                                                               |
