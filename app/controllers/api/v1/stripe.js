@@ -282,14 +282,18 @@ async function processEvent(ctx, event) {
         }
 
         // lookup the payment intent created date and if its after plan_set_at then adjust it
+        const paymentCreatedAt = dayjs.unix(paymentIntent.created).toDate();
         if (
           !_.isDate(user[config.userFields.planSetAt]) ||
           // if the user changed plans then adjust plan set at
-          user.plan !== productToPlan
+          user.plan !== productToPlan ||
+          // Fix for race condition: if the payment's timestamp is before planSetAt,
+          // update planSetAt to match. This can happen when the redirect handler
+          // set planSetAt to server time, but the webhook has the correct timestamp.
+          paymentCreatedAt.getTime() <
+            new Date(user[config.userFields.planSetAt]).getTime()
         )
-          user[config.userFields.planSetAt] = dayjs
-            .unix(paymentIntent.created)
-            .toDate();
+          user[config.userFields.planSetAt] = paymentCreatedAt;
       } else if (session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription
@@ -338,15 +342,20 @@ async function processEvent(ctx, event) {
           }
 
           // lookup the payment intent created date and if its after plan_set_at then adjust it
-
+          const subPaymentCreatedAt = dayjs
+            .unix(paymentIntent.created)
+            .toDate();
           if (
             !_.isDate(user[config.userFields.planSetAt]) ||
             // if the user changed plans then adjust plan set at
-            user.plan !== productToPlan
+            user.plan !== productToPlan ||
+            // Fix for race condition: if the payment's timestamp is before planSetAt,
+            // update planSetAt to match. This can happen when the redirect handler
+            // set planSetAt to server time, but the webhook has the correct timestamp.
+            subPaymentCreatedAt.getTime() <
+              new Date(user[config.userFields.planSetAt]).getTime()
           )
-            user[config.userFields.planSetAt] = dayjs
-              .unix(paymentIntent.created)
-              .toDate();
+            user[config.userFields.planSetAt] = subPaymentCreatedAt;
         }
       }
 

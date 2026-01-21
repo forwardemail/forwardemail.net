@@ -609,6 +609,18 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
         // log the payment just for sanity
         ctx.logger.info('paypal payment created', { payment });
 
+        // Fix for race condition: if the payment's invoice_at is before planSetAt,
+        // update planSetAt to match. This can happen when the redirect handler
+        // set planSetAt to server time (because PayPal's create_time wasn't available),
+        // but the webhook has the correct PayPal timestamp for invoice_at.
+        if (
+          _.isDate(user[config.userFields.planSetAt]) &&
+          new Date(now).getTime() <
+            new Date(user[config.userFields.planSetAt]).getTime()
+        ) {
+          user[config.userFields.planSetAt] = now;
+        }
+
         // save the user
         await user.save();
       }
