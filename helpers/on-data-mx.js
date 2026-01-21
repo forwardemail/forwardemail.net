@@ -1393,7 +1393,8 @@ async function forward(recipient, headers, session, body) {
         raw: Buffer.concat([sealHeaders, unsealed]),
         resolver: this.resolver,
         client: this.client,
-        publicKey: recipient.aliasPublicKey
+        publicKey: recipient.aliasPublicKey,
+        smimeCertificate: recipient.aliasSmimeCertificate
       });
     } catch (err) {
       //
@@ -1488,7 +1489,8 @@ async function forward(recipient, headers, session, body) {
             raw: Buffer.concat([sealHeaders, unsealed]),
             resolver: this.resolver,
             client: this.client,
-            publicKey: recipient.aliasPublicKey
+            publicKey: recipient.aliasPublicKey,
+            smimeCertificate: recipient.aliasSmimeCertificate
           });
         } catch (err) {
           err.bounceInfo = getBounceInfo(err);

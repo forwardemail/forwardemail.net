@@ -319,6 +319,7 @@ async function getRecipients(session, scan) {
           addresses,
           hasIMAP,
           aliasPublicKey,
+          aliasSmimeCertificate,
           vacationResponder,
           ignored,
           softRejected,
@@ -338,6 +339,7 @@ async function getRecipients(session, scan) {
             ignored: true,
             hasIMAP: false,
             aliasPublicKey: false,
+            aliasSmimeCertificate: false,
             vacationResponder: false
           };
 
@@ -348,6 +350,7 @@ async function getRecipients(session, scan) {
             ignored: false,
             hasIMAP: false,
             aliasPublicKey: false,
+            aliasSmimeCertificate: false,
             vacationResponder: false,
             softRejected: true
           };
@@ -359,6 +362,7 @@ async function getRecipients(session, scan) {
             ignored: false,
             hasIMAP: false,
             aliasPublicKey: false,
+            aliasSmimeCertificate: false,
             vacationResponder: false,
             hardRejected: true
           };
@@ -369,6 +373,7 @@ async function getRecipients(session, scan) {
           port,
           hasIMAP,
           aliasPublicKey,
+          aliasSmimeCertificate,
           vacationResponder,
           aliasIds,
           webhookKey
@@ -381,6 +386,7 @@ async function getRecipients(session, scan) {
             port: 25,
             hasIMAP: false,
             aliasPublicKey: false,
+            aliasSmimeCertificate: false,
             vacationResponder: false,
             // TODO: only do this if MX server of sender used our service
             srs: true
@@ -644,6 +650,7 @@ async function getRecipients(session, scan) {
           replacements[recipient.address] = address.to; // normal;
           normalized.push({
             aliasPublicKey: recipient.aliasPublicKey,
+            aliasSmimeCertificate: recipient.aliasSmimeCertificate,
             vacationResponder: recipient.vacationResponder,
             webhookKey: recipient.webhookKey,
             webhook: address.to,
@@ -660,6 +667,7 @@ async function getRecipients(session, scan) {
       replacements[recipient.address] = address.to;
       normalized.push({
         aliasPublicKey: recipient.aliasPublicKey,
+        aliasSmimeCertificate: recipient.aliasSmimeCertificate,
         vacationResponder: recipient.vacationResponder,
         host: address.host,
         port: recipient.port,

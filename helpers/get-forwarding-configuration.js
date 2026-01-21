@@ -50,6 +50,7 @@ async function getForwardingConfiguration({
   if (!domain || domain.plan === 'free') return {};
 
   let hasMultiplePGP = false;
+  let hasMultipleSMIME = false;
 
   let aliasQuery = {};
   // if the domain was is_global then filter for
@@ -99,7 +100,7 @@ async function getForwardingConfiguration({
   // eslint-disable-next-line unicorn/no-array-callback-reference
   let aliases = await Aliases.find(aliasQuery)
     .select(
-      'id user has_imap has_pgp public_key recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
+      'id user has_imap has_pgp public_key has_smime smime_certificate recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
     )
     .lean()
     .exec();
@@ -123,7 +124,7 @@ async function getForwardingConfiguration({
       name: punycode.toUnicode(username)
     })
       .select(
-        'id user has_imap has_pgp public_key recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
+        'id user has_imap has_pgp public_key has_smime smime_certificate recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
       )
       .lean()
       .exec();
@@ -314,6 +315,7 @@ async function getForwardingConfiguration({
     alias_ids: [], // ids of IMAP storage to deliver to (supports 1 nested lookup)
     has_imap: false,
     alias_public_key: false,
+    alias_smime_certificate: false,
     vacation_responder: false,
     mapping: []
   };
@@ -389,6 +391,24 @@ async function getForwardingConfiguration({
         delete body.alias_public_key;
       } else {
         body.alias_public_key = alias.public_key;
+      }
+    }
+
+    //
+    // set S/MIME certificate for body response
+    // (similar to PGP; we don't encrypt if we detect multiple matches)
+    //
+    if (
+      !hasMultipleSMIME &&
+      alias.is_enabled &&
+      alias.has_smime &&
+      isSANB(alias.smime_certificate)
+    ) {
+      if (body.alias_smime_certificate) {
+        hasMultipleSMIME = true;
+        delete body.alias_smime_certificate;
+      } else {
+        body.alias_smime_certificate = alias.smime_certificate;
       }
     }
 
@@ -605,6 +625,50 @@ async function getForwardingConfiguration({
           );
           const message = i18n.translate(
             'MULTIPLE_PGP_MESSAGE',
+            obj.locale,
+            domain.name,
+            `${username}@${domain.name}`
+          );
+          await email({
+            template: 'alert',
+            message: {
+              to: obj.to,
+              bcc: config.alertsEmail,
+              subject
+            },
+            locals: {
+              message,
+              locale: obj.locale
+            }
+          });
+        } catch (err) {
+          logger.fatal(err);
+        }
+      })
+      .catch((err) => logger.fatal(err));
+  }
+
+  // send error alert email regarding multiple S/MIME setup
+  if (hasMultipleSMIME) {
+    client
+      .get(`multiple_smime_check:${domain.id}`)
+      .then(async (cache) => {
+        if (boolean(cache)) return;
+        try {
+          await client.set(
+            `multiple_smime_check:${domain.id}`,
+            true,
+            'PX',
+            ms('7d')
+          );
+          const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+          const subject = i18n.translate(
+            'MULTIPLE_SMIME_SUBJECT',
+            obj.locale,
+            `${username}@${domain.name}`
+          );
+          const message = i18n.translate(
+            'MULTIPLE_SMIME_MESSAGE',
             obj.locale,
             domain.name,
             `${username}@${domain.name}`

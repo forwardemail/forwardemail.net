@@ -2566,6 +2566,7 @@ test('error_code_if_disabled', async (t) => {
   t.deepEqual(res.body, {
     alias_ids: [],
     alias_public_key: false,
+    alias_smime_certificate: false,
     has_imap: false,
     mapping: [user.email, '!foo', '!!bar', '!!!baz'],
     vacation_responder: false
