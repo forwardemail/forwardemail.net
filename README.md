@@ -180,7 +180,7 @@ You can start any of the services using our pre-built commands to make it easy. 
 | CalDAV       | `npm start caldav`  |          `5000`          | <http://localhost:5000> |
 | CardDAV      | `npm start carddav` |          `6000`          | <http://localhost:6000> |
 
-You can test the local SMTP, IMAP, POP3, CalDAV, CardDAV servers using [Thunderbird](), `telnet`, or `openssl`. Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
+You can test the local SMTP, IMAP, POP3, CalDAV, CardDAV servers using [Betterbird](https://betterbird.eu), `telnet`, or `openssl`. Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
 
 Try running the local web server:
 

@@ -1,6 +1,6 @@
 # CalDAV Local Testing Guide
 
-This guide will help you test the CalDAV server locally, including VTODO (Tasks) support with Thunderbird and Apple Calendar.
+This guide will help you test the CalDAV server locally, including VTODO (Tasks) support with Betterbird and Apple Calendar.
 
 ## Quick Start
 
@@ -221,25 +221,25 @@ Your calendars should now appear in the Calendar app!
 
 ---
 
-## Thunderbird
+## Betterbird
 
-### 1. Install Thunderbird
+### 1. Install Betterbird
 
-Download from: https://www.thunderbird.net/
+Download from: https://betterbird.eu/
 
 ### 2. Install TbSync Add-on
 
-1. Open Thunderbird
+1. Open Betterbird
 2. Go to **Tools** → **Add-ons and Themes** (or press `Cmd+Shift+A`)
 3. Search for **TbSync**
-4. Click **Add to Thunderbird**
-5. Restart Thunderbird if prompted
+4. Click **Add to Betterbird**
+5. Restart Betterbird if prompted
 
 ### 3. Install Provider for CalDAV & CardDAV
 
 1. In Add-ons, search for **Provider for CalDAV & CardDAV**
-2. Click **Add to Thunderbird**
-3. Restart Thunderbird if prompted
+2. Click **Add to Betterbird**
+3. Restart Betterbird if prompted
 
 ### 4. Configure CalDAV Account
 
@@ -267,7 +267,7 @@ Download from: https://www.thunderbird.net/
      - ✅ **Tasks** (for VTODO objects)
 
 5. **Access Calendars**
-   - Click on **Calendar** tab in Thunderbird (or press `Cmd+Shift+C`)
+   - Click on **Calendar** tab in Betterbird (or press `Cmd+Shift+C`)
    - You should see both calendars in the left sidebar
 
 ---
@@ -285,7 +285,7 @@ Download from: https://www.thunderbird.net/
    - Notes, due date, priority, etc.
 5. The task should sync to the server
 
-#### Thunderbird
+#### Betterbird
 1. Open **Calendar** or **Tasks** view
 2. Right-click in the calendar → **New Task**
 3. Fill in task details:
@@ -297,7 +297,7 @@ Download from: https://www.thunderbird.net/
 
 ### Verify Sync
 
-1. **Create a task in one client** (e.g., Thunderbird)
+1. **Create a task in one client** (e.g., Betterbird)
 2. **Check the other client** (e.g., Apple Reminders)
 3. The task should appear after a sync cycle (usually within seconds)
 
@@ -306,7 +306,7 @@ Download from: https://www.thunderbird.net/
 Try these operations to verify full VTODO support:
 
 - **Mark task as complete**
-  - Thunderbird: Right-click → Mark Completed
+  - Betterbird: Right-click → Mark Completed
   - Apple: Check the checkbox
 
 - **Update task priority**
@@ -317,7 +317,7 @@ Try these operations to verify full VTODO support:
 
 - **Update task status**
   - Not Started → In Progress → Completed
-  - (Thunderbird supports more statuses than Apple Reminders)
+  - (Betterbird supports more statuses than Apple Reminders)
 
 - **Delete tasks**
   - Delete in one client and verify removal in the other
@@ -439,8 +439,8 @@ Apple's implementation has some unique characteristics:
 - [ ] **Lists**: Test with different reminder lists
 
 #### **Sync Testing**
-- [ ] Create reminder in Apple Reminders → verify in Thunderbird
-- [ ] Create task in Thunderbird → verify in Apple Reminders
+- [ ] Create reminder in Apple Reminders → verify in Betterbird
+- [ ] Create task in Betterbird → verify in Apple Reminders
 - [ ] Update reminder in one client → verify sync in another
 - [ ] Complete task in one client → verify in another
 - [ ] Delete reminder → verify removal across clients
@@ -482,7 +482,7 @@ X-APPLE-DEFAULT-ALARM: TRUE       # System default alarm
 
 ### Feature Compatibility Matrix
 
-| Feature | Apple Reminders | Thunderbird | Google Tasks | Notes |
+| Feature | Apple Reminders | Betterbird | Google Tasks | Notes |
 |---------|----------------|-------------|--------------|-------|
 | **Basic VTODO** | ✅ | ✅ | ✅ | Full support |
 | **Due Dates** | ✅ | ✅ | ✅ | All clients |
@@ -510,7 +510,7 @@ X-APPLE-DEFAULT-ALARM: TRUE       # System default alarm
 - `COMPLETED` → Completed
 - (`IN-PROCESS` not commonly used)
 
-**Thunderbird:**
+**Betterbird:**
 - `NEEDS-ACTION` → Not Started
 - `IN-PROCESS` → In Progress
 - `COMPLETED` → Completed
@@ -521,7 +521,7 @@ X-APPLE-DEFAULT-ALARM: TRUE       # System default alarm
 #### **2. Time Zones**
 
 - **Apple:** Handles time zones automatically based on system settings
-- **Thunderbird:** Explicit timezone support via `TZID`
+- **Betterbird:** Explicit timezone support via `TZID`
 - **Server:** Stores UTC times, converts as needed
 
 **Best Practice:** Use UTC times (`Z` suffix) or explicit `TZID` for consistency.
@@ -529,13 +529,13 @@ X-APPLE-DEFAULT-ALARM: TRUE       # System default alarm
 #### **3. Recurring Tasks**
 
 - **Apple:** Creates instances on-demand as tasks are completed
-- **Thunderbird:** Displays all future occurrences based on `RRULE`
+- **Betterbird:** Displays all future occurrences based on `RRULE`
 - **Server:** Stores the `RRULE` and lets clients handle expansion
 
 #### **4. Subtasks (RELATED-TO)**
 
 - **Apple:** Native subtask support in Reminders
-- **Thunderbird:** Shows as separate tasks with relationship
+- **Betterbird:** Shows as separate tasks with relationship
 - **Format:** Uses `RELATED-TO;RELTYPE=PARENT:parent-uid`
 
 ### Testing Client Compatibility
@@ -544,7 +544,7 @@ X-APPLE-DEFAULT-ALARM: TRUE       # System default alarm
 # Test with Apple Reminders format
 npm test test/caldav/index.js -- --match "VTODO with Apple-specific properties"
 
-# Test with categories (Thunderbird)
+# Test with categories (Betterbird)
 npm test test/caldav/index.js -- --match "VTODO with categories"
 
 # Test subtasks
@@ -601,7 +601,7 @@ npm test test/caldav/index.js -- --match "VTODO with subtasks"
 
 **Solutions:**
 - **Apple Reminders:** Changes sync almost immediately
-- **Thunderbird:** Right-click calendar → "Synchronize"
+- **Betterbird:** Right-click calendar → "Synchronize"
 - **Force sync:** Modify a task to trigger sync
 - Check CalDAV server logs for sync requests
 
@@ -618,7 +618,7 @@ npm test test/caldav/index.js -- --match "VTODO with RRULE"
 **Common Issues:**
 1. **Client doesn't support task recurrence** (e.g., Google Tasks)
 2. **RRULE syntax error** - validate RRULE format
-3. **Different recurrence models** - Apple vs. Thunderbird handle differently
+3. **Different recurrence models** - Apple vs. Betterbird handle differently
 
 **Solution:**
 - Test RRULE in iCalendar validator
@@ -638,7 +638,7 @@ npm test test/caldav/index.js -- --match "VTODO with subtasks"
 **Notes:**
 - Not all clients support subtasks
 - Apple Reminders: Native support
-- Thunderbird: Shows as linked tasks
+- Betterbird: Shows as linked tasks
 - Google Tasks: May show as separate tasks
 
 ### Location Data Lost
@@ -659,7 +659,7 @@ npm test test/caldav/index.js -- --match "VTODO with subtasks"
 **Problem:** Categories don't appear in all clients
 
 **Compatibility:**
-- Thunderbird: Full `CATEGORIES` support
+- Betterbird: Full `CATEGORIES` support
 - Apple: Uses lists instead of categories
 - Others: Limited or no support
 
@@ -1007,7 +1007,7 @@ rm .caldav-test-credentials.json
 
 - **macOS:** System Settings → Internet Accounts → Remove CalDAV account
 - **iOS:** Settings → Calendar → Accounts → Delete CalDAV account
-- **Thunderbird:** TbSync → Account Actions → Delete account
+- **Betterbird:** TbSync → Account Actions → Delete account
 
 ---
 

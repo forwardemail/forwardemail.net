@@ -177,7 +177,7 @@ We use our own privacy-focused analytics system to understand how our services a
 * Browser and operating system type (parsed from user agent, raw data discarded)
 * Device type (desktop, mobile, tablet)
 * Referrer domain (not full URL)
-* Email client type for mail protocols (e.g. Thunderbird, Outlook)
+* Email client type for mail protocols (e.g. Betterbird, Outlook)
 
 **Data retention:**
 

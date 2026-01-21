@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [Uso de memoria de más de 1 GB](https://github.com/nylas/nylas-mail/issues/3501) antes del apagado
 * **[Buzón](https://www.postbox-inc.com/)**: [Más de 300 MB de memoria inactiva](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Correo canario](https://canarymail.io/)**: [Fallos frecuentes debido a problemas de memoria](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Pájaro de trueno](https://www.thunderbird.net/)**: [Alto uso de RAM hasta el 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) de la memoria del sistema
+* **[Pájaro de trueno](https://betterbird.eu/)**: [Alto uso de RAM hasta el 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) de la memoria del sistema
 
 > \[!WARNING]
 > **Crisis de rendimiento de Electron**: Los clientes de correo electrónico modernos desarrollados con Electron y React Native sufren graves problemas de sobrecarga de memoria y rendimiento. Estos frameworks multiplataforma, si bien son convenientes para los desarrolladores, crean aplicaciones que consumen muchos recursos y que consumen cientos de megabytes o incluso gigabytes de RAM para las funciones básicas del correo electrónico.

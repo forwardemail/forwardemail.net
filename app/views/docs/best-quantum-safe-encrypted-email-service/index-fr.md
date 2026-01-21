@@ -47,7 +47,7 @@ Nous sommes le seul fournisseur de services de messagerie 100 % open source et a
 
 ## Comment ça marche ? {#how-does-it-work}
 
-1. À l'aide de votre client de messagerie tel qu'Apple Mail, Thunderbird, Gmail ou Outlook, vous vous connectez à nos serveurs sécurisés [IMAP](/faq#do-you-support-receiving-email-with-imap) en utilisant votre nom d'utilisateur et votre mot de passe :
+1. À l'aide de votre client de messagerie tel qu'Apple Mail, Betterbird, Gmail ou Outlook, vous vous connectez à nos serveurs sécurisés [IMAP](/faq#do-you-support-receiving-email-with-imap) en utilisant votre nom d'utilisateur et votre mot de passe :
 
 * Votre nom d'utilisateur est votre alias complet avec votre domaine, par exemple `hello@example.com`.
 * Votre mot de passe est généré aléatoirement et ne s'affiche que pendant 30 secondes lorsque vous cliquez sur <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> depuis <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias.
@@ -75,7 +75,7 @@ Nous sommes le seul fournisseur de services de messagerie 100 % open source et a
 
 * Lorsque vous vous connectez à notre serveur IMAP avec votre client de messagerie, votre mot de passe est chiffré en mémoire et utilisé pour lire et écrire dans votre boîte aux lettres. Ce mot de passe est indispensable pour la lecture et l'écriture dans votre boîte aux lettres. N'oubliez pas que, puisque vous êtes le seul à disposer de ce mot de passe, vous seul pouvez y accéder en lecture et en écriture. Lors de votre prochaine tentative de consultation ou de synchronisation, vos nouveaux messages seront transférés depuis cette boîte aux lettres temporaire et stockés dans votre fichier de boîte aux lettres actuel avec le mot de passe que vous avez fourni. Notez que cette boîte aux lettres temporaire est purgée et supprimée par la suite, de sorte que seule votre boîte aux lettres protégée par mot de passe conserve les messages.
 
-* **Si vous êtes connecté en IMAP (par exemple, via un client de messagerie comme Apple Mail ou Thunderbird), nous n'avons pas besoin d'écrire sur le disque dur temporaire. Votre mot de passe IMAP chiffré en mémoire est récupéré et utilisé. En temps réel, lorsqu'un message tente de vous parvenir, nous envoyons une requête WebSocket à tous les serveurs IMAP pour leur demander s'ils ont une session active pour vous (c'est la phase de récupération), puis nous transmettons ensuite ce mot de passe chiffré en mémoire. Nous n'avons donc pas besoin d'écrire dans une boîte aux lettres temporaire ; nous pouvons écrire dans votre boîte aux lettres chiffrée actuelle avec votre mot de passe chiffré.**
+* **Si vous êtes connecté en IMAP (par exemple, via un client de messagerie comme Apple Mail ou Betterbird), nous n'avons pas besoin d'écrire sur le disque dur temporaire. Votre mot de passe IMAP chiffré en mémoire est récupéré et utilisé. En temps réel, lorsqu'un message tente de vous parvenir, nous envoyons une requête WebSocket à tous les serveurs IMAP pour leur demander s'ils ont une session active pour vous (c'est la phase de récupération), puis nous transmettons ensuite ce mot de passe chiffré en mémoire. Nous n'avons donc pas besoin d'écrire dans une boîte aux lettres temporaire ; nous pouvons écrire dans votre boîte aux lettres chiffrée actuelle avec votre mot de passe chiffré.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Voici un tableau décrivant les projets que nous utilisons dans notre code sourc
 | [SQLite](https://www.sqlite.org/about.html) | Couche de base de données intégrée pour un stockage IMAP évolutif, autonome, rapide et résilient. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Outil anti-spam, de filtrage des e-mails et de prévention du phishing Node.js (notre alternative à [Spam Assassin](https://spamassassin.apache.org/) et [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Requêtes DNS sur HTTPS avec Node.js et mise en cache à l'aide de Redis – ce qui garantit la cohérence globale et bien plus encore. |
-| [Thunderbird](https://www.thunderbird.net/) | Notre équipe de développement utilise ceci (et le recommande également) comme **client de messagerie préféré à utiliser avec Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Notre équipe de développement utilise ceci (et le recommande également) comme **client de messagerie préféré à utiliser avec Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Notre équipe de développement utilise ces machines virtuelles créées pour iOS et macOS afin de tester différents clients de messagerie (en parallèle) avec nos serveurs IMAP et SMTP. |
 | [Ubuntu](https://ubuntu.com/download/server) | Système d'exploitation serveur moderne et open source basé sur Linux qui alimente toute notre infrastructure. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Bibliothèque de serveur IMAP – voir ses notes sur [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) et [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

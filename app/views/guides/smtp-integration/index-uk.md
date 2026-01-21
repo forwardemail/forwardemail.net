@@ -20,7 +20,7 @@
 * [Інтеграція з Java](#java-integration)
   * [Використання API пошти Java](#using-javamail-api)
 * [Конфігурація поштового клієнта](#email-client-configuration)
-  * [Тандерберд](#thunderbird)
+  * [Тандерберд](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Надіслати пошту від імені)](#gmail-send-mail-as)
 * [Усунення несправностей](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Конфігурація поштового клієнта {#email-client-configuration}
 
-### Тандерберд {#thunderbird}
+### Тандерберд {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Відкрийте Thunderbird і перейдіть до налаштувань облікового запису
+1. Відкрийте Betterbird і перейдіть до налаштувань облікового запису
 2. Натисніть «Дії облікового запису» та виберіть «Додати обліковий запис пошти»
 3. Введіть своє ім’я, адресу електронної пошти та пароль
 4. Натисніть «Налаштування вручну» та введіть такі дані:

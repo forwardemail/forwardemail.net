@@ -99,7 +99,7 @@ const AnalyticsEvents = new mongoose.Schema({
     default: 'unknown',
     index: true
   },
-  // Email client app (Thunderbird, Apple Mail, Outlook, etc.)
+  // Email client app (Betterbird, Apple Mail, Outlook, etc.)
   client_app: {
     type: String,
     maxlength: 100,

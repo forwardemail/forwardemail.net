@@ -20,7 +20,7 @@
 * [Java integráció](#java-integration)
   * [A Java Mail API használata](#using-javamail-api)
 * [E-mail kliens konfiguráció](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (E-mail küldése másként)](#gmail-send-mail-as)
 * [Hibaelhárítás](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## E-mail kliens konfiguráció {#email-client-configuration}
 
-IDEIGLENES_HELYTARTÓ_0 Thunderbird {IDEIGLENES_HELYTARTÓ_1
+IDEIGLENES_HELYTARTÓ_0 Betterbird {IDEIGLENES_HELYTARTÓ_1
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]

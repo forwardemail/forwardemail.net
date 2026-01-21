@@ -11,7 +11,7 @@
   * [What is Forward Email's history](#what-is-forward-emails-history)
   * [How fast is this service](#how-fast-is-this-service)
 * [Email Clients](#email-clients)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
@@ -245,10 +245,10 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 
 ## Email Clients {#email-clients}
 
-### Thunderbird {#thunderbird}
+### Betterbird {#betterbird}
 
 1. Create a new alias and generate a password in your Forward Email dashboard
-2. Open Thunderbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
+2. Open Betterbird and go to **Edit → Account Settings → Account Actions → Add Mail Account**
 3. Enter your name, Forward Email address, and password
 4. Click **Configure manually** and enter:
    * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
@@ -881,7 +881,7 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <strong class="font-weight-bold">
     Tip:
   </strong>
-  <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+  <span>If you are using Betterbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
 | Type | Hostname | Protocol | Ports |
@@ -1002,7 +1002,7 @@ Additionally if you need to convert a Mbox file to EML file, then you can use <h
 
 ### How do I import and migrate my existing mailbox {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-You can easily import your email to Forward Email (e.g. using [Thunderbird](https://www.thunderbird.net)) with the instructions below:
+You can easily import your email to Forward Email (e.g. using [Betterbird](https://betterbird.eu)) with the instructions below:
 
 <div class="alert alert-warning">
   <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -1026,17 +1026,17 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | Gandi | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
-| Other | [Use Thunderbird](https://www.thunderbird.net) | Set up your existing email account in Thunderbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
+| Other | [Use Betterbird](https://betterbird.eu) | Set up your existing email account in Betterbird and then use the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) plugin to export and import your email.  **You may also be able to simply copy/paste or drag/drop emails between one account to another.** |
 
-2. Download, install, and open [Thunderbird](https://www.thunderbird.net).
+2. Download, install, and open [Betterbird](https://betterbird.eu).
 
 3. Create a new account using your alias' full email address (e.g. <code><you@yourdomain.com></code>) and your generated password.  <strong>If you do not yet have a generated password, then <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">refer to our setup instructions</a></strong>.
 
-4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird plugin.
+4. Download and install the [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Betterbird plugin.
 
-5. Create a new local folder in Thunderbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
+5. Create a new local folder in Betterbird, and then right click on it  → select the `ImportExportTools NG` option → choose `Import mbox file` (for MBOX export format) – or – `Import messages` / `Import all messages from a directory` (for EML export format).
 
-6. Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
+6. Drag/drop from the local folder to a new (or existing) IMAP folder in Betterbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.
 
 <div class="alert my-3 alert-primary">
      <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1044,7 +1044,7 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
        Tip:
      </strong>
      <span>
-       If you are confused as to how to import into Thunderbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+       If you are confused as to how to import into Betterbird, then you can refer to official instructions at <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> and <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
      </span>
    </div>
 
@@ -1835,13 +1835,13 @@ Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noop
 
 **To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
 
-<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Betterbird Example Setup" />
 
 ### How do I add more calendars and manage existing calendars {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
 If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
-You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Betterbird](https://thunderbird.net)).
 
 ### How do I connect and configure tasks and reminders {#how-do-i-connect-and-configure-tasks-and-reminders}
 
@@ -1867,7 +1867,7 @@ Tasks and reminders will automatically be separated from calendar events into th
 4. Enter your Forward Email alias and generated password
 5. Tasks.org will automatically discover your task calendars
 
-**Thunderbird:**
+**Betterbird:**
 
 1. Install the Lightning add-on if not already installed
 2. Create a new calendar with type "CalDAV"
@@ -2024,7 +2024,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://betterbird.eu/" target="_blank" rel="noopener noreferrer">Betterbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
@@ -2035,7 +2035,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>If you are using Betterbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
    </div>
 
 6. When prompted for IMAP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
@@ -2082,7 +2082,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://betterbird.eu/" target="_blank" rel="noopener noreferrer">Betterbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
@@ -2093,7 +2093,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>If you are using Betterbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
    </div>
 
 6. When prompted for POP3 server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 2 above
@@ -2145,7 +2145,7 @@ Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) compo
 * **macOS Reminders** - Full native support for task creation, editing, completion, and sync
 * **iOS Reminders** - Full native support across all iOS devices
 * **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird** - Task and calendar support in desktop email client
+* **Betterbird** - Task and calendar support in desktop email client
 * **Any CalDAV-compatible task manager** - Standard VTODO component support
 
 **Task features supported:**
@@ -2170,7 +2170,7 @@ The login credentials are the same as for calendar support:
 **Important notes:**
 
 * **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
-* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Betterbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
 * **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
 * **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
@@ -2225,7 +2225,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>We recommend using <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
+     <span>We recommend using <a class="alert-link" href="https://betterbird.eu/" target="_blank" rel="noopener noreferrer">Betterbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, or <a href="/blog/open-source" class="alert-link" target="_blank">an open-source and privacy-focused alternative</a>.</span>
    </div>
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
@@ -2236,7 +2236,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
      <strong class="font-weight-bold">
        Tip:
      </strong>
-     <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
+     <span>If you are using Betterbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
    </div>
 
 7. When prompted for SMTP server password, paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
@@ -2302,7 +2302,7 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
 
 | Email Client | Platform | Recommended Plugin | Notes |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Desktop | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird has built-in support for OpenPGP. |
+| Betterbird | Desktop | [Configure OpenPGP in Betterbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Betterbird has built-in support for OpenPGP. |
 | Gmail | Browser | [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download) (proprietary license) | Gmail does not support OpenPGP, however you can download the open-source plugin [Mailvelope](https://mailvelope.com/) or [FlowCrypt](https://flowcrypt.com/download). |
 | Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
 | Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietary license) | Apple Mail does not support OpenPGP, however you can download the open-source plugin [PGPro](https://github.com/opensourceios/PGPro/) or [FlowCrypt](https://flowcrypt.com/download). |

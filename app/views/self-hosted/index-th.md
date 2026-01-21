@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. กำหนดค่าไคลเอนต์อีเมลของคุณ
 
-* ใช้โปรแกรมรับส่งอีเมล เช่น Thunderbird
+* ใช้โปรแกรมรับส่งอีเมล เช่น Betterbird
 * ป้อนชื่อนามแฝงและรหัสผ่านที่สร้างขึ้น
 * กำหนดค่า **IMAP** และ **SMTP** ให้เหมาะสม
 

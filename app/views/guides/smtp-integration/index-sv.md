@@ -20,7 +20,7 @@
 * [Java-integration](#java-integration)
   * [Använda Java Mail API](#using-javamail-api)
 * [Konfiguration av e-postklient](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Skicka e-post som)](#gmail-send-mail-as)
 * [Felsökning](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Konfiguration av e-postklient {#email-client-configuration}
 
-### Thunderbird {#thunderbird}
+### Betterbird {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Öppna Thunderbird och gå till Kontoinställningar
+1. Öppna Betterbird och gå till Kontoinställningar
 2. Klicka på "Kontoåtgärder" och välj "Lägg till e-postkonto"
 3. Ange ditt namn, din e-postadress och ditt lösenord
 4. Klicka på "Manuell konfiguration" och ange följande uppgifter:

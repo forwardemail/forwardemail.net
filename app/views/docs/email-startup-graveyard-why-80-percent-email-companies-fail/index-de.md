@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [1 GB+ Speichernutzung](https://github.com/nylas/nylas-mail/issues/3501) vor dem Herunterfahren
 * **[Briefkasten](https://www.postbox-inc.com/)**: [300 MB+ Leerlaufspeicher](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Canary Mail](https://canarymail.io/)**: [Häufige Abstürze aufgrund von Speicherproblemen](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Thunderbird](https://www.thunderbird.net/)**: [Hohe RAM-Auslastung bis zu 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) des Systemspeichers
+* **[Betterbird](https://betterbird.eu/)**: [Hohe RAM-Auslastung bis zu 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) des Systemspeichers
 
 > \[!WARNING]
 > **Electron-Performance-Krise**: Moderne E-Mail-Clients, die mit Electron und React Native erstellt wurden, leiden unter massivem Speichermangel und Leistungsproblemen. Diese plattformübergreifenden Frameworks sind zwar praktisch für Entwickler, erzeugen aber ressourcenintensive Anwendungen, die Hunderte von Megabyte bis Gigabyte RAM für grundlegende E-Mail-Funktionen verbrauchen.

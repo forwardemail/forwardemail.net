@@ -47,7 +47,7 @@ Bireysel olarak şifrelenmiş SQLite posta kutularını depolayan, sınırsız a
 
 ## Nasıl çalışır? {#how-does-it-work}
 
-1. Apple Mail, Thunderbird, Gmail veya Outlook gibi e-posta istemcinizi kullanarak, kullanıcı adınızı ve şifrenizi kullanarak güvenli [IMAP](/faq#do-you-support-receiving-email-with-imap) sunucularımıza bağlanın:
+1. Apple Mail, Betterbird, Gmail veya Outlook gibi e-posta istemcinizi kullanarak, kullanıcı adınızı ve şifrenizi kullanarak güvenli [IMAP](/faq#do-you-support-receiving-email-with-imap) sunucularımıza bağlanın:
 
 * Kullanıcı adınız, `hello@example.com` gibi alan adınızdaki tam takma adınızdır.
 * Şifreniz rastgele oluşturulur ve yalnızca <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adlarım</a> <i class="fa fa-angle-right"></i> Takma Adlarım</i>'dan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong>'a tıkladığınızda 30 saniye boyunca görüntülenir.
@@ -75,7 +75,7 @@ Bireysel olarak şifrelenmiş SQLite posta kutularını depolayan, sınırsız a
 
 * E-posta istemcinizle IMAP sunucumuza bağlandığınızda, parolanız bellekte şifrelenir ve posta kutunuza okumak ve yazmak için kullanılır. Posta kutunuz yalnızca bu parola ile okunabilir ve yazılabilir. Bu parolaya sahip tek kişi siz olduğunuz için, posta kutunuza erişirken **yalnızca siz** okuyabilir ve yazabilirsiniz. E-posta istemciniz bir sonraki e-posta sorgulama veya senkronizasyon girişiminde bulunduğunda, yeni iletileriniz bu geçici posta kutusundan aktarılacak ve verdiğiniz parola kullanılarak gerçek posta kutusu dosyanızda saklanacaktır. Bu geçici posta kutusunun daha sonra temizlenip silineceğini ve iletilerin yalnızca parola korumalı posta kutunuzda saklanacağını unutmayın.
 
-* **IMAP'ye bağlıysanız (örneğin, Apple Mail veya Thunderbird gibi bir e-posta istemcisi kullanıyorsanız), geçici disk depolama alanına yazmamıza gerek kalmaz. Bunun yerine, bellek içi şifrelenmiş IMAP parolanız alınır ve kullanılır. Gerçek zamanlı olarak, size bir mesaj iletilmeye çalışıldığında, tüm IMAP sunucularına sizin için etkin bir oturum olup olmadığını soran bir WebSocket isteği göndeririz (bu, alma kısmıdır) ve ardından bu şifrelenmiş bellek içi parolayı iletiriz. Bu sayede geçici bir posta kutusuna yazmamıza gerek kalmaz, şifrelenmiş parolanızı kullanarak gerçek şifrelenmiş posta kutunuza yazabiliriz.**
+* **IMAP'ye bağlıysanız (örneğin, Apple Mail veya Betterbird gibi bir e-posta istemcisi kullanıyorsanız), geçici disk depolama alanına yazmamıza gerek kalmaz. Bunun yerine, bellek içi şifrelenmiş IMAP parolanız alınır ve kullanılır. Gerçek zamanlı olarak, size bir mesaj iletilmeye çalışıldığında, tüm IMAP sunucularına sizin için etkin bir oturum olup olmadığını soran bir WebSocket isteği göndeririz (bu, alma kısmıdır) ve ardından bu şifrelenmiş bellek içi parolayı iletiriz. Bu sayede geçici bir posta kutusuna yazmamıza gerek kalmaz, şifrelenmiş parolanızı kullanarak gerçek şifrelenmiş posta kutunuza yazabiliriz.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Kaynak kodumuzda ve geliştirme sürecimizde kullandığımız projeleri özetle
 | [SQLite](https://www.sqlite.org/about.html) | Ölçeklenebilir, kendi kendine yeten, hızlı ve dayanıklı IMAP depolama için gömülü veritabanı katmanı. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js anti-spam, e-posta filtreleme ve kimlik avı önleme aracı ([Spam Assassin](https://spamassassin.apache.org/) ve [rspamd](https://github.com/rspamd/rspamd)'e alternatifimiz). |
 | [Tangerine](https://tangeri.ne) | Node.js ile HTTPS üzerinden DNS istekleri ve Redis ile önbellekleme – küresel tutarlılığı ve çok daha fazlasını sağlar. |
-| [Thunderbird](https://www.thunderbird.net/) | Geliştirme ekibimiz bunu **Forward Email ile kullanılacak tercih edilen e-posta istemcisi** olarak kullanıyor (ve öneriyor). |
+| [Betterbird](https://betterbird.eu/) | Geliştirme ekibimiz bunu **Forward Email ile kullanılacak tercih edilen e-posta istemcisi** olarak kullanıyor (ve öneriyor). |
 | [UTM](https://github.com/utmapp/UTM) | Geliştirme ekibimiz, farklı e-posta istemcilerini (paralel olarak) IMAP ve SMTP sunucularımızla test etmek amacıyla iOS ve macOS için bu sanal makineleri oluşturuyor. |
 | [Ubuntu](https://ubuntu.com/download/server) | Tüm altyapımızı destekleyen modern, açık kaynaklı Linux tabanlı sunucu işletim sistemi. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP sunucu kütüphanesi – [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) ve [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) hakkındaki notlarına bakın. |

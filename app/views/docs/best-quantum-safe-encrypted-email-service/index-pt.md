@@ -47,7 +47,7 @@ Somos o único provedor de serviços de e-mail 100% de código aberto e focado e
 
 ## Como funciona {#how-does-it-work}
 
-1. Usando seu cliente de e-mail, como Apple Mail, Thunderbird, Gmail ou Outlook – você se conecta aos nossos servidores seguros [IMAP](/faq#do-you-support-receiving-email-with-imap) usando seu nome de usuário e senha:
+1. Usando seu cliente de e-mail, como Apple Mail, Betterbird, Gmail ou Outlook – você se conecta aos nossos servidores seguros [IMAP](/faq#do-you-support-receiving-email-with-imap) usando seu nome de usuário e senha:
 
 * Seu nome de usuário é seu alias completo com seu domínio, como `hello@example.com`.
 * Sua senha é gerada aleatoriamente e exibida por apenas 30 segundos quando você clica em <strong class="text-success"><i class="fa fa-key"></i> Gerar Senha</strong> em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Aliases.
@@ -75,7 +75,7 @@ Somos o único provedor de serviços de e-mail 100% de código aberto e focado e
 
 * Ao se conectar ao nosso servidor IMAP com seu cliente de e-mail, sua senha será criptografada na memória e usada para ler e gravar em sua caixa de correio. Sua caixa de correio só poderá ser lida e gravada com essa senha. Lembre-se de que, como você é o único com essa senha, **somente você** poderá ler e gravar em sua caixa de correio ao acessá-la. Na próxima vez que seu cliente de e-mail tentar pesquisar e-mails ou sincronizar, suas novas mensagens serão transferidas dessa caixa de correio temporária e armazenadas em seu arquivo de caixa de correio atual, usando a senha fornecida. Observe que essa caixa de correio temporária será limpa e excluída posteriormente, para que apenas sua caixa de correio protegida por senha tenha as mensagens.
 
-* **Se você estiver conectado via IMAP (por exemplo, usando um cliente de e-mail como Apple Mail ou Thunderbird), não precisamos gravar no armazenamento temporário em disco. Sua senha IMAP criptografada na memória é obtida e utilizada. Em tempo real, quando uma mensagem está tentando ser entregue a você, enviamos uma solicitação WebSocket a todos os servidores IMAP perguntando se eles têm uma sessão ativa para você (esta é a parte da busca) e, em seguida, repassamos essa senha criptografada na memória – portanto, não precisamos gravar em uma caixa de correio temporária; podemos gravar na sua caixa de correio criptografada real usando sua senha criptografada.**
+* **Se você estiver conectado via IMAP (por exemplo, usando um cliente de e-mail como Apple Mail ou Betterbird), não precisamos gravar no armazenamento temporário em disco. Sua senha IMAP criptografada na memória é obtida e utilizada. Em tempo real, quando uma mensagem está tentando ser entregue a você, enviamos uma solicitação WebSocket a todos os servidores IMAP perguntando se eles têm uma sessão ativa para você (esta é a parte da busca) e, em seguida, repassamos essa senha criptografada na memória – portanto, não precisamos gravar em uma caixa de correio temporária; podemos gravar na sua caixa de correio criptografada real usando sua senha criptografada.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Aqui está uma tabela descrevendo os projetos que usamos em nosso código-fonte 
 | [SQLite](https://www.sqlite.org/about.html) | Camada de banco de dados incorporada para armazenamento IMAP escalável, independente, rápido e resiliente. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Ferramenta antispam, filtragem de e-mail e prevenção de phishing Node.js (nossa alternativa para [Spam Assassin](https://spamassassin.apache.org/) e [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Solicitações de DNS sobre HTTPS com Node.js e cache usando Redis – o que garante consistência global e muito mais. |
-| [Thunderbird](https://www.thunderbird.net/) | Nossa equipe de desenvolvimento usa isso (e recomenda também) como **o cliente de e-mail preferido para usar com o Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Nossa equipe de desenvolvimento usa isso (e recomenda também) como **o cliente de e-mail preferido para usar com o Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Nossa equipe de desenvolvimento usa essas máquinas virtuais para iOS e macOS para testar diferentes clientes de e-mail (em paralelo) com nossos servidores IMAP e SMTP. |
 | [Ubuntu](https://ubuntu.com/download/server) | Sistema operacional de servidor moderno, de código aberto, baseado em Linux, que alimenta toda a nossa infraestrutura. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Biblioteca do servidor IMAP – veja suas notas em [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) e [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

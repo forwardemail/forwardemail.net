@@ -47,7 +47,7 @@ Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individ
 
 ## Hoe werkt het {#how-does-it-work}
 
-1. Met behulp van uw e-mailclient zoals Apple Mail, Thunderbird, Gmail of Outlook maakt u verbinding met onze beveiligde [IMAP](/faq#do-you-support-receiving-email-with-imap)-servers met uw gebruikersnaam en wachtwoord:
+1. Met behulp van uw e-mailclient zoals Apple Mail, Betterbird, Gmail of Outlook maakt u verbinding met onze beveiligde [IMAP](/faq#do-you-support-receiving-email-with-imap)-servers met uw gebruikersnaam en wachtwoord:
 
 * Je gebruikersnaam is je volledige alias bij je domein, bijvoorbeeld `hello@example.com`.
 * Je wachtwoord wordt willekeurig gegenereerd en wordt slechts 30 seconden weergegeven wanneer je op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> klikt vanuit <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen.
@@ -75,7 +75,7 @@ Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individ
 
 * Wanneer u met uw e-mailclient verbinding maakt met onze IMAP-server, wordt uw wachtwoord in het geheugen gecodeerd en gebruikt om uw mailbox te lezen en te schrijven. Uw mailbox kan alleen met dit wachtwoord worden gelezen en geschreven. Houd er rekening mee dat, aangezien u de enige bent met dit wachtwoord, **alleen u** uw mailbox kunt lezen en schrijven wanneer u deze opent. De volgende keer dat uw e-mailclient probeert te pollen voor e-mail of synchronisaties, worden uw nieuwe berichten vanuit deze tijdelijke mailbox verzonden en opgeslagen in uw eigen mailboxbestand met het opgegeven wachtwoord. Houd er rekening mee dat deze tijdelijke mailbox daarna wordt opgeschoond en verwijderd, zodat alleen uw met een wachtwoord beveiligde mailbox de berichten bevat.
 
-* **Als u verbonden bent met IMAP (bijvoorbeeld met een e-mailclient zoals Apple Mail of Thunderbird), hoeven we niet naar tijdelijke schijfruimte te schrijven. Uw in-memory gecodeerde IMAP-wachtwoord wordt in plaats daarvan opgehaald en gebruikt. Wanneer een bericht bij u wordt afgeleverd, sturen we in realtime een WebSocket-verzoek naar alle IMAP-servers met de vraag of ze een actieve sessie voor u hebben (dit is het ophalen). Vervolgens geven we dat gecodeerde in-memory wachtwoord door. We hoeven dus niet naar een tijdelijke mailbox te schrijven, maar kunnen met uw gecodeerde wachtwoord naar uw daadwerkelijke gecodeerde mailbox schrijven.**
+* **Als u verbonden bent met IMAP (bijvoorbeeld met een e-mailclient zoals Apple Mail of Betterbird), hoeven we niet naar tijdelijke schijfruimte te schrijven. Uw in-memory gecodeerde IMAP-wachtwoord wordt in plaats daarvan opgehaald en gebruikt. Wanneer een bericht bij u wordt afgeleverd, sturen we in realtime een WebSocket-verzoek naar alle IMAP-servers met de vraag of ze een actieve sessie voor u hebben (dit is het ophalen). Vervolgens geven we dat gecodeerde in-memory wachtwoord door. We hoeven dus niet naar een tijdelijke mailbox te schrijven, maar kunnen met uw gecodeerde wachtwoord naar uw daadwerkelijke gecodeerde mailbox schrijven.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Hieronder vindt u een tabel met een overzicht van de projecten die we gebruiken 
 | [SQLite](https://www.sqlite.org/about.html) | Ingebouwde databaselaag voor schaalbare, zelfstandige, snelle en veerkrachtige IMAP-opslag. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js anti-spam, e-mailfilter en phishingpreventietool (ons alternatief voor [Spam Assassin](https://spamassassin.apache.org/) en [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | DNS over HTTPS-verzoeken met Node.js en caching met Redis – wat wereldwijde consistentie garandeert en nog veel meer. |
-| [Thunderbird](https://www.thunderbird.net/) | Ons ontwikkelteam gebruikt dit (en raadt dit ook aan) als **de voorkeurs-e-mailclient voor gebruik met Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Ons ontwikkelteam gebruikt dit (en raadt dit ook aan) als **de voorkeurs-e-mailclient voor gebruik met Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Ons ontwikkelteam gebruikt deze virtuele machines voor iOS en macOS om verschillende e-mailclients (parallel) te testen met onze IMAP- en SMTP-servers. |
 | [Ubuntu](https://ubuntu.com/download/server) | Modern open-source Linux-gebaseerd serverbesturingssysteem dat onze gehele infrastructuur aandrijft. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP-serverbibliotheek – zie de opmerkingen over [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) en [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

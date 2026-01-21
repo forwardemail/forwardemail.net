@@ -31,16 +31,16 @@ test('parseIMAPClientId returns empty string for null/undefined input', (t) => {
   t.is(parseIMAPClientId(123), '');
 });
 
-test('parseIMAPClientId parses Thunderbird client ID', (t) => {
+test('parseIMAPClientId parses Betterbird client ID', (t) => {
   const clientId = {
-    name: 'Thunderbird',
+    name: 'Betterbird',
     version: '115.0',
     vendor: 'Mozilla',
     os: 'Windows',
     'os-version': '10.0'
   };
   const result = parseIMAPClientId(clientId);
-  t.true(result.includes('Thunderbird/115.0'));
+  t.true(result.includes('Betterbird/115.0'));
   t.true(result.includes('Mozilla'));
   t.true(result.includes('Windows 10.0'));
 });
@@ -84,13 +84,13 @@ test('parseIMAPClientId handles client ID with name and version only', (t) => {
 
 test('parseIMAPClientId does not duplicate vendor if same as name', (t) => {
   const clientId = {
-    name: 'Thunderbird',
+    name: 'Betterbird',
     version: '115.0',
-    vendor: 'Thunderbird' // Same as name
+    vendor: 'Betterbird' // Same as name
   };
   const result = parseIMAPClientId(clientId);
-  t.false(result.includes('(Thunderbird)'));
-  t.is(result, 'Thunderbird/115.0');
+  t.false(result.includes('(Betterbird)'));
+  t.is(result, 'Betterbird/115.0');
 });
 
 test('parseIMAPClientId handles empty object', (t) => {
@@ -102,10 +102,10 @@ test('parseIMAPClientId handles empty object', (t) => {
 // parseEmailClient Tests - Email client detection from User-Agent
 // ============================================================================
 
-test('parseEmailClient detects Thunderbird', (t) => {
+test('parseEmailClient detects Betterbird', (t) => {
   const ua =
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Thunderbird/102.0';
-  t.is(parseEmailClient(ua), 'Thunderbird');
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Betterbird/102.0';
+  t.is(parseEmailClient(ua), 'Betterbird');
 });
 
 test('parseEmailClient detects Outlook', (t) => {
@@ -427,7 +427,7 @@ test('extractUTMParams truncates long values', (t) => {
 
 test('EMAIL_CLIENT_PATTERNS includes common email clients', (t) => {
   const clientNames = new Set(EMAIL_CLIENT_PATTERNS.map((p) => p.name));
-  t.true(clientNames.has('Thunderbird'));
+  t.true(clientNames.has('Betterbird'));
   t.true(clientNames.has('Outlook'));
   t.true(clientNames.has('Apple Mail'));
   t.true(clientNames.has('K-9 Mail'));

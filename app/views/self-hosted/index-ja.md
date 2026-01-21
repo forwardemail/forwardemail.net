@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. メールクライアントを設定する
 
-* Thunderbird などのメールクライアントを使用します。
+* Betterbird などのメールクライアントを使用します。
 * エイリアス名と生成されたパスワードを入力します。
 * **IMAP** と **SMTP** の設定を適宜行います。
 

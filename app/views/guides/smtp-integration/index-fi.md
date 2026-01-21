@@ -20,7 +20,7 @@
 * [Java-integraatio](#java-integration)
   * [Java Mail -rajapinnan käyttäminen](#using-javamail-api)
 * [Sähköpostiohjelman määritys](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Lähetä sähköpostia nimellä)](#gmail-send-mail-as)
 * [Vianmääritys](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Sähköpostiohjelman määritys {#email-client-configuration}
 
-VÄLIAIKAINEN_PAIKKAPIDÄN_0 Thunderbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
+VÄLIAIKAINEN_PAIKKAPIDÄN_0 Betterbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Avaa Thunderbird ja siirry kohtaan Tilin asetukset.
+1. Avaa Betterbird ja siirry kohtaan Tilin asetukset.
 2. Napsauta "Tilin toiminnot" ja valitse "Lisää sähköpostitili".
 3. Anna nimesi, sähköpostiosoitteesi ja salasanasi.
 4. Napsauta "Manuaalinen määritys" ja anna seuraavat tiedot:

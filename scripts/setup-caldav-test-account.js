@@ -182,7 +182,7 @@ graceful.listen();
     console.log('  1. Start the CalDAV server:');
     console.log('     npm start caldav\n');
     console.log('  2. Configure your calendar client (see CALDAV-TESTING.md)');
-    console.log('     - Thunderbird: Use TbSync add-on');
+    console.log('     - Betterbird: Use TbSync add-on');
     console.log('     - Apple Mail: System Settings → Accounts → CalDAV\n');
     console.log('  3. Test VTODO (Tasks) functionality');
     console.log('     - Create a task in your calendar client');

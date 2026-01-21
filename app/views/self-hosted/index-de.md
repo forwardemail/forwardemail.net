@@ -246,7 +246,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Konfigurieren Sie Ihren E-Mail-Client
 
-* Verwenden Sie einen E-Mail-Client wie Thunderbird.
+* Verwenden Sie einen E-Mail-Client wie Betterbird.
 * Geben Sie den Aliasnamen und das generierte Passwort ein.
 * Konfigurieren Sie die **IMAP**- und **SMTP**-Einstellungen entsprechend.
 

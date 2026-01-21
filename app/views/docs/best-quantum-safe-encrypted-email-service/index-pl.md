@@ -47,7 +47,7 @@ Jesteśmy jedynym w 100% otwartym i dbającym o prywatność dostawcą usług po
 
 ## Jak to działa {#how-does-it-work}
 
-1. Korzystając z klienta poczty e-mail, takiego jak Apple Mail, Thunderbird, Gmail lub Outlook, łączysz się z naszymi bezpiecznymi serwerami [IMAP](/faq#do-you-support-receiving-email-with-imap), używając swojej nazwy użytkownika i hasła:
+1. Korzystając z klienta poczty e-mail, takiego jak Apple Mail, Betterbird, Gmail lub Outlook, łączysz się z naszymi bezpiecznymi serwerami [IMAP](/faq#do-you-support-receiving-email-with-imap), używając swojej nazwy użytkownika i hasła:
 
 * Twoja nazwa użytkownika to Twój pełny alias z domeną, np. `hello@example.com`.
 * Twoje hasło jest generowane losowo i wyświetlane tylko przez 30 sekund po kliknięciu <strong class="text-success"><i class="fa fa-key"></i>Generuj hasło</strong> z <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy.
@@ -75,7 +75,7 @@ Jesteśmy jedynym w 100% otwartym i dbającym o prywatność dostawcą usług po
 
 * Po połączeniu się z naszym serwerem IMAP za pomocą klienta poczty e-mail, Twoje hasło jest szyfrowane w pamięci i używane do odczytu i zapisu w Twojej skrzynce pocztowej. Odczyt i zapis w Twojej skrzynce pocztowej jest możliwy tylko za pomocą tego hasła. Pamiętaj, że ponieważ jesteś jedyną osobą znającą to hasło, **tylko Ty** możesz odczytywać i zapisywać w Twojej skrzynce pocztowej podczas uzyskiwania do niej dostępu. Gdy Twój klient poczty e-mail spróbuje ponownie sprawdzić pocztę lub synchronizacje, Twoje nowe wiadomości zostaną przeniesione z tej tymczasowej skrzynki pocztowej i zapisane w pliku skrzynki pocztowej z podanym przez Ciebie hasłem. Pamiętaj, że ta tymczasowa skrzynka pocztowa zostanie później wyczyszczona i usunięta, tak aby wiadomości znajdowały się tylko w Twojej chronionej hasłem skrzynce pocztowej.
 
-* **Jeśli łączysz się z protokołem IMAP (np. korzystając z klienta poczty e-mail, takiego jak Apple Mail lub Thunderbird), nie musimy zapisywać danych w tymczasowej pamięci dyskowej. Zamiast tego pobieramy i używamy Twojego zaszyfrowanego hasła IMAP w pamięci. W czasie rzeczywistym, gdy próbujemy dostarczyć Ci wiadomość, wysyłamy żądanie WebSocket do wszystkich serwerów IMAP z pytaniem, czy mają aktywną sesję (to jest etap pobierania), a następnie przekazujemy to zaszyfrowane hasło w pamięci – dzięki temu nie musimy zapisywać danych w tymczasowej skrzynce pocztowej, możemy zapisać dane w Twojej rzeczywistej zaszyfrowanej skrzynce pocztowej, używając Twojego zaszyfrowanego hasła.**
+* **Jeśli łączysz się z protokołem IMAP (np. korzystając z klienta poczty e-mail, takiego jak Apple Mail lub Betterbird), nie musimy zapisywać danych w tymczasowej pamięci dyskowej. Zamiast tego pobieramy i używamy Twojego zaszyfrowanego hasła IMAP w pamięci. W czasie rzeczywistym, gdy próbujemy dostarczyć Ci wiadomość, wysyłamy żądanie WebSocket do wszystkich serwerów IMAP z pytaniem, czy mają aktywną sesję (to jest etap pobierania), a następnie przekazujemy to zaszyfrowane hasło w pamięci – dzięki temu nie musimy zapisywać danych w tymczasowej skrzynce pocztowej, możemy zapisać dane w Twojej rzeczywistej zaszyfrowanej skrzynce pocztowej, używając Twojego zaszyfrowanego hasła.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Poniżej znajduje się tabela przedstawiająca projekty, których używamy w nas
 | [SQLite](https://www.sqlite.org/about.html) | Wbudowana warstwa bazy danych zapewniająca skalowalną, autonomiczną, szybką i odporną pamięć masową IMAP. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Narzędzie Node.js do ochrony przed spamem, filtrowania wiadomości e-mail i phishingiem (nasza alternatywa dla [Spam Assassin](https://spamassassin.apache.org/) i [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Żądania DNS przez HTTPS z użyciem Node.js i buforowanie z użyciem Redis – co zapewnia globalną spójność i wiele więcej. |
-| [Thunderbird](https://www.thunderbird.net/) | Nasz zespół programistów używa go (i również go zaleca) jako **preferowanego klienta poczty e-mail do użytku z funkcją Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Nasz zespół programistów używa go (i również go zaleca) jako **preferowanego klienta poczty e-mail do użytku z funkcją Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Nasz zespół programistów tworzy maszyny wirtualne dla systemów iOS i macOS, aby testować różne programy pocztowe (równolegle) z naszymi serwerami IMAP i SMTP. |
 | [Ubuntu](https://ubuntu.com/download/server) | Nowoczesny, serwerowy system operacyjny oparty na systemie Linux, typu open source, na którym opiera się cała nasza infrastruktura. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Biblioteka serwera IMAP – zobacz jej notatki na temat [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) i [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

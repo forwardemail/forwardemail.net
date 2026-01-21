@@ -20,7 +20,7 @@
 * [Tích hợp Java](#java-integration)
   * [Sử dụng Java Mail API](#using-javamail-api)
 * [Cấu hình máy khách email](#email-client-configuration)
-  * [Chim Sấm Sét](#thunderbird)
+  * [Chim Sấm Sét](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Gửi thư dưới dạng)](#gmail-send-mail-as)
 * [Xử lý sự cố](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Cấu hình máy khách email {#email-client-configuration}
 
-### Thunderbird {#thunderbird}
+### Betterbird {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Mở Thunderbird và vào Cài đặt Tài khoản
+1. Mở Betterbird và vào Cài đặt Tài khoản
 2. Nhấp vào "Hành động Tài khoản" và chọn "Thêm Tài khoản Thư"
 3. Nhập tên, địa chỉ email và mật khẩu của bạn
 4. Nhấp vào "Cấu hình Thủ công" và nhập các thông tin sau:

@@ -47,7 +47,7 @@ Somos el único proveedor de servicios de correo electrónico 100% de código ab
 
 ## ¿Cómo funciona? {#how-does-it-work}
 
-1. Utilizando su cliente de correo electrónico, como Apple Mail, Thunderbird, Gmail o Outlook, se conecta a nuestros servidores seguros [IMAP](/faq#do-you-support-receiving-email-with-imap) con su nombre de usuario y contraseña:
+1. Utilizando su cliente de correo electrónico, como Apple Mail, Betterbird, Gmail o Outlook, se conecta a nuestros servidores seguros [IMAP](/faq#do-you-support-receiving-email-with-imap) con su nombre de usuario y contraseña:
 
 * Tu nombre de usuario es tu alias completo con tu dominio, como `hello@example.com`.
 * Tu contraseña se genera aleatoriamente y solo se muestra durante 30 segundos al hacer clic en <strong class="text-success"><i class="fa fa-key"></i> Generar contraseña</strong> desde <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias.
@@ -75,7 +75,7 @@ Somos el único proveedor de servicios de correo electrónico 100% de código ab
 
 * Al conectarse a nuestro servidor IMAP con su cliente de correo, su contraseña se cifra en memoria y se utiliza para leer y escribir en su buzón. Solo se puede leer y escribir en su buzón con esta contraseña. Tenga en cuenta que, al ser el único con esta contraseña, **solo usted** puede leer y escribir en su buzón cuando accede a él. La próxima vez que su cliente de correo intente buscar correo o sincronizar, sus mensajes nuevos se transferirán desde este buzón temporal y se almacenarán en su archivo de buzón con la contraseña proporcionada. Tenga en cuenta que este buzón temporal se purga y elimina posteriormente para que solo su buzón protegido con contraseña contenga los mensajes.
 
-**Si está conectado a IMAP (por ejemplo, usando un cliente de correo electrónico como Apple Mail o Thunderbird), no necesitamos escribir en el almacenamiento temporal del disco. En su lugar, se obtiene y utiliza su contraseña IMAP cifrada en memoria. En tiempo real, cuando se intenta entregarle un mensaje, enviamos una solicitud WebSocket a todos los servidores IMAP para preguntarles si tienen una sesión activa para usted (esta es la fase de obtención), y posteriormente pasamos esa contraseña cifrada en memoria. Así, no necesitamos escribir en un buzón temporal; podemos escribir en su buzón cifrado real usando su contraseña cifrada.**
+**Si está conectado a IMAP (por ejemplo, usando un cliente de correo electrónico como Apple Mail o Betterbird), no necesitamos escribir en el almacenamiento temporal del disco. En su lugar, se obtiene y utiliza su contraseña IMAP cifrada en memoria. En tiempo real, cuando se intenta entregarle un mensaje, enviamos una solicitud WebSocket a todos los servidores IMAP para preguntarles si tienen una sesión activa para usted (esta es la fase de obtención), y posteriormente pasamos esa contraseña cifrada en memoria. Así, no necesitamos escribir en un buzón temporal; podemos escribir en su buzón cifrado real usando su contraseña cifrada.**
 
      ```mermaid
      sequenceDiagram
@@ -224,7 +224,7 @@ A continuación se muestra una tabla que describe los proyectos que utilizamos e
 | [SQLite](https://www.sqlite.org/about.html) | Capa de base de datos integrada para un almacenamiento IMAP escalable, autónomo, rápido y resistente. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Herramienta de prevención de phishing, filtrado de correo electrónico y antispam de Node.js (nuestra alternativa a [Spam Assassin](https://spamassassin.apache.org/) y [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Solicitudes de DNS sobre HTTPS con Node.js y almacenamiento en caché mediante Redis, lo que garantiza la consistencia global y mucho más. |
-| [Thunderbird](https://www.thunderbird.net/) | Nuestro equipo de desarrollo utiliza esto (y también lo recomienda) como **el cliente de correo electrónico preferido para usar con Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Nuestro equipo de desarrollo utiliza esto (y también lo recomienda) como **el cliente de correo electrónico preferido para usar con Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Nuestro equipo de desarrollo utiliza esta creación de máquinas virtuales para iOS y macOS para probar diferentes clientes de correo electrónico (en paralelo) con nuestros servidores IMAP y SMTP. |
 | [Ubuntu](https://ubuntu.com/download/server) | Moderno sistema operativo de servidor basado en Linux y de código abierto que impulsa toda nuestra infraestructura. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Biblioteca del servidor IMAP: consulte sus notas sobre [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) y [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

@@ -47,7 +47,7 @@
 
 ## איך זה עובד {#how-does-it-work}
 
-1. באמצעות תוכנת הדוא"ל שלך, כגון Apple Mail, Thunderbird, Gmail או Outlook – אתה מתחבר לשרתי [IMAP](/faq#do-you-support-receiving-email-with-imap) המאובטחים שלנו באמצעות שם המשתמש והסיסמה שלך:
+1. באמצעות תוכנת הדוא"ל שלך, כגון Apple Mail, Betterbird, Gmail או Outlook – אתה מתחבר לשרתי [IMAP](/faq#do-you-support-receiving-email-with-imap) המאובטחים שלנו באמצעות שם המשתמש והסיסמה שלך:
 
 * שם המשתמש שלך הוא הכינוי המלא שלך עם הדומיין שלך, כגון `hello@example.com`.
 * הסיסמה שלך נוצרת באופן אקראי ומוצגת לך רק למשך 30 שניות כשאתה לוחץ על <strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> מתוך <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים.
@@ -75,7 +75,7 @@
 
 * כאשר אתם מתחברים לשרת ה-IMAP שלנו באמצעות תוכנת הדוא"ל שלכם, הסיסמה שלכם מוצפנת בזיכרון ומשמשת לקריאה וכתיבה לתיבת הדואר שלכם. ניתן לקרוא ולכתוב לתיבת הדואר שלכם רק באמצעות סיסמה זו. זכרו שמכיוון שאתם היחידים עם סיסמה זו, **רק אתם** יכולים לקרוא ולכתוב לתיבת הדואר שלכם כשאתם ניגשים אליה. בפעם הבאה שתתכנת הדוא"ל שלכם ינסה לחפש דואר או לסנכרן, ההודעות החדשות שלכם יועברו מתיבת הדואר הזמנית הזו ויאוחסנו בקובץ תיבת הדואר בפועל באמצעות הסיסמה שסיפקתם. שימו לב שתיבת הדואר הזמנית הזו נמחקת לאחר מכן, כך שרק תיבת הדואר המוגנת בסיסמה שלכם מכילה את ההודעות.
 
-אם אתם מחוברים ל-IMAP (למשל, באמצעות תוכנת דוא"ל כמו Apple Mail או Thunderbird), איננו צריכים לכתוב לאחסון דיסק זמני. סיסמת ה-IMAP המוצפנת בזיכרון שלכם נלקחת ונעשה בה שימוש. בזמן אמת, כאשר מנסים לשלוח הודעה אליכם, אנו שולחים בקשת WebSocket לכל שרתי ה-IMAP ושואלים אותם אם יש להם הפעלה פעילה עבורכם (זהו חלק האחזור), ולאחר מכן נעביר את הסיסמה המוצפנת בזיכרון - כך שלא נצטרך לכתוב לתיבת דואר זמנית, נוכל לכתוב לתיבת הדואר המוצפנת שלכם באמצעות הסיסמה המוצפנת.
+אם אתם מחוברים ל-IMAP (למשל, באמצעות תוכנת דוא"ל כמו Apple Mail או Betterbird), איננו צריכים לכתוב לאחסון דיסק זמני. סיסמת ה-IMAP המוצפנת בזיכרון שלכם נלקחת ונעשה בה שימוש. בזמן אמת, כאשר מנסים לשלוח הודעה אליכם, אנו שולחים בקשת WebSocket לכל שרתי ה-IMAP ושואלים אותם אם יש להם הפעלה פעילה עבורכם (זהו חלק האחזור), ולאחר מכן נעביר את הסיסמה המוצפנת בזיכרון - כך שלא נצטרך לכתוב לתיבת דואר זמנית, נוכל לכתוב לתיבת הדואר המוצפנת שלכם באמצעות הסיסמה המוצפנת.
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@
 | [SQLite](https://www.sqlite.org/about.html) | שכבת מסד נתונים מוטמעת לאחסון IMAP ניתן להרחבה, עצמאי, מהיר ועמיד. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | כלי Node.js למניעת ספאם, סינון דוא"ל ומניעת פישינג (האלטרנטיבה שלנו ל-[Spam Assassin](https://spamassassin.apache.org/) ו-[rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | בקשות DNS דרך HTTPS עם Node.js ואחסון במטמון באמצעות Redis – מה שמבטיח עקביות גלובלית ועוד. |
-| [Thunderbird](https://www.thunderbird.net/) | צוות הפיתוח שלנו משתמש בזה (וגם ממליץ על זה) כ **לקוח הדוא"ל המועדף לשימוש עם Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | צוות הפיתוח שלנו משתמש בזה (וגם ממליץ על זה) כ **לקוח הדוא"ל המועדף לשימוש עם Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | צוות הפיתוח שלנו משתמש בתוכנה זו ליצירת מכונות וירטואליות עבור iOS ו-macOS על מנת לבדוק לקוחות דוא"ל שונים (במקביל) עם שרתי IMAP ו-SMTP שלנו. |
 | [Ubuntu](https://ubuntu.com/download/server) | מערכת הפעלה מודרנית בקוד פתוח מבוססת לינוקס, המפעילה את כל התשתית שלנו. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | ספריית שרת IMAP – ראו את ההערות שלה על [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) ו-[IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

@@ -47,7 +47,7 @@ Vi är den enda e-postleverantören med 100 % öppen källkod och integritetsfok
 
 ## Hur fungerar det {#how-does-it-work}
 
-1. Med hjälp av din e-postklient som Apple Mail, Thunderbird, Gmail eller Outlook ansluter du till våra säkra [IMAP](/faq#do-you-support-receiving-email-with-imap)-servrar med ditt användarnamn och lösenord:
+1. Med hjälp av din e-postklient som Apple Mail, Betterbird, Gmail eller Outlook ansluter du till våra säkra [IMAP](/faq#do-you-support-receiving-email-with-imap)-servrar med ditt användarnamn och lösenord:
 
 * Ditt användarnamn är ditt fullständiga alias med din domän, till exempel `hello@example.com`.
 * Ditt lösenord genereras slumpmässigt och visas bara i 30 sekunder när du klickar på <strong class="text-success"><i class="fa fa-key"></i>Generera lösenord</strong> från <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i>Domäner</a> <i class="fa fa-angle-right"></i>Alias.
@@ -75,7 +75,7 @@ Vi är den enda e-postleverantören med 100 % öppen källkod och integritetsfok
 
 * När du ansluter till vår IMAP-server med din e-postklient krypteras ditt lösenord i minnet och används för att läsa och skriva till din inkorg. Din inkorg kan bara läsas från och skrivas till med detta lösenord. Tänk på att eftersom du är den enda med detta lösenord kan **bara du** läsa och skriva till din inkorg när du använder den. Nästa gång din e-postklient försöker hämta e-post eller synkronisera kommer dina nya meddelanden att överföras från denna tillfälliga inkorg och lagras i din faktiska inkorgfil med ditt angivna lösenord. Observera att denna tillfälliga inkorg rensas och raderas efteråt så att endast din lösenordsskyddade inkorg har meddelandena.
 
-* **Om du är ansluten till IMAP (t.ex. använder en e-postklient som Apple Mail eller Thunderbird) behöver vi inte skriva till tillfällig disklagring. Ditt krypterade IMAP-lösenord i minnet hämtas och används istället. I realtid, när ett meddelande försöker levereras till dig, skickar vi en WebSocket-förfrågan till alla IMAP-servrar och frågar dem om de har en aktiv session för dig (detta är hämtningsdelen), och skickar sedan vidare det krypterade lösenordet i minnet – så vi behöver inte skriva till en tillfällig postlåda, vi kan skriva till din faktiska krypterade postlåda med ditt krypterade lösenord.**
+* **Om du är ansluten till IMAP (t.ex. använder en e-postklient som Apple Mail eller Betterbird) behöver vi inte skriva till tillfällig disklagring. Ditt krypterade IMAP-lösenord i minnet hämtas och används istället. I realtid, när ett meddelande försöker levereras till dig, skickar vi en WebSocket-förfrågan till alla IMAP-servrar och frågar dem om de har en aktiv session för dig (detta är hämtningsdelen), och skickar sedan vidare det krypterade lösenordet i minnet – så vi behöver inte skriva till en tillfällig postlåda, vi kan skriva till din faktiska krypterade postlåda med ditt krypterade lösenord.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Här är en tabell som beskriver projekt vi använder i vår källkod och utveck
 | [SQLite](https://www.sqlite.org/about.html) | Inbäddat databaslager för skalbar, fristående, snabb och robust IMAP-lagring. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js verktyg för att förhindra skräppost, e-postfiltrering och nätfiske (vårt alternativ till [Spam Assassin](https://spamassassin.apache.org/) och [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | DNS över HTTPS-förfrågningar med Node.js och cachning med Redis – vilket säkerställer global konsekvens och mycket mer. |
-| [Thunderbird](https://www.thunderbird.net/) | Vårt utvecklingsteam använder detta (och rekommenderar även detta) som **den föredragna e-postklienten att använda med vidarebefordran av e-post**. |
+| [Betterbird](https://betterbird.eu/) | Vårt utvecklingsteam använder detta (och rekommenderar även detta) som **den föredragna e-postklienten att använda med vidarebefordran av e-post**. |
 | [UTM](https://github.com/utmapp/UTM) | Vårt utvecklingsteam använder detta för att skapa virtuella maskiner för iOS och macOS för att testa olika e-postklienter (parallellt) med våra IMAP- och SMTP-servrar. |
 | [Ubuntu](https://ubuntu.com/download/server) | Modernt Linux-baserat serveroperativsystem med öppen källkod som driver all vår infrastruktur. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP-serverbibliotek – se dess anteckningar om [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) och [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

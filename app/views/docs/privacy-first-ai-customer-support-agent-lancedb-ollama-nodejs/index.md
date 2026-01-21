@@ -411,7 +411,7 @@ For complete details on our security practices, see our [Security page](https://
 
 Storing embeddings on our team's workstations is no different than how we already handle email:
 
-* **Thunderbird**: Downloads and stores full email content locally in mbox/maildir files
+* **Betterbird**: Downloads and stores full email content locally in mbox/maildir files
 * **Webmail clients**: Cache email data in browser storage and local databases
 * **IMAP clients**: Maintain local copies of messages for offline access
 * **Our AI system**: Stores mathematical embeddings (not plaintext) in LanceDB
@@ -422,7 +422,7 @@ The key difference: embeddings are **more secure** than plaintext email because 
 2. Harder to reverse-engineer than plaintext
 3. Still subject to the same physical security as our email clients
 
-If it's acceptable for our team to use Thunderbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
+If it's acceptable for our team to use Betterbird or webmail on encrypted workstations, it's equally acceptable (and arguably more secure) to store embeddings the same way.
 
 
 ## The Architecture

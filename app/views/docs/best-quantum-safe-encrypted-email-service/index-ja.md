@@ -47,7 +47,7 @@
 
 ## 仕組み {#how-does-it-work}
 
-1. Apple Mail、Thunderbird、Gmail、Outlook などのメール クライアントを使用して、ユーザー名とパスワードで安全な [IMAP](/faq#do-you-support-receiving-email-with-imap) サーバーに接続します。
+1. Apple Mail、Betterbird、Gmail、Outlook などのメール クライアントを使用して、ユーザー名とパスワードで安全な [IMAP](/faq#do-you-support-receiving-email-with-imap) サーバーに接続します。
 
 * ユーザー名は、`hello@example.com` のように、ドメインを含む完全なエイリアスです。
 * パスワードはランダムに生成され、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス</strong>から <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> をクリックした際に30秒間のみ表示されます。
@@ -223,7 +223,7 @@
 | [SQLite](https://www.sqlite.org/about.html) | スケーラブルで自己完結型、高速で回復力のある IMAP ストレージ用の組み込みデータベース レイヤー。 |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js のスパム対策、電子メール フィルタリング、フィッシング防止ツール ([Spam Assassin](https://spamassassin.apache.org/) および [rspamd](https://github.com/rspamd/rspamd) の代替)。 |
 | [Tangerine](https://tangeri.ne) | Node.js を使用した DNS over HTTPS リクエストと Redis を使用したキャッシュにより、グローバルな一貫性などが保証されます。 |
-| [Thunderbird](https://www.thunderbird.net/) | 弊社の開発チームは、**Forward Email** で使用する推奨メール クライアントとしてこれを使用 (推奨) しています。 |
+| [Betterbird](https://betterbird.eu/) | 弊社の開発チームは、**Forward Email** で使用する推奨メール クライアントとしてこれを使用 (推奨) しています。 |
 | [UTM](https://github.com/utmapp/UTM) | 弊社の開発チームはこれを使用して iOS および macOS 用の仮想マシンを作成し、IMAP および SMTP サーバーでさまざまな電子メール クライアントを (並行して) テストします。 |
 | [Ubuntu](https://ubuntu.com/download/server) | 当社のすべてのインフラストラクチャを強化する、最新のオープンソース Linux ベースのサーバー オペレーティング システムです。 |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP サーバー ライブラリ – [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) および [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) に関する注記を参照してください。 |

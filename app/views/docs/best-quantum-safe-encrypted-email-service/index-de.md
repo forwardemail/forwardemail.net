@@ -47,7 +47,7 @@ Wir sind der einzige 100 % Open Source- und datenschutzorientierte E-Mail-Dienst
 
 ## Wie funktioniert es {#how-does-it-work}
 
-1. Mit Ihrem E-Mail-Client wie Apple Mail, Thunderbird, Gmail oder Outlook stellen Sie mit Ihrem Benutzernamen und Passwort eine Verbindung zu unseren sicheren [IMAP](/faq#do-you-support-receiving-email-with-imap)-Servern her:
+1. Mit Ihrem E-Mail-Client wie Apple Mail, Betterbird, Gmail oder Outlook stellen Sie mit Ihrem Benutzernamen und Passwort eine Verbindung zu unseren sicheren [IMAP](/faq#do-you-support-receiving-email-with-imap)-Servern her:
 
 * Ihr Benutzername ist Ihr vollständiger Alias mit Ihrer Domain, z. B. `hello@example.com`.
 * Ihr Passwort wird zufällig generiert und Ihnen nur 30 Sekunden lang angezeigt, wenn Sie unter <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mein Konto <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliase auf <strong class="text-success"><i class="fa fa-key"></i> Passwort generieren</strong> klicken.
@@ -75,7 +75,7 @@ Wir sind der einzige 100 % Open Source- und datenschutzorientierte E-Mail-Dienst
 
 * Wenn Sie sich mit Ihrem E-Mail-Client mit unserem IMAP-Server verbinden, wird Ihr Passwort verschlüsselt und zum Lesen und Schreiben in Ihrem Postfach verwendet. Nur mit diesem Passwort kann Ihr Postfach gelesen und beschrieben werden. Da Sie der Einzige mit diesem Passwort sind, können **nur Sie** Ihr Postfach lesen und beschreiben, wenn Sie darauf zugreifen. Beim nächsten Abruf oder bei der Synchronisierung Ihres E-Mail-Clients werden Ihre neuen Nachrichten aus diesem temporären Postfach übertragen und mit Ihrem angegebenen Passwort in Ihrem aktuellen Postfach gespeichert. Beachten Sie, dass dieses temporäre Postfach anschließend gelöscht wird, sodass nur Ihr passwortgeschütztes Postfach die Nachrichten enthält.
 
-Wenn Sie mit IMAP verbunden sind (z. B. über einen E-Mail-Client wie Apple Mail oder Thunderbird), müssen wir nicht in den temporären Speicher schreiben. Stattdessen wird Ihr verschlüsseltes IMAP-Passwort im Speicher abgerufen und verwendet. Sobald eine Nachricht an Sie zugestellt werden soll, senden wir in Echtzeit eine WebSocket-Anfrage an alle IMAP-Server und fragen nach, ob eine aktive Sitzung für Sie besteht (dies ist der Abrufvorgang). Anschließend leiten wir das verschlüsselte Passwort im Speicher weiter. So müssen wir nicht in ein temporäres Postfach schreiben, sondern können mit Ihrem verschlüsselten Passwort in Ihr tatsächlich verschlüsseltes Postfach schreiben.
+Wenn Sie mit IMAP verbunden sind (z. B. über einen E-Mail-Client wie Apple Mail oder Betterbird), müssen wir nicht in den temporären Speicher schreiben. Stattdessen wird Ihr verschlüsseltes IMAP-Passwort im Speicher abgerufen und verwendet. Sobald eine Nachricht an Sie zugestellt werden soll, senden wir in Echtzeit eine WebSocket-Anfrage an alle IMAP-Server und fragen nach, ob eine aktive Sitzung für Sie besteht (dies ist der Abrufvorgang). Anschließend leiten wir das verschlüsselte Passwort im Speicher weiter. So müssen wir nicht in ein temporäres Postfach schreiben, sondern können mit Ihrem verschlüsselten Passwort in Ihr tatsächlich verschlüsseltes Postfach schreiben.
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Hier ist eine Tabelle mit einer Übersicht über die Projekte, die wir in unsere
 | [SQLite](https://www.sqlite.org/about.html) | Eingebettete Datenbankebene für skalierbaren, eigenständigen, schnellen und belastbaren IMAP-Speicher. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js-Tool zum Anti-Spam, zur E-Mail-Filterung und zur Phishing-Prävention (unsere Alternative zu [Spam Assassin](https://spamassassin.apache.org/) und [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | DNS-über-HTTPS-Anfragen mit Node.js und Caching mit Redis – das gewährleistet globale Konsistenz und vieles mehr. |
-| [Thunderbird](https://www.thunderbird.net/) | Unser Entwicklungsteam verwendet dies (und empfiehlt dies auch) als **bevorzugten E-Mail-Client zur Verwendung mit Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Unser Entwicklungsteam verwendet dies (und empfiehlt dies auch) als **bevorzugten E-Mail-Client zur Verwendung mit Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Unser Entwicklungsteam erstellt damit virtuelle Maschinen für iOS und macOS, um verschiedene E-Mail-Clients (parallel) mit unseren IMAP- und SMTP-Servern zu testen. |
 | [Ubuntu](https://ubuntu.com/download/server) | Modernes Open-Source-Serverbetriebssystem auf Linux-Basis, das unsere gesamte Infrastruktur betreibt. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP-Serverbibliothek – siehe die Hinweise zu [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) und [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

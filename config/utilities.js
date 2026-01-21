@@ -762,6 +762,21 @@ const emailClients = _.sortBy(
   [
     {
       starred: true,
+      name: 'Betterbird',
+      description:
+        'Betterbird is a fine-tuned version of Mozilla Thunderbird with additional features and bug fixes.',
+      link: 'https://betterbird.eu/',
+      img: 'img/email-clients/betterbird.webp',
+      screenshot:
+        'https://dl.flathub.org/media/eu/betterbird/Betterbird/c01c768b06479cec0f61b4c70657ccda/screenshots/image-1_orig.png',
+      attribution: 'Screenshot by Betterbird Project',
+      language: 'JavaScript &amp; C++',
+      apple: true,
+      windows: true,
+      linux: true
+    },
+    {
+      starred: false,
       name: 'Mozilla Thunderbird',
       description:
         'Access all your messages, calendars, and contacts in one fast app.',
@@ -814,7 +829,7 @@ const emailClients = _.sortBy(
       wikipedia: 'https://en.wikipedia.org/wiki/Mozilla_Thunderbird',
       language: 'Java &amp; Kotlin',
       android: true,
-      starred: true
+      starred: false
     },
     {
       name: 'K-9 Mail',

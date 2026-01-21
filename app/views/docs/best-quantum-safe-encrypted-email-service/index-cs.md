@@ -47,7 +47,7 @@ Jsme jediný poskytovatel e-mailových služeb se 100% otevřeným zdrojovým k�
 
 ## Jak to funguje {#how-does-it-work}
 
-1. Pomocí e-mailového klienta, jako je Apple Mail, Thunderbird, Gmail nebo Outlook – k našim zabezpečeným serverům [IMAP](/faq#do-you-support-receiving-email-with-imap) se připojíte pomocí svého uživatelského jména a hesla:
+1. Pomocí e-mailového klienta, jako je Apple Mail, Betterbird, Gmail nebo Outlook – k našim zabezpečeným serverům [IMAP](/faq#do-you-support-receiving-email-with-imap) se připojíte pomocí svého uživatelského jména a hesla:
 
 * Vaše uživatelské jméno je váš úplný alias u vaší domény, například `hello@example.com`.
 * Vaše heslo je náhodně generováno a zobrazí se vám pouze 30 sekund po kliknutí na <strong class="text-success"><i class="fa fa-key"></i> Generovat heslo</strong> z <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy.
@@ -75,7 +75,7 @@ Jsme jediný poskytovatel e-mailových služeb se 100% otevřeným zdrojovým k�
 
 * Když se připojíte k našemu IMAP serveru pomocí svého e-mailového klienta, vaše heslo je zašifrováno v paměti a použito ke čtení a zápisu do vaší poštovní schránky. Z vaší poštovní schránky lze číst a do ní zapisovat pouze s tímto heslem. Mějte na paměti, že jelikož toto heslo máte pouze vy, můžete do své schránky číst a zapisovat do ní, když k ní přistupujete. Až se váš e-mailový klient příště pokusí o dotazování na poštu nebo synchronizaci, vaše nové zprávy budou přeneseny z této dočasné schránky a uloženy do vašeho skutečného souboru poštovní schránky s použitím vámi zadaného hesla. Upozorňujeme, že tato dočasná schránka je následně vymazána, takže zprávy budou obsahovat pouze vaše schránka chráněná heslem.
 
-* **Pokud jste připojeni k protokolu IMAP (např. pomocí e-mailového klienta, jako je Apple Mail nebo Thunderbird), nemusíme zapisovat do dočasného úložiště na disku. Místo toho se načte a použije vaše šifrované heslo IMAP uložené v paměti. V reálném čase, když se vám pokouší doručit zprávu, odešleme všem serverům IMAP požadavek WebSocket s dotazem, zda pro vás mají aktivní relaci (toto je část načtení), a následně toto šifrované heslo uložené v paměti předáme dál – takže nemusíme zapisovat do dočasné poštovní schránky, můžeme zapisovat do vaší skutečné šifrované schránky s použitím vašeho šifrovaného hesla.**
+* **Pokud jste připojeni k protokolu IMAP (např. pomocí e-mailového klienta, jako je Apple Mail nebo Betterbird), nemusíme zapisovat do dočasného úložiště na disku. Místo toho se načte a použije vaše šifrované heslo IMAP uložené v paměti. V reálném čase, když se vám pokouší doručit zprávu, odešleme všem serverům IMAP požadavek WebSocket s dotazem, zda pro vás mají aktivní relaci (toto je část načtení), a následně toto šifrované heslo uložené v paměti předáme dál – takže nemusíme zapisovat do dočasné poštovní schránky, můžeme zapisovat do vaší skutečné šifrované schránky s použitím vašeho šifrovaného hesla.**
 
      ```mermaid
      sequenceDiagram
@@ -222,7 +222,7 @@ Zde je tabulka s přehledem projektů, které používáme v našem zdrojovém k
 | [SQLite](https://www.sqlite.org/about.html) | Vestavěná databázová vrstva pro škálovatelné, samostatné, rychlé a odolné úložiště IMAP. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Nástroj Node.js pro ochranu před spamem, filtrování e-mailů a prevenci phishingu (naše alternativa k [Spam Assassin](https://spamassassin.apache.org/) a [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | DNS přes HTTPS požadavky s Node.js a ukládáním do mezipaměti pomocí Redis – což zajišťuje globální konzistenci a mnoho dalšího. |
-| [Thunderbird](https://www.thunderbird.net/) | Náš vývojový tým používá tento program (a také jej doporučuje) jako **preferovaného e-mailového klienta pro použití s funkcí Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Náš vývojový tým používá tento program (a také jej doporučuje) jako **preferovaného e-mailového klienta pro použití s funkcí Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Náš vývojový tým používá tyto virtuální počítače pro iOS a macOS k testování různých e-mailových klientů (paralelně) s našimi IMAP a SMTP servery. |
 | [Ubuntu](https://ubuntu.com/download/server) | Moderní serverový operační systém s otevřeným zdrojovým kódem založený na Linuxu, který pohání veškerou naši infrastrukturu. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Knihovna serveru IMAP – viz poznámky k [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) a [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

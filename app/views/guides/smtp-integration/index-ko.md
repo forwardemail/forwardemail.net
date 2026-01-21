@@ -20,7 +20,7 @@
 * [자바 통합](#java-integration)
   * [Java Mail API 사용](#using-javamail-api)
 * [이메일 클라이언트 구성](#email-client-configuration)
-  * [천둥새](#thunderbird)
+  * [천둥새](#betterbird)
   * [애플 메일](#apple-mail)
   * [Gmail(메일 보내기)](#gmail-send-mail-as)
 * [문제 해결](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## 이메일 클라이언트 구성 {#email-client-configuration}
 
-### 썬더버드 {#thunderbird}
+### 썬더버드 {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]

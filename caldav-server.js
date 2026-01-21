@@ -781,14 +781,14 @@ function getEventIdVariants(eventId) {
 
     //
     // TODO: add STYLED-DESCRIPTION to buildICS output
-    // TODO: add ALTREP to buildICS object (thunderbird support)
+    // TODO: add ALTREP to buildICS object (betterbird support)
     //
     // description is either an object, string, or null/undefined
     if (typeof event.description === 'object' && event.description !== null) {
       if (_.isEmpty(event.description)) {
         event.description = undefined;
       } else {
-        // TODO: support thunderbird altrep
+        // TODO: support betterbird altrep
         event.description = {
           plain,
           html
@@ -868,7 +868,7 @@ function getEventIdVariants(eventId) {
     //       because when `toString()` is called by ical-generator
     //       it will automatically use `escape` on the values
 
-    // NOTE: Thunderbird sends over description with:
+    // NOTE: Betterbird sends over description with:
     // `DESCRIPTION;ALTREP="data:text/html,yaya%3Cb%3Eyay%3C%2Fb%3Eay":yayayayay`
 
     // TODO: organizer is similar to attendee
@@ -1228,13 +1228,13 @@ class CalDAV extends API {
 
           //
           // if "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:TRUE" then
-          // the Thunderbird checkbox was checked for
+          // the Betterbird checkbox was checked for
           // "Separate invitation per attendee"
           // <https://github.com/mozilla/releases-comm-central/blob/6c887d441f46c56b3e40081b69c34222b909bf78/calendar/itip/CalItipOutgoingMessage.sys.mjs#L67-L90>
           // https://github.com/mozilla/releases-comm-central/blob/0dd0febc7a7815833119eb056f8cc1acf59ddc04/calendar/base/content/item-editing/calendar-item-iframe.js#L734-L738
           //
           if (
-            // NOTE: the Thunderbird interface always sets this to false/disables it when you uncheck X-MOZ-SEND-INVITATIONS
+            // NOTE: the Betterbird interface always sets this to false/disables it when you uncheck X-MOZ-SEND-INVITATIONS
             //       so this edge case would never get reached, but we are doing it anyways as a safeguard
             vevent.getFirstPropertyValue(
               'x-moz-send-invitations-undisclosed'
@@ -1461,7 +1461,7 @@ class CalDAV extends API {
     if (calendar) return calendar; // safeguard
 
     // All calendars support both events and tasks (unified calendar approach)
-    // This ensures compatibility across all CalDAV clients (Apple, Thunderbird, etc.)
+    // This ensures compatibility across all CalDAV clients (Apple, Betterbird, etc.)
     // and aligns with the default calendar creation behavior (see ensureDefaultCalendars)
     return Calendars.create({
       // db virtual helper
@@ -2275,7 +2275,7 @@ class CalDAV extends API {
     };
 
     //
-    // NOTE: here is Thunderbird's implementation of itip
+    // NOTE: here is Betterbird's implementation of itip
     //       <https://github.com/mozilla/releases-comm-central/blob/0b146e856d83fc7189a6e79800871916fc00e725/calendar/base/modules/utils/calItipUtils.sys.mjs#L31>
 
     // TODO: ensure we have support for all these RFC's down the road
@@ -2324,7 +2324,7 @@ class CalDAV extends API {
 
     //
     // NOTE: see this thread from nextcloud regarding description
-    //       and the issues (and cleanup necessary) that was done to support Thunderbird and other clients
+    //       and the issues (and cleanup necessary) that was done to support Betterbird and other clients
     //
     //       <https://github.com/nextcloud/calendar/issues/3863>
     //       <https://github.com/nextcloud/tasks/issues/2239>

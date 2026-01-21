@@ -129,7 +129,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
     //
     // NOTE: if the uid is not in the selected list then we can assume client is requesting invalid data
-    //       (e.g. `options.messages = [ 50 ]` when `50` doesn't exist, e.g. after COPY in Thunderbird)
+    //       (e.g. `options.messages = [ 50 ]` when `50` doesn't exist, e.g. after COPY in Betterbird)
     //
 
     let queryAll = false;

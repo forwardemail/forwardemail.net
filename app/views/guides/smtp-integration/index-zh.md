@@ -20,7 +20,7 @@
 * [Java 集成](#java-integration)
   * [使用 Java 邮件 API](#using-javamail-api)
 * [电子邮件客户端配置](#email-client-configuration)
-  * [雷鸟](#thunderbird)
+  * [雷鸟](#betterbird)
   * [苹果邮件](#apple-mail)
   * [Gmail（以…的名义发送邮件）](#gmail-send-mail-as)
 * [故障排除](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## 电子邮件客户端配置 {#email-client-configuration}
 
-### 雷鸟 {#thunderbird}
+### 雷鸟 {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. 打开 Thunderbird 并前往“帐户设置”
+1. 打开 Betterbird 并前往“帐户设置”
 2. 点击“帐户操作”，然后选择“添加邮件帐户”
 3. 输入您的姓名、电子邮件地址和密码
 4. 点击“手动配置”，并输入以下详细信息：

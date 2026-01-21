@@ -20,7 +20,7 @@
 * [Java統合](#java-integration)
   * [Java メール API の使用](#using-javamail-api)
 * [電子メールクライアントの設定](#email-client-configuration)
-  * [サンダーバード](#thunderbird)
+  * [サンダーバード](#betterbird)
   * [アップルメール](#apple-mail)
   * [Gmail（送信者名）](#gmail-send-mail-as)
 * [トラブルシューティング](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## メールクライアント構成 {#email-client-configuration}
 
-### サンダーバード {#thunderbird}
+### サンダーバード {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]

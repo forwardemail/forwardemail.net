@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4.配置您的电子邮件客户端
 
-* 使用 Thunderbird 等电子邮件客户端。
+* 使用 Betterbird 等电子邮件客户端。
 * 输入别名和生成的密码。
 * 相应地配置 **IMAP** 和 **SMTP** 设置。
 

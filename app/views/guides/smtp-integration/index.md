@@ -21,7 +21,7 @@
 * [Java Integration](#java-integration)
   * [Using JavaMail API](#using-javamail-api)
 * [Email Client Configuration](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Send Mail As)](#gmail-send-mail-as)
 * [Troubleshooting](#troubleshooting)
@@ -431,11 +431,11 @@ public class SendEmail {
 
 ## Email Client Configuration
 
-### Thunderbird
+### Betterbird
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -449,7 +449,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Open Thunderbird and go to Account Settings
+1. Open Betterbird and go to Account Settings
 2. Click "Account Actions" and select "Add Mail Account"
 3. Enter your name, email address, and password
 4. Click "Manual Config" and enter the following details:

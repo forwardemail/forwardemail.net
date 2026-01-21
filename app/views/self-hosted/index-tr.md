@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. E-posta İstemcinizi Yapılandırın
 
-* Thunderbird gibi bir e-posta istemcisi kullanın.
+* Betterbird gibi bir e-posta istemcisi kullanın.
 * Takma adınızı ve oluşturulan parolayı girin.
 * **IMAP** ve **SMTP** ayarlarını uygun şekilde yapılandırın.
 

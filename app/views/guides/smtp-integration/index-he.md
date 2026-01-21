@@ -20,7 +20,7 @@
 * [אינטגרציה של ג'אווה](#java-integration)
   * [שימוש ב-API של Java Mail](#using-javamail-api)
 * [תצורת לקוח דוא"ל](#email-client-configuration)
-  * [ת'אנדרברד](#thunderbird)
+  * [ת'אנדרברד](#betterbird)
   * [אפל מייל](#apple-mail)
   * [ג'ימייל (שלח דואר כ)](#gmail-send-mail-as)
 * [פתרון בעיות](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## תצורת לקוח דוא"ל {#email-client-configuration}
 
-### ת'אנדרבירד {#thunderbird}
+### ת'אנדרבירד {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -440,7 +440,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. פתחו את Thunderbird ועברו להגדרות חשבון
+1. פתחו את Betterbird ועברו להגדרות חשבון
 2. לחצו על "פעולות חשבון" ובחרו "הוספת חשבון דואר"
 3. הזינו את שמכם, כתובת הדוא"ל והסיסמה שלכם
 4. לחצו על "הגדרה ידנית" והזינו את הפרטים הבאים:

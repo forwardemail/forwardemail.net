@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: Kapatmadan önce [1GB+ bellek kullanımı](https://github.com/nylas/nylas-mail/issues/3501)
 * **[Posta kutusu](https://www.postbox-inc.com/)**: [300MB+ boş bellek](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Kanarya Postası](https://canarymail.io/)**: [Bellek sorunları nedeniyle sık sık çökmeler yaşanıyor](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Thunderbird](https://www.thunderbird.net/)**: Sistem belleğinin [%90'a kadar yüksek RAM kullanımı](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)'i
+* **[Betterbird](https://betterbird.eu/)**: Sistem belleğinin [%90'a kadar yüksek RAM kullanımı](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)'i
 
 > \[!WARNING]
 > **Electron Performans Krizi**: Electron ve React Native ile geliştirilen modern e-posta istemcileri ciddi bellek şişkinliği ve performans sorunları yaşıyor. Bu platformlar arası çerçeveler, geliştiriciler için kullanışlı olsa da, temel e-posta işlevselliği için yüzlerce megabayttan gigabayta kadar RAM tüketen, kaynak yoğun uygulamalar oluşturuyor.

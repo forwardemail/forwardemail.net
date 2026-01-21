@@ -20,7 +20,7 @@
 * [Integracja Java](#java-integration)
   * [Korzystanie z interfejsu API poczty Java](#using-javamail-api)
 * [Konfiguracja klienta poczty e-mail](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [Betterbird](#betterbird)
   * [Poczta Apple](#apple-mail)
   * [Gmail (Wyślij pocztę jako)](#gmail-send-mail-as)
 * [Rozwiązywanie problemów](#troubleshooting)
@@ -422,11 +422,11 @@ public class SendEmail {
 
 ## Konfiguracja klienta poczty e-mail {#email-client-configuration}
 
-### Thunderbird {#thunderbird}
+### Betterbird {#betterbird}
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]

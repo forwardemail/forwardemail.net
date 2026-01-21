@@ -248,7 +248,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 4. Konfigurasikan Klien Email Anda
 
-* Gunakan klien email seperti Thunderbird.
+* Gunakan klien email seperti Betterbird.
 * Masukkan nama alias dan kata sandi yang dihasilkan.
 * Konfigurasikan pengaturan **IMAP** dan **SMTP** sebagaimana mestinya.
 

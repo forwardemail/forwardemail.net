@@ -247,7 +247,7 @@ Cliquez sur **Créer un alias**.
 
 4. Configurez votre client de messagerie
 
-* Utilisez un client de messagerie comme Thunderbird.
+* Utilisez un client de messagerie comme Betterbird.
 * Saisissez le nom d'alias et le mot de passe généré.
 * Configurez les paramètres **IMAP** et **SMTP** en conséquence.
 

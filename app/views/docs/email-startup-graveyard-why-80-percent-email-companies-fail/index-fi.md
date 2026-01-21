@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [Yli 1 Gt muistin käyttö](https://github.com/nylas/nylas-mail/issues/3501) ennen sammutusta
 * **[Postilaatikko](https://www.postbox-inc.com/)**: [300 Mt+ vapaata muistia](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Kanarian posti](https://canarymail.io/)**: [Usein kaatuu muistiongelmien vuoksi](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Thunderbird](https://www.thunderbird.net/)**: [Korkea RAM-muistin käyttö jopa 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) järjestelmämuistia
+* **[Betterbird](https://betterbird.eu/)**: [Korkea RAM-muistin käyttö jopa 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) järjestelmämuistia
 
 > \[!WARNING]
 > **Electronin suorituskykykriisi**: Nykyaikaiset Electronilla ja React Nativella rakennetut sähköpostiohjelmat kärsivät vakavasta muistin ylikuormituksesta ja suorituskykyongelmista. Nämä monialustaiset kehykset ovat käteviä kehittäjille, mutta ne luovat resursseja kuluttavia sovelluksia, jotka kuluttavat satoja megatavuja tai gigatavuja RAM-muistia sähköpostin perustoimintoihin.

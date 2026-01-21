@@ -104,7 +104,7 @@ class MessageAnalyzer {
 
     // Email clients
     const emailClients = [
-      'thunderbird',
+      'betterbird',
       'outlook',
       'apple mail',
       'gmail',
@@ -306,7 +306,7 @@ class MessageAnalyzer {
 
     // Email clients
     if (
-      content.includes('thunderbird') ||
+      content.includes('betterbird') ||
       content.includes('outlook') ||
       content.includes('apple mail') ||
       content.includes('gmail') ||

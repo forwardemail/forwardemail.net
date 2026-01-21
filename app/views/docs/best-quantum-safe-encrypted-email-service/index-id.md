@@ -47,7 +47,7 @@ Kami adalah satu-satunya penyedia layanan email 100% sumber terbuka dan berfokus
 
 ## Bagaimana cara kerjanya {#how-does-it-work}
 
-1. Menggunakan klien email Anda seperti Apple Mail, Thunderbird, Gmail, atau Outlook – Anda terhubung ke server [IMAP](/faq#do-you-support-receiving-email-with-imap) kami yang aman menggunakan nama pengguna dan kata sandi Anda:
+1. Menggunakan klien email Anda seperti Apple Mail, Betterbird, Gmail, atau Outlook – Anda terhubung ke server [IMAP](/faq#do-you-support-receiving-email-with-imap) kami yang aman menggunakan nama pengguna dan kata sandi Anda:
 
 * Nama pengguna Anda adalah alias lengkap dengan domain Anda, misalnya `hello@example.com`.
 * Kata sandi Anda dibuat secara acak dan hanya ditampilkan selama 30 detik ketika Anda mengklik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> dari <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias.
@@ -75,7 +75,7 @@ Kami adalah satu-satunya penyedia layanan email 100% sumber terbuka dan berfokus
 
 * Saat Anda terhubung ke server IMAP kami dengan klien email Anda, kata sandi Anda akan dienkripsi di dalam memori dan digunakan untuk membaca dan menulis ke kotak surat Anda. Kotak surat Anda hanya dapat dibaca dan ditulis dengan kata sandi ini. Perlu diingat bahwa karena Anda satu-satunya yang memiliki kata sandi ini, **hanya Anda** yang dapat membaca dan menulis ke kotak surat Anda saat mengaksesnya. Saat klien email Anda mencoba memeriksa email atau sinkronisasi berikutnya, pesan baru Anda akan ditransfer dari kotak surat sementara ini dan disimpan di berkas kotak surat Anda yang sebenarnya menggunakan kata sandi yang Anda berikan. Harap dicatat bahwa kotak surat sementara ini akan dihapus setelahnya sehingga hanya kotak surat Anda yang dilindungi kata sandi yang menyimpan pesan-pesan tersebut.
 
-* **Jika Anda terhubung ke IMAP (misalnya menggunakan klien email seperti Apple Mail atau Thunderbird), kami tidak perlu menulis ke penyimpanan disk sementara. Kata sandi IMAP terenkripsi di dalam memori Anda akan diambil dan digunakan. Secara real-time, ketika sebuah pesan mencoba dikirimkan kepada Anda, kami akan mengirimkan permintaan WebSocket ke semua server IMAP untuk menanyakan apakah mereka memiliki sesi aktif untuk Anda (inilah bagian pengambilan), dan selanjutnya akan meneruskan kata sandi terenkripsi di dalam memori tersebut – jadi kami tidak perlu menulis ke kotak surat sementara, kami dapat menulis ke kotak surat terenkripsi Anda yang sebenarnya menggunakan kata sandi terenkripsi Anda.**
+* **Jika Anda terhubung ke IMAP (misalnya menggunakan klien email seperti Apple Mail atau Betterbird), kami tidak perlu menulis ke penyimpanan disk sementara. Kata sandi IMAP terenkripsi di dalam memori Anda akan diambil dan digunakan. Secara real-time, ketika sebuah pesan mencoba dikirimkan kepada Anda, kami akan mengirimkan permintaan WebSocket ke semua server IMAP untuk menanyakan apakah mereka memiliki sesi aktif untuk Anda (inilah bagian pengambilan), dan selanjutnya akan meneruskan kata sandi terenkripsi di dalam memori tersebut – jadi kami tidak perlu menulis ke kotak surat sementara, kami dapat menulis ke kotak surat terenkripsi Anda yang sebenarnya menggunakan kata sandi terenkripsi Anda.**
 
      ```mermaid
      sequenceDiagram
@@ -223,7 +223,7 @@ Berikut tabel yang menguraikan proyek yang kami gunakan dalam kode sumber dan pr
 | [SQLite](https://www.sqlite.org/about.html) | Lapisan basis data tertanam untuk penyimpanan IMAP yang dapat diskalakan, mandiri, cepat, dan tangguh. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Alat anti-spam, penyaringan email, dan pencegahan phishing Node.js (alternatif kami untuk [Spam Assassin](https://spamassassin.apache.org/) dan [rspamd](https://github.com/rspamd/rspamd)). |
 | [Tangerine](https://tangeri.ne) | Permintaan DNS melalui HTTPS dengan Node.js dan caching menggunakan Redis – yang memastikan konsistensi global dan banyak lagi. |
-| [Thunderbird](https://www.thunderbird.net/) | Tim pengembangan kami menggunakan ini (dan merekomendasikan ini juga) sebagai **klien email pilihan untuk digunakan dengan Forward Email**. |
+| [Betterbird](https://betterbird.eu/) | Tim pengembangan kami menggunakan ini (dan merekomendasikan ini juga) sebagai **klien email pilihan untuk digunakan dengan Forward Email**. |
 | [UTM](https://github.com/utmapp/UTM) | Tim pengembangan kami menggunakan ini untuk membuat mesin virtual untuk iOS dan macOS guna menguji berbagai klien email (secara paralel) dengan server IMAP dan SMTP kami. |
 | [Ubuntu](https://ubuntu.com/download/server) | Sistem operasi server modern berbasis Linux sumber terbuka yang mendukung seluruh infrastruktur kami. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | Pustaka server IMAP – lihat catatannya pada [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) dan [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md). |

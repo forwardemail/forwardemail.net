@@ -317,7 +317,7 @@ graph LR
 * **Nylas Mail**: [استخدام ذاكرة 1 جيجابايت+](https://github.com/nylas/nylas-mail/issues/3501) قبل إيقاف التشغيل
 * **[صندوق البريد](https://www.postbox-inc.com/)**: [ذاكرة خاملة تزيد عن 300 ميجابايت](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[بريد الكناري](https://canarymail.io/)**: [الأعطال المتكررة بسبب مشاكل الذاكرة](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[طائر الرعد](https://www.thunderbird.net/)**: [استخدام ذاكرة الوصول العشوائي (RAM) بشكل مرتفع يصل إلى 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) من ذاكرة النظام
+* **[طائر الرعد](https://betterbird.eu/)**: [استخدام ذاكرة الوصول العشوائي (RAM) بشكل مرتفع يصل إلى 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) من ذاكرة النظام
 
 > \[!WARNING]
 > **أزمة أداء Electron**: تعاني برامج البريد الإلكتروني الحديثة المُصممة باستخدام Electron وReact Native من تضخم كبير في الذاكرة ومشاكل في الأداء. هذه الأطر متعددة المنصات، على الرغم من أنها مناسبة للمطورين، تُنشئ تطبيقات كثيفة الموارد تستهلك مئات الميغابايتات إلى غيغابايت من ذاكرة الوصول العشوائي (RAM) لوظائف البريد الإلكتروني الأساسية.

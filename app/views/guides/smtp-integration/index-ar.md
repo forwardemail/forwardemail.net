@@ -20,7 +20,7 @@
 * [تكامل جافا](#java-integration)
   * [استخدام واجهة برمجة تطبيقات Java Mail](#using-javamail-api)
 * [تكوين عميل البريد الإلكتروني](#email-client-configuration)
-  * [طائر الرعد](#thunderbird)
+  * [طائر الرعد](#betterbird)
   * [بريد آبل](#apple-mail)
   * [Gmail (إرسال البريد باسم)](#gmail-send-mail-as)
 * [استكشاف الأخطاء وإصلاحها](#troubleshooting)
@@ -425,7 +425,7 @@ public class SendEmail {
 
 ```mermaid
 flowchart TD
-    A[Open Thunderbird] --> B[Account Settings]
+    A[Open Betterbird] --> B[Account Settings]
     B --> C[Account Actions]
     C --> D[Add Mail Account]
     D --> E[Enter Name, Email, Password]
@@ -439,7 +439,7 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-١. افتح Thunderbird وانتقل إلى إعدادات الحساب.
+١. افتح Betterbird وانتقل إلى إعدادات الحساب.
 ٢. انقر على "إجراءات الحساب" ثم اختر "إضافة حساب بريد".
 ٣. أدخل اسمك وعنوان بريدك الإلكتروني وكلمة مرورك.
 ٤. انقر على "التكوين اليدوي" وأدخل البيانات التالية:

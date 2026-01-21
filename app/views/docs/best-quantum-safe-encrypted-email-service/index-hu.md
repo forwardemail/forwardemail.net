@@ -47,7 +47,7 @@ Mi vagyunk az egyetlen 100%-ban nyílt forráskódú és adatvédelmet szem elő
 
 ## Hogyan működik? {#how-does-it-work}
 
-1. Az Apple Mail, a Thunderbird, a Gmail vagy az Outlook levelezőprogram használatával a felhasználónevével és jelszavával csatlakozik biztonságos [IMAP](/faq#do-you-support-receiving-email-with-imap) szervereinkhez:
+1. Az Apple Mail, a Betterbird, a Gmail vagy az Outlook levelezőprogram használatával a felhasználónevével és jelszavával csatlakozik biztonságos [IMAP](/faq#do-you-support-receiving-email-with-imap) szervereinkhez:
 
 * A felhasználóneved a domainedhez tartozó teljes aliasod, például `hello@example.com`.
 * A jelszavad véletlenszerűen generálódik, és csak 30 másodpercig jelenik meg számodra, amikor a <strong class="text-success"><i class="fa fa-key"></i>Jelszó generálása</strong> lehetőségre kattintasz a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Fiókom <i class="fa fa-angle-right"></i> Domainek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontból.
@@ -229,7 +229,7 @@ Az indexek a keresési lekérdezésekben szereplő összes tulajdonsághoz is t�
 | [SQLite](https://www.sqlite.org/about.html) | Beágyazott adatbázis réteg a skálázható, önálló, gyors és rugalmas IMAP-tároláshoz. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js anti-spam, e-mail szűrő és adathalászat elleni eszköz (alternatívánk a [Spam Assassin](https://spamassassin.apache.org/) és [rspamd](https://github.com/rspamd/rspamd) helyett). |
 | [Tangerine](https://tangeri.ne) | DNS HTTPS kéréseken keresztül Node.js-sel és gyorsítótárazás Redis használatával – ami globális konzisztenciát és még sok minden mást biztosít. |
-| [Thunderbird](https://www.thunderbird.net/) | Fejlesztőcsapatunk ezt használja (és ajánlja is) **a Forward Email funkcióhoz preferált e-mail kliensként**. |
+| [Betterbird](https://betterbird.eu/) | Fejlesztőcsapatunk ezt használja (és ajánlja is) **a Forward Email funkcióhoz preferált e-mail kliensként**. |
 | [UTM](https://github.com/utmapp/UTM) | Fejlesztőcsapatunk ezt a virtuális gépeket használja iOS és macOS rendszerekhez, hogy különböző e-mail klienseket (párhuzamosan) tesztelhessen az IMAP és SMTP szervereinkkel. |
 | [Ubuntu](https://ubuntu.com/download/server) | Modern, nyílt forráskódú, Linux alapú szerver operációs rendszer, amely az összes infrastruktúránkat működteti. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP szerverkönyvtár – lásd a [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) és [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) könyvtárakra vonatkozó megjegyzéseit. |
