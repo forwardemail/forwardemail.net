@@ -74,7 +74,12 @@ graceful.listen();
     const parser = new XMLParser({});
     const result = parser.parse(xml, true);
 
-    for (const url of result.urlset.url) {
+    // Ensure urls is always an array (fast-xml-parser returns object for single entry)
+    const urls = Array.isArray(result.urlset.url)
+      ? result.urlset.url
+      : [result.urlset.url];
+
+    for (const url of urls) {
       // if (!url.loc.includes('/en/')) continue;
       // crawl the page for caching support and localization
       {
@@ -300,7 +305,7 @@ graceful.listen();
     //
     if (env.MICROSOFT_BING_API_KEY) {
       const urlLists = _.chunk(
-        result.urlset.url.map((o) => o.loc),
+        urls.map((o) => o.loc),
         500
       );
       for (const urlList of urlLists) {
