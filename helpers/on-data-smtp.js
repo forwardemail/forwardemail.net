@@ -265,6 +265,10 @@ async function onDataSMTP(session, date, headers, body) {
         const token = domain.tokens.id(tokenUsed._id);
         token.user = admin.user._id;
         domain.skip_verification = true;
+        // Set audit metadata for system-initiated token reassignment
+        domain.__audit_metadata = {
+          isSystem: true
+        };
         await domain.save();
         const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
           domain
@@ -299,6 +303,10 @@ async function onDataSMTP(session, date, headers, body) {
       } else {
         domain.tokens.id(tokenUsed._id).remove();
         domain.skip_verification = true;
+        // Set audit metadata for system-initiated token removal
+        domain.__audit_metadata = {
+          isSystem: true
+        };
         await domain.save();
         // alert admins of the edge case
         const err = new TypeError(

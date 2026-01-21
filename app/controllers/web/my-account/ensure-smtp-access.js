@@ -29,6 +29,14 @@ async function ensureSMTPAccess(ctx, next) {
     domain.locale = ctx.locale;
     domain.skip_payment_check = true;
     domain.skip_verification = true;
+
+    // Set audit metadata for domain update tracking
+    domain.__audit_metadata = {
+      user: ctx.state.user,
+      ip: ctx.ip,
+      userAgent: ctx.get('User-Agent')
+    };
+
     await domain.save();
     ctx.state.domain.dkim_key_selector = domain.dkim_key_selector;
     ctx.state.domain.dkim_public_key = domain.dkim_public_key;

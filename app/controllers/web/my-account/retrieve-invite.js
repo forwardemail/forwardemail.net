@@ -124,6 +124,14 @@ async function retrieveInvite(ctx) {
   // save domain
   domain.locale = ctx.locale;
   domain.skip_verification = true;
+
+  // Set audit metadata for domain update tracking
+  domain.__audit_metadata = {
+    user: ctx.state.user,
+    ip: ctx.ip,
+    userAgent: ctx.get('User-Agent')
+  };
+
   ctx.state.domain = await domain.save();
 
   // mark user's email as verified (accepting invite proves email access)

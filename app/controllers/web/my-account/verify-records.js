@@ -127,6 +127,14 @@ async function verifyRecords(ctx) {
     // save the domain
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
+
+    // Set audit metadata for domain update tracking
+    domain.__audit_metadata = {
+      user: ctx.state.user,
+      ip: ctx.ip,
+      userAgent: ctx.get('User-Agent')
+    };
+
     await domain.save();
 
     let extra;

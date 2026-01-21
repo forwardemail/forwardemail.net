@@ -127,6 +127,17 @@ async function update(ctx) {
 
   domain.locale = ctx.locale;
   domain.resolver = ctx.resolver;
+
+  //
+  // Set audit metadata for domain update tracking
+  // Mark as admin change to protect admin privacy from end users
+  // (admin email, IP, and user-agent will NOT be exposed in notifications)
+  //
+  domain.__audit_metadata = {
+    user: ctx.state.user,
+    isAdmin: true
+  };
+
   await domain.save();
 
   // clear cache for max forwarding addresses (used by SMTP)

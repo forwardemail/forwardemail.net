@@ -68,6 +68,10 @@ graceful.listen();
       domainsWithPortNumber.map(async (domain) => {
         domain.smtp_port = domain.smtp_port.toString();
         domain.skip_verification = true;
+        // Set audit metadata for system-initiated migration
+        domain.__audit_metadata = {
+          isSystem: true
+        };
         await domain.save();
       })
     );
@@ -145,6 +149,10 @@ graceful.listen();
     await Promise.all(
       domains.map((domain) => {
         domain.skip_verification = true;
+        // Set audit metadata for system-initiated migration
+        domain.__audit_metadata = {
+          isSystem: true
+        };
         return domain.save();
       })
     );

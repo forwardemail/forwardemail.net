@@ -1416,6 +1416,14 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
     else {
       domain.locale = ctx.locale;
       domain.resolver = ctx.resolver;
+
+      // Set audit metadata for domain update tracking
+      domain.__audit_metadata = {
+        user: ctx.state.user,
+        ip: ctx.ip,
+        userAgent: ctx.get('User-Agent')
+      };
+
       ctx.state.domain = await domain.save();
       //
       // NOTE: this logic is the same as `jobs/fix-non-free-users`

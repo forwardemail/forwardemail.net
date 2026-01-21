@@ -30,6 +30,14 @@ async function removeCatchAllPassword(ctx) {
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
     domain.skip_verification = true;
+
+    // Set audit metadata for domain update tracking
+    domain.__audit_metadata = {
+      user: ctx.state.user,
+      ip: ctx.ip,
+      userAgent: ctx.get('User-Agent')
+    };
+
     await domain.save();
 
     // TODO: add emails here and elsewhere

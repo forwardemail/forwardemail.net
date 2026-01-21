@@ -62,12 +62,20 @@ graceful.listen();
           if (!domain.is_global) {
             domain.is_global = true;
             domain.skip_verification = true;
+            // Set audit metadata for system-initiated background job
+            domain.__audit_metadata = {
+              isSystem: true
+            };
             await domain.save();
           }
 
           if (!domain.plan !== 'team') {
             domain.plan = 'team';
             domain.skip_verification = true;
+            // Set audit metadata for system-initiated background job
+            domain.__audit_metadata = {
+              isSystem: true
+            };
             await domain.save();
           }
 

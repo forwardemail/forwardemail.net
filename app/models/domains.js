@@ -553,7 +553,18 @@ const Domains = new mongoose.Schema({
       },
       changedByEmail: String,
       ip: String,
-      userAgent: String
+      userAgent: String,
+      // Admin/System change flags (for privacy protection)
+      // When isAdmin is true, admin details are hidden from end users
+      isAdmin: {
+        type: Boolean,
+        default: false
+      },
+      // When isSystem is true, change was made by system (auto-approval, jobs, etc.)
+      isSystem: {
+        type: Boolean,
+        default: false
+      }
     }
   ],
   domain_updates_sent_at: Date
@@ -1349,19 +1360,41 @@ Domains.pre('save', function (next) {
 
       // Add audit metadata if available
       if (this.__audit_metadata) {
-        if (this.__audit_metadata.user) {
-          updateEntry.changedBy =
-            this.__audit_metadata.user._id || this.__audit_metadata.user;
-          updateEntry.changedByEmail =
-            this.__audit_metadata.user.email || this.__audit_metadata.email;
-        }
+        //
+        // If this is an admin-initiated change, mark it as such
+        // and do NOT expose admin user details (email, IP, user-agent)
+        // to protect admin privacy from end users
+        //
+        if (this.__audit_metadata.isAdmin) {
+          updateEntry.isAdmin = true;
+          // Store admin user ID for internal reference but don't expose email/IP/UA
+          if (this.__audit_metadata.user) {
+            updateEntry.changedBy =
+              this.__audit_metadata.user._id || this.__audit_metadata.user;
+          }
+          // Do NOT set changedByEmail, ip, or userAgent for admin changes
+        } else if (this.__audit_metadata.isSystem) {
+          //
+          // System-initiated changes (auto-approval, background jobs, etc.)
+          // Mark as system change without exposing any user details
+          //
+          updateEntry.isSystem = true;
+        } else {
+          // Regular user-initiated change - include full audit trail
+          if (this.__audit_metadata.user) {
+            updateEntry.changedBy =
+              this.__audit_metadata.user._id || this.__audit_metadata.user;
+            updateEntry.changedByEmail =
+              this.__audit_metadata.user.email || this.__audit_metadata.email;
+          }
 
-        if (this.__audit_metadata.ip) {
-          updateEntry.ip = this.__audit_metadata.ip;
-        }
+          if (this.__audit_metadata.ip) {
+            updateEntry.ip = this.__audit_metadata.ip;
+          }
 
-        if (this.__audit_metadata.userAgent) {
-          updateEntry.userAgent = this.__audit_metadata.userAgent;
+          if (this.__audit_metadata.userAgent) {
+            updateEntry.userAgent = this.__audit_metadata.userAgent;
+          }
         }
       }
 

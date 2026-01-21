@@ -37,24 +37,36 @@ block content
                             = " → "
                           span= striptags(String(field.current || t("(empty)")))
                       td
-                        if field.changedByEmail
+                        //- Handle different change sources with appropriate privacy
+                        if field.isAdmin
+                          //- Admin-initiated changes: show "Admin" without exposing admin details
+                          span.text-info= t("Admin")
+                        else if field.isSystem
+                          //- System-initiated changes (auto-approval, background jobs, etc.)
+                          span.text-secondary= t("System (Auto)")
+                        else if field.changedByEmail
+                          //- Regular user changes: show full audit trail
                           span.notranslate= field.changedByEmail
                           if field.ip
                             br
                             small.text-muted IP: #{ field.ip }
                         else
+                          //- Fallback for legacy data without audit metadata
                           em.text-muted= t("Unknown")
                       td
                         if field.changedAt
                           span= new Date(field.changedAt).toLocaleString(locale || "en")
                         else
                           em.text-muted= t("Unknown")
-              if domainUpdates.some(f => f.userAgent)
+              //- Only show technical details for non-admin, non-system changes that have user agent
+              - const hasUserAgentDetails = domainUpdates.some((f) => f.userAgent && !f.isAdmin && !f.isSystem);
+              if hasUserAgentDetails
                 details.mt-2
                   summary.small.text-muted= t("Technical Details")
                   .small.text-muted.mt-1
                     each field in domainUpdates
-                      if field.userAgent
+                      //- Only show user agent for regular user changes, not admin or system
+                      if field.userAgent && !field.isAdmin && !field.isSystem
                         p.mb-1
                           strong= field.name
                           = ": "

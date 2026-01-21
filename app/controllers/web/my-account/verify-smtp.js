@@ -91,6 +91,16 @@ async function verifySMTP(ctx) {
 
     // return early if DNS error occurred
     if (hasDNSError) {
+      //
+      // Set audit metadata for domain update tracking
+      // This is a user-initiated verification check
+      //
+      domain.__audit_metadata = {
+        user: ctx.state.user,
+        ip: ctx.ip,
+        userAgent: ctx.get('User-Agent')
+      };
+
       // save the domain
       await domain.save();
 
@@ -105,6 +115,12 @@ async function verifySMTP(ctx) {
     }
 
     const isVerified = dkim && returnPath && dmarc;
+
+    //
+    // Track whether this will be an auto-approval (system-initiated)
+    // vs a regular user-initiated change for audit purposes
+    //
+    let isAutoApproval = false;
 
     if (domain.has_smtp && !isVerified) {
       domain.smtp_verified_at = undefined;
@@ -168,6 +184,9 @@ async function verifySMTP(ctx) {
           ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
             (hasExistingApprovedDomains && !hasSomeSuspendedDomains)))
       ) {
+        // Mark this as an auto-approval (system-initiated change)
+        isAutoApproval = true;
+
         domain.has_smtp = true;
         domain.smtp_verified_at = new Date();
 
@@ -286,6 +305,24 @@ async function verifySMTP(ctx) {
     domain.has_strict_dmarc = strictDmarc;
     domain.has_spf_record = spf;
     if (ns) domain.ns = ns;
+
+    //
+    // Set audit metadata for domain update tracking
+    // If this is an auto-approval, mark as system change to indicate
+    // it was automatically approved (not by a specific user or admin)
+    // Otherwise, it's a regular user-initiated verification
+    //
+    if (isAutoApproval) {
+      domain.__audit_metadata = {
+        isSystem: true
+      };
+    } else {
+      domain.__audit_metadata = {
+        user: ctx.state.user,
+        ip: ctx.ip,
+        userAgent: ctx.get('User-Agent')
+      };
+    }
 
     // save the domain
     await domain.save();

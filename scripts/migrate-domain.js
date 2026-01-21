@@ -59,6 +59,12 @@ graceful.listen();
     }
   ];
 
+  // Set audit metadata for admin-initiated domain migration
+  // (this script is run by admins to migrate domains between users)
+  domain.__audit_metadata = {
+    isAdmin: true
+  };
+
   await domain.save();
 
   // update all existing aliases on the domain with the new user

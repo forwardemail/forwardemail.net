@@ -135,6 +135,11 @@ async function mapper(id) {
 
     // return early if DNS error occurred
     if (hasDNSError) {
+      // Set audit metadata for system-initiated background job
+      domain.__audit_metadata = {
+        isSystem: true
+      };
+
       // save the domain
       await domain.save();
       return;
@@ -220,6 +225,11 @@ async function mapper(id) {
     domain.has_strict_dmarc = strictDmarc;
     domain.has_spf_record = spf;
     if (ns) domain.ns = ns;
+
+    // Set audit metadata for system-initiated background job
+    domain.__audit_metadata = {
+      isSystem: true
+    };
 
     // save the domain
     await domain.save();

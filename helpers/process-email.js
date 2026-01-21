@@ -546,6 +546,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
       domain.skip_payment_check = true;
       domain.skip_verification = true;
+      // Set audit metadata for system-initiated DKIM key generation
+      domain.__audit_metadata = {
+        isSystem: true
+      };
       domain = await domain.save();
     }
 

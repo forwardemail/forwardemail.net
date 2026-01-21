@@ -415,6 +415,13 @@ async function retrieveDomain(ctx, next) {
     ctx.state.domain.locale = ctx.locale;
     ctx.state.domain.resolver = ctx.resolver;
 
+    // Set audit metadata for domain update tracking
+    ctx.state.domain.__audit_metadata = {
+      user: ctx.state.user,
+      ip: ctx.ip,
+      userAgent: ctx.get('User-Agent')
+    };
+
     try {
       ctx.state.domain = await ctx.state.domain.save();
       const member = ctx.state.domain.members.find(

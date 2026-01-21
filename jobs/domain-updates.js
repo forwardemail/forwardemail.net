@@ -64,6 +64,7 @@ async function mapper(domain) {
 
   // Merge and map to actionable email format with localized field names
   // Include audit metadata (who made the change, IP, user-agent, timestamp)
+  // Handle isAdmin and isSystem flags for privacy protection
   const domainUpdates = domain.domain_updates.map((update) => {
     const {
       fieldName,
@@ -74,7 +75,9 @@ async function mapper(domain) {
       changedBy,
       changedByEmail,
       ip,
-      userAgent
+      userAgent,
+      isAdmin,
+      isSystem
     } = update;
     return {
       name: fieldName,
@@ -87,9 +90,17 @@ async function mapper(domain) {
       redacted: redacted || redactedFieldNames.has(fieldName),
       changedAt,
       changedBy,
-      changedByEmail,
-      ip,
-      userAgent
+      //
+      // Privacy protection for admin and system changes:
+      // - Admin changes: show "Admin" instead of admin's email/IP/UA
+      // - System changes: show "System (Auto)" for auto-approval, jobs, etc.
+      // - Regular user changes: show full audit trail
+      //
+      changedByEmail: isAdmin ? null : isSystem ? null : changedByEmail,
+      ip: isAdmin ? null : isSystem ? null : ip,
+      userAgent: isAdmin ? null : isSystem ? null : userAgent,
+      isAdmin: Boolean(isAdmin),
+      isSystem: Boolean(isSystem)
     };
   });
 

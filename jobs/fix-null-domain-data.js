@@ -40,6 +40,10 @@ async function mapper(id) {
     console.log('saving', domain.name);
     domain.skip_payment_check = true;
     domain.skip_verification = true;
+    // Set audit metadata for system-initiated background job
+    domain.__audit_metadata = {
+      isSystem: true
+    };
     await domain.save();
   }
 }
