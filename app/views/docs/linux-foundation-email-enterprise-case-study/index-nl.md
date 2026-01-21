@@ -1,6 +1,6 @@
 # Case Study: Hoe de Linux Foundation e-mailbeheer optimaliseert in meer dan 250 domeinen met Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Inhoudsopgave {#table-of-contents}
 

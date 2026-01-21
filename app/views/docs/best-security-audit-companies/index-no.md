@@ -1,6 +1,6 @@
 # Beste sikkerhetsrevisjonsselskaper {#best-security-audit-companies}
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 ## Innholdsfortegnelse {#table-of-contents}
 

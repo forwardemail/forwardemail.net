@@ -1,6 +1,6 @@
 # Desastre de 11 anos da API do PayPal: como criamos soluções alternativas enquanto eles ignoravam os desenvolvedores {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Na Forward Email, lidamos com as APIs quebradas do PayPal há mais de uma década. O que começou como pequenas frustrações se transformou em um desastre completo, que nos forçou a criar nossas próprias soluções alternativas, bloquear os modelos de phishing e, por fim, interromper todos os pagamentos do PayPal durante uma migração crítica de conta.</p>
 <p class="lead mt-3">Esta é a história de 11 anos em que o PayPal ignorou as necessidades básicas dos desenvolvedores enquanto tentávamos de tudo para fazer a plataforma deles funcionar.</p>
@@ -362,21 +362,21 @@ Seu navegador não suporta a tag de vídeo.
 <figcaption><div class="alert alert-danger small text-center">
 A interface de gerenciamento de assinaturas - a interface é tão ruim que tivemos que recorrer a código para gerar produtos e planos de assinatura.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Uma visão da interface de assinatura quebrada e com funcionalidade ausente (você não consegue criar produtos/planos/assinaturas facilmente — e não parece haver nenhuma maneira de excluir produtos ou planos criados na interface)
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Mensagens de erro típicas do PayPal - enigmáticas e inúteis
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### Problemas com o SDK {#sdk-problems}
@@ -420,39 +420,39 @@ O que deveria ter sido simples se transformou em um desastre completo:
 <figcaption><div class="alert alert-danger small text-center">
 O erro que os clientes viam ao tentar pagar - sem explicação, sem registros, nada
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 O suporte do PayPal alegou que estava tudo bem, enquanto os pagamentos estavam completamente interrompidos. A mensagem final mostra que eles disseram que "restauraram alguns recursos", mas ainda solicitam mais informações não especificadas - o clássico cenário de suporte do PayPal.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 O processo de verificação de identidade que supostamente não "consertou" nada
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Mensagem vaga e ainda sem resolução. Nenhuma informação, aviso ou qualquer informação adicional necessária. O suporte ao cliente fica em silêncio.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## Por que não podemos simplesmente abandonar o PayPal {#why-we-cant-just-drop-paypal}
@@ -553,7 +553,7 @@ O problema vai além do design ruim do modelo. O sistema de faturas do PayPal é
 <figcaption><div class="alert alert-danger small text-center">
 Captura de tela mostrando várias faturas fraudulentas do PayPal inundando uma caixa de entrada, todas parecendo legítimas porque, na verdade, vêm dos sistemas do PayPal.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 O pesquisador observou:
@@ -919,4 +919,4 @@ Se você está construindo um sistema de pagamento, aprenda com a nossa experiê
 
 > Esta publicação documenta nossa experiência de 11 anos com as APIs do PayPal na Forward Email. Todos os exemplos de código e links são de nossos sistemas de produção. Continuamos a oferecer suporte aos pagamentos do PayPal, apesar desses problemas, porque alguns clientes não têm outra opção.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

@@ -1,6 +1,6 @@
 # Warum Open-Source-E-Mail die Zukunft ist: Der Vorteil der E-Mail-Weiterleitung {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="Open source email security and privacy" class="rounded-lg" />
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

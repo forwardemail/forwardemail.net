@@ -1,6 +1,6 @@
 # كيف قمنا ببناء نظام دفع قوي مع Stripe وPayPal: نهج ثلاثي {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

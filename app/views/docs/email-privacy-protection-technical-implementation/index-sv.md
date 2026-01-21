@@ -1,6 +1,6 @@
 # Hur vidarebefordran av e-post fungerar med vidarebefordran av e-post: Den ultimata guiden {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # أفضل شركات التدقيق الأمني {#best-security-audit-companies}
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

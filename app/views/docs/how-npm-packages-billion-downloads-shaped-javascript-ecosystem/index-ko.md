@@ -1,6 +1,6 @@
 # 10년의 영향: npm 패키지가 10억 다운로드를 달성하고 JavaScript에 영향을 미친 과정 {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

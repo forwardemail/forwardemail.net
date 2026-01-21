@@ -1,6 +1,6 @@
 # 电子邮件转发如何与转发电子邮件配合使用：终极指南 {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

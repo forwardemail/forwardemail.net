@@ -1,6 +1,6 @@
 # Introducing Crypto Payments: Enhanced Privacy for Your Email Service
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 
 ## Table of Contents

@@ -1,6 +1,6 @@
 # E-mail doorsturen: uw Sectie 889-conforme e-maildoorstuuroplossing {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Inhoudsopgave {#table-of-contents}
 

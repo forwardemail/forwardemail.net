@@ -1,6 +1,6 @@
 # עשור של השפעה: כיצד חבילות ה-npm שלנו הגיעו למיליארד הורדות ועיצבו את JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
 
 ## תוכן עניינים
 

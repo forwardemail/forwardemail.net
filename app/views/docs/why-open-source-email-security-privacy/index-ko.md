@@ -1,6 +1,6 @@
 # 오픈소스 이메일이 미래인 이유: 이메일의 미래적 이점 {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="Open source email security and privacy" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

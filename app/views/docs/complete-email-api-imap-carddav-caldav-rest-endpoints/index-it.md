@@ -1,6 +1,6 @@
 # La prima API di posta elettronica completa: come Forward Email ha rivoluzionato la gestione della posta elettronica {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" classe="arrotondato-lg" />
 
 <p class="lead mt-3">
 

@@ -1,6 +1,6 @@
 # PayPal の 11 年間にわたる API 問題: 開発者を無視する中で、私たちがどのように回避策を構築したか {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Forward Emailでは、10年以上にわたりPayPalのAPIの不具合に対処してきました。最初は些細な不満だったものが、完全なる大惨事へと発展し、独自の回避策を構築し、フィッシング詐欺テンプレートをブロックせざるを得なくなり、最終的には重要なアカウント移行中にPayPalでのすべての決済を停止せざるを得なくなりました。</p>
 <p class="lead mt-3">これは、PayPalが開発者の基本的なニーズを無視し、私たちがPayPalのプラットフォームを機能させるためにあらゆる努力を尽くした11年間の物語です。</p>
@@ -362,21 +362,21 @@ PayPal開発者インターフェースにおける、ワークフローの不�
 <figcaption><div class="alert alert-danger small text-center">
 サブスクリプション管理インターフェース - インターフェースがあまりにも劣悪なため、商品やサブスクリプションプランを生成するためにコードに頼らざるを得ませんでした。
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 機能が不足している、壊れたサブスクリプションインターフェースの図（商品/プラン/サブスクリプションを簡単に作成できません。また、UIで作成した商品やプランを削除する方法は全くないようです）
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 PayPal の典型的なエラーメッセージ - 難解で役に立たない
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### SDKの問題 {#sdk-problems}
@@ -420,39 +420,39 @@ PayPal の典型的なエラーメッセージ - 難解で役に立たない
 <figcaption><div class="alert alert-danger small text-center">
 顧客が支払いを試みたときに表示されたエラー - 説明もログも何もなし
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 PayPalサポートはすべて問題ないと主張しているが、支払いは完全に機能していない。最後のメッセージでは、「一部の機能が復旧しました」と説明しながらも、さらに具体的な情報を求めています。典型的なPayPalサポートのやりとりです。
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 何も「解決」しなかったとされる本人確認プロセス
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 漠然としたメッセージで、解決策は見つからず。必要な追加情報に関する情報、通知、その他の情報は一切ありません。カスタマーサポートは沈黙しています。
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## PayPalを廃止できない理由 {#why-we-cant-just-drop-paypal}
@@ -553,7 +553,7 @@ PayPalの不正使用対策チームに繰り返し報告したにもかかわ�
 <figcaption><div class="alert alert-danger small text-center">
 受信トレイに大量の不正なPayPal請求書が送信されているスクリーンショット。PayPalのシステムから送信されているため、すべて正当な請求書のように見えます。
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 研究者は次のように指摘した。
@@ -919,4 +919,4 @@ PayPalが広範なフィードバックを収集しながらも、開発者の�
 
 > この投稿は、Forward EmailにおけるPayPal APIの11年間の経験についてまとめたものです。すべてのコード例とリンクは、実際の運用システムから引用しています。これらの問題にもかかわらず、PayPal決済のサポートを継続しているのは、他に選択肢がないお客様もいるためです。
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

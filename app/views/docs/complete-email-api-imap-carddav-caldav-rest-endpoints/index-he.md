@@ -1,6 +1,6 @@
 # ממשק ה-API השלם הראשון לאימייל: כיצד דוא"ל עתידי חולל מהפכה בניהול האימייל {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
 <strong>TL;DR:</strong> בנינו את ממשק ה-API REST השלם הראשון בעולם לניהול דוא"ל עם יכולות חיפוש מתקדמות שאף שירות אחר לא מציע. בעוד ש-Gmail, Outlook ו-Apple מאלצים מפתחים להיכנס לגיהנום IMAP או ממשקי API בעלי קצב חיפוש מוגבל, Forward Email מספק פעולות CRUD מהירות במיוחד עבור הודעות, תיקיות, אנשי קשר ויומנים באמצעות ממשק REST מאוחד עם יותר מ-15 פרמטרי חיפוש. זהו ממשק ה-API של דוא"ל שחיכו לו.

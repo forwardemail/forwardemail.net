@@ -1,6 +1,6 @@
 # Kvantebestandig e-mail: Sådan bruger vi krypterede SQLite-postkasser til at holde din e-mail sikker {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Indholdsfortegnelse {#table-of-contents}
 

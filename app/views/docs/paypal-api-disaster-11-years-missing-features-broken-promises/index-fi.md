@@ -1,6 +1,6 @@
 # PayPalin 11 vuotta kestänyt API-katastrofi: Miten loimme kiertoteitä, kun he jättivät kehittäjät huomiotta {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Me Forward Emaililla olemme käsitelleet PayPalin rikkinäisiä API-rajapintoja yli vuosikymmenen ajan. Se, mikä alkoi pieninä turhautumisina, on muuttunut täydelliseksi katastrofiksi, joka pakotti meidät kehittämään omia kiertoteitä, estämään heidän tietojenkalastelumallinsa ja lopulta pysäyttämään kaikki PayPal-maksut kriittisen tilin siirron aikana.</p>
 <p class="lead mt-3">Tämä on tarina 11 vuodesta, jolloin PayPal jätti huomiotta kehittäjien perustarpeet, kun me yritimme kaikkea saadaksemme heidän alustansa toimimaan.</p>
@@ -362,21 +362,21 @@ Selaimesi ei tue video-tunnistetta.
 <figcaption><div class="alert alert-danger small text-center">
 Tilausten hallintaliittymä - käyttöliittymä on niin huono, että jouduimme turvautumaan koodiin tuotteiden ja tilaussuunnitelmien luomiseen.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Näkymä rikkinäisestä tilauskäyttöliittymästä, josta puuttuu toimintoja (tuotteita/sopimuksia/tilauksia ei voi helposti luoda – eikä käyttöliittymässä näytä olevan mitään keinoa poistaa tuotteita tai sopimuksia niiden luomisen jälkeen)
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Tyypillisiä PayPal-virheilmoituksia - kryptisiä ja hyödyttömiä
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### SDK-ongelmat {#sdk-problems}
@@ -420,39 +420,39 @@ Yksinkertaiseksi muuttunutkin asia muuttui täydelliseksi katastrofiksi:
 <figcaption><div class="alert alert-danger small text-center">
 Virhe, jonka asiakkaat näkivät yrittäessään maksaa - ei selitystä, ei lokeja, ei mitään
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 PayPalin tuki väitti kaiken olevan kunnossa, vaikka maksut olivat täysin rikki. Viimeisessä viestissä he sanovat "palauttaneensa joitakin ominaisuuksia", mutta pyytävät silti lisätietoja - klassinen PayPal-tukiteatteri
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Henkilöllisyyden varmennusprosessi, jonka väitettiin "korjaavan" mitään
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Epämääräinen viesti eikä vieläkään ratkaisua. Ei mitään tietoa, ilmoitusta tai mitään siitä, mitä lisätietoja tarvitaan. Asiakastuki on hiljaa.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## Miksi emme voi vain poistaa PayPalia {#why-we-cant-just-drop-paypal}
@@ -553,7 +553,7 @@ Ongelma ulottuu pelkän huonon laskupohjan suunnittelun ulkoasuun. PayPalin lask
 <figcaption><div class="alert alert-danger small text-center">
 Kuvakaappaus, jossa näkyy useita vilpillisiä PayPal-laskuja tulvimassa postilaatikkoon. Kaikki laskut näyttävät laillisilta, koska ne ovat peräisin PayPalin järjestelmistä.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 Tutkija totesi:
@@ -919,4 +919,4 @@ Jos olet rakentamassa maksujärjestelmää, opi kokemuksestamme: rakenna [trifec
 
 > Tämä viesti dokumentoi 11 vuoden kokemuksemme PayPalin API-rajapinnoista Forward Emaililla. Kaikki koodiesimerkit ja linkit ovat peräisin todellisista tuotantojärjestelmistämme. Jatkamme PayPal-maksujen tukemista näistä ongelmista huolimatta, koska joillakin asiakkailla ei ole muuta vaihtoehtoa.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

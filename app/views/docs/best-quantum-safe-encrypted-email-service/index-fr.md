@@ -1,6 +1,6 @@
 # E-mail résistant aux quanta : comment nous utilisons des boîtes aux lettres SQLite chiffrées pour protéger votre e-mail {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Table des matières {#table-of-contents}
 

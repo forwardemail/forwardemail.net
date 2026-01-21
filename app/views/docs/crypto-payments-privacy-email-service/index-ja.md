@@ -1,6 +1,6 @@
 # 暗号通貨決済のご紹介: メールサービスのプライバシー強化 {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

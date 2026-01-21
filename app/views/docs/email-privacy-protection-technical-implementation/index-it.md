@@ -1,6 +1,6 @@
 # Come funziona l'inoltro delle email con Inoltra email: la guida definitiva {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

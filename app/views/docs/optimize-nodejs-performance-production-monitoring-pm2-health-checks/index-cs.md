@@ -1,6 +1,6 @@
 # Jak optimalizovat produkční infrastrukturu Node.js: Nejlepší postupy {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
 
 ## Obsah {#table-of-contents}
 

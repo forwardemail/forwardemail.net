@@ -1,6 +1,6 @@
 # 사례 연구: Linux Foundation이 Forward Email을 사용하여 250개 이상의 도메인에서 이메일 관리를 최적화하는 방법 {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Studium przypadku: Jak Canonical usprawnia zarządzanie pocztą e-mail w systemie Ubuntu dzięki rozwiązaniu open source firmy Forward Email dla przedsiębiorstw {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
 
 ## Spis treści {#table-of-contents}
 

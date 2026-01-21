@@ -1,6 +1,6 @@
 # Jak funguje přeposílání e-mailů s funkcí Forward Email: Ultimátní průvodce {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Obsah {#table-of-contents}
 

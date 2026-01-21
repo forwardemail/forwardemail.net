@@ -1,6 +1,6 @@
 # Квантово стійка електронна пошта: Як ми використовуємо зашифровані поштові скриньки SQLite для захисту вашої електронної пошти {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Зміст {#table-of-contents}
 

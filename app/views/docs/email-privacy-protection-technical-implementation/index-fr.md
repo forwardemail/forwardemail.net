@@ -1,6 +1,6 @@
 # Comment fonctionne la redirection d'e-mails avec Forward Email : le guide ultime {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Table des matières {#table-of-contents}
 

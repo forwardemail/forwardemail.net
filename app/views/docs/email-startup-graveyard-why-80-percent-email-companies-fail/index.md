@@ -1,6 +1,6 @@
 # The Email Startup Graveyard: Why Most Email Companies Fail
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">While many email startups have invested millions in solving perceived problems, we at <a href="https://forwardemail.net">Forward Email</a> have focused on building reliable email infrastructure from scratch since 2017. This analysis explores the patterns behind email startup outcomes and the fundamental challenges of email infrastructure.</p>
 

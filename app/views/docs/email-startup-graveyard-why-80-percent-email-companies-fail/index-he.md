@@ -1,6 +1,6 @@
 # בית הקברות של סטארט-אפים בדוא"ל: מדוע רוב חברות הדוא"ל נכשלות {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">בעוד שסטארט-אפים רבים בתחום הדוא"ל השקיעו מיליונים בפתרון בעיות נתפסות, אנו ב-<a href="https://forwardemail.net">Forward Email</a> התמקדנו בבניית תשתית דוא"ל אמינה מאפס מאז 2017. ניתוח זה בוחן את הדפוסים העומדים מאחורי תוצאות סטארט-אפים בתחום הדוא"ל ואת האתגרים הבסיסיים של תשתית הדוא"ל.</p>
 

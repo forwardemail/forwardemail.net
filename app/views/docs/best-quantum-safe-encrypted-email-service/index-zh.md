@@ -1,6 +1,6 @@
 # 抗量子电子邮件：我们如何使用加密的 SQLite 邮箱来保障您的电子邮件安全 {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

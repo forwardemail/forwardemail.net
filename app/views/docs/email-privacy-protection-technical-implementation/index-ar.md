@@ -1,6 +1,6 @@
 # كيف تعمل إعادة توجيه البريد الإلكتروني مع إعادة توجيه البريد الإلكتروني: الدليل الشامل {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

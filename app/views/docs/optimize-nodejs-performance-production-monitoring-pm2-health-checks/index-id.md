@@ -1,6 +1,6 @@
 # Cara Mengoptimalkan Infrastruktur Produksi Node.js: Praktik Terbaik {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Пример исследования: как Linux Foundation оптимизирует управление электронной почтой в более чем 250 доменах с помощью пересылки электронной почты {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Содержание {#table-of-contents}
 

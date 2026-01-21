@@ -1,6 +1,6 @@
 # عقد من التأثير: كيف وصلت حزم npm الخاصة بنا إلى مليار عملية تنزيل وشكلت JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

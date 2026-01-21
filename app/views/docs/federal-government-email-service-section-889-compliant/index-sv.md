@@ -1,6 +1,6 @@
 # Vidarebefordra e-post: Din lösning för vidarebefordran av e-post som uppfyller Section 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 

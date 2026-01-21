@@ -1,6 +1,6 @@
 # Nghiên cứu điển hình: Canonical hỗ trợ quản lý email Ubuntu như thế nào với giải pháp doanh nghiệp nguồn mở của Forward Email {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

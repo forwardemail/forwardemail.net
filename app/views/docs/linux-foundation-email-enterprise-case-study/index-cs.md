@@ -1,6 +1,6 @@
 # Případová studie: Jak Linux Foundation optimalizuje správu e-mailů ve více než 250 doménách pomocí přeposílání e-mailů {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Obsah {#table-of-contents}
 

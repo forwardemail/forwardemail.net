@@ -1,6 +1,6 @@
 # Az e-mail startupok temetője: Miért bukik meg a legtöbb e-mail cég {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Míg sok e-mail startup milliókat fektetett be a vélt problémák megoldásába, mi a <a href="https://forwardemail.net">Forward Email</a>-nál 2017 óta a nulláról építjük ki a megbízható e-mail infrastruktúrát. Ez az elemzés az e-mail startupok eredményei mögött meghúzódó mintákat és az e-mail infrastruktúra alapvető kihívásait vizsgálja.</p>
 

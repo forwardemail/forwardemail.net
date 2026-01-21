@@ -1,6 +1,6 @@
 # Sähköpostialan startup-yritysten hautausmaa: Miksi useimmat sähköpostiyritykset epäonnistuvat {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Vaikka monet sähköpostialan startup-yritykset ovat investoineet miljoonia havaittujen ongelmien ratkaisemiseen, me <a href="https://forwardemail.net">Forward Email</a>:ssa olemme keskittyneet luotettavan sähköpostiinfrastruktuurin rakentamiseen tyhjästä vuodesta 2017 lähtien. Tämä analyysi tarkastelee sähköpostialan startup-yritysten tulosten taustalla olevia malleja ja sähköpostiinfrastruktuurin perustavanlaatuisia haasteita.</p>
 

@@ -1,6 +1,6 @@
 # 최고의 보안 감사 회사 {#best-security-audit-companies}
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

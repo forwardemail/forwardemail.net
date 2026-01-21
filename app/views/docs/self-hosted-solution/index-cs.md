@@ -1,6 +1,6 @@
 # E-mail s vlastním hostingem: Závazek k open source {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
 
 ## Obsah {#table-of-contents}
 

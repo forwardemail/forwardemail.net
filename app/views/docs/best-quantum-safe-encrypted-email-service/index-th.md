@@ -1,6 +1,6 @@
 # อีเมลที่ทนทานต่อควอนตัม: วิธีที่เราใช้กล่องจดหมาย SQLite ที่เข้ารหัสเพื่อรักษาอีเมลของคุณให้ปลอดภัย {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

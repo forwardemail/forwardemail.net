@@ -1,6 +1,6 @@
 # กรณีศึกษา: มูลนิธิ Linux เพิ่มประสิทธิภาพการจัดการอีเมลในโดเมนมากกว่า 250 โดเมนอย่างไรด้วยการส่งต่ออีเมล {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

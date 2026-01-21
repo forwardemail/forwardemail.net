@@ -1,6 +1,6 @@
 # Cómo optimizar la infraestructura de producción de Node.js: mejores prácticas {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

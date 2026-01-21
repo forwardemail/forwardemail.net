@@ -1,6 +1,6 @@
 # 암호화폐 결제 소개: 이메일 서비스의 개인 정보 보호 강화 {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

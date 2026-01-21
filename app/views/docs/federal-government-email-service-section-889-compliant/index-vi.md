@@ -1,6 +1,6 @@
 # Chuyển tiếp Email: Giải pháp Chuyển tiếp Email Tuân thủ Mục 889 của Bạn {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

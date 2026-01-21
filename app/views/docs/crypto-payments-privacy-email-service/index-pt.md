@@ -1,6 +1,6 @@
 # Apresentando pagamentos criptográficos: privacidade aprimorada para seu serviço de e-mail {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

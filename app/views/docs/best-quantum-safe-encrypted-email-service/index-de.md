@@ -1,6 +1,6 @@
 # Quantenresistente E-Mail: So verwenden wir verschlüsselte SQLite-Postfächer, um Ihre E-Mails zu schützen {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

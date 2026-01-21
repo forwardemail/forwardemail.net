@@ -1,6 +1,6 @@
 # Kirkegården for e-mail-startups: Hvorfor de fleste e-mail-virksomheder fejler {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Selvom mange e-mail-startups har investeret millioner i at løse oplevede problemer, har vi hos <a href="https://forwardemail.net">Forward Email</a> fokuseret på at opbygge en pålidelig e-mail-infrastruktur fra bunden siden 2017. Denne analyse undersøger mønstrene bag resultaterne af e-mail-startups og de grundlæggende udfordringer ved e-mail-infrastruktur.</p>
 

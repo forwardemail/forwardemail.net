@@ -1,6 +1,6 @@
 # 为什么开源电子邮件是未来：转发电子邮件的优势 {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="Open source email security and privacy" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

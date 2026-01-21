@@ -54,7 +54,7 @@ module.exports = function (config, isSitemap = false) {
       `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage, IMAP/POP3/SMTP & 100% open-source security. Trusted by 500K+ users. Setup in 2 minutes.`
     ],
     '/about': [
-      `About Forward Email - Our Story & Mission | Privacy-First Email Since 2017`,
+      `About Forward Email - Our Story & Mission`,
       `Learn about Forward Email's journey from open-source project to the most trusted privacy-focused email service. Discover our commitment to transparency, security, and user privacy.`,
       'img/articles/about.webp'
     ],
@@ -64,11 +64,11 @@ module.exports = function (config, isSitemap = false) {
       'img/articles/press.webp'
     ],
     '/private-business-email': [
-      `Private Business Email for Custom Domains - Encrypted & Secure ${currentYear}`,
+      `Private Business Email - Encrypted & Secure`,
       `Create private, encrypted business email for your custom domain. End-to-end encryption, zero-knowledge architecture, GDPR compliant. Professional email addresses like <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with enterprise security.`
     ],
     '/tti': [
-      `Email Deliverability & Time to Inbox Monitoring - Live Performance Stats`,
+      `Email Deliverability & Time to Inbox Monitoring`,
       `Real-time email deliverability monitoring and time-to-inbox metrics. Compare Forward Email's delivery speed vs Gmail, Outlook, Yahoo, and iCloud. Transparent performance data updated every minute.`,
       'img/articles/tti.webp'
     ],
@@ -289,21 +289,21 @@ module.exports = function (config, isSitemap = false) {
     const name = `<span class="notranslate">${provider.name}</span>`;
     const year = `<span class="notranslate">${currentYear}</span>`;
 
-    // Rotate through SEO-optimized title patterns
+    // Rotate through SEO-optimized title patterns (kept under 60 chars)
     const titlePatterns = [
-      `${name} Email Setup - Free Custom Domain Email Guide ${year}`,
-      `How to Setup Email with ${name} - Complete DNS Guide ${year}`,
-      `${name} Email Forwarding - Step-by-Step Tutorial ${year}`,
-      `Free Email Hosting for ${name} Domains ${year}`,
-      `${name} DNS Email Configuration - Quick Setup Guide ${year}`,
-      `Setup Custom Domain Email with ${name} ${year}`,
-      `${name} Email Guide - Forward & Send Email Free ${year}`,
-      `Email Forwarding for ${name} - 2-Minute Setup ${year}`,
-      `${name} Custom Domain Email - Complete Setup ${year}`,
-      `How to Get Free Email with ${name} Domain ${year}`,
-      `${name} Email DNS Setup - Video Tutorial ${year}`,
-      `Free ${name} Email Forwarding Guide ${year}`,
-      `${name} Domain Email Setup Made Easy ${year}`
+      `${name} Email Setup Guide ${year}`,
+      `Setup Email with ${name} ${year}`,
+      `${name} Email Forwarding Tutorial ${year}`,
+      `Free Email for ${name} Domains ${year}`,
+      `${name} DNS Email Setup ${year}`,
+      `Custom Domain Email - ${name} ${year}`,
+      `${name} Email Guide ${year}`,
+      `Email Forwarding - ${name} ${year}`,
+      `${name} Domain Email Setup ${year}`,
+      `Free Email with ${name} ${year}`,
+      `${name} Email DNS Tutorial ${year}`,
+      `${name} Email Forwarding ${year}`,
+      `${name} Email Made Easy ${year}`
     ];
 
     const descPatterns = [
@@ -405,20 +405,22 @@ module.exports = function (config, isSitemap = false) {
     `Compare spam filtering services to protect your inbox. Machine learning detection, false positive rates, and integration options. Block spam without losing legitimate email.`
   ];
 
-  // developer docs
+  // developer docs (titles kept under 60 chars for SEO)
   for (const doc of developerDocs) {
+    // Use shortTitle if available, otherwise truncate title
+    const displayTitle = doc.shortTitle || doc.title;
     if (doc.notCodeExample) {
       meta[doc.slug] = [
         doc.noYearAffix
-          ? doc.title
-          : `${doc.title} - Complete Guide ${currentYear}`,
+          ? displayTitle
+          : `${displayTitle} - Guide ${currentYear}`,
         doc.description
       ];
     } else {
       meta[doc.slug] = [
         doc.noYearAffix
-          ? doc.title
-          : `${doc.title} - Code Example & Tutorial ${currentYear}`,
+          ? displayTitle
+          : `${displayTitle} - Tutorial ${currentYear}`,
         doc.description
       ];
     }

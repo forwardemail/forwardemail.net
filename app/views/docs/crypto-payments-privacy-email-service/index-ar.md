@@ -1,6 +1,6 @@
 # تقديم مدفوعات العملات المشفرة: خصوصية مُحسّنة لخدمة البريد الإلكتروني الخاصة بك {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

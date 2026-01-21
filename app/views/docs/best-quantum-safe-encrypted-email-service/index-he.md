@@ -1,6 +1,6 @@
 # דוא"ל עמיד בפני קוונטים: כיצד אנו משתמשים בתיבות דואר מוצפנות של SQLite כדי לשמור על הדוא"ל שלך בטוח {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## תוכן עניינים
 

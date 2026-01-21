@@ -1,6 +1,6 @@
 # Как работает пересылка электронной почты с помощью функции пересылки электронной почты: полное руководство {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Содержание {#table-of-contents}
 

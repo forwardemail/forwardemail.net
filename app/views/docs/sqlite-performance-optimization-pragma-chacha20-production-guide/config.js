@@ -5,6 +5,7 @@
 
 module.exports = {
   title: 'SQLite Performance Optimization: Production PRAGMA Settings',
+  shortTitle: 'SQLite Performance Optimization',
   description:
     "Complete SQLite optimization guide with real benchmark data. Learn Forward Email's production PRAGMA settings, ChaCha20 encryption, WAL mode tuning, and Node.js performance across versions.",
   icon: 'fas fa-fw fa-database',

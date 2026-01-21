@@ -1,6 +1,6 @@
 # Fallstudie: Hur Linux Foundation optimerar e-posthantering över 250+ domäner med vidarebefordran av e-post {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 

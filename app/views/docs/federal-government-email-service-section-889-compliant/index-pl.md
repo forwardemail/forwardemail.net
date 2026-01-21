@@ -1,6 +1,6 @@
 # Przekaż dalej e-mail: Twoje rozwiązanie do przekazywania wiadomości e-mail zgodne z sekcją 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Spis treści {#table-of-contents}
 

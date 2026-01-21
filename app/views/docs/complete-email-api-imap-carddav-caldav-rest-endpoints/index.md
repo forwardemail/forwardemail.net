@@ -1,6 +1,6 @@
 # The First Complete Email API: How Forward Email Revolutionized Email Management
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
   <strong>TL;DR:</strong> We built the world's first complete REST API for email management with advanced search capabilities that no other service offers. While Gmail, Outlook, and Apple force developers into IMAP hell or rate-limited APIs, Forward Email delivers blazing-fast CRUD operations for messages, folders, contacts, and calendars through a unified REST interface with 15+ search parameters. This is the email API developers have been waiting for.

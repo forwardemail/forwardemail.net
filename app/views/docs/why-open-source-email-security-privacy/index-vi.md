@@ -1,6 +1,6 @@
 # Tại sao Email nguồn mở là tương lai: Ưu điểm của Email chuyển tiếp {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="Open source email security and privacy" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

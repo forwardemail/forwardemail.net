@@ -1,6 +1,6 @@
 # Self-Hosted Email: Commitment to Open Source
 
-<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="Self-hosted email solution illustration" class="rounded-lg" />
 
 
 ## Table of Contents

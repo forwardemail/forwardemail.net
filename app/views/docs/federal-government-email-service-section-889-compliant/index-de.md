@@ -1,6 +1,6 @@
 # E-Mail weiterleiten: Ihre Section 889-konforme Lösung zur E-Mail-Weiterleitung {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

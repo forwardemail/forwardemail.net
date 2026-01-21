@@ -1,6 +1,6 @@
 # Bagaimana Kami Membangun Sistem Pembayaran yang Tangguh dengan Stripe dan PayPal: Pendekatan Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/pembayaran-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pembayaran-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 

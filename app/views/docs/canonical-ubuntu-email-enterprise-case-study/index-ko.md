@@ -1,6 +1,6 @@
 # 사례 연구: Canonical이 Forward Email의 오픈 소스 엔터프라이즈 솔루션을 통해 Ubuntu 이메일 관리를 강화하는 방법 {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

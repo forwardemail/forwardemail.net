@@ -1,6 +1,6 @@
 # PayPals 11 år lange API-katastrofe: Hvordan vi byggede løsninger, mens de ignorerede udviklere {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Hos Forward Email har vi i over et årti haft at gøre med PayPals defekte API'er. Det, der startede som mindre frustrationer, har udviklet sig til en komplet katastrofe, der tvang os til at bygge vores egne løsninger, blokere deres phishing-skabeloner og i sidste ende stoppe alle PayPal-betalinger under en kritisk kontomigrering.</p>
 <p class="lead mt-3">Dette er historien om 11 år, hvor PayPal ignorerer grundlæggende udviklerbehov, mens vi prøvede alt for at få deres platform til at fungere.</p>
@@ -362,21 +362,21 @@ Din browser understøtter ikke video-tagget.
 <figcaption><div class="alert alert-danger small text-center">
 Grænsefladen til abonnementsadministration - grænsefladen er så dårlig, at vi var nødt til at stole på kode for at generere produkter og abonnementsplaner
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 En visning af den defekte abonnementsgrænseflade med manglende funktionalitet (du kan ikke nemt oprette produkter/planer/abonnementer – og der ser slet ikke ud til at være en måde at slette produkter eller planer på, når de først er oprettet i brugergrænsefladen)
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Typiske PayPal-fejlmeddelelser - kryptiske og uhensigtsmæssige
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### SDK-problemer {#sdk-problems}
@@ -420,39 +420,39 @@ Hvad der burde have været simpelt, endte i en komplet katastrofe:
 <figcaption><div class="alert alert-danger small text-center">
 Fejlen kunderne oplevede, da de forsøgte at betale - ingen forklaring, ingen logfiler, ingenting
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 PayPal-support hævder, at alt var fint, mens betalingerne var fuldstændig afbrudt. Den sidste besked viser dem, at de siger, at de "gendannede nogle funktioner", men stadig beder om mere uspecificeret information - klassisk PayPal supportteater
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Identitetsbekræftelsesprocessen, der angiveligt ikke "fiksede" noget
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Vag besked og stadig ingen løsning. Ingen information, meddelelser eller noget om, hvilke yderligere oplysninger der kræves. Kundesupporten er tavs.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## Hvorfor vi ikke bare kan droppe PayPal {#why-we-cant-just-drop-paypal}
@@ -553,7 +553,7 @@ Problemet rækker ud over blot dårligt skabelondesign. PayPals fakturasystem er
 <figcaption><div class="alert alert-danger small text-center">
 Skærmbillede, der viser flere falske PayPal-fakturaer, der oversvømmer en indbakke. Alle ser ud til at være legitime, fordi de rent faktisk kommer fra PayPals systemer.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 Forskeren bemærkede:
@@ -919,4 +919,4 @@ Hvis du er ved at opbygge et betalingssystem, så lær af vores erfaring: Byg di
 
 > Dette indlæg dokumenterer vores 11-årige erfaring med PayPals API'er til videresendelse af e-mail. Alle kodeeksempler og links er fra vores faktiske produktionssystemer. Vi fortsætter med at understøtte PayPal-betalinger på trods af disse problemer, fordi nogle kunder ikke har andre muligheder.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

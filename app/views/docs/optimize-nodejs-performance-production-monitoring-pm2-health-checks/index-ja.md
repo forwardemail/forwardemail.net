@@ -1,6 +1,6 @@
 # Node.jsの本番環境インフラストラクチャを最適化する方法：ベストプラクティス {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="Node.js performance optimization guide" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

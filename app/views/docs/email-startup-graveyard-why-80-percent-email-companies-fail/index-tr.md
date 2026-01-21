@@ -1,6 +1,6 @@
 # E-posta Girişim Mezarlığı: Çoğu E-posta Şirketi Neden Başarısız Oluyor? {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">Birçok e-posta girişimi, algılanan sorunları çözmek için milyonlarca dolar yatırım yaparken, biz <a href="https://forwardemail.net">Forward Email</a> olarak 2017'den beri sıfırdan güvenilir bir e-posta altyapısı oluşturmaya odaklandık. Bu analiz, e-posta girişimi sonuçlarının ardındaki kalıpları ve e-posta altyapısının temel zorluklarını inceliyor.</p>
 

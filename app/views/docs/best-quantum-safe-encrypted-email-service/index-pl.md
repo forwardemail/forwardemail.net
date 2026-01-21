@@ -1,6 +1,6 @@
 # E-mail odporny na ataki kwantowe: Jak wykorzystujemy szyfrowane skrzynki pocztowe SQLite, aby zapewnić bezpieczeństwo Twojej poczty e-mail {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Spis treści {#table-of-contents}
 

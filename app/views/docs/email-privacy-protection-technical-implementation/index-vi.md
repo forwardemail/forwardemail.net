@@ -1,6 +1,6 @@
 # Cách thức hoạt động của tính năng Chuyển tiếp Email với Email Chuyển tiếp: Hướng dẫn đầy đủ {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

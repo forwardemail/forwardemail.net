@@ -1,6 +1,6 @@
 # Case-tutkimus: Miten Linux Foundation optimoi sähköpostien hallinnan yli 250 verkkotunnuksessa sähköpostin edelleenlähetyksen avulla {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Az első teljes e-mail API: Hogyan forradalmasította a Forward Email az e-mail-kezelést {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
 <strong>TL;DR:</strong> Mi építettük a világ első teljes REST API-ját e-mail-kezeléshez, olyan fejlett keresési lehetőségekkel, amelyeket egyetlen más szolgáltatás sem kínál. Míg a Gmail, az Outlook és az Apple az IMAP pokolba vagy sebességkorlátozott API-kba kényszeríti a fejlesztőket, a Forward Email villámgyors CRUD műveleteket biztosít üzenetek, mappák, névjegyek és naptárak számára egy egységes REST felületen keresztül, több mint 15 keresési paraméterrel. Erre vártak az e-mail API-fejlesztők.

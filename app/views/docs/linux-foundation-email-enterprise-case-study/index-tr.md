@@ -1,6 +1,6 @@
 # Vaka Çalışması: Linux Vakfı, Yönlendirilmiş E-posta ile 250'den Fazla Alanda E-posta Yönetimini Nasıl Optimize Ediyor? {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 

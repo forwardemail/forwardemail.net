@@ -1,6 +1,6 @@
 # Cara Kerja Penerusan Email dengan Forward Email: Panduan Lengkap {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 

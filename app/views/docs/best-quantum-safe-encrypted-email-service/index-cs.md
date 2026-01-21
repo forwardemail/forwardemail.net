@@ -1,6 +1,6 @@
 # E-mail odolný vůči kvantovým hrozbám: Jak používáme šifrované poštovní schránky SQLite k zabezpečení vašeho e-mailu {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Obsah {#table-of-contents}
 

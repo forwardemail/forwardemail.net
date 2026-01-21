@@ -1,6 +1,6 @@
 # Videresend e-mail: Din løsning til videresendelse af e-mail, der overholder paragraf 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="Federal government email service Section 889 compliant" class="rounded-lg" />
 
 ## Indholdsfortegnelse {#table-of-contents}
 

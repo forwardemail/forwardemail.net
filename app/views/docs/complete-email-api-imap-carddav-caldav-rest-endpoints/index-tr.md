@@ -1,6 +1,6 @@
 # İlk Tam E-posta API'si: Forward E-posta, E-posta Yönetiminde Nasıl Devrim Yarattı? {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
-<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/complete-email-api.webp" alt="Complete email API with IMAP CardDAV CalDAV REST" class="rounded-lg" />
 
 <p class="lead mt-3">
 <strong>ÖZET:</strong> Başka hiçbir hizmetin sunmadığı gelişmiş arama özelliklerine sahip, e-posta yönetimi için dünyanın ilk eksiksiz REST API'sini oluşturduk. Gmail, Outlook ve Apple, geliştiricileri IMAP cehennemine veya hız sınırlı API'lere zorlarken, Forward Email, 15'ten fazla arama parametresine sahip birleşik bir REST arayüzü aracılığıyla mesajlar, klasörler, kişiler ve takvimler için inanılmaz hızlı CRUD işlemleri sunar. İşte e-posta API'si geliştiricilerinin beklediği şey.

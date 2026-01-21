@@ -1,6 +1,6 @@
 # How We Built a Robust Payment System with Stripe and PayPal: A Trifecta Approach
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
 
 
 ## Table of Contents

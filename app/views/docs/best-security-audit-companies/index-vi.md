@@ -1,6 +1,6 @@
 # Công ty kiểm toán an ninh tốt nhất {#best-security-audit-companies}
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

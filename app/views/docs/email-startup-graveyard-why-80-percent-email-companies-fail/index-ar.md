@@ -1,6 +1,6 @@
 # مقبرة شركات البريد الإلكتروني الناشئة: لماذا تفشل معظم شركات البريد الإلكتروني؟ {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" class="rounded-lg" />
 
 <p class="lead mt-3">في حين استثمرت العديد من شركات البريد الإلكتروني الناشئة ملايين الدولارات في حل المشكلات المتصورة، فقد ركزنا في <a href="https://forwardemail.net">Forward Email</a> على بناء بنية تحتية موثوقة للبريد الإلكتروني من الصفر منذ عام 2017. يستكشف هذا التحليل الأنماط الكامنة وراء نتائج شركات البريد الإلكتروني الناشئة والتحديات الأساسية للبنية التحتية للبريد الإلكتروني.</p>
 

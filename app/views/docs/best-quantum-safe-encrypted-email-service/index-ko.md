@@ -1,6 +1,6 @@
 # 양자 저항 이메일: 암호화된 SQLite 사서함을 사용하여 이메일을 안전하게 보호하는 방법 {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

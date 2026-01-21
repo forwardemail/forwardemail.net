@@ -1,6 +1,6 @@
 # البريد الإلكتروني المقاوم للكم: كيف نستخدم صناديق بريد SQLite المشفرة للحفاظ على أمان بريدك الإلكتروني {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

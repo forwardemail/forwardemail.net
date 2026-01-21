@@ -1,6 +1,6 @@
 # Cách chúng tôi xây dựng hệ thống thanh toán mạnh mẽ với Stripe và PayPal: Phương pháp tiếp cận Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="Payment system with Stripe and PayPal" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Một thập kỷ tác động: Cách các gói npm của chúng tôi đạt 1 tỷ lượt tải xuống và định hình JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="NPM packages billion downloads ecosystem" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

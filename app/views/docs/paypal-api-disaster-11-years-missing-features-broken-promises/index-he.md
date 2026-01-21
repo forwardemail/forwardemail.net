@@ -1,6 +1,6 @@
 # אסון ה-API של פייפאל בן 11 השנים: כיצד בנינו פתרונות עוקפים בזמן שהם התעלמו ממפתחים {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">ב-Forward Email, אנחנו מתמודדים עם ממשקי ה-API השבורים של PayPal כבר למעלה מעשור. מה שהתחיל כתסכולים קלים הפך לאסון מוחלט שאילץ אותנו לבנות פתרונות משלנו, לחסום את תבניות הפישינג שלהם, ובסופו של דבר לעצור את כל תשלומי PayPal במהלך העברת חשבון קריטית.</p>
 <p class="lead mt-3">זהו סיפורן של 11 שנים של התעלמות של PayPal מצרכים בסיסיים של מפתחים בזמן שניסינו הכל כדי לגרום לפלטפורמה שלהם לעבוד.</p>
@@ -359,20 +359,20 @@ Authorization: Bearer {access_token}
 <figure> <figcaption><div class="alert alert-danger small text-center">
 ממשק ניהול המנויים - הממשק כל כך גרוע שנאלצנו להסתמך על קוד כדי ליצור מוצרים ותוכניות מנוי
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure> <figcaption><div class="alert alert-danger small text-center">
 מבט על ממשק המנוי התקול עם פונקציונליות חסרה (לא ניתן ליצור בקלות מוצרים/תוכניות/מנויים - ונראה שאין דרך למחוק מוצרים או תוכניות לאחר שנוצרו בממשק המשתמש)
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 הודעות שגיאה אופייניות של PayPal - מסתוריות ולא מועילות
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### בעיות ב-SDK של {#sdk-problems}
@@ -416,38 +416,38 @@ Authorization: Bearer {access_token}
 <figcaption><div class="alert alert-danger small text-center">
 השגיאה שראו לקוחות בעת ניסיון לשלם - אין הסבר, אין יומנים, כלום
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 תמיכת PayPal טוענת שהכל היה בסדר, בעוד שהתשלומים היו שבורים לחלוטין. ההודעה האחרונה מראה שהם אומרים שהם "שחזרו כמה תכונות" אך עדיין מבקשים מידע נוסף שלא פורט - תיאטרון תמיכה קלאסי של PayPal
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure> <figcaption><div class="alert alert-danger small text-center">
 תהליך אימות הזהות שכביכול לא "תיקן" כלום
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 הודעה מעורפלת ועדיין אין פתרון. אין מידע, הודעות או כל דבר אחר לגבי הנדרש למידע נוסף. תמיכת הלקוחות שותקת.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## למה אנחנו לא יכולים פשוט לוותר על PayPal {#why-we-cant-just-drop-paypal}
@@ -548,7 +548,7 @@ if (
 <figcaption><div class="alert alert-danger small text-center">
 צילום מסך המציג מספר חשבוניות מזויפות של PayPal שמציפות את תיבת הדואר הנכנס, כולן נראות לגיטימיות מכיוון שהן מגיעות ממערכות של PayPal
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 החוקר ציין:
@@ -914,4 +914,4 @@ Authorization: Bearer access_token
 
 > פוסט זה מתעד את 11 שנות הניסיון שלנו עם ממשקי ה-API של PayPal ב-Forward Email. כל דוגמאות הקוד והקישורים הם ממערכות הייצור בפועל שלנו. אנו ממשיכים לתמוך בתשלומי PayPal למרות בעיות אלו מכיוון שלחלק מהלקוחות אין אפשרות אחרת.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

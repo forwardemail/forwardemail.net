@@ -1,6 +1,6 @@
 # מקרה בוחן: כיצד קנוניקל מעצימה את ניהול הדוא"ל של אובונטו עם פתרון קוד פתוח לארגונים של דוא"ל מורחב {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
-<img loading="lazy" src="/img/articles/canonical.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/canonical.webp" alt="Canonical Ubuntu email enterprise case study" class="rounded-lg" />
 
 ## תוכן עניינים
 

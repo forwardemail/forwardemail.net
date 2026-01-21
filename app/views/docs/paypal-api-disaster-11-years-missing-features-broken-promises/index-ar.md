@@ -1,6 +1,6 @@
 # كارثة واجهة برمجة التطبيقات (API) الخاصة بـ PayPal والتي استمرت لمدة 11 عامًا: كيف قمنا ببناء حلول بديلة بينما تجاهلوا المطورين {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="PayPal API disaster illustration" class="rounded-lg" />
 
 <p class="lead mt-3">في Forward Email، نتعامل مع واجهات برمجة تطبيقات PayPal المعطوبة منذ أكثر من عقد. ما بدأ كإحباطات بسيطة تحول إلى كارثة حقيقية أجبرتنا على بناء حلول بديلة، وحظر قوالب التصيد الاحتيالي الخاصة بهم، وفي النهاية إيقاف جميع مدفوعات PayPal أثناء عملية نقل حساب مهمة.</p>
 <p class="lead mt-3">هذه قصة 11 عامًا من تجاهل PayPal لاحتياجات المطورين الأساسية بينما كنا نبذل قصارى جهدنا لجعل منصتهم تعمل.</p>
@@ -365,7 +365,7 @@ Authorization: Bearer {access_token}
 
 واجهة إدارة الاشتراكات - الواجهة سيئة للغاية لدرجة أننا اضطررنا للاعتماد على الكود لإنشاء المنتجات وخطط الاشتراك.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="PayPal subscriptions screenshot" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -373,14 +373,14 @@ Authorization: Bearer {access_token}
 
 صورة لواجهة الاشتراك المعطلة مع فقدان بعض الوظائف (لا يمكنك بسهولة إنشاء منتجات/خطط/اشتراكات - ولا يبدو أن هناك طريقة لحذف المنتجات أو الخطط بعد إنشائها في واجهة المستخدم)
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="PayPal subscriptions screenshot 2" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 رسائل خطأ باي بال الشائعة - غامضة وغير مفيدة
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-errors.png" alt="PayPal API error screenshot" class="rounded-lg" />
 </figure>
 
 ### مشاكل SDK {#sdk-problems}
@@ -424,39 +424,39 @@ Authorization: Bearer {access_token}
 <figcaption><div class="alert alert-danger small text-center">
 الخطأ الذي واجهه العملاء عند محاولة الدفع - لا يوجد تفسير، لا سجلات، لا شيء.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="PayPal something went wrong error" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 يزعم فريق دعم باي بال أن كل شيء على ما يرام، بينما المدفوعات معطلة تمامًا. تُظهر الرسالة الأخيرة أنهم قالوا إنهم "استعادوا بعض الميزات" لكنهم ما زالوا يطلبون معلومات إضافية غير محددة - دعم باي بال الكلاسيكي.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-1.png" alt="PayPal help center screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-2.png" alt="PayPal help center screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="PayPal help center screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="PayPal help center screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="PayPal help center screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="PayPal help center screenshot 6" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 عملية التحقق من الهوية التي يُفترض أنها لم تُصلح شيئًا.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="PayPal take care screenshot 1" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="PayPal take care screenshot 2" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="PayPal take care screenshot 3" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="PayPal take care screenshot 4" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="PayPal take care screenshot 5" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="PayPal take care screenshot 6" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="PayPal take care screenshot 7" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 رسالة غامضة، ولا يوجد حل حتى الآن. لا توجد أي معلومات أو إشعارات أو أي شيء يتعلق بالمعلومات الإضافية المطلوبة. خدمة دعم العملاء صامتة.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-restored.png" alt="PayPal restored screenshot" class="rounded-lg" />
 </figure>
 
 ## لماذا لا يمكننا ببساطة إسقاط PayPal {#why-we-cant-just-drop-paypal}
@@ -557,7 +557,7 @@ if (
 <figcaption><div class="alert alert-danger small text-center">
 لقطة شاشة تُظهر فواتير باي بال احتيالية متعددة تغمر صندوق الوارد، وتبدو جميعها شرعية لأنها في الواقع صادرة من أنظمة باي بال.
 </div></figcaption>
-<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-paypal-scam.png" alt="PayPal scam warning screenshot" class="rounded-lg" />
 </figure>
 
 وأشار الباحث إلى:
@@ -920,4 +920,4 @@ PayPal هو معالج الدفع الرئيسي الوحيد الذي يجبر 
 
 يوثّق هذا المنشور خبرتنا الممتدة لأحد عشر عامًا مع واجهات برمجة تطبيقات PayPal في Forward Email. جميع أمثلة الأكواد والروابط مأخوذة من أنظمة الإنتاج الفعلية لدينا. نواصل دعم مدفوعات PayPal على الرغم من هذه المشاكل، لأن بعض العملاء لا يملكون خيارًا آخر.
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="PayPal API disaster illustration" class="rounded-lg" />

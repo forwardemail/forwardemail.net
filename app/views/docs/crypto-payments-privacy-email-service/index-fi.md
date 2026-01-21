@@ -1,6 +1,6 @@
 # Esittelyssä kryptomaksut: parannettu tietosuoja sähköpostipalvelullesi {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

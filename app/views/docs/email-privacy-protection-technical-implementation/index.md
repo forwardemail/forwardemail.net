@@ -1,6 +1,6 @@
 # How Email Forwarding Works with Forward Email: The Ultimate Guide
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 
 ## Table of Contents

@@ -501,7 +501,7 @@ const NS_PROVIDERS = {
   ],
   'unifiedlayer.com': [
     'unified-layer',
-    'Unified Layer (Bluehost/HostGator)',
+    'Unified Layer',
     // The infrastructure behind many EIG brands
     'https://www.unifiedlayer.com/', // No public login
     false,
@@ -1275,15 +1275,15 @@ function getServersOrClientsList(platform, isEmailClients = false) {
 // various use cases (SEO related)
 const useCases = {
   '/government-email-hosting-forwarding': [
-    'Email Hosting & Forwarding for Federal, State, Local, County, and Municipal Governments',
+    'Government Email - Federal, State & Local',
     "We can provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for federal, state, local, county, and municipal governments."
   ],
   '/education-email-hosting-forwarding': [
-    'Email Forwarding for Education, K-12, Colleges, Universities, Schools, Students, Teachers',
+    'Email for Education - Schools, Universities & Students',
     "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for education, K-12, colleges, school districts, universities, students, and teachers."
   ],
   '/healthcare-email-hosting-forwarding-hipaa': [
-    'Email Forwarding for Healthcare, Doctors, Patients, HIPAA',
+    'Healthcare Email - HIPAA Compliant Solutions',
     "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for healthcare, doctors, patients, and HIPAA-complaint related needs."
   ],
   '/gdpr-compliant-email-hosting': [
@@ -1340,19 +1340,19 @@ const useCases = {
     'Professional email addresses for nonprofits and charities. Free custom domain email with unlimited forwarding and secure storage.'
   ],
   '/startup-company-email-solution': [
-    'Startup Email Solution - Professional Addresses on Any Budget',
+    'Startup Email - Professional Addresses on Budget',
     'Cost-effective email solution for startups. Get you@yourcompany.com addresses with enterprise features at startup-friendly prices.'
   ],
   '/freelancer-professional-email-address': [
-    'Professional Email Address for Freelancers and Consultants',
+    'Professional Email for Freelancers & Consultants',
     'Build credibility with clients using custom domain email. Free professional email setup that works with your existing email client.'
   ],
   '/small-business-email-hosting-free': [
-    'Free Email Hosting for Small Business - No Monthly Fees',
+    'Free Small Business Email - No Monthly Fees',
     'Professional small business email without monthly hosting fees. Custom domain email with unlimited addresses and secure forwarding.'
   ],
   '/secure-email-forwarding-privacy': [
-    'Secure Email Forwarding with Complete Privacy Protection',
+    'Secure Email Forwarding - Privacy Protection',
     'Privacy-focused email forwarding with no tracking or data collection. Open-source security for sensitive business communications.'
   ],
   '/unlimited-email-aliases-custom-domain': [
@@ -1536,7 +1536,7 @@ const useCases = {
     'Expert Postfix configuration for email forwarding and relay. Secure mail server setup with custom domain integration and SMTP authentication.'
   ],
   '/email-authentication-spf-dkim-dmarc-setup': [
-    'Email Authentication Setup - SPF, DKIM, DMARC Configuration',
+    'Email Authentication - SPF, DKIM & DMARC Setup',
     'Complete email authentication setup service. Configure SPF, DKIM, and DMARC records to improve deliverability and prevent email spoofing.'
   ],
   '/email-api-integration-developers': [

@@ -1,6 +1,6 @@
 # Giới thiệu Thanh toán bằng tiền điện tử: Nâng cao quyền riêng tư cho dịch vụ email của bạn {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="Cryptocurrency payments for email service" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

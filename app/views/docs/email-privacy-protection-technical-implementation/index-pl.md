@@ -1,6 +1,6 @@
 # Jak działa przekazywanie wiadomości e-mail za pomocą funkcji przekazywania wiadomości e-mail: kompletny przewodnik {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="Email privacy protection technical implementation" class="rounded-lg" />
 
 ## Spis treści {#table-of-contents}
 

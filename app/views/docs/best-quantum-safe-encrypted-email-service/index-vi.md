@@ -1,6 +1,6 @@
 # Email chống lượng tử: Cách chúng tôi sử dụng hộp thư SQLite được mã hóa để giữ an toàn cho email của bạn {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img loading="lazy" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="Quantum-safe encrypted email service illustration" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Meilleures sociétés d'audit de sécurité {#best-security-audit-companies}
 
-<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="Security audit companies comparison" class="rounded-lg" />
 
 ## Table des matières {#table-of-contents}
 

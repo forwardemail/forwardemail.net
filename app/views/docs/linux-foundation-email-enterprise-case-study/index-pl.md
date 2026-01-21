@@ -1,6 +1,6 @@
 # Studium przypadku: W jaki sposób Fundacja Linux optymalizuje zarządzanie pocztą e-mail w ponad 250 domenach dzięki funkcji przekazywania wiadomości e-mail {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Spis treści {#table-of-contents}
 

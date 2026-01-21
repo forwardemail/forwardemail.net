@@ -1,6 +1,6 @@
 # 이메일 스타트업의 무덤: 대부분의 이메일 회사가 실패하는 이유 {#the-email-startup-graveyard-why-most-email-companies-fail}
 
-<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="Email startup graveyard illustration" 클래스="둥근-lg" />
 
 <p class="lead mt-3">많은 이메일 스타트업이 인식된 문제 해결에 수백만 달러를 투자하는 동안, <a href="https://forwardemail.net">Forward Email</a>은 2017년부터 안정적인 이메일 인프라를 처음부터 구축하는 데 집중해 왔습니다. 이 분석에서는 이메일 스타트업의 성공 패턴과 이메일 인프라의 근본적인 과제를 살펴봅니다.</p>
 

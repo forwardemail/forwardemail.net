@@ -1,6 +1,6 @@
 # Nghiên cứu điển hình: Cách Linux Foundation tối ưu hóa việc quản lý email trên hơn 250 tên miền bằng tính năng chuyển tiếp email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="Linux Foundation email enterprise case study" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 
