@@ -13,7 +13,6 @@ const builder = new Builder({ bufferAsNative: true });
 //
 // Add buffer time to be safe (extended to catch any delayed syncs):
 //
-const BAD_WINDOW_START = dayjs('2026-01-06').toDate();
 const BAD_WINDOW_END = dayjs('2026-01-08').endOf('day').toDate();
 
 /**
@@ -51,7 +50,6 @@ async function fixCalDAVHref(instance, session) {
       condition: {
         href: { $ne: null },
         updated_at: {
-          $gte: BAD_WINDOW_START.toISOString(),
           $lte: BAD_WINDOW_END.toISOString()
         }
       },
@@ -90,7 +88,6 @@ async function fixCalDAVHref(instance, session) {
       table: 'CalendarEvents',
       condition: {
         deleted_at: {
-          $gte: BAD_WINDOW_START.toISOString(),
           $lte: BAD_WINDOW_END.toISOString()
         }
       },
@@ -124,4 +121,4 @@ async function fixCalDAVHref(instance, session) {
   return stats;
 }
 
-module.exports = { fixCalDAVHref, BAD_WINDOW_START, BAD_WINDOW_END };
+module.exports = { fixCalDAVHref, BAD_WINDOW_END };
