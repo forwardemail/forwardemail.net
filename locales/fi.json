@@ -18223,5 +18223,8 @@
   "S/MIME certificates are widely supported by email clients like Outlook, Apple Mail, and Thunderbird.": "S/MIME certificates are widely supported by email clients like Outlook, Apple Mail, and Thunderbird.",
   "S/MIME Certificate": "S/MIME Certificate",
   "Please enter your X.509 certificate in PEM format above. Supported key types: RSA (2048-bit or higher) and ECC (P-256, P-384, P-521).": "Please enter your X.509 certificate in PEM format above. Supported key types: RSA (2048-bit or higher) and ECC (P-256, P-384, P-521).",
-  "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.": "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing."
+  "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.": "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.",
+  "Email Testing & Preview": "Email Testing & Preview",
+  "SQLite Performance Optimization": "SQLite Performance Optimization",
+  "About Forward Email - Our Story & Mission": "About Forward Email - Our Story & Mission"
 }
