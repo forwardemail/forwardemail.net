@@ -498,14 +498,6 @@ async function processEvent(ctx) {
       } else if (!_.isDate(user[config.userFields.planSetAt])) {
         user[config.userFields.planSetAt] = now;
         await user.save();
-      } else if (now < user[config.userFields.planSetAt]) {
-        // If the payment's invoice_at (now) is before planSetAt,
-        // update planSetAt to ensure this payment is included in the expiry calculation.
-        // This fixes a race condition where PayPal's order create_time can be slightly
-        // before our planSetAt timestamp, causing the payment to be excluded from
-        // the plan_expires_at calculation in the Users pre-save hook.
-        user[config.userFields.planSetAt] = now;
-        await user.save();
       }
 
       let transactionId;
@@ -616,22 +608,10 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
 
         // log the payment just for sanity
         ctx.logger.info('paypal payment created', { payment });
-      }
 
-      // If the payment's invoice_at (now) is before planSetAt,
-      // update planSetAt to ensure this payment is included in the expiry calculation.
-      // This fixes a race condition where PayPal's order create_time can be slightly
-      // before our planSetAt timestamp, causing the payment to be excluded from
-      // the plan_expires_at calculation in the Users pre-save hook.
-      if (
-        _.isDate(user[config.userFields.planSetAt]) &&
-        now < user[config.userFields.planSetAt]
-      ) {
-        user[config.userFields.planSetAt] = now;
+        // save the user
+        await user.save();
       }
-
-      // save the user
-      await user.save();
 
       break;
     }

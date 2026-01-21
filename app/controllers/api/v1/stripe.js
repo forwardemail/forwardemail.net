@@ -286,21 +286,10 @@ async function processEvent(ctx, event) {
           !_.isDate(user[config.userFields.planSetAt]) ||
           // if the user changed plans then adjust plan set at
           user.plan !== productToPlan
-        ) {
+        )
           user[config.userFields.planSetAt] = dayjs
             .unix(paymentIntent.created)
             .toDate();
-        } else {
-          const paymentDate = dayjs.unix(paymentIntent.created).toDate();
-          if (paymentDate < user[config.userFields.planSetAt]) {
-            // If the payment's invoice_at is before planSetAt,
-            // update planSetAt to ensure this payment is included in the expiry calculation.
-            // This fixes a race condition where the payment timestamp can be slightly
-            // before our planSetAt timestamp, causing the payment to be excluded from
-            // the plan_expires_at calculation in the Users pre-save hook.
-            user[config.userFields.planSetAt] = paymentDate;
-          }
-        }
       } else if (session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription
@@ -354,21 +343,10 @@ async function processEvent(ctx, event) {
             !_.isDate(user[config.userFields.planSetAt]) ||
             // if the user changed plans then adjust plan set at
             user.plan !== productToPlan
-          ) {
+          )
             user[config.userFields.planSetAt] = dayjs
               .unix(paymentIntent.created)
               .toDate();
-          } else {
-            const paymentDate = dayjs.unix(paymentIntent.created).toDate();
-            if (paymentDate < user[config.userFields.planSetAt]) {
-              // If the payment's invoice_at is before planSetAt,
-              // update planSetAt to ensure this payment is included in the expiry calculation.
-              // This fixes a race condition where the payment timestamp can be slightly
-              // before our planSetAt timestamp, causing the payment to be excluded from
-              // the plan_expires_at calculation in the Users pre-save hook.
-              user[config.userFields.planSetAt] = paymentDate;
-            }
-          }
         }
       }
 
