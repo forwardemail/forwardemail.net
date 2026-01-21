@@ -38,6 +38,7 @@ const config = require('#config');
 const checkDiskSpace = require('#helpers/check-disk-space');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
+const encryptMessageSMIME = require('#helpers/encrypt-message-smime');
 const env = require('#config/env');
 const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
@@ -659,7 +660,7 @@ async function parsePayload(data, ws) {
                   `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
-                  'id has_imap has_pgp public_key storage_location user is_enabled name domain max_quota'
+                  'id has_imap has_pgp public_key has_smime smime_certificate storage_location user is_enabled name domain max_quota'
                 )
                 .lean()
                 .exec();
@@ -709,6 +710,8 @@ async function parsePayload(data, ws) {
                   storage_location: alias.storage_location,
                   alias_has_pgp: alias.has_pgp,
                   alias_public_key: alias.public_key,
+                  alias_has_smime: alias.has_smime,
+                  alias_smime_certificate: alias.smime_certificate,
                   locale: alias.user[config.lastLocaleField],
                   owner_full_email: alias.user.email
                 }
@@ -1071,6 +1074,132 @@ async function parsePayload(data, ws) {
                   // note we don't need to do this logic above if a session was found in IMAP
                   // because the APPEND logic already has this built-in
                   //
+
+                  // S/MIME encryption support
+                  if (
+                    session.user.alias_has_smime &&
+                    session.user.alias_smime_certificate
+                  ) {
+                    try {
+                      // NOTE: encryptMessageSMIME won't encrypt message if it already is
+                      payload.raw = await encryptMessageSMIME(
+                        session.user.alias_smime_certificate,
+                        payload.raw
+                      );
+                      // unset smime_error_sent_at if it was a date and more than 1h ago
+                      Aliases.findOneAndUpdate(
+                        {
+                          _id: new mongoose.Types.ObjectId(
+                            session.user.alias_id
+                          ),
+                          domain: new mongoose.Types.ObjectId(
+                            session.user.domain_id
+                          ),
+                          smime_error_sent_at: {
+                            $exists: true,
+                            $lte: dayjs().subtract(1, 'hour').toDate()
+                          }
+                        },
+                        {
+                          $unset: {
+                            smime_error_sent_at: 1
+                          }
+                        }
+                      )
+                        .then()
+                        .catch((err) => this.logger.fatal(err));
+                    } catch (err) {
+                      err.isCodeBug = true;
+                      err.payload = _.omit(payload, 'raw');
+                      logger.fatal(err);
+                      if (!isCodeBug(err)) {
+                        // email alias user (only once a day as a reminder) if it was not a code bug
+                        const now = new Date();
+                        Aliases.findOneAndUpdate(
+                          {
+                            $and: [
+                              {
+                                _id: new mongoose.Types.ObjectId(
+                                  session.user.alias_id
+                                ),
+                                domain: new mongoose.Types.ObjectId(
+                                  session.user.domain_id
+                                )
+                              },
+                              {
+                                $or: [
+                                  {
+                                    smime_error_sent_at: {
+                                      $exists: false
+                                    }
+                                  },
+                                  {
+                                    smime_error_sent_at: {
+                                      $lte: dayjs().subtract(1, 'day').toDate()
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            $set: {
+                              smime_error_sent_at: now
+                            }
+                          }
+                        )
+                          .then((alias) => {
+                            if (!alias) return;
+                            // send email here and if error occurred then unset
+                            email({
+                              template: 'alert',
+                              message: {
+                                to: session.user.owner_full_email,
+                                subject: i18n.translate(
+                                  'SMIME_ENCRYPTION_ERROR',
+                                  session.user.locale
+                                )
+                              },
+                              locals: {
+                                message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
+                                locale: session.user.locale
+                              }
+                            })
+                              .then(() => {
+                                Aliases.findOneAndUpdate(alias._id, {
+                                  $set: {
+                                    smime_error_sent_at: new Date()
+                                  }
+                                })
+                                  .then()
+                                  .catch((err) => this.logger.fatal(err));
+                              })
+                              .catch((err) => {
+                                this.logger.fatal(err);
+                                Aliases.findOneAndUpdate(
+                                  {
+                                    _id: new mongoose.Types.ObjectId(
+                                      session.user.alias_id
+                                    ),
+                                    domain: new mongoose.Types.ObjectId(
+                                      session.user.domain_id
+                                    ),
+                                    smime_error_sent_at: now
+                                  },
+                                  {
+                                    $unset: {
+                                      smime_error_sent_at: 1
+                                    }
+                                  }
+                                ).catch((err) => this.logger.fatal(err));
+                              });
+                          })
+                          .catch((err) => this.logger.fatal(err));
+                      }
+                    }
+                  }
+
+                  // PGP encryption support
                   if (
                     session.user.alias_has_pgp &&
                     session.user.alias_public_key

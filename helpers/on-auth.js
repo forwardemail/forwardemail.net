@@ -806,6 +806,13 @@ async function onAuth(auth, session, fn) {
             alias_public_key: alias.public_key
           }
         : {}),
+      // s/mime support
+      ...(alias && alias.has_smime
+        ? {
+            alias_has_smime: alias.has_smime,
+            alias_smime_certificate: alias.smime_certificate
+          }
+        : {}),
       // NOTE: this field will refresh in `refreshSession` helper
       locale,
       // NOTE: this field will refresh in `refreshSession` helper

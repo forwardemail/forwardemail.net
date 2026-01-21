@@ -77,11 +77,18 @@ function isMessageEncrypted(raw) {
       if (/^content-type:/i.test(line)) {
         const parts = line.split(':');
         const value = parts.slice(1).join(':');
+        const contentType = value.split(';').shift().trim().toLowerCase();
+
+        // Check for PGP encrypted message
+        if (contentType === 'multipart/encrypted') {
+          return true;
+        }
+
+        // Check for S/MIME encrypted message
         if (
-          value.split(';').shift().trim().toLowerCase() ===
-          'multipart/encrypted'
+          contentType === 'application/pkcs7-mime' ||
+          contentType === 'application/x-pkcs7-mime'
         ) {
-          // message is already encrypted, do nothing
           return true;
         }
 

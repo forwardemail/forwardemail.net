@@ -34,6 +34,7 @@ const Threads = require('#models/threads');
 const WKD = require('#helpers/wkd');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
+const encryptMessageSMIME = require('#helpers/encrypt-message-smime');
 const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
@@ -353,6 +354,165 @@ async function onAppend(path, flags, date, raw, session, fn) {
                 })
               );
           }
+        }
+      }
+    }
+
+    //
+    // S/MIME encryption support
+    //
+    if (
+      !flags.includes('\\Draft') &&
+      session.user.alias_has_smime &&
+      session.user.alias_smime_certificate
+    ) {
+      try {
+        // NOTE: encryptMessageSMIME won't encrypt message if it already is
+        raw = await encryptMessageSMIME(
+          session.user.alias_smime_certificate,
+          raw
+        );
+        // unset smime_error_sent_at if it was a date and more than 1h ago
+        Aliases.findOneAndUpdate(
+          {
+            _id: new mongoose.Types.ObjectId(session.user.alias_id),
+            domain: new mongoose.Types.ObjectId(session.user.domain_id),
+            smime_error_sent_at: {
+              $exists: true,
+              $lte: dayjs().subtract(1, 'hour').toDate()
+            }
+          },
+          {
+            $unset: {
+              smime_error_sent_at: 1
+            }
+          }
+        )
+          .then()
+          .catch((err) =>
+            this.logger.fatal(err, {
+              path,
+              flags,
+              date,
+              session,
+              resolver: this.resolver
+            })
+          );
+      } catch (err) {
+        this.logger.fatal(err, {
+          path,
+          flags,
+          date,
+          session,
+          resolver: this.resolver
+        });
+        if (!isCodeBug(err) && !isRetryableError(err)) {
+          // email alias user (only once a day as a reminder) if it was not a code bug
+          const now = new Date();
+          Aliases.findOneAndUpdate(
+            {
+              $and: [
+                {
+                  _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                  domain: new mongoose.Types.ObjectId(session.user.domain_id)
+                },
+                {
+                  $or: [
+                    {
+                      smime_error_sent_at: {
+                        $exists: false
+                      }
+                    },
+                    {
+                      smime_error_sent_at: {
+                        $lte: dayjs().subtract(1, 'day').toDate()
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              $set: {
+                smime_error_sent_at: now
+              }
+            }
+          )
+            .then((alias) => {
+              if (!alias) return;
+              // send email here and if error occurred then unset
+              email({
+                template: 'alert',
+                message: {
+                  to: session.user.owner_full_email,
+                  subject: i18n.translate(
+                    'SMIME_ENCRYPTION_ERROR',
+                    session.user.locale
+                  )
+                },
+                locals: {
+                  message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
+                  locale: session.user.locale
+                }
+              })
+                .then(() => {
+                  Aliases.findOneAndUpdate(alias._id, {
+                    $set: {
+                      smime_error_sent_at: new Date()
+                    }
+                  })
+                    .then()
+                    .catch((err) =>
+                      this.logger.fatal(err, {
+                        path,
+                        flags,
+                        date,
+                        session,
+                        resolver: this.resolver
+                      })
+                    );
+                })
+                .catch((err) => {
+                  this.logger.fatal(err, {
+                    path,
+                    flags,
+                    date,
+                    session,
+                    resolver: this.resolver
+                  });
+                  Aliases.findOneAndUpdate(
+                    {
+                      _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                      domain: new mongoose.Types.ObjectId(
+                        session.user.domain_id
+                      ),
+                      smime_error_sent_at: now
+                    },
+                    {
+                      $unset: {
+                        smime_error_sent_at: 1
+                      }
+                    }
+                  ).catch((err) =>
+                    this.logger.fatal(err, {
+                      path,
+                      flags,
+                      date,
+                      session,
+                      resolver: this.resolver
+                    })
+                  );
+                });
+            })
+            .catch((err) =>
+              this.logger.fatal(err, {
+                path,
+                flags,
+                date,
+                session,
+                resolver: this.resolver
+              })
+            );
         }
       }
     }

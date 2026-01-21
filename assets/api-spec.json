@@ -200,6 +200,14 @@
             "type": "string",
             "description": "PGP public key if available"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Whether S/MIME encryption is enabled"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "locale": {
             "type": "string",
             "description": "Locale preference"
@@ -270,6 +278,8 @@
           "has_imap": true,
           "has_pgp": false,
           "public_key": "",
+          "has_smime": false,
+          "smime_certificate": "",
           "locale": "en",
           "settings": {
             "mail": {
@@ -2232,6 +2242,14 @@
             "type": "string",
             "description": "OpenPGP public key in ASCII Armor format"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption for this alias"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "max_quota": {
             "type": "string",
             "description": "Storage max quota (e.g. '1 GB')"
@@ -2328,6 +2346,14 @@
           "public_key": {
             "type": "string",
             "description": "OpenPGP public key in ASCII Armor format"
+          },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
           },
           "max_quota": {
             "type": "string",
@@ -2793,6 +2819,8 @@
                       "has_imap": true,
                       "has_pgp": false,
                       "public_key": "",
+                      "has_smime": false,
+                      "smime_certificate": "",
                       "locale": "en",
                       "settings": {
                         "mail": {

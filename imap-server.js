@@ -329,6 +329,23 @@ class IMAP {
           return;
         }
 
+        if (channel === 'smime_reload') {
+          const alias = await Aliases.findOne({ id })
+            .select('has_smime smime_certificate')
+            .lean()
+            .exec();
+          if (alias) {
+            for (const connection of this.server.connections) {
+              if (connection?.session?.user?.alias_id !== id) continue;
+              connection.session.user.alias_has_smime = alias.has_smime;
+              connection.session.user.alias_smime_certificate =
+                alias.smime_certificate;
+            }
+          }
+
+          return;
+        }
+
         throw new TypeError(`Unknown channel ${channel}`);
       } catch (err) {
         this.logger.error(err);

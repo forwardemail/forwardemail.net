@@ -28,6 +28,14 @@ async function updateAlias(ctx, next) {
     )
       ctx.client.publish('pgp_reload', ctx.state.alias.id);
 
+    // if the body had `has_smime` or `smime_certificate` and if the values changed
+    // then refresh all IMAP sessions with the new updated certificate and boolean
+    if (
+      (ctx.client && typeof ctx.request.body.smime_certificate === 'string') ||
+      ctx.request.body.has_smime !== 'undefined'
+    )
+      ctx.client.publish('smime_reload', ctx.state.alias.id);
+
     if (ctx.api) return next();
 
     ctx.flash('custom', {

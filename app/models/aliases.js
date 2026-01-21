@@ -27,6 +27,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
+const getCertInfo = require('#helpers/get-cert-info');
 const getKeyInfo = require('#helpers/get-key-info');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
@@ -294,6 +295,20 @@ const Aliases = new mongoose.Schema({
     index: true
   },
 
+  // s/mime encryption support
+  has_smime: {
+    type: Boolean,
+    default: false
+  },
+  smime_certificate: {
+    type: String,
+    trim: true
+  },
+  smime_error_sent_at: {
+    type: Date,
+    index: true
+  },
+
   has_imap: {
     type: Boolean,
     default: false,
@@ -509,6 +524,18 @@ Aliases.pre('save', async function (next) {
 
   try {
     await getKeyInfo(this.public_key, this.locale);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// validate S/MIME certificate if any
+Aliases.pre('save', async function (next) {
+  if (!this.smime_certificate) return next();
+
+  try {
+    await getCertInfo(this.smime_certificate, this.locale);
     next();
   } catch (err) {
     next(err);

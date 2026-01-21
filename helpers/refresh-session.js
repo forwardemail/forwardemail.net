@@ -117,6 +117,9 @@ async function refreshSession(session, command) {
     // refresh the user's pgp settings, email, and locale
     session.user.alias_has_pgp = alias.has_pgp;
     session.user.alias_public_key = alias.public_key;
+    // refresh the user's smime settings
+    session.user.alias_has_smime = alias.has_smime;
+    session.user.alias_smime_certificate = alias.smime_certificate;
     session.user.locale =
       alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
     session.user.owner_full_email = alias.user.email;

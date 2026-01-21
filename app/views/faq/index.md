@@ -66,6 +66,7 @@
   * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
   * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
   * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+  * [Do you support S/MIME encryption](#do-you-support-smime-encryption)
   * [Do you support MTA-STS](#do-you-support-mta-sts)
   * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
   * [Do you support email best practices](#do-you-support-email-best-practices)
@@ -2494,6 +2495,67 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
     </strong>
     <span>
       You've successfully completed all steps.
+    </span>
+  </div>
+</div>
+
+### Do you support S/MIME encryption
+
+Yes, we support [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME) encryption as defined in [RFC 8551](https://datatracker.ietf.org/doc/html/rfc8551). S/MIME provides end-to-end encryption using X.509 certificates, which is widely supported by enterprise email clients.
+
+We support both RSA and ECC (Elliptic Curve Cryptography) certificates:
+
+* **RSA certificates**: 2048-bit minimum, 4096-bit recommended
+* **ECC certificates**: P-256, P-384, and P-521 NIST curves
+
+To configure S/MIME encryption for your alias:
+
+1. Obtain an S/MIME certificate from a trusted Certificate Authority (CA) or generate a self-signed certificate for testing.
+
+   <div class="alert my-3 alert-primary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Tip:
+     </strong>
+     <span>Free S/MIME certificates are available from providers like <a class="alert-link" href="https://www.actalis.com/s-mime-certificates.aspx">Actalis</a> or <a class="alert-link" href="https://extrassl.actalis.com/portal/uapub/freemail">Actalis Free S/MIME</a>.</span>
+   </div>
+
+2. Export your certificate in PEM format (the public certificate only, not the private key).
+
+3. Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> S/MIME and upload your public certificate.
+
+4. Once configured, all incoming emails to your alias will be encrypted using your S/MIME certificate before being stored or forwarded.
+
+   <div class="alert my-3 alert-secondary">
+     <i class="fa fa-info-circle font-weight-bold"></i>
+     <strong class="font-weight-bold">
+       Note:
+     </strong>
+     <span>
+       S/MIME encryption is applied to incoming messages that are not already encrypted. If a message is already encrypted with OpenPGP or S/MIME, it will not be re-encrypted.
+     </span>
+   </div>
+
+The following email clients have built-in S/MIME support:
+
+| Email Client      | Platform | Notes                                                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Apple Mail        | macOS    | Built-in S/MIME support. Go to Mail > Preferences > Accounts > your account > Trust to configure certificates.      |
+| Apple Mail        | iOS      | Built-in S/MIME support. Go to Settings > Mail > Accounts > your account > Advanced > S/MIME to configure.          |
+| Microsoft Outlook | Windows  | Built-in S/MIME support. Go to File > Options > Trust Center > Trust Center Settings > Email Security to configure. |
+| Microsoft Outlook | macOS    | Built-in S/MIME support. Go to Tools > Accounts > Advanced > Security to configure.                                 |
+| Thunderbird       | Desktop  | Built-in S/MIME support. Go to Account Settings > End-To-End Encryption > S/MIME to configure.                      |
+| GNOME Evolution   | Desktop  | Built-in S/MIME support. Go to Edit > Preferences > Mail Accounts > your account > Security to configure.           |
+| KMail             | Desktop  | Built-in S/MIME support. Go to Settings > Configure KMail > Identities > your identity > Cryptography to configure. |
+
+<div class="text-center my-3 my-md-5">
+  <div class="alert my-3 alert-success d-inline-block">
+    <i class="fa fa-check-circle font-weight-bold"></i>
+    <strong class="font-weight-bold">
+      Congratulations!
+    </strong>
+    <span>
+      You've successfully configured S/MIME encryption for your alias.
     </span>
   </div>
 </div>

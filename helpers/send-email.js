@@ -16,6 +16,7 @@ const checkSRS = require('./check-srs');
 const createDSNSuccess = require('./create-dsn-success');
 const createSession = require('./create-session');
 const encryptMessage = require('./encrypt-message');
+const encryptMessageSMIME = require('./encrypt-message-smime');
 const getTransporter = require('./get-transporter');
 const isDenylisted = require('./is-denylisted');
 const isEmail = require('./is-email');
@@ -38,6 +39,7 @@ async function getPGPResults({
   envelope,
   raw,
   publicKey,
+  smimeCertificate,
   resolver,
   client,
   email,
@@ -58,72 +60,101 @@ async function getPGPResults({
   //
   let finalRaw;
   let pgp = false;
+  let smime = false;
 
   if (
     !isEncrypted &&
     (email || (!email && session?.dmarc?.policy !== 'reject'))
   ) {
-    try {
-      if (!publicKey) {
-        const wkd = new WKD(resolver, client);
+    // Try S/MIME encryption first if certificate is available
+    if (smimeCertificate) {
+      try {
+        const encryptedUnsignedMessage = await encryptMessageSMIME(
+          smimeCertificate,
+          raw
+        );
 
-        // TODO: pending PR in wkd-client package
-        // <https://github.com/openpgpjs/wkd-client/issues/3>
-        // <https://github.com/openpgpjs/wkd-client/pull/4>
-        const binaryKey = await wkd.lookup({
-          email: envelope.to
-        });
-
-        logger.info('binaryKey', { binaryKey });
-
-        publicKey = await readKey({
-          binaryKey
-        });
+        finalRaw = await signMessage(encryptedUnsignedMessage, domain);
+        smime = true;
+      } catch (err) {
+        logger.fatal(
+          err,
+          email
+            ? {
+                user: email.user,
+                email: email._id,
+                domains: [email.domain],
+                session: createSession(email)
+              }
+            : { session }
+        );
       }
+    }
 
-      if (publicKey) {
-        try {
-          const encryptedUnsignedMessage = await encryptMessage(
-            publicKey,
-            raw,
-            false
-          );
+    // Fall back to PGP if S/MIME not used
+    if (!smime) {
+      try {
+        if (!publicKey) {
+          const wkd = new WKD(resolver, client);
 
-          finalRaw = await signMessage(encryptedUnsignedMessage, domain);
-          pgp = true;
-        } catch (err) {
-          logger.fatal(
-            err,
-            email
-              ? {
-                  user: email.user,
-                  email: email._id,
-                  domains: [email.domain],
-                  session: createSession(email)
-                }
-              : { session }
-          );
+          // TODO: pending PR in wkd-client package
+          // <https://github.com/openpgpjs/wkd-client/issues/3>
+          // <https://github.com/openpgpjs/wkd-client/pull/4>
+          const binaryKey = await wkd.lookup({
+            email: envelope.to
+          });
+
+          logger.info('binaryKey', { binaryKey });
+
+          publicKey = await readKey({
+            binaryKey
+          });
         }
+
+        if (publicKey) {
+          try {
+            const encryptedUnsignedMessage = await encryptMessage(
+              publicKey,
+              raw,
+              false
+            );
+
+            finalRaw = await signMessage(encryptedUnsignedMessage, domain);
+            pgp = true;
+          } catch (err) {
+            logger.fatal(
+              err,
+              email
+                ? {
+                    user: email.user,
+                    email: email._id,
+                    domains: [email.domain],
+                    session: createSession(email)
+                  }
+                : { session }
+            );
+          }
+        }
+      } catch (err) {
+        logger.debug(
+          err,
+          email
+            ? {
+                user: email.user,
+                email: email._id,
+                domains: [email.domain],
+                session: createSession(email)
+              }
+            : undefined
+        );
       }
-    } catch (err) {
-      logger.debug(
-        err,
-        email
-          ? {
-              user: email.user,
-              email: email._id,
-              domains: [email.domain],
-              session: createSession(email)
-            }
-          : undefined
-      );
     }
   }
 
-  // if no PGP then we need to still sign with DKIM
-  if (!pgp || !finalRaw) finalRaw = await signMessage(raw, domain);
+  // if no encryption then we need to still sign with DKIM
+  if (!pgp && !smime) finalRaw = await signMessage(raw, domain);
 
-  return { finalRaw, pgp };
+  return { finalRaw, pgp, smime };
 }
 
 // eslint-disable-next-line max-params
@@ -178,7 +209,8 @@ async function sendEmail(
     raw,
     resolver,
     client,
-    publicKey
+    publicKey,
+    smimeCertificate
   },
   email,
   domain
@@ -238,6 +270,7 @@ async function sendEmail(
       envelope,
       raw,
       publicKey,
+      smimeCertificate,
       resolver,
       client,
       email,
@@ -337,6 +370,7 @@ async function sendEmail(
         : {})
     });
     info.pgp = pgpResults.pgp;
+    info.smime = pgpResults.smime;
     logger.info('delivered', {
       info,
       ignore_hook: false,
@@ -512,6 +546,7 @@ async function sendEmail(
           }
         });
         info.pgp = pgpResults.pgp;
+        info.smime = pgpResults.smime;
         logger.info('delivered', {
           info,
           ignore_hook: false,

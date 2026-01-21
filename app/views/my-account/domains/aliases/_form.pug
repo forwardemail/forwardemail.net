@@ -256,6 +256,37 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
           target="_blank"
         )= t("View Example")
 
+  //- S/MIME encryption support
+  .form-group.form-check.mt-4
+    input#input-has-smime.form-check-input(
+      type="checkbox",
+      name="has_smime",
+      value="true",
+      checked=alias ? alias.has_smime : false
+    )
+    label.form-check-label(for="input-has-smime")
+      = t("S/MIME Encryption")
+      = " "
+      span.text-muted= t("(optional)")
+    .alert.alert-warning.small.mt-3
+      != t("S/MIME provides an alternative to OpenPGP for end-to-end encryption. If you have an X.509 certificate (commonly used in enterprise environments), you can upload it here to encrypt incoming emails.")
+      = " "
+      != t("S/MIME certificates are widely supported by email clients like Outlook, Apple Mail, and Thunderbird.")
+  label(for="textarea-smime-certificate")
+    = t("S/MIME Certificate")
+    = " "
+    span.text-muted= t("(optional)")
+  .form-group
+    textarea#textarea-smime-certificate.form-control(
+      name="smime_certificate",
+      rows=3,
+      placeholder="-----BEGIN CERTIFICATE-----"
+    )= alias && alias.smime_certificate ? alias.smime_certificate : ""
+  .alert.alert-secondary.small
+    != t("Please enter your X.509 certificate in PEM format above. Supported key types: RSA (2048-bit or higher) and ECC (P-256, P-384, P-521).")
+    = " "
+    != t("You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.")
+
 //-
 //- vacation responder support
 //-

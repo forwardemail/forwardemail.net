@@ -18201,5 +18201,15 @@
   "Changed By": "Changed By",
   "Time": "Time",
   "(redacted)": "(redacted)",
-  "If you did not make these changes, then please contact us immediately.": "If you did not make these changes, then please contact us immediately."
+  "If you did not make these changes, then please contact us immediately.": "If you did not make these changes, then please contact us immediately.",
+  "S/MIME certificate RSA key must be at least 2048 bits.": "S/MIME certificate RSA key must be at least 2048 bits.",
+  "S/MIME certificate has expired.": "S/MIME certificate has expired.",
+  "S/MIME certificate is not yet valid.": "S/MIME certificate is not yet valid.",
+  "Invalid S/MIME certificate format.": "Invalid S/MIME certificate format.",
+  "S/MIME Encryption": "S/MIME Encryption",
+  "S/MIME provides an alternative to OpenPGP for end-to-end encryption. If you have an X.509 certificate (commonly used in enterprise environments), you can upload it here to encrypt incoming emails.": "S/MIME provides an alternative to OpenPGP for end-to-end encryption. If you have an X.509 certificate (commonly used in enterprise environments), you can upload it here to encrypt incoming emails.",
+  "S/MIME certificates are widely supported by email clients like Outlook, Apple Mail, and Thunderbird.": "S/MIME certificates are widely supported by email clients like Outlook, Apple Mail, and Thunderbird.",
+  "S/MIME Certificate": "S/MIME Certificate",
+  "Please enter your X.509 certificate in PEM format above. Supported key types: RSA (2048-bit or higher) and ECC (P-256, P-384, P-521).": "Please enter your X.509 certificate in PEM format above. Supported key types: RSA (2048-bit or higher) and ECC (P-256, P-384, P-521).",
+  "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.": "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing."
 }

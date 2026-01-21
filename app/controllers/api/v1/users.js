@@ -57,6 +57,8 @@ function serializeAliasResponse(alias, ctx) {
     has_imap: alias.has_imap,
     has_pgp: alias.has_pgp,
     public_key: alias.public_key,
+    has_smime: alias.has_smime,
+    smime_certificate: alias.smime_certificate,
     locale: alias.locale || ctx.locale,
     created_at: alias.created_at,
     updated_at: alias.updated_at,

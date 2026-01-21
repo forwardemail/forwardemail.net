@@ -145,6 +145,8 @@ async function downloadAliasBackup(ctx) {
               storage_location: alias.storage_location,
               alias_has_pgp: alias.has_pgp,
               alias_public_key: alias.public_key,
+              alias_has_smime: alias.has_smime,
+              alias_smime_certificate: alias.smime_certificate,
               locale: ctx.locale,
               owner_full_email: ctx.state.user.email
             }

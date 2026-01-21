@@ -205,6 +205,16 @@ module.exports = {
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
   FAILED_TO_PROCESS_PUBLIC_KEY: 'Failed to process public key.',
   FAILED_TO_VERIFY_PUBLIC_KEY: 'Failed to verify public key.',
+  INVALID_SMIME_CERTIFICATE: 'Invalid S/MIME certificate format.',
+  SMIME_CERTIFICATE_NOT_YET_VALID: 'S/MIME certificate is not yet valid.',
+  SMIME_CERTIFICATE_EXPIRED: 'S/MIME certificate has expired.',
+  SMIME_RSA_KEY_TOO_SMALL:
+    'S/MIME certificate RSA key must be at least 2048 bits.',
+  SMIME_UNSUPPORTED_CURVE:
+    'S/MIME certificate uses an unsupported elliptic curve. Supported curves: P-256, P-384, P-521.',
+  SMIME_UNSUPPORTED_KEY_TYPE:
+    'S/MIME certificate uses an unsupported key type. Supported types: RSA, ECC.',
+  SMIME_ENCRYPTION_ERROR: 'An error occurred with S/MIME encryption',
   USER_UNVERIFIED:
     'Please <a href="%s" target="_blank">verify your email address</a> to continue',
   SCHEDULED_SEND_SUBJECT:
