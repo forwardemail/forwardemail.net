@@ -318,6 +318,12 @@ let jobs = [
     name: 'monitor-redis-ttl',
     interval: '6h',
     timeout: 0
+  },
+  // aggregate analytics events for dashboard performance
+  {
+    name: 'aggregate-analytics',
+    interval: '1h',
+    timeout: 0
   }
 ];
 

@@ -4,6 +4,7 @@
  */
 
 const AnalyticsEvents = require('./analytics-events');
+const AnalyticsSummary = require('./analytics-summary');
 const Attachments = require('./attachments');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
@@ -28,6 +29,7 @@ const TTI = require('./tti');
 
 module.exports = {
   AnalyticsEvents,
+  AnalyticsSummary,
   Attachments,
   Aliases,
   Domains,
