@@ -694,6 +694,19 @@ async function retrieveDomainBilling(ctx) {
         ctx.state.user[config.userFields.planSetAt] = paymentIntent
           ? dayjs.unix(paymentIntent.created).toDate()
           : now;
+      } else if (
+        _.isDate(ctx.state.user[config.userFields.planSetAt]) &&
+        paymentIntent
+      ) {
+        const paymentDate = dayjs.unix(paymentIntent.created).toDate();
+        if (paymentDate < ctx.state.user[config.userFields.planSetAt]) {
+          // If making a payment and the payment's invoice_at is before planSetAt,
+          // update planSetAt to ensure this payment is included in the expiry calculation.
+          // This fixes a race condition where the payment timestamp can be slightly
+          // before our planSetAt timestamp, causing the payment to be excluded from
+          // the plan_expires_at calculation in the Users pre-save hook.
+          ctx.state.user[config.userFields.planSetAt] = paymentDate;
+        }
       }
 
       if (subscription) {
@@ -969,6 +982,16 @@ async function retrieveDomainBilling(ctx) {
       if (!isMakePayment && !isEnableAutoRenew) {
         // set planSetAt (since we're changing plans or making an upgrade/change to the plan)
         ctx.state.user[config.userFields.planSetAt] = now;
+      } else if (
+        _.isDate(ctx.state.user[config.userFields.planSetAt]) &&
+        now < ctx.state.user[config.userFields.planSetAt]
+      ) {
+        // If making a payment and the payment's invoice_at (now) is before planSetAt,
+        // update planSetAt to ensure this payment is included in the expiry calculation.
+        // This fixes a race condition where PayPal's order create_time can be slightly
+        // before our planSetAt timestamp, causing the payment to be excluded from
+        // the plan_expires_at calculation in the Users pre-save hook.
+        ctx.state.user[config.userFields.planSetAt] = now;
       }
 
       let transactionId;
@@ -1205,6 +1228,16 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
 
       // set planSetAt (since we're changing plans or making an upgrade/change to the plan)
       if (!isMakePayment && !isEnableAutoRenew) {
+        ctx.state.user[config.userFields.planSetAt] = now;
+      } else if (
+        _.isDate(ctx.state.user[config.userFields.planSetAt]) &&
+        now < ctx.state.user[config.userFields.planSetAt]
+      ) {
+        // If making a payment and the payment's invoice_at (now) is before planSetAt,
+        // update planSetAt to ensure this payment is included in the expiry calculation.
+        // This fixes a race condition where PayPal's subscription start_time can be slightly
+        // before our planSetAt timestamp, causing the payment to be excluded from
+        // the plan_expires_at calculation in the Users pre-save hook.
         ctx.state.user[config.userFields.planSetAt] = now;
       }
 
