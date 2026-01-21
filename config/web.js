@@ -411,6 +411,20 @@ module.exports = (redis) => ({
     app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
   },
   hookBeforeRoutes(app) {
+    // Redirect www to non-www
+    app.use((ctx, next) => {
+      if (ctx.hostname === `www.${config.webHost}`) {
+        ctx.status = 301;
+        let port = '';
+        if (ctx.host.split(':').length === 2)
+          port = ':' + ctx.host.split(':')[1];
+        ctx.redirect(`${ctx.protocol}://${config.webHost}${port}${ctx.url}`);
+        return;
+      }
+
+      return next();
+    });
+
     // Prevent search engines from indexing URLs with query strings
     // This avoids duplicate content issues (e.g., UTM parameters, tracking codes)
     app.use(noindexQueryStrings);
