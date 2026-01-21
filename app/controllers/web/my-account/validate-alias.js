@@ -84,6 +84,15 @@ function validateAlias(ctx, next) {
   )
     body.public_key = '';
 
+  // S/MIME certificate handling
+  if (isSANB(ctx.request.body.smime_certificate))
+    body.smime_certificate = ctx.request.body.smime_certificate;
+  else if (
+    typeof ctx.request.body.smime_certificate === 'string' &&
+    ctx.request.body.smime_certificate === ''
+  )
+    body.smime_certificate = '';
+
   if (isSANB(body.labels))
     body.labels = _.compact(
       _.uniq(
@@ -142,6 +151,9 @@ function validateAlias(ctx, next) {
 
   if (typeof ctx.request.body.has_pgp !== 'undefined' || !ctx.api)
     body.has_pgp = boolean(ctx.request.body.has_pgp);
+
+  if (typeof ctx.request.body.has_smime !== 'undefined' || !ctx.api)
+    body.has_smime = boolean(ctx.request.body.has_smime);
 
   if (isSANB(body.recipients))
     body.recipients = _.compact(
