@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 

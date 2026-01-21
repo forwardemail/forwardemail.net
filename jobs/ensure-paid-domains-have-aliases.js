@@ -8,6 +8,8 @@ const os = require('node:os');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+// eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');

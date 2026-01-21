@@ -8,6 +8,8 @@ const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+// eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');

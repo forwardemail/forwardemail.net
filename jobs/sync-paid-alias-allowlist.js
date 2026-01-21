@@ -9,6 +9,8 @@ const { isIP } = require('node:net');
 const punycode = require('node:punycode');
 
 // eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+// eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');

@@ -4,6 +4,8 @@
  */
 
 // eslint-disable-next-line import/no-unassigned-import
+require('#helpers/polyfill-towellformed');
+// eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
 const process = require('node:process');
