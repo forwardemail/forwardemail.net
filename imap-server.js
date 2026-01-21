@@ -278,7 +278,8 @@ class IMAP {
       if (
         // channel !== 'sqlite_auth_request' &&
         channel !== 'sqlite_auth_reset' &&
-        channel !== 'pgp_reload'
+        channel !== 'pgp_reload' &&
+        channel !== 'smime_reload'
       )
         return;
       try {

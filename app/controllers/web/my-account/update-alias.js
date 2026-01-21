@@ -24,7 +24,7 @@ async function updateAlias(ctx, next) {
     // then refresh all IMAP sessions with the new updated public key and boolean
     if (
       (ctx.client && typeof ctx.request.body.public_key === 'string') ||
-      ctx.request.body.has_pgp !== 'undefined'
+      typeof ctx.request.body.has_pgp !== 'undefined'
     )
       ctx.client.publish('pgp_reload', ctx.state.alias.id);
 
@@ -32,7 +32,7 @@ async function updateAlias(ctx, next) {
     // then refresh all IMAP sessions with the new updated certificate and boolean
     if (
       (ctx.client && typeof ctx.request.body.smime_certificate === 'string') ||
-      ctx.request.body.has_smime !== 'undefined'
+      typeof ctx.request.body.has_smime !== 'undefined'
     )
       ctx.client.publish('smime_reload', ctx.state.alias.id);
 
