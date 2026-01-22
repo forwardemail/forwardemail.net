@@ -19,7 +19,7 @@
 
 const { Buffer } = require('node:buffer');
 const { simpleParser } = require('mailparser');
-const { SieveEngine } = require('./engine');
+const SieveEngine = require('./engine');
 const { SieveFilterHandler } = require('./filter-handler');
 const {
   SieveSecurityValidator,

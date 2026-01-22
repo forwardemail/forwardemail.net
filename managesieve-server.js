@@ -140,12 +140,12 @@ class ManageSieveServer {
   //
   // Start listening on configured port
   //
-  listen(port, host) {
+  listen(port, _host) {
     return new Promise((resolve, reject) => {
       const listenPort = port || env.MANAGESIEVE_PORT || 4190;
-      const listenHost = host || env.MANAGESIEVE_HOST || '0.0.0.0';
+      const listenHost = '::'; // host || env.MANAGESIEVE_HOST || '::';
 
-      this.server.listen(listenPort, listenHost, () => {
+      this.server.listen(listenPort, '::', () => {
         this.logger.info(
           `ManageSieve server listening on ${listenHost}:${listenPort}`,
           { component: 'ManageSieve' }
