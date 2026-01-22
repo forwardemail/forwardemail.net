@@ -537,7 +537,7 @@ The following SMTP extensions from the [IANA SMTP Service Extensions Registry](h
 
 > "JMAP is a beast that should not have been invented. It tries to convert TCP/IMAP (already a bad protocol by todays standards) into HTTP/JSON, just using a different transport while keeping the spirit." — Andris Reinman, [HN Discussion](https://news.ycombinator.com/item?id=18890011)
 
-> "JMAP is more than 10 years old, amnd there is almost no adoption at all" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
+> "JMAP is more than 10 years old, and there is almost no adoption at all" – Andris Reinman, [GitHub Discussion](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)
 
 Also see additional comments at <https://hn.algolia.com/?dateRange=all&page=0&prefix=true&query=jmap%20andris&sort=byDate&type=comment>.
 
