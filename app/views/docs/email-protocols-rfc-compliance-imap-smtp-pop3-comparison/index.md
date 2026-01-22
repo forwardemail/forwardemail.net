@@ -1107,72 +1107,253 @@ The following calendaring extensions are NOT supported:
 
 ## Email Message Filtering
 
-> \[!CAUTION]
-> Sieve and ManageSieve are **not currently supported** but are planned for future implementation.
+> \[!IMPORTANT]
+> Forward Email provides **full Sieve and ManageSieve support** for server-side email filtering. Create powerful rules to automatically sort, filter, forward, and respond to incoming messages.
 
 ### Sieve (RFC 5228)
 
-| RFC                                                       | Title                              | Status    | Reason                                                                                                                                                                              |
-| --------------------------------------------------------- | ---------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Sieve: An Email Filtering Language | ⚠️ Future | Not currently supported. May be implemented in the future. See [GitHub Discussion #337](https://github.com/forwardemail/forwardemail.net/discussions/337) to subscribe for updates. |
+[Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) is a standardized, powerful scripting language for server-side email filtering. Forward Email implements comprehensive Sieve support with 24 extensions.
 
-Email filtering protocols allow users to create server-side rules for automatically processing incoming messages.
+**Source Code:** [`helpers/sieve/`](https://github.com/forwardemail/forwardemail.net/tree/master/helpers/sieve)
 
-**Sieve** is a powerful email filtering language that allows users to create complex rules for message processing.
+#### Core Sieve RFCs Supported
 
-**Planned Features:**
+| RFC                                                                                    | Title                                                         | Status         |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------- |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Sieve: An Email Filtering Language                            | ✅ Full Support |
+| [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Sieve Email Filtering: Reject and Extended Reject Extensions  | ✅ Full Support |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Sieve Email Filtering: Vacation Extension                     | ✅ Full Support |
+| [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Sieve Vacation Extension: "Seconds" Parameter                 | ✅ Full Support |
+| [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Sieve Email Filtering: Imap4flags Extension                   | ✅ Full Support |
+| [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Sieve Email Filtering: Body Extension                         | ✅ Full Support |
+| [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Sieve Email Filtering: Variables Extension                    | ✅ Full Support |
+| [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Sieve Email Filtering: Relational Extension                   | ✅ Full Support |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Internet Application Protocol Collation Registry              | ✅ Full Support |
+| [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Sieve Extension: Copying Without Side Effects                 | ✅ Full Support |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Sieve Email Filtering: Editheader Extension                   | ✅ Full Support |
+| [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Sieve Email Filtering: Date and Index Extensions              | ✅ Full Support |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Sieve Email Filtering: Extension for Notifications            | ✅ Full Support |
+| [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Sieve Email Filtering: Environment Extension                  | ✅ Full Support |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Sieve Email Filtering: Extensions for Checking Mailbox Status | ✅ Full Support |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | Sieve Email Filtering: Delivering to Special-Use Mailboxes    | ✅ Full Support |
+| [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Sieve Email Filtering: Detecting Duplicate Deliveries         | ✅ Full Support |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Sieve Email Filtering: Ihave Extension                        | ✅ Full Support |
+| [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Sieve Email Filtering: Subaddress Extension                   | ✅ Full Support |
+| [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Sieve Email Filtering: Regular Expression Extension           | ✅ Full Support |
 
-* Server-side filtering rules
-* Automatic message sorting
-* Vacation auto-responders
-* Spam filtering
-* Forwarding rules
-* Custom actions
+#### Supported Sieve Extensions
 
-**Why Not Supported Yet:**
+| Extension                    | Description                              | Integration                                |
+| ---------------------------- | ---------------------------------------- | ------------------------------------------ |
+| `fileinto`                   | File messages into specific folders      | Messages stored in specified IMAP folder   |
+| `reject` / `ereject`         | Reject messages with an error            | SMTP rejection with bounce message         |
+| `vacation`                   | Automatic vacation/out-of-office replies | Queued via Emails.queue with rate limiting |
+| `vacation-seconds`           | Fine-grained vacation response intervals | TTL from `:seconds` parameter              |
+| `imap4flags`                 | Set IMAP flags (\Seen, \Flagged, etc.)   | Flags applied during message storage       |
+| `envelope`                   | Test envelope sender/recipient           | Access to SMTP envelope data               |
+| `body`                       | Test message body content                | Full body text matching                    |
+| `variables`                  | Store and use variables in scripts       | Variable expansion with modifiers          |
+| `relational`                 | Relational comparisons                   | `:count`, `:value` with gt/lt/eq           |
+| `comparator-i;ascii-numeric` | Numeric comparisons                      | Numeric string comparison                  |
+| `copy`                       | Copy messages while redirecting          | `:copy` flag on fileinto/redirect          |
+| `editheader`                 | Add or delete message headers            | Headers modified before storage            |
+| `date`                       | Test date/time values                    | `currentdate` and header date tests        |
+| `index`                      | Access specific header occurrences       | `:index` for multi-value headers           |
+| `regex`                      | Regular expression matching              | Full regex support in tests                |
+| `enotify`                    | Send notifications                       | `mailto:` notifications via Emails.queue   |
+| `environment`                | Access environment information           | Domain, host, remote-ip from session       |
+| `mailbox`                    | Test mailbox existence                   | `mailboxexists` test                       |
+| `special-use`                | File into special-use mailboxes          | Maps \Junk, \Trash, etc. to folders        |
+| `duplicate`                  | Detect duplicate messages                | Redis-based duplicate tracking             |
+| `ihave`                      | Test for extension availability          | Runtime capability checking                |
+| `subaddress`                 | Access user+detail address parts         | `:user` and `:detail` address parts        |
 
-Forward Email currently focuses on providing a user-friendly web interface for email filtering. Sieve support is planned for future implementation to provide advanced users with more powerful filtering capabilities.
+#### Sieve Extensions NOT Supported
 
-**Workaround:**
+| Extension                               | RFC                                                       | Reason                                                           |
+| --------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| `include`                               | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Security risk (script injection), requires global script storage |
+| `mboxmetadata` / `servermetadata`       | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Requires IMAP METADATA extension                                 |
+| `fcc`                                   | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Requires Sent folder integration                                 |
+| `encoded-character`                     | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Parser changes required for ${hex:} syntax                       |
+| `foreverypart` / `mime` / `extracttext` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Complex MIME tree manipulation                                   |
 
-Use Forward Email's [web-based filtering interface](https://forwardemail.net/en/faq#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder) to create filtering rules through the dashboard.
+#### Sieve Processing Flow
+
+```mermaid
+sequenceDiagram
+    participant MX as MX Server
+    participant Sieve as Sieve Engine
+    participant Redis as Redis Cache
+    participant SQLite as SQLite Storage
+    participant Queue as Email Queue
+
+    MX->>Sieve: Incoming message
+    Sieve->>Sieve: Parse active script
+    Sieve->>Sieve: Execute rules
+
+    alt fileinto action
+        Sieve->>SQLite: Store in folder with flags
+    else redirect action
+        Sieve->>Queue: Queue for delivery
+    else vacation action
+        Sieve->>Redis: Check rate limit
+        Redis-->>Sieve: OK to send
+        Sieve->>Queue: Queue vacation reply
+    else reject action
+        Sieve->>MX: Return SMTP rejection
+    else discard action
+        Sieve->>Sieve: Drop message silently
+    end
+
+    Sieve-->>MX: Processing complete
+```
+
+#### Security Features
+
+Forward Email's Sieve implementation includes comprehensive security protections:
+
+* **CVE-2023-26430 Protection**: Prevents redirect loops and mail bombing attacks
+* **Rate Limiting**: Limits on redirects (10/message, 100/day) and vacation replies
+* **Denylist Checking**: Redirect addresses checked against denylist
+* **Protected Headers**: DKIM, ARC, and authentication headers cannot be modified via editheader
+* **Script Size Limits**: Maximum script size enforced
+* **Execution Timeouts**: Scripts terminated if execution exceeds time limit
+
+#### Example Sieve Scripts
+
+**File newsletters into a folder:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Vacation auto-responder with fine-grained timing:**
+
+```sieve
+require ["vacation", "vacation-seconds"];
+
+vacation :seconds 3600 :subject "Out of Office"
+    "I'm currently away and will respond within 24 hours.";
+```
+
+**Spam filtering with flags:**
+
+```sieve
+require ["fileinto", "imap4flags"];
+
+if header :contains "X-Spam-Status" "Yes" {
+    setflag "\\Seen";
+    fileinto "Junk";
+}
+```
+
+**Complex filtering with variables:**
+
+```sieve
+require ["variables", "fileinto", "regex"];
+
+if header :regex "From" "(.+)@example\\.com" {
+    set :lower "sender" "${1}";
+    fileinto "Contacts/${sender}";
+}
+```
 
 > \[!TIP]
-> **Vacation Responder Alternative:** While Sieve is not yet supported, Forward Email provides a built-in vacation responder feature that's superior to traditional Sieve vacation filters. It includes:
->
-> * Automatic DKIM signature addition
-> * Connection issue prevention (SSL/TLS with legacy servers)
-> * Open WKD and PGP encryption support
-> * Intelligent rate limiting (once per sender every 4 days, like Gmail)
-> * Abuse prevention (filters postmaster, auto-submitted headers, mailing lists)
-> * Requires proper outbound SMTP setup (DKIM, DMARC, Return-Path)
->
-> **Configuration:** My Account → Domains → Aliases
->
-> * Start/end date configuration
-> * Subject limit: 100 characters
-> * Message limit: 1000 characters
->
-> See [FAQ: How do I set up a vacation responder?](https://forwardemail.net/en/faq#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+> For complete documentation, example scripts, and configuration instructions, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
 
 ### ManageSieve (RFC 5804)
 
-| RFC                                                       | Title                                          | Status          | Reason                |
-| --------------------------------------------------------- | ---------------------------------------------- | --------------- | --------------------- |
-| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | A Protocol for Remotely Managing Sieve Scripts | ❌ Not Supported | Sieve not implemented |
+Forward Email provides full ManageSieve protocol support for remotely managing Sieve scripts.
 
-**ManageSieve** is a protocol for remotely managing Sieve scripts.
+**Source Code:** [`managesieve-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/managesieve-server.js)
 
-**Planned Features:**
+| RFC                                                       | Title                                          | Status         |
+| --------------------------------------------------------- | ---------------------------------------------- | -------------- |
+| [RFC 5804](https://datatracker.ietf.org/doc/html/rfc5804) | A Protocol for Remotely Managing Sieve Scripts | ✅ Full Support |
 
-* Remote script management
-* Script validation
-* Multiple script support
-* Script activation/deactivation
+#### ManageSieve Server Configuration
 
-**Current Status:**
+| Setting            | Value                   |
+| ------------------ | ----------------------- |
+| **Server**         | `imap.forwardemail.net` |
+| **Port**           | `4190`                  |
+| **Security**       | STARTTLS (required)     |
+| **Authentication** | PLAIN (over TLS)        |
 
-ManageSieve support is planned for future implementation alongside Sieve. For more information about ManageSieve, see [Dovecot's ManageSieve documentation](https://doc.dovecot.org/admin_manual/pigeonhole_managesieve_server/).
+#### Supported ManageSieve Commands
+
+| Command        | Description                             |
+| -------------- | --------------------------------------- |
+| `AUTHENTICATE` | Authenticate using PLAIN mechanism      |
+| `CAPABILITY`   | List server capabilities and extensions |
+| `HAVESPACE`    | Check if script can be stored           |
+| `PUTSCRIPT`    | Upload a new script                     |
+| `LISTSCRIPTS`  | List all scripts with active status     |
+| `SETACTIVE`    | Activate a script                       |
+| `GETSCRIPT`    | Download a script                       |
+| `DELETESCRIPT` | Delete a script                         |
+| `RENAMESCRIPT` | Rename a script                         |
+| `CHECKSCRIPT`  | Validate script syntax                  |
+| `NOOP`         | Keep connection alive                   |
+| `LOGOUT`       | End session                             |
+
+#### Compatible ManageSieve Clients
+
+* **Thunderbird**: Built-in Sieve support via [Sieve add-on](https://addons.thunderbird.net/addon/sieve/)
+* **Roundcube**: [ManageSieve plugin](https://plugins.roundcube.net/packages/johndoh/sieve)
+* **KMail**: Native ManageSieve support
+* **sieve-connect**: Command-line client
+* **Any RFC 5804 compliant client**
+
+#### ManageSieve Protocol Flow
+
+```mermaid
+sequenceDiagram
+    participant Client as Email Client
+    participant MS as ManageSieve Server
+    participant DB as MongoDB
+
+    Client->>MS: Connect to port 4190
+    MS-->>Client: "IMPLEMENTATION" "Forward Email"
+    Client->>MS: STARTTLS
+    MS-->>Client: OK
+    Client->>MS: AUTHENTICATE "PLAIN" [credentials]
+    MS->>DB: Verify credentials
+    DB-->>MS: OK
+    MS-->>Client: OK
+
+    Client->>MS: LISTSCRIPTS
+    MS->>DB: Query SieveScripts
+    DB-->>MS: Scripts list
+    MS-->>Client: "default" ACTIVE\n"backup"
+
+    Client->>MS: PUTSCRIPT "newfilter" {script}
+    MS->>MS: Validate syntax
+    MS->>DB: Store script
+    MS-->>Client: OK
+
+    Client->>MS: SETACTIVE "newfilter"
+    MS->>DB: Update active script
+    MS-->>Client: OK
+
+    Client->>MS: LOGOUT
+    MS-->>Client: OK
+```
+
+#### Web Interface and API
+
+In addition to ManageSieve, Forward Email provides:
+
+* **Web Dashboard**: Create and manage Sieve scripts through the web interface at My Account → Domains → Aliases → Sieve Scripts
+* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/api#sieve-scripts)
+
+> \[!TIP]
+> For detailed setup instructions and client configuration, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)
 
 ---
 
