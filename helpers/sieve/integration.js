@@ -18,6 +18,8 @@
  */
 
 const { Buffer } = require('node:buffer');
+
+const mongoose = require('mongoose');
 const { simpleParser } = require('mailparser');
 const SieveEngine = require('./engine');
 const { SieveFilterHandler } = require('./filter-handler');
@@ -803,15 +805,17 @@ class SieveIntegration {
     switch (scheme.toLowerCase()) {
       case 'mailto': {
         // Send email notification
-        // Import Emails model dynamically to avoid circular dependency
-        let Emails;
-        try {
-          Emails = require('#models/emails');
-        } catch {
+        // Access Emails model via mongoose connection to avoid circular dependency
+        const conn = mongoose.connections.find(
+          (c) => c[Symbol.for('connection.name')] === 'MONGO_URI'
+        );
+        if (!conn || !conn.models || !conn.models.Emails) {
           throw new Error(
-            'Email notification not available in this environment'
+            'Email notification not available - Emails model not loaded'
           );
         }
+
+        const { Emails } = conn.models;
 
         // Parse mailto URI
         const emailTarget = target.split('?')[0];
@@ -913,9 +917,16 @@ function createSieveIntegration(options = {}) {
 
 function getDefaultSieveStore() {
   try {
-    const { SieveScripts } = require('#models');
-    if (SieveScripts && typeof SieveScripts.getActiveScript === 'function') {
-      return SieveScripts;
+    const conn = mongoose.connections.find(
+      (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
+    );
+    if (
+      conn &&
+      conn.models &&
+      conn.models.SieveScripts &&
+      typeof conn.models.SieveScripts.getActiveScript === 'function'
+    ) {
+      return conn.models.SieveScripts;
     }
   } catch {}
 

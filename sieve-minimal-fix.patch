@@ -1,0 +1,76 @@
+From f287efff82281a2e76a09be7b6da21ddf68cffb4 Mon Sep 17 00:00:00 2001
+From: Forward Email <dev@forwardemail.net>
+Date: Thu, 22 Jan 2026 18:31:37 -0500
+Subject: [PATCH] fix(sieve): use conn.models singleton pattern for model
+ access
+
+- Add mongoose require at top of file (proper import ordering)
+- Use conn.models.SieveScripts via MONGO_URI connection in getDefaultSieveStore()
+- Use conn.models.Emails via MONGO_URI connection in sendNotification()
+- Follows same pattern as helpers/email.js, helpers/is-valid-password.js
+- Avoids circular dependency issues with require('#models')
+---
+ helpers/sieve/integration.js | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/helpers/sieve/integration.js b/helpers/sieve/integration.js
+index c001904..51fc81d 100644
+--- a/helpers/sieve/integration.js
++++ b/helpers/sieve/integration.js
+@@ -18,6 +18,8 @@
+  */
+ 
+ const { Buffer } = require('node:buffer');
++
++const mongoose = require('mongoose');
+ const { simpleParser } = require('mailparser');
+ const SieveEngine = require('./engine');
+ const { SieveFilterHandler } = require('./filter-handler');
+@@ -803,16 +805,18 @@ class SieveIntegration {
+     switch (scheme.toLowerCase()) {
+       case 'mailto': {
+         // Send email notification
+-        // Import Emails model dynamically to avoid circular dependency
+-        let Emails;
+-        try {
+-          Emails = require('#models/emails');
+-        } catch {
++        // Access Emails model via mongoose connection to avoid circular dependency
++        const conn = mongoose.connections.find(
++          (c) => c[Symbol.for('connection.name')] === 'MONGO_URI'
++        );
++        if (!conn || !conn.models || !conn.models.Emails) {
+           throw new Error(
+-            'Email notification not available in this environment'
++            'Email notification not available - Emails model not loaded'
+           );
+         }
+ 
++        const { Emails } = conn.models;
++
+         // Parse mailto URI
+         const emailTarget = target.split('?')[0];
+         const subjectMatch =
+@@ -913,9 +917,16 @@ function createSieveIntegration(options = {}) {
+ 
+ function getDefaultSieveStore() {
+   try {
+-    const { SieveScripts } = require('#models');
+-    if (SieveScripts && typeof SieveScripts.getActiveScript === 'function') {
+-      return SieveScripts;
++    const conn = mongoose.connections.find(
++      (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
++    );
++    if (
++      conn &&
++      conn.models &&
++      conn.models.SieveScripts &&
++      typeof conn.models.SieveScripts.getActiveScript === 'function'
++    ) {
++      return conn.models.SieveScripts;
+     }
+   } catch {}
+ 
+-- 
+2.34.1
+
