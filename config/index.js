@@ -1040,22 +1040,53 @@ const config = {
 
   // domain fields whose updates create an action (e.g. email to domain admins)
   domainUpdateFields: [
+    // Webhook and logging settings
     'bounce_webhook',
     'has_delivery_logs',
+    'webhook_key',
+
+    // Quota and retention settings
     'max_quota_per_alias',
     'retention_days',
+
+    // Security and protection settings
     'has_adult_content_protection',
     'has_phishing_protection',
     'has_executable_protection',
     'has_virus_protection',
+    'require_tls_inbound',
+
+    // Alias and recipient settings
     'is_catchall_regex_disabled',
+    'has_recipient_verification',
+    'max_recipients_per_alias',
+
+    // SMTP settings
     'has_smtp',
+    'smtp_port',
+
+    // Newsletter
     'has_newsletter',
+
+    // DNS and verification settings
     'ignore_mx_check',
-    'webhook_key',
+
+    // Access control lists
     'allowlist',
     'denylist',
-    'restricted_alias_names'
+    'restricted_alias_names',
+
+    // Custom verification template
+    'has_custom_verification',
+    'custom_verification',
+
+    // DKIM settings
+    'dkim_modulus_length',
+    'dkim_key_selector',
+
+    // Plan and status (admin-modifiable)
+    'plan',
+    'is_smtp_suspended'
   ],
 
   // domain fields that should be redacted in domain update emails (security-sensitive)
