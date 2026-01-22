@@ -27,10 +27,10 @@ module.exports = {
 
     watch: 'gulp watch',
     clean: 'gulp clean',
-    build: 'gulp build',
+    build: series('nps buildSieve', 'gulp build'),
     buildSieve:
       'peggy --format commonjs -o helpers/sieve/parser-generated.js helpers/sieve/grammar.pegjs',
-    buildTest: 'NODE_ENV=test gulp build',
+    buildTest: series('nps buildSieve', 'NODE_ENV=test gulp build'),
 
     //
     // TODO: once remark-preset-github is upgraded to ESM and all deps upgraded

@@ -11,17 +11,32 @@ const path = require('node:path');
 
 // Try to load pre-generated parser, fall back to generating on-the-fly
 let parser;
+const generatedParserPath = path.join(__dirname, 'parser-generated.js');
+
 try {
+  // First try to load the pre-generated parser (created by `nps buildSieve`)
   parser = require('./parser-generated.js');
-} catch {
-  // Generate parser from grammar if pre-generated version doesn't exist
-  const peggy = require('peggy');
-  const grammarPath = path.join(__dirname, 'grammar.pegjs');
-  const grammar = fs.readFileSync(grammarPath, 'utf8');
-  parser = peggy.generate(grammar, {
-    output: 'parser',
-    format: 'commonjs'
-  });
+} catch (err) {
+  // If pre-generated parser doesn't exist, try to generate on-the-fly
+  // This requires peggy to be installed
+  try {
+    const peggy = require('peggy');
+    const grammarPath = path.join(__dirname, 'grammar.pegjs');
+    const grammar = fs.readFileSync(grammarPath, 'utf8');
+    parser = peggy.generate(grammar, {
+      output: 'parser',
+      format: 'commonjs'
+    });
+  } catch {
+    // Neither pre-generated parser nor peggy available
+    // Throw a clear error message
+    throw new Error(
+      `Sieve parser not available. The pre-generated parser (${generatedParserPath}) ` +
+        `was not found and peggy is not installed for on-the-fly generation. ` +
+        `Please run 'nps buildSieve' or 'npm run build' to generate the parser. ` +
+        `Original error: ${err.message}`
+    );
+  }
 }
 
 /**
