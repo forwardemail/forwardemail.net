@@ -35,7 +35,7 @@ const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
-const { Emails } = require('#models');
+const { Emails, SieveScripts } = require('#models');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
@@ -919,6 +919,7 @@ async function parsePayload(data, ws) {
               try {
                 // Create Sieve integration instance
                 const sieveIntegration = createSieveIntegration({
+                  store: SieveScripts,
                   client: this.client,
                   resolver: this.resolver
                 });

@@ -186,6 +186,10 @@ class SieveIntegration {
     };
 
     try {
+      if (!this.store || typeof this.store.getActiveScript !== 'function') {
+        return result;
+      }
+
       // Get active script for this alias
       const script = await this.store.getActiveScript(aliasId);
 
@@ -872,6 +876,7 @@ class SieveIntegration {
  * @param {Object} options - Options
  * @param {Object} options.store - Sieve script store
  * @param {Object} options.client - Redis client
+ * @param {Object} options.resolver - DNS resolver for denylist checking
  * @returns {SieveIntegration} Integration instance
  */
 function createSieveIntegration(options = {}) {
@@ -896,11 +901,25 @@ function createSieveIntegration(options = {}) {
       config.sieve?.enabledExtensions || DEFAULT_CONFIG.enabledExtensions
   };
 
+  const store = options.store || getDefaultSieveStore();
+
   return new SieveIntegration({
-    store: options.store,
+    store,
     client: options.client,
+    resolver: options.resolver,
     config: sieveConfig
   });
+}
+
+function getDefaultSieveStore() {
+  try {
+    const { SieveScripts } = require('#models');
+    if (SieveScripts && typeof SieveScripts.getActiveScript === 'function') {
+      return SieveScripts;
+    }
+  } catch {}
+
+  return null;
 }
 
 module.exports = {
