@@ -38,7 +38,8 @@ const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const pMap = require('p-map');
-const Redis = require('ioredis-mock');
+const Redis = require('@ladjs/redis');
+const sharedConfig = require('@ladjs/shared-config');
 
 const Domains = require('#models/domains');
 const Logs = require('#models/logs');
@@ -48,11 +49,8 @@ const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
-// Use real Redis in production, mock for testing
-const redis = config.redis
-  ? new (require('ioredis'))(config.redis)
-  : new Redis();
-
+const breeSharedConfig = sharedConfig('BREE');
+const redis = new Redis(breeSharedConfig.redis, logger);
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [redis],
@@ -452,6 +450,17 @@ async function processUser(user, endDate) {
   await setupMongoose(logger);
 
   try {
+    // Do not send any emails until January 25, 2026 or later
+    // This allows time for the Redis fix to be deployed and stabilize
+    const launchDate = dayjs('2026-01-25', 'YYYY-MM-DD').startOf('day');
+    if (dayjs().isBefore(launchDate)) {
+      logger.info(
+        'Weekly DMARC report job skipped (before launch date 2026-01-25)'
+      );
+      if (parentPort) parentPort.postMessage('done');
+      else process.exit(0);
+    }
+
     const endDate = new Date();
 
     // Check if running for a single user (manual testing)
