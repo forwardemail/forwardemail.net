@@ -59,6 +59,11 @@
         rule: allow
         port: 2993
         proto: tcp
+    - name: Allow port 4190 (ManageSieve)
+      ufw:
+        rule: allow
+        port: 4190
+        proto: tcp
     - name: Allow http
       ufw:
         rule: allow

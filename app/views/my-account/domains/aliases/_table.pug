@@ -695,6 +695,29 @@ p.text-center.d-lg-none
                           i.fa.fa-database
                           = " "
                           = t("Download Backup")
+                    //- Sieve Scripts button - requires IMAP to be enabled
+                    li.list-inline-item
+                      if alias.has_imap
+                        a.btn.btn-sm.btn-link.text-themed.btn-block(
+                          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve`)
+                        )
+                          i.fa.fa-filter
+                          = " "
+                          = t("Sieve Scripts")
+                      else
+                        span(
+                          data-toggle="tooltip",
+                          data-placement="top",
+                          data-html="true",
+                          title=t("IMAP must be enabled to use Sieve scripts")
+                        )
+                          button.btn.btn-sm.btn-link.text-muted.btn-block(
+                            type="button",
+                            disabled
+                          )
+                            i.fa.fa-filter
+                            = " "
+                            = t("Sieve Scripts")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -888,5 +911,28 @@ p.text-center.d-lg-none
                         i.fa.fa-database
                         = " "
                         = t("Download Backup")
+                  //- Sieve Scripts button - requires IMAP to be enabled
+                  li.list-inline-item
+                    if alias.has_imap
+                      a.btn.btn-sm.btn-link.text-themed.btn-block(
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve`)
+                      )
+                        i.fa.fa-filter
+                        = " "
+                        = t("Sieve Scripts")
+                    else
+                      span(
+                        data-toggle="tooltip",
+                        data-placement="top",
+                        data-html="true",
+                        title=t("IMAP must be enabled to use Sieve scripts")
+                      )
+                        button.btn.btn-sm.btn-link.text-muted.btn-block(
+                          type="button",
+                          disabled
+                        )
+                          i.fa.fa-filter
+                          = " "
+                          = t("Sieve Scripts")
 
 +paginate('#table-aliases')

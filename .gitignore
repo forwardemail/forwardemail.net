@@ -46,3 +46,4 @@ redis-data
 mongodb-backups
 assets/api-spec-en.json
 .caldav-test-credentials.json
+helpers/sieve/parser-generated.js

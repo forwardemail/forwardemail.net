@@ -1847,4 +1847,19 @@ config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
 
 config.payments = payments;
 
+// ManageSieve configuration
+config.managesieve = {
+  host: env.MANAGESIEVE_HOST,
+  port: env.MANAGESIEVE_PORT,
+  maxScriptSize: env.SIEVE_MAX_SCRIPT_SIZE
+    ? Number.parseInt(env.SIEVE_MAX_SCRIPT_SIZE, 10)
+    : 1024 * 1024,
+  maxScripts: env.SIEVE_MAX_SCRIPTS
+    ? Number.parseInt(env.SIEVE_MAX_SCRIPTS, 10)
+    : 100,
+  maxScriptNameLength: 128,
+  maxNestedDepth: 10,
+  maxRedirects: 5
+};
+
 module.exports = config;

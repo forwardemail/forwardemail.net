@@ -1,0 +1,177 @@
+extends ../../../../layout
+
+block body
+  .py-3(
+    class=typeof isContainerFluid === "boolean" && isContainerFluid === true ? "container-fluid" : "container"
+  )
+    .row
+      .col
+        include ../../../../_breadcrumbs
+
+        //- Check if IMAP is enabled
+        if !alias.has_imap
+          .alert.alert-warning
+            i.fa.fa-exclamation-triangle
+            = " "
+            != t('Sieve email filtering requires IMAP to be enabled. <a href="%s" class="alert-link">Enable IMAP</a> for this alias first.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`))
+
+        //- Check if catch-all alias
+        else if alias.name === '*' || alias.name.startsWith('/')
+          .alert.alert-warning
+            i.fa.fa-exclamation-triangle
+            = " "
+            = t("Sieve email filtering is not available for catch-all or regex aliases.")
+
+        else
+          //- Header with create button
+          .d-flex.justify-content-between.align-items-center.mb-4
+            h2.h4.mb-0
+              i.fa.fa-filter
+              = " "
+              = t("Sieve Filters")
+            a.btn.btn-success(
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/new`)
+            )
+              i.fa.fa-plus
+              = " "
+              = t("New Script")
+
+          //- Info alert about Sieve
+          .alert.alert-info.small
+            i.fa.fa-info-circle
+            = " "
+            != t('Sieve is a powerful email filtering language that lets you automatically sort, filter, and respond to incoming messages. <a href="%s" target="_blank" class="alert-link">Learn more about Sieve</a>.', l("/faq#do-you-support-sieve-email-filtering"))
+
+          //- Scripts table
+          if sieveScripts && sieveScripts.length > 0
+            .table-responsive
+              table.table.table-hover.table-bordered
+                thead.thead-dark
+                  tr
+                    th(scope="col")= t("Name")
+                    th(scope="col")= t("Status")
+                    th(scope="col")= t("Description")
+                    th(scope="col")= t("Last Updated")
+                    th(scope="col")= t("Actions")
+                tbody
+                  each script in sieveScripts
+                    tr
+                      td
+                        a(
+                          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${script._id}`)
+                        )
+                          = script.name
+                      td
+                        if script.is_active
+                          span.badge.badge-success
+                            i.fa.fa-check
+                            = " "
+                            = t("Active")
+                        else
+                          span.badge.badge-secondary= t("Inactive")
+                      td
+                        if script.description
+                          = script.description
+                        else
+                          span.text-muted= t("No description")
+                      td
+                        = dayjs(script.updated_at).format("YYYY-MM-DD HH:mm")
+                      td
+                        .btn-group.btn-group-sm
+                          a.btn.btn-primary(
+                            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${script._id}`),
+                            title=t("Edit")
+                          )
+                            i.fa.fa-edit
+                          if !script.is_active
+                            form.d-inline(
+                              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${script._id}/activate`),
+                              method="POST"
+                            )
+                              button.btn.btn-success(
+                                type="submit",
+                                title=t("Activate")
+                              )
+                                i.fa.fa-play
+                          else
+                            form.d-inline(
+                              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${script._id}/deactivate`),
+                              method="POST"
+                            )
+                              button.btn.btn-warning(
+                                type="submit",
+                                title=t("Deactivate")
+                              )
+                                i.fa.fa-pause
+                          if !script.is_active
+                            form.d-inline(
+                              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${script._id}`),
+                              method="POST"
+                            )
+                              input(
+                                type="hidden",
+                                name="_method",
+                                value="DELETE"
+                              )
+                              button.btn.btn-danger(
+                                type="submit",
+                                title=t("Delete"),
+                                onclick=`return confirm('${t("Are you sure you want to delete this script?")}')`
+                              )
+                                i.fa.fa-trash
+
+          else
+            .alert.alert-secondary.text-center
+              i.fa.fa-inbox
+              = " "
+              = t("No Sieve scripts yet.")
+              = " "
+              a(
+                href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/new`)
+              )= t("Create your first script")
+
+          //- ManageSieve connection info
+          .card.mt-4
+            .card-header
+              h5.mb-0
+                i.fa.fa-plug
+                = " "
+                = t("ManageSieve Connection")
+            .card-body.markdown-body
+              p.small= t("You can also manage your Sieve scripts using a ManageSieve client (like Thunderbird Sieve add-on).")
+              table.table.table-sm.table-bordered.mb-0
+                tbody
+                  tr
+                    th(scope="row")= t("Server")
+                    td: code imap.forwardemail.net
+                  tr
+                    th(scope="row")= t("Port")
+                    td: code 4190
+                  tr
+                    th(scope="row")= t("Security")
+                    td STARTTLS
+                  tr
+                    th(scope="row")= t("Username")
+                    td: code= `${alias.name}@${domain.name}`
+                  tr
+                    th(scope="row")= t("Password")
+                    td= t("Your alias password (same as IMAP)")
+
+    //- Back buttons
+    .row.text-center.my-5
+      .col
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`)
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Alias")
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Aliases")

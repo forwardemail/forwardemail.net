@@ -605,4 +605,24 @@ router
   .put('/folders/:id', api.v1.folders.update)
   .delete('/folders/:id', api.v1.folders.remove);
 
+// Sieve scripts (email filtering)
+router.get('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.list);
+router.post('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.create);
+router.get(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  api.v1.sieve.retrieve
+);
+router.put(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  api.v1.sieve.update
+);
+router.delete(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  api.v1.sieve.remove
+);
+router.post(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate',
+  api.v1.sieve.activate
+);
+
 module.exports = router;

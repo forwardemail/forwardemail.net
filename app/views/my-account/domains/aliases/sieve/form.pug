@@ -1,0 +1,216 @@
+extends ../../../../layout
+
+block body
+  .py-3(
+    class=typeof isContainerFluid === "boolean" && isContainerFluid === true ? "container-fluid" : "container"
+  )
+    .row
+      .col
+        include ../../../../_breadcrumbs
+
+        //- Check if IMAP is enabled
+        if !alias.has_imap
+          .alert.alert-warning
+            i.fa.fa-exclamation-triangle
+            = " "
+            != t('Sieve email filtering requires IMAP to be enabled. <a href="%s" class="alert-link">Enable IMAP</a> for this alias first.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`))
+
+        //- Check if catch-all alias
+        else if alias.name === '*' || alias.name.startsWith('/')
+          .alert.alert-warning
+            i.fa.fa-exclamation-triangle
+            = " "
+            = t("Sieve email filtering is not available for catch-all or regex aliases.")
+
+        else
+          h2.h4.mb-4
+            i.fa.fa-filter
+            = " "
+            if sieveScript
+              = t("Edit Sieve Script")
+            else
+              = t("New Sieve Script")
+
+          //- Form
+          form.ajax-form(
+            action=sieveScript ? l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve/${sieveScript._id}`) : l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve`),
+            method="POST"
+          )
+            if sieveScript
+              input(type="hidden", name="_method", value="PUT")
+
+            //- Script name
+            .form-group
+              label(for="input-sieve-name")
+                = t("Script Name")
+                = " "
+                span.text-danger= t("(required)")
+              input#input-sieve-name.form-control(
+                type="text",
+                name="name",
+                required,
+                maxlength="255",
+                value=sieveScript ? sieveScript.name : "",
+                placeholder=t("e.g., spam-filter, vacation-reply")
+              )
+              small.form-text.text-muted= t("A unique name for this script (letters, numbers, hyphens, underscores)")
+
+            //- Description
+            .form-group
+              label(for="input-sieve-description")= t("Description")
+              input#input-sieve-description.form-control(
+                type="text",
+                name="description",
+                maxlength="500",
+                value=sieveScript ? sieveScript.description : "",
+                placeholder=t("Optional description of what this script does")
+              )
+
+            //- Script content
+            .form-group
+              label(for="input-sieve-content")
+                = t("Script Content")
+                = " "
+                span.text-danger= t("(required)")
+              textarea#input-sieve-content.form-control.text-monospace(
+                name="content",
+                required,
+                rows="15",
+                placeholder=t("Enter your Sieve script here...")
+              )= sieveScript ? sieveScript.content : ""
+              small.form-text.text-muted
+                != t('Maximum size: 1MB. See <a href="%s" target="_blank">Sieve documentation</a> for syntax help.', l("/faq#do-you-support-sieve-email-filtering"))
+
+            //- Active checkbox
+            .form-group
+              .custom-control.custom-checkbox
+                input#input-sieve-active.custom-control-input(
+                  type="checkbox",
+                  name="is_active",
+                  value="true",
+                  checked=sieveScript ? sieveScript.is_active : true
+                )
+                label.custom-control-label(for="input-sieve-active")
+                  = t("Activate this script")
+              small.form-text.text-muted= t("Only one script can be active at a time. Activating this script will deactivate any other active script.")
+
+            //- Validation errors display
+            if validationErrors && validationErrors.length > 0
+              .alert.alert-danger
+                strong
+                  i.fa.fa-exclamation-circle
+                  = " "
+                  = t("Script Validation Errors:")
+                ul.mb-0
+                  each error in validationErrors
+                    li= error
+
+            //- Security warnings display
+            if securityWarnings && securityWarnings.length > 0
+              .alert.alert-warning
+                strong
+                  i.fa.fa-exclamation-triangle
+                  = " "
+                  = t("Security Warnings:")
+                ul.mb-0
+                  each warning in securityWarnings
+                    li= warning
+
+            //- Submit buttons
+            .form-group
+              button.btn.btn-success.btn-lg(type="submit")
+                if sieveScript
+                  i.fa.fa-save
+                  = " "
+                  = t("Update Script")
+                else
+                  i.fa.fa-plus
+                  = " "
+                  = t("Create Script")
+              = " "
+              a.btn.btn-secondary.btn-lg(
+                href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve`)
+              )= t("Cancel")
+
+          //- Example scripts
+          .card.mt-4
+            .card-header
+              h5.mb-0
+                i.fa.fa-lightbulb
+                = " "
+                = t("Example Scripts")
+            .card-body.markdown-body
+              //- File to folder
+              .mb-4
+                h6= t("Sort newsletters to a folder")
+                pre
+                  code.
+                    require ["fileinto"];
+
+                    # File newsletters to a Newsletters folder
+                    if header :contains "List-Unsubscribe" "" {
+                      fileinto "Newsletters";
+                      stop;
+                    }
+
+              //- Vacation auto-reply
+              .mb-4
+                h6= t("Vacation auto-reply")
+                pre
+                  code.
+                    require ["vacation"];
+
+                    vacation :days 7
+                      :subject "Out of Office"
+                      "I am currently out of the office and will respond when I return.";
+
+              //- Discard spam
+              .mb-4
+                h6= t("Discard suspected spam")
+                pre
+                  code.
+                    # Discard messages with high spam score
+                    if header :contains "X-Spam-Flag" "YES" {
+                      discard;
+                      stop;
+                    }
+
+              //- Flag important messages
+              .mb-4
+                h6= t("Flag messages from specific senders")
+                pre
+                  code.
+                    require ["imap4flags"];
+
+                    # Flag messages from boss as important
+                    if address :is "from" "boss@example.com" {
+                      setflag "\\Flagged";
+                    }
+
+              //- Redirect with copy
+              h6= t("Forward a copy to another address")
+              pre
+                code.
+                  require ["copy"];
+
+                  # Forward a copy of all messages to backup
+                  redirect :copy "backup@example.com";
+
+    //- Back buttons
+    .row.text-center.my-5
+      .col
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/sieve`)
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Sieve Scripts")
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`)
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Alias")

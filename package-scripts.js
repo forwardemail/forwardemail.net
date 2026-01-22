@@ -28,6 +28,8 @@ module.exports = {
     watch: 'gulp watch',
     clean: 'gulp clean',
     build: 'gulp build',
+    buildSieve:
+      'peggy --format commonjs -o helpers/sieve/parser-generated.js helpers/sieve/grammar.pegjs',
     buildTest: 'NODE_ENV=test gulp build',
 
     //
@@ -52,8 +54,11 @@ module.exports = {
     // <https://github.com/kentcdodds/nps-utils/issues/24>
     pretest: concurrent.nps('lint', 'build-test'),
 
-    test: 'nyc ava',
+    test: series('nyc ava', 'nps test-sieve'),
+    testSieve:
+      'node --test test/sieve/parser.js test/sieve/engine.js test/sieve/extensions.js test/sieve/store.js test/sieve/filter-handler.js test/sieve/security.js test/sieve/managesieve-server.js test/sieve/mx-integration.js',
     testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots'),
+    testSieveAva: 'ava test/sieve/auth.js test/sieve/integration.js',
     testCustomerSupportAi:
       'NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai'
   }

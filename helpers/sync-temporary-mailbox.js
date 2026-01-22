@@ -112,10 +112,15 @@ async function syncTemporaryMailbox(session) {
             // (e.g. one might have an issue with `date` or `raw`)
             //
 
+            // Use Sieve-determined mailbox and flags if available
+            // (stored during MX delivery when Sieve filtering was applied)
+            const targetMailbox = message.mailbox || 'INBOX';
+            const targetFlags = message.flags || [];
+
             await onAppendPromise.call(
               this,
-              'INBOX',
-              [],
+              targetMailbox,
+              targetFlags,
               message.date,
               message.raw,
               {

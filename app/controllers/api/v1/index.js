@@ -23,12 +23,14 @@ const port = require('./port');
 const restricted = require('./restricted');
 const selfTest = require('./self-test');
 const settings = require('./settings');
+const sieve = require('./sieve');
 const stripe = require('./stripe');
 const test = require('./test');
 const upgrade = require('./upgrade');
 const users = require('./users');
 
 module.exports = {
+  sieve,
   aliasAuth,
   aliases,
   apple,

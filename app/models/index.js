@@ -26,6 +26,7 @@ const CalendarEvents = require('./calendar-events');
 const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
 const TTI = require('./tti');
+const SieveScripts = require('./sieve-scripts');
 
 module.exports = {
   AnalyticsEvents,
@@ -50,5 +51,6 @@ module.exports = {
   CalendarEvents,
   AddressBooks,
   Contacts,
-  TTI
+  TTI,
+  SieveScripts
 };

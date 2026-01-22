@@ -30,6 +30,21 @@
       }
     },
     "schemas": {
+      "SieveScript": {
+        "type": "object",
+        "required": ["id", "name", "content", "alias"],
+        "properties": {
+          "id": {"type": "string", "description": "Unique script identifier"},
+          "name": {"type": "string", "description": "Script name"},
+          "content": {"type": "string", "description": "Sieve script content"},
+          "alias": {"type": "string", "description": "Alias ID this script belongs to"},
+          "is_active": {"type": "boolean", "description": "Whether the script is active", "default": false},
+          "priority": {"type": "integer", "description": "Script priority (lower = higher priority)", "default": 0},
+          "created_at": {"type": "string", "format": "date-time", "description": "Creation timestamp"},
+          "updated_at": {"type": "string", "format": "date-time", "description": "Last update timestamp"},
+          "object": {"type": "string", "example": "sieve_script"}
+        }
+      },
       "Error": {
         "type": "object",
         "required": [
@@ -6158,6 +6173,152 @@
           }
         }
       }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve-scripts": {
+      "get": {
+        "summary": "List Sieve Scripts",
+        "description": "List all Sieve scripts for an alias. Sieve is a powerful email filtering language defined in RFC 5228.",
+        "tags": ["Sieve Scripts"],
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "domain_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Domain ID or name"},
+          {"name": "alias_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Alias ID or name"}
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Sieve scripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {"$ref": "#/components/schemas/SieveScript"}
+                }
+              }
+            }
+          },
+          "401": {"$ref": "#/components/responses/Error"},
+          "404": {"$ref": "#/components/responses/Error"}
+        }
+      },
+      "post": {
+        "summary": "Create Sieve Script",
+        "description": "Create a new Sieve script for an alias. The script will be validated before saving.",
+        "tags": ["Sieve Scripts"],
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "domain_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Domain ID or name"},
+          {"name": "alias_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Alias ID or name"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "content"],
+                "properties": {
+                  "name": {"type": "string", "description": "Script name"},
+                  "content": {"type": "string", "description": "Sieve script content"},
+                  "is_active": {"type": "boolean", "description": "Whether the script is active", "default": false},
+                  "priority": {"type": "integer", "description": "Script priority (lower = higher priority)", "default": 0}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sieve script created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/SieveScript"}
+              }
+            }
+          },
+          "400": {"$ref": "#/components/responses/Error"},
+          "401": {"$ref": "#/components/responses/Error"},
+          "404": {"$ref": "#/components/responses/Error"}
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve-scripts/{script_id}": {
+      "get": {
+        "summary": "Get Sieve Script",
+        "description": "Get a specific Sieve script by ID.",
+        "tags": ["Sieve Scripts"],
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "domain_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Domain ID or name"},
+          {"name": "alias_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Alias ID or name"},
+          {"name": "script_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Sieve script ID"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/SieveScript"}
+              }
+            }
+          },
+          "401": {"$ref": "#/components/responses/Error"},
+          "404": {"$ref": "#/components/responses/Error"}
+        }
+      },
+      "put": {
+        "summary": "Update Sieve Script",
+        "description": "Update an existing Sieve script. The script will be validated before saving.",
+        "tags": ["Sieve Scripts"],
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "domain_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Domain ID or name"},
+          {"name": "alias_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Alias ID or name"},
+          {"name": "script_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Sieve script ID"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string", "description": "Script name"},
+                  "content": {"type": "string", "description": "Sieve script content"},
+                  "is_active": {"type": "boolean", "description": "Whether the script is active"},
+                  "priority": {"type": "integer", "description": "Script priority"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sieve script updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/SieveScript"}
+              }
+            }
+          },
+          "400": {"$ref": "#/components/responses/Error"},
+          "401": {"$ref": "#/components/responses/Error"},
+          "404": {"$ref": "#/components/responses/Error"}
+        }
+      },
+      "delete": {
+        "summary": "Delete Sieve Script",
+        "description": "Delete a Sieve script.",
+        "tags": ["Sieve Scripts"],
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "domain_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Domain ID or name"},
+          {"name": "alias_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Alias ID or name"},
+          {"name": "script_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Sieve script ID"}
+        ],
+        "responses": {
+          "200": {"description": "Sieve script deleted"},
+          "401": {"$ref": "#/components/responses/Error"},
+          "404": {"$ref": "#/components/responses/Error"}
+        }
+      }
     }
   },
   "tags": [
@@ -6212,6 +6373,10 @@
     {
       "name": "Folders",
       "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
+    },
+    {
+      "name": "Sieve Scripts",
+      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, vacation, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, and copy. Scripts are validated before saving to ensure they are syntactically correct."
     }
   ]
 }

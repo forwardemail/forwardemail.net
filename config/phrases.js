@@ -930,5 +930,14 @@ module.exports = {
     'Drafts folder must be a non-empty string or null.',
   SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT:
     'Alias defaults must be provided as an object.',
+  // Sieve
+  SIEVE_SCRIPT_CREATED: 'Sieve script created successfully.',
+  SIEVE_SCRIPT_UPDATED: 'Sieve script updated successfully.',
+  SIEVE_SCRIPT_DELETED: 'Sieve script deleted successfully.',
+  SIEVE_SCRIPT_ACTIVATED: 'Sieve script activated successfully.',
+  SIEVE_SCRIPT_DEACTIVATED: 'Sieve script deactivated successfully.',
+  SIEVE_SCRIPT_NOT_FOUND: 'Sieve script not found.',
+  SIEVE_IMAP_REQUIRED: 'IMAP must be enabled to use Sieve scripts.',
+
   ...STATUSES
 };

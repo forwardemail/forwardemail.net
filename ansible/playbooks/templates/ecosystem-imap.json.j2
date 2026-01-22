@@ -23,6 +23,18 @@
         "NODE_ENV": "production",
         "IMAP_PORT": 2993
       }
+    },
+    {
+      "name": "managesieve-4190",
+      "script": "managesieve.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production",
+        "MANAGESIEVE_PORT": 4190
+      }
     }
   ],
   "deploy": {

@@ -54,6 +54,7 @@ async function onAuth(auth, session, fn) {
     const isAPI = this?.constructor?.name === 'API';
     const isIMAP = this?.constructor?.name === 'IMAP';
     const isPOP3 = this?.constructor?.name === 'POP3';
+    const isManageSieve = this?.constructor?.name === 'ManageSieveServer';
     const authLimitKey = `auth_limit_${config.env}:${session.remoteAddress}`;
     const attemptsKey = `auth_attempts_${config.env}:${session.remoteAddress}`;
 
@@ -369,7 +370,7 @@ async function onAuth(auth, session, fn) {
     await Promise.all([
       validateDomain(domain, domainName),
       // validate alias (will throw an error if !alias)
-      alias || isIMAPorPOP3
+      alias || isIMAPorPOP3 || isManageSieve
         ? validateAlias(alias, domain.name, name)
         : Promise.resolve()
     ]);
@@ -378,9 +379,10 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     //
 
-    // IMAP/POP3/CalDAV/CardDAV/API servers can only validate against aliases
+    // IMAP/POP3/CalDAV/CardDAV/API/ManageSieve servers can only validate against aliases
     if (
       isIMAPorPOP3 ||
+      isManageSieve ||
       (alias && isCalDAV) ||
       (alias && isCardDAV) ||
       (alias && isAPI)

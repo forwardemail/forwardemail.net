@@ -36,6 +36,16 @@ const TemporaryMessages = new mongoose.Schema(
     remoteAddress: {
       type: String,
       required: true
+    },
+    // Sieve filtering support - target mailbox folder
+    mailbox: {
+      type: String,
+      default: 'INBOX'
+    },
+    // Sieve filtering support - message flags
+    flags: {
+      type: [String],
+      default: []
     }
   },
   dummySchemaOptions

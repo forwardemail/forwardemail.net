@@ -40,6 +40,27 @@
       }
     },
     {
+      "name": "managesieve-4190",
+      "script": "managesieve.js",
+      "max_restarts": 999,
+      "max_memory_restart": "4G",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "pmx": false,
+      "error_file": "/var/log/pm2/managesieve-4190-error.log",
+      "out_file": "/var/log/pm2/managesieve-4190-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
+      "env_development": {
+        "MANAGESIEVE_PORT": 4190
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "MANAGESIEVE_PORT": 4190
+      }
+    },
+    {
       "name": "proxy-http",
       "script": "proxy.js",
       "max_restarts": 999,

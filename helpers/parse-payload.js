@@ -5,12 +5,14 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 const { randomUUID } = require('node:crypto');
 
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
+const MimeNode = require('nodemailer/lib/mime-node');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
@@ -24,6 +26,7 @@ const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
+const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const Boom = require('@hapi/boom');
@@ -32,6 +35,7 @@ const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const { Emails } = require('#models');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
@@ -47,6 +51,8 @@ const getPathToDatabase = require('#helpers/get-path-to-database');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
 const isAllowlisted = require('#helpers/is-allowlisted');
+const checkSRS = require('#helpers/check-srs');
+const createSession = require('#helpers/create-session');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
@@ -57,6 +63,7 @@ const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const { createSieveIntegration } = require('#helpers/sieve');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -100,6 +107,7 @@ const concurrency = os.cpus().length;
 
 const CHECKPOINTS = ['PASSIVE', 'FULL', 'RESTART', 'TRUNCATE'];
 
+const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 
 const PAYLOAD_ACTIONS = new Set([
@@ -700,6 +708,7 @@ async function parsePayload(data, ws) {
                   username: `${alias.name}@${alias.domain.name}`,
                   alias_id: alias.id,
                   alias_name: alias.name,
+                  alias_user_id: alias.user.id,
                   domain_id: alias.domain.id,
                   domain_name: alias.domain.name,
                   password: encrypt(
@@ -894,18 +903,304 @@ async function parsePayload(data, ws) {
               )
                 session.db = this.databaseMap.get(session.user.alias_id);
 
+              //
+              // Sieve filtering - process message through user's Sieve script
+              //
+              let sieveResult = {
+                action: 'keep',
+                folder: 'INBOX',
+                flags: [],
+                reject: null,
+                redirects: [],
+                vacation: null,
+                discarded: false
+              };
+
+              try {
+                // Create Sieve integration instance
+                const sieveIntegration = createSieveIntegration({
+                  client: this.client,
+                  resolver: this.resolver
+                });
+
+                // Process message through Sieve script
+                sieveResult = await sieveIntegration.processMessage({
+                  aliasId: session.user.alias_id,
+                  aliasAddress: session.user.username,
+                  raw: payload.raw,
+                  envelope: payload.envelope || {
+                    from: payload.sender,
+                    to: [session.user.username]
+                  },
+                  session: {
+                    remoteAddress: payload.remoteAddress,
+                    resolvedClientHostname: payload.resolvedClientHostname
+                  }
+                });
+
+                // Handle rejection - return SMTP error
+                if (sieveResult.action === 'reject' && sieveResult.reject) {
+                  throw new SMTPError(
+                    sieveResult.reject.message || sieveResult.reject,
+                    { responseCode: 550 }
+                  );
+                }
+
+                // Handle discard - skip storage entirely
+                if (sieveResult.action === 'discard' || sieveResult.discarded) {
+                  logger.info('sieve discarded message', {
+                    user: { id: session.user.alias_user_id },
+                    domains: [
+                      new mongoose.Types.ObjectId(session.user.domain_id)
+                    ],
+                    session,
+                    ignore_hook: false,
+                    alias: session.user.username,
+                    sender: payload.sender
+                  });
+                  // Still process redirects if any have :copy flag
+                  if (
+                    sieveResult.redirects &&
+                    sieveResult.redirects.length > 0
+                  ) {
+                    for (const redirect of sieveResult.redirects) {
+                      if (redirect.copy) {
+                        try {
+                          // Queue the redirect email using Emails.queue
+                          await Emails.queue({
+                            info: {
+                              message: payload.raw,
+                              envelope: {
+                                from: session.user.username,
+                                to: [redirect.address]
+                              }
+                            },
+                            user: { id: session.user.alias_user_id },
+                            is_bounce: false
+                          });
+                        } catch (err) {
+                          logger.error('sieve redirect failed', {
+                            user: { id: session.user.alias_user_id },
+                            domains: [
+                              new mongoose.Types.ObjectId(
+                                session.user.domain_id
+                              )
+                            ],
+                            session,
+                            ignore_hook: false,
+                            err,
+                            redirect
+                          });
+                        }
+                      }
+                    }
+                  }
+
+                  return; // Skip storage
+                }
+
+                // Handle redirects without :copy flag (forward only, no local storage)
+                if (sieveResult.redirects && sieveResult.redirects.length > 0) {
+                  const forwardOnly = sieveResult.redirects.filter(
+                    (r) => !r.copy
+                  );
+                  if (forwardOnly.length > 0 && sieveResult.action !== 'keep') {
+                    for (const redirect of forwardOnly) {
+                      try {
+                        // Queue the redirect email using Emails.queue
+                        await Emails.queue({
+                          info: {
+                            message: payload.raw,
+                            envelope: {
+                              from: session.user.username,
+                              to: [redirect.address]
+                            }
+                          },
+                          user: { id: session.user.alias_user_id },
+                          is_bounce: false
+                        });
+                      } catch (err) {
+                        logger.error('sieve redirect failed', {
+                          user: { id: session.user.alias_user_id },
+                          domains: [
+                            new mongoose.Types.ObjectId(session.user.domain_id)
+                          ],
+                          session,
+                          ignore_hook: false,
+                          err,
+                          redirect
+                        });
+                      }
+                    }
+
+                    // If only forwarding (no keep), skip local storage
+                    if (sieveResult.action !== 'keep' && !sieveResult.folder) {
+                      return;
+                    }
+                  }
+                }
+
+                // Handle vacation auto-reply (similar to on-data-mx.js sendVacationResponder)
+                if (sieveResult.vacation) {
+                  try {
+                    // Check cache if we've already sent this vacation reply
+                    const vacationKey = `${
+                      config.fingerprintPrefix
+                    }:vacation:${revHash(
+                      encoder.pack([session.user.alias_id, payload.sender])
+                    )}`;
+
+                    const vacationCache = await this.client.get(vacationKey);
+                    if (!vacationCache) {
+                      // Calculate vacation TTL from :seconds or :days (vacation-seconds extension RFC 6131)
+                      // Default is 4 days if not specified
+                      let vacationTtlMs;
+                      if (sieveResult.vacation.seconds) {
+                        // vacation-seconds extension - use seconds directly
+                        // Minimum 60 seconds per RFC 6131
+                        vacationTtlMs =
+                          Math.max(60, sieveResult.vacation.seconds) * 1000;
+                      } else if (sieveResult.vacation.days) {
+                        // Standard vacation :days parameter
+                        // Minimum 1 day, maximum 31 days per RFC 5230
+                        vacationTtlMs =
+                          Math.min(31, Math.max(1, sieveResult.vacation.days)) *
+                          24 *
+                          60 *
+                          60 *
+                          1000;
+                      } else {
+                        // Default 4 days
+                        vacationTtlMs = ms('4d');
+                      }
+
+                      // Set cache with calculated TTL to prevent duplicate replies
+                      await this.client.set(
+                        vacationKey,
+                        true,
+                        'PX',
+                        vacationTtlMs
+                      );
+
+                      // Create proper MIME message like on-data-mx.js
+                      const rootNode = new MimeNode(
+                        'text/plain; charset=utf-8'
+                      );
+                      rootNode.setHeader('To', payload.sender);
+                      rootNode.setHeader('From', session.user.username);
+
+                      // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
+                      const originalSubject = payload.subject || '';
+                      rootNode.setHeader(
+                        'Subject',
+                        isSANB(originalSubject)
+                          ? `${
+                              sieveResult.vacation.subject || 'Auto-Reply'
+                            } Re: ${originalSubject}`
+                          : sieveResult.vacation.subject || 'Auto-Reply'
+                      );
+                      rootNode.setHeader('Precedence', 'bulk');
+                      rootNode.setHeader('X-Autoreply', 'yes');
+                      rootNode.setHeader('Auto-Submitted', 'auto-replied');
+
+                      // Set In-Reply-To and References if original message had Message-ID
+                      if (payload.messageId) {
+                        rootNode.setHeader('In-Reply-To', payload.messageId);
+                        rootNode.setHeader('References', payload.messageId);
+                      }
+
+                      rootNode.setHeader(
+                        'X-Report-Abuse-To',
+                        config.abuseEmail
+                      );
+                      rootNode.setHeader('X-Report-Abuse', config.abuseEmail);
+                      rootNode.setHeader('X-Complaints-To', config.abuseEmail);
+                      rootNode.setHeader(
+                        'X-Forward-Email-Website',
+                        config.urls.web
+                      );
+                      rootNode.setHeader(
+                        'X-Forward-Email-Version',
+                        config.pkg.version
+                      );
+                      rootNode.setHeader(
+                        'X-Forward-Email-Sender',
+                        `rfc822; ${[
+                          punycode.toASCII(session.user.username),
+                          HOSTNAME,
+                          IP_ADDRESS
+                        ].join(', ')}`
+                      );
+
+                      rootNode.setContent(sieveResult.vacation.body || '');
+
+                      // Queue the email using Emails.queue like on-data-mx.js
+                      const vacationEmail = await Emails.queue({
+                        info: {
+                          message: rootNode.createReadStream(),
+                          envelope: {
+                            from: punycode.toASCII(session.user.username),
+                            to: [checkSRS(payload.sender)]
+                          }
+                        },
+                        user: { id: session.user.alias_user_id },
+                        is_bounce: true
+                      });
+
+                      logger.info('sieve vacation email created', {
+                        session: createSession(vacationEmail),
+                        user: vacationEmail.user,
+                        email: vacationEmail._id,
+                        domains: [vacationEmail.domain],
+                        ignore_hook: false
+                      });
+                    }
+                  } catch (err) {
+                    logger.error('sieve vacation reply failed', {
+                      user: { id: session.user.alias_user_id },
+                      domains: [
+                        new mongoose.Types.ObjectId(session.user.domain_id)
+                      ],
+                      session,
+                      ignore_hook: false,
+                      err
+                    });
+                  }
+                }
+              } catch (err) {
+                // If Sieve processing fails, log and continue with default delivery
+                if (err instanceof SMTPError) throw err; // Re-throw SMTP errors (reject)
+                logger.error('sieve processing error', {
+                  user: { id: session.user.alias_user_id },
+                  domains: [
+                    new mongoose.Types.ObjectId(session.user.domain_id)
+                  ],
+                  session,
+                  ignore_hook: false,
+                  err,
+                  alias: session.user.username
+                });
+              }
+
+              // Use Sieve-determined folder and flags
+              const targetFolder = sieveResult.folder || 'INBOX';
+              const targetFlags = sieveResult.flags || [];
+
+              // Use modified raw message if header changes were applied (editheader extension)
+              const messageRaw = sieveResult.modifiedRaw || payload.raw;
+
               if (session.db) {
                 try {
                   // since we use onAppend it re-uses addEntries
                   // which notifies all connected imap users via EXISTS
                   await onAppendPromise.call(
                     this,
-                    'INBOX',
-                    [],
+                    targetFolder,
+                    targetFlags,
                     _.isDate(payload.date)
                       ? payload.date
                       : new Date(payload.date),
-                    payload.raw,
+                    messageRaw,
                     {
                       user: {
                         ...session.user
@@ -987,12 +1282,12 @@ async function parsePayload(data, ws) {
                 // which notifies all connected imap users via EXISTS
                 await onAppendPromise.call(
                   this,
-                  'INBOX',
-                  [],
+                  targetFolder,
+                  targetFlags,
                   _.isDate(payload.date)
                     ? payload.date
                     : new Date(payload.date),
-                  payload.raw,
+                  messageRaw,
                   {
                     user: {
                       ...session.user,
@@ -1329,7 +1624,7 @@ async function parsePayload(data, ws) {
                     }
                   }
 
-                  // store temp message
+                  // store temp message with Sieve-determined folder and flags
                   await TemporaryMessages.create({
                     instance: this,
                     session: { user: session.user, db: tmpDb },
@@ -1337,8 +1632,11 @@ async function parsePayload(data, ws) {
                     date: _.isDate(payload.date)
                       ? payload.date
                       : new Date(payload.date),
-                    raw: payload.raw,
-                    remoteAddress: payload.remoteAddress
+                    raw: messageRaw,
+                    remoteAddress: payload.remoteAddress,
+                    // Sieve filtering results
+                    mailbox: targetFolder,
+                    flags: targetFlags
                   });
 
                   // run a checkpoint to copy over wal to db

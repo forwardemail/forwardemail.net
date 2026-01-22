@@ -67,6 +67,7 @@
   * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
   * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
   * [Do you support S/MIME encryption](#do-you-support-smime-encryption)
+  * [Do you support Sieve email filtering](#do-you-support-sieve-email-filtering)
   * [Do you support MTA-STS](#do-you-support-mta-sts)
   * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
   * [Do you support email best practices](#do-you-support-email-best-practices)
@@ -2568,6 +2569,120 @@ The following email clients have built-in S/MIME support:
       You've successfully configured S/MIME encryption for your alias.
     </span>
   </div>
+</div>
+
+### Do you support Sieve email filtering
+
+Yes! We support [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) email filtering as defined in [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Sieve is a powerful, standardized scripting language for server-side email filtering that allows you to automatically organize, filter, and respond to incoming messages.
+
+#### Supported Sieve Extensions
+
+We support a comprehensive set of Sieve extensions:
+
+| Extension                    | RFC                                                                                    | Description                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `fileinto`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | File messages into specific folders              |
+| `reject` / `ereject`         | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429)                              | Reject messages with an error                    |
+| `vacation`                   | [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230)                              | Automatic vacation/out-of-office replies         |
+| `vacation-seconds`           | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131)                              | Fine-grained vacation response intervals         |
+| `imap4flags`                 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232)                              | Set IMAP flags (\Seen, \Flagged, etc.)           |
+| `envelope`                   | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228)                              | Test envelope sender/recipient                   |
+| `body`                       | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173)                              | Test message body content                        |
+| `variables`                  | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229)                              | Store and use variables in scripts               |
+| `relational`                 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231)                              | Relational comparisons (greater than, less than) |
+| `comparator-i;ascii-numeric` | [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790)                              | Numeric comparisons                              |
+| `copy`                       | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894)                              | Copy messages while redirecting                  |
+| `editheader`                 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293)                              | Add or delete message headers                    |
+| `date`                       | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Test date/time values                            |
+| `index`                      | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260)                              | Access specific header occurrences               |
+| `regex`                      | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | Regular expression matching                      |
+| `enotify`                    | [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435)                              | Send notifications (e.g., mailto:)               |
+| `environment`                | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183)                              | Access environment information                   |
+| `mailbox`                    | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490)                              | Test mailbox existence, create mailboxes         |
+| `special-use`                | [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579)                              | File into special-use mailboxes (\Junk, \Trash)  |
+| `duplicate`                  | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352)                              | Detect duplicate messages                        |
+| `ihave`                      | [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463)                              | Test for extension availability                  |
+| `subaddress`                 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233)                              | Access user+detail address parts                 |
+
+#### Extensions Not Supported
+
+The following extensions are not currently supported:
+
+| Extension                                                       | Reason                                                              |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `include`                                                       | Security risk (script injection) and requires global script storage |
+| `mboxmetadata` / `servermetadata`                               | Requires IMAP METADATA extension support                            |
+| `foreverypart` / `mime` / `extracttext` / `replace` / `enclose` | Complex MIME tree manipulation not yet implemented                  |
+
+#### Example Sieve Scripts
+
+**File newsletters into a folder:**
+
+```sieve
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+```
+
+**Auto-reply when on vacation:**
+
+```sieve
+require ["vacation"];
+
+vacation :days 7 :subject "Out of Office"
+    "I am currently out of the office and will respond when I return.";
+```
+
+**Mark messages from important senders:**
+
+```sieve
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\Flagged";
+}
+```
+
+**Reject spam with specific subjects:**
+
+```sieve
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Message rejected due to spam content.";
+}
+```
+
+#### Managing Sieve Scripts
+
+You can manage your Sieve scripts in several ways:
+
+1. **Web Interface**: Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts to create and manage scripts.
+
+2. **ManageSieve Protocol**: Connect using any ManageSieve-compatible client (like Thunderbird's Sieve add-on) to `imap.forwardemail.net` on port `4190`.
+
+3. **API**: Use our [REST API](/api#sieve-scripts) to programmatically manage scripts.
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Note:
+  </strong>
+  <span>
+    Sieve filtering is applied to incoming messages before they are stored in your mailbox. Scripts are executed in order of priority, and the first matching action determines how the message is handled.
+  </span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Security:
+  </strong>
+  <span>
+    For security, redirect actions are limited to 10 per script and 100 per day. Vacation responses are rate-limited to prevent abuse.
+  </span>
 </div>
 
 ### Do you support MTA-STS

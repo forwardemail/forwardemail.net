@@ -246,6 +246,7 @@
     "parse-logs": "3.0.2",
     "passport-local-mongoose": "7.1.2",
     "paypal-rest-sdk": "1.8.1",
+    "peggy": "4",
     "pify": "5.0.0",
     "piscina": "4.9.2",
     "pkijs": "3.2.4",

@@ -806,4 +806,84 @@ router
     else ctx.body = { redirectTo };
   });
 
+// Sieve routes
+router.get(
+  '/domains/:domain_id/aliases/:alias_id/sieve',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.list,
+  render('my-account/domains/aliases/sieve/index')
+);
+
+router.get(
+  '/domains/:domain_id/aliases/:alias_id/sieve/new',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.createForm,
+  render('my-account/domains/aliases/sieve/form')
+);
+
+router.post(
+  '/domains/:domain_id/aliases/:alias_id/sieve',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.create
+);
+
+router.get(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.editForm,
+  render('my-account/domains/aliases/sieve/form')
+);
+
+router.put(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.retrieve,
+  web.myAccount.sieve.update
+);
+
+router.delete(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.retrieve,
+  web.myAccount.sieve.remove
+);
+
+router.post(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.retrieve,
+  web.myAccount.sieve.activate
+);
+
+router.post(
+  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id/deactivate',
+  web.myAccount.retrieveDomain,
+  web.myAccount.ensureDomainAdmin,
+  web.myAccount.retrieveAlias,
+  web.myAccount.ensureAliasAdmin,
+  web.myAccount.sieve.retrieve,
+  web.myAccount.sieve.deactivate
+);
+
 module.exports = router;

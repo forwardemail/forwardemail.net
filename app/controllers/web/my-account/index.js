@@ -33,6 +33,7 @@ const resetAPIToken = require('./reset-api-token');
 const retrieveAlias = require('./retrieve-alias');
 const retrieveAliases = require('./retrieve-aliases');
 const retrieveBilling = require('./retrieve-billing');
+const sieve = require('./sieve');
 const retrieveDomain = require('./retrieve-domain');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
 const retrieveDomains = require('./retrieve-domains');
@@ -73,6 +74,7 @@ const listAnalytics = require('./list-analytics');
 const listDmarcReports = require('./list-dmarc-reports');
 
 module.exports = {
+  sieve,
   cancelEmailChange,
   cancelSubscription,
   createAlias,
