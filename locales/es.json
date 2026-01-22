@@ -18212,5 +18212,10 @@
   "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.": "You can obtain an S/MIME certificate from a Certificate Authority (CA) or generate a self-signed certificate for testing.",
   "Email Testing & Preview": "Email Testing & Preview",
   "SQLite Performance Optimization": "SQLite Performance Optimization",
-  "About Forward Email - Our Story & Mission": "About Forward Email - Our Story & Mission"
+  "About Forward Email - Our Story & Mission": "About Forward Email - Our Story & Mission",
+  "RFC Protocol Compliance": "RFC Protocol Compliance",
+  "Email protocols & RFC compliance": "Email protocols & RFC compliance",
+  "%d articles": "%d articles",
+  "Complete guide to email protocols & RFC compliance. Compare IMAP, SMTP, POP3, DKIM, SPF, DMARC, ARC standards. Learn email security, CalDAV, encryption & protocol support across providers.": "Complete guide to email protocols & RFC compliance. Compare IMAP, SMTP, POP3, DKIM, SPF, DMARC, ARC standards. Learn email security, CalDAV, encryption & protocol support across providers.",
+  "Best Security Audit Companies - Guide 2026": "Best Security Audit Companies - Guide 2026"
 }

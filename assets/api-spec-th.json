@@ -99,6 +99,10 @@
           "locale": {
             "type": "string"
           },
+          "preferred_locale": {
+            "type": "string",
+            "description": "User's preferred language setting that overrides automatic detection"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -196,9 +200,60 @@
             "type": "string",
             "description": "คีย์สาธารณะ PGP หากมี"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Whether S/MIME encryption is enabled"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "locale": {
             "type": "string",
             "description": "การตั้งค่าตำแหน่งที่ตั้ง"
+          },
+          "settings": {
+            "type": "object",
+            "description": "Alias settings",
+            "properties": {
+              "mail": {
+                "type": "object",
+                "properties": {
+                  "archive_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail archive folder"
+                  },
+                  "sent_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail sent folder"
+                  },
+                  "drafts_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail drafts folder"
+                  }
+                }
+              },
+              "label_settings": {
+                "type": "object",
+                "description": "Alias label map keyed by keyword",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/SettingsLabelUpdate"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "properties": {
+                  "defaults": {
+                    "type": "object",
+                    "description": "Free-form alias defaults such as display_name or signature.",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
           },
           "created_at": {
             "type": "string",
@@ -223,7 +278,20 @@
           "has_imap": true,
           "has_pgp": false,
           "public_key": "",
+          "has_smime": false,
+          "smime_certificate": "",
           "locale": "en",
+          "settings": {
+            "mail": {
+              "archive_folder": null,
+              "sent_folder": null,
+              "drafts_folder": null
+            },
+            "label_settings": {},
+            "aliases": {
+              "defaults": {}
+            }
+          },
           "created_at": "2025-06-04T02:43:52.646Z",
           "updated_at": "2025-06-04T02:43:55.350Z"
         }
@@ -962,6 +1030,7 @@
           "header_date",
           "subject",
           "flags",
+          "labels",
           "size",
           "uid",
           "modseq",
@@ -1058,6 +1127,18 @@
               "type": "string"
             },
             "description": "แฟล็ก IMAP"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "User-defined labels (lowercase, max 10)",
+            "example": [
+              "work",
+              "important",
+              "follow-up"
+            ]
           },
           "size": {
             "type": "integer",
@@ -1226,6 +1307,24 @@
               }
             ],
             "description": "ตั้งค่าแฟล็ก IMAP บนข้อความ"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": [
+              "work",
+              "important"
+            ]
           }
         }
       },
@@ -1238,6 +1337,24 @@
               "type": "string"
             },
             "description": "ตั้งค่าแฟล็ก IMAP บนข้อความ"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": [
+              "work",
+              "important"
+            ]
           },
           "folder": {
             "type": "string",
@@ -1285,6 +1402,16 @@
           },
           "status": {
             "type": "string",
+            "enum": [
+              "pending",
+              "queued",
+              "sent",
+              "partially_sent",
+              "deferred",
+              "bounced",
+              "rejected"
+            ],
+            "description": "The current status of the email. Scheduling is determined by the `date` field.",
             "example": "sent"
           },
           "is_locked": {
@@ -1311,7 +1438,8 @@
           },
           "date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The email's Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Maximum 30 days in the future from creation."
           },
           "subject": {
             "type": "string"
@@ -1341,6 +1469,10 @@
           "link": {
             "type": "string",
             "format": "uri"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Indicates if TLS is required for the entire delivery chain (RFC 8689)."
           }
         },
         "example": {
@@ -1555,11 +1687,16 @@
                 "type": "string"
               }
             ],
-            "description": "ส่วนหัววันที่ (ไม่บังคับ) ต้องไม่เกิน 30 วันในอนาคต"
+            "description": "Optional Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Cannot be more than 30 days in the future from creation.",
+            "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
             "type": "object",
             "description": "วัตถุตัวเลือกของส่วนหัว List-*"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "If true, requires TLS for the entire delivery chain (RFC 8689). The message will only be transmitted over TLS-encrypted connections."
           }
         }
       },
@@ -1655,6 +1792,10 @@
           },
           "has_custom_verification": {
             "type": "boolean"
+          },
+          "require_tls_inbound": {
+            "type": "boolean",
+            "description": "When enabled, reject inbound emails not sent over TLS"
           },
           "verification_record": {
             "type": "string"
@@ -2158,6 +2299,14 @@
             "type": "string",
             "description": "คีย์สาธารณะ OpenPGP ในรูปแบบ ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption for this alias"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "max_quota": {
             "type": "string",
             "description": "โควตาพื้นที่เก็บข้อมูลสูงสุด (เช่น '1 GB')"
@@ -2255,6 +2404,14 @@
             "type": "string",
             "description": "คีย์สาธารณะ OpenPGP ในรูปแบบ ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "max_quota": {
             "type": "string",
             "description": "โควตาพื้นที่เก็บข้อมูลสูงสุด (เช่น '1 GB')"
@@ -2313,6 +2470,62 @@
           "limit": {
             "type": "integer",
             "description": "จำนวนอีเมลสูงสุดที่อนุญาต"
+          }
+        }
+      },
+      "SavedSearch": {
+        "type": "object",
+        "description": "Saved search definition stored per alias.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Display name for the saved search"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Search query string to reuse (e.g., \"from:billing\")"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "ShortcutMap": {
+        "type": "object",
+        "description": "Map of actions to keybindings for keyboard shortcuts.",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Keybinding for the action (e.g., \"e\" for archive)"
+        }
+      },
+      "SettingsLabelUpdate": {
+        "type": "object",
+        "description": "Fields allowed when updating a label definition.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable label name shown in the UI"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+            "description": "Hex color used for UI rendering"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Hide the label in the UI while preserving the keyword"
+          },
+          "source": {
+            "type": "string",
+            "description": "Label origin for filtering and migrations",
+            "enum": [
+              "custom",
+              "system",
+              "imported"
+            ]
           }
         }
       },
@@ -2406,7 +2619,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "รหัสอีเมล",
+        "description": "Email ID or Message-ID. You can pass either the unique email ID (e.g., '683fbe4d5baef1b583a11e54') or the email's Message-ID header value (e.g., '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net').",
         "schema": {
           "type": "string"
         }
@@ -2443,6 +2656,15 @@
         "in": "path",
         "required": true,
         "description": "รหัสข้อความ",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "labelKeyword": {
+        "name": "keyword",
+        "in": "path",
+        "required": true,
+        "description": "IMAP keyword used as the label identifier",
         "schema": {
           "type": "string"
         }
@@ -2588,7 +2810,7 @@
           "บัญชี"
         ],
         "summary": "ดึงข้อมูลบัญชี",
-        "description": "ดึงข้อมูลบัญชีของคุณ\n\n**การรับรองความถูกต้อง:** จุดสิ้นสุดนี้รองรับทั้งการรับรองความถูกต้องโทเค็น API และการรับรองความถูกต้องข้อมูลประจำตัวนามแฝง\n\n- **บัญชีผู้ใช้ (โทเค็น API):** เมื่อรับรองความถูกต้องด้วยโทเค็น API ของคุณ จุดสิ้นสุดนี้จะส่งคืนข้อมูลบัญชีผู้ใช้ของคุณ รวมถึงรายละเอียดแผน อีเมล และโทเค็น API\n\n- **บัญชีนามแฝง (ข้อมูลประจำตัวนามแฝง):** เมื่อรับรองความถูกต้องด้วยข้อมูลประจำตัวนามแฝง (อีเมลและรหัสผ่านที่สร้างขึ้น) จุดสิ้นสุดนี้จะส่งคืนข้อมูลนามแฝง/กล่องจดหมาย รวมถึงพื้นที่เก็บข้อมูลที่ใช้ โควต้าพื้นที่เก็บข้อมูล และการตั้งค่ากล่องจดหมาย วิธีนี้มีประโยชน์สำหรับไคลเอ็นต์ IMAP/POP3/CalDAV/CardDAV เพื่อตรวจสอบสถานะพื้นที่เก็บข้อมูล",
+        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used/quota and a nested `settings` object (mail special folders, label settings, and alias defaults). This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status and preferences.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2652,7 +2874,20 @@
                       "has_imap": true,
                       "has_pgp": false,
                       "public_key": "",
+                      "has_smime": false,
+                      "smime_certificate": "",
                       "locale": "en",
+                      "settings": {
+                        "mail": {
+                          "archive_folder": null,
+                          "sent_folder": null,
+                          "drafts_folder": null
+                        },
+                        "label_settings": {},
+                        "aliases": {
+                          "defaults": {}
+                        }
+                      },
                       "created_at": "2025-06-04T02:43:52.646Z",
                       "updated_at": "2025-06-04T02:43:55.350Z"
                     }
@@ -2677,11 +2912,14 @@
           "บัญชี"
         ],
         "summary": "อัปเดตบัญชี",
-        "description": "อัปเดตข้อมูลบัญชีของคุณ",
+        "description": "Update your account information.\n\n- **User Account (API Token):** Update user profile fields.\n- **Alias Account (Alias Credentials):** Update alias-scoped settings using the nested `settings` object. Legacy flat fields are accepted for compatibility. The response matches `GET /v1/account`.",
         "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
@@ -2691,6 +2929,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "settings": {
+                    "type": "object",
+                    "description": "Alias settings (alias authentication only)",
+                    "properties": {
+                      "mail": {
+                        "type": "object",
+                        "properties": {
+                          "archive_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail archive folder"
+                          },
+                          "sent_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail sent folder"
+                          },
+                          "drafts_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail drafts folder"
+                          }
+                        }
+                      },
+                      "label_settings": {
+                        "type": "object",
+                        "description": "Alias label map keyed by keyword",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SettingsLabelUpdate"
+                        }
+                      },
+                      "aliases": {
+                        "type": "object",
+                        "properties": {
+                          "defaults": {
+                            "type": "object",
+                            "description": "Free-form alias defaults such as display_name or signature",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  },
                   "display_name": {
                     "type": "string",
                     "description": "ชื่อที่แสดง"
@@ -2698,6 +2979,16 @@
                   "locale": {
                     "type": "string",
                     "description": "การตั้งค่าตำแหน่งที่ตั้ง"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Updated email address (user authentication only)"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Avatar URL (user authentication only)"
                   }
                 }
               }
@@ -2710,7 +3001,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
                 }
               }
             }
@@ -4112,7 +4410,7 @@
           "ข้อความ"
         ],
         "summary": "สร้างข้อความ",
-        "description": "สร้าง/ผนวกข้อความใหม่ลงในโฟลเดอร์ ปลายทางนี้รองรับรูปแบบข้อความ Nodemailer มาตรฐาน และอนุญาตให้คุณระบุโฟลเดอร์เป้าหมายและแฟล็กเริ่มต้นได้ หากไม่มีโฟลเดอร์เป้าหมาย ระบบจะสร้างโฟลเดอร์นั้นโดยอัตโนมัติ",
+        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder, initial flags, and labels. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4245,7 +4543,7 @@
           "ข้อความ"
         ],
         "summary": "อัปเดตข้อความ",
-        "description": "อัปเดตข้อความที่มีอยู่ คุณสามารถแก้ไขแฟล็กข้อความหรือย้ายไปยังโฟลเดอร์อื่นได้ หากไม่มีโฟลเดอร์เป้าหมาย ระบบจะสร้างขึ้นโดยอัตโนมัติ",
+        "description": "Update an existing message. You can modify the message flags, labels, or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4397,6 +4695,20 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "always_send_email",
+            "in": "query",
+            "description": "If set to `true` or `1`, an email will always be sent even if no logs are found. The email will indicate that no logs were available and will not contain an attachment.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "1",
+                "0"
+              ]
+            }
           }
         ],
         "responses": {
@@ -4434,7 +4746,7 @@
     "/v1/emails": {
       "get": {
         "summary": "รายชื่ออีเมล SMTP ขาออก",
-        "description": "**แสดงรายการอีเมล SMTP ขาออก**\n\nโปรดทราบว่าจุดสิ้นสุดนี้จะไม่ส่งคืนค่าคุณสมบัติของ `message`, `headers` หรือ `rejectedErrors` ของอีเมล\n\nหากต้องการส่งคืนคุณสมบัติและค่าเหล่านั้น โปรดใช้จุดสิ้นสุด [เรียกอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) พร้อมรหัสอีเมล",
+        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the Retrieve email endpoint with an email ID or Message-ID.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password.",
         "tags": [
           "อีเมล์"
         ],
@@ -4458,6 +4770,14 @@
             "description": "ค้นหาอีเมล์ตามชื่อโดเมน",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "is_scheduled",
+            "in": "query",
+            "description": "Filter for scheduled emails (emails with future send date). Set to 'true' to show only emails scheduled to be sent in the future.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4512,7 +4832,7 @@
       },
       "post": {
         "summary": "สร้างอีเมล SMTP ขาออก",
-        "description": "API สำหรับการสร้างอีเมลของเราได้รับแรงบันดาลใจและใช้ประโยชน์จากการกำหนดค่าตัวเลือกข้อความของ Nodemailer โปรดอ้างอิง [การกำหนดค่าข้อความของ Nodemailer](https://nodemailer.com/message/) สำหรับพารามิเตอร์เนื้อหาทั้งหมดด้านล่างนี้\n\nโปรดทราบว่า ยกเว้น `envelope` และ `dkim` (เนื่องจากเราตั้งค่าเหล่านี้ให้คุณโดยอัตโนมัติ) เรารองรับตัวเลือกทั้งหมดของ Nodemailer โดยเราตั้งค่าตัวเลือก `disableFileAccess` และ `disableUrlAccess` เป็น `true` โดยอัตโนมัติเพื่อความปลอดภัย\n\nคุณควรส่งตัวเลือก `raw` เพียงตัวเลือกเดียวพร้อมกับอีเมลแบบเต็มแบบ raw ของคุณ รวมถึงส่วนหัว หรือส่งตัวเลือกพารามิเตอร์เนื้อหาแต่ละรายการด้านล่าง\n\nจุดสิ้นสุดของ API นี้จะเข้ารหัสอิโมจิให้คุณโดยอัตโนมัติ หากพบอิโมจิในส่วนหัว (เช่น บรรทัดหัวเรื่อง `Subject: 🤓 Hello` จะถูกแปลงเป็น `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` โดยอัตโนมัติ) เป้าหมายของเราคือการสร้าง API อีเมลที่ใช้งานง่ายสำหรับนักพัฒนาและป้องกันข้อผิดพลาดแบบดัมมี\n\n**การยืนยันตัวตน:** จุดสิ้นสุดนี้รองรับทั้งการยืนยันตัวตนด้วยโทเค็น API และการยืนยันตัวตนด้วยนามแฝง คุณสามารถตรวจสอบตัวตนได้โดยใช้คีย์ API (แนะนำ) หรือที่อยู่อีเมลนามแฝงและรหัสผ่านที่สร้างขึ้น ดูรายละเอียดเพิ่มเติมในส่วนการยืนยันตัวตนในเอกสารประกอบ API",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "อีเมล์"
         ],
@@ -4602,7 +4922,7 @@
       ],
       "get": {
         "summary": "ดึงอีเมล SMTP ขาออก",
-        "description": "ดึงอีเมล SMTP ขาออกที่เฉพาะเจาะจง",
+        "description": "Retrieve a specific outbound SMTP email by ID or Message-ID. You can pass either the email's unique ID or its Message-ID header value.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "อีเมล์"
         ],
@@ -4635,7 +4955,7 @@
       },
       "delete": {
         "summary": "ลบอีเมล SMTP ขาออก",
-        "description": "การลบอีเมลจะตั้งสถานะเป็น \"ปฏิเสธ\" (และจะไม่ดำเนินการในคิว) ก็ต่อเมื่อสถานะปัจจุบันเป็น \"รอดำเนินการ\" \"คิว\" หรือ \"รอการอนุมัติ\" เราอาจล้างอีเมลโดยอัตโนมัติหลังจาก 30 วันหลังจากสร้างและ/หรือส่งอีเมล ดังนั้นคุณควรเก็บสำเนาอีเมล SMTP ขาออกไว้ในไคลเอ็นต์ ฐานข้อมูล หรือแอปพลิเคชันของคุณ คุณสามารถอ้างอิงค่ารหัสอีเมลของเราในฐานข้อมูลได้หากต้องการ โดยค่านี้จะส่งคืนจากทั้งจุดสิ้นสุด [สร้างอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) และ [ดึงอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email)",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "อีเมล์"
         ],

@@ -99,6 +99,10 @@
           "locale": {
             "type": "string"
           },
+          "preferred_locale": {
+            "type": "string",
+            "description": "User's preferred language setting that overrides automatic detection"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -196,9 +200,60 @@
             "type": "string",
             "description": "Clave pública PGP si está disponible"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Whether S/MIME encryption is enabled"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "locale": {
             "type": "string",
             "description": "Preferencias de configuración regional"
+          },
+          "settings": {
+            "type": "object",
+            "description": "Alias settings",
+            "properties": {
+              "mail": {
+                "type": "object",
+                "properties": {
+                  "archive_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail archive folder"
+                  },
+                  "sent_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail sent folder"
+                  },
+                  "drafts_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias mail drafts folder"
+                  }
+                }
+              },
+              "label_settings": {
+                "type": "object",
+                "description": "Alias label map keyed by keyword",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/SettingsLabelUpdate"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "properties": {
+                  "defaults": {
+                    "type": "object",
+                    "description": "Free-form alias defaults such as display_name or signature.",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
           },
           "created_at": {
             "type": "string",
@@ -223,7 +278,20 @@
           "has_imap": true,
           "has_pgp": false,
           "public_key": "",
+          "has_smime": false,
+          "smime_certificate": "",
           "locale": "en",
+          "settings": {
+            "mail": {
+              "archive_folder": null,
+              "sent_folder": null,
+              "drafts_folder": null
+            },
+            "label_settings": {},
+            "aliases": {
+              "defaults": {}
+            }
+          },
           "created_at": "2025-06-04T02:43:52.646Z",
           "updated_at": "2025-06-04T02:43:55.350Z"
         }
@@ -962,6 +1030,7 @@
           "header_date",
           "subject",
           "flags",
+          "labels",
           "size",
           "uid",
           "modseq",
@@ -1058,6 +1127,18 @@
               "type": "string"
             },
             "description": "Banderas IMAP"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "User-defined labels (lowercase, max 10)",
+            "example": [
+              "work",
+              "important",
+              "follow-up"
+            ]
           },
           "size": {
             "type": "integer",
@@ -1226,6 +1307,24 @@
               }
             ],
             "description": "Banderas IMAP para configurar en el mensaje"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": [
+              "work",
+              "important"
+            ]
           }
         }
       },
@@ -1238,6 +1337,24 @@
               "type": "string"
             },
             "description": "Banderas IMAP para configurar en el mensaje"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "example": [
+              "work",
+              "important"
+            ]
           },
           "folder": {
             "type": "string",
@@ -1285,6 +1402,16 @@
           },
           "status": {
             "type": "string",
+            "enum": [
+              "pending",
+              "queued",
+              "sent",
+              "partially_sent",
+              "deferred",
+              "bounced",
+              "rejected"
+            ],
+            "description": "The current status of the email. Scheduling is determined by the `date` field.",
             "example": "sent"
           },
           "is_locked": {
@@ -1311,7 +1438,8 @@
           },
           "date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The email's Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Maximum 30 days in the future from creation."
           },
           "subject": {
             "type": "string"
@@ -1341,6 +1469,10 @@
           "link": {
             "type": "string",
             "format": "uri"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Indicates if TLS is required for the entire delivery chain (RFC 8689)."
           }
         },
         "example": {
@@ -1555,11 +1687,16 @@
                 "type": "string"
               }
             ],
-            "description": "Encabezado de fecha opcional. No puede ser posterior a más de 30 días."
+            "description": "Optional Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Cannot be more than 30 days in the future from creation.",
+            "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
             "type": "object",
             "description": "Objeto opcional de encabezados List-*."
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "If true, requires TLS for the entire delivery chain (RFC 8689). The message will only be transmitted over TLS-encrypted connections."
           }
         }
       },
@@ -1655,6 +1792,10 @@
           },
           "has_custom_verification": {
             "type": "boolean"
+          },
+          "require_tls_inbound": {
+            "type": "boolean",
+            "description": "When enabled, reject inbound emails not sent over TLS"
           },
           "verification_record": {
             "type": "string"
@@ -2158,6 +2299,14 @@
             "type": "string",
             "description": "Clave pública OpenPGP en formato ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption for this alias"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "max_quota": {
             "type": "string",
             "description": "Cuota máxima de almacenamiento (p. ej., '1 GB')"
@@ -2255,6 +2404,14 @@
             "type": "string",
             "description": "Clave pública OpenPGP en formato ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Enable or disable S/MIME encryption"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509 certificate in PEM format"
+          },
           "max_quota": {
             "type": "string",
             "description": "Cuota máxima de almacenamiento (por ejemplo, '1 GB')"
@@ -2313,6 +2470,62 @@
           "limit": {
             "type": "integer",
             "description": "Número máximo de correos electrónicos permitidos"
+          }
+        }
+      },
+      "SavedSearch": {
+        "type": "object",
+        "description": "Saved search definition stored per alias.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Display name for the saved search"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Search query string to reuse (e.g., \"from:billing\")"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "ShortcutMap": {
+        "type": "object",
+        "description": "Map of actions to keybindings for keyboard shortcuts.",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Keybinding for the action (e.g., \"e\" for archive)"
+        }
+      },
+      "SettingsLabelUpdate": {
+        "type": "object",
+        "description": "Fields allowed when updating a label definition.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable label name shown in the UI"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+            "description": "Hex color used for UI rendering"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Hide the label in the UI while preserving the keyword"
+          },
+          "source": {
+            "type": "string",
+            "description": "Label origin for filtering and migrations",
+            "enum": [
+              "custom",
+              "system",
+              "imported"
+            ]
           }
         }
       },
@@ -2406,7 +2619,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "ID de correo electrónico",
+        "description": "Email ID or Message-ID. You can pass either the unique email ID (e.g., '683fbe4d5baef1b583a11e54') or the email's Message-ID header value (e.g., '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net').",
         "schema": {
           "type": "string"
         }
@@ -2443,6 +2656,15 @@
         "in": "path",
         "required": true,
         "description": "ID del mensaje",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "labelKeyword": {
+        "name": "keyword",
+        "in": "path",
+        "required": true,
+        "description": "IMAP keyword used as the label identifier",
         "schema": {
           "type": "string"
         }
@@ -2588,7 +2810,7 @@
           "Cuenta"
         ],
         "summary": "Recuperar cuenta",
-        "description": "Recupere la información de su cuenta.\n\n**Autenticación:** Este punto final admite la autenticación mediante token de API y credenciales de alias.\n\n- **Cuenta de usuario (Token de API):** Al autenticarse con su token de API, este punto final devuelve la información de su cuenta de usuario, incluyendo detalles del plan, correo electrónico y token de API.\n\n- **Cuenta de alias (Credenciales de alias):** Al autenticarse con credenciales de alias (correo electrónico y contraseña generada), este punto final devuelve información de alias/buzón de correo, incluyendo el almacenamiento utilizado, la cuota de almacenamiento y la configuración del buzón. Esto es útil para que los clientes IMAP/POP3/CalDAV/CardDAV comprueben el estado del almacenamiento.",
+        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used/quota and a nested `settings` object (mail special folders, label settings, and alias defaults). This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status and preferences.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2652,7 +2874,20 @@
                       "has_imap": true,
                       "has_pgp": false,
                       "public_key": "",
+                      "has_smime": false,
+                      "smime_certificate": "",
                       "locale": "en",
+                      "settings": {
+                        "mail": {
+                          "archive_folder": null,
+                          "sent_folder": null,
+                          "drafts_folder": null
+                        },
+                        "label_settings": {},
+                        "aliases": {
+                          "defaults": {}
+                        }
+                      },
                       "created_at": "2025-06-04T02:43:52.646Z",
                       "updated_at": "2025-06-04T02:43:55.350Z"
                     }
@@ -2677,11 +2912,14 @@
           "Cuenta"
         ],
         "summary": "Actualizar cuenta",
-        "description": "Actualice la información de su cuenta.",
+        "description": "Update your account information.\n\n- **User Account (API Token):** Update user profile fields.\n- **Alias Account (Alias Credentials):** Update alias-scoped settings using the nested `settings` object. Legacy flat fields are accepted for compatibility. The response matches `GET /v1/account`.",
         "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
@@ -2691,6 +2929,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "settings": {
+                    "type": "object",
+                    "description": "Alias settings (alias authentication only)",
+                    "properties": {
+                      "mail": {
+                        "type": "object",
+                        "properties": {
+                          "archive_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail archive folder"
+                          },
+                          "sent_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail sent folder"
+                          },
+                          "drafts_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias mail drafts folder"
+                          }
+                        }
+                      },
+                      "label_settings": {
+                        "type": "object",
+                        "description": "Alias label map keyed by keyword",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SettingsLabelUpdate"
+                        }
+                      },
+                      "aliases": {
+                        "type": "object",
+                        "properties": {
+                          "defaults": {
+                            "type": "object",
+                            "description": "Free-form alias defaults such as display_name or signature",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  },
                   "display_name": {
                     "type": "string",
                     "description": "Nombre para mostrar"
@@ -2698,6 +2979,16 @@
                   "locale": {
                     "type": "string",
                     "description": "Preferencias de configuración regional"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Updated email address (user authentication only)"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Avatar URL (user authentication only)"
                   }
                 }
               }
@@ -2710,7 +3001,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
                 }
               }
             }
@@ -4112,7 +4410,7 @@
           "Mensajes"
         ],
         "summary": "Crear mensaje",
-        "description": "Crea o añade un nuevo mensaje a una carpeta. Este punto final acepta el formato de mensaje estándar de Nodemailer y permite especificar la carpeta de destino y los indicadores iniciales. Si la carpeta de destino no existe, se creará automáticamente.",
+        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder, initial flags, and labels. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4245,7 +4543,7 @@
           "Mensajes"
         ],
         "summary": "Mensaje de actualización",
-        "description": "Actualizar un mensaje existente. Puedes modificar las marcas del mensaje o moverlo a otra carpeta. Si la carpeta de destino no existe, se creará automáticamente.",
+        "description": "Update an existing message. You can modify the message flags, labels, or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4397,6 +4695,20 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "always_send_email",
+            "in": "query",
+            "description": "If set to `true` or `1`, an email will always be sent even if no logs are found. The email will indicate that no logs were available and will not contain an attachment.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "1",
+                "0"
+              ]
+            }
           }
         ],
         "responses": {
@@ -4434,7 +4746,7 @@
     "/v1/emails": {
       "get": {
         "summary": "Lista de correos electrónicos SMTP salientes",
-        "description": "**Listar correos electrónicos SMTP salientes**\n\nTenga en cuenta que este punto de conexión no devuelve valores de propiedad para `message`, `headers` ni `rejectedErrors` de un correo electrónico.\n\nPara devolver estas propiedades y sus valores, utilice el punto de conexión [Recuperar correo electrónico](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) con un ID de correo electrónico.",
+        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the Retrieve email endpoint with an email ID or Message-ID.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password.",
         "tags": [
           "Correos electrónicos"
         ],
@@ -4458,6 +4770,14 @@
             "description": "Buscar correos electrónicos por nombre de dominio.",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "is_scheduled",
+            "in": "query",
+            "description": "Filter for scheduled emails (emails with future send date). Set to 'true' to show only emails scheduled to be sent in the future.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4512,7 +4832,7 @@
       },
       "post": {
         "summary": "Crear correo electrónico SMTP saliente",
-        "description": "Nuestra API para crear correos electrónicos se inspira en la configuración de opciones de mensajes de Nodemailer y la aprovecha. Consulte la [configuración de mensajes de Nodemailer](https://nodemailer.com/message/) para todos los parámetros del cuerpo que aparecen a continuación.\n\nTenga en cuenta que, con la excepción de `envelope` y `dkim` (ya que los configuramos automáticamente), admitimos todas las opciones de Nodemailer. Por seguridad, configuramos automáticamente las opciones `disableFileAccess` y `disableUrlAccess` en `true`.\n\nDebe pasar la opción `raw` con su correo electrónico completo, incluyendo los encabezados, o bien pasar las opciones individuales de los parámetros del cuerpo que aparecen a continuación.\n\nEste punto final de la API codificará automáticamente los emojis si se encuentran en los encabezados (por ejemplo, un asunto como `Subject: 🤓 Hello` se convierte automáticamente en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Nuestro objetivo era crear una API de correo electrónico extremadamente intuitiva y a prueba de errores.\n\n**Autenticación:** Este punto final admite la autenticación mediante token de API y credenciales de alias. Puede autenticarse usando su clave de API (recomendado) o su dirección de correo electrónico de alias y la contraseña generada. Consulte la sección \"Autenticación\" en la documentación de la API para obtener más información.",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "Correos electrónicos"
         ],
@@ -4602,7 +4922,7 @@
       ],
       "get": {
         "summary": "Recuperar correo electrónico SMTP saliente",
-        "description": "Recuperar un correo electrónico SMTP saliente específico.",
+        "description": "Retrieve a specific outbound SMTP email by ID or Message-ID. You can pass either the email's unique ID or its Message-ID header value.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Correos electrónicos"
         ],
@@ -4635,7 +4955,7 @@
       },
       "delete": {
         "summary": "Eliminar correo electrónico SMTP saliente",
-        "description": "La eliminación de correos electrónicos establecerá el estado en \"rechazado\" (y, por lo tanto, no se procesará en la cola) solo si el estado actual es \"pendiente\", \"en cola\" o \"aplazado\". Podemos purgar los correos electrónicos automáticamente después de 30 días de su creación o envío; por lo tanto, le recomendamos conservar una copia de los correos SMTP salientes en su cliente, base de datos o aplicación. Si lo desea, puede consultar el valor de nuestro ID de correo electrónico en su base de datos; este valor se devuelve desde los puntos finales [Crear correo electrónico](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) y [Recuperar correo electrónico](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Correos electrónicos"
         ],

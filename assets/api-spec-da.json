@@ -99,6 +99,10 @@
           "locale": {
             "type": "string"
           },
+          "preferred_locale": {
+            "type": "string",
+            "description": "Brugerens foretrukne sprogindstilling, der tilsidesætter automatisk detektion"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -196,9 +200,60 @@
             "type": "string",
             "description": "PGP offentlig nøgle, hvis tilgængelig"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Om S/MIME-kryptering er aktiveret"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509-certifikat i PEM-format"
+          },
           "locale": {
             "type": "string",
             "description": "Lokalitetspræference"
+          },
+          "settings": {
+            "type": "object",
+            "description": "Aliasindstillinger",
+            "properties": {
+              "mail": {
+                "type": "object",
+                "properties": {
+                  "archive_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias-mailarkivmappe"
+                  },
+                  "sent_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Aliasmappe for sendte e-mails"
+                  },
+                  "drafts_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Alias-mappe til mailkladder"
+                  }
+                }
+              },
+              "label_settings": {
+                "type": "object",
+                "description": "Alias-etiketkort indtastet efter nøgleord",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/SettingsLabelUpdate"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "properties": {
+                  "defaults": {
+                    "type": "object",
+                    "description": "Frit formulerede aliasstandarder såsom display_name eller signatur.",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
           },
           "created_at": {
             "type": "string",
@@ -223,7 +278,20 @@
           "has_imap": true,
           "has_pgp": false,
           "public_key": "",
+          "has_smime": false,
+          "smime_certificate": "",
           "locale": "en",
+          "settings": {
+            "mail": {
+              "archive_folder": null,
+              "sent_folder": null,
+              "drafts_folder": null
+            },
+            "label_settings": {},
+            "aliases": {
+              "defaults": {}
+            }
+          },
           "created_at": "2025-06-04T02:43:52.646Z",
           "updated_at": "2025-06-04T02:43:55.350Z"
         }
@@ -962,6 +1030,7 @@
           "header_date",
           "subject",
           "flags",
+          "labels",
           "size",
           "uid",
           "modseq",
@@ -1058,6 +1127,18 @@
               "type": "string"
             },
             "description": "IMAP-flag"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Brugerdefinerede etiketter (små bogstaver, maks. 10)",
+            "example": [
+              "work",
+              "important",
+              "follow-up"
+            ]
           },
           "size": {
             "type": "integer",
@@ -1226,6 +1307,24 @@
               }
             ],
             "description": "IMAP-flag, der skal sættes på beskeden"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Brugerdefinerede etiketter, der skal indstilles på beskeden. Kan være en enkelt etiketstreng eller en række etiketter. Etiketter skal starte med et bogstav, ciffer, omvendt skråstreg eller dollartegn og kan indeholde ord, tegn, punktummer og bindestreger. Maksimalt 10 etiketter pr. besked. Etiketter skelner ikke mellem store og små bogstaver og gemmes med små bogstaver.",
+            "example": [
+              "work",
+              "important"
+            ]
           }
         }
       },
@@ -1238,6 +1337,24 @@
               "type": "string"
             },
             "description": "IMAP-flag, der skal sættes på beskeden"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Brugerdefinerede etiketter, der skal indstilles på beskeden. Kan være en enkelt etiketstreng eller en række etiketter. Etiketter skal starte med et bogstav, ciffer, omvendt skråstreg eller dollartegn og kan indeholde ord, tegn, punktummer og bindestreger. Maksimalt 10 etiketter pr. besked. Etiketter skelner ikke mellem store og små bogstaver og gemmes med små bogstaver.",
+            "example": [
+              "work",
+              "important"
+            ]
           },
           "folder": {
             "type": "string",
@@ -1285,6 +1402,16 @@
           },
           "status": {
             "type": "string",
+            "enum": [
+              "pending",
+              "queued",
+              "sent",
+              "partially_sent",
+              "deferred",
+              "bounced",
+              "rejected"
+            ],
+            "description": "E-mailens aktuelle status. Planlægningen bestemmes af `dato`-feltet.",
             "example": "sent"
           },
           "is_locked": {
@@ -1311,7 +1438,8 @@
           },
           "date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "E-mailens datoheader. Hvis den er indstillet til et fremtidigt tidspunkt (mere end 1 minut frem), vil e-mailen blive gemt indtil dette tidspunkt. Maksimalt 30 dage frem i tiden fra oprettelsen."
           },
           "subject": {
             "type": "string"
@@ -1341,6 +1469,10 @@
           "link": {
             "type": "string",
             "format": "uri"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Angiver om TLS er påkrævet for hele leveringskæden (RFC 8689)."
           }
         },
         "example": {
@@ -1555,11 +1687,16 @@
                 "type": "string"
               }
             ],
-            "description": "Valgfri datooverskrift. Må ikke være mere end 30 dage ude i fremtiden."
+            "description": "Valgfri datooverskrift. Hvis den er indstillet til et fremtidigt tidspunkt (mere end 1 minut frem), vil e-mailen blive gemt indtil dette tidspunkt. Den må ikke være mere end 30 dage ude i fremtiden fra oprettelsen.",
+            "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
             "type": "object",
             "description": "Valgfrit objekt for List-*-overskrifter."
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Hvis sand, kræver det TLS for hele leveringskæden (RFC 8689). Beskeden vil kun blive transmitteret via TLS-krypterede forbindelser."
           }
         }
       },
@@ -1655,6 +1792,10 @@
           },
           "has_custom_verification": {
             "type": "boolean"
+          },
+          "require_tls_inbound": {
+            "type": "boolean",
+            "description": "Afvis indgående e-mails, der ikke sendes via TLS, når den er aktiveret"
           },
           "verification_record": {
             "type": "string"
@@ -2158,6 +2299,14 @@
             "type": "string",
             "description": "OpenPGP offentlig nøgle i ASCII Armor-format"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Aktivér eller deaktiver S/MIME-kryptering for dette alias"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509-certifikat i PEM-format"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maksimal lagerpladskvote (f.eks. '1 GB')"
@@ -2255,6 +2404,14 @@
             "type": "string",
             "description": "OpenPGP offentlig nøgle i ASCII Armor-format"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Aktivér eller deaktiver S/MIME-kryptering"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "S/MIME X.509-certifikat i PEM-format"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maksimal lagerpladskvote (f.eks. '1 GB')"
@@ -2313,6 +2470,62 @@
           "limit": {
             "type": "integer",
             "description": "Maksimalt antal tilladte e-mails"
+          }
+        }
+      },
+      "SavedSearch": {
+        "type": "object",
+        "description": "Gemt søgedefinition gemt via alias.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Vist navn for den gemte søgning"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Søgestreng, der skal genbruges (f.eks. \"from:billing\")"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "ShortcutMap": {
+        "type": "object",
+        "description": "Kort over handlinger til tastebindinger for tastaturgenveje.",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Tastebinding for handlingen (f.eks. \"e\" for arkivering)"
+        }
+      },
+      "SettingsLabelUpdate": {
+        "type": "object",
+        "description": "Felter tilladt ved opdatering af en etiketdefinition.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Læsbart etiketnavn vist i brugergrænsefladen"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+            "description": "Hex-farve brugt til UI-rendering"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Skjul etiketten i brugergrænsefladen, mens du bevarer nøgleordet"
+          },
+          "source": {
+            "type": "string",
+            "description": "Etiketoprindelse for filtrering og migreringer",
+            "enum": [
+              "custom",
+              "system",
+              "imported"
+            ]
           }
         }
       },
@@ -2406,7 +2619,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "E-mail-ID",
+        "description": "E-mail-ID eller besked-ID. Du kan angive enten det unikke e-mail-ID (f.eks. '683fbe4d5baef1b583a11e54') eller e-mailens besked-ID-headerværdi (f.eks. '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net').",
         "schema": {
           "type": "string"
         }
@@ -2443,6 +2656,15 @@
         "in": "path",
         "required": true,
         "description": "Besked-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "labelKeyword": {
+        "name": "keyword",
+        "in": "path",
+        "required": true,
+        "description": "IMAP-nøgleord brugt som etiket-identifikator",
         "schema": {
           "type": "string"
         }
@@ -2588,7 +2810,7 @@
           "Konto"
         ],
         "summary": "Hent konto",
-        "description": "Hent dine kontooplysninger.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-token-godkendelse og alias-legitimationsgodkendelse.\n\n- **Brugerkonto (API-token):** Når dette slutpunkt er godkendt med dit API-token, returnerer det dine brugerkontooplysninger, inklusive planoplysninger, e-mail og API-token.\n\n- **Aliaskonto (Alias-legitimationsoplysninger):** Når dette slutpunkt er godkendt med alias-legitimationsoplysninger (e-mail og genereret adgangskode), returnerer det alias-/postkasseoplysninger, inklusive brugt lagerplads, lagerkvote og postkasseindstillinger. Dette er nyttigt for IMAP/POP3/CalDAV/CardDAV-klienter til at kontrollere lagerstatus.",
+        "description": "Hent dine kontooplysninger.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-token-godkendelse og alias-legitimationsgodkendelse.\n\n- **Brugerkonto (API-token):** Når dette slutpunkt er godkendt med dit API-token, returnerer det dine brugerkontooplysninger, inklusive planoplysninger, e-mail og API-token.\n\n- **Aliaskonto (Alias-legitimationsoplysninger):** Når dette slutpunkt er godkendt med alias-legitimationsoplysninger (e-mail og genereret adgangskode), returnerer det alias-/postkasseoplysninger, inklusive brugt lagerplads/kvote og et indlejret `indstillinger`-objekt (mail-specielle mapper, etiketindstillinger og aliasstandarder). Dette er nyttigt for IMAP/POP3/CalDAV/CardDAV-klienter til at kontrollere lagerstatus og præferencer.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2652,7 +2874,20 @@
                       "has_imap": true,
                       "has_pgp": false,
                       "public_key": "",
+                      "has_smime": false,
+                      "smime_certificate": "",
                       "locale": "en",
+                      "settings": {
+                        "mail": {
+                          "archive_folder": null,
+                          "sent_folder": null,
+                          "drafts_folder": null
+                        },
+                        "label_settings": {},
+                        "aliases": {
+                          "defaults": {}
+                        }
+                      },
                       "created_at": "2025-06-04T02:43:52.646Z",
                       "updated_at": "2025-06-04T02:43:55.350Z"
                     }
@@ -2677,11 +2912,14 @@
           "Konto"
         ],
         "summary": "Opdater konto",
-        "description": "Opdater dine kontooplysninger.",
+        "description": "Opdater dine kontooplysninger.\n\n- **Brugerkonto (API-token):** Opdater brugerprofilfelter.\n\n- **Aliaskonto (Alias-legitimationsoplysninger):** Opdater alias-scoped-indstillinger ved hjælp af det indbyggede `settings`-objekt. Ældre flade felter accepteres af hensyn til kompatibilitet. Svaret matcher `GET /v1/account`.",
         "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
@@ -2691,6 +2929,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "settings": {
+                    "type": "object",
+                    "description": "Aliasindstillinger (kun aliasgodkendelse)",
+                    "properties": {
+                      "mail": {
+                        "type": "object",
+                        "properties": {
+                          "archive_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias-mailarkivmappe"
+                          },
+                          "sent_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Aliasmappe for sendte e-mails"
+                          },
+                          "drafts_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Alias-mappe til mailkladder"
+                          }
+                        }
+                      },
+                      "label_settings": {
+                        "type": "object",
+                        "description": "Alias-etiketkort indtastet efter nøgleord",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SettingsLabelUpdate"
+                        }
+                      },
+                      "aliases": {
+                        "type": "object",
+                        "properties": {
+                          "defaults": {
+                            "type": "object",
+                            "description": "Frit formulerede aliasstandarder såsom display_name eller signatur",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  },
                   "display_name": {
                     "type": "string",
                     "description": "Vist navn"
@@ -2698,6 +2979,16 @@
                   "locale": {
                     "type": "string",
                     "description": "Lokalitetspræference"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Opdateret e-mailadresse (kun brugergodkendelse)"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Avatar-URL (kun brugergodkendelse)"
                   }
                 }
               }
@@ -2710,7 +3001,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
                 }
               }
             }
@@ -4112,7 +4410,7 @@
           "Beskeder"
         ],
         "summary": "Opret besked",
-        "description": "Opret/tilføj en ny besked til en mappe. Dette slutpunkt accepterer standard Nodemailer-meddelelsesformat og giver dig mulighed for at angive destinationsmappen og startflag. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
+        "description": "Opret/tilføj en ny besked til en mappe. Dette slutpunkt accepterer standard Nodemailer-meddelelsesformat og giver dig mulighed for at angive destinationsmappen, startflag og etiketter. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4245,7 +4543,7 @@
           "Beskeder"
         ],
         "summary": "Opdater besked",
-        "description": "Opdater en eksisterende besked. Du kan ændre beskedens markeringer eller flytte den til en anden mappe. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
+        "description": "Opdater en eksisterende besked. Du kan ændre beskedens flag, etiketter eller flytte den til en anden mappe. Hvis destinationsmappen ikke findes, oprettes den automatisk.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4397,6 +4695,20 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "always_send_email",
+            "in": "query",
+            "description": "Hvis den er indstillet til `true` eller `1`, sendes der altid en e-mail, selvom der ikke findes nogen logfiler. E-mailen angiver, at der ikke var nogen logfiler tilgængelige, og den indeholder ikke en vedhæftet fil.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "1",
+                "0"
+              ]
+            }
           }
         ],
         "responses": {
@@ -4434,7 +4746,7 @@
     "/v1/emails": {
       "get": {
         "summary": "Liste over udgående SMTP-e-mails",
-        "description": "**Vis udgående SMTP-e-mails**\n\nBemærk, at dette slutpunkt ikke returnerer egenskabsværdier for en e-mails `message`, `headers` eller `rejectedErrors`.\n\nFor at returnere disse egenskaber og deres værdier skal du bruge slutpunktet [Hent email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) med et e-mail-ID.",
+        "description": "**Vis udgående SMTP-e-mails**\n\nBemærk, at dette slutpunkt ikke returnerer egenskabsværdier for en e-mails `message`, `headers` eller `rejectedErrors`.\n\nFor at returnere disse egenskaber og deres værdier skal du bruge slutpunktet Hent e-mail med et e-mail-ID eller Message-ID.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-tokengodkendelse og aliaslegitimationsgodkendelse. Du kan godkende ved hjælp af enten din API-nøgle (anbefales) eller din alias-e-mailadresse og genererede adgangskode.",
         "tags": [
           "E-mails"
         ],
@@ -4458,6 +4770,14 @@
             "description": "Søg efter e-mails efter domænenavn.",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "is_scheduled",
+            "in": "query",
+            "description": "Filtrer efter planlagte e-mails (e-mails med fremtidig afsendelsesdato). Indstil til 'sand' for kun at vise e-mails, der er planlagt til at blive sendt i fremtiden.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4512,7 +4832,7 @@
       },
       "post": {
         "summary": "Opret udgående SMTP-e-mail",
-        "description": "Vores API til at oprette en e-mail er inspireret af og udnytter Nodemailers konfiguration af beskedindstillinger. Se venligst [Nodemailer message configuration](https://nodemailer.com/message/) for alle nedenfor nævnte brødtekstparametre.\n\nBemærk, at med undtagelse af `envelope` og `dkim` (da vi automatisk indstiller dem for dig), understøtter vi alle Nodemailer-indstillinger. Vi indstiller automatisk `disableFileAccess` og `disableUrlAccess` til `true` af sikkerhedsmæssige årsager.\n\nDu skal enten give den enkelte indstilling `raw` med din rå fulde e-mail inklusive headere eller give individuelle brødtekstparameterindstillinger nedenfor.\n\nDette API-slutpunkt vil automatisk kode emojis for dig, hvis de findes i headerne (f.eks. bliver emnelinjen `Subject: 🤓 Hello` automatisk konverteret til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Vores mål var at lave en ekstremt udviklervenlig og dummy-sikker e-mail-API.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-tokengodkendelse og aliaslegitimationsgodkendelse. Du kan godkende ved hjælp af enten din API-nøgle (anbefales) eller din alias-e-mailadresse og genererede adgangskode. Se afsnittet Godkendelse i API-dokumentationen for at få flere oplysninger.",
+        "description": "Vores API til at oprette en e-mail er inspireret af og udnytter Nodemailers konfiguration af beskedindstillinger. Se venligst [Nodemailer message configuration](https://nodemailer.com/message/) for alle nedenfor nævnte brødtekstparametre.\n\nBemærk, at med undtagelse af `envelope` og `dkim` (da vi automatisk indstiller dem for dig), understøtter vi alle Nodemailer-indstillinger. Vi indstiller automatisk `disableFileAccess` og `disableUrlAccess` til `true` af sikkerhedsmæssige årsager.\n\nDu skal enten give den enkelte indstilling `raw` med din rå fulde e-mail inklusive headere eller give individuelle brødtekstparameterindstillinger nedenfor.\n\nDette API-slutpunkt vil automatisk kode emojis for dig, hvis de findes i headerne (f.eks. bliver emnelinjen `Subject: 🤓 Hello` automatisk konverteret til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Vores mål var at lave en ekstremt udviklervenlig og dummy-sikker e-mail-API.\n\n**Planlagt afsendelse:** For at planlægge en e-mail til fremtidig levering skal du indstille `date`-feltet til et fremtidigt tidsstempel (skal være mindst 1 minut frem i tid og højst 30 dage fra nu). E-mailen vil blive gemt indtil det angivne tidspunkt. Du kan annullere den ved hjælp af slutpunktet Slet e-mail.\n\n\n**Godkendelse:** Dette slutpunkt understøtter både API-tokengodkendelse og aliaslegitimationsgodkendelse. Du kan godkende ved hjælp af enten din API-nøgle (anbefales) eller din alias-e-mailadresse og genererede adgangskode. Se afsnittet Godkendelse i API-dokumentationen for detaljer.",
         "tags": [
           "E-mails"
         ],
@@ -4602,7 +4922,7 @@
       ],
       "get": {
         "summary": "Hent udgående SMTP-e-mail",
-        "description": "Hent en specifik udgående SMTP-e-mail.",
+        "description": "Hent en specifik udgående SMTP-e-mail via ID eller meddelelses-ID. Du kan enten videregive e-mailens unikke ID eller dens meddelelses-ID-headerværdi.\n\n**Godkendelse:** Dette slutpunkt understøtter både API-token-godkendelse og alias-legitimationsgodkendelse.",
         "tags": [
           "E-mails"
         ],
@@ -4635,7 +4955,7 @@
       },
       "delete": {
         "summary": "Slet udgående SMTP-e-mail",
-        "description": "Sletning af e-mails vil sætte status til \"afvist\" (og efterfølgende ikke behandle den i køen), hvis og kun hvis den aktuelle status er en af \"afventer\", \"i kø\" eller \"udskudt\". Vi kan slette e-mails automatisk 30 dage efter, at de blev oprettet og/eller sendt – derfor bør du gemme en kopi af udgående SMTP-e-mails i din klient, database eller applikation. Du kan referere til vores e-mail-ID-værdi i din database, hvis det ønskes – denne værdi returneres fra både [Opret e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) og [Hent e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) slutpunkter.",
+        "description": "Sletning af e-mails vil sætte status til \"afvist\" (og efterfølgende ikke behandle den i køen), hvis og kun hvis den aktuelle status er en af \"afventer\", \"i kø\" eller \"udskudt\". Dette er nyttigt til at annullere e-mails, der er planlagt via en fremtidig \"dato\", før de sendes. Vi kan slette e-mails automatisk 30 dage efter, at de blev oprettet og/eller sendt – derfor bør du gemme en kopi af udgående SMTP-e-mails i din klient, database eller applikation.\n\n\n**Godkendelse:** Dette slutpunkt understøtter både API-tokengodkendelse og aliaslegitimationsgodkendelse.",
         "tags": [
           "E-mails"
         ],

@@ -339,6 +339,14 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/private-business-email'));
   })
+  .get('/rfc', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(
+      ctx.state.l(
+        '/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison'
+      )
+    );
+  })
   .get('/pricing', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/private-business-email'));

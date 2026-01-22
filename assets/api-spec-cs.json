@@ -99,6 +99,10 @@
           "locale": {
             "type": "string"
           },
+          "preferred_locale": {
+            "type": "string",
+            "description": "Preferované nastavení jazyka uživatele, které přepíše automatickou detekci"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -196,9 +200,60 @@
             "type": "string",
             "description": "Veřejný klíč PGP, pokud je k dispozici"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Zda je povoleno šifrování S/MIME"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "Certifikát S/MIME X.509 ve formátu PEM"
+          },
           "locale": {
             "type": "string",
             "description": "Předvolba místního nastavení"
+          },
+          "settings": {
+            "type": "object",
+            "description": "Nastavení aliasů",
+            "properties": {
+              "mail": {
+                "type": "object",
+                "properties": {
+                  "archive_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Složka archivu aliasové pošty"
+                  },
+                  "sent_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Složka odeslané pošty Alias"
+                  },
+                  "drafts_folder": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Složka konceptů aliasů"
+                  }
+                }
+              },
+              "label_settings": {
+                "type": "object",
+                "description": "Mapa aliasových popisků s klíčovým slovem",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/SettingsLabelUpdate"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "properties": {
+                  "defaults": {
+                    "type": "object",
+                    "description": "Výchozí aliasy ve volném formátu, například zobrazované_jméno nebo podpis.",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
           },
           "created_at": {
             "type": "string",
@@ -223,7 +278,20 @@
           "has_imap": true,
           "has_pgp": false,
           "public_key": "",
+          "has_smime": false,
+          "smime_certificate": "",
           "locale": "en",
+          "settings": {
+            "mail": {
+              "archive_folder": null,
+              "sent_folder": null,
+              "drafts_folder": null
+            },
+            "label_settings": {},
+            "aliases": {
+              "defaults": {}
+            }
+          },
           "created_at": "2025-06-04T02:43:52.646Z",
           "updated_at": "2025-06-04T02:43:55.350Z"
         }
@@ -962,6 +1030,7 @@
           "header_date",
           "subject",
           "flags",
+          "labels",
           "size",
           "uid",
           "modseq",
@@ -1058,6 +1127,18 @@
               "type": "string"
             },
             "description": "Příznaky IMAP"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Uživatelsky definované popisky (malá písmena, max. 10)",
+            "example": [
+              "work",
+              "important",
+              "follow-up"
+            ]
           },
           "size": {
             "type": "integer",
@@ -1226,6 +1307,24 @@
               }
             ],
             "description": "Příznaky IMAP, které se mají nastavit pro zprávu"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Uživatelsky definované popisky, které se mají nastavit ve zprávě. Může se jednat o jeden řetězec popisků nebo pole popisků. Popisky musí začínat písmenem, číslicí, zpětným lomítkem nebo znakem dolaru a mohou obsahovat znaky slov, tečky a pomlčky. Maximálně 10 popisků na zprávu. Popisky nerozlišují velká a malá písmena a budou uloženy malými písmeny.",
+            "example": [
+              "work",
+              "important"
+            ]
           }
         }
       },
@@ -1238,6 +1337,24 @@
               "type": "string"
             },
             "description": "Příznaky IMAP, které se mají nastavit pro zprávu"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Uživatelsky definované popisky, které se mají nastavit ve zprávě. Může se jednat o jeden řetězec popisků nebo pole popisků. Popisky musí začínat písmenem, číslicí, zpětným lomítkem nebo znakem dolaru a mohou obsahovat znaky slov, tečky a pomlčky. Maximálně 10 popisků na zprávu. Popisky nerozlišují velká a malá písmena a budou uloženy malými písmeny.",
+            "example": [
+              "work",
+              "important"
+            ]
           },
           "folder": {
             "type": "string",
@@ -1285,6 +1402,16 @@
           },
           "status": {
             "type": "string",
+            "enum": [
+              "pending",
+              "queued",
+              "sent",
+              "partially_sent",
+              "deferred",
+              "bounced",
+              "rejected"
+            ],
+            "description": "Aktuální stav e-mailu. Plánování je určeno polem `date`.",
             "example": "sent"
           },
           "is_locked": {
@@ -1311,7 +1438,8 @@
           },
           "date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Záhlaví data e-mailu. Pokud je datum nastaveno na budoucí čas (více než 1 minutu dopředu), bude e-mail uchován do tohoto času. Maximálně 30 dní od vytvoření."
           },
           "subject": {
             "type": "string"
@@ -1341,6 +1469,10 @@
           "link": {
             "type": "string",
             "format": "uri"
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Označuje, zda je TLS vyžadován pro celý doručovací řetězec (RFC 8689)."
           }
         },
         "example": {
@@ -1555,11 +1687,16 @@
                 "type": "string"
               }
             ],
-            "description": "Volitelné datum v záhlaví. Nesmí být více než 30 dní v budoucnosti."
+            "description": "Volitelné datum v záhlaví. Pokud je datum nastaveno na budoucí čas (více než 1 minutu dopředu), bude e-mail uložen do tohoto času. Datum nesmí být od vytvoření dále než 30 dní v budoucnosti.",
+            "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
             "type": "object",
             "description": "Volitelný objekt záhlaví List-*."
+          },
+          "requireTLS": {
+            "type": "boolean",
+            "description": "Pokud je hodnota nastavena na hodnotu true, vyžaduje se TLS pro celý doručovací řetězec (RFC 8689). Zpráva bude přenášena pouze přes připojení šifrovaná pomocí TLS."
           }
         }
       },
@@ -1655,6 +1792,10 @@
           },
           "has_custom_verification": {
             "type": "boolean"
+          },
+          "require_tls_inbound": {
+            "type": "boolean",
+            "description": "Pokud je povoleno, odmítnout příchozí e-maily neodeslané přes TLS"
           },
           "verification_record": {
             "type": "string"
@@ -2158,6 +2299,14 @@
             "type": "string",
             "description": "Veřejný klíč OpenPGP ve formátu ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Povolit nebo zakázat šifrování S/MIME pro tento alias"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "Certifikát S/MIME X.509 ve formátu PEM"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximální kvóta úložiště (např. „1 GB“)"
@@ -2255,6 +2404,14 @@
             "type": "string",
             "description": "Veřejný klíč OpenPGP ve formátu ASCII Armor"
           },
+          "has_smime": {
+            "type": "boolean",
+            "description": "Povolení nebo zakázání šifrování S/MIME"
+          },
+          "smime_certificate": {
+            "type": "string",
+            "description": "Certifikát S/MIME X.509 ve formátu PEM"
+          },
           "max_quota": {
             "type": "string",
             "description": "Maximální kvóta úložiště (např. „1 GB“)"
@@ -2313,6 +2470,62 @@
           "limit": {
             "type": "integer",
             "description": "Maximální povolený počet e-mailů"
+          }
+        }
+      },
+      "SavedSearch": {
+        "type": "object",
+        "description": "Uložená definice vyhledávání uložená pro každý alias.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Zobrazovaný název pro uložené vyhledávání"
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Řetězec vyhledávacího dotazu k opětovnému použití (např. „from:billing“)"
+          }
+        },
+        "required": [
+          "name",
+          "query"
+        ]
+      },
+      "ShortcutMap": {
+        "type": "object",
+        "description": "Mapa akcí na klávesové zkratky.",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Klávesová zkratka pro akci (např. „e“ pro archiv)"
+        }
+      },
+      "SettingsLabelUpdate": {
+        "type": "object",
+        "description": "Pole povolená při aktualizaci definice popisku.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Člověkem čitelný název štítku zobrazený v uživatelském rozhraní"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
+            "description": "Hexadecimální barva použitá pro vykreslování uživatelského rozhraní"
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Skrýt popisek v uživatelském rozhraní při zachování klíčového slova"
+          },
+          "source": {
+            "type": "string",
+            "description": "Původ štítku pro filtrování a migrace",
+            "enum": [
+              "custom",
+              "system",
+              "imported"
+            ]
           }
         }
       },
@@ -2406,7 +2619,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "ID e-mailu",
+        "description": "ID e-mailu nebo ID zprávy. Můžete předat buď jedinečné ID e-mailu (např. „683fbe4d5baef1b583a11e54“), nebo hodnotu záhlaví Message-ID e-mailu (např. „1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net“).",
         "schema": {
           "type": "string"
         }
@@ -2443,6 +2656,15 @@
         "in": "path",
         "required": true,
         "description": "ID zprávy",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "labelKeyword": {
+        "name": "keyword",
+        "in": "path",
+        "required": true,
+        "description": "Klíčové slovo IMAP použité jako identifikátor štítku",
         "schema": {
           "type": "string"
         }
@@ -2588,7 +2810,7 @@
           "Účet"
         ],
         "summary": "Obnovit účet",
-        "description": "Získejte informace o svém účtu.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů.\n\n- **Uživatelský účet (token API):** Po ověření pomocí tokenu API tento koncový bod vrátí informace o vašem uživatelském účtu, včetně podrobností o tarifu, e-mailu a tokenu API.\n\n- **Alias účtu (aliasové přihlašovací údaje):** Po ověření pomocí aliasových přihlašovacích údajů (e-mail a vygenerované heslo) tento koncový bod vrátí informace o aliasu/poštovní schránce, včetně použitého úložiště, kvóty úložiště a nastavení poštovní schránky. To je užitečné pro klienty IMAP/POP3/CalDAV/CardDAV pro kontrolu stavu úložiště.",
+        "description": "Získejte informace o svém účtu.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů.\n\n- **Uživatelský účet (token API):** Po ověření pomocí tokenu API tento koncový bod vrátí informace o vašem uživatelském účtu, včetně podrobností o tarifu, e-mailu a tokenu API.\n\n- **Alias účet (aliasové přihlašovací údaje):** Po ověření pomocí aliasových přihlašovacích údajů (e-mail a vygenerované heslo) tento koncový bod vrátí informace o aliasu/poštovní schránce, včetně použitého úložiště/kvóty a vnořeného objektu `settings` (speciální složky pošty, nastavení štítků a výchozí hodnoty aliasů). To je užitečné pro klienty IMAP/POP3/CalDAV/CardDAV pro kontrolu stavu a předvoleb úložiště.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2652,7 +2874,20 @@
                       "has_imap": true,
                       "has_pgp": false,
                       "public_key": "",
+                      "has_smime": false,
+                      "smime_certificate": "",
                       "locale": "en",
+                      "settings": {
+                        "mail": {
+                          "archive_folder": null,
+                          "sent_folder": null,
+                          "drafts_folder": null
+                        },
+                        "label_settings": {},
+                        "aliases": {
+                          "defaults": {}
+                        }
+                      },
                       "created_at": "2025-06-04T02:43:52.646Z",
                       "updated_at": "2025-06-04T02:43:55.350Z"
                     }
@@ -2677,11 +2912,14 @@
           "Účet"
         ],
         "summary": "Aktualizovat účet",
-        "description": "Aktualizujte informace o svém účtu.",
+        "description": "Aktualizujte informace o svém účtu.\n\n- **Uživatelský účet (API Token):** Aktualizujte pole profilu uživatele.\n\n- **Alias účtu (Alias Credentials):** Aktualizujte nastavení s rozsahem aliasu pomocí vnořeného objektu `settings`. Z důvodu kompatibility jsou akceptována starší plochá pole. Odpověď odpovídá `GET /v1/account`.",
         "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
           }
         ],
         "requestBody": {
@@ -2691,6 +2929,49 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "settings": {
+                    "type": "object",
+                    "description": "Nastavení aliasu (pouze ověřování aliasem)",
+                    "properties": {
+                      "mail": {
+                        "type": "object",
+                        "properties": {
+                          "archive_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Složka archivu aliasové pošty"
+                          },
+                          "sent_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Složka odeslané pošty Alias"
+                          },
+                          "drafts_folder": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Složka konceptů aliasů"
+                          }
+                        }
+                      },
+                      "label_settings": {
+                        "type": "object",
+                        "description": "Mapa aliasových popisků s klíčovým slovem",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/SettingsLabelUpdate"
+                        }
+                      },
+                      "aliases": {
+                        "type": "object",
+                        "properties": {
+                          "defaults": {
+                            "type": "object",
+                            "description": "Výchozí aliasy ve volném formátu, například display_name nebo signature",
+                            "additionalProperties": true
+                          }
+                        }
+                      }
+                    }
+                  },
                   "display_name": {
                     "type": "string",
                     "description": "Zobrazovaný název"
@@ -2698,6 +2979,16 @@
                   "locale": {
                     "type": "string",
                     "description": "Předvolba místního nastavení"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Aktualizovaná e-mailová adresa (pouze ověření uživatele)"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL adresa avatara (pouze pro ověření uživatele)"
                   }
                 }
               }
@@ -2710,7 +3001,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Account"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AliasAccount"
+                    }
+                  ]
                 }
               }
             }
@@ -4112,7 +4410,7 @@
           "Zprávy"
         ],
         "summary": "Vytvořit zprávu",
-        "description": "Vytvořit/přidat novou zprávu do složky. Tento koncový bod akceptuje standardní formát zpráv Nodemailer a umožňuje zadat cílovou složku a počáteční příznaky. Pokud cílová složka neexistuje, bude vytvořena automaticky.",
+        "description": "Vytvořit/přidat novou zprávu do složky. Tento koncový bod akceptuje standardní formát zpráv Nodemailer a umožňuje zadat cílovou složku, počáteční příznaky a popisky. Pokud cílová složka neexistuje, bude vytvořena automaticky.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4245,7 +4543,7 @@
           "Zprávy"
         ],
         "summary": "Aktualizační zpráva",
-        "description": "Aktualizujte existující zprávu. Můžete upravit příznaky zprávy nebo ji přesunout do jiné složky. Pokud cílová složka neexistuje, bude automaticky vytvořena.",
+        "description": "Aktualizujte existující zprávu. Můžete upravit příznaky a štítky zprávy nebo ji přesunout do jiné složky. Pokud cílová složka neexistuje, bude automaticky vytvořena.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4397,6 +4695,20 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "always_send_email",
+            "in": "query",
+            "description": "Pokud je nastaveno na hodnotu `true` nebo `1`, bude e-mail vždy odeslán, i když nebudou nalezeny žádné protokoly. E-mail bude informovat, že žádné protokoly nebyly k dispozici, a nebude obsahovat přílohu.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "1",
+                "0"
+              ]
+            }
           }
         ],
         "responses": {
@@ -4434,7 +4746,7 @@
     "/v1/emails": {
       "get": {
         "summary": "Seznam odchozích SMTP e-mailů",
-        "description": "**Vypsat odchozí e-maily SMTP**\n\nUpozorňujeme, že tento koncový bod nevrací hodnoty vlastností pro `message`, `headers` ani `rejectedErrors` e-mailu.\n\nChcete-li tyto vlastnosti a jejich hodnoty vrátit, použijte koncový bod [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) s ID e-mailu.",
+        "description": "**Výpis odchozích SMTP e-mailů**\n\nUpozorňujeme, že tento koncový bod nevrací hodnoty vlastností pro `message`, `headers` ani `rejectedErrors` e-mailu.\n\nChcete-li tyto vlastnosti a jejich hodnoty vrátit, použijte koncový bod Retrieve email s ID e-mailu nebo Message-ID.\n\n**Autentizace:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů. Ověřovat se můžete buď pomocí klíče API (doporučeno), nebo pomocí aliasové e-mailové adresy a vygenerovaného hesla.",
         "tags": [
           "E-maily"
         ],
@@ -4458,6 +4770,14 @@
             "description": "Vyhledávání e-mailů podle názvu domény.",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "is_scheduled",
+            "in": "query",
+            "description": "Filtr pro naplánované e-maily (e-maily s datem odeslání v budoucnu). Nastavením na hodnotu „true“ zobrazíte pouze e-maily, jejichž odeslání je naplánováno v budoucnu.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4512,7 +4832,7 @@
       },
       "post": {
         "summary": "Vytvořit odchozí SMTP e-mail",
-        "description": "Naše API pro vytváření e-mailů je inspirováno a využívá konfiguraci možností zpráv Nodemaileru. Pro všechny parametry těla zprávy se prosím řiďte níže uvedenými pokyny v [konfiguraci zpráv Nodemaileru](https://nodemailer.com/message/).\n\nUpozorňujeme, že s výjimkou parametrů `envelope` a `dkim` (protože je nastavujeme automaticky) podporujeme všechny možnosti Nodemaileru. Z bezpečnostních důvodů automaticky nastavujeme možnosti `disableFileAccess` a `disableUrlAccess` na `true`.\n\nBuď byste měli předat jednu možnost `raw` s celým e-mailem včetně záhlaví, nebo níže předat jednotlivé možnosti parametrů těla.\n\nTento koncový bod API automaticky zakóduje emoji, pokud se nacházejí v záhlavích (např. předmět `Subject: 🤓 Hello` se automaticky převede na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naším cílem bylo vytvořit extrémně vývojářsky přívětivé a proti falešným e-mailovým rozhraním odolné API.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů. Ověřovat se můžete buď pomocí klíče API (doporučeno), nebo pomocí aliasové e-mailové adresy a vygenerovaného hesla. Podrobnosti naleznete v dokumentaci k API v části Ověřování.",
+        "description": "Naše API pro vytváření e-mailů je inspirováno a využívá konfiguraci možností zpráv Nodemaileru. Pro všechny parametry těla zprávy se prosím řiďte níže uvedenými pokyny v [konfiguraci zpráv Nodemaileru](https://nodemailer.com/message/).\n\nUpozorňujeme, že s výjimkou parametrů `envelope` a `dkim` (protože je nastavujeme automaticky) podporujeme všechny možnosti Nodemaileru. Z bezpečnostních důvodů automaticky nastavujeme možnosti `disableFileAccess` a `disableUrlAccess` na `true`.\n\nBuď byste měli předat jednu možnost `raw` s celým e-mailem včetně záhlaví, nebo níže předat jednotlivé možnosti parametrů těla.\n\nTento koncový bod API automaticky zakóduje emoji, pokud se nacházejí v záhlavích (např. předmět `Subject: 🤓 Hello` se automaticky převede na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naším cílem bylo vytvořit extrémně vývojářsky přívětivé a proti falešným e-mailovým rozhraním odolné API.\n\n**Plánované odesílání:** Chcete-li naplánovat doručení e-mailu v budoucnu, nastavte pole „datum“ na časové razítko v budoucnosti (musí být alespoň 1 minutu dopředu a ne více než 30 dní od současnosti). E-mail bude uchován do zadaného času. Zrušení můžete provést pomocí koncového bodu Smazat e-mail.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů. Ověřovat se můžete buď pomocí klíče API (doporučeno), nebo pomocí aliasové e-mailové adresy a vygenerovaného hesla. Podrobnosti naleznete v dokumentaci k API v části Ověřování.",
         "tags": [
           "E-maily"
         ],
@@ -4602,7 +4922,7 @@
       ],
       "get": {
         "summary": "Načíst odchozí e-maily SMTP",
-        "description": "Načíst konkrétní odchozí SMTP e-mail.",
+        "description": "Načte konkrétní odchozí SMTP e-mail pomocí ID nebo Message-ID. Můžete předat buď jedinečné ID e-mailu, nebo hodnotu jeho záhlaví Message-ID.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenu API i ověřování pomocí aliasových přihlašovacích údajů.",
         "tags": [
           "E-maily"
         ],
@@ -4635,7 +4955,7 @@
       },
       "delete": {
         "summary": "Smazat odchozí SMTP e-maily",
-        "description": "Smazání e-mailu nastaví stav na „odmítnuto“ (a následně jej nezpracuje ve frontě) pouze tehdy, když je aktuální stav „čeká na vyřízení“, „zařazeno do fronty“ nebo „odloženo“. E-maily můžeme automaticky smazat po 30 dnech od jejich vytvoření a/nebo odeslání – proto byste si měli uchovávat kopii odchozích SMTP e-mailů ve svém klientovi, databázi nebo aplikaci. V případě potřeby můžete ve své databázi odkazovat na hodnotu ID našeho e-mailu – tato hodnota je vrácena z koncových bodů [Vytvořit e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) i [Načíst e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "description": "Smazání e-mailu nastaví stav na „odmítnuto“ (a následně jej nezpracuje ve frontě) pouze tehdy, když je aktuální stav „čeká na odeslání“, „zařazeno do fronty“ nebo „odloženo“. To je užitečné pro zrušení e-mailů naplánovaných na budoucí datum před jejich odesláním. E-maily můžeme automaticky smazat 30 dní po jejich vytvoření a/nebo odeslání – proto byste si měli uchovávat kopii odchozích SMTP e-mailů ve svém klientovi, databázi nebo aplikaci.\n\n**Ověřování:** Tento koncový bod podporuje ověřování pomocí tokenů API i ověřování pomocí aliasových přihlašovacích údajů.",
         "tags": [
           "E-maily"
         ],

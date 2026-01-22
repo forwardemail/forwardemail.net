@@ -609,14 +609,6 @@ nav.navbar(class=navbarClasses.join(" "))
                 aria-labelledby="navbar-dropdown-docs"
               )
                 a.dropdown-item(
-                  href="/technical-whitepaper.pdf",
-                  target="_blank"
-                )= t("Technical Whitepaper")
-                a.dropdown-item(
-                  href=l("/ips"),
-                  class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
-                )= t("IP Addresses")
-                a.dropdown-item(
                   href=l("/email-api"),
                   class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
                 )
@@ -624,6 +616,19 @@ nav.navbar(class=navbarClasses.join(" "))
                     = t("Email API Reference")
                   else
                     = t("API Reference")
+                a.dropdown-item(
+                  href=l("/rfc"),
+                  class=ctx.pathWithoutLocale === "/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison" ? "active" : ""
+                )
+                  = t("RFC Protocol Compliance")
+                a.dropdown-item(
+                  href="/technical-whitepaper.pdf",
+                  target="_blank"
+                )= t("Technical Whitepaper")
+                a.dropdown-item(
+                  href=l("/ips"),
+                  class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
+                )= t("IP Addresses")
                 a.dropdown-item(
                   href=l("/self-hosted"),
                   class=ctx.pathWithoutLocale === "/self-hosted" ? "active" : ""
