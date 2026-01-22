@@ -112,9 +112,7 @@ AnalyticsSummary.statics.upsertSummary = async function (options) {
     value
   };
 
-  if (value2 !== null) {
-    query.value2 = value2;
-  }
+  query.value2 = value2 || null;
 
   const update = {
     $inc: {
