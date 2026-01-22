@@ -12,57 +12,43 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
  * Pre-aggregated analytics data for fast dashboard queries.
  * Data is aggregated hourly by the aggregate-analytics job.
  *
- * This collection stores summarized metrics that would otherwise
- * require expensive aggregations over millions of raw events.
+ * Each document represents a single dimension (e.g., one browser, one service)
+ * for a specific hour. This allows efficient querying without scanning
+ * millions of raw events.
  */
 const AnalyticsSummary = new mongoose.Schema({
   // Time bucket for this summary (hourly granularity)
   hour: {
     type: Date,
-    required: true,
-    index: true
+    required: true
   },
 
-  // Aggregation dimensions
-  service: {
+  // Dimension type - what this summary aggregates by
+  // Only ONE of these should be set per document
+  dimension: {
     type: String,
-    index: true
+    required: true,
+    enum: [
+      'service',
+      'browser',
+      'os',
+      'device_type',
+      'client_app',
+      'referrer',
+      'pathname',
+      'utm'
+    ]
   },
-  browser: {
+
+  // Dimension value (the actual service name, browser name, etc.)
+  value: {
     type: String,
-    index: true
+    required: true
   },
-  os: {
-    type: String,
-    index: true
-  },
-  device_type: {
-    type: String,
-    index: true
-  },
-  client_app: {
-    type: String,
-    index: true
-  },
-  referrer: {
-    type: String,
-    index: true
-  },
-  referrer_source: {
-    type: String,
-    index: true
-  },
-  pathname: {
-    type: String,
-    index: true
-  },
-  utm_source: {
-    type: String,
-    index: true
-  },
-  utm_campaign: {
-    type: String,
-    index: true
+
+  // Secondary value for compound dimensions (e.g., referrer_source, utm_campaign)
+  value2: {
+    type: String
   },
 
   // Aggregated metrics
@@ -85,74 +71,50 @@ const AnalyticsSummary = new mongoose.Schema({
   landing_page_entries: {
     type: Number,
     default: 0
-  },
-
-  // Metadata
-  created_at: {
-    type: Date,
-    default: Date.now,
-    index: true
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
   }
 });
 
-// Compound indexes for common query patterns
-// These support the dashboard queries efficiently
-AnalyticsSummary.index({ hour: -1, service: 1 });
-AnalyticsSummary.index({ hour: -1, browser: 1 });
-AnalyticsSummary.index({ hour: -1, os: 1 });
-AnalyticsSummary.index({ hour: -1, device_type: 1 });
-AnalyticsSummary.index({ hour: -1, client_app: 1 });
-AnalyticsSummary.index({ hour: -1, referrer: 1 });
-AnalyticsSummary.index({ hour: -1, pathname: 1 });
-AnalyticsSummary.index({ hour: -1, utm_source: 1 });
+// Primary query index: hour range + dimension type
+// This supports all dashboard queries efficiently
+AnalyticsSummary.index({ hour: 1, dimension: 1 });
 
-// Unique index to prevent duplicate summaries
+// Unique constraint to prevent duplicates
+// Each hour + dimension + value combination should be unique
 AnalyticsSummary.index(
-  {
-    hour: 1,
-    service: 1,
-    browser: 1,
-    os: 1,
-    device_type: 1,
-    client_app: 1,
-    referrer: 1,
-    pathname: 1
-  },
-  { unique: true, sparse: true }
+  { hour: 1, dimension: 1, value: 1, value2: 1 },
+  { unique: true }
 );
 
 // TTL index - keep summaries for 90 days
-AnalyticsSummary.index(
-  { created_at: 1 },
-  { expireAfterSeconds: 90 * 24 * 60 * 60 }
-);
+AnalyticsSummary.index({ hour: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
-// Pre-save hook to update timestamps
-AnalyticsSummary.pre('save', function (next) {
-  this.updated_at = new Date();
-  next();
-});
-
-// Apply common plugin
+// Apply common plugin with uniqueId disabled since we use upserts
 AnalyticsSummary.plugin(mongooseCommonPlugin, {
   object: 'analytics_summary',
-  locale: false
+  locale: false,
+  uniqueId: false
 });
 
-// Static method to get or create a summary for a specific hour and dimensions
-AnalyticsSummary.statics.upsertSummary = async function (
-  hour,
-  dimensions,
-  metrics
-) {
+/**
+ * Upsert a summary document
+ * @param {Object} options - Upsert options
+ * @param {Date} options.hour - Hour bucket
+ * @param {string} options.dimension - Dimension type (service, browser, etc.)
+ * @param {string} options.value - Dimension value
+ * @param {Object} options.metrics - Metrics to increment
+ * @param {string} [options.value2] - Secondary value for compound dimensions
+ */
+AnalyticsSummary.statics.upsertSummary = async function (options) {
+  const { hour, dimension, value, metrics, value2 = null } = options;
   const query = {
     hour,
-    ...dimensions
+    dimension,
+    value
   };
+
+  if (value2 !== null) {
+    query.value2 = value2;
+  }
 
   const update = {
     $inc: {
@@ -161,36 +123,86 @@ AnalyticsSummary.statics.upsertSummary = async function (
       successful_events: metrics.successful_events || 0,
       failed_events: metrics.failed_events || 0,
       landing_page_entries: metrics.landing_page_entries || 0
-    },
-    $set: {
-      updated_at: new Date()
-    },
-    $setOnInsert: {
-      created_at: new Date()
     }
   };
 
-  return this.findOneAndUpdate(query, update, {
-    upsert: true,
-    new: true
-  });
-};
-
-// Static method to get aggregated stats for a date range
-AnalyticsSummary.statics.getAggregatedStats = async function (
-  startDate,
-  endDate,
-  filters = {}
-) {
-  const match = {
-    hour: { $gte: startDate, $lte: endDate }
+  // Use findOneAndUpdate with upsert to ensure id field is set
+  // The mongoose-common-plugin sets id in pre('save'), but upserts bypass save hooks
+  // So we use $setOnInsert to set id and object on insert
+  const objectId = new mongoose.Types.ObjectId();
+  update.$setOnInsert = {
+    id: objectId.toString(),
+    object: 'analytics_summary'
   };
 
-  if (filters.service) match.service = filters.service;
-  if (filters.browser) match.browser = filters.browser;
-  if (filters.device_type) match.device_type = filters.device_type;
+  return this.updateOne(query, update, { upsert: true });
+};
 
-  return this.aggregate([
+/**
+ * Get aggregated stats for a date range and dimension
+ * @param {Date} startDate - Start of range
+ * @param {Date} endDate - End of range
+ * @param {string} dimension - Dimension to query
+ * @param {Object} [options] - Query options
+ * @returns {Promise<Array>} Aggregated results
+ */
+AnalyticsSummary.statics.getByDimension = async function (
+  startDate,
+  endDate,
+  dimension,
+  options = {}
+) {
+  const pipeline = [
+    {
+      $match: {
+        hour: { $gte: startDate, $lte: endDate },
+        dimension
+      }
+    },
+    {
+      $group: {
+        _id: options.includeValue2
+          ? { value: '$value', value2: '$value2' }
+          : '$value',
+        event_count: { $sum: '$event_count' },
+        unique_visitors: { $sum: '$unique_visitors' },
+        successful_events: { $sum: '$successful_events' },
+        failed_events: { $sum: '$failed_events' },
+        landing_page_entries: { $sum: '$landing_page_entries' }
+      }
+    },
+    { $sort: { unique_visitors: -1 } }
+  ];
+
+  if (options.limit) {
+    pipeline.push({ $limit: options.limit });
+  }
+
+  return this.aggregate(pipeline);
+};
+
+/**
+ * Get total overview stats for a date range
+ * @param {Date} startDate - Start of range
+ * @param {Date} endDate - End of range
+ * @param {string} [serviceFilter] - Optional service filter
+ * @returns {Promise<Object>} Overview stats
+ */
+AnalyticsSummary.statics.getOverview = async function (
+  startDate,
+  endDate,
+  serviceFilter = null
+) {
+  const match = {
+    hour: { $gte: startDate, $lte: endDate },
+    dimension: 'service'
+  };
+
+  if (serviceFilter && serviceFilter !== 'all') {
+    match.value = serviceFilter;
+  }
+
+  const result = await this.aggregate([
     { $match: match },
     {
       $group: {
@@ -199,6 +211,66 @@ AnalyticsSummary.statics.getAggregatedStats = async function (
         unique_visitors: { $sum: '$unique_visitors' },
         successful_events: { $sum: '$successful_events' },
         failed_events: { $sum: '$failed_events' }
+      }
+    }
+  ]);
+
+  if (result.length === 0) {
+    return {
+      total_events: 0,
+      unique_visitors: 0,
+      successful_events: 0,
+      failed_events: 0,
+      success_rate: 0
+    };
+  }
+
+  const overview = result[0];
+  overview.success_rate =
+    overview.total_events > 0
+      ? (overview.successful_events / overview.total_events) * 100
+      : 0;
+
+  return overview;
+};
+
+/**
+ * Get visitors over time for a date range
+ * @param {Date} startDate - Start of range
+ * @param {Date} endDate - End of range
+ * @param {string} [serviceFilter] - Optional service filter
+ * @returns {Promise<Array>} Daily visitor counts
+ */
+AnalyticsSummary.statics.getVisitorsOverTime = async function (
+  startDate,
+  endDate,
+  serviceFilter = null
+) {
+  const match = {
+    hour: { $gte: startDate, $lte: endDate },
+    dimension: 'service'
+  };
+
+  if (serviceFilter && serviceFilter !== 'all') {
+    match.value = serviceFilter;
+  }
+
+  return this.aggregate([
+    { $match: match },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$hour' } },
+        events: { $sum: '$event_count' },
+        visitors: { $sum: '$unique_visitors' }
+      }
+    },
+    { $sort: { _id: 1 } },
+    {
+      $project: {
+        date: '$_id',
+        events: 1,
+        visitors: 1,
+        _id: 0
       }
     }
   ]);

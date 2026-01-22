@@ -69,6 +69,16 @@ block body
                 i.fa.fa-times.mr-1
                 = t("Clear Filters")
 
+    //- Warning if no summary data
+    if analytics.noData
+      .row.mb-3
+        .col
+          .alert.alert-warning.mb-0
+            i.fa.fa-exclamation-triangle.mr-2
+            strong= t("Analytics data is being processed.")
+            = " "
+            = t("Run 'node scripts/backfill-analytics.js' to populate historical data.")
+
     //- Overview stats cards
     .row.mb-3
       .col-md-3.col-sm-6.mb-3

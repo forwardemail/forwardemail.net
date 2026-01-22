@@ -3,13 +3,22 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+/**
+ * One-time backfill script for analytics summaries.
+ *
+ * Run this manually to populate AnalyticsSummary with historical data:
+ *   node scripts/backfill-analytics.js
+ *
+ * This script uses cursor-based iteration to process events hour by hour,
+ * avoiding memory issues with large datasets.
+ */
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
 const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -28,26 +37,12 @@ const graceful = new Graceful({
   logger
 });
 
-// store boolean if the job is cancelled
-let isCancelled = false;
-
-// handle cancellation
-if (parentPort)
-  parentPort.once('message', (message) => {
-    if (message === 'cancel') isCancelled = true;
-  });
-
 graceful.listen();
 
 /**
- * Aggregate analytics events for a specific hour using cursor-based iteration.
- * This avoids loading all session hashes into memory.
- *
- * @param {Date} hourStart - Start of the hour to aggregate
+ * Aggregate a single hour of data using cursor-based iteration
  */
 async function aggregateHour(hourStart) {
-  if (isCancelled) return;
-
   const hourEnd = dayjs(hourStart).add(1, 'hour').toDate();
 
   // Check if there are any events for this hour
@@ -56,16 +51,10 @@ async function aggregateHour(hourStart) {
   });
 
   if (eventCount === 0) {
-    return;
+    return { processed: 0, summaries: 0 };
   }
 
-  logger.info('Aggregating analytics', {
-    hour: hourStart.toISOString(),
-    events: eventCount
-  });
-
   // Use Maps to accumulate counts during cursor iteration
-  // This is more memory efficient than $addToSet for session hashes
   const serviceCounts = new Map();
   const browserCounts = new Map();
   const osCounts = new Map();
@@ -75,8 +64,7 @@ async function aggregateHour(hourStart) {
   const pathnameCounts = new Map();
   const utmCounts = new Map();
 
-  // Track unique sessions per dimension using Sets
-  // For very large datasets, we estimate instead
+  // Track unique sessions per dimension
   const serviceSessions = new Map();
   const browserSessions = new Map();
   const osSessions = new Map();
@@ -86,7 +74,7 @@ async function aggregateHour(hourStart) {
   const pathnameSessions = new Map();
   const utmSessions = new Map();
 
-  // Cursor-based iteration over events
+  // Cursor-based iteration
   for await (const event of AnalyticsEvents.find({
     created_at: { $gte: hourStart, $lt: hourEnd }
   })
@@ -96,8 +84,6 @@ async function aggregateHour(hourStart) {
     .lean()
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
-    if (isCancelled) break;
-
     const sessionHash = event.session_hash || 'unknown';
 
     // Aggregate by service
@@ -213,8 +199,6 @@ async function aggregateHour(hourStart) {
       utmSessions.get(key).add(sessionHash);
     }
   }
-
-  if (isCancelled) return;
 
   // Save all summaries to database
   const savePromises = [];
@@ -365,45 +349,79 @@ async function aggregateHour(hourStart) {
   // Execute all saves
   await Promise.all(savePromises);
 
-  logger.info('Completed aggregation', {
-    hour: hourStart.toISOString(),
-    summaries: savePromises.length
-  });
+  return { processed: eventCount, summaries: savePromises.length };
 }
 
 /**
- * Main aggregation job
- * Aggregates the last 2-3 hours of data to catch late-arriving events
+ * Main backfill function
  */
 (async () => {
   await setupMongoose(logger);
 
   try {
-    const now = dayjs();
-    const currentHour = now.startOf('hour').toDate();
-    const previousHour = now.subtract(1, 'hour').startOf('hour').toDate();
-    const twoHoursAgo = now.subtract(2, 'hours').startOf('hour').toDate();
+    // Get the date range of existing analytics events
+    const [oldest, newest] = await Promise.all([
+      AnalyticsEvents.findOne({}).sort({ created_at: 1 }).select('created_at'),
+      AnalyticsEvents.findOne({}).sort({ created_at: -1 }).select('created_at')
+    ]);
 
-    // Aggregate the last 2-3 hours to catch late events
-    const hoursToAggregate = [twoHoursAgo, previousHour, currentHour];
-
-    for (const hour of hoursToAggregate) {
-      if (isCancelled) break;
-      try {
-        await aggregateHour(hour);
-      } catch (err) {
-        logger.error('Error aggregating hour', {
-          hour: hour.toISOString(),
-          err
-        });
-      }
+    if (!oldest || !newest) {
+      logger.info('No analytics events found, nothing to backfill');
+      process.exit(0);
     }
 
-    logger.info('Analytics aggregation job completed');
+    const startDate = dayjs(oldest.created_at).startOf('hour');
+    const endDate = dayjs(newest.created_at).startOf('hour');
+
+    logger.info('Starting backfill', {
+      from: startDate.toISOString(),
+      to: endDate.toISOString()
+    });
+
+    // Calculate total hours
+    const totalHours = endDate.diff(startDate, 'hour') + 1;
+    let processedHours = 0;
+    let totalEvents = 0;
+    let totalSummaries = 0;
+
+    // Process each hour
+    let currentHour = startDate;
+    while (currentHour.isBefore(endDate) || currentHour.isSame(endDate)) {
+      try {
+        const result = await aggregateHour(currentHour.toDate());
+        totalEvents += result.processed;
+        totalSummaries += result.summaries;
+        processedHours++;
+
+        // Log progress every 24 hours
+        if (processedHours % 24 === 0) {
+          const progress = Math.round((processedHours / totalHours) * 100);
+          logger.info('Backfill progress', {
+            progress: `${progress}%`,
+            hours: `${processedHours}/${totalHours}`,
+            events: totalEvents.toLocaleString(),
+            summaries: totalSummaries
+          });
+        }
+      } catch (err) {
+        logger.error('Error processing hour', {
+          hour: currentHour.toISOString(),
+          err: err.message
+        });
+      }
+
+      currentHour = currentHour.add(1, 'hour');
+    }
+
+    logger.info('Backfill completed', {
+      totalHours: processedHours,
+      totalEvents,
+      totalSummaries
+    });
   } catch (err) {
-    await logger.error('Analytics aggregation job failed', { err });
+    logger.error('Backfill failed', { err });
+    process.exit(1);
   }
 
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
+  process.exit(0);
 })();
