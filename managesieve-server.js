@@ -212,25 +212,33 @@ class ManageSieveServer {
       return;
     }
 
-    // Run onConnect checks (rate limiting, denylist, etc.)
-    try {
-      await onConnectPromise.call(this, session);
-    } catch (err) {
-      // Handle connection rejection
-      const error = refineAndLogError(err, session, false, this);
-      this.logger.warn('ManageSieve connection rejected', {
-        component: 'ManageSieve',
-        sessionId: session.id,
-        remoteAddress: socket.remoteAddress,
-        error: error.message
-      });
-      this.send(session, `${RESPONSE.BYE} "${error.message}"`);
-      socket.end();
-      return;
-    }
-
-    // Send greeting
+    // Send greeting immediately to comply with RFC 5804
+    // The server MUST send capabilities upon connection
     this.sendCapabilities(session);
+
+    // Run onConnect checks asynchronously (rate limiting, denylist, etc.)
+    // This is done after greeting to prevent DNS/Redis delays from blocking the greeting
+    // Similar to how IMAP/POP3 handle onConnect in onAuth instead of blocking connection
+    onConnectPromise
+      .call(this, session)
+      .then(() => {
+        this.logger.debug('ManageSieve onConnect completed', {
+          component: 'ManageSieve',
+          sessionId: session.id
+        });
+      })
+      .catch((err) => {
+        // Handle connection rejection - close the connection
+        const error = refineAndLogError(err, session, false, this);
+        this.logger.warn('ManageSieve connection rejected after greeting', {
+          component: 'ManageSieve',
+          sessionId: session.id,
+          remoteAddress: socket.remoteAddress,
+          error: error.message
+        });
+        this.send(session, `${RESPONSE.BYE} "${error.message}"`);
+        socket.end();
+      });
 
     // Handle data
     socket.on('data', (data) => {
