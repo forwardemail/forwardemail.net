@@ -196,12 +196,12 @@ block content
                           code= issue.ip
                         td.text-right= issue.count.toLocaleString()
                         td.text-center
-                          if issue.spfResult === 'pass' && issue.spfAligned === 'pass'
+                          if issue.spfResult === 'pass'
                             span(style="color: #28a745")= emoji("white_check_mark")
                           else
                             span(style="color: #dc3545")= emoji("x")
                         td.text-center
-                          if issue.dkimResult === 'pass' && issue.dkimAligned === 'pass'
+                          if issue.dkimResult === 'pass'
                             span(style="color: #28a745")= emoji("white_check_mark")
                           else
                             span(style="color: #dc3545")= emoji("x")

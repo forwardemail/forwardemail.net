@@ -10,7 +10,7 @@
  * Aggregates DMARC reports across all domains for a given user.
  *
  * Features:
- * - Redis-based deduplication to prevent duplicate emails
+ * - Redis-based deduplication to prevent duplicate emails (atomic SETNX)
  * - Aggregates reports across all user's domains
  * - Weekly frequency (runs once per week)
  * - Similar to daily-log-alert but for DMARC reports
@@ -126,14 +126,18 @@ async function getDmarcStats(domainIds, startDate, endDate) {
     const meta = log.meta || {};
     const dmarcMeta = meta.dmarc_report || {};
 
-    // Aggregate message counts
-    const msgCount = dmarcMeta.total_messages || 0;
+    // FIX: Read from the correct nested path (summary object)
+    // The data is stored as meta.dmarc_report.summary.* not meta.dmarc_report.*
+    const summary = dmarcMeta.summary || {};
+
+    // Aggregate message counts from the summary object
+    const msgCount = summary.total_messages || 0;
     totalMessages += msgCount;
-    spfAligned += dmarcMeta.spf_aligned || 0;
-    dkimAligned += dmarcMeta.dkim_aligned || 0;
-    accepted += dmarcMeta.accepted || 0;
-    quarantined += dmarcMeta.quarantined || 0;
-    rejected += dmarcMeta.rejected || 0;
+    spfAligned += summary.spf_aligned || 0;
+    dkimAligned += summary.dkim_aligned || 0;
+    accepted += summary.accepted || 0;
+    quarantined += summary.quarantined || 0;
+    rejected += summary.rejected || 0;
 
     // Track per-domain stats
     for (const domainId of log.domains || []) {
@@ -150,12 +154,13 @@ async function getDmarcStats(domainIds, startDate, endDate) {
       const stats = domainStats.get(domainIdStr);
       stats.reports++;
       stats.messages += msgCount;
-      stats.spfAligned += dmarcMeta.spf_aligned || 0;
-      stats.dkimAligned += dmarcMeta.dkim_aligned || 0;
+      stats.spfAligned += summary.spf_aligned || 0;
+      stats.dkimAligned += summary.dkim_aligned || 0;
     }
 
-    // Track reporter organizations
-    const orgName = dmarcMeta.org_name || 'Unknown';
+    // FIX: Read org_name from the correct path (report_metadata object)
+    const reportMetadata = dmarcMeta.report_metadata || {};
+    const orgName = reportMetadata.org_name || 'Unknown';
     if (!reporterStats.has(orgName)) {
       reporterStats.set(orgName, { reports: 0, messages: 0 });
     }
@@ -165,23 +170,26 @@ async function getDmarcStats(domainIds, startDate, endDate) {
     reporter.messages += msgCount;
 
     // Track source IPs with alignment issues (for actionable insights)
+    // FIX: Use correct field names from the stored record structure
     const records = dmarcMeta.records || [];
     for (const record of records.slice(0, 10)) {
       // Limit to first 10 records
-      const spfPass =
-        record.spf_result === 'pass' && record.spf_aligned === 'pass';
-      const dkimPass =
-        record.dkim_result === 'pass' && record.dkim_aligned === 'pass';
+      // The record structure has policy_evaluated.spf and policy_evaluated.dkim
+      // not spf_result/spf_aligned fields
+      const policyEvaluated = record.policy_evaluated || {};
+      const spfPass = policyEvaluated.spf === 'pass';
+      const dkimPass = policyEvaluated.dkim === 'pass';
 
       if (!spfPass || !dkimPass) {
         sourceIpIssues.push({
           ip: record.source_ip,
           count: record.count || 1,
-          spfResult: record.spf_result,
-          spfAligned: record.spf_aligned,
-          dkimResult: record.dkim_result,
-          dkimAligned: record.dkim_aligned,
-          disposition: record.disposition
+          // Store the actual policy_evaluated values for display
+          spfResult: policyEvaluated.spf || 'fail',
+          spfAligned: policyEvaluated.spf || 'fail',
+          dkimResult: policyEvaluated.dkim || 'fail',
+          dkimAligned: policyEvaluated.dkim || 'fail',
+          disposition: policyEvaluated.disposition || 'none'
         });
       }
     }
@@ -233,30 +241,23 @@ async function getDmarcStats(domainIds, startDate, endDate) {
 }
 
 /**
- * Check if a weekly report was already sent for this user
- * Uses Redis for deduplication
+ * Atomically acquire a lock for sending the weekly report
+ * Uses Redis SETNX (SET if Not eXists) to prevent race conditions
  *
  * @param {string} userId - User ID
- * @returns {boolean} True if report was already sent this week
+ * @returns {boolean} True if lock was acquired (report not yet sent), false otherwise
  */
-async function wasReportSentThisWeek(userId) {
+async function acquireReportLock(userId) {
   const weekKey = dayjs().startOf('week').format('YYYY-WW');
   const redisKey = `${REDIS_KEY_PREFIX}${userId}:${weekKey}`;
 
-  const exists = await redis.exists(redisKey);
-  return exists === 1;
-}
+  // Use SET with NX (only set if not exists) and EX (expiration) atomically
+  // This prevents race conditions where multiple job instances could
+  // all check, find no key, and then all send emails
+  const result = await redis.set(redisKey, '1', 'EX', REDIS_KEY_TTL, 'NX');
 
-/**
- * Mark that a weekly report was sent for this user
- *
- * @param {string} userId - User ID
- */
-async function markReportSent(userId) {
-  const weekKey = dayjs().startOf('week').format('YYYY-WW');
-  const redisKey = `${REDIS_KEY_PREFIX}${userId}:${weekKey}`;
-
-  await redis.setex(redisKey, REDIS_KEY_TTL, '1');
+  // Returns 'OK' if the key was set (we acquired the lock), null if key already existed
+  return result === 'OK';
 }
 
 /**
@@ -296,10 +297,11 @@ async function processUser(user, endDate) {
   if (isCancelled) return;
 
   try {
-    // Check Redis to prevent duplicate emails
-    const alreadySent = await wasReportSentThisWeek(user._id.toString());
-    if (alreadySent) {
-      logger.debug('DMARC report already sent this week', {
+    // FIX: Use atomic SETNX to prevent duplicate emails from race conditions
+    // This atomically checks AND sets the lock in one operation
+    const lockAcquired = await acquireReportLock(user._id.toString());
+    if (!lockAcquired) {
+      logger.debug('DMARC report already sent this week (lock not acquired)', {
         userId: user._id,
         email: user.email
       });
@@ -430,8 +432,8 @@ async function processUser(user, endDate) {
       }
     });
 
-    // Mark as sent in Redis
-    await markReportSent(user._id.toString());
+    // Note: Lock was already acquired atomically at the start via SETNX
+    // No need to mark as sent again - the lock IS the sent marker
 
     logger.info('DMARC report sent', {
       userId: user._id,
@@ -466,7 +468,7 @@ async function processUser(user, endDate) {
         throw new Error(`User not found: ${process.env.USER_EMAIL}`);
       }
 
-      // Process single user (skip Redis check for manual runs)
+      // Process single user (uses same atomic lock mechanism)
       await processUser(user, endDate);
       logger.info('Single user processing complete');
     } else {
