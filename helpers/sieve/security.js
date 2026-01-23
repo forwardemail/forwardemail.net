@@ -931,31 +931,60 @@ class SieveAuditLogger {
   }
 
   /**
+   * Log a script execution event
+   * @param {string} userId - The user ID
+   * @param {string} scriptName - The script name
+   * @param {string} action - The action taken (keep, discard, reject, etc.)
+   * @param {Object} options - Log options (session, ignore_hook)
+   */
+  async logScriptExecution(userId, scriptName, action, options = {}) {
+    await this.log(
+      'script_execution',
+      userId,
+      {
+        scriptName,
+        action
+      },
+      options
+    );
+  }
+
+  /**
    * Log a redirect action
    * @param {string} userId - The user ID
-   * @param {string} fromAddress - Original recipient
    * @param {string} toAddress - Redirect destination
-   * @param {string} messageId - Message ID
+   * @param {string} fromAddress - Original recipient
+   * @param {Object} options - Log options (session, ignore_hook)
    */
-  async logRedirect(userId, fromAddress, toAddress, messageId) {
-    await this.log('redirect', userId, {
-      fromAddress,
-      toAddress,
-      messageId
-    });
+  async logRedirect(userId, toAddress, fromAddress, options = {}) {
+    await this.log(
+      'redirect',
+      userId,
+      {
+        fromAddress,
+        toAddress
+      },
+      options
+    );
   }
 
   /**
    * Log a vacation response
    * @param {string} userId - The user ID
    * @param {string} recipient - Vacation recipient
-   * @param {string} messageId - Original message ID
+   * @param {string} subject - Vacation subject
+   * @param {Object} options - Log options (session, ignore_hook)
    */
-  async logVacation(userId, recipient, messageId) {
-    await this.log('vacation', userId, {
-      recipient,
-      messageId
-    });
+  async logVacation(userId, recipient, subject, options = {}) {
+    await this.log(
+      'vacation',
+      userId,
+      {
+        recipient,
+        subject
+      },
+      options
+    );
   }
 
   /**
@@ -981,8 +1010,9 @@ class SieveAuditLogger {
    * @param {string} action - The action type
    * @param {string} userId - The user ID
    * @param {Object} data - Additional data
+   * @param {Object} options - Log options (session, ignore_hook)
    */
-  async log(action, userId, data = {}) {
+  async log(action, userId, data = {}, options = {}) {
     const entry = {
       timestamp: new Date().toISOString(),
       action,
@@ -990,8 +1020,12 @@ class SieveAuditLogger {
       ...data
     };
 
-    // Log to console/logger
-    this.logger.info('Sieve audit:', entry);
+    // Log to console/logger with session and ignore_hook
+    this.logger.info('Sieve audit:', {
+      ignore_hook: options.ignore_hook ?? true,
+      session: options.session,
+      ...entry
+    });
 
     // Store if store is available
     if (this.store) {

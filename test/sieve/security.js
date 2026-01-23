@@ -646,9 +646,9 @@ describe('Sieve Security - Audit Logging', () => {
   it('should log redirect actions', async () => {
     await auditLogger.logRedirect(
       'user1',
-      'inbox@example.com',
       'backup@example.com',
-      'msg123'
+      'inbox@example.com',
+      { session: {}, ignore_hook: true }
     );
 
     const entries = await auditLogger.getAuditLog('user1');
@@ -671,7 +671,7 @@ describe('Sieve Security - Audit Logging', () => {
   it('should filter audit log by action', async () => {
     await auditLogger.logScriptCreated('user1', 'script1.sieve');
     await auditLogger.logScriptUpdated('user1', 'script1.sieve');
-    await auditLogger.logRedirect('user1', 'a@b.com', 'c@d.com', 'msg1');
+    await auditLogger.logRedirect('user1', 'c@d.com', 'a@b.com', {});
 
     const entries = await auditLogger.getAuditLog('user1', {
       action: 'redirect'

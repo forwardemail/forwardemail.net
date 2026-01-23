@@ -355,7 +355,8 @@ class SieveIntegration {
             this.auditLogger.logRedirect(
               aliasId,
               redirect.address,
-              aliasAddress
+              aliasAddress,
+              { session, ignore_hook: true }
             );
             // Log redirect action for user debugging
             logger.info('sieve redirect', {
@@ -398,7 +399,8 @@ class SieveIntegration {
           this.auditLogger.logVacation(
             aliasId,
             envelope.from,
-            filterResult.vacation.subject
+            filterResult.vacation.subject,
+            { session, ignore_hook: true }
           );
           // Log vacation action for user debugging
           logger.info('sieve vacation', {
@@ -508,7 +510,10 @@ class SieveIntegration {
       }
 
       // Log script execution summary
-      this.auditLogger.logScriptExecution(aliasId, script.name, result.action);
+      this.auditLogger.logScriptExecution(aliasId, script.name, result.action, {
+        session,
+        ignore_hook: true
+      });
       logger.info('sieve executed', {
         ignore_hook: false,
         session,
