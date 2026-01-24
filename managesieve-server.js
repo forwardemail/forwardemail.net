@@ -186,6 +186,11 @@ class ManageSieveServer {
   // Handle new client connection
   //
   async handleConnection(socket) {
+    // Disable Nagle's algorithm to ensure immediate data transmission
+    // This is important for protocol servers that need to send greeting immediately
+    // See: https://brooker.co.za/blog/2024/05/09/nagle.html
+    socket.setNoDelay(true);
+
     const session = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       socket,
