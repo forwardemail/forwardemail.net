@@ -138,11 +138,8 @@ class SieveIntegration {
       allowedExtensions: this.config.enabledExtensions
     });
 
-    // Create a rate limit store that wraps the Redis client
-    // The store provides get/set interface expected by SieveRateLimiter
-    const rateLimitStore = this.createRedisRateLimitStore(this.client);
-
-    this.rateLimiter = new SieveRateLimiter(rateLimitStore, {
+    // Pass Redis client directly to rate limiter
+    this.rateLimiter = new SieveRateLimiter(this.client, {
       redirectsPerDay: this.config.maxRedirectsPerDay,
       vacationsPerHour: this.config.maxVacationsPerHour
     });
@@ -625,33 +622,6 @@ class SieveIntegration {
       ...options,
       maxSize: this.config.maxScriptSize
     });
-  }
-
-  /**
-   * Create a Redis-based rate limit store wrapper
-   *
-   * This wraps the Redis client to provide the get/set interface
-   * expected by SieveRateLimiter, storing rate limit data as JSON.
-   *
-   * @param {Object} client - Redis client instance
-   * @returns {Object} Store object with get/set/delete methods
-   */
-  createRedisRateLimitStore(client) {
-    return {
-      async get(key) {
-        const data = await client.get(key);
-        return data ? JSON.parse(data) : null;
-      },
-
-      async set(key, value, ttlMs) {
-        const ttlSeconds = Math.ceil(ttlMs / 1000);
-        await client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
-      },
-
-      async delete(key) {
-        await client.del(key);
-      }
-    };
   }
 
   /**

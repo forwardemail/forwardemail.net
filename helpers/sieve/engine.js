@@ -767,7 +767,12 @@ class SieveEngine {
    */
   evaluateBodyTest(test, state) {
     const { keys, matchType, comparator } = test;
-    const body = state.message.body || '';
+    let body = state.message.body || '';
+
+    // Handle body as object with text/html properties (from SieveIntegration)
+    if (typeof body === 'object' && body !== null) {
+      body = body.text || body.html || '';
+    }
 
     for (const key of keys) {
       const interpolatedKey = this.interpolateVariables(key, state);

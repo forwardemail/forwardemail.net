@@ -50,6 +50,9 @@ async function sieveAliasAuth(ctx, next) {
   ctx.state.alias = alias;
   ctx.state.domain = domain;
 
+  // Set user from populated alias.user for Sieve controller (needed for getUserDomains)
+  ctx.state.user = alias.user;
+
   // Set alias.group for permission checks (alias auth means user owns the alias)
   ctx.state.alias.group = 'admin';
 

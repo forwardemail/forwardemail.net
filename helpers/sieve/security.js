@@ -735,11 +735,11 @@ class SieveSecurityValidator {
 class SieveRateLimiter {
   /**
    * Create a new rate limiter
-   * @param {Object} store - Storage backend for rate limit data
+   * @param {Object} client - Redis client instance
    * @param {Object} config - Rate limit configuration
    */
-  constructor(store, config = {}) {
-    this.store = store;
+  constructor(client, config = {}) {
+    this.client = client;
     this.config = {
       redirectsPerDay: config.redirectsPerDay || 100,
       vacationsPerHour: config.vacationsPerHour || 50,
@@ -795,10 +795,9 @@ class SieveRateLimiter {
     const now = Date.now();
     const windowStart = now - windowMs;
 
-    // Get current count
-    let data = await this.store.get(key);
-
-    data ||= { count: 0, timestamps: [] };
+    // Get current count from Redis
+    const raw = await this.client.get(key);
+    const data = raw ? JSON.parse(raw) : { count: 0, timestamps: [] };
 
     // Remove expired timestamps
     data.timestamps = data.timestamps.filter((ts) => ts > windowStart);
@@ -810,7 +809,8 @@ class SieveRateLimiter {
       // Record this action
       data.timestamps.push(now);
       data.count = data.timestamps.length;
-      await this.store.set(key, data, windowMs);
+      const ttlSeconds = Math.ceil(windowMs / 1000);
+      await this.client.set(key, JSON.stringify(data), 'EX', ttlSeconds);
     }
 
     // Calculate remaining AFTER the action is recorded

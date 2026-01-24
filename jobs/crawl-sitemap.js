@@ -57,64 +57,209 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-(async () => {
-  await setupMongoose(logger);
+/**
+ * Fetch and parse a sitemap XML file
+ * @param {string} sitemapPath - Path to the sitemap
+ * @returns {Promise<Object>} Parsed XML result
+ */
+async function fetchSitemap(sitemapPath) {
+  const response = await client.request({
+    method: 'GET',
+    path: sitemapPath,
+    resolver
+  });
 
-  try {
-    //
-    // fetch sitemap and then use undici to GET requests for every page
-    //
-    const response = await client.request({
+  const xml = await response.body.text();
+  const parser = new XMLParser({});
+  return parser.parse(xml, true);
+}
+
+/**
+ * Extract URLs from a parsed sitemap result
+ * @param {Object} result - Parsed XML result
+ * @returns {Array} Array of URL objects with loc property
+ */
+function extractUrls(result) {
+  if (!result.urlset || !result.urlset.url) {
+    return [];
+  }
+
+  const urls = Array.isArray(result.urlset.url)
+    ? result.urlset.url
+    : [result.urlset.url];
+
+  // Filter out undefined/null entries and entries without loc property
+  return urls.filter((url) => url && url.loc);
+}
+
+/**
+ * Extract child sitemap URLs from a sitemap index
+ * @param {Object} result - Parsed XML result
+ * @returns {Array} Array of sitemap URL strings
+ */
+function extractSitemapIndexUrls(result) {
+  if (!result.sitemapindex || !result.sitemapindex.sitemap) {
+    return [];
+  }
+
+  const sitemaps = Array.isArray(result.sitemapindex.sitemap)
+    ? result.sitemapindex.sitemap
+    : [result.sitemapindex.sitemap];
+
+  // Filter and extract loc from each sitemap entry
+  return sitemaps
+    .filter((sitemap) => sitemap && sitemap.loc)
+    .map((sitemap) => sitemap.loc);
+}
+
+/**
+ * Process a single URL - crawl and index content
+ * @param {Object} url - URL object with loc property
+ */
+async function processUrl(url) {
+  // crawl the page for caching support and localization
+  {
+    const path = url.loc.replace(config.urls.web, '');
+    logger.debug(`crawling ${path}`);
+
+    const { body } = await client.request({
       method: 'GET',
-      path: '/sitemap.xml',
-      resolver
+      path
     });
 
-    const xml = await response.body.text();
-    const parser = new XMLParser({});
-    const result = parser.parse(xml, true);
+    const text = await body.text();
 
-    // Ensure urls is always an array (fast-xml-parser returns object for single entry)
-    const urls = Array.isArray(result.urlset.url)
-      ? result.urlset.url
-      : [result.urlset.url];
+    const document = parse(text);
 
-    for (const url of urls) {
-      // if (!url.loc.includes('/en/')) continue;
-      // crawl the page for caching support and localization
+    // remove <nav> and <footer> and all modals
+    for (const el of document.querySelectorAll(
+      'nav, footer, .modal, .fixed-bottom, .no-search'
+    )) {
+      el.remove();
+    }
+
+    const title = document.querySelector('title').rawText;
+    const content = document
+      .querySelector('meta[name="description"]')
+      .getAttribute('content');
+    const locale = document.querySelector('html').getAttribute('lang');
+
+    SearchResults.findOneAndUpdate(
       {
-        const path = url.loc.replace(config.urls.web, '');
-        logger.debug(`crawling ${path}`);
+        href: url.loc
+      },
+      {
+        href: url.loc,
+        title,
+        content,
+        locale
+      },
+      {
+        upsert: true
+      }
+    )
+      .then()
+      .catch((err) => logger.error(err));
 
-        const { body } = await client.request({
-          method: 'GET',
-          path
-        });
+    for (const header of document.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
+      let content = '';
 
-        const text = await body.text();
+      let href = url.loc;
+      let id;
 
-        const document = parse(text);
-
-        // remove <nav> and <footer> and all modals
-        for (const el of document.querySelectorAll(
-          'nav, footer, .modal, .fixed-bottom, .no-search'
-        )) {
-          el.remove();
+      id = header.getAttribute('id');
+      if (!isSANB(id) || id === 'top') id = null;
+      if (!id) {
+        const a = header.querySelector('a');
+        if (a) {
+          id = a.getAttribute('id');
+          if (!isSANB(id) || id === 'top') id = null;
         }
+      }
 
-        const title = document.querySelector('title').rawText;
-        const content = document
-          .querySelector('meta[name="description"]')
-          .getAttribute('content');
-        const locale = document.querySelector('html').getAttribute('lang');
+      if (!id) {
+        // find closest parent header
+        const number = Number.parseInt(header.rawTagName.replace('h', ''), 10);
+        if (number !== 1) {
+          const closest = header.closest(`h${number - 1}`);
+          if (closest) {
+            id = closest.getAttribute('id');
+            if (!isSANB(id) || id === 'top') id = null;
+            if (!id) {
+              const anchor = closest.querySelector('a');
+              if (anchor) {
+                const id = anchor.getAttribute('id');
+                if (isSANB(id) && id !== 'top') href += `#${id}`;
+              }
+            }
+          }
+        }
+      }
 
+      if (id) {
+        href += `#${id}`;
+        href += `:~:text=${encodeURIComponent(header.text)}`;
+      } else {
+        href += `#:~:text=${encodeURIComponent(header.text)}`;
+      }
+
+      let node = header;
+      while (
+        node.nextElementSibling &&
+        !['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(
+          node.nextElementSibling.rawTagName
+        )
+      ) {
+        node = node.nextElementSibling;
+        content += _.compact(
+          splitLines(
+            convert(node.outerHTML, {
+              wordwrap: false,
+              linkBrackets: false,
+              selectors: [
+                ...[1, 2, 3, 4, 5, 6].map((i) => ({
+                  selector: `h${i}`,
+                  format: 'block',
+                  options: { uppercase: false }
+                })),
+                { selector: 'form', format: 'skip' },
+                { selector: 'pre', format: 'skip' },
+                { selector: 'img', format: 'skip' },
+                { selector: 'svg', format: 'skip' },
+                { selector: 'hr', format: 'skip' },
+                { selector: 'ul', options: { itemPrefix: ' ' } },
+                {
+                  selector: 'a',
+                  options: {
+                    hideLinkHrefIfSameAsText: true,
+                    ignoreHref: true,
+                    baseUrl: config.urls.web,
+                    linkBrackets: false
+                  }
+                }
+              ]
+            }).trim()
+          )
+        ).join(' ');
+      }
+
+      // <https://stackoverflow.com/a/64875801>
+      content = content
+        .replace(/\s\s+/g, ' ')
+        // .replace(/\s*([,.!?:;]+)(?!\s*$)\s*/g, '$1 ')
+        .trim();
+
+      if (content) {
         SearchResults.findOneAndUpdate(
           {
-            href: url.loc
+            href,
+            title,
+            header: header.text
           },
           {
-            href: url.loc,
+            href,
             title,
+            header: header.text,
             content,
             locale
           },
@@ -124,134 +269,72 @@ graceful.listen();
         )
           .then()
           .catch((err) => logger.error(err));
+      }
+    }
+  }
 
-        for (const header of document.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
-          let content = '';
+  // crawl the page + .png for social open graph image caching
+  {
+    const path = url.loc.replace(config.urls.web, '') + '.png';
+    logger.debug(`crawling ${path}`);
 
-          let href = url.loc;
-          let id;
+    const { body } = await client.request({
+      method: 'GET',
+      path
+    });
 
-          id = header.getAttribute('id');
-          if (!isSANB(id) || id === 'top') id = null;
-          if (!id) {
-            const a = header.querySelector('a');
-            if (a) {
-              id = a.getAttribute('id');
-              if (!isSANB(id) || id === 'top') id = null;
-            }
-          }
+    await body.text();
+    // body.destroy();
+  }
+}
 
-          if (!id) {
-            // find closest parent header
-            const number = Number.parseInt(
-              header.rawTagName.replace('h', ''),
-              10
-            );
-            if (number !== 1) {
-              const closest = header.closest(`h${number - 1}`);
-              if (closest) {
-                id = closest.getAttribute('id');
-                if (!isSANB(id) || id === 'top') id = null;
-                if (!id) {
-                  const anchor = closest.querySelector('a');
-                  if (anchor) {
-                    const id = anchor.getAttribute('id');
-                    if (isSANB(id) && id !== 'top') href += `#${id}`;
-                  }
-                }
-              }
-            }
-          }
+(async () => {
+  await setupMongoose(logger);
 
-          if (id) {
-            href += `#${id}`;
-            href += `:~:text=${encodeURIComponent(header.text)}`;
-          } else {
-            href += `#:~:text=${encodeURIComponent(header.text)}`;
-          }
+  try {
+    //
+    // fetch sitemap and then use undici to GET requests for every page
+    //
+    const result = await fetchSitemap('/sitemap.xml');
 
-          let node = header;
-          while (
-            node.nextElementSibling &&
-            !['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(
-              node.nextElementSibling.rawTagName
-            )
-          ) {
-            node = node.nextElementSibling;
-            content += _.compact(
-              splitLines(
-                convert(node.outerHTML, {
-                  wordwrap: false,
-                  linkBrackets: false,
-                  selectors: [
-                    ...[1, 2, 3, 4, 5, 6].map((i) => ({
-                      selector: `h${i}`,
-                      format: 'block',
-                      options: { uppercase: false }
-                    })),
-                    { selector: 'form', format: 'skip' },
-                    { selector: 'pre', format: 'skip' },
-                    { selector: 'img', format: 'skip' },
-                    { selector: 'svg', format: 'skip' },
-                    { selector: 'hr', format: 'skip' },
-                    { selector: 'ul', options: { itemPrefix: ' ' } },
-                    {
-                      selector: 'a',
-                      options: {
-                        hideLinkHrefIfSameAsText: true,
-                        ignoreHref: true,
-                        baseUrl: config.urls.web,
-                        linkBrackets: false
-                      }
-                    }
-                  ]
-                }).trim()
-              )
-            ).join(' ');
-          }
+    // Collect all URLs from all sitemaps
+    let allUrls = [];
 
-          // <https://stackoverflow.com/a/64875801>
-          content = content
-            .replace(/\s\s+/g, ' ')
-            // .replace(/\s*([,.!?:;]+)(?!\s*$)\s*/g, '$1 ')
-            .trim();
+    // Check if this is a sitemap index (contains sitemapindex with child sitemaps)
+    const childSitemapUrls = extractSitemapIndexUrls(result);
 
-          if (content) {
-            SearchResults.findOneAndUpdate(
-              {
-                href,
-                title,
-                header: header.text
-              },
-              {
-                href,
-                title,
-                header: header.text,
-                content,
-                locale
-              },
-              {
-                upsert: true
-              }
-            )
-              .then()
-              .catch((err) => logger.error(err));
-          }
+    if (childSitemapUrls.length > 0) {
+      // This is a sitemap index - fetch each child sitemap
+      logger.debug(
+        `Found sitemap index with ${childSitemapUrls.length} child sitemaps`
+      );
+
+      for (const sitemapUrl of childSitemapUrls) {
+        try {
+          const sitemapPath = sitemapUrl.replace(config.urls.web, '');
+          logger.debug(`Fetching child sitemap: ${sitemapPath}`);
+
+          const childResult = await fetchSitemap(sitemapPath);
+          const urls = extractUrls(childResult);
+          allUrls = [...allUrls, ...urls];
+
+          logger.debug(`Found ${urls.length} URLs in ${sitemapPath}`);
+        } catch (err) {
+          logger.error(err, { sitemapUrl });
         }
       }
+    } else {
+      // This is a regular sitemap with URLs directly
+      allUrls = extractUrls(result);
+    }
 
-      // crawl the page + .png for social open graph image caching
-      {
-        const path = url.loc.replace(config.urls.web, '') + '.png';
-        logger.debug(`crawling ${path}`);
+    logger.debug(`Total URLs to crawl: ${allUrls.length}`);
 
-        const { body } = await client.request({
-          method: 'GET',
-          path
-        });
-
-        await body.text();
-        // body.destroy();
+    for (const url of allUrls) {
+      try {
+        await processUrl(url);
+      } catch (err) {
+        logger.error(err, { url: url.loc });
       }
     }
 
@@ -305,7 +388,7 @@ graceful.listen();
     //
     if (env.MICROSOFT_BING_API_KEY) {
       const urlLists = _.chunk(
-        urls.map((o) => o.loc),
+        allUrls.map((o) => o.loc),
         500
       );
       for (const urlList of urlLists) {
