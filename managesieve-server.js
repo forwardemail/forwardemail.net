@@ -100,10 +100,15 @@ class ManageSieveServer {
     this.maxScriptNameLength = config.managesieve.maxScriptNameLength;
 
     // TLS configuration
+    // Note: secure=true means implicit TLS (start encrypted)
+    // secure=false means STARTTLS (start plain, upgrade to TLS)
+    // Both modes need TLS options for encryption
     this.secure = options.secure !== false;
     this.tlsOptions = null;
 
-    if (this.secure && env.WEB_SSL_KEY_PATH && env.WEB_SSL_CERT_PATH) {
+    // Load TLS options if certificates are available
+    // This is needed for both implicit TLS and STARTTLS modes
+    if (env.WEB_SSL_KEY_PATH && env.WEB_SSL_CERT_PATH) {
       this.tlsOptions = {
         key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
         cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
