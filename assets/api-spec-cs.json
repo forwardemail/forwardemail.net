@@ -26,10 +26,61 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nPro základní ověřování použijte vygenerované **alias uživatelské jméno a heslo**. Toto platí pro koncové body v rámci:\n* Alias kontaktů (CardDAV)\n* Alias kalendářů (CalDAV)\n* Alias zpráv (IMAP/POP3)\n* Alias složek (IMAP/POP3)\n\n**Příklad:**\nPokud je alias uživatelské jméno `alias@domain.com` a heslo `GENERATED_PASSWORD`, hodnota kódovaná Base64 by byla `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorizace: Základní YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n*   Alias Sieve Scripts\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
+      "SieveScript": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "content",
+          "alias"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique script identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Script name"
+          },
+          "content": {
+            "type": "string",
+            "description": "Sieve script content"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias ID this script belongs to"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the script is active",
+            "default": false
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Script priority (lower = higher priority)",
+            "default": 0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Časové razítko vytvoření"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Časové razítko poslední aktualizace"
+          },
+          "object": {
+            "type": "string",
+            "example": "sieve_script"
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "required": [
@@ -6214,6 +6265,690 @@
           }
         }
       }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve": {
+      "get": {
+        "summary": "List Sieve Scripts",
+        "description": "List all Sieve scripts for an alias. Sieve is a powerful email filtering language defined in RFC 5228.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Sieve scripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SieveScript"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Sieve Script",
+        "description": "Create a new Sieve script for an alias. The script will be validated before saving.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "content"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Script name"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the script is active",
+                    "default": false
+                  },
+                  "priority": {
+                    "type": "integer",
+                    "description": "Script priority (lower = higher priority)",
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sieve script created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}": {
+      "get": {
+        "summary": "Get Sieve Script",
+        "description": "Get a specific Sieve script by ID or name.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Sieve Script",
+        "description": "Update an existing Sieve script. The script will be validated before saving.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  },
+                  "activate": {
+                    "type": "boolean",
+                    "description": "Whether to activate the script after update",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sieve script updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Sieve Script",
+        "description": "Delete a Sieve script. Cannot delete an active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}/activate": {
+      "post": {
+        "summary": "Activate Sieve Script",
+        "description": "Activate a Sieve script. Only one script can be active at a time - activating a script will deactivate any currently active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts": {
+      "get": {
+        "summary": "List Sieve Scripts (Alias Auth)",
+        "description": "List all Sieve scripts for the authenticated alias. Uses alias authentication instead of API token.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Sieve scripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SieveScript"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Sieve Script (Alias Auth)",
+        "description": "Create a new Sieve script for the authenticated alias. Uses alias authentication instead of API token.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "content"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Script name"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sieve script created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts/{script_id}": {
+      "get": {
+        "summary": "Get Sieve Script (Alias Auth)",
+        "description": "Get a specific Sieve script by ID or name for the authenticated alias.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Sieve Script (Alias Auth)",
+        "description": "Update an existing Sieve script for the authenticated alias.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  },
+                  "activate": {
+                    "type": "boolean",
+                    "description": "Whether to activate the script after update",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sieve script updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Sieve Script (Alias Auth)",
+        "description": "Delete a Sieve script for the authenticated alias. Cannot delete an active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts/{script_id}/activate": {
+      "post": {
+        "summary": "Activate Sieve Script (Alias Auth)",
+        "description": "Activate a Sieve script for the authenticated alias. Only one script can be active at a time.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -6268,6 +7003,10 @@
     {
       "name": "Složky",
       "description": "Koncové body správy aliasových složek (IMAP/POP3)\n\n>[!TIP]\n> Koncové body složek s cestou ke složce <code>/v1/folders/:path</code> jako koncovým bodem jsou zaměnitelné s ID složky <code>:id</code>. To znamená, že na složku se můžete odkazovat buď pomocí její hodnoty <code>path</code>, nebo <code>id</code>.\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako záhlaví základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n>[!TIP]\n> Tyto koncové body poskytují plnou správu složek včetně vytváření, přejmenování a mazání. Cesty ke složkám mohou zahrnovat nadřazené složky (např. „INBOX/Podsložka“) a nadřazené složky budou vytvořeny automaticky, pokud neexistují."
+    },
+    {
+      "name": "Sieve Scripts",
+      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, and variables. Scripts are validated before saving to ensure they are syntactically correct.\n\n>[!NOTE]\n> **Two authentication methods are supported:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Use your API key as the username with Basic Auth. Requires domain_id and alias_id in the URL path.\n> - **Alias Auth** (`/v1/sieve-scripts`): Use the alias email and generated password as Basic Auth credentials. No domain_id or alias_id needed in the URL.\n\n>[!TIP]\n> Script ID parameters accept either the MongoDB ObjectId or the script name, allowing flexible script identification."
     }
   ]
 }

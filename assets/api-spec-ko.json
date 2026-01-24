@@ -26,10 +26,61 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\n기본 인증에는 생성된 **별칭 사용자 이름 및 비밀번호**를 사용하세요. 이는 다음 엔드포인트에 적용됩니다.\n* 별칭 연락처(CardDAV)\n* 별칭 캘린더(CalDAV)\n* 별칭 메시지(IMAP/POP3)\n* 별칭 폴더(IMAP/POP3)\n\n**예:**\n별칭 사용자 이름이 `alias@domain.com`이고 비밀번호가 `GENERATED_PASSWORD`인 경우, Base64로 인코딩된 값은 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`입니다.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n*   Alias Sieve Scripts\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
+      "SieveScript": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "content",
+          "alias"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique script identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Script name"
+          },
+          "content": {
+            "type": "string",
+            "description": "Sieve script content"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias ID this script belongs to"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the script is active",
+            "default": false
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Script priority (lower = higher priority)",
+            "default": 0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "생성 타임스탬프"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "마지막 업데이트 타임스탬프"
+          },
+          "object": {
+            "type": "string",
+            "example": "sieve_script"
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "required": [
@@ -101,7 +152,7 @@
           },
           "preferred_locale": {
             "type": "string",
-            "description": "User's preferred language setting that overrides automatic detection"
+            "description": "자동 감지 기능을 재정의하는 사용자 선호 언어 설정"
           },
           "created_at": {
             "type": "string",
@@ -202,11 +253,11 @@
           },
           "has_smime": {
             "type": "boolean",
-            "description": "Whether S/MIME encryption is enabled"
+            "description": "S/MIME 암호화가 활성화되어 있는지 여부"
           },
           "smime_certificate": {
             "type": "string",
-            "description": "S/MIME X.509 certificate in PEM format"
+            "description": "PEM 형식의 S/MIME X.509 인증서"
           },
           "locale": {
             "type": "string",
@@ -214,7 +265,7 @@
           },
           "settings": {
             "type": "object",
-            "description": "Alias settings",
+            "description": "별칭 설정",
             "properties": {
               "mail": {
                 "type": "object",
@@ -222,23 +273,23 @@
                   "archive_folder": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Alias mail archive folder"
+                    "description": "별칭 메일 보관 폴더"
                   },
                   "sent_folder": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Alias mail sent folder"
+                    "description": "별칭 메일 보낸 편지함"
                   },
                   "drafts_folder": {
                     "type": "string",
                     "nullable": true,
-                    "description": "Alias mail drafts folder"
+                    "description": "별칭 메일 초안 폴더"
                   }
                 }
               },
               "label_settings": {
                 "type": "object",
-                "description": "Alias label map keyed by keyword",
+                "description": "키워드를 키로 사용하는 별칭 레이블 맵",
                 "additionalProperties": {
                   "$ref": "#/components/schemas/SettingsLabelUpdate"
                 }
@@ -248,7 +299,7 @@
                 "properties": {
                   "defaults": {
                     "type": "object",
-                    "description": "Free-form alias defaults such as display_name or signature.",
+                    "description": "표시 이름이나 서명과 같은 자유 형식 별칭 기본값입니다.",
                     "additionalProperties": true
                   }
                 }
@@ -1133,7 +1184,7 @@
             "items": {
               "type": "string"
             },
-            "description": "User-defined labels (lowercase, max 10)",
+            "description": "사용자 정의 레이블(소문자, 최대 10개)",
             "example": [
               "work",
               "important",
@@ -1320,7 +1371,7 @@
                 }
               }
             ],
-            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "description": "메시지에 설정할 사용자 정의 레이블입니다. 단일 레이블 문자열 또는 레이블 배열을 사용할 수 있습니다. 레이블은 문자, 숫자, 역슬래시(\\) 또는 달러 기호($)로 시작해야 하며, 단어, 마침표(.) 및 하이픈(-)을 포함할 수 있습니다. 메시지당 최대 10개의 레이블을 사용할 수 있습니다. 레이블은 대소문자를 구분하지 않으며 소문자로 저장됩니다.",
             "example": [
               "work",
               "important"
@@ -1350,7 +1401,7 @@
                 }
               }
             ],
-            "description": "User-defined labels to set on the message. Can be a single label string or an array of labels. Labels must start with a letter, digit, backslash, or dollar sign, and can contain word characters, dots, and hyphens. Maximum of 10 labels per message. Labels are case-insensitive and will be stored in lowercase.",
+            "description": "메시지에 설정할 사용자 정의 레이블입니다. 단일 레이블 문자열 또는 레이블 배열을 사용할 수 있습니다. 레이블은 문자, 숫자, 역슬래시(\\) 또는 달러 기호($)로 시작해야 하며, 단어, 마침표(.) 및 하이픈(-)을 포함할 수 있습니다. 메시지당 최대 10개의 레이블을 사용할 수 있습니다. 레이블은 대소문자를 구분하지 않으며 소문자로 저장됩니다.",
             "example": [
               "work",
               "important"
@@ -1411,7 +1462,7 @@
               "bounced",
               "rejected"
             ],
-            "description": "The current status of the email. Scheduling is determined by the `date` field.",
+            "description": "이메일의 현재 상태입니다. 예약 여부는 `date` 필드에 따라 결정됩니다.",
             "example": "sent"
           },
           "is_locked": {
@@ -1439,7 +1490,7 @@
           "date": {
             "type": "string",
             "format": "date-time",
-            "description": "The email's Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Maximum 30 days in the future from creation."
+            "description": "이메일의 날짜 헤더입니다. 미래 시간(1분 이상 앞)으로 설정하면 해당 시간까지 이메일이 보류됩니다. 생성일로부터 최대 30일까지 미래 시간으로 설정할 수 있습니다."
           },
           "subject": {
             "type": "string"
@@ -1472,7 +1523,7 @@
           },
           "requireTLS": {
             "type": "boolean",
-            "description": "Indicates if TLS is required for the entire delivery chain (RFC 8689)."
+            "description": "전체 전송 체인에 TLS가 필요한지 여부를 나타냅니다(RFC 8689)."
           }
         },
         "example": {
@@ -1687,7 +1738,7 @@
                 "type": "string"
               }
             ],
-            "description": "Optional Date header. If set to a future time (more than 1 minute ahead), the email will be held until that time. Cannot be more than 30 days in the future from creation.",
+            "description": "날짜 헤더는 선택 사항입니다. 미래 시간(1분 이상 앞)으로 설정하면 해당 시간까지 이메일이 보류됩니다. 생성일로부터 30일을 초과하는 미래 날짜는 설정할 수 없습니다.",
             "example": "2025-06-04T15:30:00.000Z"
           },
           "list": {
@@ -1696,7 +1747,7 @@
           },
           "requireTLS": {
             "type": "boolean",
-            "description": "If true, requires TLS for the entire delivery chain (RFC 8689). The message will only be transmitted over TLS-encrypted connections."
+            "description": "만약 그렇다면, 전체 전송 과정에 TLS가 필요합니다(RFC 8689). 메시지는 TLS로 암호화된 연결을 통해서만 전송됩니다."
           }
         }
       },
@@ -1795,7 +1846,7 @@
           },
           "require_tls_inbound": {
             "type": "boolean",
-            "description": "When enabled, reject inbound emails not sent over TLS"
+            "description": "이 옵션을 활성화하면 TLS를 통해 전송되지 않은 수신 이메일을 거부합니다."
           },
           "verification_record": {
             "type": "string"
@@ -2301,11 +2352,11 @@
           },
           "has_smime": {
             "type": "boolean",
-            "description": "Enable or disable S/MIME encryption for this alias"
+            "description": "이 별칭에 대해 S/MIME 암호화를 활성화 또는 비활성화합니다."
           },
           "smime_certificate": {
             "type": "string",
-            "description": "S/MIME X.509 certificate in PEM format"
+            "description": "PEM 형식의 S/MIME X.509 인증서"
           },
           "max_quota": {
             "type": "string",
@@ -2406,11 +2457,11 @@
           },
           "has_smime": {
             "type": "boolean",
-            "description": "Enable or disable S/MIME encryption"
+            "description": "S/MIME 암호화를 활성화 또는 비활성화합니다."
           },
           "smime_certificate": {
             "type": "string",
-            "description": "S/MIME X.509 certificate in PEM format"
+            "description": "PEM 형식의 S/MIME X.509 인증서"
           },
           "max_quota": {
             "type": "string",
@@ -2475,17 +2526,17 @@
       },
       "SavedSearch": {
         "type": "object",
-        "description": "Saved search definition stored per alias.",
+        "description": "저장된 검색 정의는 별칭별로 저장됩니다.",
         "properties": {
           "name": {
             "type": "string",
             "maxLength": 100,
-            "description": "Display name for the saved search"
+            "description": "저장된 검색의 표시 이름"
           },
           "query": {
             "type": "string",
             "maxLength": 500,
-            "description": "Search query string to reuse (e.g., \"from:billing\")"
+            "description": "재사용할 검색 쿼리 문자열(예: \"from:billing\")"
           }
         },
         "required": [
@@ -2495,32 +2546,32 @@
       },
       "ShortcutMap": {
         "type": "object",
-        "description": "Map of actions to keybindings for keyboard shortcuts.",
+        "description": "키보드 단축키에 대한 동작 매핑입니다.",
         "additionalProperties": {
           "type": "string",
-          "description": "Keybinding for the action (e.g., \"e\" for archive)"
+          "description": "해당 동작에 대한 키 바인딩(예: 아카이브는 \"e\")"
         }
       },
       "SettingsLabelUpdate": {
         "type": "object",
-        "description": "Fields allowed when updating a label definition.",
+        "description": "레이블 정의를 업데이트할 때 허용되는 필드입니다.",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Human-readable label name shown in the UI"
+            "description": "사용자 인터페이스에 표시되는 사람이 읽기 쉬운 레이블 이름"
           },
           "color": {
             "type": "string",
             "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$",
-            "description": "Hex color used for UI rendering"
+            "description": "UI 렌더링에 사용되는 16진수 색상"
           },
           "hidden": {
             "type": "boolean",
-            "description": "Hide the label in the UI while preserving the keyword"
+            "description": "키워드는 유지하면서 UI에서 레이블을 숨깁니다."
           },
           "source": {
             "type": "string",
-            "description": "Label origin for filtering and migrations",
+            "description": "필터링 및 마이그레이션을 위한 레이블 출처",
             "enum": [
               "custom",
               "system",
@@ -2619,7 +2670,7 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "Email ID or Message-ID. You can pass either the unique email ID (e.g., '683fbe4d5baef1b583a11e54') or the email's Message-ID header value (e.g., '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net').",
+        "description": "이메일 ID 또는 메시지 ID를 전달할 수 있습니다. 고유한 이메일 ID(예: '683fbe4d5baef1b583a11e54') 또는 이메일의 메시지 ID 헤더 값(예: '1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net')을 전달할 수 있습니다.",
         "schema": {
           "type": "string"
         }
@@ -2664,7 +2715,7 @@
         "name": "keyword",
         "in": "path",
         "required": true,
-        "description": "IMAP keyword used as the label identifier",
+        "description": "레이블 식별자로 사용되는 IMAP 키워드",
         "schema": {
           "type": "string"
         }
@@ -2810,7 +2861,7 @@
           "계정"
         ],
         "summary": "계정 검색",
-        "description": "Retrieve your account information.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.\n\n- **User Account (API Token):** When authenticated with your API token, this endpoint returns your user account information including plan details, email, and API token.\n\n- **Alias Account (Alias Credentials):** When authenticated with alias credentials (email and generated password), this endpoint returns alias/mailbox information including storage used/quota and a nested `settings` object (mail special folders, label settings, and alias defaults). This is useful for IMAP/POP3/CalDAV/CardDAV clients to check storage status and preferences.",
+        "description": "계정 정보를 조회하세요.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다.\n\n- **사용자 계정(API 토큰):** API 토큰으로 인증하면 요금제 세부 정보, 이메일 주소, API 토큰을 포함한 사용자 계정 정보가 반환됩니다.\n\n- **별칭 계정(별칭 자격 증명):** 별칭 자격 증명(이메일 주소 및 생성된 비밀번호)으로 인증하면 저장 공간 사용량/할당량 및 중첩된 `settings` 객체(메일 특수 폴더, 레이블 설정, 별칭 기본값)를 포함한 별칭/사서함 정보가 반환됩니다. 이는 IMAP/POP3/CalDAV/CardDAV 클라이언트에서 저장 공간 상태 및 기본 설정을 확인하는 데 유용합니다.",
         "operationId": "retrieveAccount",
         "security": [
           {
@@ -2912,7 +2963,7 @@
           "계정"
         ],
         "summary": "계정 업데이트",
-        "description": "Update your account information.\n\n- **User Account (API Token):** Update user profile fields.\n- **Alias Account (Alias Credentials):** Update alias-scoped settings using the nested `settings` object. Legacy flat fields are accepted for compatibility. The response matches `GET /v1/account`.",
+        "description": "계정 정보를 업데이트하세요.\n\n- **사용자 계정(API 토큰):** 사용자 프로필 필드를 업데이트합니다.\n\n- **별칭 계정(별칭 자격 증명):** 중첩된 `settings` 객체를 사용하여 별칭 범위 설정을 업데이트합니다. 호환성을 위해 기존의 일반 필드도 허용됩니다. 응답은 `GET /v1/account`와 일치합니다.",
         "operationId": "updateAccount",
         "security": [
           {
@@ -2931,7 +2982,7 @@
                 "properties": {
                   "settings": {
                     "type": "object",
-                    "description": "Alias settings (alias authentication only)",
+                    "description": "별칭 설정(별칭 인증 전용)",
                     "properties": {
                       "mail": {
                         "type": "object",
@@ -2939,23 +2990,23 @@
                           "archive_folder": {
                             "type": "string",
                             "nullable": true,
-                            "description": "Alias mail archive folder"
+                            "description": "별칭 메일 보관 폴더"
                           },
                           "sent_folder": {
                             "type": "string",
                             "nullable": true,
-                            "description": "Alias mail sent folder"
+                            "description": "별칭 메일 보낸 편지함"
                           },
                           "drafts_folder": {
                             "type": "string",
                             "nullable": true,
-                            "description": "Alias mail drafts folder"
+                            "description": "별칭 메일 초안 폴더"
                           }
                         }
                       },
                       "label_settings": {
                         "type": "object",
-                        "description": "Alias label map keyed by keyword",
+                        "description": "키워드를 키로 사용하는 별칭 레이블 맵",
                         "additionalProperties": {
                           "$ref": "#/components/schemas/SettingsLabelUpdate"
                         }
@@ -2965,7 +3016,7 @@
                         "properties": {
                           "defaults": {
                             "type": "object",
-                            "description": "Free-form alias defaults such as display_name or signature",
+                            "description": "display_name이나 signature와 같은 자유 형식 별칭 기본값",
                             "additionalProperties": true
                           }
                         }
@@ -2983,12 +3034,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Updated email address (user authentication only)"
+                    "description": "업데이트된 이메일 주소 (사용자 인증 전용)"
                   },
                   "avatar_url": {
                     "type": "string",
                     "format": "uri",
-                    "description": "Avatar URL (user authentication only)"
+                    "description": "아바타 URL (사용자 인증 전용)"
                   }
                 }
               }
@@ -4410,7 +4461,7 @@
           "메시지"
         ],
         "summary": "메시지 만들기",
-        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder, initial flags, and labels. If the target folder doesn't exist, it will be created automatically.",
+        "description": "폴더에 새 메시지를 생성/추가합니다. 이 엔드포인트는 표준 Nodemailer 메시지 형식을 허용하며 대상 폴더, 초기 플래그 및 레이블을 지정할 수 있습니다. 대상 폴더가 존재하지 않으면 자동으로 생성됩니다.",
         "operationId": "createMessage",
         "security": [
           {
@@ -4543,7 +4594,7 @@
           "메시지"
         ],
         "summary": "업데이트 메시지",
-        "description": "Update an existing message. You can modify the message flags, labels, or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "description": "기존 메시지를 업데이트할 수 있습니다. 메시지 플래그, 레이블을 수정하거나 다른 폴더로 이동할 수 있습니다. 대상 폴더가 없으면 자동으로 생성됩니다.",
         "operationId": "updateMessage",
         "security": [
           {
@@ -4699,7 +4750,7 @@
           {
             "name": "always_send_email",
             "in": "query",
-            "description": "If set to `true` or `1`, an email will always be sent even if no logs are found. The email will indicate that no logs were available and will not contain an attachment.",
+            "description": "`true` 또는 `1`로 설정하면 로그를 찾을 수 없는 경우에도 항상 이메일이 전송됩니다. 이메일에는 로그를 찾을 수 없다는 내용이 표시되며 첨부 파일은 포함되지 않습니다.",
             "schema": {
               "type": "string",
               "enum": [
@@ -4746,7 +4797,7 @@
     "/v1/emails": {
       "get": {
         "summary": "아웃바운드 SMTP 이메일 나열",
-        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the Retrieve email endpoint with an email ID or Message-ID.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password.",
+        "description": "**발신 SMTP 이메일 목록 조회**\n\n참고: 이 엔드포인트는 이메일의 `message`, `headers`, `rejectedErrors` 속성 값을 반환하지 않습니다.\n\n해당 속성 및 값을 조회하려면 이메일 ID 또는 메시지 ID를 사용하여 '이메일 조회' 엔드포인트를 사용하십시오.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다. API 키(권장) 또는 별칭 이메일 주소와 생성된 비밀번호를 사용하여 인증할 수 있습니다.",
         "tags": [
           "이메일"
         ],
@@ -4775,7 +4826,7 @@
           {
             "name": "is_scheduled",
             "in": "query",
-            "description": "Filter for scheduled emails (emails with future send date). Set to 'true' to show only emails scheduled to be sent in the future.",
+            "description": "예약된 이메일(발송 예정일이 미래인 이메일)만 필터링합니다. 'true'로 설정하면 향후 발송 예정인 이메일만 표시됩니다.",
             "schema": {
               "type": "boolean"
             }
@@ -4832,7 +4883,7 @@
       },
       "post": {
         "summary": "아웃바운드 SMTP 이메일 만들기",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "description": "저희 이메일 생성 API는 Nodemailer의 메시지 옵션 설정을 기반으로 하며, 해당 설정을 활용합니다. 아래의 모든 본문 매개변수에 대해서는 [Nodemailer 메시지 설정](https://nodemailer.com/message/)을 참조해 주시기 바랍니다.\n\n`envelope`와 `dkim` 옵션(저희 API에서 자동으로 설정해 드립니다)을 제외한 모든 Nodemailer 옵션을 지원합니다. 보안상의 이유로 `disableFileAccess`와 `disableUrlAccess` 옵션은 자동으로 `true`로 설정됩니다.\n\n헤더를 포함한 전체 이메일 내용을 `raw` 옵션과 함께 전달하거나, 아래의 각 본문 매개변수 옵션을 개별적으로 전달해 주시면 됩니다.\n\n이 API 엔드포인트는 헤더에 이모지가 포함되어 있을 경우 자동으로 인코딩합니다(예: `Subject: 🤓 Hello`는 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`로 자동 변환). 저희는 개발자 친화적이고 누구나 쉽게 사용할 수 있는 이메일 API를 만드는 것을 목표로 했습니다.\n\n**예약 전송:** 이메일을 예약 전송하려면 `date` 필드에 미래 날짜(현재 시간으로부터 최소 1분 이상, 최대 30일 이내)를 설정하세요. 이메일은 지정된 시간까지 보관됩니다. 예약 전송은 이메일 삭제 엔드포인트를 사용하여 취소할 수 있습니다.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다. API 키(권장) 또는 별칭 이메일 주소와 생성된 비밀번호를 사용하여 인증할 수 있습니다. 자세한 내용은 API 문서의 인증 섹션을 참조하세요.",
         "tags": [
           "이메일"
         ],
@@ -4922,7 +4973,7 @@
       ],
       "get": {
         "summary": "아웃바운드 SMTP 이메일 검색",
-        "description": "Retrieve a specific outbound SMTP email by ID or Message-ID. You can pass either the email's unique ID or its Message-ID header value.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
+        "description": "ID 또는 메시지 ID를 사용하여 특정 발신 SMTP 이메일을 조회합니다. 이메일의 고유 ID 또는 메시지 ID 헤더 값을 전달할 수 있습니다.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다.",
         "tags": [
           "이메일"
         ],
@@ -4955,7 +5006,7 @@
       },
       "delete": {
         "summary": "아웃바운드 SMTP 이메일 삭제",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
+        "description": "이메일 삭제는 현재 상태가 \"대기 중\", \"대기열에 있음\" 또는 \"보류 중\"인 경우에만 상태를 \"거부됨\"으로 설정하고 이후 대기열에서 처리하지 않습니다. 이는 특정 날짜로 예약된 이메일을 전송 전에 취소하는 데 유용합니다. 이메일은 생성 및/또는 전송 후 30일이 지나면 자동으로 삭제될 수 있으므로, 클라이언트, 데이터베이스 또는 애플리케이션에 발신 SMTP 이메일 사본을 보관해야 합니다.\n\n**인증:** 이 엔드포인트는 API 토큰 인증과 별칭 자격 증명 인증을 모두 지원합니다.",
         "tags": [
           "이메일"
         ],
@@ -6214,6 +6265,690 @@
           }
         }
       }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve": {
+      "get": {
+        "summary": "List Sieve Scripts",
+        "description": "List all Sieve scripts for an alias. Sieve is a powerful email filtering language defined in RFC 5228.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Sieve scripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SieveScript"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Sieve Script",
+        "description": "Create a new Sieve script for an alias. The script will be validated before saving.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "content"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Script name"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the script is active",
+                    "default": false
+                  },
+                  "priority": {
+                    "type": "integer",
+                    "description": "Script priority (lower = higher priority)",
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sieve script created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}": {
+      "get": {
+        "summary": "Get Sieve Script",
+        "description": "Get a specific Sieve script by ID or name.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Sieve Script",
+        "description": "Update an existing Sieve script. The script will be validated before saving.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  },
+                  "activate": {
+                    "type": "boolean",
+                    "description": "Whether to activate the script after update",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sieve script updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Sieve Script",
+        "description": "Delete a Sieve script. Cannot delete an active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/sieve/{script_id}/activate": {
+      "post": {
+        "summary": "Activate Sieve Script",
+        "description": "Activate a Sieve script. Only one script can be active at a time - activating a script will deactivate any currently active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domain ID or name"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias ID or name"
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts": {
+      "get": {
+        "summary": "List Sieve Scripts (Alias Auth)",
+        "description": "List all Sieve scripts for the authenticated alias. Uses alias authentication instead of API token.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Sieve scripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SieveScript"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Sieve Script (Alias Auth)",
+        "description": "Create a new Sieve script for the authenticated alias. Uses alias authentication instead of API token.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "content"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Script name"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sieve script created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts/{script_id}": {
+      "get": {
+        "summary": "Get Sieve Script (Alias Auth)",
+        "description": "Get a specific Sieve script by ID or name for the authenticated alias.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Sieve Script (Alias Auth)",
+        "description": "Update an existing Sieve script for the authenticated alias.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Sieve script content"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Script description"
+                  },
+                  "activate": {
+                    "type": "boolean",
+                    "description": "Whether to activate the script after update",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sieve script updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Sieve Script (Alias Auth)",
+        "description": "Delete a Sieve script for the authenticated alias. Cannot delete an active script.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sieve-scripts/{script_id}/activate": {
+      "post": {
+        "summary": "Activate Sieve Script (Alias Auth)",
+        "description": "Activate a Sieve script for the authenticated alias. Only one script can be active at a time.",
+        "tags": [
+          "Sieve Scripts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sieve script ID or name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sieve script activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SieveScript"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -6268,6 +7003,10 @@
     {
       "name": "폴더",
       "description": "별칭 폴더 관리 엔드포인트(IMAP/POP3)\n\n>[!TIP]\n> 폴더 경로 <code>/v1/folders/:path</code>를 엔드포인트로 사용하는 폴더 엔드포인트는 폴더 ID <code>:id</code>와 상호 교환 가능합니다. 즉, <code>path</code> 또는 <code>id</code> 값으로 폴더를 참조할 수 있습니다.\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 폴더 생성, 이름 변경, 삭제를 포함한 전체 폴더 관리 기능을 제공합니다. 폴더 경로에는 상위 폴더(예: '받은 편지함/하위 폴더')가 포함될 수 있으며, 상위 폴더가 없으면 자동으로 생성됩니다."
+    },
+    {
+      "name": "Sieve Scripts",
+      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, and variables. Scripts are validated before saving to ensure they are syntactically correct.\n\n>[!NOTE]\n> **Two authentication methods are supported:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Use your API key as the username with Basic Auth. Requires domain_id and alias_id in the URL path.\n> - **Alias Auth** (`/v1/sieve-scripts`): Use the alias email and generated password as Basic Auth credentials. No domain_id or alias_id needed in the URL.\n\n>[!TIP]\n> Script ID parameters accept either the MongoDB ObjectId or the script name, allowing flexible script identification."
     }
   ]
 }
