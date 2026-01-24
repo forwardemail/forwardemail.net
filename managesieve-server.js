@@ -415,7 +415,20 @@ class ManageSieveServer {
         }
 
         case 'NOOP': {
-          this.send(session, `${RESPONSE.OK} "NOOP completed"`);
+          // RFC 5804 Section 2.13: If a tag string is provided, include it in TAG response code
+          const noopTag = this.parseString(args);
+          if (noopTag) {
+            // Response format: OK (TAG "tagstring") "message"
+            this.send(
+              session,
+              `${RESPONSE.OK} (TAG "${this.escapeString(
+                noopTag
+              )}") "NOOP completed"`
+            );
+          } else {
+            this.send(session, `${RESPONSE.OK} "NOOP completed"`);
+          }
+
           break;
         }
 
@@ -715,10 +728,11 @@ class ManageSieveServer {
 
   //
   // Handle LOGOUT command
+  // RFC 5804 Section 2.3: Server MUST reply with OK response, then close connection
+  // Note: BYE is only used for server-initiated disconnection (timeout, shutdown, etc.)
   //
   handleLogout(session) {
     this.send(session, `${RESPONSE.OK} "Logout completed"`);
-    this.send(session, `${RESPONSE.BYE} "Goodbye"`);
     session.socket.end();
   }
 
@@ -764,7 +778,8 @@ class ManageSieveServer {
     });
 
     if (!script) {
-      this.send(session, `${RESPONSE.NO} "Script not found"`);
+      // RFC 5804 Section 2.9: NONEXISTENT response code for non-existent script
+      this.send(session, `${RESPONSE.NO} (NONEXISTENT) "Script not found"`);
       return;
     }
 
@@ -905,7 +920,8 @@ class ManageSieveServer {
     });
 
     if (!script) {
-      this.send(session, `${RESPONSE.NO} "Script not found"`);
+      // RFC 5804 Section 2.8: NONEXISTENT response code for non-existent script
+      this.send(session, `${RESPONSE.NO} (NONEXISTENT) "Script not found"`);
       return;
     }
 
@@ -942,12 +958,17 @@ class ManageSieveServer {
     });
 
     if (!script) {
-      this.send(session, `${RESPONSE.NO} "Script not found"`);
+      // RFC 5804 Section 2.10: NONEXISTENT response code for non-existent script
+      this.send(session, `${RESPONSE.NO} (NONEXISTENT) "Script not found"`);
       return;
     }
 
     if (script.is_active) {
-      this.send(session, `${RESPONSE.NO} "Cannot delete active script"`);
+      // RFC 5804 Section 2.10: ACTIVE response code when trying to delete active script
+      this.send(
+        session,
+        `${RESPONSE.NO} (ACTIVE) "Cannot delete active script"`
+      );
       return;
     }
 
@@ -994,7 +1015,8 @@ class ManageSieveServer {
     });
 
     if (!script) {
-      this.send(session, `${RESPONSE.NO} "Script not found"`);
+      // RFC 5804 Section 2.11: NONEXISTENT response code for non-existent script
+      this.send(session, `${RESPONSE.NO} (NONEXISTENT) "Script not found"`);
       return;
     }
 
@@ -1005,9 +1027,10 @@ class ManageSieveServer {
     });
 
     if (existing) {
+      // RFC 5804 Section 2.11: ALREADYEXISTS response code when target name already exists
       this.send(
         session,
-        `${RESPONSE.NO} "Script with new name already exists"`
+        `${RESPONSE.NO} (ALREADYEXISTS) "Script with new name already exists"`
       );
       return;
     }
