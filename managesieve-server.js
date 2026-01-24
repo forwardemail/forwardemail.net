@@ -652,6 +652,13 @@ class ManageSieveServer {
       this.processBuffer(session);
     });
 
+    // Per RFC 5804 Section 2.2: After the TLS layer is established,
+    // the server MUST re-issue the capability results, followed by an OK response.
+    // Use 'secure' event to ensure TLS handshake is complete before sending capabilities
+    tlsSocket.once('secure', () => {
+      this.sendCapabilities(session);
+    });
+
     tlsSocket.on('error', (error) => {
       this.logger.error(error, {
         component: 'ManageSieve',
