@@ -437,11 +437,19 @@ class ManageSieveServer {
       capabilities.push('"STARTTLS"');
     }
 
-    for (const cap of capabilities) {
-      this.send(session, cap);
-    }
+    // Add OK response
+    capabilities.push(`${RESPONSE.OK} "Capability completed"`);
 
-    this.send(session, `${RESPONSE.OK} "Capability completed"`);
+    // Batch all capabilities into a single write to ensure immediate transmission
+    // This prevents TCP buffering from delaying the greeting
+    try {
+      session.socket.write(capabilities.map((c) => `${c}\r\n`).join(''));
+    } catch (err) {
+      this.logger.error(err, {
+        component: 'ManageSieve',
+        sessionId: session.id
+      });
+    }
   }
 
   //
