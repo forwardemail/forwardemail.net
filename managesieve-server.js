@@ -200,6 +200,7 @@ class ManageSieveServer {
       domain: null,
       tlsStarted: this.secure,
       buffer: '',
+      pendingAuthMechanism: null, // Track pending SASL authentication continuation
       // Properties for onConnect/onAuth compatibility
       remoteAddress: socket.remoteAddress,
       localAddress: socket.localAddress,
@@ -285,6 +286,19 @@ class ManageSieveServer {
   // Process incoming data buffer
   //
   async processBuffer(session) {
+    // If we're waiting for SASL authentication continuation, handle it first
+    if (session.pendingAuthMechanism) {
+      const crlfIndex = session.buffer.indexOf('\r\n');
+      if (crlfIndex === -1) {
+        return; // Wait for complete line
+      }
+
+      const authData = session.buffer.slice(0, crlfIndex);
+      session.buffer = session.buffer.slice(crlfIndex + 2);
+      await this.handleAuthContinuation(session, authData);
+      return;
+    }
+
     // If we're waiting for literal data, handle it first
     if (session.pendingLiteral) {
       const { size, callback } = session.pendingLiteral;
@@ -490,13 +504,45 @@ class ManageSieveServer {
   async handlePlainAuth(session, initialResponse) {
     const authData = initialResponse;
 
-    // If no initial response, request it
+    // If no initial response, request it via SASL continuation
     if (!authData) {
-      this.send(session, '""');
-      // Wait for client response (simplified - in production use proper async handling)
+      // Set pending auth state so processBuffer knows to handle the continuation
+      session.pendingAuthMechanism = 'PLAIN';
+      // Send empty string to request credentials (per RFC 4422 / RFC 5804)
+      // ManageSieve uses empty quoted string "" for SASL continuation
+      try {
+        session.socket.write('""\r\n');
+      } catch (err) {
+        this.logger.error(err, {
+          component: 'ManageSieve',
+          sessionId: session.id
+        });
+      }
+
       return;
     }
 
+    await this.processPlainAuthData(session, authData);
+  }
+
+  //
+  // Handle SASL authentication continuation
+  //
+  async handleAuthContinuation(session, authData) {
+    const mechanism = session.pendingAuthMechanism;
+    session.pendingAuthMechanism = null;
+
+    if (mechanism === 'PLAIN') {
+      await this.processPlainAuthData(session, authData);
+    } else {
+      this.send(session, `${RESPONSE.NO} "Unknown auth mechanism"`);
+    }
+  }
+
+  //
+  // Process PLAIN authentication data
+  //
+  async processPlainAuthData(session, authData) {
     // Decode base64 PLAIN auth: \0username\0password
     let decoded;
     try {
