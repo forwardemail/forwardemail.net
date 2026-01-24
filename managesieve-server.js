@@ -488,15 +488,17 @@ class ManageSieveServer {
       return;
     }
 
-    // Parse mechanism
-    const match = args.match(/^"?([\w-]+)"?(?:\s+"?([^"]*)"?)?$/i);
-    if (!match) {
+    // Parse mechanism - supports three formats:
+    // 1. AUTHENTICATE "PLAIN" - no initial response
+    // 2. AUTHENTICATE "PLAIN" "base64data" - quoted initial response
+    // 3. AUTHENTICATE "PLAIN" {size+} - literal initial response (followed by data)
+    const mechanismMatch = args.match(/^"?([\w-]+)"?/i);
+    if (!mechanismMatch) {
       this.send(session, `${RESPONSE.NO} "Invalid AUTHENTICATE syntax"`);
       return;
     }
 
-    const mechanism = match[1].toUpperCase();
-    const initialResponse = match[2];
+    const mechanism = mechanismMatch[1].toUpperCase();
 
     if (!SASL_MECHANISMS.includes(mechanism)) {
       this.send(
@@ -505,6 +507,26 @@ class ManageSieveServer {
       );
       return;
     }
+
+    // Check for literal syntax: AUTHENTICATE "PLAIN" {size+}
+    const literalMatch = args.match(/{(\d+)\+?}\s*$/);
+    if (literalMatch) {
+      const size = Number.parseInt(literalMatch[1], 10);
+      // Set up pending literal to read auth data
+      session.pendingLiteral = {
+        size,
+        data: Buffer.alloc(0),
+        callback: async (data) => {
+          const authData = data.toString('utf8').trim();
+          await this.processPlainAuthData(session, authData);
+        }
+      };
+      return;
+    }
+
+    // Check for quoted initial response: AUTHENTICATE "PLAIN" "base64data"
+    const quotedMatch = args.match(/^"?[\w-]+"?\s+"([^"]*)"\s*$/i);
+    const initialResponse = quotedMatch ? quotedMatch[1] : null;
 
     if (mechanism === 'PLAIN') {
       await this.handlePlainAuth(session, initialResponse);

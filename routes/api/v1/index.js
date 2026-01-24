@@ -606,23 +606,53 @@ router
   .delete('/folders/:id', api.v1.folders.remove);
 
 // Sieve scripts (email filtering)
-router.get('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.list);
-router.post('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.create);
-router.get(
-  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
-  api.v1.sieve.retrieve
-);
-router.put(
-  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
-  api.v1.sieve.update
-);
-router.delete(
-  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
-  api.v1.sieve.remove
-);
-router.post(
-  '/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate',
-  api.v1.sieve.activate
-);
+//
+// Two authentication methods are supported:
+// 1. API token auth: /v1/domains/:domain_id/aliases/:alias_id/sieve
+//    - Uses API token in Basic Auth (username=token, password=empty)
+//    - Requires domain_id and alias_id in URL path
+// 2. Alias auth: /v1/sieve-scripts
+//    - Uses alias credentials in Basic Auth (username=alias@domain, password=generated_password)
+//    - No domain_id/alias_id needed in URL (derived from auth)
+//
+
+// API token auth routes (with domain/alias middleware)
+router
+  .use(
+    '/domains/:domain_id/aliases/:alias_id/sieve',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin
+  )
+  .get('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.list)
+  .post('/domains/:domain_id/aliases/:alias_id/sieve', api.v1.sieve.create)
+  .get(
+    '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+    api.v1.sieve.retrieve
+  )
+  .put(
+    '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+    api.v1.sieve.update
+  )
+  .delete(
+    '/domains/:domain_id/aliases/:alias_id/sieve/:script_id',
+    api.v1.sieve.remove
+  )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate',
+    api.v1.sieve.activate
+  );
+
+// Alias auth routes (like contacts/messages/folders)
+// Uses alias@domain:password authentication
+router
+  .use('/sieve-scripts', api.v1.aliasAuth, api.v1.sieveAliasAuth)
+  .get('/sieve-scripts', api.v1.sieve.list)
+  .post('/sieve-scripts', api.v1.sieve.create)
+  .get('/sieve-scripts/:script_id', api.v1.sieve.retrieve)
+  .put('/sieve-scripts/:script_id', api.v1.sieve.update)
+  .delete('/sieve-scripts/:script_id', api.v1.sieve.remove)
+  .post('/sieve-scripts/:script_id/activate', api.v1.sieve.activate);
 
 module.exports = router;

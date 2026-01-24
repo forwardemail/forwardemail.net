@@ -5,6 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const config = require('#config');
 const { Domains, SieveScripts } = require('#models');
 const sieve = require('#helpers/sieve');
@@ -161,11 +162,11 @@ async function listScripts(ctx) {
 
 /**
  * Get a specific Sieve script
- * GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_name
+ * GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id
  */
 async function getScript(ctx) {
   const { alias } = ctx.state;
-  const { script_name: scriptName } = ctx.params;
+  const { script_id: scriptId } = ctx.params;
 
   // Check if IMAP is enabled - Sieve requires IMAP
   if (!alias.has_imap) {
@@ -177,12 +178,15 @@ async function getScript(ctx) {
     throw Boom.badRequest(ctx.translateError('SIEVE_NOT_ALLOWED_FOR_CATCHALL'));
   }
 
-  const script = await SieveScripts.findOne({
-    alias: alias._id,
-    name: scriptName
-  })
-    .lean()
-    .exec();
+  // Support lookup by ID or name
+  const query = { alias: alias._id };
+  if (mongoose.isObjectIdOrHexString(scriptId)) {
+    query._id = scriptId;
+  } else {
+    query.name = scriptId;
+  }
+
+  const script = await SieveScripts.findOne(query).lean().exec();
 
   if (!script) {
     throw Boom.notFound(ctx.translateError('SIEVE_SCRIPT_NOT_FOUND'));
@@ -207,11 +211,11 @@ async function getScript(ctx) {
 
 /**
  * Create or update a Sieve script
- * PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_name
+ * PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id
  */
 async function putScript(ctx) {
   const { alias, domain, user } = ctx.state;
-  const { script_name: scriptName } = ctx.params;
+  const { script_id: scriptId } = ctx.params;
   const { content, description, activate } = ctx.request.body;
 
   // Check if IMAP is enabled - Sieve requires IMAP
@@ -257,10 +261,15 @@ async function putScript(ctx) {
 
   // Check script count limit
   const scriptCount = await SieveScripts.countDocuments({ alias: alias._id });
-  const existingScript = await SieveScripts.findOne({
-    alias: alias._id,
-    name: scriptName
-  });
+  // Support lookup by ID or name
+  const query = { alias: alias._id };
+  if (mongoose.isObjectIdOrHexString(scriptId)) {
+    query._id = scriptId;
+  } else {
+    query.name = scriptId;
+  }
+
+  const existingScript = await SieveScripts.findOne(query);
 
   if (!existingScript && scriptCount >= config.sieve.maxScripts) {
     throw Boom.badRequest(ctx.translateError('SIEVE_MAX_SCRIPTS_EXCEEDED'));
@@ -282,7 +291,7 @@ async function putScript(ctx) {
       alias: alias._id,
       user: user._id,
       domain: domain._id,
-      name: scriptName,
+      name: scriptId,
       content,
       description: description || '',
       is_active: false,
@@ -293,7 +302,7 @@ async function putScript(ctx) {
 
   // Activate if requested
   if (activate) {
-    await SieveScripts.activateScript(alias._id, scriptName);
+    await SieveScripts.activateScript(alias._id, script.name);
     script = await SieveScripts.findById(script._id).lean().exec();
   }
 
@@ -313,11 +322,11 @@ async function putScript(ctx) {
 
 /**
  * Delete a Sieve script
- * DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_name
+ * DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id
  */
 async function deleteScript(ctx) {
   const { alias } = ctx.state;
-  const { script_name: scriptName } = ctx.params;
+  const { script_id: scriptId } = ctx.params;
 
   // Check if IMAP is enabled - Sieve requires IMAP
   if (!alias.has_imap) {
@@ -329,10 +338,15 @@ async function deleteScript(ctx) {
     throw Boom.badRequest(ctx.translateError('SIEVE_NOT_ALLOWED_FOR_CATCHALL'));
   }
 
-  const script = await SieveScripts.findOne({
-    alias: alias._id,
-    name: scriptName
-  });
+  // Support lookup by ID or name
+  const query = { alias: alias._id };
+  if (mongoose.isObjectIdOrHexString(scriptId)) {
+    query._id = scriptId;
+  } else {
+    query.name = scriptId;
+  }
+
+  const script = await SieveScripts.findOne(query);
 
   if (!script) {
     throw Boom.notFound(ctx.translateError('SIEVE_SCRIPT_NOT_FOUND'));
@@ -353,11 +367,11 @@ async function deleteScript(ctx) {
 
 /**
  * Activate a Sieve script
- * POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_name/activate
+ * POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate
  */
 async function activateScript(ctx) {
   const { alias } = ctx.state;
-  const { script_name: scriptName } = ctx.params;
+  const { script_id: scriptId } = ctx.params;
 
   // Check if IMAP is enabled - Sieve requires IMAP
   if (!alias.has_imap) {
@@ -367,6 +381,20 @@ async function activateScript(ctx) {
   // Check if alias is domain-wide (catch-all) - not allowed for Sieve
   if (alias.name === '*' || alias.name.startsWith('*@')) {
     throw Boom.badRequest(ctx.translateError('SIEVE_NOT_ALLOWED_FOR_CATCHALL'));
+  }
+
+  // Support lookup by ID or name
+  let scriptName = scriptId;
+  if (mongoose.isObjectIdOrHexString(scriptId)) {
+    const existingScript = await SieveScripts.findOne({
+      alias: alias._id,
+      _id: scriptId
+    });
+    if (!existingScript) {
+      throw Boom.notFound(ctx.translateError('SIEVE_SCRIPT_NOT_FOUND'));
+    }
+
+    scriptName = existingScript.name;
   }
 
   const script = await SieveScripts.activateScript(alias._id, scriptName);
