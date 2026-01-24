@@ -20,9 +20,9 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
-const managesieveSharedConfig = sharedConfig('MANAGESIEVE');
+const breeSharedConfig = sharedConfig('BREE');
 
-const client = new Redis(managesieveSharedConfig.redis, logger);
+const client = new Redis(breeSharedConfig.redis, logger);
 client.setMaxListeners(0);
 
 const wsp = createWebSocketAsPromised();
