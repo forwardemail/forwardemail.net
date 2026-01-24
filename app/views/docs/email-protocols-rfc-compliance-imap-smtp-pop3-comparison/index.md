@@ -1278,12 +1278,14 @@ Forward Email provides full ManageSieve protocol support for remotely managing S
 
 #### ManageSieve Server Configuration
 
-| Setting            | Value                   |
-| ------------------ | ----------------------- |
-| **Server**         | `imap.forwardemail.net` |
-| **Port**           | `4190`                  |
-| **Security**       | STARTTLS (required)     |
-| **Authentication** | PLAIN (over TLS)        |
+| Setting                 | Value                   |
+| ----------------------- | ----------------------- |
+| **Server**              | `imap.forwardemail.net` |
+| **Port (STARTTLS)**     | `2190` (recommended)    |
+| **Port (Implicit TLS)** | `4190`                  |
+| **Authentication**      | PLAIN (over TLS)        |
+
+> **Note:** Port 2190 uses STARTTLS (upgrade from plain to TLS) and is compatible with most ManageSieve clients including [sieve-connect](https://github.com/philpennock/sieve-connect). Port 4190 uses implicit TLS (TLS from connection start) for clients that support it.
 
 #### Supported ManageSieve Commands
 
@@ -1318,10 +1320,10 @@ sequenceDiagram
     participant MS as ManageSieve Server
     participant DB as MongoDB
 
-    Client->>MS: Connect to port 4190
+    Client->>MS: Connect to port 2190
     MS-->>Client: "IMPLEMENTATION" "Forward Email"
     Client->>MS: STARTTLS
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
     Client->>MS: AUTHENTICATE "PLAIN" [credentials]
     MS->>DB: Verify credentials
     DB-->>MS: OK

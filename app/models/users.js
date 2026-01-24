@@ -648,6 +648,19 @@ object[config.userFields.addressCountry] = {
 // Finally add the fields
 Users.add(object);
 
+//
+// If preferred_locale is set, override last_locale with it
+// This ensures the user's explicit language preference is used for all
+// locale-dependent operations including emails
+//
+Users.pre('validate', function (next) {
+  if (isSANB(this.preferred_locale)) {
+    this[config.lastLocaleField] = this.preferred_locale;
+  }
+
+  next();
+});
+
 // validate timezone
 Users.pre('validate', function (next) {
   // if not set yet then default to UTC

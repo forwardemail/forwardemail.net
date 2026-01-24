@@ -61,6 +61,27 @@
       }
     },
     {
+      "name": "managesieve-2190",
+      "script": "managesieve-starttls.js",
+      "max_restarts": 999,
+      "max_memory_restart": "4G",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "pmx": false,
+      "error_file": "/var/log/pm2/managesieve-2190-error.log",
+      "out_file": "/var/log/pm2/managesieve-2190-out.log",
+      "combine_logs": true,
+      "merge_logs": true,
+      "env_development": {
+        "MANAGESIEVE_STARTTLS_PORT": 2190
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "MANAGESIEVE_STARTTLS_PORT": 2190
+      }
+    },
+    {
       "name": "proxy-http",
       "script": "proxy.js",
       "max_restarts": 999,

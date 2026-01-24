@@ -145,11 +145,17 @@ block body
                     th(scope="row")= t("Server")
                     td: code imap.forwardemail.net
                   tr
-                    th(scope="row")= t("Port")
-                    td: code 4190
+                    th(scope="row")= t("Port (STARTTLS)")
+                    td
+                      code 2190
+                      = " "
+                      span.text-muted= t("(recommended for most clients)")
                   tr
-                    th(scope="row")= t("Security")
-                    td STARTTLS
+                    th(scope="row")= t("Port (Implicit TLS)")
+                    td
+                      code 4190
+                      = " "
+                      span.text-muted= t("(for clients supporting implicit TLS)")
                   tr
                     th(scope="row")= t("Username")
                     td: code= `${alias.name}@${domain.name}`

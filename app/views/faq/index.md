@@ -2661,7 +2661,7 @@ You can manage your Sieve scripts in several ways:
 
 1. **Web Interface**: Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts to create and manage scripts.
 
-2. **ManageSieve Protocol**: Connect using any ManageSieve-compatible client (like Thunderbird's Sieve add-on) to `imap.forwardemail.net` on port `4190`.
+2. **ManageSieve Protocol**: Connect using any ManageSieve-compatible client (like Thunderbird's Sieve add-on or [sieve-connect](https://github.com/philpennock/sieve-connect)) to `imap.forwardemail.net`. Use port `2190` with STARTTLS (recommended for most clients) or port `4190` with implicit TLS.
 
 3. **API**: Use our [REST API](/api#sieve-scripts) to programmatically manage scripts.
 

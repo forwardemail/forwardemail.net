@@ -6,6 +6,9 @@
 ## Table of Contents
 
 * [About Forward Email](#about-forward-email)
+* [Key Facts & Statistics](#key-facts--statistics)
+* [Notable Users](#notable-users)
+* [Awards & Recognition](#awards--recognition)
 * [Fonts](#fonts)
 * [Colors](#colors)
 * [Logos](#logos)
@@ -21,6 +24,37 @@ Our service was founded in 2017 and powers email for over 500,000 domains – in
 Our goal is to be the enterprise-grade email and security infrastructure platform – and we adhere to [several principles](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
 If you are a member of the press, a journalist, or a media representative and would like to speak with us, ask questions, or learn more – then please contact us at `press@forwardemail.net`.
+
+
+## Key Facts & Statistics
+
+| Metric                  | Value                                                                                            |
+| :---------------------- | :----------------------------------------------------------------------------------------------- |
+| **Founded**             | 2017                                                                                             |
+| **Domains Powered**     | 500,000+                                                                                         |
+| **Open Source**         | 100% (GitHub: [forwardemail/forwardemail.net](https://github.com/forwardemail/forwardemail.net)) |
+| **Languages Supported** | 25+                                                                                              |
+| **Encryption**          | Quantum-safe ChaCha20-Poly1305, OpenPGP, WKD, S/MIME                                             |
+| **Protocols**           | IMAP, POP3, SMTP, CalDAV, CardDAV ([see our full RFC Compliance document](/rfc))                 |
+| **Self-Hosting**        | [Available via Docker](/self-hosted)                                                             |
+| **Trustpilot Rating**   | 4.9/5 (140+ reviews)                                                                             |
+
+
+## Notable Users
+
+Forward Email is trusted by leading organizations across industries:
+
+* **Government:** The U.S. Naval Academy, Government of South Australia, Government of Dominican Republic
+* **Technology:** Netflix Games, Canonical/Ubuntu, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
+* **Education:** University of Cambridge, University of Maryland, University of Washington, Tufts University, Swarthmore College
+* **Industry Leaders:** Isaac Z. Schlueter (npm), David Heinemeier Hansson (Ruby on Rails)
+
+
+## Awards & Recognition
+
+* Listed on [Awesome Privacy](https://github.com/Lissy93/awesome-privacy) (8,800+ GitHub stars)
+* Listed on [Awesome Self-Hosted](https://github.com/awesome-selfhosted/awesome-selfhosted) (270,000+ GitHub stars)
+* Featured in the [GitHub Email Aliasing Comparison](https://github.com/fynks/email-aliasing-comparison)
 
 
 ## Fonts

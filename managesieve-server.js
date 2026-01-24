@@ -513,7 +513,7 @@ class ManageSieveServer {
             logger: this.logger,
             resolver: this.resolver,
             server: this.server,
-            constructor: { name: 'ManageSieve' }
+            constructor: { name: 'ManageSieveServer' }
           },
           { username, password },
           session,

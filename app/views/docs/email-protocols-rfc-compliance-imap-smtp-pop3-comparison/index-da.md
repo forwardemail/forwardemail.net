@@ -1266,8 +1266,8 @@ Forward Email provides full ManageSieve protocol support for remotely managing S
 | Setting | Value |
 | ------------------ | ----------------------- |
 | **Server** | `imap.forwardemail.net` |
-| **Port** | `4190` |
-| **Security** | STARTTLS (required) |
+| **Port (STARTTLS)** | `2190` (recommended) |
+| **Port (Implicit TLS)** | `4190` |
 | **Authentication** | PLAIN (over TLS) |
 
 #### Supported ManageSieve Commands {#supported-managesieve-commands}
@@ -1303,14 +1303,14 @@ sequenceDiagram
     participant MS as ManageSieve Server
     participant DB as MongoDB
 
-    Client->>MS: Connect to port 4190
+    Client->>MS: Connect to port 2190
     MS-->>Client: "IMPLEMENTATION" "Forward Email"
     Client->>MS: STARTTLS
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
     Client->>MS: AUTHENTICATE "PLAIN" [credentials]
     MS->>DB: Verify credentials
     DB-->>MS: OK
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
 
     Client->>MS: LISTSCRIPTS
     MS->>DB: Query SieveScripts
@@ -1320,14 +1320,14 @@ sequenceDiagram
     Client->>MS: PUTSCRIPT "newfilter" {script}
     MS->>MS: Validate syntax
     MS->>DB: Store script
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
 
     Client->>MS: SETACTIVE "newfilter"
     MS->>DB: Update active script
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
 
     Client->>MS: LOGOUT
-    MS-->>Client: OK
+    MS-->>Client: OK (TLS negotiation)
 ```
 
 #### Web Interface and API {#web-interface-and-api}

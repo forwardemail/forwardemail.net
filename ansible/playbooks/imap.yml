@@ -59,10 +59,15 @@
         rule: allow
         port: 2993
         proto: tcp
-    - name: Allow port 4190 (ManageSieve)
+    - name: Allow port 4190 (ManageSieve implicit TLS)
       ufw:
         rule: allow
         port: 4190
+        proto: tcp
+    - name: Allow port 2190 (ManageSieve STARTTLS)
+      ufw:
+        rule: allow
+        port: 2190
         proto: tcp
     - name: Allow http
       ufw:
