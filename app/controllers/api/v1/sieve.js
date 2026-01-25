@@ -210,13 +210,13 @@ async function getScript(ctx) {
 }
 
 /**
- * Create or update a Sieve script
- * PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id
+ * Create a new Sieve script
+ * POST /v1/domains/:domain_id/aliases/:alias_id/sieve
+ * POST /v1/sieve-scripts
  */
-async function putScript(ctx) {
+async function createScript(ctx) {
   const { alias, domain, user } = ctx.state;
-  const { script_id: scriptId } = ctx.params;
-  const { content, description, activate } = ctx.request.body;
+  const { name, content, description, activate } = ctx.request.body;
 
   // Check if IMAP is enabled - Sieve requires IMAP
   if (!alias.has_imap) {
@@ -228,8 +228,13 @@ async function putScript(ctx) {
     throw Boom.badRequest(ctx.translateError('SIEVE_NOT_ALLOWED_FOR_CATCHALL'));
   }
 
+  // Name is required for creating a new script
+  if (!isSANB(name)) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_NAME_REQUIRED'));
+  }
+
   if (!isSANB(content)) {
-    throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_REQUIRED'));
+    throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_CONTENT_REQUIRED'));
   }
 
   // Validate script syntax
@@ -253,7 +258,7 @@ async function putScript(ctx) {
   if (!securityResult.valid) {
     throw Boom.badRequest(
       ctx.translateError(
-        'SIEVE_SECURITY_ERROR',
+        'SIEVE_SCRIPT_SECURITY_ERROR',
         securityResult.errors[0].message
       )
     );
@@ -261,6 +266,77 @@ async function putScript(ctx) {
 
   // Check script count limit
   const scriptCount = await SieveScripts.countDocuments({ alias: alias._id });
+  if (scriptCount >= config.sieve.maxScripts) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_MAX_SCRIPTS_EXCEEDED'));
+  }
+
+  // Check if script with same name already exists
+  const existingScript = await SieveScripts.findOne({
+    alias: alias._id,
+    name
+  });
+  if (existingScript) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_NAME_EXISTS'));
+  }
+
+  // Create new script
+  let script = await SieveScripts.create({
+    alias: alias._id,
+    user: user._id,
+    domain: domain._id,
+    name,
+    content,
+    description: description || '',
+    is_active: false,
+    created_by: 'api',
+    last_modified_by: 'api'
+  });
+
+  // Activate if requested
+  if (activate) {
+    await SieveScripts.activateScript(alias._id, script.name);
+    script = await SieveScripts.findById(script._id).lean().exec();
+  }
+
+  ctx.body = {
+    object: 'sieve_script',
+    id: script._id.toString(),
+    name: script.name,
+    description: script.description,
+    is_active: script.is_active,
+    is_valid: script.is_valid,
+    required_capabilities: script.required_capabilities,
+    security_warnings: script.security_warnings,
+    created_at: script.created_at,
+    updated_at: script.updated_at
+  };
+}
+
+/**
+ * Update an existing Sieve script
+ * PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id
+ * PUT /v1/sieve-scripts/:script_id
+ */
+async function updateScript(ctx) {
+  const { alias, user } = ctx.state;
+  const { script_id: scriptId } = ctx.params;
+  const { content, description, activate } = ctx.request.body;
+
+  // Check if IMAP is enabled - Sieve requires IMAP
+  if (!alias.has_imap) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_REQUIRES_IMAP'));
+  }
+
+  // Check if alias is domain-wide (catch-all) - not allowed for Sieve
+  if (alias.name === '*' || alias.name.startsWith('*@')) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_NOT_ALLOWED_FOR_CATCHALL'));
+  }
+
+  // Validate script_id
+  if (!isSANB(scriptId)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_SIEVE_SCRIPT_ID'));
+  }
+
   // Support lookup by ID or name
   const query = { alias: alias._id };
   if (mongoose.isObjectIdOrHexString(scriptId)) {
@@ -271,34 +347,50 @@ async function putScript(ctx) {
 
   const existingScript = await SieveScripts.findOne(query);
 
-  if (!existingScript && scriptCount >= config.sieve.maxScripts) {
-    throw Boom.badRequest(ctx.translateError('SIEVE_MAX_SCRIPTS_EXCEEDED'));
+  if (!existingScript) {
+    throw Boom.notFound(ctx.translateError('SIEVE_SCRIPT_DOES_NOT_EXIST'));
   }
 
-  let script;
-  if (existingScript) {
-    // Update existing script
-    existingScript.content = content;
-    if (isSANB(description)) {
-      existingScript.description = description;
-    }
-
-    existingScript.last_modified_by = 'api';
-    script = await existingScript.save();
-  } else {
-    // Create new script
-    script = await SieveScripts.create({
-      alias: alias._id,
-      user: user._id,
-      domain: domain._id,
-      name: scriptId,
-      content,
-      description: description || '',
-      is_active: false,
-      created_by: 'api',
-      last_modified_by: 'api'
-    });
+  // Content is required for update
+  if (!isSANB(content)) {
+    throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_CONTENT_REQUIRED'));
   }
+
+  // Validate script syntax
+  const validation = sieve.validate(content);
+  if (!validation.valid) {
+    throw Boom.badRequest(
+      ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)
+    );
+  }
+
+  // Security validation
+  const securityValidator = new sieve.SieveSecurityValidator({
+    maxScriptSize: config.sieve.maxScriptSize,
+    maxNestedDepth: config.sieve.maxNestedDepth,
+    maxRedirects: config.sieve.maxRedirects,
+    // Allow redirects to the user's own domains
+    allowedRedirectDomains: await getUserDomains(user._id)
+  });
+
+  const securityResult = securityValidator.validate(content);
+  if (!securityResult.valid) {
+    throw Boom.badRequest(
+      ctx.translateError(
+        'SIEVE_SCRIPT_SECURITY_ERROR',
+        securityResult.errors[0].message
+      )
+    );
+  }
+
+  // Update existing script
+  existingScript.content = content;
+  if (isSANB(description)) {
+    existingScript.description = description;
+  }
+
+  existingScript.last_modified_by = 'api';
+  let script = await existingScript.save();
 
   // Activate if requested
   if (activate) {
@@ -497,8 +589,8 @@ module.exports = {
   capabilities: getCapabilities,
   validate: validateScript,
   retrieve: getScript,
-  create: putScript,
-  update: putScript,
+  create: createScript,
+  update: updateScript,
   remove: deleteScript,
   activate: activateScript,
   deactivate: deactivateScripts,
@@ -508,7 +600,8 @@ module.exports = {
   testScript,
   listScripts,
   getScript,
-  putScript,
+  createScript,
+  updateScript,
   deleteScript,
   activateScript,
   deactivateScripts,

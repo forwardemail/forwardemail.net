@@ -318,7 +318,8 @@ SieveScripts.virtual('info').get(function () {
 
 SieveScripts.plugin(mongooseCommonPlugin, {
   object: 'sieve_script',
-  locale: false
+  locale: true,
+  defaultLocale: i18n.config.defaultLocale
 });
 
 const conn = mongoose.connections.find(

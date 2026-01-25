@@ -1847,19 +1847,73 @@ config.launchDate = dayjs('11/23/2020 10:00 AM', 'MM/DD/YYYY h:mm A').toDate();
 
 config.payments = payments;
 
-// ManageSieve configuration
-config.managesieve = {
+// Sieve configuration (used by ManageSieve server, API, and web controllers)
+config.sieve = {
+  // Server settings (for ManageSieve protocol)
   host: env.MANAGESIEVE_HOST,
   port: env.MANAGESIEVE_PORT,
+
+  // Script limits
   maxScriptSize: env.SIEVE_MAX_SCRIPT_SIZE
     ? Number.parseInt(env.SIEVE_MAX_SCRIPT_SIZE, 10)
     : 1024 * 1024,
   maxScripts: env.SIEVE_MAX_SCRIPTS
     ? Number.parseInt(env.SIEVE_MAX_SCRIPTS, 10)
     : 100,
+  maxScriptCount: env.SIEVE_MAX_SCRIPTS
+    ? Number.parseInt(env.SIEVE_MAX_SCRIPTS, 10)
+    : 100,
   maxScriptNameLength: 128,
   maxNestedDepth: 10,
-  maxRedirects: 5
+
+  // Redirect limits
+  maxRedirects: 5,
+  maxRedirectsPerScript: 5,
+  maxRedirectsPerDay: 100,
+
+  // Vacation limits
+  maxVacationsPerHour: 10,
+
+  // Security settings
+  allowedRedirectDomains: null,
+  protectedHeaders: [
+    'from',
+    'sender',
+    'return-path',
+    'dkim-signature',
+    'arc-seal',
+    'arc-message-signature',
+    'arc-authentication-results',
+    'authentication-results',
+    'received',
+    'received-spf',
+    'message-id',
+    'date',
+    'mime-version',
+    'content-type',
+    'content-transfer-encoding'
+  ],
+
+  // Enabled Sieve extensions
+  enabledExtensions: [
+    'fileinto',
+    'reject',
+    'ereject',
+    'vacation',
+    'vacation-seconds',
+    'variables',
+    'imap4flags',
+    'body',
+    'copy',
+    'relational',
+    'editheader',
+    'envelope',
+    'date',
+    'index',
+    'regex',
+    'enotify',
+    'environment'
+  ]
 };
 
 module.exports = config;

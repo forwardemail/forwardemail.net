@@ -18213,5 +18213,12 @@
   "Email protocols & RFC compliance": "Email protocols & RFC compliance",
   "%d articles": "%d articles",
   "Complete guide to email protocols & RFC compliance. Compare IMAP, SMTP, POP3, DKIM, SPF, DMARC, ARC standards. Learn email security, CalDAV, encryption & protocol support across providers.": "Complete guide to email protocols & RFC compliance. Compare IMAP, SMTP, POP3, DKIM, SPF, DMARC, ARC standards. Learn email security, CalDAV, encryption & protocol support across providers.",
-  "Best Security Audit Companies - Guide 2026": "Best Security Audit Companies - Guide 2026"
+  "Best Security Audit Companies - Guide 2026": "Best Security Audit Companies - Guide 2026",
+  "Sieve script name is required.": "Sieve script name is required.",
+  "Sieve script content is required.": "Sieve script content is required.",
+  "Sieve script is invalid: %s": "Sieve script is invalid: %s",
+  "A Sieve script with this name already exists.": "A Sieve script with this name already exists.",
+  "Sieve script not found.": "Sieve script not found.",
+  "Sieve script does not exist.": "Sieve script does not exist.",
+  "Cannot delete an active Sieve script. Please deactivate it first.": "Cannot delete an active Sieve script. Please deactivate it first."
 }

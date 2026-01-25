@@ -930,14 +930,41 @@ module.exports = {
     'Drafts folder must be a non-empty string or null.',
   SETTINGS_ALIASES_DEFAULTS_MUST_BE_OBJECT:
     'Alias defaults must be provided as an object.',
-  // Sieve
+  // Sieve Scripts
   SIEVE_SCRIPT_CREATED: 'Sieve script created successfully.',
   SIEVE_SCRIPT_UPDATED: 'Sieve script updated successfully.',
   SIEVE_SCRIPT_DELETED: 'Sieve script deleted successfully.',
   SIEVE_SCRIPT_ACTIVATED: 'Sieve script activated successfully.',
   SIEVE_SCRIPT_DEACTIVATED: 'Sieve script deactivated successfully.',
   SIEVE_SCRIPT_NOT_FOUND: 'Sieve script not found.',
+  SIEVE_SCRIPT_DOES_NOT_EXIST: 'Sieve script does not exist.',
   SIEVE_IMAP_REQUIRED: 'IMAP must be enabled to use Sieve scripts.',
+  SIEVE_REQUIRES_IMAP: 'IMAP must be enabled to use Sieve scripts.',
+  SIEVE_NOT_ALLOWED_FOR_CATCHALL:
+    'Sieve scripts are not allowed for catch-all or wildcard aliases.',
+  SIEVE_SCRIPT_REQUIRED: 'Sieve script content is required.',
+  SIEVE_SCRIPT_CONTENT_REQUIRED: 'Sieve script content is required.',
+  SIEVE_SCRIPT_NAME_REQUIRED: 'Sieve script name is required.',
+  SIEVE_SCRIPT_NAME_EXISTS: 'A Sieve script with this name already exists.',
+  SIEVE_SCRIPT_INVALID: 'Sieve script is invalid: %s',
+  SIEVE_INVALID_SCRIPT: 'Sieve script is invalid: %s',
+  SIEVE_SCRIPT_SYNTAX_ERROR: 'Sieve script syntax error: %s',
+  SIEVE_SCRIPT_SECURITY_ERROR: 'Sieve script security error: %s',
+  SIEVE_SCRIPT_SIZE_EXCEEDED:
+    'Sieve script size exceeds the maximum allowed size of %s bytes.',
+  SIEVE_SCRIPT_LIMIT_EXCEEDED:
+    'Maximum number of Sieve scripts (%s) has been reached for this alias.',
+  SIEVE_MAX_SCRIPTS_EXCEEDED:
+    'Maximum number of Sieve scripts has been reached for this alias.',
+  SIEVE_CANNOT_DELETE_ACTIVE:
+    'Cannot delete an active Sieve script. Please deactivate it first.',
+  SIEVE_EXECUTION_ERROR: 'Sieve script execution error: %s',
+  SIEVE_TEST_MESSAGE_REQUIRED:
+    'A test message object is required to test the Sieve script.',
+  SIEVE_VACATION_CONFLICT:
+    'Cannot activate Sieve script with vacation extension while vacation responder is enabled. Please disable the vacation responder first.',
+  SIEVE_SECURITY_ERROR: 'Sieve script security validation failed: %s',
+  INVALID_SIEVE_SCRIPT_ID: 'Invalid Sieve script ID.',
 
   ...STATUSES
 };

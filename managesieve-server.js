@@ -95,9 +95,9 @@ class ManageSieveServer {
     this.resolver = createTangerine(this.client, this.logger);
 
     // Server configuration
-    this.maxScriptSize = config.managesieve.maxScriptSize;
-    this.maxScriptCount = config.managesieve.maxScripts;
-    this.maxScriptNameLength = config.managesieve.maxScriptNameLength;
+    this.maxScriptSize = config.sieve.maxScriptSize;
+    this.maxScriptCount = config.sieve.maxScripts;
+    this.maxScriptNameLength = config.sieve.maxScriptNameLength;
 
     // TLS configuration
     // Note: secure=true means implicit TLS (start encrypted)
@@ -454,7 +454,7 @@ class ManageSieveServer {
       '"IMPLEMENTATION" "Forward Email ManageSieve v1.0.0"',
       `"SASL" "${SASL_MECHANISMS.join(' ')}"`,
       `"SIEVE" "${SIEVE_CAPABILITIES.join(' ')}"`,
-      `"MAXREDIRECTS" "${config.managesieve.maxRedirects}"`,
+      `"MAXREDIRECTS" "${config.sieve.maxRedirects}"`,
       '"NOTIFY" "mailto"',
       '"VERSION" "1.0"'
     ];
