@@ -111,6 +111,10 @@
 
 **Июнь 2025 г.**: Forward Email запустила поддержку [Протокол CardDAV](/faq#do-you-support-contacts-carddav), расширяя возможности платформы за счет синхронизации контактов с существующими службами электронной почты и календаря.
 
+### 2026 - Соответствие RFC и расширенная фильтрация {#2026---rfc-compliance-and-advanced-filtering}
+
+**Январь 2026**: Forward Email выпустил комплексный [документ о соответствии протоколу RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), подробно описывающий полную поддержку стандартов SMTP, IMAP, POP3 и CalDAV. Платформа также добавила [поддержку REQUIRETLS (RFC 8689)](/faq#requiretls-support) для принудительного TLS-шифрования при передаче электронной почты, [шифрование S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) для безопасной подписи и шифрования сообщений, а также комплексную [фильтрацию электронной почты Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) с [протоколом ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) для серверной фильтрации электронной почты. [REST API](/email-api) был расширен до 39 конечных точек, охватывающих сообщения, папки, контакты, календари и события календаря.
+
 ## Основные принципы {#core-principles}
 
 С момента своего создания компания Forward Email неизменно придерживается принципов конфиденциальности и безопасности:

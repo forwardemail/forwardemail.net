@@ -16,7 +16,8 @@
   * [2021 - Platform Modernizasyonu](#2021---platform-modernization)
   * [2023 - Altyapı ve Özellik Genişletmesi](#2023---infrastructure-and-feature-expansion)
   * [2024 - Hizmet Optimizasyonu ve Gelişmiş Özellikler](#2024---service-optimization-and-advanced-features)
-  * [2025 - Sürekli Yenilik](#2025---continued-innovation)
+  * [2025 - Gizlilik İyileştirmeleri ve Protokol Desteği](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC Uyumluluğu ve Gelişmiş Filtreleme](#2026---rfc-compliance-and-advanced-filtering)
 * [Temel İlkeler](#core-principles)
 * [Mevcut Durum](#current-status)
 
@@ -101,7 +102,7 @@ Bu çözümün basitliği ve etkililiği, Ruby on Rails'in yaratıcısı [David 
 
 **Ağustos 2024**: Forward Email, posta kutularını [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ve [Mbox](https://en.wikipedia.org/wiki/Mbox) formatlarında (mevcut [SQLite](https://en.wikipedia.org/wiki/SQLite) dışa aktarma formatına ek olarak) dışa aktarma desteği ekledi. [Webhook imza desteği eklendi](https://forwardemail.net/faq#do-you-support-bounce-webhooks) ve şirket, kullanıcıların giden SMTP hizmeti aracılığıyla haber bültenleri, duyurular ve e-posta pazarlaması göndermelerine olanak sağlamaya başladı. IMAP/POP3/CalDAV için alan adı genelinde ve takma ada özgü depolama kotaları da uygulandı.
 
-### 2025 - Sürekli Yenilik {#2025---continued-innovation}
+### 2025 - Gizlilik İyileştirmeleri ve Protokol Desteği {#2025---privacy-enhancements-and-protocol-support}
 
 **Eylül 2024 - Ocak 2025**: Zaten uygulanmış şifreli posta kutusu depolama yeteneklerini temel alarak [e-posta yönlendirme için çok talep edilen bir tatil yanıtlayıcı özelliği ve OpenPGP/WKD şifrelemesi eklendi](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) e-postasını iletin.
 
@@ -110,6 +111,10 @@ Bu çözümün basitliği ve etkililiği, Ruby on Rails'in yaratıcısı [David 
 **Şubat 2025**: Forward Email, hizmet güvenilirliğini ve hızını daha da artırmak için özel, performansa odaklı, çıplak metal donanım uygulayarak yeni birincil veri merkezi sağlayıcısı olarak [Veri Paketi](https://www.datapacket.com)'a geçti.
 
 **Haziran 2025**: Forward Email, [CardDAV protokolü](/faq#do-you-support-contacts-carddav) desteğini başlattı ve platformun yeteneklerini mevcut e-posta ve takvim hizmetlerinin yanı sıra kişi senkronizasyonunu da içerecek şekilde genişletti.
+
+### 2026 - RFC Uyumluluğu ve Gelişmiş Filtreleme {#2026---rfc-compliance-and-advanced-filtering}
+
+**Ocak 2026**: Forward Email kapsamlı bir [RFC protokol uyumluluk belgesi](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) yayınladı ve SMTP, IMAP, POP3 ve CalDAV için tam standart desteğini ayrıntılı olarak açıkladı. Platform ayrıca [REQUIRETLS desteği (RFC 8689)](/faq#requiretls-support) (e-posta taşımasında zorunlu TLS şifrelemesi için), [S/MIME şifrelemesi (RFC 8551)](/faq#do-you-support-smime-encryption) (güvenli mesaj imzalama ve şifreleme için) ve kapsamlı [Sieve e-posta filtreleme (RFC 5228)](/faq#do-you-support-sieve-email-filtering) ile [ManageSieve protokolü (RFC 5804)](/faq#do-you-support-sieve-email-filtering) desteği (sunucu tarafı e-posta filtreleme için) ekledi. [REST API](/email-api) 39 uç noktaya genişletildi ve mesajları, klasörleri, kişileri, takvimleri ve takvim etkinliklerini kapsar.
 
 ## Temel İlkeler {#core-principles}
 

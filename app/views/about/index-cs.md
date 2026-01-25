@@ -16,7 +16,8 @@
   * [2021 - Modernizace platformy](#2021---platform-modernization)
   * [2023 – Rozšíření infrastruktury a funkcí](#2023---infrastructure-and-feature-expansion)
   * [2024 – Optimalizace služeb a pokročilé funkce](#2024---service-optimization-and-advanced-features)
-  * [2025 - Pokračující inovace](#2025---continued-innovation)
+  * [2025 - Vylepšení ochrany soukromí a podpora protokolů](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - Shoda s RFC a pokročilé filtrování](#2026---rfc-compliance-and-advanced-filtering)
 * [Základní principy](#core-principles)
 * [Aktuální stav](#current-status)
 
@@ -101,7 +102,7 @@ Jednoduchost a efektivita tohoto řešení přilákala pozornost významných v�
 
 **Srpen 2024**: Funkce Forward Email přidala podporu pro export poštovních schránek ve formátech [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) a [Mbox](https://en.wikipedia.org/wiki/Mbox) (kromě stávajícího exportního formátu [SQLite](https://en.wikipedia.org/wiki/SQLite)), [Byla přidána podpora podpisů webhooků](https://forwardemail.net/faq#do-you-support-bounce-webhooks) a společnost začala uživatelům umožňovat odesílání newsletterů, oznámení a e-mailového marketingu prostřednictvím své odchozí služby SMTP. Byly také implementovány kvóty úložiště pro IMAP/POP3/CalDAV v rámci celé domény a pro specifické aliasy.
 
-### 2025 - Pokračující inovace {#2025---continued-innovation}
+### 2025 - Vylepšení ochrany soukromí a podpora protokolů {#2025---privacy-enhancements-and-protocol-support}
 
 **Září 2024 až leden 2025**: Přeposílání e-mailů [přidána velmi žádaná funkce odpovědi na dovolenou a šifrování OpenPGP/WKD pro přeposílání e-mailů](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) na základě již implementovaných možností šifrovaného úložiště poštovních schránek.
 
@@ -110,6 +111,10 @@ Jednoduchost a efektivita tohoto řešení přilákala pozornost významných v�
 **Únor 2025**: Služba Forward Email přešla na [Datový paket](https://www.datapacket.com) jako nového primárního poskytovatele datového centra a implementovala vlastní, výkonnostně orientovaný hardware bez nutnosti instalace pro další zvýšení spolehlivosti a rychlosti služeb.
 
 **Červen 2025**: Služba Forward Email spustila podporu pro [Protokol CardDAV](/faq#do-you-support-contacts-carddav), čímž rozšířila možnosti platformy o synchronizaci kontaktů vedle stávajících e-mailových a kalendářových služeb.
+
+### 2026 - Shoda s RFC a pokročilé filtrování {#2026---rfc-compliance-and-advanced-filtering}
+
+**Leden 2026**: Forward Email vydal komplexní [dokument o shodě s protokolem RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) s podrobnostmi o úplné podpoře standardů SMTP, IMAP, POP3 a CalDAV. Platforma také přidala [podporu REQUIRETLS (RFC 8689)](/faq#requiretls-support) pro vynucené šifrování TLS při přenosu e-mailů, [šifrování S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) pro bezpečné podepisování a šifrování zpráv a komplexní [filtrování e-mailů Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) s [protokolem ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) pro filtrování e-mailů na straně serveru. [REST API](/email-api) bylo rozšířeno na 39 koncových bodů pokrývajících zprávy, složky, kontakty, kalendáře a události kalendáře.
 
 ## Základní principy {#core-principles}
 

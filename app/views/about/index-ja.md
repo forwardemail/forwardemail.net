@@ -16,7 +16,8 @@
   * [2021年 - プラットフォームの近代化](#2021---platform-modernization)
   * [2023年 - インフラストラクチャと機能の拡張](#2023---infrastructure-and-feature-expansion)
   * [2024 - サービスの最適化と高度な機能](#2024---service-optimization-and-advanced-features)
-  * [2025年 - 継続的なイノベーション](#2025---continued-innovation)
+  * [2025年 - プライバシー強化とプロトコルサポート](#2025---privacy-enhancements-and-protocol-support)
+  * [2026年 - RFCコンプライアンスと高度なフィルタリング](#2026---rfc-compliance-and-advanced-filtering)
 * [コア原則](#core-principles)
 * [現在の状況](#current-status)
 

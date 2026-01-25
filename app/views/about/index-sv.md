@@ -111,6 +111,10 @@ Enkelheten och effektiviteten hos denna lösning väckte uppmärksamhet från fr
 
 **Juni 2025**: Vidarebefordra e-post lanserade stöd för [CardDAV-protokoll](/faq#do-you-support-contacts-carddav), vilket utökar plattformens funktioner till att inkludera kontaktsynkronisering utöver befintliga e-post- och kalendertjänster.
 
+### 2026 - RFC-efterlevnad och avancerad filtrering {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januari 2026**: Forward Email släppte ett omfattande [RFC-protokoll efterlevnadsdokument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) som beskriver fullständigt standardstöd för SMTP, IMAP, POP3 och CalDAV. Plattformen lade också till [REQUIRETLS-stöd (RFC 8689)](/faq#requiretls-support) för tvingad TLS-kryptering vid e-posttransport, [S/MIME-kryptering (RFC 8551)](/faq#do-you-support-smime-encryption) för säker meddelandesignering och kryptering, och omfattande [Sieve e-postfiltrering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) med [ManageSieve-protokoll (RFC 5804)](/faq#do-you-support-sieve-email-filtering)-stöd för serversides e-postfiltrering. [REST API](/email-api) utökades till 39 slutpunkter som täcker meddelanden, mappar, kontakter, kalendrar och kalenderhändelser.
+
 ## Kärnprinciper {#core-principles}
 
 Sedan starten har Forward Email upprätthållit ett orubbligt engagemang för integritets- och säkerhetsprinciper:

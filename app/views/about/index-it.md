@@ -16,7 +16,8 @@
   * [2021 - Modernizzazione della piattaforma](#2021---platform-modernization)
   * [2023 - Espansione dell'infrastruttura e delle funzionalità](#2023---infrastructure-and-feature-expansion)
   * [2024 - Ottimizzazione del servizio e funzionalità avanzate](#2024---service-optimization-and-advanced-features)
-  * [2025 - Innovazione continua](#2025---continued-innovation)
+  * [2025 - Miglioramenti della privacy e supporto protocolli](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - Conformità RFC e filtraggio avanzato](#2026---rfc-compliance-and-advanced-filtering)
 * [Principi fondamentali](#core-principles)
 * [Stato attuale](#current-status)
 
@@ -101,7 +102,7 @@ La semplicità e l'efficacia di questa soluzione hanno attirato l'attenzione di 
 
 **Agosto 2024**: Forward Email ha aggiunto il supporto per l'esportazione delle caselle di posta nei formati [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) e [Mbox](https://en.wikipedia.org/wiki/Mbox) (oltre al formato di esportazione [SQLite](https://en.wikipedia.org/wiki/SQLite) esistente). È stato introdotto il supporto per [È stato aggiunto il supporto per la firma webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks) e l'azienda ha iniziato a consentire agli utenti di inviare newsletter, annunci ed email marketing tramite il proprio servizio SMTP in uscita. Sono state inoltre implementate quote di archiviazione a livello di dominio e specifiche per alias per IMAP/POP3/CalDAV.
 
-### 2025 - Innovazione continua {#2025---continued-innovation}
+### 2025 - Miglioramenti della privacy e supporto protocolli {#2025---privacy-enhancements-and-protocol-support}
 
 **Da settembre 2024 a gennaio 2025**: Inoltra e-mail [aggiunta una funzionalità di risposta automatica molto richiesta e crittografia OpenPGP/WKD per l'inoltro delle email](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), sfruttando le funzionalità di archiviazione delle caselle di posta crittografate già implementate.
 
@@ -110,6 +111,10 @@ La semplicità e l'efficacia di questa soluzione hanno attirato l'attenzione di 
 **Febbraio 2025**: Forward Email è passata a [Pacchetto dati](https://www.datapacket.com) come nuovo fornitore principale del data center, implementando hardware bare-metal personalizzato e incentrato sulle prestazioni per migliorare ulteriormente l'affidabilità e la velocità del servizio.
 
 **Giugno 2025**: Forward Email ha lanciato il supporto per [Protocollo CardDAV](/faq#do-you-support-contacts-carddav), ampliando le funzionalità della piattaforma per includere la sincronizzazione dei contatti insieme ai servizi di posta elettronica e calendario esistenti.
+
+### 2026 - Conformità RFC e filtraggio avanzato {#2026---rfc-compliance-and-advanced-filtering}
+
+**Gennaio 2026**: Forward Email ha rilasciato un documento completo di [conformità al protocollo RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) che dettaglia il supporto completo degli standard per SMTP, IMAP, POP3 e CalDAV. La piattaforma ha anche aggiunto [supporto REQUIRETLS (RFC 8689)](/faq#requiretls-support) per la crittografia TLS forzata sul trasporto email, [crittografia S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) per la firma e crittografia sicura dei messaggi, e [filtraggio email Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) con [protocollo ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) per il filtraggio email lato server. L'[API REST](/email-api) è stata espansa a 39 endpoint che coprono messaggi, cartelle, contatti, calendari ed eventi del calendario.
 
 ## Principi fondamentali {#core-principles}
 

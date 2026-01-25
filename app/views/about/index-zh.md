@@ -16,7 +16,8 @@
   * [2021 年 - 平台现代化](#2021---platform-modernization)
   * [2023 年 - 基础设施和功能扩展](#2023---infrastructure-and-feature-expansion)
   * [2024 年 - 服务优化和高级功能](#2024---service-optimization-and-advanced-features)
-  * [2025年——持续创新](#2025---continued-innovation)
+  * [2025年 - 隐私增强和协议支持](#2025---privacy-enhancements-and-protocol-support)
+  * [2026年 - RFC合规和高级过滤](#2026---rfc-compliance-and-advanced-filtering)
 * [核心原则](#core-principles)
 * [当前状态](#current-status)
 
@@ -110,6 +111,10 @@ Forward Email 的使命不仅仅是提供电子邮件服务，更旨在改变行
 **2025 年 2 月**：Forward Email 改用 [数据包](https://www.datapacket.com) 作为其新的主要数据中心提供商，实施定制的、注重性能的裸机硬件，以进一步提高服务可靠性和速度。
 
 **2025 年 6 月**：Forward Email 推出了对 [CardDAV 协议](/faq#do-you-support-contacts-carddav) 的支持，扩展了平台的功能，包括联系人同步以及现有的电子邮件和日历服务。
+
+### 2026年 - RFC合规和高级过滤 {#2026---rfc-compliance-and-advanced-filtering}
+
+**2026年1月**: Forward Email发布了全面的[RFC协议合规文档](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison)，详细说明了对SMTP、IMAP、POP3和CalDAV的完整标准支持。平台还添加了[REQUIRETLS支持（RFC 8689）](/faq#requiretls-support)用于强制邮件传输TLS加密，[S/MIME加密（RFC 8551）](/faq#do-you-support-smime-encryption)用于安全消息签名和加密，以及全面的[Sieve邮件过滤（RFC 5228）](/faq#do-you-support-sieve-email-filtering)和[ManageSieve协议（RFC 5804）](/faq#do-you-support-sieve-email-filtering)支持服务器端邮件过滤。[REST API](/email-api)已扩展至39个端点，涵盖消息、文件夹、联系人、日历和日历事件。
 
 ## 核心原则 {#core-principles}
 

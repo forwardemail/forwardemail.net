@@ -16,7 +16,8 @@
   * [2021 - تحديث المنصة](#2021---platform-modernization)
   * [2023 - توسيع البنية التحتية والميزات](#2023---infrastructure-and-feature-expansion)
   * [2024 - تحسين الخدمة والميزات المتقدمة](#2024---service-optimization-and-advanced-features)
-  * [2025 - الابتكار المستمر](#2025---continued-innovation)
+  * [2025 - تحسينات الخصوصية ودعم البروتوكول](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - الامتثال لـ RFC والتصفية المتقدمة](#2026---rfc-compliance-and-advanced-filtering)
 * [المبادئ الأساسية](#core-principles)
 * [الحالة الحالية](#current-status)
 
@@ -101,7 +102,7 @@
 
 **أغسطس ٢٠٢٤**: أضافت خدمة إعادة توجيه البريد الإلكتروني دعمًا لتصدير صناديق البريد بتنسيقي [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) و[إم بوكس](https://en.wikipedia.org/wiki/Mbox) (بالإضافة إلى تنسيق التصدير الحالي [SQLite](https://en.wikipedia.org/wiki/SQLite)). [تمت إضافة دعم توقيع Webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks)، وبدأت الشركة في السماح للمستخدمين بإرسال النشرات الإخبارية والإعلانات والتسويق عبر البريد الإلكتروني من خلال خدمة SMTP الصادرة. كما تم تطبيق حصص تخزين على مستوى النطاق واسم مستعار لبروتوكولات IMAP/POP3/CalDAV.
 
-### 2025 - الابتكار المستمر {#2025---continued-innovation}
+### 2025 - تحسينات الخصوصية ودعم البروتوكول {#2025---privacy-enhancements-and-protocol-support}
 
 **من سبتمبر 2024 إلى يناير 2025**: إعادة توجيه البريد الإلكتروني [تمت إضافة ميزة الرد التلقائي المطلوبة بشدة وتشفير OpenPGP/WKD لإعادة توجيه البريد الإلكتروني](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254)، بناءً على إمكانيات تخزين صندوق البريد المشفر التي تم تنفيذها بالفعل.
 
@@ -110,6 +111,10 @@
 **فبراير 2025**: تحولت شركة Forward Email إلى [حزمة البيانات](https://www.datapacket.com) كمزود مركز البيانات الأساسي الجديد الخاص بها، وتنفيذ أجهزة مخصصة تركز على الأداء، وأجهزة عارية لتعزيز موثوقية الخدمة وسرعتها بشكل أكبر.
 
 **يونيو 2025**: أطلقت Forward Email الدعم لـ [بروتوكول CardDAV](/faq#do-you-support-contacts-carddav)، مما أدى إلى توسيع قدرات المنصة لتشمل مزامنة جهات الاتصال جنبًا إلى جنب مع خدمات البريد الإلكتروني والتقويم الحالية.
+
+### 2026 - الامتثال لـ RFC والتصفية المتقدمة {#2026---rfc-compliance-and-advanced-filtering}
+
+**يناير 2026**: أصدر Forward Email وثيقة شاملة [للامتثال لبروتوكول RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) توضح الدعم الكامل للمعايير عبر SMTP وIMAP وPOP3 وCalDAV. أضافت المنصة أيضًا [دعم REQUIRETLS (RFC 8689)](/faq#requiretls-support) لتشفير TLS الإلزامي على نقل البريد الإلكتروني، [تشفير S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) لتوقيع الرسائل الآمنة والتشفير، و[تصفية البريد الإلكتروني Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) مع [بروتوكول ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) لدعم تصفية البريد الإلكتروني من جانب الخادم. بالإضافة إلى ذلك، تم توسيع [REST API](/email-api) إلى 39 نقطة نهاية تغطي الرسائل والمجلدات وجهات الاتصال والتقويمات وأحداث التقويم.
 
 ## المبادئ الأساسية {#core-principles}
 

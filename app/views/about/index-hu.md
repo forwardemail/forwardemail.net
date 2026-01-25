@@ -111,6 +111,10 @@ A megoldás egyszerűsége és hatékonysága felkeltette a kiemelkedő fejleszt
 
 **2025. június**: A Forward Email elindította a [CardDAV protokoll](/faq#do-you-support-contacts-carddav) támogatását, kibővítve a platform képességeit a meglévő e-mail- és naptárszolgáltatások mellett a névjegyek szinkronizálásával is.
 
+### 2026 - RFC-megfelelőség és fejlett szűrés {#2026---rfc-compliance-and-advanced-filtering}
+
+**2026. január**: A Forward Email kiadott egy átfogó [RFC protokoll megfelelőségi dokumentumot](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), amely részletezi a teljes szabványtámogatást az SMTP, IMAP, POP3 és CalDAV terén. A platform hozzáadta a [REQUIRETLS támogatást (RFC 8689)](/faq#requiretls-support) a kényszerített TLS titkosításhoz az e-mail átvitelben, [S/MIME titkosítást (RFC 8551)](/faq#do-you-support-smime-encryption) a biztonságos üzenet aláíráshoz és titkosításhoz, valamint átfogó [Sieve e-mail szűrést (RFC 5228)](/faq#do-you-support-sieve-email-filtering) [ManageSieve protokoll (RFC 5804)](/faq#do-you-support-sieve-email-filtering) támogatással a szerveroldali e-mail szűréshez. A [REST API](/email-api) kibővült 39 végpontra, amelyek lefedik az üzeneteket, mappákat, névjegyeket, naptárakat és naptáreseményeket.
+
 ## Alapelvek {#core-principles}
 
 A Forward Email megalakulása óta rendíthetetlenül elkötelezett az adatvédelem és a biztonság alapelvei iránt:

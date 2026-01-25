@@ -16,7 +16,8 @@
   * [2021 - Platformmodernisering](#2021---platform-modernization)
   * [2023 - Udvidelse af infrastruktur og funktioner](#2023---infrastructure-and-feature-expansion)
   * [2024 - Serviceoptimering og avancerede funktioner](#2024---service-optimization-and-advanced-features)
-  * [2025 - Fortsat innovation](#2025---continued-innovation)
+  * [2025 - Privatlivsforbedringer og protokolunderstøttelse](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-overholdelse og avanceret filtrering](#2026---rfc-compliance-and-advanced-filtering)
 * [Kerneprincipper](#core-principles)
 * [Aktuel status](#current-status)
 
@@ -101,7 +102,7 @@ Enkelheden og effektiviteten af denne løsning tiltrak opmærksomhed fra fremtr�
 
 **August 2024**: Videresendt e-mail har tilføjet understøttelse af eksport af postkasser som [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)- og [Mbox](https://en.wikipedia.org/wiki/Mbox)-formater (ud over det eksisterende [SQLite](https://en.wikipedia.org/wiki/SQLite)-eksportformat). [Understøttelse af webhook-signaturer blev tilføjet](https://forwardemail.net/faq#do-you-support-bounce-webhooks), og virksomheden begyndte at give brugerne mulighed for at sende nyhedsbreve, meddelelser og e-mailmarkedsføring via deres udgående SMTP-tjeneste. Domæneomfattende og aliasspecifikke lagerkvoter for IMAP/POP3/CalDAV blev også implementeret.
 
-### 2025 - Fortsat innovation {#2025---continued-innovation}
+### 2025 - Privatlivsforbedringer og protokolunderstøttelse {#2025---privacy-enhancements-and-protocol-support}
 
 **September 2024 til januar 2025**: Videresend e-mail [tilføjede en meget efterspurgt feriesvarfunktion og OpenPGP/WKD-kryptering til videresendelse af e-mails](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), baseret på deres allerede implementerede krypterede postkasselagringsfunktioner.
 
@@ -110,6 +111,10 @@ Enkelheden og effektiviteten af denne løsning tiltrak opmærksomhed fra fremtr�
 **Februar 2025**: Videresendt e-mail skiftede til [Datapakke](https://www.datapacket.com) som deres nye primære datacenterudbyder og implementerede brugerdefineret, ydeevnefokuseret bare-metal-hardware for yderligere at forbedre tjenestens pålidelighed og hastighed.
 
 **Juni 2025**: Videresend e-mail lancerede understøttelse af [CardDAV-protokol](/faq#do-you-support-contacts-carddav), hvilket udvider platformens muligheder til at omfatte kontaktsynkronisering sammen med eksisterende e-mail- og kalendertjenester.
+
+### 2026 - RFC-overholdelse og avanceret filtrering {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januar 2026**: Forward Email udgav et omfattende [RFC-protokol overensstemmelsesdokument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) med detaljer om komplet standardunderstøttelse på tværs af SMTP, IMAP, POP3 og CalDAV. Platformen tilføjede også [REQUIRETLS-understøttelse (RFC 8689)](/faq#requiretls-support) for tvungen TLS-kryptering på e-mail-transport, [S/MIME-kryptering (RFC 8551)](/faq#do-you-support-smime-encryption) til sikker beskedsignering og kryptering, og omfattende [Sieve e-mail-filtrering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) med [ManageSieve-protokol (RFC 5804)](/faq#do-you-support-sieve-email-filtering)-understøttelse til server-side e-mail-filtrering. [REST API](/email-api)'et blev udvidet til 39 endpoints der dækker beskeder, mapper, kontakter, kalendere og kalenderbegivenheder.
 
 ## Kerneprincipper {#core-principles}
 

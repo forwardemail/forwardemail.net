@@ -16,7 +16,8 @@
   * [2021 - Alustan modernisointi](#2021---platform-modernization)
   * [2023 - Infrastruktuurin ja ominaisuuksien laajennus](#2023---infrastructure-and-feature-expansion)
   * [2024 - Palvelun optimointi ja edistyneet ominaisuudet](#2024---service-optimization-and-advanced-features)
-  * [2025 - Jatkuvaa innovaatiota](#2025---continued-innovation)
+  * [2025 - Yksityisyyden parannukset ja protokollatuki](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-yhteensopivuus ja edistynyt suodatus](#2026---rfc-compliance-and-advanced-filtering)
 * [Keskeiset periaatteet](#core-principles)
 * [Nykyinen tila](#current-status)
 
@@ -101,7 +102,7 @@ Tämän ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävi
 
 **Elokuu 2024**: Sähköpostin edelleenlähetystoimintoon lisättiin tuki postilaatikoiden viennille [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)- ja [Mbox](https://en.wikipedia.org/wiki/Mbox)-muodoissa (olemassa olevan [SQLite](https://en.wikipedia.org/wiki/SQLite)-vientimuodon lisäksi). [Webhook-allekirjoitusten tuki lisättiin](https://forwardemail.net/faq#do-you-support-bounce-webhooks)-muotoon, ja yritys alkoi sallia käyttäjien lähettää uutiskirjeitä, ilmoituksia ja sähköpostimarkkinointia lähtevän SMTP-palvelunsa kautta. Myös verkkotunnuskohtaiset ja aliaskohtaiset tallennuskiintiöt IMAP/POP3/CalDAV-protokollille otettiin käyttöön.
 
-### 2025 - Jatkuva innovaatio {#2025---continued-innovation}
+### 2025 - Yksityisyyden parannukset ja protokollatuki {#2025---privacy-enhancements-and-protocol-support}
 
 **Syyskuu 2024 – tammikuu 2025**: Lähetä sähköposti edelleen [lisätty paljon pyydetty lomavastaajatoiminto ja OpenPGP/WKD-salauksen sähköpostin edelleenlähetystä varten](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) jo toteutettujen salattujen postilaatikoiden tallennusominaisuuksien pohjalta.
 
@@ -110,6 +111,10 @@ Tämän ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävi
 **Helmikuu 2025**: Forward Email vaihtoi [DataPacket](https://www.datapacket.com):n uudeksi ensisijaiseksi datakeskuspalveluntarjoajakseen ja otti käyttöön räätälöityjä, suorituskykyyn keskittyviä, bare metal -laitteistoja parantaakseen palvelun luotettavuutta ja nopeutta entisestään.
 
 **Kesäkuu 2025**: Forward Email julkaisi tuen [CardDAV-protokolla](/faq#do-you-support-contacts-carddav):lle, laajentaen alustan ominaisuuksia koskemaan yhteystietojen synkronointia olemassa olevien sähköposti- ja kalenteripalveluiden rinnalla.
+
+### 2026 - RFC-yhteensopivuus ja edistynyt suodatus {#2026---rfc-compliance-and-advanced-filtering}
+
+**Tammikuu 2026**: Forward Email julkaisi kattavan [RFC-protokollan yhteensopivuusdokumentin](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison), joka kuvaa täydellisen standardituen SMTP:lle, IMAP:lle, POP3:lle ja CalDAV:lle. Alusta lisäsi myös [REQUIRETLS-tuen (RFC 8689)](/faq#requiretls-support) pakotettuun TLS-salaukseen sähköpostin kuljetuksessa, [S/MIME-salauksen (RFC 8551)](/faq#do-you-support-smime-encryption) turvalliseen viestien allekirjoitukseen ja salaukseen sekä kattavan [Sieve-sähköpostisuodatuksen (RFC 5228)](/faq#do-you-support-sieve-email-filtering) [ManageSieve-protokollan (RFC 5804)](/faq#do-you-support-sieve-email-filtering) tuella palvelinpuolen sähköpostisuodatukseen. [REST API](/email-api) laajennettiin 39 päätepisteeseen, jotka kattavat viestit, kansiot, yhteystiedot, kalenterit ja kalenteritapahtumat.
 
 ## Keskeiset periaatteet {#core-principles}
 

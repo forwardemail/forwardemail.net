@@ -16,7 +16,8 @@
   * [2021 - Platformmodernisering](#2021---platform-modernization)
   * [2023 - Uitbreiding van infrastructuur en functies](#2023---infrastructure-and-feature-expansion)
   * [2024 - Service-optimalisatie en geavanceerde functies](#2024---service-optimization-and-advanced-features)
-  * [2025 - Voortdurende innovatie](#2025---continued-innovation)
+  * [2025 - Privacyverbeteringen en protocolondersteuning](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-naleving en geavanceerde filtering](#2026---rfc-compliance-and-advanced-filtering)
 * [Kernprincipes](#core-principles)
 * [Huidige status](#current-status)
 
@@ -101,7 +102,7 @@ De eenvoud en effectiviteit van deze oplossing trokken de aandacht van vooraanst
 
 **Augustus 2024**: Forward Email heeft ondersteuning toegevoegd voor het exporteren van mailboxen in de formaten [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) en [Mbox](https://en.wikipedia.org/wiki/Mbox) (naast het bestaande exportformaat [SQLite](https://en.wikipedia.org/wiki/SQLite)). Ook [Ondersteuning voor webhook-handtekeningen is toegevoegd](https://forwardemail.net/faq#do-you-support-bounce-webhooks) werd toegevoegd en het bedrijf begon gebruikers toe te staan nieuwsbrieven, aankondigingen en e-mailmarketing te versturen via hun uitgaande SMTP-service. Domeinbrede en aliasspecifieke opslagquota voor IMAP/POP3/CalDAV werden eveneens geïmplementeerd.
 
-### 2025 - Voortdurende innovatie {#2025---continued-innovation}
+### 2025 - Privacyverbeteringen en protocolondersteuning {#2025---privacy-enhancements-and-protocol-support}
 
 **September 2024 tot januari 2025**: Stuur e-mail [een veelgevraagde functie voor het beantwoorden van vakantieberichten en OpenPGP/WKD-encryptie voor het doorsturen van e-mails toegevoegd](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) door, voortbouwend op de reeds geïmplementeerde mogelijkheden voor versleutelde mailboxopslag.
 
@@ -110,6 +111,10 @@ De eenvoud en effectiviteit van deze oplossing trokken de aandacht van vooraanst
 **Februari 2025**: Forward Email is overgestapt naar [Datapakket](https://www.datapacket.com) als hun nieuwe primaire datacenterprovider. Hierbij is aangepaste, prestatiegerichte, bare-metal hardware geïmplementeerd om de betrouwbaarheid en snelheid van de service verder te verbeteren.
 
 **Juni 2025**: Forward Email heeft ondersteuning gelanceerd voor [CardDAV-protocol](/faq#do-you-support-contacts-carddav), waarmee de mogelijkheden van het platform worden uitgebreid met contactsynchronisatie naast bestaande e-mail- en agendaservices.
+
+### 2026 - RFC-naleving en geavanceerde filtering {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januari 2026**: Forward Email heeft een uitgebreid [RFC-protocol nalevingsdocument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) uitgebracht met details over volledige standaardondersteuning voor SMTP, IMAP, POP3 en CalDAV. Het platform heeft ook [REQUIRETLS-ondersteuning (RFC 8689)](/faq#requiretls-support) toegevoegd voor afgedwongen TLS-encryptie bij e-mailtransport, [S/MIME-encryptie (RFC 8551)](/faq#do-you-support-smime-encryption) voor veilige berichtondertekening en -encryptie, en uitgebreide [Sieve e-mailfiltering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) met [ManageSieve-protocol (RFC 5804)](/faq#do-you-support-sieve-email-filtering)-ondersteuning voor server-side e-mailfiltering. De [REST API](/email-api) is uitgebreid naar 39 eindpunten die berichten, mappen, contacten, agenda's en agenda-evenementen dekken.
 
 ## Kernprincipes {#core-principles}
 

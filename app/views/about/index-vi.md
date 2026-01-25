@@ -111,6 +111,10 @@ Sự đơn giản và hiệu quả của giải pháp này đã thu hút sự ch
 
 **Tháng 6 năm 2025**: Forward Email đã ra mắt hỗ trợ cho [Giao thức CardDAV](/faq#do-you-support-contacts-carddav), mở rộng khả năng của nền tảng để bao gồm tính năng đồng bộ hóa danh bạ cùng với các dịch vụ email và lịch hiện có.
 
+### 2026 - Tuân thủ RFC và lọc nâng cao {#2026---rfc-compliance-and-advanced-filtering}
+
+**Tháng 1 năm 2026**: Forward Email đã phát hành một tài liệu toàn diện về [tuân thủ giao thức RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) chi tiết hỗ trợ đầy đủ các tiêu chuẩn SMTP, IMAP, POP3 và CalDAV. Nền tảng cũng đã thêm [hỗ trợ REQUIRETLS (RFC 8689)](/faq#requiretls-support) cho mã hóa TLS bắt buộc trong vận chuyển email, [mã hóa S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) cho ký và mã hóa tin nhắn an toàn, và [lọc email Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) với [giao thức ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) hỗ trợ lọc email phía máy chủ. [REST API](/email-api) đã được mở rộng lên 39 điểm cuối bao gồm tin nhắn, thư mục, danh bạ, lịch và sự kiện lịch.
+
 ## Nguyên tắc cốt lõi {#core-principles}
 
 Kể từ khi thành lập, Forward Email luôn cam kết kiên định với các nguyên tắc về quyền riêng tư và bảo mật:

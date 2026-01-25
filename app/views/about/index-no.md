@@ -16,7 +16,8 @@
   * [2021 - Plattformmodernisering](#2021---platform-modernization)
   * [2023 – Utvidelse av infrastruktur og funksjoner](#2023---infrastructure-and-feature-expansion)
   * [2024 – Tjenesteoptimalisering og avanserte funksjoner](#2024---service-optimization-and-advanced-features)
-  * [2025 - Fortsatt innovasjon](#2025---continued-innovation)
+  * [2025 - Personvernforbedringer og protokollstøtte](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - RFC-samsvar og avansert filtrering](#2026---rfc-compliance-and-advanced-filtering)
 * [Kjerneprinsipper](#core-principles)
 * [Nåværende status](#current-status)
 
@@ -110,6 +111,10 @@ Enkelheten og effektiviteten til denne løsningen tiltrakk seg oppmerksomhet fra
 **Februar 2025**: Videresendt e-post byttet til [Datapakke](https://www.datapacket.com) som deres nye primære datasenterleverandør, og implementerte tilpasset, ytelsesfokusert, bare-metal-maskinvare for å forbedre tjenestens pålitelighet og hastighet ytterligere.
 
 **Juni 2025**: Videresend e-post lanserte støtte for [CardDAV-protokoll](/faq#do-you-support-contacts-carddav), og utvidet plattformens muligheter til å inkludere kontaktsynkronisering i tillegg til eksisterende e-post- og kalendertjenester.
+
+### 2026 - RFC-samsvar og avansert filtrering {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januar 2026**: Forward Email ga ut et omfattende [RFC-protokoll samsvarsdokument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) som beskriver fullstendig standardstøtte for SMTP, IMAP, POP3 og CalDAV. Plattformen la også til [REQUIRETLS-støtte (RFC 8689)](/faq#requiretls-support) for tvungen TLS-kryptering ved e-posttransport, [S/MIME-kryptering (RFC 8551)](/faq#do-you-support-smime-encryption) for sikker meldingssignering og kryptering, og omfattende [Sieve e-postfiltrering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) med [ManageSieve-protokoll (RFC 5804)](/faq#do-you-support-sieve-email-filtering)-støtte for serverside e-postfiltrering. [REST API](/email-api) ble utvidet til 39 endepunkter som dekker meldinger, mapper, kontakter, kalendere og kalenderhendelser.
 
 ## Kjerneprinsipper {#core-principles}
 

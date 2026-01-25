@@ -101,7 +101,7 @@ Die Einfachheit und Effektivität dieser Lösung erregte die Aufmerksamkeit namh
 
 **August 2024**: Forward Email unterstützt nun den Export von Postfächern in den Formaten [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) und [Mbox](https://en.wikipedia.org/wiki/Mbox) (zusätzlich zum bestehenden Exportformat [SQLite](https://en.wikipedia.org/wiki/SQLite)). [Unterstützung für Webhook-Signaturen wurde hinzugefügt](https://forwardemail.net/faq#do-you-support-bounce-webhooks), und das Unternehmen ermöglicht Benutzern nun den Versand von Newslettern, Ankündigungen und E-Mail-Marketing über seinen ausgehenden SMTP-Dienst. Domänenweite und aliasspezifische Speicherkontingente für IMAP/POP3/CalDAV wurden ebenfalls implementiert.
 
-### 2025 – Kontinuierliche Innovation {#2025---continued-innovation}
+### 2025 - Datenschutzverbesserungen und Protokollunterstützung {#2025---privacy-enhancements-and-protocol-support}
 
 **September 2024 bis Januar 2025**: Leiten Sie E-Mails [Eine häufig nachgefragte Abwesenheitsnotizfunktion und OpenPGP/WKD-Verschlüsselung für die E-Mail-Weiterleitung wurden hinzugefügt.](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) weiter, aufbauend auf den bereits implementierten Funktionen zur verschlüsselten Postfachspeicherung.
 
@@ -110,6 +110,10 @@ Die Einfachheit und Effektivität dieser Lösung erregte die Aufmerksamkeit namh
 **Februar 2025**: Forward Email wechselte zu [Datenpaket](https://www.datapacket.com) als neuem primären Rechenzentrumsanbieter und implementierte benutzerdefinierte, leistungsorientierte Bare-Metal-Hardware, um die Servicezuverlässigkeit und -geschwindigkeit weiter zu verbessern.
 
 **Juni 2025**: Forward Email hat die Unterstützung für [CardDAV-Protokoll](/faq#do-you-support-contacts-carddav) eingeführt und erweitert damit die Funktionen der Plattform um die Kontaktsynchronisierung neben vorhandenen E-Mail- und Kalenderdiensten.
+
+### 2026 - RFC-Konformität und erweiterte Filterung {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januar 2026**: Forward Email veröffentlichte ein umfassendes [RFC-Protokoll-Compliance-Dokument](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) mit Details zur vollständigen Standardunterstützung für SMTP, IMAP, POP3 und CalDAV. Die Plattform fügte außerdem [REQUIRETLS-Unterstützung (RFC 8689)](/faq#requiretls-support) für erzwungene TLS-Verschlüsselung beim E-Mail-Transport, [S/MIME-Verschlüsselung (RFC 8551)](/faq#do-you-support-smime-encryption) für sichere Nachrichtensignierung und -verschlüsselung sowie umfassende [Sieve-E-Mail-Filterung (RFC 5228)](/faq#do-you-support-sieve-email-filtering) mit [ManageSieve-Protokoll (RFC 5804)](/faq#do-you-support-sieve-email-filtering)-Unterstützung für serverseitige E-Mail-Filterung hinzu. Die [REST-API](/email-api) wurde auf 39 Endpunkte erweitert, die Nachrichten, Ordner, Kontakte, Kalender und Kalenderereignisse abdecken.
 
 ## Grundprinzipien {#core-principles}
 

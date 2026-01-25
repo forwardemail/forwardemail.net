@@ -16,7 +16,8 @@
   * [2021 - מודרניזציה של הפלטפורמה](#2021---platform-modernization)
   * [2023 - הרחבת תשתית ותכונות](#2023---infrastructure-and-feature-expansion)
   * [2024 - אופטימיזציה של שירות ותכונות מתקדמות](#2024---service-optimization-and-advanced-features)
-  * [2025 - חדשנות מתמשכת](#2025---continued-innovation)
+  * [2025 - שיפורי פרטיות ותמיכה בפרוטוקולים](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - תאימות RFC וסינון מתקדם](#2026---rfc-compliance-and-advanced-filtering)
 * [עקרונות ליבה](#core-principles)
 * [מצב נוכחי](#current-status)
 
@@ -101,7 +102,7 @@
 
 **אוגוסט 2024**: תמיכה בייצוא תיבות דואר בפורמטים [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) ו-[Mbox](https://en.wikipedia.org/wiki/Mbox) נוספה לפורמט הייצוא הקיים [SQLite](https://en.wikipedia.org/wiki/SQLite). [נוספה תמיכה בחתימות Webhook](https://forwardemail.net/faq#do-you-support-bounce-webhooks), והחברה החלה לאפשר למשתמשים לשלוח ניוזלטרים, הודעות ושיווק בדוא"ל דרך שירות ה-SMTP היוצא שלה. כמו כן, יושמו מכסות אחסון כלל-דומיין וספציפיות לכינויים עבור IMAP/POP3/CalDAV.
 
-### 2025 - חדשנות מתמשכת {#2025---continued-innovation}
+### 2025 - שיפורי פרטיות ותמיכה בפרוטוקולים {#2025---privacy-enhancements-and-protocol-support}
 
 **ספטמבר 2024 עד ינואר 2025**: העברת דוא"ל [נוספה תכונה מבוקשת מאוד של מענה לחופשה והצפנת OpenPGP/WKD להעברת דוא"ל](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), בהתבסס על יכולות אחסון תיבות דואר מוצפנות שכבר יושמו.
 
@@ -110,6 +111,10 @@
 **פברואר 2025**: העברת דוא"ל עברה ל-[חבילת נתונים](https://www.datapacket.com) כספק מרכז הנתונים הראשי החדש שלהם, תוך יישום חומרה מותאמת אישית, ממוקדת ביצועים, Bare Metal, כדי לשפר עוד יותר את אמינות השירות ומהירותו.
 
 **יוני 2025**: תמיכה ב-[פרוטוקול CardDAV](/faq#do-you-support-contacts-carddav) הושקה בפלטפורמה Forward Email, מה שמרחיב את יכולות הפלטפורמה כך שתכלול סנכרון אנשי קשר לצד שירותי דוא"ל ויומן קיימים.
+
+### 2026 - תאימות RFC וסינון מתקדם {#2026---rfc-compliance-and-advanced-filtering}
+
+**ינואר 2026**: Forward Email פרסם מסמך מקיף של [תאימות לפרוטוקול RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) המפרט תמיכה מלאה בתקנים עבור SMTP, IMAP, POP3 ו-CalDAV. הפלטפורמה גם הוסיפה [תמיכה ב-REQUIRETLS (RFC 8689)](/faq#requiretls-support) להצפנת TLS מאולצת בהעברת דוא"ל, [הצפנת S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) לחתימה והצפנה מאובטחת של הודעות, ו[סינון דוא"ל Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) עם [פרוטוקול ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) לסינון דוא"ל בצד השרת. ה-[REST API](/email-api) הורחב ל-39 נקודות קצה המכסים הודעות, תיקיות, אנשי קשר, לוחות שנה ואירועי לוח שנה.
 
 ## עקרונות ליבה
 

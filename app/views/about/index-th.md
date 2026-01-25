@@ -16,7 +16,8 @@
   * [2021 - การปรับปรุงแพลตฟอร์ม](#2021---platform-modernization)
   * [2023 - การขยายโครงสร้างพื้นฐานและคุณสมบัติ](#2023---infrastructure-and-feature-expansion)
   * [2024 - การเพิ่มประสิทธิภาพการบริการและคุณลักษณะขั้นสูง](#2024---service-optimization-and-advanced-features)
-  * [2025 - นวัตกรรมต่อเนื่อง](#2025---continued-innovation)
+  * [2025 - การปรับปรุงความเป็นส่วนตัวและการสนับสนุนโปรโตคอล](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - การปฏิบัติตาม RFC และการกรองขั้นสูง](#2026---rfc-compliance-and-advanced-filtering)
 * [หลักการสำคัญ](#core-principles)
 * [สถานะปัจจุบัน](#current-status)
 
@@ -101,7 +102,7 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 **สิงหาคม 2024**: อีเมลส่งต่อได้เพิ่มการรองรับการส่งออกกล่องจดหมายเป็นรูปแบบ [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) และ [เอ็มบ็อกซ์](https://en.wikipedia.org/wiki/Mbox) (นอกเหนือจากรูปแบบการส่งออก [SQLite](https://en.wikipedia.org/wiki/SQLite) ที่มีอยู่) [เพิ่มการรองรับลายเซ็นเว็บฮุกแล้ว](https://forwardemail.net/faq#do-you-support-bounce-webhooks) และบริษัทได้เริ่มอนุญาตให้ผู้ใช้ส่งจดหมายข่าว ประกาศ และการตลาดทางอีเมลผ่านบริการ SMTP ขาออก นอกจากนี้ยังมีการนำโควต้าพื้นที่เก็บข้อมูลสำหรับ IMAP/POP3/CalDAV ทั้งแบบโดเมนและแบบเฉพาะนามแฝงมาใช้ด้วย
 
-### 2025 - นวัตกรรมต่อเนื่อง {#2025---continued-innovation}
+### 2025 - การปรับปรุงความเป็นส่วนตัวและการสนับสนุนโปรโตคอล {#2025---privacy-enhancements-and-protocol-support}
 
 **กันยายน 2567 ถึงมกราคม 2568**: ส่งต่ออีเมล [เพิ่มฟีเจอร์ตอบกลับวันหยุดที่ได้รับการร้องขออย่างมากและการเข้ารหัส OpenPGP/WKD สำหรับการส่งต่ออีเมล](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) โดยสร้างขึ้นจากความสามารถในการจัดเก็บกล่องจดหมายเข้ารหัสที่ใช้งานแล้ว
 
@@ -110,6 +111,10 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 **กุมภาพันธ์ 2568**: Forward Email ได้เปลี่ยนมาใช้ [ดาต้าแพ็คเก็ต](https://www.datapacket.com) เป็นผู้ให้บริการศูนย์ข้อมูลหลักรายใหม่ โดยใช้ฮาร์ดแวร์แบบเปล่าที่เน้นประสิทธิภาพและปรับแต่งได้ เพื่อปรับปรุงความน่าเชื่อถือและความเร็วในการให้บริการให้ดียิ่งขึ้น
 
 **มิถุนายน 2568**: การส่งต่ออีเมลเปิดตัวการสนับสนุนสำหรับ [โปรโตคอล CardDAV](/faq#do-you-support-contacts-carddav) ซึ่งขยายความสามารถของแพลตฟอร์มเพื่อรวมการซิงโครไนซ์ข้อมูลติดต่อควบคู่ไปกับบริการอีเมลและปฏิทินที่มีอยู่
+
+### 2026 - การปฏิบัติตาม RFC และการกรองขั้นสูง {#2026---rfc-compliance-and-advanced-filtering}
+
+**มกราคม 2569**: Forward Email เผยแพร่เอกสาร[การปฏิบัติตามโปรโตคอล RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison)ที่ครอบคลุม โดยอธิบายรายละเอียดการสนับสนุนมาตรฐานเต็มรูปแบบสำหรับ SMTP, IMAP, POP3 และ CalDAV แพลตฟอร์มยังเพิ่ม[การสนับสนุน REQUIRETLS (RFC 8689)](/faq#requiretls-support) สำหรับการเข้ารหัส TLS บังคับในการส่งอีเมล [การเข้ารหัส S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) สำหรับการลงนามและเข้ารหัสข้อความอย่างปลอดภัย และ[การกรองอีเมล Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) พร้อม[โปรโตคอล ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) สำหรับการกรองอีเมลฝั่งเซิร์ฟเวอร์ [REST API](/email-api) ถูกขยายเป็น 39 endpoints ครอบคลุมข้อความ โฟลเดอร์ รายชื่อติดต่อ ปฏิทิน และกิจกรรมปฏิทิน
 
 ## หลักการสำคัญ {#core-principles}
 

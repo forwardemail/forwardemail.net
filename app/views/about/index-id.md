@@ -16,7 +16,8 @@
   * [2021 - Modernisasi Platform](#2021---platform-modernization)
   * [2023 - Perluasan Infrastruktur dan Fitur](#2023---infrastructure-and-feature-expansion)
   * [2024 - Optimalisasi Layanan dan Fitur Lanjutan](#2024---service-optimization-and-advanced-features)
-  * [2025 - Inovasi Berkelanjutan](#2025---continued-innovation)
+  * [2025 - Peningkatan Privasi dan Dukungan Protokol](#2025---privacy-enhancements-and-protocol-support)
+  * [2026 - Kepatuhan RFC dan Penyaringan Lanjutan](#2026---rfc-compliance-and-advanced-filtering)
 * [Prinsip Inti](#core-principles)
 * [Status Saat Ini](#current-status)
 
@@ -101,7 +102,7 @@ Kesederhanaan dan efektivitas solusi ini menarik perhatian para pengembang terke
 
 **Agustus 2024**: Forward Email menambahkan dukungan untuk mengekspor kotak surat sebagai format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) dan [Mbox](https://en.wikipedia.org/wiki/Mbox) (selain format ekspor [SQLite](https://en.wikipedia.org/wiki/SQLite) yang sudah ada). [Dukungan tanda tangan webhook telah ditambahkan](https://forwardemail.net/faq#do-you-support-bounce-webhooks), dan perusahaan mulai mengizinkan pengguna untuk mengirim buletin, pengumuman, dan pemasaran email melalui layanan SMTP keluar mereka. Kuota penyimpanan untuk seluruh domain dan khusus alias untuk IMAP/POP3/CalDAV juga diimplementasikan.
 
-### 2025 - Inovasi Berkelanjutan {#2025---continued-innovation}
+### 2025 - Peningkatan Privasi dan Dukungan Protokol {#2025---privacy-enhancements-and-protocol-support}
 
 **September 2024 hingga Januari 2025**: Teruskan Email [menambahkan fitur penjawab liburan yang sangat diminta dan enkripsi OpenPGP/WKD untuk penerusan email](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254), berdasarkan kemampuan penyimpanan kotak surat terenkripsi yang telah diterapkan.
 
@@ -110,6 +111,10 @@ Kesederhanaan dan efektivitas solusi ini menarik perhatian para pengembang terke
 **Februari 2025**: Forward Email beralih ke [Paket Data](https://www.datapacket.com) sebagai penyedia pusat data utama baru mereka, yang menerapkan perangkat keras bare-metal khusus yang berfokus pada kinerja untuk lebih meningkatkan keandalan dan kecepatan layanan.
 
 **Juni 2025**: Forward Email meluncurkan dukungan untuk [Protokol CardDAV](/faq#do-you-support-contacts-carddav), memperluas kemampuan platform untuk menyertakan sinkronisasi kontak di samping layanan email dan kalender yang ada.
+
+### 2026 - Kepatuhan RFC dan Penyaringan Lanjutan {#2026---rfc-compliance-and-advanced-filtering}
+
+**Januari 2026**: Forward Email merilis dokumen komprehensif [kepatuhan protokol RFC](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) yang merinci dukungan standar lengkap untuk SMTP, IMAP, POP3, dan CalDAV. Platform juga menambahkan [dukungan REQUIRETLS (RFC 8689)](/faq#requiretls-support) untuk enkripsi TLS yang dipaksakan pada transportasi email, [enkripsi S/MIME (RFC 8551)](/faq#do-you-support-smime-encryption) untuk penandatanganan dan enkripsi pesan yang aman, dan [penyaringan email Sieve (RFC 5228)](/faq#do-you-support-sieve-email-filtering) dengan [protokol ManageSieve (RFC 5804)](/faq#do-you-support-sieve-email-filtering) untuk penyaringan email sisi server. [REST API](/email-api) diperluas menjadi 39 endpoint yang mencakup pesan, folder, kontak, kalender, dan acara kalender.
 
 ## Prinsip Inti {#core-principles}
 

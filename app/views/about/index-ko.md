@@ -111,6 +111,10 @@ Forward Email의 사명은 단순히 이메일 서비스를 제공하는 데 그
 
 **2025년 6월**: Forward Email에서 [CardDAV 프로토콜](/faq#do-you-support-contacts-carddav)에 대한 지원을 시작하여 기존 이메일 및 캘린더 서비스와 함께 연락처 동기화를 포함하도록 플랫폼의 기능을 확장했습니다.
 
+### 2026년 - RFC 준수 및 고급 필터링 {#2026---rfc-compliance-and-advanced-filtering}
+
+**2026년 1월**: Forward Email은 포괄적인 [RFC 프로토콜 준수 문서](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison)를 발표하여 SMTP, IMAP, POP3 및 CalDAV에 대한 완전한 표준 지원을 상세히 설명했습니다. 플랫폼은 또한 [REQUIRETLS 지원 (RFC 8689)](/faq#requiretls-support)(이메일 전송 시 강제 TLS 암호화용), [S/MIME 암호화 (RFC 8551)](/faq#do-you-support-smime-encryption)(보안 메시지 서명 및 암호화용), 그리고 포괄적인 [Sieve 이메일 필터링 (RFC 5228)](/faq#do-you-support-sieve-email-filtering)과 [ManageSieve 프로토콜 (RFC 5804)](/faq#do-you-support-sieve-email-filtering) 지원(서버 측 이메일 필터링용)을 추가했습니다. [REST API](/email-api)는 39개 엔드포인트로 확장되어 메시지, 폴더, 연락처, 캘린더 및 캘린더 이벤트를 다룹니다.
+
 ## 핵심 원칙 {#core-principles}
 
 Forward Email은 창립 이래로 개인정보 보호 및 보안 원칙을 확고히 지켜왔습니다.
