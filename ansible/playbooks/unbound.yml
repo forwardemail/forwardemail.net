@@ -133,6 +133,20 @@
         mode: '0644'
       notify: Restart Unbound
 
+    - name: Disable unbound-control remote control interface
+      ansible.builtin.copy:
+        dest: /etc/unbound/unbound.conf.d/remote-control.conf
+        content: |
+          # Disable remote control interface (port 8953)
+          # This mitigates CVE-2024-1488 and reduces attack surface
+          # See: https://access.redhat.com/security/cve/cve-2024-1488
+          remote-control:
+              control-enable: no
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Unbound
+
     - name: Configure Unbound forwarding
       ansible.builtin.copy:
         dest: /etc/unbound/unbound.conf.d/forward.conf
