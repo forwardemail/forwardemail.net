@@ -811,3 +811,398 @@ fileinto :specialuse "\\\\Archive" "Archive";`;
     });
   });
 });
+
+// ============================================================================
+// MAILPARSER ADDRESS OBJECT HANDLING TESTS
+// ============================================================================
+
+describe('Sieve Integration - Mailparser Address Object Handling', () => {
+  // Import SieveIntegration for testing parseMessageForSieve
+  const { SieveIntegration } = require('../../helpers/sieve/integration');
+
+  describe('parseMessageForSieve', () => {
+    it('should convert mailparser address objects to strings for From header', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: John Doe <user@gmail.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = { from: 'user@gmail.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      // headers.from should be a string, not an object
+      assert.strictEqual(typeof message.headers.from, 'string');
+      assert.ok(
+        message.headers.from.includes('user@gmail.com'),
+        `Expected headers.from to contain email address, got: ${message.headers.from}`
+      );
+    });
+
+    it('should convert mailparser address objects to strings for To header', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: Jane Doe <jane@example.com>\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = { from: 'sender@example.com', to: 'jane@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(typeof message.headers.to, 'string');
+      assert.ok(
+        message.headers.to.includes('jane@example.com'),
+        `Expected headers.to to contain email address, got: ${message.headers.to}`
+      );
+    });
+
+    it('should handle multiple recipients in To header', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: alice@example.com, bob@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: ['alice@example.com', 'bob@example.com']
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(typeof message.headers.to, 'string');
+      assert.ok(
+        message.headers.to.includes('alice@example.com'),
+        `Expected headers.to to contain alice@example.com`
+      );
+      assert.ok(
+        message.headers.to.includes('bob@example.com'),
+        `Expected headers.to to contain bob@example.com`
+      );
+    });
+
+    it('should handle Cc header with address objects', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Cc: Manager <manager@example.com>\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(typeof message.headers.cc, 'string');
+      assert.ok(
+        message.headers.cc.includes('manager@example.com'),
+        `Expected headers.cc to contain email address, got: ${message.headers.cc}`
+      );
+    });
+
+    it('should handle Reply-To header with address objects', async () => {
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Reply-To: Support <support@example.com>\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+
+      assert.strictEqual(typeof message.headers['reply-to'], 'string');
+      assert.ok(
+        message.headers['reply-to'].includes('support@example.com'),
+        `Expected headers.reply-to to contain email address`
+      );
+    });
+  });
+
+  describe('address test with mailparser output', () => {
+    it('should match address :domain with real mailparser output', async () => {
+      const script = `require ["fileinto"];
+if address :domain "from" "gmail.com" {
+  fileinto "System";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: John Doe <user@gmail.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test email from Gmail\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          'Message-ID: <test123@gmail.com>\r\n' +
+          '\r\n' +
+          'This is a test email from Gmail.\r\n'
+      );
+      const envelope = { from: 'user@gmail.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileintoAction, 'Expected fileinto action to be triggered');
+      assert.strictEqual(fileintoAction.mailbox, 'System');
+    });
+
+    it('should match address :localpart with real mailparser output', async () => {
+      const script = `require ["fileinto"];
+if address :localpart "from" "newsletter" {
+  fileinto "Newsletters";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: Newsletter <newsletter@example.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Weekly Update\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Newsletter content\r\n'
+      );
+      const envelope = {
+        from: 'newsletter@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileintoAction, 'Expected fileinto action to be triggered');
+      assert.strictEqual(fileintoAction.mailbox, 'Newsletters');
+    });
+
+    it('should match address :all with real mailparser output', async () => {
+      const script = `require ["fileinto"];
+if address :all :is "from" "boss@company.com" {
+  fileinto "Important";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: The Boss <boss@company.com>\r\n' +
+          'To: employee@company.com\r\n' +
+          'Subject: Important Meeting\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Meeting details\r\n'
+      );
+      const envelope = { from: 'boss@company.com', to: 'employee@company.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileintoAction, 'Expected fileinto action to be triggered');
+      assert.strictEqual(fileintoAction.mailbox, 'Important');
+    });
+
+    it('should NOT match address :domain for non-matching domain', async () => {
+      const script = `require ["fileinto"];
+if address :domain "from" "gmail.com" {
+  fileinto "Gmail";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: User <user@yahoo.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = { from: 'user@yahoo.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find(
+        (a) => a.type === 'fileinto' && a.mailbox === 'Gmail'
+      );
+      assert.ok(
+        !fileintoAction,
+        'Expected fileinto action NOT to be triggered'
+      );
+      assert.strictEqual(result.implicitKeep, true);
+    });
+  });
+
+  describe('header test with mailparser output', () => {
+    it('should match header :contains with real mailparser output', async () => {
+      const script = `require ["fileinto"];
+if header :contains "from" "@gmail.com" {
+  fileinto "Gmail";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: John Doe <user@gmail.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = { from: 'user@gmail.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileintoAction, 'Expected fileinto action to be triggered');
+      assert.strictEqual(fileintoAction.mailbox, 'Gmail');
+    });
+
+    it('should match header :is with exact value', async () => {
+      const script = `require ["fileinto"];
+if header :is "subject" "Test Subject" {
+  fileinto "Matched";
+  stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: sender@example.com\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test Subject\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com'
+      };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileintoAction, 'Expected fileinto action to be triggered');
+      assert.strictEqual(fileintoAction.mailbox, 'Matched');
+    });
+  });
+
+  describe('customer reported script', () => {
+    it('should work with exact customer script: address :domain from gmail.com', async () => {
+      // This is the exact script the customer reported as not working
+      const script = `require ["fileinto"];
+
+if address :domain "from" "gmail.com"
+{
+    fileinto "System";
+    stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: John Doe <user@gmail.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test email from Gmail\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          'Message-ID: <test123@gmail.com>\r\n' +
+          'Content-Type: text/plain; charset=utf-8\r\n' +
+          '\r\n' +
+          'This is a test email from Gmail.\r\n'
+      );
+      const envelope = { from: 'user@gmail.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(
+        fileintoAction,
+        'Customer script: fileinto action should be triggered'
+      );
+      assert.strictEqual(
+        fileintoAction.mailbox,
+        'System',
+        'Customer script: should file to System folder'
+      );
+    });
+
+    it('should work with customer alternative: header :contains from @gmail.com', async () => {
+      // Customer also tried this alternative
+      const script = `require ["fileinto"];
+
+if header :contains "from" "@gmail.com" {
+    fileinto "System";
+    stop;
+}`;
+
+      const integration = new SieveIntegration({});
+      const raw = Buffer.from(
+        'From: John Doe <user@gmail.com>\r\n' +
+          'To: recipient@example.com\r\n' +
+          'Subject: Test email from Gmail\r\n' +
+          'Date: Mon, 26 Jan 2026 12:00:00 -0500\r\n' +
+          '\r\n' +
+          'Test body\r\n'
+      );
+      const envelope = { from: 'user@gmail.com', to: 'recipient@example.com' };
+
+      const message = await integration.parseMessageForSieve(raw, envelope);
+      const ast = parse(script);
+      const engine = new SieveEngine();
+      const result = await engine.execute(ast, message);
+
+      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(
+        fileintoAction,
+        'Alternative script: fileinto action should be triggered'
+      );
+      assert.strictEqual(
+        fileintoAction.mailbox,
+        'System',
+        'Alternative script: should file to System folder'
+      );
+    });
+  });
+});

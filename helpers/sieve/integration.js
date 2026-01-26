@@ -565,19 +565,46 @@ class SieveIntegration {
     if (parsed.headers) {
       for (const [key, value] of parsed.headers) {
         const lowerKey = key.toLowerCase();
+        // mailparser returns address headers (from, to, cc, bcc, reply-to, sender)
+        // as objects with { value: [...], text: "..." } structure.
+        // We need to extract the text representation for Sieve processing.
+        let headerValue = value;
+        if (
+          value &&
+          typeof value === 'object' &&
+          !Array.isArray(value) &&
+          typeof value.text === 'string'
+        ) {
+          // This is a mailparser address object, extract the text representation
+          headerValue = value.text;
+        } else if (
+          value &&
+          typeof value === 'object' &&
+          !Array.isArray(value) &&
+          value.value &&
+          Array.isArray(value.value)
+        ) {
+          // Fallback: extract addresses from value array
+          headerValue = value.value
+            .map((v) =>
+              v.name ? `"${v.name}" <${v.address}>` : v.address || ''
+            )
+            .join(', ');
+        }
+
         if (headers[lowerKey]) {
           if (Array.isArray(headers[lowerKey])) {
-            headers[lowerKey].push(value);
+            headers[lowerKey].push(headerValue);
           } else {
-            headers[lowerKey] = [headers[lowerKey], value];
+            headers[lowerKey] = [headers[lowerKey], headerValue];
           }
         } else {
-          headers[lowerKey] = value;
+          headers[lowerKey] = headerValue;
         }
       }
     }
 
-    // Ensure common headers exist
+    // Ensure common headers exist (use text representation from parsed objects)
     if (!headers.from && parsed.from) {
       headers.from = parsed.from.text || parsed.from.value?.[0]?.address;
     }
