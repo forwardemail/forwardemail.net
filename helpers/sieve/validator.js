@@ -15,6 +15,21 @@
 const { parse, validate, getRequiredCapabilities } = require('./parser');
 const { SieveSecurityValidator } = require('./security');
 
+// Core Sieve tests (RFC 5228 Section 5) - these are always available
+// and don't need to be declared with "require", but some scripts
+// incorrectly include them. We accept them silently for compatibility.
+const CORE_TESTS = new Set([
+  'address',
+  'allof',
+  'anyof',
+  'exists',
+  'false',
+  'header',
+  'not',
+  'size',
+  'true'
+]);
+
 // Supported capabilities - duplicated here to avoid circular dependency
 const SUPPORTED_CAPABILITIES = [
   'fileinto',
@@ -136,7 +151,8 @@ class SieveValidator {
     result.capabilities.required = requiredCaps;
 
     const unsupported = requiredCaps.filter(
-      (cap) => !this.options.allowedCapabilities.includes(cap)
+      (cap) =>
+        !this.options.allowedCapabilities.includes(cap) && !CORE_TESTS.has(cap)
     );
 
     if (unsupported.length > 0) {
@@ -201,11 +217,15 @@ class SieveValidator {
       return {
         valid: true,
         required,
-        supported: required.filter((cap) =>
-          this.options.allowedCapabilities.includes(cap)
+        supported: required.filter(
+          (cap) =>
+            this.options.allowedCapabilities.includes(cap) ||
+            CORE_TESTS.has(cap)
         ),
         unsupported: required.filter(
-          (cap) => !this.options.allowedCapabilities.includes(cap)
+          (cap) =>
+            !this.options.allowedCapabilities.includes(cap) &&
+            !CORE_TESTS.has(cap)
         )
       };
     } catch (err) {

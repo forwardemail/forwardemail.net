@@ -633,3 +633,649 @@ describe('Sieve Engine', () => {
     });
   });
 });
+
+describe('Core Sieve tests (RFC 5228 Section 5)', () => {
+  describe('Handling incorrectly required core tests', () => {
+    it('should accept "address" in require statement', async () => {
+      // Per RFC 5228, "address" is a core test that doesn't need require
+      // but some scripts incorrectly include it. We should accept it.
+      const script = `
+        require ["fileinto", "address"];
+        if address :domain "from" "gmail.com" {
+          fileinto "Gmail";
+        }
+      `;
+      const message = createMessage({
+        headers: { from: 'user@gmail.com' }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Gmail');
+    });
+
+    it('should accept "header" in require statement', async () => {
+      const script = `
+        require ["fileinto", "header"];
+        if header :contains "subject" "test" {
+          fileinto "Test";
+        }
+      `;
+      const message = createMessage({
+        headers: { subject: 'This is a test message' }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Test');
+    });
+
+    it('should accept "exists" in require statement', async () => {
+      const script = `
+        require ["fileinto", "exists"];
+        if exists "X-Custom-Header" {
+          fileinto "Custom";
+        }
+      `;
+      const message = createMessage({
+        headers: { 'x-custom-header': 'value' }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Custom');
+    });
+
+    it('should accept "size" in require statement', async () => {
+      const script = `
+        require ["fileinto", "size"];
+        if size :over 500 {
+          fileinto "Large";
+        }
+      `;
+      const message = createMessage({ size: 1024 });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Large');
+    });
+
+    it('should accept "true" in require statement', async () => {
+      const script = `
+        require ["fileinto", "true"];
+        if true {
+          fileinto "Always";
+        }
+      `;
+      const result = await executeScript(script, createMessage());
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Always');
+    });
+
+    it('should accept "false" in require statement', async () => {
+      const script = `
+        require ["fileinto", "false"];
+        if false {
+          fileinto "Never";
+        }
+      `;
+      const result = await executeScript(script, createMessage());
+      // Should not fileinto since condition is false
+      assert.ok(!result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should accept "not" in require statement', async () => {
+      const script = `
+        require ["fileinto", "not"];
+        if not header :is "subject" "spam" {
+          fileinto "NotSpam";
+        }
+      `;
+      const message = createMessage({
+        headers: { subject: 'Hello' }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'NotSpam');
+    });
+
+    it('should accept "allof" in require statement', async () => {
+      const script = `
+        require ["fileinto", "allof"];
+        if allof (
+          header :contains "from" "example.com",
+          header :contains "subject" "important"
+        ) {
+          fileinto "Important";
+        }
+      `;
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          subject: 'important message'
+        }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Important');
+    });
+
+    it('should accept "anyof" in require statement', async () => {
+      const script = `
+        require ["fileinto", "anyof"];
+        if anyof (
+          header :contains "from" "spam.com",
+          header :contains "subject" "urgent"
+        ) {
+          fileinto "Flagged";
+        }
+      `;
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          subject: 'urgent request'
+        }
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Flagged');
+    });
+
+    it('should accept multiple core tests in require statement', async () => {
+      const script = `
+        require ["fileinto", "address", "header", "exists", "size"];
+        if allof (
+          address :domain "from" "gmail.com",
+          header :contains "subject" "test",
+          exists "to",
+          size :under 10000
+        ) {
+          fileinto "Matched";
+        }
+      `;
+      const message = createMessage({
+        headers: {
+          from: 'user@gmail.com',
+          to: 'me@example.com',
+          subject: 'test message'
+        },
+        size: 1024
+      });
+      const result = await executeScript(script, message);
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'Matched');
+    });
+  });
+
+  describe('User-reported issue: address :domain filter not working', () => {
+    it('should correctly filter gmail.com messages with :domain', async () => {
+      // This is the exact script from the user report
+      const script = `
+        require ["fileinto", "address"];
+
+        if address :domain "from" "gmail.com"
+        {
+            fileinto "System";
+            stop;
+        }
+      `;
+
+      // Test with gmail.com sender
+      const gmailMessage = createMessage({
+        headers: { from: 'test@gmail.com' }
+      });
+      const gmailResult = await executeScript(script, gmailMessage);
+      const gmailFileinto = gmailResult.actions.find(
+        (a) => a.type === 'fileinto'
+      );
+      assert.ok(gmailFileinto, 'Gmail message should be filed');
+      assert.strictEqual(
+        gmailFileinto.mailbox,
+        'System',
+        'Gmail message should go to System folder'
+      );
+
+      // Test with non-gmail sender
+      const otherMessage = createMessage({
+        headers: { from: 'test@yahoo.com' }
+      });
+      const otherResult = await executeScript(script, otherMessage);
+      const otherFileinto = otherResult.actions.find(
+        (a) => a.type === 'fileinto'
+      );
+      assert.ok(
+        !otherFileinto,
+        'Non-Gmail message should not be filed to System'
+      );
+      assert.ok(
+        otherResult.actions.some((a) => a.type === 'keep'),
+        'Non-Gmail message should be kept in inbox'
+      );
+    });
+
+    it('should handle various From header formats', async () => {
+      const script = `
+        require ["fileinto", "address"];
+        if address :domain "from" "gmail.com" {
+          fileinto "Gmail";
+        }
+      `;
+
+      // Test bare email
+      let result = await executeScript(
+        script,
+        createMessage({ headers: { from: 'user@gmail.com' } })
+      );
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+
+      // Test with display name
+      result = await executeScript(
+        script,
+        createMessage({ headers: { from: 'John Doe <user@gmail.com>' } })
+      );
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+
+      // Test with quoted display name
+      result = await executeScript(
+        script,
+        createMessage({ headers: { from: '"John Doe" <user@gmail.com>' } })
+      );
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+  });
+
+  describe('Non-string header value handling (TypeError prevention)', () => {
+    it('should handle null header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "subject" "test" {
+          fileinto "Test";
+        }
+      `;
+
+      // Test with null header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', subject: null }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should not match
+      assert.ok(!result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle undefined header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-custom" "value" {
+          fileinto "Custom";
+        }
+      `;
+
+      // Test with undefined header value (header doesn't exist)
+      const message = createMessage({
+        headers: { from: 'user@example.com' }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should not match
+      assert.ok(!result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle numeric header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-priority" "1" {
+          fileinto "Priority";
+        }
+      `;
+
+      // Test with numeric header value (some parsers might return numbers)
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-priority': 1 }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match since String(1) === '1'
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle object header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "from" "test" {
+          fileinto "Test";
+        }
+      `;
+
+      // Test with object header value (malformed parsed header)
+      const message = createMessage({
+        headers: { from: { address: 'test@example.com', name: 'Test' } }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - object will be converted to string "[object Object]"
+      // and should not match "test"
+      assert.ok(!result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle array header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "received" "google" {
+          fileinto "Google";
+        }
+      `;
+
+      // Test with array header value (multiple Received headers)
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          received: ['from google.com', 'from example.com']
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match the first element
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle empty string header values', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :is "subject" "" {
+          fileinto "NoSubject";
+        }
+      `;
+
+      // Test with empty string header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', subject: '' }
+      });
+      const result = await executeScript(script, message);
+      // Should match empty string
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle boolean header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-spam" "true" {
+          fileinto "Spam";
+        }
+      `;
+
+      // Test with boolean header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-spam': true }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match since String(true) === 'true'
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle Date object header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "date" "2024" {
+          fileinto "Dated";
+        }
+      `;
+
+      // Test with Date object header value (some parsers might return Date objects)
+      const message = createMessage({
+        headers: { from: 'user@example.com', date: new Date('2024-01-15') }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - Date will be converted to string
+      assert.ok(!result.error);
+    });
+
+    it('should handle nested object header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "from" "example" {
+          fileinto "Nested";
+        }
+      `;
+
+      // Test with nested object header value
+      const message = createMessage({
+        headers: {
+          from: { address: 'test@example.com', parsed: { local: 'test' } }
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - object will be converted to "[object Object]"
+      assert.ok(!result.error);
+    });
+
+    it('should handle mixed array header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-mixed" "string" {
+          fileinto "Mixed";
+        }
+      `;
+
+      // Test with mixed array (strings, numbers, objects)
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          'x-mixed': ['string value', 123, { key: 'value' }, null, undefined]
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match the first string element
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle Symbol header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-symbol" "Symbol" {
+          fileinto "Symbol";
+        }
+      `;
+
+      // Test with Symbol header value (edge case)
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-symbol': Symbol('test') }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - Symbol will be converted to "Symbol(test)"
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle BigInt header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-bigint" "12345" {
+          fileinto "BigInt";
+        }
+      `;
+
+      // Test with BigInt header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-bigint': BigInt(12345) }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match since String(BigInt(12345)) === '12345'
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle function header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-func" "test" {
+          fileinto "Function";
+        }
+      `;
+
+      // Test with function header value (extreme edge case)
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          'x-func'() {
+            return 'test';
+          }
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - function will be converted to its string representation
+      // The assertion is just that it doesn't throw, not that it matches
+      assert.ok(!result.error);
+    });
+
+    it('should handle NaN header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-nan" "NaN" {
+          fileinto "NaN";
+        }
+      `;
+
+      // Test with NaN header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-nan': Number.NaN }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match since String(NaN) === 'NaN'
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle Infinity header values without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto"];
+        if header :contains "x-inf" "Infinity" {
+          fileinto "Infinity";
+        }
+      `;
+
+      // Test with Infinity header value
+      const message = createMessage({
+        headers: { from: 'user@example.com', 'x-inf': Number.POSITIVE_INFINITY }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw, and should match since String(Infinity) === 'Infinity'
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+  });
+
+  describe('Variables extension with non-string values', () => {
+    it('should handle set command with non-string interpolated values', async () => {
+      const script = `
+        require ["fileinto", "variables"];
+        set "myvar" "test";
+        if header :contains "subject" "\${myvar}" {
+          fileinto "Variables";
+        }
+      `;
+
+      const message = createMessage({
+        headers: { from: 'user@example.com', subject: 'this is a test message' }
+      });
+      const result = await executeScript(script, message);
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+
+    it('should handle set command modifiers without throwing TypeError', async () => {
+      const script = `
+        require ["fileinto", "variables"];
+        set :lower "myvar" "TEST";
+        if string :is "\${myvar}" "test" {
+          fileinto "Lower";
+        }
+      `;
+
+      const message = createMessage({
+        headers: { from: 'user@example.com' }
+      });
+      const result = await executeScript(script, message);
+      assert.ok(result.actions.some((a) => a.type === 'fileinto'));
+    });
+  });
+
+  describe('Date test with non-string header values', () => {
+    it('should handle date test with object header value', async () => {
+      const script = `
+        require ["fileinto", "date"];
+        if date :is "date" "year" "2024" {
+          fileinto "2024";
+        }
+      `;
+
+      // Test with object header value that has a toString method
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          date: { toString: () => 'Mon, 15 Jan 2024 12:00:00 GMT' }
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw
+      assert.ok(!result.error);
+    });
+
+    it('should handle date test with numeric timestamp header value', async () => {
+      const script = `
+        require ["fileinto", "date"];
+        if date :is "date" "year" "2024" {
+          fileinto "2024";
+        }
+      `;
+
+      // Test with numeric timestamp
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          date: 1705320000000 // Jan 15, 2024
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw - number will be converted to string for Date parsing
+      assert.ok(!result.error);
+    });
+  });
+
+  describe('Duplicate test with non-string header values', () => {
+    it('should handle duplicate test with object message-id', async () => {
+      const script = `
+        require ["fileinto", "duplicate"];
+        if duplicate {
+          fileinto "Duplicate";
+        }
+      `;
+
+      // Test with object message-id
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          'message-id': { id: '<test@example.com>', raw: '<test@example.com>' }
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw
+      assert.ok(!result.error);
+    });
+
+    it('should handle duplicate test with numeric message-id', async () => {
+      const script = `
+        require ["fileinto", "duplicate"];
+        if duplicate {
+          fileinto "Duplicate";
+        }
+      `;
+
+      // Test with numeric message-id
+      const message = createMessage({
+        headers: {
+          from: 'user@example.com',
+          'message-id': 12345
+        }
+      });
+      const result = await executeScript(script, message);
+      // Should not throw
+      assert.ok(!result.error);
+    });
+  });
+});

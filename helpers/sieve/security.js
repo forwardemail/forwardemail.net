@@ -34,6 +34,21 @@ try {
   isDenylisted = null;
 }
 
+// Core Sieve tests (RFC 5228 Section 5) - these are always available
+// and don't need to be declared with "require", but some scripts
+// incorrectly include them. We accept them silently for compatibility.
+const CORE_TESTS = new Set([
+  'address',
+  'allof',
+  'anyof',
+  'exists',
+  'false',
+  'header',
+  'not',
+  'size',
+  'true'
+]);
+
 /**
  * Default security configuration
  */
@@ -251,7 +266,8 @@ class SieveSecurityValidator {
 
     const requiredExtensions = this.extractRequiredExtensions(ast);
     const disallowed = requiredExtensions.filter(
-      (ext) => !this.config.allowedExtensions.includes(ext)
+      (ext) =>
+        !this.config.allowedExtensions.includes(ext) && !CORE_TESTS.has(ext)
     );
 
     if (disallowed.length > 0) {

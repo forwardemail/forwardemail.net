@@ -2747,3 +2747,496 @@ test.serial('empty script - implicit keep delivers to INBOX', async (t) => {
 
   t.is(inbox.exists, 1);
 });
+
+// ============================================================================
+// USER-REPORTED ISSUE TESTS - Core tests in require statements
+// ============================================================================
+
+test.serial(
+  'address :domain with require ["fileinto", "address"] - customer reported issue',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // This is the exact script from the customer's bug report
+    // The issue was that "address" in require was being rejected as unsupported
+    const sieveScript = `
+require ["fileinto", "address"];
+
+if address :domain "from" "gmail.com"
+{
+    fileinto "System";
+    stop;
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    // Send from gmail.com - should be filed to System
+    await sendMessage(t, {
+      from: 'user@gmail.com',
+      to: email,
+      subject: 'Test from Gmail',
+      text: 'This message should be filed to System folder'
+    });
+
+    // Wait for message processing
+    await delay(2000);
+
+    // Check that message is in System folder
+    const system = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'System',
+      expectedCount: 1,
+      checkSubject: 'Test from Gmail'
+    });
+
+    t.is(system.exists, 1);
+
+    // INBOX should be empty
+    const inbox = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'INBOX',
+      expectedCount: 0
+    });
+
+    t.is(inbox.exists, 0);
+  }
+);
+
+test.serial(
+  'address :domain with display name - customer reported issue variant',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    const sieveScript = `
+require ["fileinto", "address"];
+
+if address :domain "from" "gmail.com"
+{
+    fileinto "System";
+    stop;
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    // Send from gmail.com with display name
+    await sendMessage(t, {
+      from: '"John Doe" <user@gmail.com>',
+      to: email,
+      subject: 'Test from Gmail with display name',
+      text: 'This message should be filed to System folder'
+    });
+
+    // Wait for message processing
+    await delay(2000);
+
+    // Check that message is in System folder
+    const system = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'System',
+      expectedCount: 1
+    });
+
+    t.is(system.exists, 1);
+  }
+);
+
+test.serial(
+  'header :contains "from" "@gmail.com" - alternative customer script',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // Alternative script the customer tried
+    const sieveScript = `
+require ["fileinto"];
+
+if header :contains "from" "@gmail.com"
+{
+    fileinto "System";
+    stop;
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    // Send from gmail.com
+    await sendMessage(t, {
+      from: 'user@gmail.com',
+      to: email,
+      subject: 'Test header contains gmail',
+      text: 'This message should be filed to System folder'
+    });
+
+    // Wait for message processing
+    await delay(2000);
+
+    // Check that message is in System folder
+    const system = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'System',
+      expectedCount: 1
+    });
+
+    t.is(system.exists, 1);
+  }
+);
+
+test.serial('non-gmail message should not match gmail filter', async (t) => {
+  t.timeout(TEST_TIMEOUT);
+
+  const sieveScript = `
+require ["fileinto", "address"];
+
+if address :domain "from" "gmail.com"
+{
+    fileinto "System";
+    stop;
+}
+`;
+
+  const { alias, domain, password } = await createTestSetup(t, sieveScript);
+  const email = `${alias.name}@${domain.name}`;
+
+  // Send from yahoo.com - should NOT be filed to System
+  await sendMessage(t, {
+    from: 'user@yahoo.com',
+    to: email,
+    subject: 'Test from Yahoo',
+    text: 'This message should stay in INBOX'
+  });
+
+  // Wait for message processing
+  await delay(2000);
+
+  // Check that message is in INBOX, not System
+  const inbox = await checkMailbox(t, {
+    email,
+    password,
+    mailbox: 'INBOX',
+    expectedCount: 1,
+    checkSubject: 'Test from Yahoo'
+  });
+
+  t.is(inbox.exists, 1);
+});
+
+// ============================================================================
+// FAQ EXAMPLE SCRIPTS TESTS
+// ============================================================================
+
+test.serial('FAQ example: File newsletters into a folder', async (t) => {
+  t.timeout(TEST_TIMEOUT);
+
+  // From FAQ: "File newsletters into a folder"
+  const sieveScript = `
+require ["fileinto"];
+
+if header :contains "List-Id" "newsletter" {
+    fileinto "Newsletters";
+}
+`;
+
+  const { alias, domain, password } = await createTestSetup(t, sieveScript);
+  const email = `${alias.name}@${domain.name}`;
+
+  // Send newsletter message
+  await sendMessage(t, {
+    from: 'news@example.com',
+    to: email,
+    subject: 'Weekly Newsletter',
+    text: 'Newsletter content',
+    headers: { 'List-Id': '<newsletter.example.com>' }
+  });
+
+  // Wait for message processing
+  await delay(2000);
+
+  // Check that message is in Newsletters folder
+  const newsletters = await checkMailbox(t, {
+    email,
+    password,
+    mailbox: 'Newsletters',
+    expectedCount: 1
+  });
+
+  t.is(newsletters.exists, 1);
+});
+
+test.serial('FAQ example: Mark messages from important senders', async (t) => {
+  t.timeout(TEST_TIMEOUT);
+
+  // From FAQ: "Mark messages from important senders"
+  const sieveScript = `
+require ["imap4flags"];
+
+if address :is "from" "boss@example.com" {
+    setflag "\\\\Flagged";
+}
+`;
+
+  const { alias, domain, password } = await createTestSetup(t, sieveScript);
+  const email = `${alias.name}@${domain.name}`;
+
+  // Send from boss
+  await sendMessage(t, {
+    from: 'boss@example.com',
+    to: email,
+    subject: 'Important message from boss',
+    text: 'Please review this'
+  });
+
+  // Wait for message processing
+  await delay(2000);
+
+  // Check that message is flagged
+  const inbox = await checkMailbox(t, {
+    email,
+    password,
+    mailbox: 'INBOX',
+    expectedCount: 1,
+    checkFlags: ['\\Flagged']
+  });
+
+  t.is(inbox.exists, 1);
+  t.true(inbox.messages[0].flags.includes('\\Flagged'));
+});
+
+test.serial('FAQ example: Reject spam with specific subjects', async (t) => {
+  t.timeout(TEST_TIMEOUT);
+
+  // From FAQ: "Reject spam with specific subjects"
+  const sieveScript = `
+require ["reject"];
+
+if header :contains "subject" ["lottery", "winner", "urgent transfer"] {
+    reject "Message rejected due to spam content.";
+}
+`;
+
+  const { alias, domain, password } = await createTestSetup(t, sieveScript);
+  const email = `${alias.name}@${domain.name}`;
+
+  // Send spam message - this should be rejected
+  // Note: The reject action may not result in the message being stored at all
+  await sendMessage(t, {
+    from: 'spammer@example.com',
+    to: email,
+    subject: 'You are a lottery winner!',
+    text: 'Claim your prize'
+  });
+
+  // Wait for message processing
+  await delay(2000);
+
+  // INBOX should be empty (message was rejected)
+  const inbox = await checkMailbox(t, {
+    email,
+    password,
+    mailbox: 'INBOX',
+    expectedCount: 0
+  });
+
+  t.is(inbox.exists, 0);
+});
+
+test.serial(
+  'FAQ example: Spam filtering with flags (from RFC compliance doc)',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // From RFC compliance doc example
+    const sieveScript = `
+require ["fileinto", "imap4flags"];
+
+if header :contains "X-Spam-Status" "Yes" {
+    setflag "\\\\Seen";
+    fileinto "Junk";
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    // Send spam message with X-Spam-Status header
+    await sendMessage(t, {
+      from: 'spammer@example.com',
+      to: email,
+      subject: 'Spam message',
+      text: 'Buy now!',
+      headers: { 'X-Spam-Status': 'Yes, score=10.0' }
+    });
+
+    // Wait for message processing
+    await delay(2000);
+
+    // Check that message is in Junk folder with Seen flag
+    const junk = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'Junk',
+      expectedCount: 1,
+      checkFlags: ['\\Seen']
+    });
+
+    t.is(junk.exists, 1);
+    t.true(junk.messages[0].flags.includes('\\Seen'));
+  }
+);
+
+// ============================================================================
+// CORE TESTS IN REQUIRE - Comprehensive coverage
+// ============================================================================
+
+test.serial(
+  'require ["fileinto", "header"] - header is a core test',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // "header" is a core test per RFC 5228, should be accepted in require
+    const sieveScript = `
+require ["fileinto", "header"];
+
+if header :contains "Subject" "test" {
+    fileinto "Tests";
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    await sendMessage(t, {
+      from: 'sender@example.com',
+      to: email,
+      subject: 'This is a test message',
+      text: 'Test content'
+    });
+
+    await delay(2000);
+
+    const tests = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'Tests',
+      expectedCount: 1
+    });
+
+    t.is(tests.exists, 1);
+  }
+);
+
+test.serial(
+  'require ["fileinto", "exists"] - exists is a core test',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // "exists" is a core test per RFC 5228, should be accepted in require
+    const sieveScript = `
+require ["fileinto", "exists"];
+
+if exists "X-Custom-Header" {
+    fileinto "Custom";
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    await sendMessage(t, {
+      from: 'sender@example.com',
+      to: email,
+      subject: 'Message with custom header',
+      text: 'Test content',
+      headers: { 'X-Custom-Header': 'present' }
+    });
+
+    await delay(2000);
+
+    const custom = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'Custom',
+      expectedCount: 1
+    });
+
+    t.is(custom.exists, 1);
+  }
+);
+
+test.serial('require ["fileinto", "size"] - size is a core test', async (t) => {
+  t.timeout(TEST_TIMEOUT);
+
+  // "size" is a core test per RFC 5228, should be accepted in require
+  const sieveScript = `
+require ["fileinto", "size"];
+
+if size :under 500 {
+    fileinto "Small";
+}
+`;
+
+  const { alias, domain, password } = await createTestSetup(t, sieveScript);
+  const email = `${alias.name}@${domain.name}`;
+
+  await sendMessage(t, {
+    from: 'sender@example.com',
+    to: email,
+    subject: 'Small message',
+    text: 'Hi'
+  });
+
+  await delay(2000);
+
+  const small = await checkMailbox(t, {
+    email,
+    password,
+    mailbox: 'Small',
+    expectedCount: 1
+  });
+
+  t.is(small.exists, 1);
+});
+
+test.serial(
+  'require with multiple core tests - all should be accepted',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    // Multiple core tests in require should all be accepted
+    const sieveScript = `
+require ["fileinto", "address", "header", "exists", "size", "true", "false", "not", "allof", "anyof"];
+
+if address :domain "from" "example.com" {
+    fileinto "Example";
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    await sendMessage(t, {
+      from: 'user@example.com',
+      to: email,
+      subject: 'Test multiple core tests',
+      text: 'Test content'
+    });
+
+    await delay(2000);
+
+    const example = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'Example',
+      expectedCount: 1
+    });
+
+    t.is(example.exists, 1);
+  }
+);

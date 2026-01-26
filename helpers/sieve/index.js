@@ -33,6 +33,21 @@ const ManageSieveServer = require('./managesieve-server');
 const { MemorySieveStore } = require('./store');
 const { SieveIntegration, createSieveIntegration } = require('./integration');
 
+// Core Sieve tests (RFC 5228 Section 5) - these are always available
+// and don't need to be declared with "require", but some scripts
+// incorrectly include them. We accept them silently for compatibility.
+const CORE_TESTS = [
+  'address',
+  'allof',
+  'anyof',
+  'exists',
+  'false',
+  'header',
+  'not',
+  'size',
+  'true'
+];
+
 // Supported capabilities
 const SUPPORTED_CAPABILITIES = [
   // Core (RFC 5228)
@@ -102,7 +117,7 @@ function validateScript(script) {
   const ast = parse(script);
   const required = getRequiredCapabilities(ast);
   const unsupported = required.filter(
-    (cap) => !SUPPORTED_CAPABILITIES.includes(cap)
+    (cap) => !SUPPORTED_CAPABILITIES.includes(cap) && !CORE_TESTS.includes(cap)
   );
 
   if (unsupported.length > 0) {
@@ -164,5 +179,6 @@ module.exports = {
   createSieveIntegration,
 
   // Constants
-  SUPPORTED_CAPABILITIES
+  SUPPORTED_CAPABILITIES,
+  CORE_TESTS
 };

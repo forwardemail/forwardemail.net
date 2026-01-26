@@ -60,6 +60,21 @@ function parseAddresses(value) {
   return results;
 }
 
+// Core Sieve tests (RFC 5228 Section 5) - these are always available
+// and don't need to be declared with "require", but some scripts
+// incorrectly include them. We accept them silently for compatibility.
+const CORE_TESTS = new Set([
+  'address',
+  'allof',
+  'anyof',
+  'exists',
+  'false',
+  'header',
+  'not',
+  'size',
+  'true'
+]);
+
 // Default supported capabilities
 const DEFAULT_CAPABILITIES = new Set([
   'fileinto',
@@ -141,8 +156,12 @@ class SieveEngine {
    * @returns {boolean} True if supported
    */
   hasCapability(capability) {
+    // Accept core tests (RFC 5228 Section 5) even though they don't need require
+    // This provides compatibility with scripts that incorrectly require them
     return (
-      this.capabilities.has(capability) || EXTENDED_CAPABILITIES.has(capability)
+      this.capabilities.has(capability) ||
+      EXTENDED_CAPABILITIES.has(capability) ||
+      CORE_TESTS.has(capability)
     );
   }
 
@@ -596,9 +615,19 @@ class SieveEngine {
 
       const values = Array.isArray(headerValue) ? headerValue : [headerValue];
       for (const value of values) {
+        // Coerce value to string to prevent TypeError on non-string header values
+        const stringValue =
+          value === null || value === undefined ? '' : String(value);
         for (const key of keys) {
           const interpolatedKey = this.interpolateVariables(key, state);
-          if (this.matchString(value, interpolatedKey, matchType, comparator)) {
+          if (
+            this.matchString(
+              stringValue,
+              interpolatedKey,
+              matchType,
+              comparator
+            )
+          ) {
             return true;
           }
         }
@@ -798,7 +827,10 @@ class SieveEngine {
       return false;
     }
 
-    const date = new Date(headerValue);
+    // Coerce to string for Date parsing (handles objects, numbers, etc.)
+    const dateString =
+      typeof headerValue === 'string' ? headerValue : String(headerValue);
+    const date = new Date(dateString);
     if (Number.isNaN(date.getTime())) {
       return false;
     }
@@ -1053,8 +1085,11 @@ class SieveEngine {
    */
   matchString(value, pattern, matchType, comparator) {
     // Normalize values based on comparator
-    let normalizedValue = value || '';
-    let normalizedPattern = pattern || '';
+    // Ensure values are strings to prevent TypeError on .toLowerCase()
+    let normalizedValue =
+      value === null || value === undefined ? '' : String(value);
+    let normalizedPattern =
+      pattern === null || pattern === undefined ? '' : String(pattern);
 
     if (comparator === 'i;ascii-casemap' || !comparator) {
       normalizedValue = normalizedValue.toLowerCase();
@@ -1221,7 +1256,10 @@ class SieveEngine {
       return string_;
     }
 
-    return string_.replaceAll(/\${([^}]+)}/g, (match, varName) => {
+    // Ensure string_ is actually a string to prevent TypeError on .replaceAll()
+    const str = typeof string_ === 'string' ? string_ : String(string_);
+
+    return str.replaceAll(/\${([^}]+)}/g, (match, varName) => {
       const value = state.variables.get(varName.toLowerCase());
       return value === undefined ? '' : value;
     });
@@ -1234,6 +1272,13 @@ class SieveEngine {
    */
   executeSet(command, state) {
     let value = this.interpolateVariables(command.value, state);
+
+    // Ensure value is a string before applying modifiers
+    if (value === null || value === undefined) {
+      value = '';
+    } else if (typeof value !== 'string') {
+      value = String(value);
+    }
 
     // Apply modifiers
     for (const modifier of command.modifiers || []) {
@@ -1355,10 +1400,16 @@ class SieveEngine {
     } else if (test.header) {
       // Use specified header value
       const headerValue = state.message.headers[test.header.toLowerCase()];
-      uniqueId = headerValue || '';
+      // Coerce to string to handle non-string header values
+      uniqueId =
+        headerValue === null || headerValue === undefined
+          ? ''
+          : String(headerValue);
     } else {
       // Default: use Message-ID header
-      uniqueId = state.message.headers['message-id'] || '';
+      const messageId = state.message.headers['message-id'];
+      uniqueId =
+        messageId === null || messageId === undefined ? '' : String(messageId);
     }
 
     if (!uniqueId) {

@@ -11,6 +11,21 @@
 
 const { SieveValidator, sanitizeScript } = require('./validator');
 
+// Core Sieve tests (RFC 5228 Section 5) - these are always available
+// and don't need to be declared with "require", but some scripts
+// incorrectly include them. We accept them silently for compatibility.
+const CORE_TESTS = [
+  'address',
+  'allof',
+  'anyof',
+  'exists',
+  'false',
+  'header',
+  'not',
+  'size',
+  'true'
+];
+
 // Supported capabilities - duplicated to avoid circular dependency
 const SUPPORTED_CAPABILITIES = [
   'fileinto',
@@ -122,9 +137,10 @@ class SieveScriptChecker {
         message: `Unsupported capabilities: ${validationResult.capabilities.unsupported.join(
           ', '
         )}`,
-        suggestion: `Remove or replace the unsupported capabilities. Supported: ${this.options.allowedCapabilities.join(
-          ', '
-        )}`
+        suggestion: `Remove or replace the unsupported capabilities. Supported: ${[
+          ...this.options.allowedCapabilities,
+          ...CORE_TESTS
+        ].join(', ')}`
       });
     }
 
