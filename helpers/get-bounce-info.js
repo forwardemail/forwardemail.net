@@ -559,8 +559,12 @@ function getBounceInfo(err) {
 
   // <https://github.com/zone-eu/zone-mta/issues/434>
   // DMARC failures should be retried (421) since they may be temporary SPF issues
-  if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
-    bounceInfo.category = 'blocklist';
+  if (
+    response.startsWith('DMARC ') ||
+    response.includes(' DMARC ') ||
+    response.includes('DMARC policy')
+  ) {
+    bounceInfo.category = 'dmarc';
     bounceInfo.action = 'defer';
   }
 
