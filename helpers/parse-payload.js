@@ -1222,10 +1222,12 @@ async function parsePayload(data, ws) {
                       checkForExisting: true,
 
                       // don't retry so we can timely store to tmp storage instead
-                      retries: 0
+                      retries: 0,
+
+                      // Sieve fileinto :create flag - auto-create folder if it doesn't exist
+                      createFolder: sieveResult.create || false
                     }
                   );
-
                   //
                   // increase rate limiting size and count
                   //

@@ -21,8 +21,10 @@ const { ImapFlow } = require('imapflow');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
+// const mxConnect = require('mx-connect');
 const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
+// const pify = require('pify');
 const test = require('ava');
 
 const utils = require('../utils');
@@ -39,6 +41,11 @@ let getPort;
 import('get-port').then((object) => {
   getPort = object.default;
 });
+
+// Unused but kept for reference
+// const asyncMxConnect = pify(mxConnect);
+// const IP_ADDRESS = ip.address();
+// const tls = { rejectUnauthorized: false };
 
 // Test configuration
 const TEST_TIMEOUT = ms('60s');
@@ -92,6 +99,8 @@ test.beforeEach(async (t) => {
     client: t.context.client,
     wsp: t.context.wsp
   });
+  // Share the databaseMap from SQLite server so MX can reuse open database connections
+  mx.databaseMap = t.context.sqlite.databaseMap;
   t.context.mxPort = mxPort;
   t.context.mx = mx;
   await mx.listen(mxPort);
@@ -140,6 +149,7 @@ test.afterEach.always(async (t) => {
  */
 async function createTestSetup(t, sieveScript, aliasOptions = {}) {
   const { resolver } = t.context.mx;
+  const IP_ADDRESS = ip.address();
 
   // Create user with plan
   const user = await t.context.userFactory
@@ -172,6 +182,45 @@ async function createTestSetup(t, sieveScript, aliasOptions = {}) {
       resolver
     })
     .create();
+
+  // Set up DNS spoofing for the domain (like test/mx/index.js does)
+  const map = new Map();
+
+  // Spoof A record for domain
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  // Spoof MX record for domain
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Spoof TXT record for domain verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Store spoofed DNS cache
+  await resolver.options.cache.mset(map);
+
+  // Set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
 
   // Create password for alias
   const password = 'Str0ngP4ssw0rdXyz789';
@@ -2783,6 +2832,36 @@ if address :domain "from" "gmail.com"
     // Wait for message processing
     await delay(2000);
 
+    // First check INBOX to see if message was delivered at all
+    const inbox = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'INBOX'
+    });
+    console.log('INBOX has', inbox.exists, 'messages');
+    if (inbox.messages.length > 0) {
+      console.log(
+        'INBOX messages:',
+        inbox.messages.map((m) => m.subject)
+      );
+    }
+
+    // List all mailboxes to see what exists
+    const client = new ImapFlow({
+      host: ip.address(),
+      port: t.context.imapPort,
+      secure: false,
+      auth: { user: email, pass: password },
+      tls: { rejectUnauthorized: false }
+    });
+    await client.connect();
+    const mailboxes = await client.list();
+    console.log(
+      'Available mailboxes:',
+      mailboxes.map((m) => m.path)
+    );
+    await client.logout();
+
     // Check that message is in System folder
     const system = await checkMailbox(t, {
       email,
@@ -2793,15 +2872,6 @@ if address :domain "from" "gmail.com"
     });
 
     t.is(system.exists, 1);
-
-    // INBOX should be empty
-    const inbox = await checkMailbox(t, {
-      email,
-      password,
-      mailbox: 'INBOX',
-      expectedCount: 0
-    });
-
     t.is(inbox.exists, 0);
   }
 );

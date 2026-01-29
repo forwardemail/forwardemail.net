@@ -272,10 +272,12 @@ class SieveIntegration {
       if (filterResult.fileinto && filterResult.fileinto.length > 0) {
         // Use the first fileinto destination as primary folder
         result.folder = filterResult.fileinto[0].folder;
+        // Pass through :create flag for auto-creating folders
+        result.create = filterResult.fileinto[0].create || false;
         // Additional fileinto destinations for copies
         result.additionalFolders = filterResult.fileinto
           .slice(1)
-          .map((f) => f.folder);
+          .map((f) => ({ folder: f.folder, create: f.create || false }));
         // Log fileinto action for user debugging
         logger.info('sieve fileinto', {
           ignore_hook: false,

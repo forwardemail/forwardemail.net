@@ -149,13 +149,33 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //   client that it can attempt a CREATE command and retry the APPEND
     //   if the CREATE is successful.
     //
-    if (!mailbox)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          imapResponse: 'TRYCREATE'
-        }
-      );
+    // However, for Sieve fileinto :create, we auto-create the folder per RFC 5490
+    //
+    if (!mailbox) {
+      // Check if this is a Sieve fileinto :create operation
+      if (session.createFolder) {
+        // Auto-create the mailbox for Sieve fileinto :create
+        mailbox = await Mailboxes.create({
+          // Virtual helper for Mongoose
+          instance: this,
+          session,
+          path,
+          // Default retention (0 = no auto-expunge)
+          retention: 0
+        });
+        this.logger.debug('Auto-created mailbox for Sieve fileinto :create', {
+          path,
+          mailboxId: mailbox._id
+        });
+      } else {
+        throw new IMAPError(
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+          {
+            imapResponse: 'TRYCREATE'
+          }
+        );
+      }
+    }
 
     //
     // encrypt message if it is not a Draft and user has a public key (either uploaded or via WKD)
