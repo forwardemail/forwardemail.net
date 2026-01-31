@@ -20,10 +20,10 @@ const GITHUB_API_BASE =
 const CACHE_KEY_INCIDENTS = 'event_feed:status_incidents';
 const CACHE_KEY_SUMMARY = 'event_feed:status_summary';
 
-// Cache duration - 6 hours to match X posts and reduce API calls
+// Cache duration - 5 minutes for timely status updates
 const CACHE_DURATION = env.X_API_CACHE_DURATION
   ? ms(env.X_API_CACHE_DURATION)
-  : ms('6h');
+  : ms('5m');
 const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
 
 /**

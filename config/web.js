@@ -131,11 +131,10 @@ async function checkGitHubIssues() {
 }
 
 // GitHub API is limited to 5K requests per hour
-// (if we check every 10 seconds, then that is 360 requests per hour)
-// (if we check every minute, then that is 60 requests per hour)
+// (if we check every 5 minutes, then that is 12 requests per hour)
 if (config.env !== 'test') {
   checkGitHubIssues();
-  setInterval(checkGitHubIssues, 60000);
+  setInterval(checkGitHubIssues, 300000);
 }
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
