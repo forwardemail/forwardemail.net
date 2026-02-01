@@ -1302,39 +1302,118 @@
           DELETED_OLD=0
           DELETED_DAILY=0
           KEPT_RECENT=0
+          KEPT_DAILY=0
           ERRORS=0
 
-          # Calculate dates
+          # Calculate cutoff timestamps
+          NOW=$(date +%s)
           THIRTY_DAYS_AGO=$(date -d "30 days ago" +%s)
           TWO_DAYS_AGO=$(date -d "2 days ago" +%s)
 
-          echo "Retention policy: Keep hourly for days 1-2, one per day for days 3-30, delete > 30 days"
+          echo "Retention policy: Keep all hourly backups for last 2 days, keep latest daily backup for days 3-30, delete backups older than 30 days"
+          echo "Current time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "Two days ago cutoff: $(date -u -d @${TWO_DAYS_AGO} +%Y-%m-%dT%H:%M:%SZ)"
+          echo "Thirty days ago cutoff: $(date -u -d @${THIRTY_DAYS_AGO} +%Y-%m-%dT%H:%M:%SZ)"
           echo "Checking bucket: s3://${BACKUP_BUCKET}/mongo/"
 
+          # Clean up any stale state files from previous runs
+          rm -f /tmp/mongo-cleanup-*.keep
+
           # List all backups and process
-          if ! BACKUP_LIST=$(aws s3 ls s3://${BACKUP_BUCKET}/mongo/ --recursive --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1); then
+          if ! BACKUP_LIST=$(aws s3 ls "s3://${BACKUP_BUCKET}/mongo/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1); then
             ERROR_MSG="Failed to list backups in s3://${BACKUP_BUCKET}/mongo/ at $(date -u +%Y-%m-%dT%H:%M:%SZ). Error: ${BACKUP_LIST}"
             echo "ERROR: $ERROR_MSG"
             /usr/local/bin/send-rate-limited-email.sh "mongo-cleanup" "[ERROR] MongoDB Backup Cleanup Failed on $(hostname)" "$ERROR_MSG"
             exit 1
           fi
 
-          # Process each backup
-          echo "$BACKUP_LIST" | while read -r line; do
+          # Check if bucket is empty
+          if [ -z "$BACKUP_LIST" ]; then
+            echo "No backups found in bucket. Nothing to clean up."
+            exit 0
+          fi
+
+          # PHASE 1: Build a map of the latest backup for each date (for days 3-30)
+          # We need to identify which backup to KEEP for each date before we start deleting
+          declare -A LATEST_BACKUP_FOR_DATE
+          declare -A LATEST_TIMESTAMP_FOR_DATE
+
+          echo ""
+          echo "=== Phase 1: Identifying latest backup for each date ==="
+
+          while IFS= read -r line; do
             # Skip empty lines
             [ -z "$line" ] && continue
 
             FILE_DATE=$(echo "$line" | awk '{print $1" "$2}')
             FILE_PATH=$(echo "$line" | awk '{print $4}')
 
+            # Skip if no file path
+            [ -z "$FILE_PATH" ] && continue
+
             # Extract timestamp from filename (ISO 8601 format: mongo-backup-2025-11-27T19:50:03Z.gz.gpg)
-            # Filename format: mongo-backup-YYYY-MM-DDTHH:MM:SSZ.gz.gpg
             FILENAME=$(basename "$FILE_PATH")
             ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
 
             # Try to parse timestamp from filename first (more reliable), fallback to S3 metadata date
             if [ -n "$ISO_TIMESTAMP" ]; then
-              # Parse ISO 8601 timestamp from filename
+              if ! FILE_TIMESTAMP=$(date -d "$ISO_TIMESTAMP" +%s 2>/dev/null); then
+                if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
+                  continue
+                fi
+              fi
+            else
+              if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
+                continue
+              fi
+            fi
+
+            # Only process backups in the 3-30 day range for this phase
+            if [ "$FILE_TIMESTAMP" -ge "$THIRTY_DAYS_AGO" ] && [ "$FILE_TIMESTAMP" -lt "$TWO_DAYS_AGO" ]; then
+              # Extract date from ISO 8601 timestamp in filename (YYYY-MM-DD)
+              if [ -n "$ISO_TIMESTAMP" ]; then
+                BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
+              else
+                BACKUP_DATE=$(date -d "$FILE_DATE" +%Y-%m-%d)
+              fi
+
+              [ -z "$BACKUP_DATE" ] && continue
+
+              # Check if this is the latest backup for this date
+              EXISTING_TIMESTAMP="${LATEST_TIMESTAMP_FOR_DATE[$BACKUP_DATE]:-0}"
+              if [ "$FILE_TIMESTAMP" -gt "$EXISTING_TIMESTAMP" ]; then
+                LATEST_BACKUP_FOR_DATE[$BACKUP_DATE]="$FILE_PATH"
+                LATEST_TIMESTAMP_FOR_DATE[$BACKUP_DATE]="$FILE_TIMESTAMP"
+              fi
+            fi
+          done <<< "$BACKUP_LIST"
+
+          # Log which backups will be kept for each date
+          echo "Latest backups to keep for each date (days 3-30):"
+          for DATE in "${!LATEST_BACKUP_FOR_DATE[@]}"; do
+            echo "  $DATE: ${LATEST_BACKUP_FOR_DATE[$DATE]}"
+          done
+
+          # PHASE 2: Process all backups and apply retention policy
+          echo ""
+          echo "=== Phase 2: Applying retention policy ==="
+
+          while IFS= read -r line; do
+            # Skip empty lines
+            [ -z "$line" ] && continue
+
+            FILE_DATE=$(echo "$line" | awk '{print $1" "$2}')
+            FILE_PATH=$(echo "$line" | awk '{print $4}')
+
+            # Skip if no file path
+            [ -z "$FILE_PATH" ] && continue
+
+            # Extract timestamp from filename
+            FILENAME=$(basename "$FILE_PATH")
+            ISO_TIMESTAMP=$(echo "$FILENAME" | grep -oP 'mongo-backup-\K[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' || echo "")
+
+            # Try to parse timestamp from filename first, fallback to S3 metadata date
+            if [ -n "$ISO_TIMESTAMP" ]; then
               if ! FILE_TIMESTAMP=$(date -d "$ISO_TIMESTAMP" +%s 2>/dev/null); then
                 echo "Warning: Could not parse ISO timestamp from filename ${FILENAME}, trying S3 date"
                 if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
@@ -1344,7 +1423,6 @@
                 fi
               fi
             else
-              # Fallback to S3 metadata date
               if ! FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s 2>/dev/null); then
                 echo "Warning: Could not parse date for ${FILE_PATH}, skipping"
                 ERRORS=$((ERRORS + 1))
@@ -1352,7 +1430,7 @@
               fi
             fi
 
-            # Delete backups older than 30 days
+            # RULE 1: Delete backups older than 30 days
             if [ "$FILE_TIMESTAMP" -lt "$THIRTY_DAYS_AGO" ]; then
               echo "Deleting backup older than 30 days: ${FILE_PATH}"
               if aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
@@ -1362,10 +1440,14 @@
                 ERRORS=$((ERRORS + 1))
               fi
 
-            # For backups 3-30 days old, keep only one per day
+            # RULE 2: For backups 3-30 days old, keep only the LATEST backup per day
             elif [ "$FILE_TIMESTAMP" -lt "$TWO_DAYS_AGO" ]; then
               # Extract date from ISO 8601 timestamp in filename (YYYY-MM-DD)
-              BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
+              if [ -n "$ISO_TIMESTAMP" ]; then
+                BACKUP_DATE=$(echo "$ISO_TIMESTAMP" | cut -d'T' -f1)
+              else
+                BACKUP_DATE=$(date -d "$FILE_DATE" +%Y-%m-%d)
+              fi
 
               if [ -z "$BACKUP_DATE" ]; then
                 echo "Warning: Could not extract date from timestamp ${ISO_TIMESTAMP}, keeping file"
@@ -1373,11 +1455,11 @@
                 continue
               fi
 
-              # Track if we've already kept one backup for this date
-              STATE_FILE="/tmp/mongo-cleanup-${BACKUP_DATE}.keep"
-
-              if [ -f "$STATE_FILE" ]; then
-                # Already kept one backup for this date, delete this one
+              # Check if this is the latest backup for this date
+              if [ "${LATEST_BACKUP_FOR_DATE[$BACKUP_DATE]}" = "$FILE_PATH" ]; then
+                echo "Keeping latest daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
+                KEPT_DAILY=$((KEPT_DAILY + 1))
+              else
                 echo "Deleting non-latest daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
                 if aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}" 2>&1; then
                   DELETED_DAILY=$((DELETED_DAILY + 1))
@@ -1385,27 +1467,22 @@
                   echo "ERROR: Failed to delete ${FILE_PATH}"
                   ERRORS=$((ERRORS + 1))
                 fi
-              else
-                # First backup for this date, keep it and mark as kept
-                echo "Keeping daily backup for ${BACKUP_DATE}: ${FILE_PATH}"
-                touch "$STATE_FILE"
-                KEPT_RECENT=$((KEPT_RECENT + 1))
               fi
+
+            # RULE 3: Keep all hourly backups from the last 2 days
             else
-              # Recent backup (< 2 days), keep all hourly backups
+              echo "Keeping recent hourly backup (< 2 days old): ${FILE_PATH}"
               KEPT_RECENT=$((KEPT_RECENT + 1))
             fi
-          done
+          done <<< "$BACKUP_LIST"
 
           # Summary report
-          # Clean up state files
-          rm -f /tmp/mongo-cleanup-*.keep
-
           echo ""
           echo "=== MongoDB Backup Cleanup Summary ==="
-          echo "Deleted (>30 days): ${DELETED_OLD}"
-          echo "Deleted (daily consolidation): ${DELETED_DAILY}"
-          echo "Kept (recent <2 days, hourly): ${KEPT_RECENT}"
+          echo "Deleted (>30 days old): ${DELETED_OLD}"
+          echo "Deleted (daily consolidation, days 3-30): ${DELETED_DAILY}"
+          echo "Kept (latest daily backup, days 3-30): ${KEPT_DAILY}"
+          echo "Kept (hourly backups, last 2 days): ${KEPT_RECENT}"
           echo "Errors: ${ERRORS}"
           echo "Completed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
