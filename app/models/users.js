@@ -206,16 +206,21 @@ const Users = new mongoose.Schema({
   // - two-factor-reminder
   // - welcome
   //
+  // NOTE: daily-log-alert and weekly-dmarc-report are opted out by default
+  //       to reduce email noise for new users
   //
-  opt_out_templates: [
-    {
-      type: String,
-      lowercase: true,
-      trim: true,
-      index: true,
-      enum: config.optOutTemplates
-    }
-  ],
+  opt_out_templates: {
+    type: [
+      {
+        type: String,
+        lowercase: true,
+        trim: true,
+        enum: config.optOutTemplates
+      }
+    ],
+    index: true,
+    default: ['daily-log-alert', 'weekly-dmarc-report']
+  },
 
   // Timezone
   // (automatically updated client-side via POST /my-account/timezone)
