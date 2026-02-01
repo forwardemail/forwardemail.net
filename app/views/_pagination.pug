@@ -74,7 +74,10 @@ mixin paginate(tableSelector)
             class=ctx.query.limit === limit ? "active" : "",
             href=paginate.href({ page: 1, limit })
           )= t(limit.toString())
-  if itemCount && itemCount > 1
+  //- FIX: Only show itemCount when it accurately reflects rendered results
+  //- Hide when hideItemCount flag is set (post-filtering caused mismatch)
+  //- Use typeof check to safely handle undefined in other routes that use this mixin
+  if itemCount && itemCount > 1 && (typeof hideItemCount === 'undefined' || !hideItemCount)
     p.small.text-muted.text-center(
       class=pageCount && pageCount > 1 ? false : "mt-3 mt-md-0"
     )

@@ -32,6 +32,15 @@ async function listLogs(ctx) {
   if (!ctx.isAuthenticated())
     throw Boom.badRequest(ctx.translateError('LOGIN_REQUIRED'));
 
+  //
+  // FIX: Normalize URL parameters for consistency
+  // Email links use 'response_code' (singular) but UI uses 'response_codes' (plural)
+  // This ensures both work correctly with the filter logic
+  //
+  if (isSANB(ctx.query.response_code) && !ctx.query.response_codes) {
+    ctx.query.response_codes = ctx.query.response_code;
+  }
+
   const domains = new Set();
 
   //
@@ -842,17 +851,39 @@ async function listLogs(ctx) {
     });
 
     //
-    // NOTE: We intentionally do NOT update itemCount here.
+    // FIX: Track the actual number of logs after privacy filtering
+    // This allows the view layer to handle the mismatch between itemCount and rendered logs
+    //
     // The itemCount from the database query represents the total matching logs,
     // while ctx.state.logs.length is only the filtered logs on the current page.
-    // Setting itemCount = logs.length would break pagination by making it think
-    // there are only N logs total (where N is the current page count).
+    // We don't update itemCount directly as that would break pagination.
+    // Instead, we pass additional state to the view for intelligent display.
     //
-    // The original fix (commit 1b0cc07) for GitHub issue #467 was incorrect.
-    // The UI inconsistency ("N results found" with "No error logs" message)
-    // should be fixed in the view layer, not by corrupting the pagination count.
+    ctx.state.filteredLogsCount = ctx.state.logs.length;
+
     //
+    // FIX: When post-filtering results in zero logs but itemCount > 0,
+    // we have a mismatch that would confuse users ("X results found" but nothing shown).
+    // Set a flag to hide the misleading itemCount in this case.
+    //
+    if (ctx.state.logs.length === 0 && ctx.state.itemCount > 0) {
+      ctx.state.hideItemCount = true;
+    }
   }
+
+  //
+  // FIX: Track active filters for contextual empty state messages
+  //
+  ctx.state.activeFilters = {
+    hasSearch: isSANB(ctx.query.q),
+    hasResponseCodes:
+      isSANB(ctx.query.response_codes) || isSANB(ctx.query.response_code),
+    hasBounceCategory: isSANB(ctx.query.bounce_category),
+    hasDateRange: isSANB(ctx.query.start_date) || isSANB(ctx.query.end_date),
+    hasShowErrors: ctx.query.show_errors === 'true',
+    hasDomainFilter: domains.size > 0
+  };
+  ctx.state.hasAnyFilter = Object.values(ctx.state.activeFilters).some(Boolean);
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
 

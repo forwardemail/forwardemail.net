@@ -10,10 +10,27 @@ table.table.table-hover.table-bordered.table-sm
       if logs.length === 0
         tr
           td.alert.alert-info(colspan="2")
-            if isSANB(ctx.query.q)
-              = t("No logs exist for that search.")
+            //- FIX: Context-aware empty state messages
+            //- Show specific messages based on which filters are active
+            if activeFilters && activeFilters.hasSearch
+              = t("No logs found matching your search.")
+            else if activeFilters && activeFilters.hasResponseCodes
+              = t("No logs found for the selected response code.")
+            else if activeFilters && activeFilters.hasBounceCategory
+              = t("No logs found for the selected bounce category.")
+            else if activeFilters && activeFilters.hasDateRange
+              = t("No logs found for the selected date range.")
+            else if activeFilters && activeFilters.hasShowErrors
+              = t("No error logs found for the current filters.")
+            else if activeFilters && activeFilters.hasDomainFilter
+              = t("No logs found for the selected domain.")
+            else if hideItemCount
+              //- This case: itemCount > 0 but logs.length === 0 after privacy filtering
+              = t("No logs available on this page. This may occur due to privacy filtering. Try adjusting your filters or navigating to a different page.")
+            else if hasAnyFilter
+              = t("No logs found for the selected filters.")
             else
-              = t("No error logs have been stored yet.  Please check back later.")
+              = t("No error logs have been stored yet. Please check back later.")
       else
         each log in logs
           tr
