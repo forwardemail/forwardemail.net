@@ -754,7 +754,17 @@ async function onAppend(path, flags, date, raw, session, fn) {
     };
 
     if (maildata.attachments && maildata.attachments.length > 0)
-      data.attachments = maildata.attachments;
+      // filter out PGP envelope parts from attachment list
+      // (application/pgp-encrypted, application/pgp-signature, and the encrypted.asc blob)
+      data.attachments = maildata.attachments.filter(
+        (a) =>
+          a.contentType !== 'application/pgp-encrypted' &&
+          a.contentType !== 'application/pgp-signature' &&
+          !(
+            a.contentType === 'application/octet-stream' &&
+            a.filename === 'encrypted.asc'
+          )
+      );
 
     //
     // TODO: explore modseq usage (for journal sorting by modseq uids in ascending order)
