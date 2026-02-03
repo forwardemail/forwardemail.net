@@ -1401,9 +1401,44 @@ class CalDAV extends API {
                 ctx.logger.fatal(err);
               }
             }
+          } else if (
+            method === 'REQUEST' &&
+            eventUid &&
+            attendeeInfo.length > 0
+          ) {
+            // Send individual emails with personalized Accept/Decline/Tentative links
+            for (const attendee of attendeeInfo) {
+              try {
+                const links = generateResponseLinks({
+                  eventUid,
+                  organizerEmail,
+                  attendeeEmail: attendee.email
+                });
+                const html = buildInviteHtml(ctx, event, links);
+
+                await Emails.queue({
+                  message: {
+                    from: ctx.state.user.username,
+                    to: attendee.formatted,
+                    subject,
+                    html,
+                    icalEvent: {
+                      method,
+                      filename: 'invite.ics',
+                      content: ics
+                    }
+                  },
+                  alias,
+                  domain,
+                  user: alias ? alias.user : undefined,
+                  date: new Date()
+                });
+              } catch (err) {
+                ctx.logger.fatal(err);
+              }
+            }
           } else {
-            // Send to all recipients at once (original behavior)
-            // Note: HTML response links are only added when X-MOZ-SEND-INVITATIONS-UNDISCLOSED is set
+            // For CANCEL or other methods, send to all at once without personalized links
             await Emails.queue({
               message: {
                 from: ctx.state.user.username,
