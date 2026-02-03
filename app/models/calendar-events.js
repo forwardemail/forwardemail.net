@@ -1,6 +1,6 @@
-/*
+/**
  * Copyright (c) Forward Email LLC
- * SPDX-License-Identifier: MPL-2.0
+ * SPDX-License-Identifier: BUSL-1.1
  */
 
 const ICAL = require('ical.js');
@@ -141,6 +141,80 @@ const CalendarEvents = new mongoose.Schema(
     geo: mongoose.Schema.Types.Mixed,
     recurrenceid: mongoose.Schema.Types.Mixed,
     */
+
+    //
+    // RFC 6638 Scheduling Extensions fields
+    // @see https://tools.ietf.org/html/rfc6638
+    //
+
+    // Schedule tag for tracking scheduling changes (RFC 6638 Section 3.2.10)
+    scheduleTag: {
+      type: String,
+      index: true
+    },
+
+    // iTIP method used for this event (RFC 5546)
+    itipMethod: {
+      type: String,
+      enum: [
+        null,
+        'PUBLISH',
+        'REQUEST',
+        'REPLY',
+        'ADD',
+        'CANCEL',
+        'REFRESH',
+        'COUNTER',
+        'DECLINECOUNTER'
+      ]
+    },
+
+    // Organizer email for scheduling
+    organizerEmail: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      index: true
+    },
+
+    // Attendees with their participation status
+    attendees: [
+      {
+        email: {
+          type: String,
+          lowercase: true,
+          trim: true
+        },
+        cn: String,
+        partstat: {
+          type: String,
+          enum: [
+            'NEEDS-ACTION',
+            'ACCEPTED',
+            'DECLINED',
+            'TENTATIVE',
+            'DELEGATED'
+          ],
+          default: 'NEEDS-ACTION'
+        },
+        role: {
+          type: String,
+          enum: [
+            'CHAIR',
+            'REQ-PARTICIPANT',
+            'OPT-PARTICIPANT',
+            'NON-PARTICIPANT'
+          ],
+          default: 'REQ-PARTICIPANT'
+        }
+      }
+    ],
+
+    // Sequence number for tracking event updates
+    sequence: {
+      type: Number,
+      default: 0
+    },
 
     ical: {
       type: String,

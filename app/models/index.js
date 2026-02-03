@@ -23,6 +23,7 @@ const TemporaryMessages = require('./temporary-messages');
 const SearchResults = require('./search-results');
 const Calendars = require('./calendars');
 const CalendarEvents = require('./calendar-events');
+const CalendarInvites = require('./calendar-invites');
 const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
 const TTI = require('./tti');
@@ -49,6 +50,7 @@ module.exports = {
   SearchResults,
   Calendars,
   CalendarEvents,
+  CalendarInvites,
   AddressBooks,
   Contacts,
   TTI,

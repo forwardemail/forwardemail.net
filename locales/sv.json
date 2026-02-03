@@ -18225,5 +18225,10 @@
   "A Sieve script with this name already exists.": "A Sieve script with this name already exists.",
   "Sieve script not found.": "Sieve script not found.",
   "Sieve script does not exist.": "Sieve script does not exist.",
-  "Cannot delete an active Sieve script. Please deactivate it first.": "Cannot delete an active Sieve script. Please deactivate it first."
+  "Cannot delete an active Sieve script. Please deactivate it first.": "Cannot delete an active Sieve script. Please deactivate it first.",
+  "When": "When",
+  "Will you attend this event?": "Will you attend this event?",
+  "Accept": "Accept",
+  "Tentative": "Tentative",
+  "This invitation was sent via Forward Email. Click the buttons above to respond, or open the attached .ics file in your calendar application.": "This invitation was sent via Forward Email. Click the buttons above to respond, or open the attached .ics file in your calendar application."
 }

@@ -1,0 +1,23 @@
+//- Copyright (c) Forward Email LLC
+//- SPDX-License-Identifier: BUSL-1.1
+
+extends layout
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-5
+      .row.justify-content-center
+        .col-md-8.col-lg-6
+          .card.border-themed
+            .card-body.text-center.py-5
+              i.fa.fa-check-circle.text-success.fa-4x.mb-4
+              h2.h4.mb-3 Response Recorded
+              p.text-muted.mb-4 Your calendar response has been recorded. The event organizer will be notified.
+              p.small.text-muted You can close this window now.
+          .alert.alert-light.mt-3.text-center.small
+            | This invitation was sent via
+            a(
+              href="https://forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) Forward Email
+            | , a privacy-focused email service.

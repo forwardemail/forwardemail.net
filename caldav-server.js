@@ -33,12 +33,115 @@ const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
 const setupAuthSession = require('#helpers/setup-auth-session');
+const { processCalendarInvites } = require('#helpers/process-calendar-invites');
+const { generateResponseLinks } = require('#helpers/calendar-response');
 
 const exdateRegex =
   /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
 
 function isValidExdate(str) {
   return exdateRegex.test(str);
+}
+
+/**
+ * Build HTML email body for calendar invitations with response links
+ * @param {Object} ctx - Koa context
+ * @param {Object} event - ICAL.Event object
+ * @param {Object} links - Response links { accept, decline, tentative }
+ * @returns {string} HTML string
+ */
+function buildInviteHtml(ctx, event, links) {
+  const summary = event.summary || 'Calendar Event';
+  const description = event.description || '';
+  const location = event.location || '';
+
+  // Format start/end times
+  let startTime = '';
+  let endTime = '';
+  try {
+    if (event.startDate) {
+      const start = event.startDate.toJSDate();
+      startTime = start.toLocaleString(ctx.locale || 'en', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      });
+    }
+
+    if (event.endDate) {
+      const end = event.endDate.toJSDate();
+      endTime = end.toLocaleString(ctx.locale || 'en', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      });
+    }
+  } catch {
+    // Ignore date formatting errors
+  }
+
+  // Build HTML with response buttons
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${i18n.translate('INVITATION', ctx.locale)}: ${summary}</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background: #f8f9fa; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
+    <h1 style="margin: 0 0 16px 0; font-size: 24px; color: #1a1a1a;">${summary}</h1>
+    ${
+      startTime
+        ? `<p style="margin: 8px 0;"><strong>When:</strong> ${startTime}${
+            endTime && endTime !== startTime ? ` - ${endTime}` : ''
+          }</p>`
+        : ''
+    }
+    ${
+      location
+        ? `<p style="margin: 8px 0;"><strong>Where:</strong> ${location}</p>`
+        : ''
+    }
+    ${
+      description
+        ? `<p style="margin: 16px 0 0 0; color: #666;">${description}</p>`
+        : ''
+    }
+  </div>
+
+  <div style="text-align: center; margin: 32px 0;">
+    <p style="margin-bottom: 16px; font-size: 16px;">Will you attend this event?</p>
+    <div style="display: inline-block;">
+      <a href="${
+        links.accept
+      }" style="display: inline-block; background: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Accept</a>
+      <a href="${
+        links.tentative
+      }" style="display: inline-block; background: #ffc107; color: #212529; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Tentative</a>
+      <a href="${
+        links.decline
+      }" style="display: inline-block; background: #dc3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Decline</a>
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #e9ecef; margin: 24px 0;">
+
+  <p style="font-size: 12px; color: #6c757d; text-align: center;">
+    This invitation was sent via <a href="https://forwardemail.net" style="color: #6c757d;">Forward Email</a>, a privacy-focused email service.
+  </p>
+</body>
+</html>
+  `.trim();
 }
 
 //
@@ -1160,10 +1263,16 @@ class CalDAV extends API {
 
       if (isValid) {
         const to = [];
+        // Store attendee info for response links
+        const attendeeInfo = [];
         const organizerEmail = event.organizer
           .replace('mailto:', '')
           .trim()
           .toLowerCase();
+
+        // Get event UID for response links
+        const eventUid = vevent.getFirstPropertyValue('uid');
+
         if (event.attendees) {
           for (const attendee of event.attendees) {
             // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
@@ -1193,6 +1302,15 @@ class CalDAV extends API {
               to.push(`"${commonName}" <${email}>`);
             } else {
               to.push(email);
+            }
+
+            // Store attendee info for response links (only for REQUEST method)
+            if (method === 'REQUEST' && eventUid) {
+              attendeeInfo.push({
+                email,
+                commonName,
+                formatted: commonName ? `"${commonName}" <${email}>` : email
+              });
             }
           }
         }
@@ -1243,13 +1361,31 @@ class CalDAV extends API {
               vevent.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
             )
           ) {
+            // Send separate invitations per attendee with personalized response links
             for (const rcpt of to) {
               try {
+                // Find attendee info for this recipient
+                const attendee = attendeeInfo.find(
+                  (a) => a.formatted === rcpt || a.email === rcpt
+                );
+
+                // Generate response links for this attendee (REQUEST method only)
+                let html;
+                if (method === 'REQUEST' && eventUid && attendee) {
+                  const links = generateResponseLinks({
+                    eventUid,
+                    organizerEmail,
+                    attendeeEmail: attendee.email
+                  });
+                  html = buildInviteHtml(ctx, event, links);
+                }
+
                 await Emails.queue({
                   message: {
                     from: ctx.state.user.username,
                     to: rcpt,
                     subject,
+                    ...(html ? { html } : {}),
                     icalEvent: {
                       method,
                       filename: 'invite.ics',
@@ -1266,6 +1402,8 @@ class CalDAV extends API {
               }
             }
           } else {
+            // Send to all recipients at once (original behavior)
+            // Note: HTML response links are only added when X-MOZ-SEND-INVITATIONS-UNDISCLOSED is set
             await Emails.queue({
               message: {
                 from: ctx.state.user.username,
@@ -1310,6 +1448,22 @@ class CalDAV extends API {
     //
     // ensure default calendar(s) exist
     await ensureDefaultCalendars.call(this, ctx);
+
+    //
+    // Process any pending calendar invite responses from the MongoDB queue
+    // This merges Accept/Decline/Tentative responses into the user's calendar
+    // (responses are queued by the web routes when attendees click response links)
+    //
+    try {
+      const inviteResults = await processCalendarInvites(this, ctx);
+      if (inviteResults.processed > 0 || inviteResults.failed > 0) {
+        ctx.logger.info('Calendar invite processing results', inviteResults);
+      }
+    } catch (err) {
+      // Don't fail authentication if invite processing fails
+      ctx.logger.error(err, 'Error processing calendar invites');
+    }
+
     return ctx.state.user;
   }
 

@@ -331,6 +331,19 @@ localeRouter
   // supports both GET (user clicks link) and POST (mail client one-click)
   .get('/unsubscribe/:token', rateLimit(50, 'unsubscribe'), web.unsubscribe)
   .post('/unsubscribe/:token', rateLimit(50, 'unsubscribe'), web.unsubscribe)
+  // calendar invite responses (RFC 6638 iMIP)
+  // supports both GET (display confirmation) and POST (process response)
+  .get(
+    '/calendar/respond/:response/:token',
+    rateLimit(50, 'calendar-response'),
+    web.calendarResponse.showResponsePage
+  )
+  .post(
+    '/calendar/respond/:response/:token',
+    rateLimit(50, 'calendar-response'),
+    web.calendarResponse.processResponse
+  )
+  .get('/calendar/response-success', render('calendar-response-success'))
   .get('/dashboard', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/my-account'));
