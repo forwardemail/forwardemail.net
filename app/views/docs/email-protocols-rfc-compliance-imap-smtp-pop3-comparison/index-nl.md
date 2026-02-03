@@ -699,8 +699,8 @@ Forward Email implements modern transport security protocols:
 | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461) | SMTP MTA Strict Transport Security (MTA-STS) | ✅ Supported | Extensively used on IMAP, SMTP, and MX servers. See [create-mta-sts-cache.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/create-mta-sts-cache.js) and [get-transporter.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-transporter.js) |
 | [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) | SMTP TLS Reporting | ✅ Supported | Via [mailauth](https://github.com/postalsys/mailauth) library |
-| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance | ⚠️ Partial | Custom TLSA resolver implemented (`Tangerine.resolveTlsa`) but not yet used for DANE validation |
-| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ⚠️ Partial | TLSA resolution available but DANE not fully implemented |
+| [RFC 7671](https://datatracker.ietf.org/doc/html/rfc7671) | The DNS-Based Authentication of Named Entities (DANE) Protocol: Updates and Operational Guidance | ✅ Supported | Full DANE verification for outbound SMTP connections. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
+| [RFC 6698](https://datatracker.ietf.org/doc/html/rfc6698) | The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA | ✅ Supported | Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types. See [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22) |
 | [RFC 8314](https://datatracker.ietf.org/doc/html/rfc8314) | Cleartext Considered Obsolete: Use of Transport Layer Security (TLS) for Email Submission and Access | ✅ Supported | TLS required for all connections |
 | [RFC 8689](https://datatracker.ietf.org/doc/html/rfc8689) | SMTP Service Extension for Requiring TLS (REQUIRETLS) | ✅ Supported | Full support for REQUIRETLS SMTP extension and "TLS-Required" header |
 
@@ -712,7 +712,7 @@ Transport security protocols ensure that email messages are encrypted and authen
 | -------------- | -------- | ----------- | ------------------------------------------------ |
 | **TLS** | RFC 8314 | ✅ Supported | Transport Layer Security - Encrypted connections |
 | **MTA-STS** | RFC 8461 | ✅ Supported | Mail Transfer Agent Strict Transport Security |
-| **DANE** | RFC 7671 | ⚠️ Partial | DNS-based Authentication of Named Entities |
+| **DANE** | RFC 7671 | ✅ Supported | DNS-based Authentication of Named Entities |
 | **REQUIRETLS** | RFC 8689 | ✅ Supported | Require TLS for entire delivery path |
 
 ### TLS (Transport Layer Security) {#tls-transport-layer-security}
@@ -741,19 +741,23 @@ Forward Email implements MTA-STS using [create-mta-sts-cache.js](https://github.
 
 ### DANE (DNS-based Authentication of Named Entities) {#dane-dns-based-authentication-of-named-entities}
 
-> \[!WARNING]
-> DANE support is partial - outbound only, not enforced for inbound.
+> \[!NOTE]
+> Forward Email now provides full DANE support for outbound SMTP connections.
 
 **DANE** uses DNSSEC to publish TLS certificate information in DNS, allowing mail servers to verify certificates without relying on certificate authorities.
 
-**Current Status:**
+**Key Features:**
 
-* ⚠️ Partial support for outbound delivery
-* ❌ Not enforced for inbound delivery
+* ✅ Full DANE verification for outbound SMTP connections
+* ✅ Full RFC 6698 support: PKIX-TA, PKIX-EE, DANE-TA, DANE-EE usage types
+* ✅ Certificate verification against TLSA records during TLS upgrade
+* ✅ Parallel TLSA resolution for multiple MX hosts
+* ✅ Automatic detection of native `dns.resolveTlsa` (Node.js v22.15.0+, v23.9.0+)
+* ✅ Custom resolver support for older Node.js versions via [Tangerine](https://github.com/forwardemail/tangerine)
 * Requires DNSSEC-signed domains
 
 > \[!TIP]
-> **Future DANE Support:** Full DANE support may be possible in the future if Node.js releases TLSA support. See [nodejs/node#39569](https://github.com/nodejs/node/issues/39569).
+> **Implementation Details:** DANE support was added via [mx-connect PR #22](https://github.com/zone-eu/mx-connect/pull/22), which provides comprehensive DANE/TLSA support for outbound SMTP connections.
 
 ### REQUIRETLS {#requiretls}
 
@@ -797,7 +801,7 @@ graph LR
     style TLS fill:#9f9,stroke:#333
     style CERT fill:#9f9,stroke:#333
     style MTASTS fill:#9f9,stroke:#333
-    style DANE fill:#ff9,stroke:#333
+    style DANE fill:#9f9,stroke:#333
     style REQTLS fill:#9f9,stroke:#333
 ```
 
@@ -977,6 +981,9 @@ Forward Email supports CalDAV and CardDAV via the [caldav-adapter](https://githu
 | [RFC 6352](https://datatracker.ietf.org/doc/html/rfc6352) | CardDAV: vCard Extensions to WebDAV | ✅ Supported | Contact access and management |
 | [RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545) | Internet Calendaring and Scheduling Core Object Specification (iCalendar) | ✅ Supported | iCalendar format support |
 | [RFC 6350](https://datatracker.ietf.org/doc/html/rfc6350) | vCard Format Specification | ✅ Supported | vCard 4.0 format support |
+| [RFC 6638](https://datatracker.ietf.org/doc/html/rfc6638) | Scheduling Extensions to CalDAV | ✅ Supported | CalDAV scheduling with iMIP support. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Independent Interoperability Protocol (iTIP) | ✅ Supported | iTIP support for REQUEST, REPLY, CANCEL, and VFREEBUSY methods. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
+| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Message-Based Interoperability Protocol (iMIP) | ✅ Supported | Email-based calendar invitations with response links. See [commit c4d1629](https://github.com/forwardemail/forwardemail.net/commit/c4d162975a49e38d76d68a032662e873a34a9b80) |
 
 CalDAV and CardDAV are protocols that allow calendar and contact data to be accessed, shared, and synchronized across devices.
 
@@ -989,6 +996,9 @@ CalDAV and CardDAV are protocols that allow calendar and contact data to be acce
 | **iCalendar** | RFC 5545 | ✅ Supported | Calendar data format |
 | **vCard** | RFC 6350 | ✅ Supported | Contact data format |
 | **VTODO** | RFC 5545 | ✅ Supported | Task/reminder support |
+| **CalDAV Scheduling** | RFC 6638 | ✅ Supported | Calendar scheduling extensions |
+| **iTIP** | RFC 5546 | ✅ Supported | Transport-independent interoperability |
+| **iMIP** | RFC 6047 | ✅ Supported | Email-based calendar invitations |
 
 ### CalDAV (Calendar Access) {#caldav-calendar-access}
 
@@ -1082,8 +1092,6 @@ The following calendaring extensions are NOT supported:
 
 | RFC | Title | Reason |
 | --------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [RFC 5546](https://datatracker.ietf.org/doc/html/rfc5546) | iCalendar Transport-Independent Interoperability Protocol (iTIP) | Not implemented in [caldav-adapter](https://github.com/forwardemail/caldav-adapter) |
-| [RFC 6047](https://datatracker.ietf.org/doc/html/rfc6047) | iCalendar Message-Based Interoperability Protocol (iMIP) | Not implemented in [caldav-adapter](https://github.com/forwardemail/caldav-adapter) |
 | [RFC 4918](https://datatracker.ietf.org/doc/html/rfc4918) | HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) | CalDAV uses WebDAV concepts but doesn't implement full RFC 4918 |
 | [RFC 6578](https://datatracker.ietf.org/doc/html/rfc6578) | Collection Synchronization for WebDAV | Not implemented |
 | [RFC 3744](https://datatracker.ietf.org/doc/html/rfc3744) | WebDAV Access Control Protocol | Not implemented |
