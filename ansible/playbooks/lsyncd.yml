@@ -102,26 +102,21 @@
       when: source_contents.stdout == ""
 
     # CRITICAL: Check if target has existing data that would be deleted
-    - name: Check if target directory has existing data
-      shell: "find {{ lsyncd_target }} -mindepth 1 -maxdepth 1 | head -1"
-      register: target_contents
-      changed_when: false
-
+    # Note: We only count actual files, not directories (lost+found is normal on ext4)
     - name: Count files in target directory
       shell: "find {{ lsyncd_target }} -type f 2>/dev/null | wc -l"
       register: target_file_count
       changed_when: false
-      when: target_contents.stdout != ""
 
-    - name: SAFETY CHECK - Fail if target has existing data
+    - name: SAFETY CHECK - Fail if target has existing files
       fail:
         msg: |
           ============================================================================
-          SAFETY CHECK FAILED - TARGET DIRECTORY HAS EXISTING DATA
+          SAFETY CHECK FAILED - TARGET DIRECTORY HAS EXISTING FILES
           ============================================================================
 
           Target directory: {{ lsyncd_target }}
-          Files found: {{ target_file_count.stdout | default('unknown') }}
+          Files found: {{ target_file_count.stdout }}
 
           The --delete flag in lsyncd will DELETE any files in the target that
           do not exist in the source. This could cause DATA LOSS.
@@ -144,7 +139,7 @@
           Then re-run this playbook.
           ============================================================================
       when:
-        - target_contents.stdout != ""
+        - target_file_count.stdout | int > 0
         - lsyncd_skip_safety != "true"
 
     - name: Safety check passed or skipped
