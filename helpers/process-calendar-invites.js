@@ -5,7 +5,7 @@
 
 /**
  * Process Calendar Invites Helper
- **
+ *
  * This helper processes pending calendar invite responses from the MongoDB
  * CalendarInvites queue. It is called during CalDAV authentication (after
  * the session is established) to merge invite responses into the user's
@@ -26,6 +26,7 @@
  */
 
 const ICAL = require('ical.js');
+const isEmail = require('#helpers/is-email');
 
 const CalendarInvites = require('#models/calendar-invites');
 const CalendarEvents = require('#models/calendar-events');
@@ -36,6 +37,36 @@ const MAX_INVITES_PER_BATCH = 10;
 
 // Maximum processing attempts before giving up
 const MAX_PROCESS_ATTEMPTS = 3;
+
+/**
+ * Get UID variants for flexible matching.
+ * Handles .ics suffix and case variations.
+ *
+ * @param {string} uid - The UID to get variants for
+ * @returns {string[]} Array of UID variants to try
+ */
+function getUidVariants(uid) {
+  if (typeof uid !== 'string') return [uid];
+  const variants = new Set();
+
+  // Add original
+  variants.add(uid);
+
+  // Add lowercase version
+  variants.add(uid.toLowerCase());
+
+  // Handle .ics suffix
+  if (uid.endsWith('.ics')) {
+    const withoutIcs = uid.slice(0, -4);
+    variants.add(withoutIcs);
+    variants.add(withoutIcs.toLowerCase());
+  } else {
+    variants.add(`${uid}.ics`);
+    variants.add(`${uid}.ics`.toLowerCase());
+  }
+
+  return [...variants];
+}
 
 /**
  * Process pending calendar invite responses for the authenticated user
@@ -143,6 +174,9 @@ async function processInvite(instance, ctx, invite) {
   const calendars = await Calendars.find(instance, ctx.state.session, {});
 
   let calendarEvent = null;
+  const uidVariants = getUidVariants(invite.eventUid);
+
+  ctx.logger.debug('Searching for event with UID variants', { uidVariants });
 
   for (const cal of calendars) {
     // Search for event with matching UID in the iCal data
@@ -152,8 +186,12 @@ async function processInvite(instance, ctx, invite) {
     });
 
     for (const event of events) {
-      if (event.ical && eventHasUid(event.ical, invite.eventUid)) {
+      if (event.ical && eventHasUid(event.ical, uidVariants)) {
         calendarEvent = event;
+        ctx.logger.debug('Found matching event', {
+          eventId: event.eventId,
+          calendarId: cal._id
+        });
         break;
       }
     }
@@ -176,7 +214,8 @@ async function processInvite(instance, ctx, invite) {
     );
     ctx.logger.warn('Calendar event not found for invite', {
       inviteId: invite._id,
-      eventUid: invite.eventUid
+      eventUid: invite.eventUid,
+      uidVariants
     });
     return;
   }
@@ -239,16 +278,39 @@ async function processInvite(instance, ctx, invite) {
 }
 
 /**
- * Check if an iCal string contains an event with the given UID
+ * Check if an iCal string contains an event with any of the given UID variants
+ *
+ * @param {string} icalStr - The iCal string to check
+ * @param {string[]} uidVariants - Array of UID variants to match against
+ * @returns {boolean} True if any variant matches
  */
-function eventHasUid(icalStr, uid) {
+function eventHasUid(icalStr, uidVariants) {
   try {
     const comp = new ICAL.Component(ICAL.parse(icalStr));
     const vevent = comp.getFirstSubcomponent('vevent');
     if (!vevent) return false;
 
     const eventUid = vevent.getFirstPropertyValue('uid');
-    return eventUid === uid;
+    if (!eventUid) return false;
+
+    // Check against all variants (handles case sensitivity and .ics suffix)
+    for (const variant of uidVariants) {
+      if (eventUid === variant) return true;
+      // Also check case-insensitive
+      if (eventUid.toLowerCase() === variant.toLowerCase()) return true;
+    }
+
+    // Handle email UIDs with @ to _ conversion (Google Calendar does this)
+    if (isEmail(eventUid)) {
+      const emailAsUnderscore = eventUid.replace('@', '_');
+      for (const variant of uidVariants) {
+        if (emailAsUnderscore === variant) return true;
+        if (emailAsUnderscore.toLowerCase() === variant.toLowerCase())
+          return true;
+      }
+    }
+
+    return false;
   } catch {
     return false;
   }
@@ -304,6 +366,7 @@ module.exports = {
   processCalendarInvites,
   updateAttendeePartstat,
   eventHasUid,
+  getUidVariants,
   MAX_INVITES_PER_BATCH,
   MAX_PROCESS_ATTEMPTS
 };
