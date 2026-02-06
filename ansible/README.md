@@ -25,7 +25,8 @@ ansible/
 │   ├── MONGODB_PERFORMANCE_TUNING.md
 │   ├── REDIS_PERFORMANCE_TUNING.md
 │   ├── DISASTER_RECOVERY.md
-│   └── SERVICE_USER_AUDIT.md
+│   ├── SERVICE_USER_AUDIT.md
+│   └── LSYNCD_STORAGE_MIRRORING.md  # Real-time storage mirroring guide
 ├── playbooks/                   # Ansible playbooks
 │   ├── security.yml            # Security baseline & monitoring (uses msmtp)
 │   ├── node.yml                # Node.js & PM2 deployment
@@ -49,6 +50,7 @@ ansible/
 │   ├── mx2.yml                 # MX2 mail exchanger
 │   ├── unbound.yml             # Unbound DNS resolver
 │   ├── sqlite.yml              # SQLite server
+│   ├── lsyncd.yml              # Real-time storage mirroring (lsyncd)
 │   ├── certificates.yml        # SSL/TLS certificates
 │   ├── dkim.yml                # DKIM key deployment
 │   ├── env.yml                 # Environment variables
@@ -76,6 +78,7 @@ ansible/
 * [Monitoring & Alerting](#monitoring--alerting)
 * [Operations & Maintenance](#operations--maintenance)
 * [Performance Tuning](#performance-tuning)
+* [Real-time Storage Mirroring](#real-time-storage-mirroring)
 * [Disaster Recovery](#disaster-recovery)
 * [Security & Auditing](#security--auditing)
 * [Common Commands](#common-commands)
@@ -384,7 +387,53 @@ Complete MongoDB operations manual:
 * 📊 Performance monitoring
 * 🐛 Troubleshooting
 
-### Disaster Recovery
+---
+
+
+## 💾 Real-time Storage Mirroring
+
+**[Lsyncd Storage Mirroring Guide](docs/LSYNCD_STORAGE_MIRRORING.md)**
+
+Real-time file synchronization between primary and secondary encrypted storage volumes:
+
+* 🔄 **Real-time mirroring** - Sub-second sync using inotify + rsync
+* 🛡️ **Safety checks** - Prevents accidental data loss
+* 📧 **Email notifications** - Alerts for sync errors and failures
+* ⏱️ **Health monitoring** - Systemd timer checks every 5 minutes
+* 🔒 **LUKS support** - Works with encrypted volumes
+
+**Integrated into**: `sqlite.yml` (optional), or run standalone
+
+**Usage**:
+
+```bash
+# Deploy lsyncd to SQLite servers
+ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+
+# With custom source/target
+LSYNCD_SOURCE=/mnt/primary LSYNCD_TARGET=/mnt/backup \
+  ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+```
+
+**Environment Variables**:
+
+| Variable             | Description                 | Default                     |
+| -------------------- | --------------------------- | --------------------------- |
+| `LSYNCD_SOURCE`      | Source directory to mirror  | `/mnt/storage_do_1`         |
+| `LSYNCD_TARGET`      | Target directory for mirror | `/mnt/storage_do_2`         |
+| `MSMTP_RCPTS`        | Email recipients for alerts | `security@forwardemail.net` |
+| `LSYNCD_SKIP_SAFETY` | Skip safety checks          | `false`                     |
+
+> \[!WARNING]
+> The playbook will **fail** if the target directory contains existing data to prevent accidental deletion. Set `LSYNCD_SKIP_SAFETY=true` to bypass this check after verifying the target data is expendable.
+
+> \[!TIP]
+> Run this playbook after setting up LUKS-encrypted storage volumes (see README.md "Bare Metal Advice" section).
+
+---
+
+
+## 🛠️ Disaster Recovery
 
 **[Disaster Recovery Guide](docs/DISASTER_RECOVERY.md)**
 

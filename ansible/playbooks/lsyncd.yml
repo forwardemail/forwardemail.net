@@ -1,0 +1,464 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# Lsyncd Real-time Storage Mirroring Playbook
+# ============================================================================
+# This playbook sets up lsyncd for real-time file synchronization between
+# primary and secondary encrypted storage volumes on SQLite servers.
+#
+# Features:
+# - Real-time file mirroring using inotify + rsync
+# - Email notifications for sync errors and failures
+# - Systemd service with automatic restart on failure
+# - Health monitoring with periodic status checks
+# - Safety checks to prevent accidental data loss
+#
+# Usage:
+#   ansible-playbook ansible/playbooks/lsyncd.yml -l sqlite
+#
+# Environment Variables:
+#   LSYNCD_SOURCE      - Source directory (default: /mnt/storage_do_1)
+#   LSYNCD_TARGET      - Target directory (default: /mnt/storage_do_2)
+#   MSMTP_RCPTS        - Email recipients for alerts (default: security@forwardemail.net)
+#   LSYNCD_SKIP_SAFETY - Set to "true" to skip safety checks (default: false)
+#
+# ============================================================================
+
+- hosts: sqlite
+  name: Lsyncd Real-time Storage Mirroring
+  become: true
+  become_user: root
+  vars:
+    lsyncd_source: "{{ lookup('env', 'LSYNCD_SOURCE') | default('/mnt/storage_do_1', true) }}"
+    lsyncd_target: "{{ lookup('env', 'LSYNCD_TARGET') | default('/mnt/storage_do_2', true) }}"
+    msmtp_rcpts: "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+    lsyncd_skip_safety: "{{ lookup('env', 'LSYNCD_SKIP_SAFETY') | default('false', true) }}"
+  handlers:
+    - name: Restart lsyncd
+      systemd:
+        name: lsyncd
+        state: restarted
+        daemon_reload: yes
+
+    - name: Restart lsyncd monitor timer
+      systemd:
+        name: lsyncd-monitor.timer
+        state: restarted
+        daemon_reload: yes
+
+  tasks:
+    # =========================================================================
+    # SAFETY CHECKS - Prevent accidental data loss
+    # =========================================================================
+
+    - name: Display configuration
+      debug:
+        msg: |
+          Lsyncd Configuration:
+            Source: {{ lsyncd_source }}
+            Target: {{ lsyncd_target }}
+            Skip Safety: {{ lsyncd_skip_safety }}
+
+    # Check source directory exists and is mounted
+    - name: Check if source directory exists
+      stat:
+        path: "{{ lsyncd_source }}"
+      register: source_stat
+
+    - name: Fail if source directory does not exist
+      fail:
+        msg: |
+          SOURCE DIRECTORY DOES NOT EXIST: {{ lsyncd_source }}
+          Please ensure the LUKS volume is mounted before running this playbook.
+          See README.md 'Bare Metal Advice' section for LUKS setup instructions.
+      when: not source_stat.stat.exists
+
+    # Check target directory exists and is mounted
+    - name: Check if target directory exists
+      stat:
+        path: "{{ lsyncd_target }}"
+      register: target_stat
+
+    - name: Fail if target directory does not exist
+      fail:
+        msg: |
+          TARGET DIRECTORY DOES NOT EXIST: {{ lsyncd_target }}
+          Please ensure the LUKS volume is mounted before running this playbook.
+          See README.md 'Bare Metal Advice' section for LUKS setup instructions.
+      when: not target_stat.stat.exists
+
+    # Check if source has data
+    - name: Check if source directory has data
+      shell: "find {{ lsyncd_source }} -mindepth 1 -maxdepth 1 | head -1"
+      register: source_contents
+      changed_when: false
+
+    - name: Warn if source directory is empty
+      debug:
+        msg: |
+          WARNING: Source directory {{ lsyncd_source }} appears to be empty.
+          Lsyncd will mirror an empty directory to the target.
+      when: source_contents.stdout == ""
+
+    # CRITICAL: Check if target has existing data that would be deleted
+    - name: Check if target directory has existing data
+      shell: "find {{ lsyncd_target }} -mindepth 1 -maxdepth 1 | head -1"
+      register: target_contents
+      changed_when: false
+
+    - name: Count files in target directory
+      shell: "find {{ lsyncd_target }} -type f 2>/dev/null | wc -l"
+      register: target_file_count
+      changed_when: false
+      when: target_contents.stdout != ""
+
+    - name: SAFETY CHECK - Fail if target has existing data
+      fail:
+        msg: |
+          ============================================================================
+          SAFETY CHECK FAILED - TARGET DIRECTORY HAS EXISTING DATA
+          ============================================================================
+
+          Target directory: {{ lsyncd_target }}
+          Files found: {{ target_file_count.stdout | default('unknown') }}
+
+          The --delete flag in lsyncd will DELETE any files in the target that
+          do not exist in the source. This could cause DATA LOSS.
+
+          Before proceeding, you must either:
+
+          1. VERIFY the target data is expendable:
+             ls -la {{ lsyncd_target }}/
+             du -sh {{ lsyncd_target }}/
+
+          2. BACKUP the target data if needed:
+             rsync -avP {{ lsyncd_target }}/ /path/to/backup/
+
+          3. CLEAR the target directory:
+             rm -rf {{ lsyncd_target }}/*
+
+          4. OR skip this safety check by setting:
+             export LSYNCD_SKIP_SAFETY=true
+
+          Then re-run this playbook.
+          ============================================================================
+      when:
+        - target_contents.stdout != ""
+        - lsyncd_skip_safety != "true"
+
+    - name: Safety check passed or skipped
+      debug:
+        msg: |
+          Safety check {{ 'SKIPPED (LSYNCD_SKIP_SAFETY=true)' if lsyncd_skip_safety == 'true' else 'PASSED' }}
+          Proceeding with lsyncd installation...
+
+    # =========================================================================
+    # INSTALLATION
+    # =========================================================================
+
+    # Install lsyncd package
+    - name: Install lsyncd
+      apt:
+        name: lsyncd
+        state: present
+        update_cache: yes
+
+    # Create log directory
+    - name: Create lsyncd log directory
+      file:
+        path: /var/log/lsyncd
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Create lsyncd configuration directory
+    - name: Create lsyncd configuration directory
+      file:
+        path: /etc/lsyncd
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Deploy lsyncd configuration
+    - name: Deploy lsyncd configuration
+      copy:
+        dest: /etc/lsyncd/lsyncd.conf.lua
+        content: |
+          --
+          -- Lsyncd configuration for real-time storage mirroring
+          -- Forward Email SQLite Server
+          --
+          -- Source: {{ lsyncd_source }}
+          -- Target: {{ lsyncd_target }}
+          --
+          -- WARNING: The --delete flag will remove files from target that
+          -- do not exist in source. This is intentional for true mirroring.
+          --
+
+          settings {
+              logfile    = "/var/log/lsyncd/lsyncd.log",
+              statusFile = "/var/log/lsyncd/lsyncd.status",
+              statusInterval = 10,
+              insist     = true,
+              nodaemon   = false,
+          }
+
+          sync {
+              default.rsync,
+              source    = "{{ lsyncd_source }}/",
+              target    = "{{ lsyncd_target }}/",
+              delay     = 1,
+              rsync     = {
+                  binary     = "/usr/bin/rsync",
+                  archive    = true,
+                  compress   = false,
+                  whole_file = true,
+                  _extra     = {
+                      "--delete",
+                      "--delete-after",
+                      "--inplace",
+                      "--no-perms",
+                      "--omit-dir-times"
+                  }
+              }
+          }
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart lsyncd
+
+    # Create systemd override directory for lsyncd
+    - name: Create lsyncd systemd override directory
+      file:
+        path: /etc/systemd/system/lsyncd.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Deploy lsyncd systemd override for failure notifications
+    - name: Deploy lsyncd systemd override
+      copy:
+        dest: /etc/systemd/system/lsyncd.service.d/override.conf
+        content: |
+          [Unit]
+          OnFailure=failure-notification@%n.service
+
+          [Service]
+          Restart=always
+          RestartSec=10
+          Environment="MSMTP_RCPTS={{ msmtp_rcpts }}"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart lsyncd
+
+    # Deploy lsyncd monitor script
+    - name: Deploy lsyncd monitor script
+      copy:
+        dest: /usr/local/bin/lsyncd-monitor.sh
+        content: |
+          #!/bin/bash
+          # Lsyncd health monitor script
+          # Checks lsyncd status and sends alerts on issues
+
+          set -euo pipefail
+
+          MSMTP_RCPTS="${MSMTP_RCPTS:-security@forwardemail.net}"
+          SOURCE_DIR="{{ lsyncd_source }}"
+          TARGET_DIR="{{ lsyncd_target }}"
+          STATUS_FILE="/var/log/lsyncd/lsyncd.status"
+          LOG_FILE="/var/log/lsyncd/lsyncd.log"
+
+          echo "[$(date -Iseconds)] Starting lsyncd health check..."
+
+          ALERT_NEEDED=0
+          ALERT_MSG=""
+
+          # Check if lsyncd service is running
+          if ! systemctl is-active --quiet lsyncd; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}CRITICAL: lsyncd service is not running\n"
+            echo "[$(date -Iseconds)] ERROR: lsyncd service is not running"
+          fi
+
+          # Check if source directory exists and is mounted
+          if [ ! -d "$SOURCE_DIR" ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}CRITICAL: Source directory $SOURCE_DIR does not exist\n"
+            echo "[$(date -Iseconds)] ERROR: Source directory does not exist"
+          elif ! mountpoint -q "$SOURCE_DIR" 2>/dev/null; then
+            # Check if it's a mount point (for LUKS volumes)
+            if ! df "$SOURCE_DIR" | grep -q "$SOURCE_DIR"; then
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: Source directory $SOURCE_DIR may not be mounted\n"
+              echo "[$(date -Iseconds)] WARNING: Source directory may not be mounted"
+            fi
+          fi
+
+          # Check if target directory exists and is mounted
+          if [ ! -d "$TARGET_DIR" ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}CRITICAL: Target directory $TARGET_DIR does not exist\n"
+            echo "[$(date -Iseconds)] ERROR: Target directory does not exist"
+          elif ! mountpoint -q "$TARGET_DIR" 2>/dev/null; then
+            if ! df "$TARGET_DIR" | grep -q "$TARGET_DIR"; then
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: Target directory $TARGET_DIR may not be mounted\n"
+              echo "[$(date -Iseconds)] WARNING: Target directory may not be mounted"
+            fi
+          fi
+
+          # Check for recent errors in log file
+          if [ -f "$LOG_FILE" ]; then
+            RECENT_ERRORS=$(tail -100 "$LOG_FILE" | grep -i "error\|fail\|cannot" | tail -5 || true)
+            if [ -n "$RECENT_ERRORS" ]; then
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: Recent errors in lsyncd log:\n${RECENT_ERRORS}\n"
+              echo "[$(date -Iseconds)] WARNING: Found recent errors in log"
+            fi
+          fi
+
+          # Check status file for sync status
+          if [ -f "$STATUS_FILE" ]; then
+            # Check if there are any "Delay" entries (pending syncs)
+            PENDING=$(grep -c "Delay" "$STATUS_FILE" 2>/dev/null || echo "0")
+            if [ "$PENDING" -gt 100 ]; then
+              ALERT_NEEDED=1
+              ALERT_MSG="${ALERT_MSG}WARNING: Large sync backlog detected: $PENDING pending items\n"
+              echo "[$(date -Iseconds)] WARNING: Large sync backlog: $PENDING items"
+            fi
+          fi
+
+          # Check disk space on target
+          TARGET_USAGE=$(df "$TARGET_DIR" 2>/dev/null | tail -1 | awk '{print $5}' | tr -d '%' || echo "0")
+          if [ "$TARGET_USAGE" -gt 90 ]; then
+            ALERT_NEEDED=1
+            ALERT_MSG="${ALERT_MSG}WARNING: Target disk usage is ${TARGET_USAGE}%\n"
+            echo "[$(date -Iseconds)] WARNING: Target disk usage is ${TARGET_USAGE}%"
+          fi
+
+          # Send alert if needed
+          if [ "$ALERT_NEEDED" -eq 1 ]; then
+            echo "[$(date -Iseconds)] Sending alert email..."
+
+            FULL_ALERT="Lsyncd Health Check Alert - $(hostname)\n"
+            FULL_ALERT="${FULL_ALERT}Timestamp: $(date -Iseconds)\n\n"
+            FULL_ALERT="${FULL_ALERT}Issues Detected:\n${ALERT_MSG}\n"
+            FULL_ALERT="${FULL_ALERT}Source: $SOURCE_DIR\n"
+            FULL_ALERT="${FULL_ALERT}Target: $TARGET_DIR\n\n"
+            FULL_ALERT="${FULL_ALERT}Service Status:\n$(systemctl status lsyncd --no-pager 2>&1 | head -20)\n\n"
+            FULL_ALERT="${FULL_ALERT}Disk Usage:\n$(df -h $SOURCE_DIR $TARGET_DIR 2>&1)\n\n"
+            FULL_ALERT="${FULL_ALERT}Recent Log Entries:\n$(tail -20 $LOG_FILE 2>&1 || echo 'No log file')\n\n"
+            FULL_ALERT="${FULL_ALERT}To investigate:\n"
+            FULL_ALERT="${FULL_ALERT}  sudo systemctl status lsyncd\n"
+            FULL_ALERT="${FULL_ALERT}  sudo journalctl -u lsyncd -n 100\n"
+            FULL_ALERT="${FULL_ALERT}  tail -f /var/log/lsyncd/lsyncd.log\n"
+
+            if [ -x "/usr/local/bin/send-rate-limited-email.sh" ]; then
+              /usr/local/bin/send-rate-limited-email.sh "lsyncd-monitor" "[ALERT] Lsyncd Health Check Failed on $(hostname)" "$FULL_ALERT"
+            else
+              echo -e "$FULL_ALERT" | sendmail -t "$MSMTP_RCPTS" || \
+                echo "[$(date -Iseconds)] ERROR: Failed to send alert email"
+            fi
+
+            exit 1
+          fi
+
+          echo "[$(date -Iseconds)] Lsyncd health check passed"
+          exit 0
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Deploy lsyncd monitor systemd service
+    - name: Deploy lsyncd monitor service
+      copy:
+        dest: /etc/systemd/system/lsyncd-monitor.service
+        content: |
+          [Unit]
+          Description=Lsyncd Health Monitor
+          After=lsyncd.service
+
+          [Service]
+          Type=oneshot
+          Environment="MSMTP_RCPTS={{ msmtp_rcpts }}"
+          ExecStart=/usr/local/bin/lsyncd-monitor.sh
+          StandardOutput=journal
+          StandardError=journal
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart lsyncd monitor timer
+
+    # Deploy lsyncd monitor systemd timer
+    - name: Deploy lsyncd monitor timer
+      copy:
+        dest: /etc/systemd/system/lsyncd-monitor.timer
+        content: |
+          [Unit]
+          Description=Run Lsyncd Health Monitor every 5 minutes
+
+          [Timer]
+          OnBootSec=2min
+          OnUnitActiveSec=5min
+          AccuracySec=1min
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart lsyncd monitor timer
+
+    # Reload systemd daemon
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    # Enable and start lsyncd service
+    - name: Enable and start lsyncd service
+      systemd:
+        name: lsyncd
+        enabled: yes
+        state: started
+
+    # Enable and start lsyncd monitor timer
+    - name: Enable and start lsyncd monitor timer
+      systemd:
+        name: lsyncd-monitor.timer
+        enabled: yes
+        state: started
+
+    # Verify lsyncd is running
+    - name: Verify lsyncd is running
+      command: systemctl is-active lsyncd
+      register: lsyncd_status
+      changed_when: false
+      failed_when: lsyncd_status.rc != 0
+
+    # Display status
+    - name: Display lsyncd status
+      debug:
+        msg: |
+          ============================================================================
+          Lsyncd has been configured and started successfully!
+          ============================================================================
+
+          Configuration:
+            Source: {{ lsyncd_source }}
+            Target: {{ lsyncd_target }}
+            Email alerts: {{ msmtp_rcpts }}
+
+          Useful commands:
+            sudo systemctl status lsyncd
+            sudo journalctl -u lsyncd -f
+            tail -f /var/log/lsyncd/lsyncd.log
+            cat /var/log/lsyncd/lsyncd.status
+
+          Documentation:
+            See ansible/docs/LSYNCD_STORAGE_MIRRORING.md for full documentation.
+          ============================================================================
