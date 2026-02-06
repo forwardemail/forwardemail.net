@@ -135,10 +135,24 @@ const CalendarInvites = new mongoose.Schema(
       index: true
     },
 
-    // When the token expires
+    // When the token expires (required for web responses, optional for iMIP)
     tokenExpiresAt: {
       type: Date,
-      required: true,
+      required: false,
+      index: true
+    },
+
+    // Source of the response (web = response link click, imip = incoming email)
+    source: {
+      type: String,
+      enum: ['web', 'imip'],
+      default: 'web',
+      index: true
+    },
+
+    // Message-ID of the source email (for iMIP responses)
+    sourceMessageId: {
+      type: String,
       index: true
     },
 

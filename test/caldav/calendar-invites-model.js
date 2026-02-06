@@ -71,11 +71,13 @@ test('CalendarInvites response is required', (t) => {
   t.true(field.isRequired);
 });
 
-test('CalendarInvites tokenExpiresAt is required', (t) => {
+test('CalendarInvites tokenExpiresAt is optional (for iMIP sources)', (t) => {
   const { schema } = CalendarInvites;
   const field = schema.path('tokenExpiresAt');
 
-  t.true(field.isRequired);
+  // tokenExpiresAt is optional because iMIP responses don't have tokens
+  // (authentication is done via DKIM/DMARC at the MX level)
+  t.false(field.isRequired);
 });
 
 test('CalendarInvites processed defaults to false', (t) => {
@@ -102,6 +104,27 @@ test('CalendarInvites comment has maxlength of 1000', (t) => {
   );
   t.truthy(maxlengthValidator);
   t.is(maxlengthValidator.maxlength, 1000);
+});
+
+test('CalendarInvites source defaults to web', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('source');
+
+  t.is(field.defaultValue, 'web');
+});
+
+test('CalendarInvites source enum is correct', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('source');
+
+  t.deepEqual(field.enumValues, ['web', 'imip']);
+});
+
+test('CalendarInvites sourceMessageId field exists', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('sourceMessageId');
+
+  t.truthy(field);
 });
 
 test('CalendarInvites has indexes on key fields', (t) => {

@@ -10,15 +10,19 @@ block body
           .card.border-themed
             .card-body.text-center.py-5
               i.fa.fa-calendar.text-primary.fa-4x.mb-4
-              h2.h4.mb-3 Calendar Invitation Response
-              p.text-muted.mb-4 Click the button below to confirm your response to this calendar invitation.
+              h2.h4.mb-3= t("Calendar Invitation Response")
+              p.text-muted.mb-4= t("Click the button below to confirm your response to this calendar invitation.")
               if tokenData && tokenData.eventUid
                 p.small.text-muted.mb-2
-                  strong Event:
+                  strong= t("Event:")
+                  |
+                  = " "
                   span.notranslate= tokenData.eventUid
               if tokenData && tokenData.organizerEmail
                 p.small.text-muted.mb-4
-                  strong Organizer:
+                  strong= t("Organizer:")
+                  |
+                  = " "
                   span.notranslate= tokenData.organizerEmail
               .d-grid.gap-2
                 form.d-inline(action=ctx.path, method="POST")
@@ -34,10 +38,13 @@ block body
                       i.fa.fa-question.me-2
                     = responseText
           .alert.alert-light.mt-3.text-center.small
-            | This invitation was sent via
+            = t("This invitation was sent via")
+            |
+            = " "
             a(
               href="https://forwardemail.net",
               target="_blank",
               rel="noopener noreferrer"
-            ) Forward Email
-            | , a privacy-focused email service.
+            )= t("Forward Email")
+            = ", "
+            = t("a privacy-focused email service.")

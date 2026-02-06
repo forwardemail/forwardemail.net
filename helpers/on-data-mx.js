@@ -475,6 +475,8 @@ async function imap(alias, headers, session, body) {
       resolvedRootClientHostname: session.resolvedRootClientHostname,
       resolvedClientHostname: session.resolvedClientHostname,
       allowlistValue: session.allowlistValue,
+      // Pass sender for iMIP REPLY processing (sender/attendee match validation)
+      sender: session.envelope?.mailFrom?.address,
       date:
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate

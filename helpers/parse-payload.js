@@ -30,6 +30,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const Boom = require('@hapi/boom');
+const { simpleParser } = require('mailparser');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
@@ -64,6 +65,7 @@ const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { createSieveIntegration } = require('#helpers/sieve');
+const { checkAndProcessImipReply } = require('#helpers/process-imip-reply');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -1693,6 +1695,74 @@ async function parsePayload(data, ws) {
                     );
 
                 if (err) throw err;
+              }
+
+              //
+              // Process iMIP REPLY messages (calendar invite responses)
+              // This detects incoming emails with METHOD:REPLY ICS attachments
+              // and queues them for processing during CalDAV sync
+              //
+              // SECURITY: DKIM/DMARC already validated by MX server (is-authenticated-message.js)
+              // Additional checks: sender/attendee match and rate limiting
+              //
+              try {
+                const parsedEmail = await simpleParser(payload.raw, {
+                  skipHtmlToText: true,
+                  skipTextLinks: true,
+                  skipTextToHtml: true,
+                  skipImageLinks: true
+                });
+
+                const imipResult = await checkAndProcessImipReply(parsedEmail, {
+                  messageId: parsedEmail.messageId,
+                  fromEmail: payload.sender,
+                  toEmail: session.user.username,
+                  client: this.client,
+                  remoteAddress: payload.remoteAddress
+                });
+
+                if (imipResult && imipResult.processed) {
+                  logger.info('Processed iMIP REPLY from incoming email', {
+                    session,
+                    user: { id: session.user.alias_user_id },
+                    domains: [
+                      new mongoose.Types.ObjectId(session.user.domain_id)
+                    ],
+                    inviteId: imipResult.invite?._id,
+                    eventUid: imipResult.imipData?.uid,
+                    attendeeEmail: imipResult.imipData?.attendeeEmail,
+                    partstat: imipResult.imipData?.partstat,
+                    toEmail: session.user.username
+                  });
+                } else if (imipResult && imipResult.rejected) {
+                  // Log security rejections for audit trail
+                  logger.warn('iMIP REPLY rejected for security reasons', {
+                    session,
+                    user: { id: session.user.alias_user_id },
+                    domains: [
+                      new mongoose.Types.ObjectId(session.user.domain_id)
+                    ],
+                    code: imipResult.code,
+                    reason: imipResult.reason,
+                    eventUid: imipResult.imipData?.uid,
+                    attendeeEmail: imipResult.imipData?.attendeeEmail,
+                    sender: payload.sender,
+                    recipient: session.user.username,
+                    remoteAddress: payload.remoteAddress
+                  });
+                }
+              } catch (imipErr) {
+                // Don't fail message delivery if iMIP processing fails
+                logger.warn('iMIP REPLY processing failed', {
+                  session,
+                  user: { id: session.user.alias_user_id },
+                  domains: [
+                    new mongoose.Types.ObjectId(session.user.domain_id)
+                  ],
+                  error: imipErr.message,
+                  sender: payload.sender,
+                  recipient: session.user.username
+                });
               }
             } catch (err) {
               err.payload = _.omit(payload, 'raw');

@@ -10,14 +10,17 @@ block body
           .card.border-themed
             .card-body.text-center.py-5
               i.fa.fa-check-circle.text-success.fa-4x.mb-4
-              h2.h4.mb-3 Response Recorded
-              p.text-muted.mb-4 Your calendar response has been recorded. The event organizer will be notified.
-              p.small.text-muted You can close this window now.
+              h2.h4.mb-3= t("Response Recorded")
+              p.text-muted.mb-4= t("Your calendar response has been recorded. The event organizer will be notified.")
+              p.small.text-muted= t("You can close this window now.")
           .alert.alert-light.mt-3.text-center.small
-            | This invitation was sent via
+            = t("This invitation was sent via")
+            |
+            = " "
             a(
               href="https://forwardemail.net",
               target="_blank",
               rel="noopener noreferrer"
-            ) Forward Email
-            | , a privacy-focused email service.
+            )= t("Forward Email")
+            = ", "
+            = t("a privacy-focused email service.")
