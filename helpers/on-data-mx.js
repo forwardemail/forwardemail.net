@@ -476,7 +476,10 @@ async function imap(alias, headers, session, body) {
       resolvedClientHostname: session.resolvedClientHostname,
       allowlistValue: session.allowlistValue,
       // Pass sender for iMIP REPLY processing (sender/attendee match validation)
-      sender: session.envelope?.mailFrom?.address,
+      // Use checkSRS to unwrap SRS-rewritten addresses for proper sender/attendee matching
+      sender: session.envelope?.mailFrom?.address
+        ? checkSRS(session.envelope.mailFrom.address)
+        : undefined,
       date:
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate
