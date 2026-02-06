@@ -2637,11 +2637,11 @@ const obj = {
     // wkd
     true,
     // hardenize (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/posteo.de/1722691888">Fail</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/posteo.de/1770372614">Pass</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/posteo.deo/2910817/">33/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/posteo.de/3742430/">100/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/posteo.de/1308586/">83/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/posteo.de/1744910/">86/100</a>',
     // ssl_labs
     'A+'
   ],
