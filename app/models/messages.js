@@ -333,23 +333,8 @@ Messages.pre('validate', function (next) {
     this.msgid = this.msgid.replace('@wildduck.email', `@${env.WEB_HOST}`);
 
   // update boolean based off attachments
-  // filter out PGP/S-MIME envelope parts (they are not user-facing attachments)
   this.ha =
-    Array.isArray(this.attachments) &&
-    this.attachments.some(
-      (a) =>
-        !a.related &&
-        // PGP encrypted message parts
-        a.contentType !== 'application/pgp-encrypted' &&
-        a.contentType !== 'application/pgp-signature' &&
-        !(
-          a.contentType === 'application/octet-stream' &&
-          a.filename === 'encrypted.asc'
-        ) &&
-        // S/MIME encrypted message parts
-        a.contentType !== 'application/pkcs7-mime' &&
-        a.contentType !== 'application/x-pkcs7-mime'
-    );
+    Array.isArray(this.attachments) && this.attachments.some((a) => !a.related);
 
   next();
 });
