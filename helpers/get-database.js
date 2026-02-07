@@ -47,6 +47,7 @@ const updateStorageUsed = require('#helpers/update-storage-used');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
+const { repairPgpMessages } = require('#helpers/repair-pgp-messages');
 
 const builder = new Builder({ bufferAsNative: true });
 
@@ -515,6 +516,7 @@ async function getDatabase(
     let highestmodseqCheck = !instance.server;
     let storageFormatCheck = !instance.server;
     let caldavHrefCheck = !instance.server;
+    let pgpRepairCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -527,7 +529,8 @@ async function getDatabase(
           `calendar_duplicate_check:${session.user.alias_id}`,
           `highestmodseq_check:${session.user.alias_id}`,
           `storage_format_check:${session.user.alias_id}`,
-          `caldav_href_check:${session.user.alias_id}`
+          `caldav_href_check:${session.user.alias_id}`,
+          `pgp_repair_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -538,6 +541,7 @@ async function getDatabase(
         highestmodseqCheck = boolean(results[6]);
         storageFormatCheck = boolean(results[7]);
         caldavHrefCheck = boolean(results[8]);
+        pgpRepairCheck = boolean(results[9]);
 
         // If Redis cache miss, check the MongoDB field as fallback
         if (!storageFormatCheck && alias.has_storage_format_migration) {
@@ -1010,6 +1014,37 @@ async function getDatabase(
       }
     }
 
+    //
+    // Repair corrupted PGP-encrypted messages from Feb 2-6, 2026.
+    // The encrypted.asc body was emptied during storage; this migration
+    // reconstructs the mimeTree, bodystructure, and envelope from the
+    // Attachments table data.
+    //
+    if (
+      !pgpRepairCheck &&
+      session.user.username === 'support@forwardemail.net'
+    ) {
+      try {
+        await instance.client.set(
+          `pgp_repair_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        const stats = await repairPgpMessages(instance, session);
+
+        if (stats.messagesRepaired > 0) {
+          logger.info('PGP message repair completed', {
+            session,
+            stats
+          });
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
@@ -1019,7 +1054,8 @@ async function getDatabase(
       !calendarDuplicateCheck ||
       !highestmodseqCheck ||
       !storageFormatCheck ||
-      !caldavHrefCheck
+      !caldavHrefCheck ||
+      !pgpRepairCheck
     ) {
       try {
         //

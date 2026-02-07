@@ -27,6 +27,7 @@ const i18n = require('#helpers/i18n');
 const recursivelyParse = require('#helpers/recursively-parse');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
+const { repairEncryptedMessage } = require('#helpers/repair-encrypted-message');
 
 const builder = new Builder({ bufferAsNative: true });
 const attachmentStorage = new AttachmentStorage();
@@ -248,10 +249,13 @@ async function json(ctx, message) {
     (async () => {
       // similar to 'rfc822' case in `helpers/get-query-response.js`
       // (value is a stream)
-      const { value } = indexer.getContents(
+      let mimeTree =
         typeof message.mimeTree === 'object'
           ? message.mimeTree
-          : JSON.parse(message.mimeTree),
+          : JSON.parse(message.mimeTree);
+
+      const { value } = indexer.getContents(
+        mimeTree,
         false,
         {},
         ctx.instance,
@@ -259,6 +263,12 @@ async function json(ctx, message) {
       );
 
       const raw = await getStream.buffer(value);
+
+      // Repair corrupted encrypted.asc bodies from Feb 2-6, 2026
+      // This handles messages with empty encrypted.asc parts that need
+      // to be reconstructed from the raw message
+      mimeTree = repairEncryptedMessage(mimeTree, raw);
+
       const nodemailer = await simpleParser(raw, {
         Iconv,
         skipHtmlToText: true,

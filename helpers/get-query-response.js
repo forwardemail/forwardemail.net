@@ -19,6 +19,7 @@ const { Buffer } = require('node:buffer');
 const libmime = require('libmime');
 
 const Indexer = require('./indexer');
+const { repairEncryptedMessage } = require('./repair-encrypted-message');
 
 // eslint-disable-next-line max-params
 function getQueryResponse(query, message, options = {}, instance, session) {
@@ -32,6 +33,13 @@ function getQueryResponse(query, message, options = {}, instance, session) {
   // So if the query is for (UID FLAGS) then mimeTree is never generated
   let { mimeTree } = message;
   const indexer = new Indexer(options);
+
+  // Repair corrupted encrypted.asc bodies from Feb 2-6, 2026
+  // This handles messages with empty encrypted.asc parts that need
+  // to be reconstructed from the raw message for IMAP clients
+  if (mimeTree && message.raw) {
+    mimeTree = repairEncryptedMessage(mimeTree, message.raw);
+  }
 
   // generate response object
   const values = [];
@@ -68,6 +76,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getBodyStructure(mimeTree);
@@ -123,6 +132,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getEnvelope(mimeTree);
@@ -195,6 +205,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
       case 'rfc822': {
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree = repairEncryptedMessage(mimeTree, message.raw);
         }
 
         value = indexer.getContents(mimeTree, false, {}, instance, session);
@@ -207,6 +218,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
         } else {
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getSize(mimeTree);
@@ -219,6 +231,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
         // Equivalent to BODY[HEADER]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree = repairEncryptedMessage(mimeTree, message.raw);
         }
 
         value = [mimeTree.header || []].flat().join('\r\n') + '\r\n\r\n';
@@ -229,6 +242,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
         // Equivalent to BODY[TEXT]
         if (!mimeTree) {
           mimeTree = indexer.parseMimeTree(message.raw);
+          mimeTree = repairEncryptedMessage(mimeTree, message.raw);
         }
 
         value = indexer.getContents(
@@ -250,6 +264,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
           // BODY
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getBody(mimeTree);
@@ -257,6 +272,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
           // BODY[]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getContents(
@@ -273,6 +289,7 @@ function getQueryResponse(query, message, options = {}, instance, session) {
           // BODY[SELECTOR]
           if (!mimeTree) {
             mimeTree = indexer.parseMimeTree(message.raw);
+            mimeTree = repairEncryptedMessage(mimeTree, message.raw);
           }
 
           value = indexer.getContents(
