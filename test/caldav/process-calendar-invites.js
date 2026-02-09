@@ -36,19 +36,19 @@ END:VEVENT
 END:VCALENDAR`;
 
 test('eventHasUid returns true for matching UID', (t) => {
-  t.true(eventHasUid(sampleIcal, 'test-event-uid-123'));
+  t.true(eventHasUid(sampleIcal, ['test-event-uid-123']));
 });
 
 test('eventHasUid returns false for non-matching UID', (t) => {
-  t.false(eventHasUid(sampleIcal, 'different-uid'));
+  t.false(eventHasUid(sampleIcal, ['different-uid']));
 });
 
 test('eventHasUid returns false for invalid iCal', (t) => {
-  t.false(eventHasUid('invalid ical data', 'test-uid'));
+  t.false(eventHasUid('invalid ical data', ['test-uid']));
 });
 
 test('eventHasUid returns false for empty string', (t) => {
-  t.false(eventHasUid('', 'test-uid'));
+  t.false(eventHasUid('', ['test-uid']));
 });
 
 test('eventHasUid returns false for iCal without VEVENT', (t) => {
@@ -56,7 +56,7 @@ test('eventHasUid returns false for iCal without VEVENT', (t) => {
 VERSION:2.0
 PRODID:-//Test//Test//EN
 END:VCALENDAR`;
-  t.false(eventHasUid(noEvent, 'test-uid'));
+  t.false(eventHasUid(noEvent, ['test-uid']));
 });
 
 // Test updateAttendeePartstat
@@ -144,6 +144,6 @@ test('updateAttendeePartstat updates only the specified attendee', (t) => {
 });
 
 test('eventHasUid with multi-attendee event', (t) => {
-  t.true(eventHasUid(multiAttendeeIcal, 'multi-attendee-event'));
-  t.false(eventHasUid(multiAttendeeIcal, 'wrong-uid'));
+  t.true(eventHasUid(multiAttendeeIcal, ['multi-attendee-event']));
+  t.false(eventHasUid(multiAttendeeIcal, ['wrong-uid']));
 });

@@ -176,15 +176,27 @@ async function processInvite(instance, ctx, invite) {
   let calendarEvent = null;
   const uidVariants = getUidVariants(invite.eventUid);
 
-  ctx.logger.debug('Searching for event with UID variants', { uidVariants });
+  ctx.logger.debug('Searching for event with UID variants', {
+    uidVariants,
+    calendarsCount: calendars.length
+  });
 
   for (const cal of calendars) {
     // Search for event with matching UID in the iCal data
-    const events = await CalendarEvents.find(instance, ctx.state.session, {
-      calendar: cal._id,
-      deleted_at: null
+    // NOTE: We fetch all events and filter deleted_at in JavaScript because
+    // SQL "deleted_at = null" doesn't work correctly (need IS NULL)
+    let events = await CalendarEvents.find(instance, ctx.state.session, {
+      calendar: cal._id
     });
 
+    // Filter out deleted events in JavaScript (same pattern as caldav-server.js)
+    events = events.filter((e) => !e.deleted_at);
+
+    ctx.logger.debug('Calendar events found', {
+      calendarId: cal._id,
+      calendarUuid: cal.calendarId,
+      totalEvents: events.length
+    });
     for (const event of events) {
       if (event.ical && eventHasUid(event.ical, uidVariants)) {
         calendarEvent = event;

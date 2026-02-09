@@ -269,7 +269,7 @@ test('updateAttendeePartstat - updates event from iMIP REPLY data', (t) => {
   t.truthy(updatedIcs);
   t.true(updatedIcs.includes('PARTSTAT=ACCEPTED'));
   // Verify the UID is preserved
-  t.true(eventHasUid(updatedIcs, 'integration-test-event@forwardemail.net'));
+  t.true(eventHasUid(updatedIcs, ['integration-test-event@forwardemail.net']));
 });
 
 test('updateAttendeePartstat - handles Gmail DECLINED response', (t) => {
