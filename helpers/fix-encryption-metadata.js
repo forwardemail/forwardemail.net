@@ -103,17 +103,8 @@ async function fixEncryptionMetadata(instance, session, options = {}) {
           }
 
           // Only target multipart/encrypted messages
-          // NOTE: the decoded mimeTree does not have a top-level `contentType`
-          // string; instead it stores `multipart: 'encrypted'` and the full
-          // content-type is in `parsedHeader['content-type'].value`.
-          const rootCt =
-            (mimeTree.parsedHeader &&
-              mimeTree.parsedHeader['content-type'] &&
-              mimeTree.parsedHeader['content-type'].value) ||
-            '';
           if (
-            (mimeTree.multipart !== 'encrypted' &&
-              rootCt !== 'multipart/encrypted') ||
+            mimeTree.contentType !== 'multipart/encrypted' ||
             !Array.isArray(mimeTree.childNodes) ||
             mimeTree.childNodes.length < 2
           ) {
@@ -140,21 +131,16 @@ async function fixEncryptionMetadata(instance, session, options = {}) {
             }
           }
 
-          // Check whether the PGP envelope parts are already present.
-          // A properly-stored multipart/encrypted message has two parts:
-          //   1. application/pgp-encrypted  (version identifier, ~12 bytes)
-          //   2. application/octet-stream   (the encrypted.asc payload)
-          // We check for the pgp-encrypted entry specifically, since
-          // application/octet-stream is too generic and could match
-          // unrelated attachments.
-          const hasPgpParts = attachments.some(
+          // Check whether the encrypted.asc entry is already present
+          const hasEncryptedAsc = attachments.some(
             (a) =>
               a &&
-              (a.contentType === 'application/pgp-encrypted' ||
-                a.filename === 'encrypted.asc')
+              (a.filename === 'encrypted.asc' ||
+                (a.contentType === 'application/octet-stream' &&
+                  a.contentType === 'application/pgp-encrypted'))
           );
 
-          if (hasPgpParts) {
+          if (hasEncryptedAsc) {
             // Metadata is fine - nothing to repair
             stats.messagesSkipped++;
             continue;
