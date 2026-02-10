@@ -17,23 +17,18 @@ const { decodeMetadata, encodeMetadata } = require('#helpers/msgpack-helpers');
  *
  * Timeline (all times UTC):
  *   - Bug introduced:  2026-02-02 04:53 (commit 75d4204e)
- *     Filtered PGP parts from data.attachments in on-append.js.
- *   - Second commit:   2026-02-02 19:32 (commit 2fb919d0)
- *     Reverted on-append filter but moved it to pre-validate hook,
- *     so attachments array was correct but `ha` was forced to false.
- *   - Partial revert:  2026-02-07 04:28 (commit 60cc340d, reverted commit 2)
- *     Re-exposed the original on-append filter from commit 1.
+ *   - Partial revert:  2026-02-07 04:28 (commit 60cc340d, reverted commit 2 only)
  *   - Full revert:     2026-02-07 19:21 (commit ca7bf3e9, reverted commit 1)
  *
- * The query window extends to Feb 8 00:00 UTC to cover deployment lag.
+ * The query window extends to Feb 8 00:00 UTC to cover any messages that
+ * arrived between the partial and full revert, plus deployment lag.
  *
  * This migration:
  *   1. Scans messages created during the bug window (Feb 2-8 2026).
- *   2. For each multipart/encrypted message, ALWAYS recalculates `ha`
- *      from the attachments metadata (since `ha` was wrong for all
- *      affected messages regardless of whether attachments were filtered).
- *   3. If the attachments metadata is also missing PGP parts, rebuilds
- *      it from the mimeTree.
+ *   2. For each multipart/encrypted message whose `attachments` metadata
+ *      is missing the `encrypted.asc` entry, regenerates the metadata
+ *      from the mimeTree.
+ *   3. Recalculates `ha` (has-attachments) and updates the row.
  *
  * No raw-message reconstruction or on-the-fly patching is required.
  *
@@ -159,49 +154,30 @@ async function fixEncryptionMetadata(instance, session, options = {}) {
                 a.filename === 'encrypted.asc')
           );
 
-          // Determine the final attachments array to use for `ha` calculation.
-          // If PGP parts are missing, rebuild from the mimeTree.
-          // If PGP parts are present, keep the existing attachments.
-          let finalAttachments;
-          let attachmentsChanged = false;
-
           if (hasPgpParts) {
-            finalAttachments = attachments;
-          } else {
-            // Rebuild the attachments metadata from the mimeTree
-            finalAttachments = rebuildAttachmentsMeta(mimeTree);
-            attachmentsChanged = true;
-          }
-
-          // Recalculate `ha` using the same logic as the pre-validate hook:
-          //   this.ha = Array.isArray(this.attachments)
-          //     && this.attachments.some((a) => !a.related);
-          const ha = finalAttachments.some((a) => !a.related) ? 1 : 0;
-
-          // Check if anything actually needs updating
-          const haChanged = message.ha !== ha;
-
-          if (!attachmentsChanged && !haChanged) {
+            // Metadata is fine - nothing to repair
             stats.messagesSkipped++;
             continue;
           }
 
+          // -- Rebuild the attachments metadata from the mimeTree --
+          // Walk the childNodes to reconstruct what getMaildata would
+          // have produced for the attachment metadata array.
+          const repairedAttachments = rebuildAttachmentsMeta(mimeTree);
+
+          // Recalculate `ha` using the same logic as the pre-validate hook:
+          //   this.ha = Array.isArray(this.attachments)
+          //     && this.attachments.some((a) => !a.related);
+          const ha = repairedAttachments.some((a) => !a.related) ? 1 : 0;
+
           // -- Persist the fix --
-          if (attachmentsChanged) {
-            const encodedAttachments = encodeMetadata(finalAttachments);
-            db.prepare(
-              `UPDATE Messages
-               SET attachments = ?, ha = ?
-               WHERE _id = ?`
-            ).run(encodedAttachments, ha, message._id);
-          } else {
-            // Only ha needs fixing
-            db.prepare(
-              `UPDATE Messages
-               SET ha = ?
-               WHERE _id = ?`
-            ).run(ha, message._id);
-          }
+          const encodedAttachments = encodeMetadata(repairedAttachments);
+
+          db.prepare(
+            `UPDATE Messages
+             SET attachments = ?, ha = ?
+             WHERE _id = ?`
+          ).run(encodedAttachments, ha, message._id);
 
           stats.messagesRepaired++;
         } catch (err) {
