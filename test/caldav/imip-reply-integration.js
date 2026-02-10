@@ -22,8 +22,10 @@ const {
 } = require('#helpers/process-calendar-invites');
 const {
   parseImipReply,
+  parseImipMessage,
   processImipReply,
-  checkAndProcessImipReply
+  checkAndProcessImipReply,
+  checkAndProcessImipMessage
 } = require('#helpers/process-imip-reply');
 
 // Sample event ICS that would be stored in the organizer's calendar
@@ -361,7 +363,7 @@ test('checkAndProcessImipReply - ignores non-calendar emails', async (t) => {
   t.is(result, null);
 });
 
-test('checkAndProcessImipReply - ignores REQUEST method (not REPLY)', async (t) => {
+test('checkAndProcessImipReply - ignores REQUEST method (REPLY-only handler)', async (t) => {
   const requestIcs = `BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:REQUEST
@@ -383,6 +385,7 @@ END:VCALENDAR`;
     ]
   };
 
+  // The REPLY-only handler should return null for REQUEST
   const result = await checkAndProcessImipReply(parsedEmail, {
     toEmail: 'organizer@forwardemail.net'
   });
@@ -390,7 +393,7 @@ END:VCALENDAR`;
   t.is(result, null);
 });
 
-test('checkAndProcessImipReply - ignores CANCEL method', async (t) => {
+test('checkAndProcessImipReply - ignores CANCEL method (REPLY-only handler)', async (t) => {
   const cancelIcs = `BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:CANCEL
@@ -411,11 +414,182 @@ END:VCALENDAR`;
     ]
   };
 
+  // The REPLY-only handler should return null for CANCEL
   const result = await checkAndProcessImipReply(parsedEmail, {
     toEmail: 'organizer@forwardemail.net'
   });
 
   t.is(result, null);
+});
+
+//
+// checkAndProcessImipMessage tests (comprehensive handler for all methods)
+//
+
+test('checkAndProcessImipMessage - processes REQUEST method', async (t) => {
+  const requestIcs = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:request-test-msg@example.com
+DTSTAMP:20260203T100000Z
+DTSTART:20260210T140000Z
+DTEND:20260210T150000Z
+SUMMARY:Team Standup
+ORGANIZER:mailto:boss@external.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:attendee@forwardemail.net
+END:VEVENT
+END:VCALENDAR`;
+
+  const parsedEmail = {
+    messageId: '<request-test@external.com>',
+    attachments: [
+      {
+        contentType: 'text/calendar; method=REQUEST',
+        content: Buffer.from(requestIcs)
+      }
+    ]
+  };
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    messageId: parsedEmail.messageId,
+    fromEmail: 'boss@external.com',
+    toEmail: 'attendee@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.true(result.processed);
+  t.is(result.method, 'REQUEST');
+  t.truthy(result.invite);
+  t.is(result.invite.method, 'REQUEST');
+
+  // Cleanup
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('checkAndProcessImipMessage - processes CANCEL method', async (t) => {
+  const cancelIcs = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:CANCEL
+BEGIN:VEVENT
+UID:cancel-test-msg@example.com
+DTSTAMP:20260203T100000Z
+DTSTART:20260210T140000Z
+SUMMARY:Cancelled Meeting
+STATUS:CANCELLED
+ORGANIZER:mailto:boss@external.com
+ATTENDEE:mailto:attendee@forwardemail.net
+END:VEVENT
+END:VCALENDAR`;
+
+  const parsedEmail = {
+    messageId: '<cancel-test@external.com>',
+    attachments: [
+      {
+        contentType: 'text/calendar; method=CANCEL',
+        content: Buffer.from(cancelIcs)
+      }
+    ]
+  };
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    messageId: parsedEmail.messageId,
+    fromEmail: 'boss@external.com',
+    toEmail: 'attendee@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.true(result.processed);
+  t.is(result.method, 'CANCEL');
+
+  // Cleanup
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('checkAndProcessImipMessage - processes REPLY method (backwards compat)', async (t) => {
+  const parsedEmail = {
+    messageId: '<reply-compat-test@external.com>',
+    attachments: [
+      {
+        contentType: 'text/calendar; method=REPLY',
+        content: Buffer.from(O365_REPLY_ACCEPTED)
+      }
+    ]
+  };
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    messageId: parsedEmail.messageId,
+    fromEmail: 'attendee1@external.com',
+    toEmail: 'organizer@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.true(result.processed);
+  t.is(result.method, 'REPLY');
+
+  // Cleanup
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('parseImipMessage - parses REQUEST with all fields', (t) => {
+  const requestIcs = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:parse-request-test@example.com
+DTSTAMP:20260203T100000Z
+DTSTART:20260210T140000Z
+DTEND:20260210T150000Z
+SUMMARY:Parse Test
+SEQUENCE:2
+ORGANIZER;CN=Boss:mailto:boss@external.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;CN=Worker:mailto:worker@forwardemail.net
+END:VEVENT
+END:VCALENDAR`;
+
+  const result = parseImipMessage(requestIcs);
+  t.is(result.method, 'REQUEST');
+  t.is(result.uid, 'parse-request-test@example.com');
+  t.is(result.organizerEmail, 'boss@external.com');
+  t.is(result.sequence, 2);
+  t.truthy(result.raw);
+});
+
+test('parseImipMessage - parses CANCEL correctly', (t) => {
+  const cancelIcs = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:CANCEL
+BEGIN:VEVENT
+UID:parse-cancel-test@example.com
+DTSTAMP:20260203T100000Z
+STATUS:CANCELLED
+ORGANIZER:mailto:boss@external.com
+END:VEVENT
+END:VCALENDAR`;
+
+  const result = parseImipMessage(cancelIcs);
+  t.is(result.method, 'CANCEL');
+  t.is(result.uid, 'parse-cancel-test@example.com');
+  t.is(result.organizerEmail, 'boss@external.com');
+});
+
+test('parseImipMessage - parses PUBLISH (informational, no scheduling action)', (t) => {
+  const publishIcs = `BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:publish-test@example.com
+DTSTAMP:20260203T100000Z
+SUMMARY:Published Event
+END:VEVENT
+END:VCALENDAR`;
+
+  // parseImipMessage returns data for all supported methods including PUBLISH
+  // (checkAndProcessImipMessage is what skips PUBLISH for scheduling)
+  const result = parseImipMessage(publishIcs);
+  t.truthy(result);
+  t.is(result.method, 'PUBLISH');
+  t.is(result.uid, 'publish-test@example.com');
 });
 
 //

@@ -33,7 +33,48 @@ test('CalendarInvites response enum is correct', (t) => {
   const { schema } = CalendarInvites;
   const responseField = schema.path('response');
 
-  t.deepEqual(responseField.enumValues, ['ACCEPTED', 'DECLINED', 'TENTATIVE']);
+  // Extended enum includes NEEDS-ACTION, DELEGATED, CANCELLED per RFC 5546
+  t.deepEqual(responseField.enumValues, [
+    'ACCEPTED',
+    'DECLINED',
+    'TENTATIVE',
+    'NEEDS-ACTION',
+    'DELEGATED',
+    'CANCELLED'
+  ]);
+});
+
+test('CalendarInvites has method field', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('method');
+
+  t.truthy(field);
+  t.is(field.defaultValue, 'REPLY');
+  t.deepEqual(field.enumValues, [
+    'REPLY',
+    'REQUEST',
+    'CANCEL',
+    'ADD',
+    'REFRESH',
+    'COUNTER',
+    'DECLINECOUNTER',
+    'PUBLISH'
+  ]);
+});
+
+test('CalendarInvites has rawIcs field', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('rawIcs');
+
+  t.truthy(field);
+});
+
+test('CalendarInvites has sequence field', (t) => {
+  const { schema } = CalendarInvites;
+  const field = schema.path('sequence');
+
+  t.truthy(field);
+  t.is(field.defaultValue, 0);
 });
 
 test('CalendarInvites has timestamps enabled', (t) => {

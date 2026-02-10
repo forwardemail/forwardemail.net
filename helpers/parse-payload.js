@@ -65,7 +65,7 @@ const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { createSieveIntegration } = require('#helpers/sieve');
-const { checkAndProcessImipReply } = require('#helpers/process-imip-reply');
+const { checkAndProcessImipMessage } = require('#helpers/process-imip-reply');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -1698,9 +1698,8 @@ async function parsePayload(data, ws) {
               }
 
               //
-              // Process iMIP REPLY messages (calendar invite responses)
-              // This detects incoming emails with METHOD:REPLY ICS attachments
-              // and queues them for processing during CalDAV sync
+              // Process iMIP messages (calendar scheduling via email)
+              // Handles all iTIP methods: REPLY, REQUEST, CANCEL, ADD, REFRESH, COUNTER, DECLINECOUNTER
               //
               // SECURITY: DKIM/DMARC already validated by MX server (is-authenticated-message.js)
               // Additional checks: sender/attendee match and rate limiting
@@ -1713,21 +1712,26 @@ async function parsePayload(data, ws) {
                   skipImageLinks: true
                 });
 
-                const imipResult = await checkAndProcessImipReply(parsedEmail, {
-                  messageId: parsedEmail.messageId,
-                  fromEmail: payload.sender,
-                  toEmail: session.user.username,
-                  client: this.client,
-                  remoteAddress: payload.remoteAddress
-                });
+                // Try the comprehensive handler first (handles all methods)
+                const imipResult = await checkAndProcessImipMessage(
+                  parsedEmail,
+                  {
+                    messageId: parsedEmail.messageId,
+                    fromEmail: payload.sender,
+                    toEmail: session.user.username,
+                    client: this.client,
+                    remoteAddress: payload.remoteAddress
+                  }
+                );
 
                 if (imipResult && imipResult.processed) {
-                  logger.info('Processed iMIP REPLY from incoming email', {
+                  logger.info('Processed iMIP message from incoming email', {
                     session,
                     user: { id: session.user.alias_user_id },
                     domains: [
                       new mongoose.Types.ObjectId(session.user.domain_id)
                     ],
+                    method: imipResult.method,
                     inviteId: imipResult.invite?._id,
                     eventUid: imipResult.imipData?.uid,
                     attendeeEmail: imipResult.imipData?.attendeeEmail,
@@ -1736,12 +1740,13 @@ async function parsePayload(data, ws) {
                   });
                 } else if (imipResult && imipResult.rejected) {
                   // Log security rejections for audit trail
-                  logger.warn('iMIP REPLY rejected for security reasons', {
+                  logger.warn('iMIP message rejected for security reasons', {
                     session,
                     user: { id: session.user.alias_user_id },
                     domains: [
                       new mongoose.Types.ObjectId(session.user.domain_id)
                     ],
+                    method: imipResult.method,
                     code: imipResult.code,
                     reason: imipResult.reason,
                     eventUid: imipResult.imipData?.uid,
@@ -1753,7 +1758,7 @@ async function parsePayload(data, ws) {
                 }
               } catch (imipErr) {
                 // Don't fail message delivery if iMIP processing fails
-                logger.warn('iMIP REPLY processing failed', {
+                logger.warn('iMIP processing failed', {
                   session,
                   user: { id: session.user.alias_user_id },
                   domains: [

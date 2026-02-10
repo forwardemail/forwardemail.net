@@ -1138,6 +1138,87 @@ class CalDAV extends API {
       // (since the client will be the one sending them, or perhaps user didn't want to)
       if (vevent.getFirstPropertyValue('x-moz-send-invitations'))
         isValid = false;
+      //
+      // For REPLY method: the user is an attendee, not the organizer.
+      // Send the REPLY to the organizer (RFC 5546 Section 3.2.3).
+      //
+      else if (method === 'REPLY') {
+        if (event.organizer) {
+          const organizerEmail = event.organizer
+            .replace('mailto:', '')
+            .trim()
+            .toLowerCase();
+          if (organizerEmail && isEmail(organizerEmail)) {
+            // Build a REPLY ICS containing only the attendee's VEVENT
+            const vc = new ICAL.Component(['vcalendar', [], []]);
+            vc.addSubcomponent(vevent);
+            const ics = await this.buildICS(
+              ctx,
+              [
+                {
+                  eventId: calendarEvent.eventId,
+                  calendar: calendar._id,
+                  ical: vc.toString()
+                }
+              ],
+              calendar,
+              'REPLY'
+            );
+
+            // Get the attendee's current PARTSTAT for the subject line
+            let partstat = 'ACCEPTED';
+            if (event.attendees) {
+              for (const att of event.attendees) {
+                let attEmail = att.getFirstValue();
+                if (attEmail)
+                  attEmail = attEmail
+                    .replace('mailto:', '')
+                    .toLowerCase()
+                    .trim();
+                if (attEmail === ctx.state.user.username) {
+                  partstat = (
+                    att.getParameter('partstat') || 'ACCEPTED'
+                  ).toUpperCase();
+                  break;
+                }
+              }
+            }
+
+            const summary =
+              event.summary ||
+              (event.getFirstPropertyValue &&
+                event.getFirstPropertyValue('summary')) ||
+              'Event';
+
+            const subjectPrefix =
+              partstat === 'DECLINED'
+                ? i18n.translate('DECLINED', ctx.locale)
+                : partstat === 'TENTATIVE'
+                ? i18n.translate('TENTATIVE', ctx.locale)
+                : i18n.translate('ACCEPTED', ctx.locale);
+
+            await Emails.queue({
+              message: {
+                from: ctx.state.user.username,
+                to: organizerEmail,
+                subject: `${subjectPrefix}: ${summary}`,
+                icalEvent: {
+                  method: 'REPLY',
+                  filename: 'invite.ics',
+                  content: ics
+                }
+              },
+              alias,
+              domain,
+              user: alias ? alias.user : undefined,
+              date: new Date()
+            });
+
+            // Already handled, skip the normal attendee iteration
+            return;
+          }
+        }
+      }
       // mirror sabre/dav behavior
       //
       // must have organizer matching alias
@@ -1275,9 +1356,11 @@ class CalDAV extends API {
 
         if (event.attendees) {
           for (const attendee of event.attendees) {
-            // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
-            // const scheduleAgent = attendee.getParameter('schedule-agent');
-            // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
+            // RFC 6638 Section 7.1: SCHEDULE-AGENT=CLIENT means the client
+            // handles scheduling itself, server should not send invites
+            const scheduleAgent = attendee.getParameter('schedule-agent');
+            if (scheduleAgent && scheduleAgent.toUpperCase() === 'CLIENT')
+              continue;
 
             // skip attendees that were already DECLINED
             const partStat = attendee.getParameter('partstat');
@@ -2666,16 +2749,165 @@ class CalDAV extends API {
     // save event
     e = await e.save();
 
-    // Fire and forget - don't block the response waiting for email to be sent
-    // Use setImmediate to completely detach from the current execution context
-    // The sendEmailWithICS method is already wrapped with try/catch internally
-    setImmediate(() => {
-      this.sendEmailWithICS(ctx, calendar, e, 'REQUEST', oldCalStr).catch(
-        (err) => {
-          ctx.logger.error('sendEmailWithICS error', { err });
+    //
+    // Determine if this is an organizer update or an attendee PARTSTAT change
+    // RFC 5546: If the authenticated user is an attendee (not organizer),
+    // and their PARTSTAT changed, send a REPLY to the organizer instead of REQUEST
+    //
+    const newComp = new ICAL.Component(ICAL.parse(e.ical));
+    const newVevent = newComp.getFirstSubcomponent('vevent');
+    const organizerProp = newVevent
+      ? newVevent.getFirstProperty('organizer')
+      : null;
+    const organizerValue = organizerProp ? organizerProp.getFirstValue() : null;
+    const organizerEmail = organizerValue
+      ? organizerValue
+          .replace(/^mailto:/i, '')
+          .toLowerCase()
+          .trim()
+      : null;
+    const isOrganizer = organizerEmail === ctx.state.user.username;
+
+    if (!isOrganizer && organizerEmail && oldCalStr && newVevent) {
+      //
+      // GAP 3: Attendee-side REPLY generation
+      // The authenticated user is an attendee - check if their PARTSTAT changed
+      //
+      const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
+      const oldVevent = oldComp.getFirstSubcomponent('vevent');
+
+      if (oldVevent) {
+        const userEmail = ctx.state.user.username;
+        const oldAttendees = oldVevent.getAllProperties('attendee');
+        const newAttendees = newVevent.getAllProperties('attendee');
+
+        let oldPartstat = null;
+        let newPartstat = null;
+
+        for (const att of oldAttendees) {
+          const email = (att.getFirstValue() || '')
+            .replace(/^mailto:/i, '')
+            .toLowerCase()
+            .trim();
+          if (email === userEmail) {
+            oldPartstat = (
+              att.getParameter('partstat') || 'NEEDS-ACTION'
+            ).toUpperCase();
+            break;
+          }
         }
-      );
-    });
+
+        for (const att of newAttendees) {
+          const email = (att.getFirstValue() || '')
+            .replace(/^mailto:/i, '')
+            .toLowerCase()
+            .trim();
+          if (email === userEmail) {
+            newPartstat = (
+              att.getParameter('partstat') || 'NEEDS-ACTION'
+            ).toUpperCase();
+            break;
+          }
+        }
+
+        if (oldPartstat && newPartstat && oldPartstat !== newPartstat) {
+          // PARTSTAT changed - send REPLY to organizer
+          // Check SCHEDULE-AGENT on the attendee
+          let scheduleAgent = null;
+          for (const att of newAttendees) {
+            const email = (att.getFirstValue() || '')
+              .replace(/^mailto:/i, '')
+              .toLowerCase()
+              .trim();
+            if (email === userEmail) {
+              scheduleAgent = att.getParameter('schedule-agent');
+              break;
+            }
+          }
+
+          if (!scheduleAgent || scheduleAgent.toUpperCase() !== 'CLIENT') {
+            setImmediate(() => {
+              this.sendEmailWithICS(ctx, calendar, e, 'REPLY').catch((err) => {
+                ctx.logger.error('sendEmailWithICS REPLY error', { err });
+              });
+            });
+          }
+        }
+      }
+    } else if (isOrganizer) {
+      //
+      // GAP 4 & 5: Organizer update - check for significant changes
+      // Reset PARTSTATs and increment SEQUENCE on time/recurrence changes
+      //
+      if (oldCalStr && newVevent) {
+        const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
+        const oldVevent = oldComp.getFirstSubcomponent('vevent');
+
+        if (oldVevent) {
+          const oldDtstart = oldVevent.getFirstPropertyValue('dtstart');
+          const newDtstart = newVevent.getFirstPropertyValue('dtstart');
+          const oldDtend = oldVevent.getFirstPropertyValue('dtend');
+          const newDtend = newVevent.getFirstPropertyValue('dtend');
+          const oldRrule = oldVevent.getFirstPropertyValue('rrule');
+          const newRrule = newVevent.getFirstPropertyValue('rrule');
+
+          const timeChanged =
+            (oldDtstart &&
+              newDtstart &&
+              oldDtstart.toString() !== newDtstart.toString()) ||
+            (oldDtend &&
+              newDtend &&
+              oldDtend.toString() !== newDtend.toString()) ||
+            String(oldRrule || '') !== String(newRrule || '');
+
+          if (timeChanged) {
+            // Reset all attendee PARTSTATs to NEEDS-ACTION (RFC 5546 Section 3.2.2.1)
+            const attendees = newVevent.getAllProperties('attendee');
+            let resetCount = 0;
+            for (const att of attendees) {
+              const email = (att.getFirstValue() || '')
+                .replace(/^mailto:/i, '')
+                .toLowerCase()
+                .trim();
+              // Don't reset the organizer's own PARTSTAT
+              if (email === organizerEmail) continue;
+              const currentPartstat = (
+                att.getParameter('partstat') || ''
+              ).toUpperCase();
+              if (currentPartstat !== 'NEEDS-ACTION') {
+                att.setParameter('partstat', 'NEEDS-ACTION');
+                resetCount++;
+              }
+            }
+
+            // Auto-increment SEQUENCE (RFC 5546 Section 3.2.2)
+            const currentSeq = newVevent.getFirstPropertyValue('sequence') || 0;
+            const oldSeq = oldVevent.getFirstPropertyValue('sequence') || 0;
+            if (currentSeq <= oldSeq) {
+              newVevent.updatePropertyWithValue('sequence', oldSeq + 1);
+            }
+
+            if (resetCount > 0) {
+              // Save the updated iCal with reset PARTSTATs
+              e.ical = newComp.toString();
+              e.instance = this;
+              e.session = ctx.state.session;
+              e.isNew = false;
+              e = await e.save();
+            }
+          }
+        }
+      }
+
+      // Fire and forget - send REQUEST to attendees
+      setImmediate(() => {
+        this.sendEmailWithICS(ctx, calendar, e, 'REQUEST', oldCalStr).catch(
+          (err) => {
+            ctx.logger.error('sendEmailWithICS error', { err });
+          }
+        );
+      });
+    }
 
     // send apple push notification for calendar sync
     sendApnCalendar(this.client, ctx.state.user.alias_id)
@@ -2848,14 +3080,76 @@ class CalDAV extends API {
         }
       );
 
-      // Fire and forget - don't block the response waiting for email to be sent
-      // Use setImmediate to completely detach from the current execution context
-      // The sendEmailWithICS method is already wrapped with try/catch internally
-      setImmediate(() => {
-        this.sendEmailWithICS(ctx, calendar, event, 'CANCEL').catch((err) => {
-          ctx.logger.error('sendEmailWithICS error', { err });
-        });
-      });
+      //
+      // Determine if the user is the organizer or an attendee
+      // If organizer: send CANCEL to all attendees
+      // If attendee: send DECLINED REPLY to organizer (RFC 5546 Section 3.2.3)
+      //
+      {
+        const delComp = new ICAL.Component(ICAL.parse(event.ical));
+        const delVevent = delComp.getFirstSubcomponent('vevent');
+        const delOrgProp = delVevent
+          ? delVevent.getFirstProperty('organizer')
+          : null;
+        const delOrgValue = delOrgProp ? delOrgProp.getFirstValue() : null;
+        const delOrgEmail = delOrgValue
+          ? delOrgValue
+              .replace(/^mailto:/i, '')
+              .toLowerCase()
+              .trim()
+          : null;
+        const isDelOrganizer = delOrgEmail === ctx.state.user.username;
+
+        if (isDelOrganizer) {
+          // Organizer deleting - send CANCEL to attendees
+          setImmediate(() => {
+            this.sendEmailWithICS(ctx, calendar, event, 'CANCEL').catch(
+              (err) => {
+                ctx.logger.error('sendEmailWithICS CANCEL error', { err });
+              }
+            );
+          });
+        } else if (delOrgEmail && delVevent) {
+          // Attendee deleting - send DECLINED REPLY to organizer
+          // Check SCHEDULE-AGENT first
+          const attProps = delVevent.getAllProperties('attendee');
+          let shouldSendReply = true;
+          for (const att of attProps) {
+            const email = (att.getFirstValue() || '')
+              .replace(/^mailto:/i, '')
+              .toLowerCase()
+              .trim();
+            if (email === ctx.state.user.username) {
+              const sa = att.getParameter('schedule-agent');
+              if (sa && sa.toUpperCase() === 'CLIENT') {
+                shouldSendReply = false;
+              }
+
+              // Set PARTSTAT to DECLINED before sending
+              att.setParameter('partstat', 'DECLINED');
+              break;
+            }
+          }
+
+          if (shouldSendReply) {
+            // Update the event ical with DECLINED status for the REPLY
+            const declinedEvent = {
+              ...event,
+              ical: delComp.toString()
+            };
+            setImmediate(() => {
+              this.sendEmailWithICS(
+                ctx,
+                calendar,
+                declinedEvent,
+                'REPLY'
+              ).catch((err) => {
+                ctx.logger.error('sendEmailWithICS REPLY error', { err });
+              });
+            });
+          }
+        }
+      }
 
       // send apple push notification for calendar sync
       sendApnCalendar(this.client, ctx.state.user.alias_id)
@@ -2890,11 +3184,21 @@ class CalDAV extends API {
 
       comp.updatePropertyWithValue('version', '2.0');
 
-      // used for invites, cancelled events, and replies
+      // used for invites, cancelled events, replies, and other iTIP methods
       if (method) {
-        if (!['REQUEST', 'REPLY', 'CANCEL'].includes(method))
+        const validMethods = [
+          'REQUEST',
+          'REPLY',
+          'CANCEL',
+          'ADD',
+          'REFRESH',
+          'COUNTER',
+          'DECLINECOUNTER',
+          'PUBLISH'
+        ];
+        if (!validMethods.includes(method))
           throw new TypeError(
-            'Method must be either REQUEST, REPLY, or CANCEL'
+            `Method must be one of: ${validMethods.join(', ')}`
           );
         comp.updatePropertyWithValue('method', method);
       }
