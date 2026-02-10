@@ -47,6 +47,7 @@ const updateStorageUsed = require('#helpers/update-storage-used');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
+const { fixEncryptionMetadata } = require('#helpers/fix-encryption-metadata');
 
 const builder = new Builder({ bufferAsNative: true });
 
@@ -515,6 +516,7 @@ async function getDatabase(
     let highestmodseqCheck = !instance.server;
     let storageFormatCheck = !instance.server;
     let caldavHrefCheck = !instance.server;
+    let encryptionBugCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -527,7 +529,8 @@ async function getDatabase(
           `calendar_duplicate_check:${session.user.alias_id}`,
           `highestmodseq_check:${session.user.alias_id}`,
           `storage_format_check:${session.user.alias_id}`,
-          `caldav_href_check:${session.user.alias_id}`
+          `caldav_href_check:${session.user.alias_id}`,
+          `encryption_bug_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -538,6 +541,7 @@ async function getDatabase(
         highestmodseqCheck = boolean(results[6]);
         storageFormatCheck = boolean(results[7]);
         caldavHrefCheck = boolean(results[8]);
+        encryptionBugCheck = boolean(results[9]);
 
         // If Redis cache miss, check the MongoDB field as fallback
         if (!storageFormatCheck && alias.has_storage_format_migration) {
@@ -1010,6 +1014,39 @@ async function getDatabase(
       }
     }
 
+    //
+    // Fix PGP encryption metadata corruption (Feb 2-7 2026).
+    // A faulty attachment filter removed the `encrypted.asc` entry from the
+    // `attachments` metadata array in the Messages table.  The actual body
+    // data was never lost (it lives in the Attachments table).  This one-time
+    // migration rebuilds the metadata from the mimeTree and recalculates `ha`.
+    //
+    if (
+      !encryptionBugCheck &&
+      // TODO: remove this guard once confirmed working in production
+      session.user.username === 'support@forwardemail.net'
+    ) {
+      try {
+        await instance.client.set(
+          `encryption_bug_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        const stats = await fixEncryptionMetadata(instance, session);
+
+        if (stats.messagesRepaired > 0) {
+          logger.info('Encryption metadata repair completed', {
+            session,
+            stats
+          });
+        }
+      } catch (err) {
+        logger.fatal(err, { session, resolver: instance.resolver });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
@@ -1019,7 +1056,8 @@ async function getDatabase(
       !calendarDuplicateCheck ||
       !highestmodseqCheck ||
       !storageFormatCheck ||
-      !caldavHrefCheck
+      !caldavHrefCheck ||
+      !encryptionBugCheck
     ) {
       try {
         //
