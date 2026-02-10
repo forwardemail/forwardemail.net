@@ -33,13 +33,81 @@ html.h-100.no-js(
     .scalar-app-reset
       #app
     include _footer
-    script(
-      defer,
-      src=manifest("js/build.js"),
-      integrity=manifest("js/build.js", "integrity"),
-      crossorigin="anonymous",
-      fetchpriority="low"
-    )
+
+    //- scripts (mirrored from layout.pug block scripts)
+    if !isBot(ctx.get('User-Agent'))
+      //- flash messaging (with koa-better-flash and sweetalert2)
+      script(defer, nonce=nonce).
+        window._types = {
+          success: "#{ t('Success') }",
+          error: "#{ t('Error') }",
+          info: "#{ t('Info') }",
+          warning: "#{ t('Warning') }",
+          question: "#{ t('Question') }",
+        };
+      script#flash-messages(defer, nonce=nonce, data-ignore-hash-change).
+        window._messages = !{json(flash(), null, null)};
+
+      //- set defaults for sweetalert2
+      //- <https://github.com/limonte/sweetalert2/issues/763>
+      script(defer, nonce=nonce).
+        window._swalDefaults = {
+          confirmButtonText: "#{ t('OK') }",
+          cancelButtonText: "#{ t('Cancel') }",
+          closeButtonAriaLabel: "#{ t('Close this dialog') }",
+          reverseButtons: true,
+        };
+
+      //- set defaults for confirm prompt sweetalert2 modal
+      script(defer, nonce=nonce).
+        window._confirmPromptTitle = "#{ t('Are you sure?') }";
+        window._confirmPromptHTML = "#{ t('Please confirm if you wish to continue.') }";
+
+      //- set the locale to be used by front-end assets
+      script(defer, nonce=nonce).
+        window.LOCALE = "#{locale}";
+
+      //- set the API endpoint to be used by front-end assets
+      script(defer, nonce=nonce).
+        window.API_URL = "#{config.urls.api}";
+
+    //- set the user and API key to be used by CabinJS
+    if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
+      if user
+        script(defer, nonce=nonce).
+          window.USER = {
+            id: "#{user.id}",
+            name: "#{user[config.passport.fields.displayName]}",
+            email: "#{user.email}",
+          };
+          window.API_TOKEN = "#{user[config.userFields.apiToken]}";
+      else if ctx.sessionId
+        script(defer, nonce=nonce).
+          window.USER = {
+            id: "#{ctx.sessionId}",
+          };
+
+    if !isBot(ctx.get('User-Agent'))
+      //- build
+      script(
+        defer,
+        src=manifest("js/build.js"),
+        integrity=manifest("js/build.js", "integrity"),
+        crossorigin="anonymous",
+        fetchpriority="low"
+      )
+
+      //- cloudflare turnstile (hidden from bots and admins)
+      if config.turnstileEnabled && (!user || user.group !== 'admin')
+        script(defer, nonce=nonce).
+          window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
+          window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
+        script(
+          defer,
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback"
+        )
+
+    //- scalar API reference
     script(src="/js/scalar.js", crossorigin="anonymous")
     if user
       script.
