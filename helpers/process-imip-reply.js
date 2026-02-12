@@ -38,14 +38,9 @@ const CalendarInvites = require('#models/calendar-invites');
 const logger = require('#helpers/logger');
 
 /**
- * Valid PARTSTAT values that indicate a response
- */
-const RESPONSE_PARTSTAT = ['ACCEPTED', 'DECLINED', 'TENTATIVE', 'DELEGATED'];
-
-/**
  * All supported iTIP methods
  */
-const SUPPORTED_METHODS = [
+const SUPPORTED_METHODS = new Set([
   'REPLY',
   'REQUEST',
   'CANCEL',
@@ -54,7 +49,7 @@ const SUPPORTED_METHODS = [
   'COUNTER',
   'DECLINECOUNTER',
   'PUBLISH'
-];
+]);
 
 /**
  * Rate limit: max iMIP messages per sender per hour
@@ -376,14 +371,6 @@ function extractImipMessage(parsedEmail) {
   return parseImipMessage(icalData);
 }
 
-// Backwards-compatible alias
-function extractImipReply(parsedEmail) {
-  const result = extractImipMessage(parsedEmail);
-  // Only return if it's actually a REPLY for backwards compatibility
-  if (result && result.method === 'REPLY') return result;
-  return null;
-}
-
 /**
  * Parse iMIP ICS data for any supported iTIP method
  *
@@ -413,7 +400,7 @@ function parseImipMessage(icalData) {
     }
 
     const normalizedMethod = method.toUpperCase();
-    if (!SUPPORTED_METHODS.includes(normalizedMethod)) {
+    if (!SUPPORTED_METHODS.has(normalizedMethod)) {
       logger.warn('iMIP message with unsupported method', {
         method: normalizedMethod
       });
@@ -584,13 +571,6 @@ function parseImipMessage(icalData) {
     logger.error('Failed to parse iMIP message', { error: err.message });
     return null;
   }
-}
-
-// Backwards-compatible alias
-function parseImipReply(icalData) {
-  const result = parseImipMessage(icalData);
-  if (result && result.method === 'REPLY') return result;
-  return null;
 }
 
 /**
@@ -793,15 +773,6 @@ async function processImipMessage(imipData, options = {}) {
   return invite;
 }
 
-// Backwards-compatible alias
-async function processImipReply(imipData, options = {}) {
-  if (!imipData || imipData.method !== 'REPLY') {
-    throw new TypeError('Invalid iMIP REPLY data');
-  }
-
-  return processImipMessage(imipData, options);
-}
-
 /**
  * Check if an email contains an iMIP message and process it with security validation
  *
@@ -987,43 +958,6 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
   }
 }
 
-// Backwards-compatible alias - only processes REPLY method
-async function checkAndProcessImipReply(parsedEmail, options = {}) {
-  // Extract iMIP data first to check method
-  const imipData = extractImipMessage(parsedEmail);
-  if (!imipData || imipData.method !== 'REPLY') {
-    return null;
-  }
-
-  // Delegate to the full handler for REPLY processing
-  return checkAndProcessImipMessage(parsedEmail, options);
-}
-
 module.exports = {
-  // New comprehensive functions
-  extractImipMessage,
-  parseImipMessage,
-  processImipMessage,
-  checkAndProcessImipMessage,
-  validateSenderOrganizerMatch,
-
-  // Backwards-compatible aliases
-  extractImipReply,
-  parseImipReply,
-  processImipReply,
-  checkAndProcessImipReply,
-
-  // Shared utilities
-  validateSenderAttendeeMatch,
-  checkRateLimits,
-  normalizeEmail,
-  extractDomain,
-
-  // Constants
-  RESPONSE_PARTSTAT,
-  SUPPORTED_METHODS,
-  SECURITY_CODES,
-  RATE_LIMIT_MAX_PER_HOUR,
-  RATE_LIMIT_MAX_PER_EVENT_ATTENDEE_PER_HOUR,
-  MAX_ICS_SIZE
+  checkAndProcessImipMessage
 };

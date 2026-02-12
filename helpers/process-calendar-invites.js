@@ -959,23 +959,5 @@ function getRecurrenceIdFromIcs(icalStr) {
 }
 
 module.exports = {
-  processCalendarInvites,
-  // REPLY utilities (backwards compatible)
-  updateAttendeePartstat,
-  eventHasUid,
-  getUidVariants,
-  // New utilities
-  findEventByUid,
-  getDefaultCalendar,
-  setCancelledStatus,
-  setCancelledStatusForInstance,
-  mergeAddComponents,
-  stripMethodFromIcs,
-  getSequenceFromIcal,
-  getRecurrenceIdFromIcs,
-  getUserEmails,
-  markProcessed,
-  // Constants
-  MAX_INVITES_PER_BATCH,
-  MAX_PROCESS_ATTEMPTS
+  processCalendarInvites
 };
