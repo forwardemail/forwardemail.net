@@ -438,6 +438,9 @@ ZXhhbXBsZQo=
     msg.mimeTree.body.toString().trim(),
     'This is an OpenPGP/MIME encrypted message'
   );
+
+  // ensure is_encrypted was set to true by the pre-validate hook
+  t.true(msg.is_encrypted);
 });
 
 test('onAppend with public PGP', async (t) => {
@@ -599,6 +602,9 @@ ZXhhbXBsZQo=
     msg.mimeTree.body.toString().trim(),
     'This is an OpenPGP/MIME encrypted message'
   );
+
+  // ensure is_encrypted was set to true by the pre-validate hook
+  t.true(msg.is_encrypted);
 });
 
 test('onAppend', async (t) => {
@@ -656,6 +662,13 @@ ZXhhbXBsZQo=
   );
 
   t.is(mailbox.uidNext, 2);
+
+  // ensure is_encrypted is false for a non-encrypted message
+  const msg = await Messages.findOne(t.context.imap, t.context.session, {
+    mailbox: mailbox._id,
+    uid: append.uid
+  });
+  t.false(msg.is_encrypted);
 });
 
 test('onCreate', async (t) => {

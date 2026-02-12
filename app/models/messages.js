@@ -235,6 +235,14 @@ const Messages = new mongoose.Schema(
       default: false
     },
 
+    // whether the message is encrypted (PGP/MIME or S/MIME)
+    is_encrypted: {
+      type: Boolean,
+      required: true,
+      index: true,
+      default: false
+    },
+
     // IP address of creation
     remoteAddress: {
       type: String,
@@ -335,6 +343,22 @@ Messages.pre('validate', function (next) {
   // update boolean based off attachments
   this.ha =
     Array.isArray(this.attachments) && this.attachments.some((a) => !a.related);
+
+  // update is_encrypted based on mimeTree parsed content-type
+  // (matches WildDuck's approach and is-message-encrypted.js helper)
+  // supports both PGP/MIME (multipart/encrypted) and S/MIME (application/pkcs7-mime)
+  if (this.mimeTree && typeof this.mimeTree === 'object') {
+    const parsedHeader = this.mimeTree.parsedHeader || {};
+    const parsedContentType = parsedHeader['content-type'];
+    if (parsedContentType && typeof parsedContentType === 'object') {
+      this.is_encrypted =
+        parsedContentType.subtype === 'encrypted' ||
+        parsedContentType.value === 'application/pkcs7-mime' ||
+        parsedContentType.value === 'application/x-pkcs7-mime';
+    } else {
+      this.is_encrypted = false;
+    }
+  }
 
   next();
 });

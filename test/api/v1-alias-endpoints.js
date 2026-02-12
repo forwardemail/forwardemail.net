@@ -1144,6 +1144,70 @@ test('messages list supports pagination and filtering', async (t) => {
   t.true(res2.body.every((msg) => msg.is_unread === true));
 });
 
+test('messages have is_encrypted field in response', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create a plain (non-encrypted) message
+  const res = await api
+    .post('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      to: [{ address: 'test@example.com' }],
+      subject: 'Plain Message',
+      text: 'This is a plain text message'
+    });
+
+  t.is(res.status, 200);
+  t.is(res.body.object, 'message');
+  // non-encrypted message should have is_encrypted = false
+  t.is(res.body.is_encrypted, false);
+});
+
+test('messages list supports ?is_encrypted filter', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  // Create a few plain messages
+  for (let i = 0; i < 2; i++) {
+    const res = await api
+      .post('/v1/messages')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      )
+      .send({
+        to: [{ address: 'test@example.com' }],
+        subject: `Plain Message ${i}`,
+        text: `This is plain message ${i}`
+      });
+    t.is(res.status, 200);
+  }
+
+  // Filter for encrypted messages (should be empty since none are encrypted)
+  const encryptedRes = await api
+    .get('/v1/messages?is_encrypted=true')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(encryptedRes.status, 200);
+  t.is(encryptedRes.body.length, 0);
+
+  // Filter for non-encrypted messages (should return all)
+  const nonEncryptedRes = await api
+    .get('/v1/messages?is_encrypted=false')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(nonEncryptedRes.status, 200);
+  t.is(nonEncryptedRes.body.length, 2);
+  t.true(nonEncryptedRes.body.every((msg) => msg.is_encrypted === false));
+});
+
 test('calendars list supports pagination', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

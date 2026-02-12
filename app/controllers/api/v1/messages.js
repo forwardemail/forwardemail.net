@@ -320,6 +320,9 @@ async function json(ctx, message) {
     // junk -> is_junk
     is_junk: message.junk,
 
+    // is_encrypted
+    is_encrypted: Boolean(message.is_encrypted),
+
     // copied -> is_copied
     is_copied: message.copied,
 
@@ -422,6 +425,13 @@ async function list(ctx) {
   // copied -> is_copied
   if (ctx.query.is_copied !== undefined) {
     searchConditions.push({ copied: boolean(ctx.query.is_copied) ? 1 : 0 });
+  }
+
+  // is_encrypted
+  if (ctx.query.is_encrypted !== undefined) {
+    searchConditions.push({
+      is_encrypted: boolean(ctx.query.is_encrypted) ? 1 : 0
+    });
   }
 
   // searchable -> is_searchable

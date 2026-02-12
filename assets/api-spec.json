@@ -994,6 +994,7 @@
           "is_draft",
           "is_junk",
           "is_copied",
+          "is_encrypted",
           "is_searchable",
           "is_expired",
           "has_attachment",
@@ -1060,6 +1061,10 @@
           "is_copied": {
             "type": "boolean",
             "description": "Whether message is copied"
+          },
+          "is_encrypted": {
+            "type": "boolean",
+            "description": "Whether message is encrypted (PGP/MIME or S/MIME)"
           },
           "is_searchable": {
             "type": "boolean",
@@ -1164,6 +1169,7 @@
           "is_draft": false,
           "is_junk": false,
           "is_copied": false,
+          "is_encrypted": false,
           "is_searchable": true,
           "is_expired": false,
           "has_attachment": false,
@@ -4136,6 +4142,14 @@
             "name": "is_copied",
             "in": "query",
             "description": "Filter by copied status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_encrypted",
+            "in": "query",
+            "description": "Filter by encryption status (PGP/MIME or S/MIME)",
             "schema": {
               "type": "boolean"
             }
