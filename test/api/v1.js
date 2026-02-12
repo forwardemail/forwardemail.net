@@ -522,11 +522,9 @@ test('creates alias and generates password', async (t) => {
     .send({
       new_password: falso.randPassword()
     });
-  t.is(res2.status, 500);
-
-  // t.is(res2.status, 408);
-  // t.is(res2.body.username, `test@${domain.name}`);
-  // t.is(res2.body.password, '...');
+  t.is(res2.status, 200);
+  t.is(res2.body.username, `test@${domain.name}`);
+  t.true(typeof res2.body.password === 'string');
 });
 
 test('creates alias with multiple recipients', async (t) => {

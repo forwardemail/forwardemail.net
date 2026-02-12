@@ -163,72 +163,100 @@ async function generateAliasPassword(ctx) {
     newToken = true;
     alias.emailed_instructions = emailedInstructions || undefined;
 
-    if (isSANB(ctx.request.body.password)) {
-      // change password on existing sqlite file using supplied password and new password
-      const wsp = createWebSocketAsPromised();
-      //
-      // TODO: because rekey has VACUUM INTO and VACUUM calls
-      //       this operation is likely to take longer than HTTP timeout
-      //       therefore we should change messaging and functionality
-      //       so that this alerts the user via email once it is complete
-      //
-      await wsp.request(
-        {
-          action: 'rekey',
-          new_password: encrypt(pass),
-          session: {
-            user: {
-              id: alias.id,
-              username: `${alias.name}@${ctx.state.domain.name}`,
-              alias_id: alias.id,
-              alias_name: alias.name,
-              domain_id: ctx.state.domain.id,
-              domain_name: ctx.state.domain.name,
-              password: encrypt(ctx.request.body.password),
-              storage_location: alias.storage_location,
-              alias_has_pgp: alias.has_pgp,
-              alias_public_key: alias.public_key,
-              alias_has_smime: alias.has_smime,
-              alias_smime_certificate: alias.smime_certificate,
-              locale: ctx.locale,
-              owner_full_email: ctx.state.user.email
-            }
-          }
-        },
-        // don't retry so we can email user quicker to try again
-        // and also in case of an error with the backup worker
-        // e.g. it won't keep retrying and flood it
-        0
-      );
+    // use shared wsp from instance if available (API server),
+    // otherwise create an ephemeral connection (web server)
+    const hasSharedWsp = Boolean(ctx.instance?.wsp);
+    const wsp = hasSharedWsp ? ctx.instance.wsp : createWebSocketAsPromised();
 
-      if (!ctx.api) {
-        ctx.flash(
-          'success',
-          ctx.translate(
-            'ALIAS_REKEY_STARTED',
-            `${alias.name}@${ctx.state.domain.name}`
-          )
+    try {
+      if (isSANB(ctx.request.body.password)) {
+        // change password on existing sqlite file using supplied password and new password
+        //
+        // TODO: because rekey has VACUUM INTO and VACUUM calls
+        //       this operation is likely to take longer than HTTP timeout
+        //       therefore we should change messaging and functionality
+        //       so that this alerts the user via email once it is complete
+        //
+        await wsp.request(
+          {
+            action: 'rekey',
+            new_password: encrypt(pass),
+            session: {
+              user: {
+                id: alias.id,
+                username: `${alias.name}@${ctx.state.domain.name}`,
+                alias_id: alias.id,
+                alias_name: alias.name,
+                domain_id: ctx.state.domain.id,
+                domain_name: ctx.state.domain.name,
+                password: encrypt(ctx.request.body.password),
+                storage_location: alias.storage_location,
+                alias_has_pgp: alias.has_pgp,
+                alias_public_key: alias.public_key,
+                alias_has_smime: alias.has_smime,
+                alias_smime_certificate: alias.smime_certificate,
+                locale: ctx.locale,
+                owner_full_email: ctx.state.user.email
+              }
+            }
+          },
+          // don't retry so we can email user quicker to try again
+          // and also in case of an error with the backup worker
+          // e.g. it won't keep retrying and flood it
+          0
         );
-      }
 
-      // don't save until we're sure that sqlite operations were performed
-      alias.is_rekey = true;
-      await alias.save();
-
-      // close websocket
-      if (wsp.isOpened) {
-        try {
-          wsp.close();
-        } catch (err) {
-          ctx.logger.fatal(err);
+        if (!ctx.api) {
+          ctx.flash(
+            'success',
+            ctx.translate(
+              'ALIAS_REKEY_STARTED',
+              `${alias.name}@${ctx.state.domain.name}`
+            )
+          );
         }
-      }
-    } else if (boolean(ctx.request.body.is_override)) {
-      // reset existing mailbox and create new mailbox
-      const wsp = createWebSocketAsPromised();
-      await wsp.request(
-        {
-          action: 'reset',
+
+        // don't save until we're sure that sqlite operations were performed
+        alias.is_rekey = true;
+        await alias.save();
+      } else if (boolean(ctx.request.body.is_override)) {
+        // reset existing mailbox and create new mailbox
+        await wsp.request(
+          {
+            action: 'reset',
+            session: {
+              user: {
+                id: alias.id,
+                username: `${alias.name}@${ctx.state.domain.name}`,
+                alias_id: alias.id,
+                alias_name: alias.name,
+                domain_id: ctx.state.domain.id,
+                domain_name: ctx.state.domain.name,
+                password: encrypt(pass),
+                storage_location: alias.storage_location,
+                alias_has_pgp: alias.has_pgp,
+                alias_public_key: alias.public_key,
+                alias_has_smime: alias.has_smime,
+                alias_smime_certificate: alias.smime_certificate,
+                locale: ctx.locale,
+                owner_full_email: ctx.state.user.email
+              }
+            }
+          },
+          // don't retry so we can email user quicker to try again
+          // and also in case of an error with the backup worker
+          // e.g. it won't keep retrying and flood it
+          0
+        );
+
+        // don't save until we're sure that sqlite operations were performed
+        await alias.save();
+      } else {
+        // create new mailbox
+        /*
+        // NOTE: we're just using reset here as a safeguard
+        await wsp.request({
+          action: 'setup',
           session: {
             user: {
               id: alias.id,
@@ -252,84 +280,42 @@ async function generateAliasPassword(ctx) {
         // and also in case of an error with the backup worker
         // e.g. it won't keep retrying and flood it
         0
-      );
-
-      // don't save until we're sure that sqlite operations were performed
-      await alias.save();
-
-      // close websocket
-      if (wsp.isOpened) {
-        try {
-          wsp.close();
-        } catch (err) {
-          ctx.logger.fatal(err);
-        }
-      }
-    } else {
-      // create new mailbox
-      const wsp = createWebSocketAsPromised();
-      /*
-      // NOTE: we're just using reset here as a safeguard
-      await wsp.request({
-        action: 'setup',
-        session: {
-          user: {
-            id: alias.id,
-            username: `${alias.name}@${ctx.state.domain.name}`,
-            alias_id: alias.id,
-            alias_name: alias.name,
-            domain_id: ctx.state.domain.id,
-            domain_name: ctx.state.domain.name,
-            password: encrypt(pass),
-            storage_location: alias.storage_location,
-            alias_has_pgp: alias.has_pgp,
-            alias_public_key: alias.public_key,
-            alias_has_smime: alias.has_smime,
-            alias_smime_certificate: alias.smime_certificate,
-            locale: ctx.locale,
-            owner_full_email: ctx.state.user.email
-          }
-        }
-      },
-      // don't retry so we can email user quicker to try again
-      // and also in case of an error with the backup worker
-      // e.g. it won't keep retrying and flood it
-      0
-      );
-      */
-      await wsp.request(
-        {
-          action: 'reset',
-          session: {
-            user: {
-              id: alias.id,
-              username: `${alias.name}@${ctx.state.domain.name}`,
-              alias_id: alias.id,
-              alias_name: alias.name,
-              domain_id: ctx.state.domain.id,
-              domain_name: ctx.state.domain.name,
-              password: encrypt(pass),
-              storage_location: alias.storage_location,
-              alias_has_pgp: alias.has_pgp,
-              alias_public_key: alias.public_key,
-              alias_has_smime: alias.has_smime,
-              alias_smime_certificate: alias.smime_certificate,
-              locale: ctx.locale,
-              owner_full_email: ctx.state.user.email
+        );
+        */
+        await wsp.request(
+          {
+            action: 'reset',
+            session: {
+              user: {
+                id: alias.id,
+                username: `${alias.name}@${ctx.state.domain.name}`,
+                alias_id: alias.id,
+                alias_name: alias.name,
+                domain_id: ctx.state.domain.id,
+                domain_name: ctx.state.domain.name,
+                password: encrypt(pass),
+                storage_location: alias.storage_location,
+                alias_has_pgp: alias.has_pgp,
+                alias_public_key: alias.public_key,
+                alias_has_smime: alias.has_smime,
+                alias_smime_certificate: alias.smime_certificate,
+                locale: ctx.locale,
+                owner_full_email: ctx.state.user.email
+              }
             }
-          }
-        },
-        // don't retry so we can email user quicker to try again
-        // and also in case of an error with the backup worker
-        // e.g. it won't keep retrying and flood it
-        0
-      );
+          },
+          // don't retry so we can email user quicker to try again
+          // and also in case of an error with the backup worker
+          // e.g. it won't keep retrying and flood it
+          0
+        );
 
-      // save alias
-      await alias.save();
-
-      // close websocket
-      if (wsp.isOpened) {
+        // save alias
+        await alias.save();
+      }
+    } finally {
+      // close ephemeral websocket (do not close the shared instance)
+      if (!hasSharedWsp && wsp?.isOpened) {
         try {
           wsp.close();
         } catch (err) {

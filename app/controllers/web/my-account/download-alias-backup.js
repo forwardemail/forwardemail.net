@@ -126,43 +126,51 @@ async function downloadAliasBackup(ctx) {
 
     // send backup request
     if (isSANB(ctx.request.body.password)) {
-      const wsp = createWebSocketAsPromised();
-      await wsp.request(
-        {
-          action: 'backup',
-          backup_at: new Date().toISOString(),
-          format: ctx.request.body.format,
-          email: ctx.state.user.email,
-          session: {
-            user: {
-              id: alias.id,
-              username: `${alias.name}@${ctx.state.domain.name}`,
-              alias_id: alias.id,
-              alias_name: alias.name,
-              domain_id: ctx.state.domain.id,
-              domain_name: ctx.state.domain.name,
-              password: encrypt(ctx.request.body.password),
-              storage_location: alias.storage_location,
-              alias_has_pgp: alias.has_pgp,
-              alias_public_key: alias.public_key,
-              alias_has_smime: alias.has_smime,
-              alias_smime_certificate: alias.smime_certificate,
-              locale: ctx.locale,
-              owner_full_email: ctx.state.user.email
-            }
-          }
-        },
-        // don't retry so we can email user quicker to try again
-        // and also in case of an error with the backup worker
-        // e.g. it won't keep retrying and flood it
-        0
-      );
+      // use shared wsp from instance if available (API server),
+      // otherwise create an ephemeral connection (web server)
+      const hasSharedWsp = Boolean(ctx.instance?.wsp);
+      const wsp = hasSharedWsp ? ctx.instance.wsp : createWebSocketAsPromised();
 
-      // close websocket
       try {
-        wsp.close();
-      } catch (err) {
-        ctx.logger.fatal(err);
+        await wsp.request(
+          {
+            action: 'backup',
+            backup_at: new Date().toISOString(),
+            format: ctx.request.body.format,
+            email: ctx.state.user.email,
+            session: {
+              user: {
+                id: alias.id,
+                username: `${alias.name}@${ctx.state.domain.name}`,
+                alias_id: alias.id,
+                alias_name: alias.name,
+                domain_id: ctx.state.domain.id,
+                domain_name: ctx.state.domain.name,
+                password: encrypt(ctx.request.body.password),
+                storage_location: alias.storage_location,
+                alias_has_pgp: alias.has_pgp,
+                alias_public_key: alias.public_key,
+                alias_has_smime: alias.has_smime,
+                alias_smime_certificate: alias.smime_certificate,
+                locale: ctx.locale,
+                owner_full_email: ctx.state.user.email
+              }
+            }
+          },
+          // don't retry so we can email user quicker to try again
+          // and also in case of an error with the backup worker
+          // e.g. it won't keep retrying and flood it
+          0
+        );
+      } finally {
+        // close ephemeral websocket (do not close the shared instance)
+        if (!hasSharedWsp && wsp?.isOpened) {
+          try {
+            wsp.close();
+          } catch (err) {
+            ctx.logger.fatal(err);
+          }
+        }
       }
 
       // otherwise flash message that email will be sent once download ready
