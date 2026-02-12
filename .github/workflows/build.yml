@@ -154,5 +154,13 @@ jobs:
         run: npm i -g pnpm@9.15.9
       - name: Install dependencies
         run: pnpm install
+      - name: Increase swap space
+        run: |
+          sudo swapoff -a
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          sudo swapon --show
       - name: Run tests
         run: npm test
