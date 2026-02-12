@@ -172,7 +172,8 @@ async function sendSuccessDSN(email, domain, info, raw, envelope, session) {
       raw
     },
     envelope.to,
-    deliveryTime
+    deliveryTime,
+    { info, session }
   );
 
   // Queue the DSN success notification

@@ -63,7 +63,7 @@ async function onRename(path, newPath, session, fn) {
     //
     // RFC 6154 Compliance: Allow renaming of all mailboxes including special-use ones
     // Special-use mailboxes will be auto-recreated if they are in REQUIRED_PATHS
-    // This matches behavior of Dovecot and Stalwart IMAP servers
+    // This matches behavior of Dovecot and other IMAP servers
     //
     // Previous code prevented renaming of REQUIRED_PATHS mailboxes:
     // if (ensureDefaultMailboxes.REQUIRED_PATHS.includes(mailbox.path))
