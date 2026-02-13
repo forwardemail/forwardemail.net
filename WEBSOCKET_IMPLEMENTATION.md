@@ -29,27 +29,27 @@ graph TD
     end
 
     subgraph "Server-Side Handler"
-        A --> B{Operation Handler e.g., `on-append.js`};
-        B --> C[sendWebSocketNotification(aliasId, event, data)];
-        C --> D[encoder.pack({ aliasId, payload })];
-        D --> E[redis.publishBuffer(channel, packed_message)];
+        A --> B["Operation Handler e.g., `on-append.js`"];
+        B --> C["sendWebSocketNotification(aliasId, event, data)"];
+        C --> D["encoder.pack({ aliasId, payload })"];
+        D --> E["redis.publishBuffer(channel, packed_message)"];
     end
 
     subgraph "Redis Pub/Sub"
-        E -- "`WS_REDIS_CHANNEL_NAME`" --> F((msgpackr-encoded Buffer));
+        E -- "`WS_REDIS_CHANNEL_NAME`" --> F(["msgpackr-encoded Buffer"]);
     end
 
     subgraph "API Server (ApiWebSocketHandler)"
-        F --> G{subscriber.on("messageBuffer")};
-        G --> H[decoder.unpack(message)];
-        H --> I{Find clients for `aliasId`};
-        I --> J{For each client...};
-        J -- "`?msgpackr=true`" --> K[Send Binary Frame (msgpackr)];
-        J -- "default" --> L[Send Text Frame (JSON)];
+        F --> G["subscriber.on(&quot;messageBuffer&quot;)"];
+        G --> H["decoder.unpack(message)"];
+        H --> I["Find clients for `aliasId`"];
+        I --> J["For each client..."];
+        J -- "`?msgpackr=true`" --> K["Send Binary Frame (msgpackr)"];
+        J -- "default" --> L["Send Text Frame (JSON)"];
     end
 
     subgraph "Connected Clients"
-        K --> M[Webmail / Mobile App / etc.];
+        K --> M["Webmail / Mobile App / etc."];
         L --> M;
     end
 
