@@ -24,6 +24,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 const onMovePromise = pify(onMove, { multiArgs: true });
@@ -60,6 +61,17 @@ async function onDelete(path, session, fn) {
         .catch((err) =>
           this.logger.fatal(err, { path, session, resolver: this.resolver })
         );
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'mailboxDeleted',
+        {
+          path,
+          mailbox: mailbox._id.toString()
+        }
+      );
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -174,6 +186,17 @@ async function onDelete(path, session, fn) {
     // );
 
     fn(null, true, mailbox);
+
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      session.user.alias_id,
+      'mailboxDeleted',
+      {
+        path,
+        mailbox: mailbox._id.toString()
+      }
+    );
 
     // Ensure default mailboxes exist after deletion
     ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache

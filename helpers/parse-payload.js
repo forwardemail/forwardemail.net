@@ -60,6 +60,7 @@ const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const sendApn = require('#helpers/send-apn');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
@@ -1693,6 +1694,32 @@ async function parsePayload(data, ws) {
                     .catch((err) =>
                       logger.fatal(err, { session, resolver: this.resolver })
                     );
+
+                // send websocket push notification (enriched payload with eml)
+                if (!err)
+                  sendWebSocketNotification(
+                    this.client,
+                    alias.id,
+                    'newMessage',
+                    {
+                      mailbox: targetFolder || 'INBOX',
+                      message: {
+                        folder_path: targetFolder || 'INBOX',
+                        flags: targetFlags || [],
+                        is_unread: !(targetFlags || []).includes('\\Seen'),
+                        is_flagged: (targetFlags || []).includes('\\Flagged'),
+                        is_deleted: (targetFlags || []).includes('\\Deleted'),
+                        is_draft: (targetFlags || []).includes('\\Draft'),
+                        is_encrypted: false,
+                        eml: Buffer.isBuffer(messageRaw)
+                          ? messageRaw.toString()
+                          : typeof messageRaw === 'string'
+                          ? messageRaw
+                          : '',
+                        object: 'message'
+                      }
+                    }
+                  );
 
                 if (err) throw err;
               }

@@ -29,6 +29,7 @@ const API = require('../api-server');
 require('#config/mongoose');
 
 const _ = require('#helpers/lodash');
+const ApiWebSocketHandler = require('#helpers/api-websocket-handler');
 const apiConfig = require('#config/api');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
@@ -121,6 +122,13 @@ exports.setupApiServer = async (t) => {
   t.context.api = request.agent(api.server);
   t.context._api = api;
   t.context.resolver = sqlite.resolver;
+
+  // Set up WebSocket handler on the API server
+  const wsHandler = new ApiWebSocketHandler({
+    server: api.server,
+    client
+  });
+  t.context.wsHandler = wsHandler;
 };
 
 exports.setupRedisClient = async (t) => {
@@ -219,6 +227,15 @@ exports.setupFactories = (t) => {
 };
 
 exports.teardownApiServer = async (t) => {
+  // close API WebSocket handler
+  if (t.context.wsHandler) {
+    try {
+      await t.context.wsHandler.close();
+    } catch (err) {
+      logger.debug(err);
+    }
+  }
+
   // close websocket connection
   if (t.context.wsp) {
     try {

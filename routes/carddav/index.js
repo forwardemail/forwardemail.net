@@ -14,6 +14,7 @@ const Contacts = require('#models/contacts');
 const config = require('#config');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
 const sendApnContacts = require('#helpers/send-apn-contacts');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
 
@@ -266,6 +267,24 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           .then()
           .catch((err) => ctx.logger.fatal(err));
 
+        // send websocket push notification
+        sendWebSocketNotification(
+          ctx.instance.client,
+          ctx.state.user.alias_id,
+          'contactUpdated',
+          {
+            contact: {
+              id: existingContact._id.toString(),
+              contactId: contact,
+              addressBookId: addressBook._id.toString(),
+              fullName: existingContact.fullName || '',
+              content: vCardContent,
+              etag: newEtag,
+              object: 'contact'
+            }
+          }
+        );
+
         ctx.set('ETag', newEtag);
         ctx.status = 204;
       } else {
@@ -307,6 +326,23 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
           .then()
           .catch((err) => ctx.logger.fatal(err));
+
+        // send websocket push notification
+        sendWebSocketNotification(
+          ctx.instance.client,
+          ctx.state.user.alias_id,
+          'contactCreated',
+          {
+            contact: {
+              contactId: contact,
+              addressBookId: addressBook._id.toString(),
+              fullName: vCard.FN || '',
+              content: vCardContent,
+              etag: newEtag,
+              object: 'contact'
+            }
+          }
+        );
 
         ctx.set('ETag', newEtag);
         ctx.status = 201;
@@ -380,6 +416,23 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       sendApnContacts(ctx.instance.client, ctx.state.user.alias_id)
         .then()
         .catch((err) => ctx.logger.fatal(err));
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        ctx.instance.client,
+        ctx.state.user.alias_id,
+        'contactDeleted',
+        {
+          contact: {
+            id: contactObj._id.toString(),
+            contactId: contact,
+            addressBookId: addressBook._id.toString(),
+            fullName: contactObj.fullName || '',
+            content: contactObj.content || '',
+            object: 'contact'
+          }
+        }
+      );
 
       ctx.status = 204;
       break;
@@ -555,6 +608,20 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         prodId: `//forwardemail.net//carddav//EN`
       });
 
+      // send websocket push notification
+      sendWebSocketNotification(
+        ctx.instance.client,
+        ctx.state.user.alias_id,
+        'addressBookCreated',
+        {
+          addressBook: {
+            addressBookId: addressbook,
+            name: displayName,
+            object: 'address_book'
+          }
+        }
+      );
+
       ctx.status = 201;
       break;
     }
@@ -571,6 +638,21 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       });
       // TODO: define $__remove in sqlite helper
       // await addressBook.remove();
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        ctx.instance.client,
+        ctx.state.user.alias_id,
+        'addressBookDeleted',
+        {
+          addressBook: {
+            id: addressBook._id.toString(),
+            addressBookId: addressbook,
+            name: addressBook.name || '',
+            object: 'address_book'
+          }
+        }
+      );
 
       ctx.status = 204;
       break;

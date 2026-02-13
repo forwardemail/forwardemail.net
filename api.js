@@ -18,6 +18,7 @@ const ip = require('ip');
 
 const API = require('./api-server');
 
+const ApiWebSocketHandler = require('#helpers/api-websocket-handler');
 const Users = require('#models/users');
 const apiConfig = require('#config/api');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
@@ -32,10 +33,17 @@ const api = new API(
   Users
 );
 
+// Attach WebSocket handler to the API server
+const wsHandler = new ApiWebSocketHandler({
+  server: api.server,
+  client: api.client
+});
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [api.server],
   redisClients: [api.client],
+  customHandlers: [() => wsHandler.close()],
   logger
 });
 graceful.listen();

@@ -27,6 +27,7 @@ const i18n = require('#helpers/i18n');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
@@ -85,6 +86,19 @@ async function onStore(mailboxId, update, session, fn) {
               resolver: this.resolver
             })
           );
+
+        // send websocket push notification
+        sendWebSocketNotification(
+          this.client,
+          session.user.alias_id,
+          'flagsUpdated',
+          {
+            mailbox: mailboxId.toString(),
+            action: update.action,
+            flags: update.value,
+            uids: modified || []
+          }
+        );
       }
 
       fn(null, bool, modified);
@@ -545,6 +559,21 @@ async function onStore(mailboxId, update, session, fn) {
         session,
         resolver: this.resolver
       });
+    }
+
+    // send websocket push notification
+    if (entries.length > 0) {
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'flagsUpdated',
+        {
+          mailbox: mailboxId.toString(),
+          action: update.action,
+          flags: update.value,
+          uids: modified || []
+        }
+      );
     }
 
     // update storage in background

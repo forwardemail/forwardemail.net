@@ -26,6 +26,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
@@ -130,6 +131,20 @@ async function onMove(mailboxId, update, session, fn) {
               resolver: this.resolver
             })
           );
+
+        // send websocket push notification
+        sendWebSocketNotification(
+          this.client,
+          session.user.alias_id,
+          'messagesMoved',
+          {
+            sourceMailbox: mailboxId.toString(),
+            destinationMailbox: targetMailbox._id.toString(),
+            destinationPath: update.destination,
+            sourceUid: response.sourceUid,
+            destinationUid: response.destinationUid
+          }
+        );
       }
     } catch (err) {
       // NOTE: if POP3 then throw err (since POP3 re-uses this)
@@ -384,6 +399,22 @@ async function onMove(mailboxId, update, session, fn) {
     };
 
     fn(null, true, response, targetMailbox, expungeEntries, existEntries);
+
+    // send websocket push notification
+    if (sourceUid.length > 0) {
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'messagesMoved',
+        {
+          sourceMailbox: mailboxId.toString(),
+          destinationMailbox: targetMailbox._id.toString(),
+          destinationPath: update.destination,
+          sourceUid,
+          destinationUid
+        }
+      );
+    }
 
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');

@@ -43,6 +43,7 @@ const isTimeoutError = require('#helpers/is-timeout-error');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const sendApn = require('#helpers/send-apn');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 
 const { formatResponse } = IMAPConnection.prototype;
 
@@ -846,6 +847,49 @@ async function onAppend(path, flags, date, raw, session, fn) {
       .catch((err) =>
         this.logger.fatal(err, { session, resolver: this.resolver })
       );
+
+    // send websocket push notification (enriched payload mirrors GET /v1/messages/:id)
+    sendWebSocketNotification(
+      this.client,
+      session.user.alias_id,
+      'newMessage',
+      {
+        mailbox: path,
+        message: {
+          id: message._id.toString(),
+          root_id: message.root ? message.root.toString() : undefined,
+          folder_id: mailbox._id.toString(),
+          folder_path: mailbox.path,
+          thread_id: message.thread ? message.thread.toString() : undefined,
+          header_message_id: message.msgid,
+          uid: message.uid,
+          modseq: message.modseq,
+          flags: message.flags,
+          labels: message.labels || [],
+          subject: message.subject || '',
+          size: message.size > 0 ? message.size : size,
+          is_unread: !message.flags.includes('\\Seen'),
+          is_flagged: message.flags.includes('\\Flagged'),
+          is_deleted: message.flags.includes('\\Deleted'),
+          is_draft: message.flags.includes('\\Draft'),
+          is_junk: Boolean(message.junk),
+          is_encrypted: Boolean(message.is_encrypted),
+          is_copied: Boolean(message.copied),
+          is_searchable: Boolean(message.searchable),
+          is_expired: Boolean(message.exp),
+          has_attachment: Boolean(message.ha),
+          retention_date: message.rdate,
+          internal_date: message.idate,
+          header_date: message.hdate,
+          remote_address: message.remoteAddress,
+          transaction: message.transaction,
+          created_at: message.created_at,
+          updated_at: message.updated_at,
+          eml: Buffer.isBuffer(raw) ? raw.toString() : raw,
+          object: 'message'
+        }
+      }
+    );
   } catch (err) {
     // delete attachments if we need to cleanup
     const attachmentIds =

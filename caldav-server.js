@@ -32,6 +32,7 @@ const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const sendApnCalendar = require('#helpers/send-apn-calendar');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const { processCalendarInvites } = require('#helpers/process-calendar-invites');
 const { generateResponseLinks } = require('#helpers/calendar-response');
@@ -1735,7 +1736,7 @@ class CalDAV extends API {
     // All calendars support both events and tasks (unified calendar approach)
     // This ensures compatibility across all CalDAV clients (Apple, Thunderbird, etc.)
     // and aligns with the default calendar creation behavior (see ensureDefaultCalendars)
-    return Calendars.create({
+    const created = await Calendars.create({
       // db virtual helper
       instance: this,
       session: ctx.state.session,
@@ -1756,6 +1757,29 @@ class CalDAV extends API {
       has_vevent: true, // Support both events and tasks
       has_vtodo: true
     });
+
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      ctx.state.user.alias_id,
+      'calendarCreated',
+      {
+        calendar: {
+          id: created._id.toString(),
+          calendarId: created.calendarId,
+          name: created.name,
+          description: created.description || '',
+          color: created.color || '',
+          order: created.order || 0,
+          timezone: created.timezone || '',
+          readonly: Boolean(created.readonly),
+          synctoken: created.synctoken || '',
+          object: 'calendar'
+        }
+      }
+    );
+
+    return created;
   }
 
   // https://caldav.forwardemail.net/dav/support@forwardemail.net/default
@@ -1874,6 +1898,27 @@ class CalDAV extends API {
         calendar._id,
         {
           $set: sanitizedUpdates
+        }
+      );
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        ctx.state.user.alias_id,
+        'calendarUpdated',
+        {
+          calendar: {
+            id: calendar._id.toString(),
+            calendarId,
+            name: calendar.name,
+            description: calendar.description || '',
+            color: calendar.color || '',
+            order: calendar.order || 0,
+            timezone: calendar.timezone || '',
+            readonly: Boolean(calendar.readonly),
+            synctoken: calendar.synctoken || '',
+            object: 'calendar'
+          }
         }
       );
 
@@ -2626,6 +2671,23 @@ class CalDAV extends API {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      ctx.state.user.alias_id,
+      'calendarEventCreated',
+      {
+        calendarEvent: {
+          id: eventCreated._id.toString(),
+          eventId: eventCreated.eventId,
+          calendarId,
+          ical: eventCreated.ical || ctx.request.body,
+          href: eventCreated.href || ctx.url,
+          object: 'calendar_event'
+        }
+      }
+    );
+
     return eventCreated;
   }
 
@@ -2914,6 +2976,23 @@ class CalDAV extends API {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      ctx.state.user.alias_id,
+      'calendarEventUpdated',
+      {
+        calendarEvent: {
+          id: e._id.toString(),
+          eventId,
+          calendarId,
+          ical: e.ical || ctx.request.body,
+          href: e.href || ctx.url,
+          object: 'calendar_event'
+        }
+      }
+    );
+
     return e;
   }
 
@@ -2990,6 +3069,21 @@ class CalDAV extends API {
     await Calendars.deleteOne(this, ctx.state.session, {
       _id: calendar._id
     });
+
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      ctx.state.user.alias_id,
+      'calendarDeleted',
+      {
+        calendar: {
+          id: calendar._id.toString(),
+          calendarId,
+          name: calendar.name,
+          object: 'calendar'
+        }
+      }
+    );
   }
 
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {
@@ -3155,6 +3249,22 @@ class CalDAV extends API {
       sendApnCalendar(this.client, ctx.state.user.alias_id)
         .then()
         .catch((err) => ctx.logger.fatal(err));
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        ctx.state.user.alias_id,
+        'calendarEventDeleted',
+        {
+          calendarEvent: {
+            id: event._id.toString(),
+            eventId: event.eventId,
+            calendarId,
+            ical: event.ical || '',
+            object: 'calendar_event'
+          }
+        }
+      );
     }
 
     return event;

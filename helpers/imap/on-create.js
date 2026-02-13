@@ -19,6 +19,7 @@ const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onCreate(path, session, fn) {
@@ -45,6 +46,17 @@ async function onCreate(path, session, fn) {
         .catch((err) =>
           this.logger.fatal(err, { path, session, resolver: this.resolver })
         );
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'mailboxCreated',
+        {
+          path,
+          mailbox: mailboxId.toString()
+        }
+      );
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -119,6 +131,17 @@ async function onCreate(path, session, fn) {
     };
 
     fn(null, true, mailbox._id, entry);
+
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      session.user.alias_id,
+      'mailboxCreated',
+      {
+        path,
+        mailbox: mailbox._id.toString()
+      }
+    );
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)

@@ -18,6 +18,7 @@ const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 // const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onRename(path, newPath, session, fn) {
@@ -37,6 +38,18 @@ async function onRename(path, newPath, session, fn) {
       });
 
       fn(null, bool, mailboxId);
+
+      // send websocket push notification
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'mailboxRenamed',
+        {
+          oldPath: path,
+          newPath,
+          mailbox: mailboxId.toString()
+        }
+      );
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -106,6 +119,18 @@ async function onRename(path, newPath, session, fn) {
 
     // send response
     fn(null, true, mailbox._id);
+
+    // send websocket push notification
+    sendWebSocketNotification(
+      this.client,
+      session.user.alias_id,
+      'mailboxRenamed',
+      {
+        oldPath: path,
+        newPath,
+        mailbox: mailbox._id.toString()
+      }
+    );
 
     // Ensure default mailboxes exist after rename
     ensureDefaultMailboxes(this, session, true) // 3rd arg is to purge cache

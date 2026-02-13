@@ -25,6 +25,7 @@ const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const sendWebSocketNotification = require('#helpers/send-websocket-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -112,7 +113,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           : [];
 
       // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L883C31-L893>
-      if (Array.isArray(entries) && entries.length > 0)
+      if (Array.isArray(entries) && entries.length > 0) {
         this.server.notifier
           .addEntries(this, session, mailboxId, entries)
           .then(() => this.server.notifier.fire(session.user.alias_id))
@@ -124,6 +125,18 @@ async function onExpunge(mailboxId, update, session, fn) {
               resolver: this.resolver
             })
           );
+
+        // send websocket push notification
+        sendWebSocketNotification(
+          this.client,
+          session.user.alias_id,
+          'messagesExpunged',
+          {
+            mailbox: mailboxId.toString(),
+            uids: messages.map((m) => m.uid)
+          }
+        );
+      }
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -237,6 +250,19 @@ async function onExpunge(mailboxId, update, session, fn) {
     }
 
     fn(null, true, mailbox, messages);
+
+    // send websocket push notification
+    if (messages.length > 0) {
+      sendWebSocketNotification(
+        this.client,
+        session.user.alias_id,
+        'messagesExpunged',
+        {
+          mailbox: mailboxId.toString(),
+          uids: messages.map((m) => m.uid)
+        }
+      );
+    }
 
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');

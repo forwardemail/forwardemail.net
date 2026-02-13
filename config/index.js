@@ -702,6 +702,7 @@ const config = {
   imapConfigurations: env.SELF_HOSTED ? [] : imapConfigurations,
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
+  WS_REDIS_CHANNEL_NAME: 'websocket_notifications',
 
   srs: {
     separator: '=',
