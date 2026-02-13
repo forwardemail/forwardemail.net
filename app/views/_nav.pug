@@ -346,6 +346,14 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Apps")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
+                  //- Webmail
+                  a.dropdown-item(
+                    href="https://mail.forwardemail.net",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-inbox
+                    = " "
+                    = t("Webmail")
                   //- Apple
                   a.dropdown-item(
                     href=l("/blog/open-source/apple-email-clients"),
@@ -883,6 +891,11 @@ nav.navbar(class=navbarClasses.join(" "))
                   = t("My Account")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-my-account")
                   //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
+                  a.dropdown-item(
+                    href="https://mail.forwardemail.net",
+                    rel="noopener noreferrer"
+                  )
+                    = t("Webmail")
                   a.dropdown-item(
                     class=ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
                     href=l("/my-account/domains")

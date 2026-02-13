@@ -630,6 +630,31 @@ p.text-center.d-lg-none
                       i.fa.fa-pencil
                       = " "
                       = t("Edit")
+                  //- Webmail
+                  if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
+                    li.list-inline-item
+                      if alias.has_imap
+                        a.btn.btn-sm.btn-link.text-themed.btn-block(
+                          href=`https://mail.forwardemail.net?email=${alias.name}@${domain.name}`,
+                          rel="noopener noreferrer"
+                        )
+                          i.fa.fa-inbox
+                          = " "
+                          = t("Webmail")
+                      else
+                        span(
+                          data-toggle="tooltip",
+                          data-placement="top",
+                          data-html="true",
+                          title=t("IMAP must be enabled to use webmail")
+                        )
+                          button.btn.btn-sm.btn-link.text-muted.btn-block(
+                            type="button",
+                            disabled
+                          )
+                            i.fa.fa-inbox
+                            = " "
+                            = t("Webmail")
                   if !isUbuntuRelatedAlias || domain.group === 'admin'
                     li.list-inline-item
                       form.ajax-form.confirm-prompt.d-block(
@@ -846,6 +871,31 @@ p.text-center.d-lg-none
                     i.fa.fa-pencil
                     = " "
                     = t("Edit")
+                //- Webmail
+                if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
+                  li.list-inline-item
+                    if alias.has_imap
+                      a.btn.btn-sm.btn-link.text-themed.btn-block(
+                        href=`https://mail.forwardemail.net?email=${alias.name}@${domain.name}`,
+                        rel="noopener noreferrer"
+                      )
+                        i.fa.fa-inbox
+                        = " "
+                        = t("Webmail")
+                    else
+                      span(
+                        data-toggle="tooltip",
+                        data-placement="top",
+                        data-html="true",
+                        title=t("IMAP must be enabled to use webmail")
+                      )
+                        button.btn.btn-sm.btn-link.text-muted.btn-block(
+                          type="button",
+                          disabled
+                        )
+                          i.fa.fa-inbox
+                          = " "
+                          = t("Webmail")
                 if !isUbuntuRelatedAlias || domain.group === 'admin'
                   li.list-inline-item
                     form.ajax-form.confirm-prompt.d-block(

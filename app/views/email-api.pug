@@ -45,9 +45,9 @@ html.h-100.no-js(
           warning: "#{ t('Warning') }",
           question: "#{ t('Question') }",
         };
+      //- prettier-ignore
       script#flash-messages(defer, nonce=nonce, data-ignore-hash-change).
         window._messages = !{json(flash(), null, null)};
-
       //- set defaults for sweetalert2
       //- <https://github.com/limonte/sweetalert2/issues/763>
       script(defer, nonce=nonce).

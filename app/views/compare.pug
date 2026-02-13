@@ -201,6 +201,10 @@ block body
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best private email service.', l("/"))
             else
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email service alternative.', l("/"))
+            = " "
+            = t("We also support webmail:")
+            = " "
+            a(rel="noopener noreferrer", href="https://mail.forwardemail.net")= "https://mail.forwardemail.net"
       .row.no-search
         .col-12
           #email-service-comparison.text-center.py-3.py-md-5.mb-0
