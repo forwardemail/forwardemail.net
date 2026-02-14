@@ -147,7 +147,7 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
       - name: start redis
-        uses: supercharge/redis-github-action@1.4.0
+        uses: supercharge/redis-github-action@1.8.1
         with:
           redis-version: latest
       - name: Install pnpm v9.15.9
