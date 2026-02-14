@@ -192,6 +192,17 @@ router
   .post('/apple', api.v1.apple)
 
   //
+  // websocket
+  // NOTE: actual WebSocket upgrades are handled by ApiWebSocketHandler;
+  //       this route only serves non-upgrade HTTP requests to /v1/ws
+  //
+  .get('/ws', () => {
+    throw Boom.badRequest(
+      'This endpoint requires a WebSocket connection. See https://forwardemail.net/docs/api#websocket-events for setup instructions.'
+    );
+  })
+
+  //
   // restricted
   //
   .get('/lookup', api.v1.restricted, api.v1.lookup)
