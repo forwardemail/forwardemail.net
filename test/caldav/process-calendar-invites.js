@@ -141,11 +141,13 @@ test.beforeEach(utils.setupFactories);
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();
 
-  // Default calendar
+  // Default calendar (matches ensureDefaultCalendars in caldav-server.js)
   t.context.defaultCalendar = {
     _id: new mongoose.Types.ObjectId(),
     calendarId: 'default',
-    name: 'Default'
+    name: 'DEFAULT_CALENDAR_NAME',
+    has_vevent: true,
+    synctoken: 1
   };
 
   // Track created/updated events
@@ -157,7 +159,14 @@ test.beforeEach((t) => {
     .stub(Calendars, 'find')
     .resolves([t.context.defaultCalendar]);
 
-  // Stub CalendarEvents.find to return empty by default (no existing events)
+  // Stub CalendarEvents.findOne for the fast path in findEventByUid
+  // Returns null by default (no match by eventId)
+  t.context.calendarEventsFindOne = t.context.sandbox
+    .stub(CalendarEvents, 'findOne')
+    .resolves(null);
+
+  // Stub CalendarEvents.find for the slow path in findEventByUid
+  // Returns empty by default (no existing events)
   t.context.calendarEventsFind = t.context.sandbox
     .stub(CalendarEvents, 'find')
     .resolves([]);
@@ -171,13 +180,20 @@ test.beforeEach((t) => {
     });
 
   // Stub CalendarEvents.create to track creations
+  // NOTE: create() uses mongoose's default signature (single doc object)
+  // where instance and session are properties of the doc
   t.context.calendarEventsCreate = t.context.sandbox
     .stub(CalendarEvents, 'create')
-    .callsFake(async (_instance, _session, doc) => {
+    .callsFake(async (doc) => {
       const created = { _id: new mongoose.Types.ObjectId(), ...doc };
       t.context.createdEvents.push(created);
       return created;
     });
+
+  // Stub Calendars.findByIdAndUpdate for synctoken bumping
+  t.context.calendarsFindByIdAndUpdate = t.context.sandbox
+    .stub(Calendars, 'findByIdAndUpdate')
+    .resolves({});
 });
 
 test.afterEach.always((t) => {

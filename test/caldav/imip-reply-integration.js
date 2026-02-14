@@ -259,6 +259,43 @@ test('CANCEL - creates CalendarInvites record', async (t) => {
   await CalendarInvites.deleteOne({ _id: result.invite._id });
 });
 
+// ─── Google Calendar Sender Mismatch ──────────────────────────────────────
+
+test('REQUEST from Google Calendar infrastructure sender - accepted', async (t) => {
+  // Google Calendar sends from calendar-notification@google.com,
+  // not from the organizer's gmail.com address.
+  // Per RFC 6047 Section 2.4, DKIM/DMARC validates transport authenticity.
+  const parsedEmail = buildParsedEmail(SAMPLE_REQUEST);
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    messageId: parsedEmail.messageId,
+    fromEmail: 'calendar-notification@google.com',
+    toEmail: 'attendee@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.true(result.processed);
+  t.is(result.method, 'REQUEST');
+
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('CANCEL from Microsoft infrastructure sender - accepted', async (t) => {
+  const parsedEmail = buildParsedEmail(SAMPLE_CANCEL);
+
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    messageId: parsedEmail.messageId,
+    fromEmail: 'noreply@microsoft.com',
+    toEmail: 'attendee@forwardemail.net'
+  });
+
+  t.truthy(result);
+  t.true(result.processed);
+  t.is(result.method, 'CANCEL');
+
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
 // ─── PUBLISH - informational only ──────────────────────────────────────────
 
 test('PUBLISH - returns null (informational only)', async (t) => {

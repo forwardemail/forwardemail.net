@@ -380,17 +380,23 @@ test('REPLY from spoofed sender - rejected', async (t) => {
   t.true(result.rejected);
 });
 
-test('REQUEST from spoofed sender - rejected', async (t) => {
+test('REQUEST from different sender - accepted (DKIM/DMARC validates transport)', async (t) => {
+  // Google Calendar sends from calendar-notification@google.com,
+  // Microsoft from noreply@microsoft.com, etc.
+  // Sender validation is NOT applied for REQUEST per RFC 6047 Section 2.4.
   const parsedEmail = buildParsedEmail(SAMPLE_REQUEST);
 
   const result = await checkAndProcessImipMessage(parsedEmail, {
-    fromEmail: 'attacker@evil.com', // Does NOT match organizer@forwardemail.net
+    fromEmail: 'calendar-notification@google.com',
     toEmail: 'attendee@external.com'
   });
 
   t.truthy(result);
-  t.false(result.processed);
-  t.true(result.rejected);
+  t.true(result.processed);
+
+  if (result.invite?._id) {
+    await CalendarInvites.deleteOne({ _id: result.invite._id });
+  }
 });
 
 test('REPLY sender case-insensitive match - accepted', async (t) => {

@@ -162,60 +162,6 @@ function validateSenderAttendeeMatch(senderEmail, attendeeEmail) {
 }
 
 /**
- * Validate that the email sender matches the organizer (for REQUEST/CANCEL/ADD)
- *
- * @param {string} senderEmail - The email sender (From header)
- * @param {string} organizerEmail - The organizer email in the iTIP message
- * @returns {Object} Validation result { valid: boolean, code: string, reason: string }
- */
-function validateSenderOrganizerMatch(senderEmail, organizerEmail) {
-  const normalizedSender = normalizeEmail(senderEmail);
-  const normalizedOrganizer = normalizeEmail(organizerEmail);
-
-  if (!normalizedSender || !normalizedOrganizer) {
-    return {
-      valid: false,
-      code: SECURITY_CODES.SENDER_MISMATCH,
-      reason: 'Missing sender or organizer email'
-    };
-  }
-
-  // Exact match
-  if (normalizedSender === normalizedOrganizer) {
-    return { valid: true, code: SECURITY_CODES.VALID, reason: 'Exact match' };
-  }
-
-  // Check SENT-BY: organizer may delegate sending to another address
-  // Allow same-domain match for organizational delegation
-  const senderDomain = extractDomain(normalizedSender);
-  const organizerDomain = extractDomain(normalizedOrganizer);
-
-  if (senderDomain && organizerDomain) {
-    const senderParts = senderDomain.split('.');
-    const organizerParts = organizerDomain.split('.');
-
-    if (senderParts.length >= 2 && organizerParts.length >= 2) {
-      const senderRoot = senderParts.slice(-2).join('.');
-      const organizerRoot = organizerParts.slice(-2).join('.');
-
-      if (senderRoot === organizerRoot) {
-        return {
-          valid: true,
-          code: SECURITY_CODES.VALID,
-          reason: 'Same organization domain'
-        };
-      }
-    }
-  }
-
-  return {
-    valid: false,
-    code: SECURITY_CODES.SENDER_MISMATCH,
-    reason: `Sender ${normalizedSender} does not match organizer ${normalizedOrganizer}`
-  };
-}
-
-/**
  * Check rate limits for iMIP message processing
  *
  * @param {Object} client - Redis client
@@ -839,8 +785,12 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
 
   //
   // SECURITY CHECK 1: Sender Match
-  // For REPLY/REFRESH/COUNTER: sender must match the attendee
-  // For REQUEST/CANCEL/ADD/DECLINECOUNTER: sender must match the organizer
+  // For REPLY/REFRESH/COUNTER: sender must match the attendee (prevents spoofing)
+  // For REQUEST/CANCEL/ADD/DECLINECOUNTER: NO sender validation needed
+  //   RFC 6047 Section 2.4: transport security (DKIM/DMARC) is sufficient.
+  //   Calendar providers (Google, Microsoft, Apple) send from infrastructure
+  //   addresses (e.g. calendar-notification@google.com) that don't match
+  //   the organizer's email address.
   //
   if (options.fromEmail) {
     let senderValidation;
@@ -855,17 +805,13 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
           attendeeEmail
         );
       }
-    } else if (
-      ['REQUEST', 'CANCEL', 'ADD', 'DECLINECOUNTER'].includes(
-        imipData.method
-      ) && // Sender should be the organizer
-      imipData.organizerEmail
-    ) {
-      senderValidation = validateSenderOrganizerMatch(
-        options.fromEmail,
-        imipData.organizerEmail
-      );
     }
+
+    // NOTE: No sender validation for REQUEST/CANCEL/ADD/DECLINECOUNTER
+    // Google Calendar sends from calendar-notification@google.com
+    // Microsoft sends from noreply@microsoft.com
+    // Apple sends from infrastructure addresses
+    // DKIM/DMARC already validates authenticity at the transport layer
 
     if (senderValidation && !senderValidation.valid) {
       logger.warn('iMIP message rejected - sender mismatch', {

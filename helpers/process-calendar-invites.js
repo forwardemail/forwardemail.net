@@ -296,6 +296,16 @@ async function processReply(instance, ctx, invite) {
     { $set: { ical: updatedIcal } }
   );
 
+  // Bump calendar synctoken so CalDAV clients see the change
+  const { calendar: replyCal } = await findEventByUid(
+    instance,
+    ctx,
+    invite.eventUid
+  );
+  if (replyCal) {
+    await bumpSyncToken(instance, ctx, replyCal._id);
+  }
+
   await markProcessed(invite._id);
 
   ctx.logger.info('REPLY processed - attendee PARTSTAT updated', {
@@ -363,6 +373,11 @@ async function processRequest(instance, ctx, invite) {
       { $set: { ical: storedIcs } }
     );
 
+    // Bump calendar synctoken so CalDAV clients see the change
+    if (calendar) {
+      await bumpSyncToken(instance, ctx, calendar._id);
+    }
+
     await markProcessed(invite._id);
     ctx.logger.info('REQUEST processed - event updated', {
       inviteId: invite._id,
@@ -381,14 +396,25 @@ async function processRequest(instance, ctx, invite) {
     // Strip METHOD from stored ICS
     const storedIcs = stripMethodFromIcs(invite.rawIcs);
 
-    // Generate eventId from UID
+    // Generate eventId and href from UID (follows CalDAV server convention)
     const eventId = `${invite.eventUid}.ics`;
+    const username = ctx.state.user?.username || '';
+    const href = `/dav/${username}/${targetCalendar._id}/${eventId}`;
 
-    await CalendarEvents.create(instance, ctx.state.session, {
+    // NOTE: CalendarEvents.create() uses mongoose's default create(doc)
+    // signature (not the restricted statics pattern). The instance and
+    // session must be properties of the document object.
+    await CalendarEvents.create({
+      instance,
+      session: ctx.state.session,
       eventId,
       calendar: targetCalendar._id,
-      ical: storedIcs
+      ical: storedIcs,
+      href
     });
+
+    // Bump calendar synctoken so CalDAV clients see the change
+    await bumpSyncToken(instance, ctx, targetCalendar._id);
 
     await markProcessed(invite._id);
     ctx.logger.info('REQUEST processed - event created', {
@@ -465,6 +491,16 @@ async function processCancel(instance, ctx, invite) {
     }
   }
 
+  // Bump calendar synctoken so CalDAV clients see the change
+  const { calendar: cancelCal } = await findEventByUid(
+    instance,
+    ctx,
+    invite.eventUid
+  );
+  if (cancelCal) {
+    await bumpSyncToken(instance, ctx, cancelCal._id);
+  }
+
   await markProcessed(invite._id);
   ctx.logger.info('CANCEL processed - event cancelled', {
     inviteId: invite._id,
@@ -519,6 +555,16 @@ async function processAdd(instance, ctx, invite) {
       { _id: calendarEvent._id },
       { $set: { ical: updatedIcal } }
     );
+  }
+
+  // Bump calendar synctoken so CalDAV clients see the change
+  const { calendar: addCal } = await findEventByUid(
+    instance,
+    ctx,
+    invite.eventUid
+  );
+  if (addCal) {
+    await bumpSyncToken(instance, ctx, addCal._id);
   }
 
   await markProcessed(invite._id);
@@ -630,6 +676,9 @@ async function processDeclineCounter(instance, ctx, invite) {
 /**
  * Find a calendar event by UID across all user's calendars
  *
+ * Uses a fast path (query by eventId) first, then falls back to
+ * scanning all events if the fast path fails (for legacy data).
+ *
  * @param {Object} instance - CalDAV server instance
  * @param {Object} ctx - Koa context
  * @param {string} eventUid - Event UID to find
@@ -644,9 +693,23 @@ async function findEventByUid(instance, ctx, eventUid) {
     calendarsCount: calendars.length
   });
 
+  // Fast path: query by eventId directly (indexed field)
   for (const cal of calendars) {
-    // Fetch all events and filter deleted_at in JavaScript
-    // (SQL "deleted_at = null" doesn't work correctly, need IS NULL)
+    for (const variant of uidVariants) {
+      const event = await CalendarEvents.findOne(instance, ctx.state.session, {
+        eventId: variant,
+        calendar: cal._id
+      });
+
+      if (event && !event.deleted_at) {
+        return { calendarEvent: event, calendar: cal };
+      }
+    }
+  }
+
+  // Slow path: scan all events and parse ICS to match UID
+  // (handles legacy data where eventId doesn't match UID)
+  for (const cal of calendars) {
     let events = await CalendarEvents.find(instance, ctx.state.session, {
       calendar: cal._id
     });
@@ -665,23 +728,50 @@ async function findEventByUid(instance, ctx, eventUid) {
 }
 
 /**
+ * Bump the synctoken on a calendar so CalDAV clients detect changes
+ * via sync-collection reports.
+ *
+ * @param {Object} instance - CalDAV server instance
+ * @param {Object} ctx - Koa context
+ * @param {string} calendarId - Calendar _id to bump
+ */
+async function bumpSyncToken(instance, ctx, calendarId) {
+  try {
+    await Calendars.findByIdAndUpdate(instance, ctx.state.session, calendarId, {
+      $inc: { synctoken: 1 }
+    });
+  } catch (err) {
+    ctx.logger.warn('Failed to bump calendar synctoken', {
+      calendarId,
+      error: err.message
+    });
+  }
+}
+
+/**
  * Get the default calendar for the user (first VEVENT-capable calendar)
+ *
+ * Matches the calendar created by ensureDefaultCalendars() in caldav-server.js
+ * which uses name: 'DEFAULT_CALENDAR_NAME' (a localized i18n key).
  */
 async function getDefaultCalendar(instance, ctx) {
   const calendars = await Calendars.find(instance, ctx.state.session, {});
 
-  // Prefer a calendar named "default" or the first one
+  // Prefer the default VEVENT calendar (created by ensureDefaultCalendars)
   for (const cal of calendars) {
-    if (
-      cal.calendarId === 'default' ||
-      cal.name === 'default' ||
-      cal.name === 'Default'
-    ) {
+    if (cal.name === 'DEFAULT_CALENDAR_NAME' && cal.has_vevent !== false) {
       return cal;
     }
   }
 
-  // Return first calendar if no default found
+  // Fallback: first calendar that supports VEVENT
+  for (const cal of calendars) {
+    if (cal.has_vevent !== false) {
+      return cal;
+    }
+  }
+
+  // Last resort: any calendar
   return calendars.length > 0 ? calendars[0] : null;
 }
 
