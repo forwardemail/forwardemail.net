@@ -17,6 +17,7 @@ const mongoose = require('mongoose');
 const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
+const sanitizeHtml = require('sanitize-html');
 const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
@@ -52,9 +53,11 @@ function isValidExdate(str) {
  * @returns {string} HTML string
  */
 function buildInviteHtml(ctx, event, links) {
-  const summary = event.summary || 'Calendar Event';
-  const description = event.description || '';
-  const location = event.location || '';
+  const sanitize = (str) =>
+    sanitizeHtml(str, { allowedTags: [], allowedAttributes: {} });
+  const summary = sanitize(event.summary || 'Calendar Event');
+  const description = sanitize(event.description || '');
+  const location = sanitize(event.location || '');
 
   // Format start/end times
   let startTime = '';
@@ -1135,9 +1138,20 @@ class CalDAV extends API {
 
       let isValid = true;
 
-      // if X-MOZ-SEND-INVITATIONS is set then don't send invitation updates
-      // (since the client will be the one sending them, or perhaps user didn't want to)
-      if (vevent.getFirstPropertyValue('x-moz-send-invitations'))
+      // Thunderbird sets X-MOZ-SEND-INVITATIONS to the string "TRUE" or "FALSE"
+      // based on the "Send invitations to attendees" checkbox.
+      // (see calendar-item-iframe.js line 3087 and CalItipMessageSender.sys.mjs line 236
+      //  in comm-central: https://searchfox.org/comm-central/source/)
+      // ical.js returns these as literal strings, so we must compare against "TRUE".
+      // When the property is absent or "TRUE", we send invitations.
+      // When explicitly "FALSE", the user opted out of server-side invitations.
+      if (
+        vevent.getFirstPropertyValue('x-moz-send-invitations') !== null &&
+        vevent
+          .getFirstPropertyValue('x-moz-send-invitations')
+          .toString()
+          .toUpperCase() !== 'TRUE'
+      )
         isValid = false;
       //
       // For REPLY method: the user is an attendee, not the organizer.
@@ -2090,12 +2104,10 @@ class CalDAV extends API {
         }
 
         if (events.length > 0) {
-          // TODO: is this wrong?
-          const calendarEvents = await CalendarEvents.create(
-            this,
-            ctx.state.session,
-            events
-          );
+          // NOTE: CalendarEvents.create() is NOT a restricted static,
+          //       so it uses mongoose's default signature: create(doc) or create([docs]).
+          //       Each event object already includes `instance` and `session` as virtual properties.
+          const calendarEvents = await CalendarEvents.create(events);
 
           // already wrapped with try/catch
           await Promise.all(
