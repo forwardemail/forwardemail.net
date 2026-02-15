@@ -231,6 +231,31 @@ async function update(ctx) {
   calendar.session = ctx.state.session;
   calendar.isNew = false;
 
+  //
+  // Fix corrupted synctokens before saving.
+  // Production calendars may have corrupted synctokens (e.g. "/7" instead
+  // of "https://forwardemail.net/ns/sync-token/7") from a prior bug in
+  // bumpSyncToken. The isURL() validator on the synctoken field rejects
+  // these, causing "Sync token was invalid" errors on any save() call.
+  // Repair the synctoken to a valid URL format before saving.
+  //
+  if (
+    typeof calendar.synctoken !== 'string' ||
+    calendar.synctoken.trim() === '' ||
+    !calendar.synctoken.startsWith('http')
+  ) {
+    const DEFAULT_SYNC_BASE = `${config.urls.web}/ns/sync-token`;
+    const parts =
+      typeof calendar.synctoken === 'string'
+        ? calendar.synctoken.split('/')
+        : [];
+    const lastPart = parts[parts.length - 1];
+    const num = Number.parseInt(lastPart, 10);
+    calendar.synctoken = Number.isNaN(num)
+      ? `${DEFAULT_SYNC_BASE}/1`
+      : `${DEFAULT_SYNC_BASE}/${num}`;
+  }
+
   await calendar.save();
 
   ctx.body = json(calendar);
