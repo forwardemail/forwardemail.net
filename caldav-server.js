@@ -521,12 +521,37 @@ async function ensureDefaultCalendars(ctx) {
 // TODO: DNS SRV records <https://sabre.io/dav/service-discovery/#dns-srv-records>
 
 function bumpSyncToken(synctoken) {
+  //
+  // synctoken must be a valid URL like:
+  //   https://forwardemail.net/ns/sync-token/1
+  //
+  // If the synctoken is corrupted (e.g. just a number, or a partial
+  // path like "/7"), we reset to the default base URL to prevent
+  // mongoose validation failures (isURL check).
+  //
+  const DEFAULT_SYNC_BASE = `${config.urls.web}/ns/sync-token`;
+
+  if (typeof synctoken !== 'string' || synctoken.trim() === '') {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
   const parts = synctoken.split('/');
-  return (
-    parts.slice(0, -1).join('/') +
-    '/' +
-    (Number.parseInt(parts[parts.length - 1], 10) + 1)
-  );
+  const lastPart = parts[parts.length - 1];
+  const num = Number.parseInt(lastPart, 10);
+
+  // If the last part is not a valid number, reset
+  if (Number.isNaN(num)) {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
+  const base = parts.slice(0, -1).join('/');
+
+  // If the base is empty or not a valid URL prefix, reset with the bumped number
+  if (!base || !base.startsWith('http')) {
+    return `${DEFAULT_SYNC_BASE}/${num + 1}`;
+  }
+
+  return `${base}/${num + 1}`;
 }
 
 // Helper function to detect component type from ICS data
@@ -1011,35 +1036,91 @@ class CalDAV extends API {
 
     this.sendEmailWithICS = this.sendEmailWithICS.bind(this);
 
-    this.app.use(
-      caldavAdapter({
-        authenticate: this.authenticate,
-        authRealm: 'forwardemail/caldav',
-        caldavRoot: '/',
-        calendarRoot: 'dav',
-        principalRoot: 'principals',
-        // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/src/koa.ts#L130-L131>
-        disableWellKnown: false,
-        logEnabled: !env.AXE_SILENT,
-        logLevel: 'debug',
-        data: {
-          createCalendar: this.createCalendar,
-          updateCalendar: this.updateCalendar,
-          getCalendar: this.getCalendar,
-          getCalendarsForPrincipal: this.getCalendarsForPrincipal,
-          getEventsForCalendar: this.getEventsForCalendar,
-          getEventsByDate: this.getEventsByDate,
-          getEvent: this.getEvent,
-          createEvent: this.createEvent,
-          updateEvent: this.updateEvent,
-          deleteEvent: this.deleteEvent,
-          deleteCalendar: this.deleteCalendar,
-          buildICS: this.buildICS,
-          getCalendarId: this.getCalendarId,
-          getETag: this.getETag
-        }
-      })
-    );
+    //
+    // Wrap the caldav-adapter middleware with error handling.
+    // Without this wrapper, any error thrown in CalDAV handlers
+    // (createEvent, updateEvent, etc.) bubbles up to koa-better-error-handler,
+    // which calls `ctx.accepts(['text', 'json', 'html'])`.  CalDAV clients
+    // (Thunderbird, Apple Calendar, etc.) send Accept headers like
+    // `text/xml` or `*/*` that don't match those three types, so the error
+    // handler overrides the status to 406 Not Acceptable — masking the real
+    // error and confusing clients.
+    //
+    // This wrapper catches errors and returns a proper WebDAV/CalDAV XML
+    // error response so the client sees the actual HTTP status code and
+    // error message, and the real error is logged server-side.
+    //
+    const caldavMiddleware = caldavAdapter({
+      authenticate: this.authenticate,
+      authRealm: 'forwardemail/caldav',
+      caldavRoot: '/',
+      calendarRoot: 'dav',
+      principalRoot: 'principals',
+      // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/src/koa.ts#L130-L131>
+      disableWellKnown: false,
+      logEnabled: !env.AXE_SILENT,
+      logLevel: 'debug',
+      data: {
+        createCalendar: this.createCalendar,
+        updateCalendar: this.updateCalendar,
+        getCalendar: this.getCalendar,
+        getCalendarsForPrincipal: this.getCalendarsForPrincipal,
+        getEventsForCalendar: this.getEventsForCalendar,
+        getEventsByDate: this.getEventsByDate,
+        getEvent: this.getEvent,
+        createEvent: this.createEvent,
+        updateEvent: this.updateEvent,
+        deleteEvent: this.deleteEvent,
+        deleteCalendar: this.deleteCalendar,
+        buildICS: this.buildICS,
+        getCalendarId: this.getCalendarId,
+        getETag: this.getETag
+      }
+    });
+
+    this.app.use(async (ctx, next) => {
+      //
+      // NOTE: the caldav-adapter middleware handles its own URL routing
+      //       internally (rootRegexp, calendarRegex, principalRegex, well-known).
+      //       We wrap ALL requests so the adapter can handle /, /dav, /principals,
+      //       and /.well-known/caldav — and we catch errors to return proper
+      //       WebDAV XML responses instead of letting them bubble up to
+      //       koa-better-error-handler (which converts them to 406 due to
+      //       CalDAV clients' Accept headers not matching text/json/html).
+      //
+      try {
+        await caldavMiddleware(ctx, next);
+      } catch (err) {
+        // Log the real error so it's visible in server logs
+        err.isCodeBug = true;
+        ctx.logger.error('CalDAV request error', {
+          err,
+          method: ctx.method,
+          url: ctx.url,
+          status: err.status || err.output?.statusCode
+        });
+
+        // Determine the appropriate HTTP status code
+        const status = err.isBoom ? err.output.statusCode : err.status || 500;
+
+        // Return a proper WebDAV XML error response
+        // so CalDAV clients see the real status code
+        ctx.status = status;
+        ctx.set('Content-Type', 'application/xml; charset="utf-8"');
+        ctx.body = [
+          '<?xml version="1.0" encoding="utf-8"?>',
+          '<D:error xmlns:D="DAV:">',
+          `  <D:status>HTTP/1.1 ${status} ${
+            err.message || 'Internal Server Error'
+          }</D:status>`,
+          `  <D:description>${sanitizeHtml(
+            err.message || 'Internal Server Error',
+            { allowedTags: [], allowedAttributes: {} }
+          )}</D:description>`,
+          '</D:error>'
+        ].join('\n');
+      }
+    });
   }
 
   // send email calendar invite with ICS

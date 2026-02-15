@@ -202,6 +202,12 @@ module.exports = {
     'Calendar named <span class="notranslate">%s</span> was successfully deleted with <span class="notranslate">%d</span> events (attached is a backup in case this was an accident)',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',
   EVENT_DOES_NOT_EXIST: 'Event does not exist.',
+  CALENDAR_EVENT_ALREADY_EXISTS:
+    'Calendar event already exists within the same calendar.',
+  CALENDAR_EVENT_DOES_NOT_EXIST: 'Calendar event does not exist.',
+  CALENDAR_EVENT_INVALID_ID: 'Invalid calendar event ID.',
+  PRECONDITION_FAILED_EVENT_EXISTS:
+    'Precondition failed: event already exists.',
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
   FAILED_TO_PROCESS_PUBLIC_KEY: 'Failed to process public key.',
   FAILED_TO_VERIFY_PUBLIC_KEY: 'Failed to verify public key.',
@@ -866,6 +872,8 @@ module.exports = {
   CONTACT_FULLNAME_OR_CONTENT_REQUIRED:
     'Contact must have either fullName or vCard content.',
   CONTACT_INVALID_ID: 'Invalid contact ID.',
+  CONTACT_ID_INVALID: 'Invalid contact ID.',
+  CONTACT_UID_INVALID: 'Invalid contact UID.',
 
   CALENDAR_NAME_REQUIRED: 'Calendar name is required.',
   CALENDAR_INVALID_ID: 'Invalid calendar ID.',

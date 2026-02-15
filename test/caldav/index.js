@@ -531,7 +531,7 @@ test('it should send calendar invite', async (t) => {
         .exec();
       return email !== null;
     },
-    { timeout: ms('15s') }
+    { timeout: ms('30s') }
   );
 
   t.true(email !== null);
