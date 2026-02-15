@@ -739,11 +739,15 @@ module.exports = {
   EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
   EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
   CANCELLED: 'Cancelled',
+  ACCEPTED: 'Accepted',
+  DECLINED: 'Declined',
+  TENTATIVE: 'Tentative',
   INVITATION: 'Invitation',
   UPDATED_INVITATION: 'Updated Invitation',
   PAYMENT_DESCRIPTION:
     '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
   PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',
+  PAYMENT_REFUNDED: 'Payment has been successfully refunded.',
   RECEIPT: 'Receipt',
   MAKE_PAYMENT: 'Make Payment',
   ALLOWLIST_DENYLIST_EXCEEDS_LIMIT:

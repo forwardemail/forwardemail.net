@@ -1088,6 +1088,30 @@ class CalDAV extends API {
       //       koa-better-error-handler (which converts them to 406 due to
       //       CalDAV clients' Accept headers not matching text/json/html).
       //
+
+      //
+      // Handle OPTIONS requests before passing to caldav-adapter.
+      // The adapter authenticates ALL requests (including OPTIONS) before
+      // checking the HTTP method, which triggers full DB setup (onAuth,
+      // refreshSession, getDatabase). This causes unnecessary 15s+ timeouts
+      // and 500 errors for simple OPTIONS capability-discovery requests
+      // from iOS/macOS Calendar (dataaccessd) and other CalDAV clients.
+      // RFC 4791 Section 5.1.1: OPTIONS just needs DAV + Allow headers.
+      //
+      if (ctx.method === 'OPTIONS') {
+        ctx.status = 200;
+        ctx.set(
+          'DAV',
+          '1, 3, calendar-access, calendar-schedule, calendar-auto-schedule'
+        );
+        ctx.set(
+          'Allow',
+          'OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCALENDAR'
+        );
+        ctx.body = '';
+        return;
+      }
+
       try {
         await caldavMiddleware(ctx, next);
       } catch (err) {
