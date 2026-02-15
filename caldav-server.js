@@ -18,14 +18,15 @@ const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
 const sanitizeHtml = require('sanitize-html');
-const _ = require('#helpers/lodash');
 
+const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
+const isCodeBug = require('#helpers/is-code-bug');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -1115,8 +1116,7 @@ class CalDAV extends API {
       try {
         await caldavMiddleware(ctx, next);
       } catch (err) {
-        // Log the real error so it's visible in server logs
-        err.isCodeBug = true;
+        err.isCodeBug = isCodeBug(err);
         ctx.logger.error('CalDAV request error', {
           err,
           method: ctx.method,
@@ -1135,10 +1135,14 @@ class CalDAV extends API {
           '<?xml version="1.0" encoding="utf-8"?>',
           '<D:error xmlns:D="DAV:">',
           `  <D:status>HTTP/1.1 ${status} ${
-            err.message || 'Internal Server Error'
+            err.isCodeBug
+              ? 'Internal Server Error'
+              : err.message || 'Internal Server Error'
           }</D:status>`,
           `  <D:description>${sanitizeHtml(
-            err.message || 'Internal Server Error',
+            err.isCodeBug
+              ? 'Internal Server Error'
+              : err.message || 'Internal Server Error',
             { allowedTags: [], allowedAttributes: {} }
           )}</D:description>`,
           '</D:error>'
