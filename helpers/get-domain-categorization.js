@@ -51,6 +51,19 @@ const { PARKING_IPS } = require('#config/smtp-reputation');
 const loggerDefault = require('#helpers/logger');
 
 // ───────────────────────────────────────────────────────────────────
+// Module-level undici dispatcher (shared across all calls)
+// ───────────────────────────────────────────────────────────────────
+//
+// undici v7 removed the `maxRedirections` request option;
+// use the redirect interceptor on a shared Agent instead.
+// Creating the Agent once avoids per-call overhead and enables
+// connection pooling across concurrent categorisation requests.
+//
+const dispatcher = new undici.Agent().compose(
+  undici.interceptors.redirect({ maxRedirections: 5 })
+);
+
+// ───────────────────────────────────────────────────────────────────
 // Keyword dictionaries for content-based categorisation
 // ───────────────────────────────────────────────────────────────────
 
@@ -481,14 +494,6 @@ async function fetchDomainContent(domain, opts = {}) {
     server: null
   };
 
-  //
-  // undici v7 removed the `maxRedirections` request option;
-  // use the redirect interceptor on a per-request Agent instead.
-  //
-  const dispatcher = new undici.Agent().compose(
-    undici.interceptors.redirect({ maxRedirections: 5 })
-  );
-
   for (const scheme of ['https', 'http']) {
     const url = `${scheme}://${domain}`;
 
@@ -690,28 +695,47 @@ async function getDomainCategorization(domain, opts = {}) {
   };
 
   //
-  // Step 1 – Cloudflare Family DNS check + parking IP / hosting check
+  // Run DNS check and HTTP fetch concurrently.
+  // These are independent I/O operations so there is no reason to
+  // wait for one before starting the other.  Domain-name pattern
+  // matching (Step 2) is synchronous and runs instantly afterwards.
   //
-  if (familyResolver) {
-    const { dnsCategory, aRecords } = await checkCloudflareFamilyDNS(
-      domain,
-      familyResolver
-    );
+  const [dnsResult, fetchResult] = await Promise.all([
+    // Step 1 – Cloudflare Family DNS check
+    familyResolver
+      ? checkCloudflareFamilyDNS(domain, familyResolver)
+      : { dnsCategory: false, aRecords: [] },
 
-    if (dnsCategory) {
-      result.blocked = dnsCategory === 'blocked_by_cloudflare_family';
-      result.categories.push(dnsCategory);
-    }
+    // Step 3 – HTTP content fetch (runs in parallel with DNS)
+    fetchDomainContent(domain, { timeout, logger: log }).catch((err) => {
+      log.debug(`HTTP categorisation error for ${domain}`, {
+        error: err.message
+      });
+      return {
+        statusCode: null,
+        contentLength: 0,
+        body: '',
+        error: err.message
+      };
+    })
+  ]);
 
-    // Reuse hasLegitimateHosting from check-domain-reputation.js
-    // (same function the SMTP approval flow uses in domains.js verifySMTP)
-    if (aRecords.length > 0) {
-      result.hasLegitimateHosting = hasLegitimateHosting(aRecords);
-    }
+  //
+  // Apply DNS results
+  //
+  if (dnsResult.dnsCategory) {
+    result.blocked = dnsResult.dnsCategory === 'blocked_by_cloudflare_family';
+    result.categories.push(dnsResult.dnsCategory);
+  }
+
+  // Reuse hasLegitimateHosting from check-domain-reputation.js
+  // (same function the SMTP approval flow uses in domains.js verifySMTP)
+  if (dnsResult.aRecords.length > 0) {
+    result.hasLegitimateHosting = hasLegitimateHosting(dnsResult.aRecords);
   }
 
   //
-  // Step 2 – Domain-name pattern matching (no HTTP needed)
+  // Step 2 – Domain-name pattern matching (synchronous, instant)
   //
   const nameCategories = categoriseByDomainName(domain);
   for (const cat of nameCategories) {
@@ -721,52 +745,43 @@ async function getDomainCategorization(domain, opts = {}) {
   }
 
   //
-  // Step 3 – HTTP content fetch and analysis
+  // Apply HTTP fetch results
   //
-  try {
-    const fetched = await fetchDomainContent(domain, { timeout, logger: log });
+  result.statusCode = fetchResult.statusCode;
+  result.contentLength = fetchResult.contentLength;
+  result.error = fetchResult.error;
 
-    result.statusCode = fetched.statusCode;
-    result.contentLength = fetched.contentLength;
-    result.error = fetched.error;
+  if (fetchResult.body && fetchResult.body.length > 0) {
+    result.title = extractTitle(fetchResult.body);
 
-    if (fetched.body && fetched.body.length > 0) {
-      result.title = extractTitle(fetched.body);
+    const visibleText = extractVisibleText(fetchResult.body);
+    const textLower = visibleText.toLowerCase();
 
-      const visibleText = extractVisibleText(fetched.body);
-      const textLower = visibleText.toLowerCase();
-
-      // Content-based categorisation
-      const contentCategories = categoriseByContent(textLower);
-      for (const cat of contentCategories) {
-        if (!result.categories.includes(cat)) {
-          result.categories.push(cat);
-        }
+    // Content-based categorisation
+    const contentCategories = categoriseByContent(textLower);
+    for (const cat of contentCategories) {
+      if (!result.categories.includes(cat)) {
+        result.categories.push(cat);
       }
-
-      // Mark as parked if the parked category was detected
-      if (result.categories.includes('parked')) {
-        result.isParked = true;
-      }
-
-      // If no categories matched and the page has very little content,
-      // flag it as minimal / splash page
-      if (
-        result.categories.length === 0 &&
-        result.contentLength < 500 &&
-        result.statusCode &&
-        result.statusCode < 400
-      ) {
-        result.categories.push('minimal_content');
-      }
-    } else if (!fetched.error && fetched.statusCode === null) {
-      result.error = 'NO_RESPONSE';
     }
-  } catch (err) {
-    log.debug(`HTTP categorisation error for ${domain}`, {
-      error: err.message
-    });
-    result.error = err.message;
+
+    // Mark as parked if the parked category was detected
+    if (result.categories.includes('parked')) {
+      result.isParked = true;
+    }
+
+    // If no categories matched and the page has very little content,
+    // flag it as minimal / splash page
+    if (
+      result.categories.length === 0 &&
+      result.contentLength < 500 &&
+      result.statusCode &&
+      result.statusCode < 400
+    ) {
+      result.categories.push('minimal_content');
+    }
+  } else if (!fetchResult.error && fetchResult.statusCode === null) {
+    result.error = 'NO_RESPONSE';
   }
 
   return result;

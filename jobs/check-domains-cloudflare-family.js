@@ -833,14 +833,20 @@ function buildDigestHtml(opts) {
     }
 
     //
-    // Process domains in parallel with concurrency control
+    // Process domains in parallel with concurrency control.
+    // Concurrency can be tuned via the CONCURRENCY env var;
+    // defaults to 100 (same as check-bad-domains.js).
     //
+    const CONCURRENCY = Number.parseInt(process.env.CONCURRENCY, 10) || 100;
+
     const ctx = {
       bannedResults: [],
       reviewResults: [],
       skippedResults: [],
       dryRun
     };
+
+    let processed = 0;
 
     await pMap(
       ids,
@@ -859,8 +865,22 @@ function buildDigestHtml(opts) {
         } catch (err) {
           logger.error(`Error in mapper for domain ID ${id}:`, err);
         }
+
+        processed++;
+
+        // Log progress every 100 domains so operators can see the
+        // job is making forward progress on large domain sets.
+        if (processed % 100 === 0 || processed === ids.length) {
+          logger.info(
+            `${dryRun ? '[DRY RUN] ' : ''}Progress: ${processed}/${
+              ids.length
+            } domains checked (${ctx.bannedResults.length} banned, ${
+              ctx.reviewResults.length
+            } review)`
+          );
+        }
       },
-      { concurrency: 100 }
+      { concurrency: CONCURRENCY }
     );
 
     const totalDuration = Date.now() - startTime;
