@@ -30,10 +30,12 @@ const nodemailer = require('nodemailer');
 const pEvent = require('p-event');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
+const striptags = require('striptags');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
+const { decode } = require('html-entities');
 
 const Aliases = require('./aliases');
 const Domains = require('./domains');
@@ -1363,6 +1365,16 @@ Emails.statics.queue = async function (
   //       when using readable streams as content if sending fails then
   //       nodemailer does not abort opened and not finished stream
   //
+
+  //
+  // Strip HTML tags from email subjects before sending.
+  // Many translated phrase keys contain <span class="notranslate">...</span>
+  // wrappers for translation services, which are fine for HTML email bodies
+  // but render as raw HTML in plain-text email subjects.
+  // (see https://github.com/forwardemail/forwardemail.net/issues/475)
+  //
+  if (options?.message?.subject)
+    options.message.subject = decode(striptags(options.message.subject));
 
   // this allow us to pass an already created nodemailer transport stream for parsing
   const info = options?.info || (await transporter.sendMail(options.message));
