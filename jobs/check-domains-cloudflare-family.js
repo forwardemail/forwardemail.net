@@ -57,7 +57,6 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -67,10 +66,10 @@ const sharedConfig = require('@ladjs/shared-config');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
+const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
-const getDomainCategorization = require('#helpers/get-domain-categorization');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -96,42 +95,6 @@ const familyResolver = createTangerine(client, logger, {
   servers: new Set(['1.1.1.3', '1.1.0.3'])
 });
 
-// Denylist entries expire after 30 days (consistent with on-data-mx.js)
-const DENYLIST_TTL_MS = ms('30d');
-
-// Accounts older than this are protected from automatic banning
-const ACCOUNT_AGE_THRESHOLD_MONTHS = 3;
-
-//
-// Categories that trigger an automatic ban + denylist.
-// Other categories (e.g. 'minimal_content', 'parking_ip') are
-// reported but do NOT trigger a ban.
-//
-const BANNABLE_CATEGORIES = new Set([
-  'blocked_by_cloudflare_family',
-  'adult',
-  'phishing',
-  'malware',
-  'crypto_scam',
-  'pharmacy',
-  'gambling',
-  'url_shortener',
-  'disposable_email',
-  'piracy'
-]);
-
-//
-// Categories that are reported in the digest but do NOT trigger a ban.
-// Admins can review these manually.
-//
-const REVIEW_CATEGORIES = new Set([
-  'parked',
-  'parking_ip',
-  'tiktok_tool',
-  'streaming',
-  'minimal_content'
-]);
-
 // store boolean if the job is cancelled
 let isCancelled = false;
 
@@ -142,41 +105,7 @@ if (parentPort)
   });
 
 /**
- * Determine why a user should be excluded from banning.
- * Returns an array of reason strings, or an empty array if the user
- * is eligible for banning.
- *
- * @param   {object}  user  Lean user document
- * @returns {string[]}
- */
-function getExclusionReasons(user) {
-  const reasons = [];
-
-  // Admin users are never auto-banned
-  if (user.group === 'admin') {
-    reasons.push('User is an admin');
-  }
-
-  // KYC-verified users are never auto-banned
-  if (user.has_passed_kyc === true) {
-    reasons.push('User has passed KYC verification');
-  }
-
-  // Customers with accounts older than 3 months are excluded
-  if (user.created_at) {
-    const accountAge = dayjs().diff(dayjs(user.created_at), 'month');
-    if (accountAge >= ACCOUNT_AGE_THRESHOLD_MONTHS) {
-      reasons.push(
-        `Account is ${accountAge} months old (threshold: ${ACCOUNT_AGE_THRESHOLD_MONTHS} months)`
-      );
-    }
-  }
-
-  return reasons;
-}
-
-/**
- * Process a single domain document.
+ * Process a single domain document using the shared helper.
  *
  * @param   {object}  domainDoc       Lean Mongoose document
  * @param   {object}  ctx             Shared context
@@ -188,213 +117,17 @@ function getExclusionReasons(user) {
 async function processDomain(domainDoc, ctx) {
   if (isCancelled) return;
 
-  const { name } = domainDoc;
-
   try {
-    //
-    // Run the full categorisation (DNS + domain-name + HTTP content)
-    //
-    const cat = await getDomainCategorization(name, {
+    await checkDomainAndAct(domainDoc, ctx, {
+      client,
       familyResolver,
       logger,
-      timeout: 10_000
+      timeout: 10_000,
+      Users,
+      Aliases
     });
-
-    // No categories detected – domain is clean
-    if (cat.categories.length === 0) return;
-
-    //
-    // Determine whether any bannable category matched
-    //
-    const bannableHits = cat.categories.filter((c) =>
-      BANNABLE_CATEGORIES.has(c)
-    );
-    const reviewHits = cat.categories.filter((c) => REVIEW_CATEGORIES.has(c));
-
-    // Nothing actionable
-    if (bannableHits.length === 0 && reviewHits.length === 0) return;
-
-    //
-    // Collect member user IDs
-    //
-    const memberUserIds = (domainDoc.members || []).map((m) => m.user);
-    if (memberUserIds.length === 0) return;
-
-    //
-    // Count aliases on this domain (for the digest report)
-    //
-    const aliasCount = await Aliases.countDocuments({
-      domain: domainDoc._id
-    });
-
-    //
-    // If there are bannable hits, evaluate each user for banning
-    //
-    if (bannableHits.length > 0) {
-      //
-      // Fetch ALL member users who are not already banned
-      // (we need to check each one for exclusion reasons)
-      //
-      const users = await Users.find({
-        _id: { $in: memberUserIds },
-        [config.userFields.isBanned]: false
-      })
-        .select(
-          `_id email group has_passed_kyc created_at ${config.userFields.isBanned}`
-        )
-        .lean()
-        .exec();
-
-      if (users.length === 0) return;
-
-      //
-      // Separate users into bannable vs. protected (skipped)
-      //
-      const bannableUsers = [];
-      const protectedUsers = [];
-
-      for (const user of users) {
-        const exclusionReasons = getExclusionReasons(user);
-        if (exclusionReasons.length > 0) {
-          protectedUsers.push({ user, exclusionReasons });
-        } else {
-          bannableUsers.push(user);
-        }
-      }
-
-      //
-      // Ban eligible users (skipped in dry-run mode)
-      //
-      if (bannableUsers.length > 0) {
-        const bannedEmails = [];
-
-        if (ctx.dryRun) {
-          //
-          // DRY RUN – log what would happen but take no action
-          //
-          for (const user of bannableUsers) {
-            bannedEmails.push(user.email);
-            logger.info(
-              `[DRY RUN] Would ban user ${user._id} (${
-                user.email
-              }) – domain ${name} categorised as [${bannableHits.join(', ')}]`
-            );
-          }
-
-          logger.info(
-            `[DRY RUN] Would denylist domain ${name} and ${bannedEmails.length} email(s)`
-          );
-        } else {
-          //
-          // LIVE – perform ban + denylist
-          //
-          const pipeline = client.pipeline();
-
-          for (const user of bannableUsers) {
-            // Ban the user
-            await Users.findByIdAndUpdate(user._id, {
-              $set: {
-                [config.userFields.isBanned]: true
-              }
-            });
-
-            // Denylist the user's email address
-            pipeline.set(
-              `denylist:${user.email}`,
-              'true',
-              'PX',
-              DENYLIST_TTL_MS
-            );
-            bannedEmails.push(user.email);
-
-            logger.info(
-              `Banned user ${user._id} (${
-                user.email
-              }) – domain ${name} categorised as [${bannableHits.join(', ')}]`
-            );
-          }
-
-          // Denylist the domain name itself
-          pipeline.set(`denylist:${name}`, 'true', 'PX', DENYLIST_TTL_MS);
-
-          await pipeline.exec();
-
-          // Clear the banned_user_ids cache
-          await client.del('banned_user_ids');
-        }
-
-        ctx.bannedResults.push({
-          domain: name,
-          categories: cat.categories,
-          bannableCategories: bannableHits,
-          title: cat.title,
-          statusCode: cat.statusCode,
-          contentLength: cat.contentLength,
-          isParked: cat.isParked,
-          hasLegitimateHosting: cat.hasLegitimateHosting,
-          users: bannableUsers.map((u) => ({
-            id: u._id.toString(),
-            email: u.email
-          })),
-          aliasCount,
-          bannedEmails
-        });
-      }
-
-      //
-      // Record protected (skipped) users for the digest
-      //
-      if (protectedUsers.length > 0) {
-        for (const { user, exclusionReasons } of protectedUsers) {
-          const accountAge = user.created_at
-            ? dayjs().diff(dayjs(user.created_at), 'day')
-            : null;
-
-          ctx.skippedResults.push({
-            domain: name,
-            categories: cat.categories,
-            bannableCategories: bannableHits,
-            title: cat.title,
-            user: {
-              id: user._id.toString(),
-              email: user.email,
-              group: user.group,
-              hasPassedKyc: user.has_passed_kyc === true,
-              accountAgeDays: accountAge,
-              createdAt: user.created_at
-            },
-            exclusionReasons,
-            aliasCount
-          });
-
-          logger.info(
-            `${ctx.dryRun ? '[DRY RUN] ' : ''}Skipped protected user ${
-              user._id
-            } (${
-              user.email
-            }) for domain ${name} – reasons: ${exclusionReasons.join('; ')}`
-          );
-        }
-      }
-    } else if (reviewHits.length > 0) {
-      //
-      // Review-only – no ban, just report
-      //
-      ctx.reviewResults.push({
-        domain: name,
-        categories: cat.categories,
-        reviewCategories: reviewHits,
-        title: cat.title,
-        statusCode: cat.statusCode,
-        contentLength: cat.contentLength,
-        isParked: cat.isParked,
-        hasLegitimateHosting: cat.hasLegitimateHosting,
-        memberCount: memberUserIds.length,
-        aliasCount
-      });
-    }
   } catch (err) {
-    logger.error(`Error processing domain ${name}:`, err);
+    logger.error(`Error processing domain ${domainDoc.name}:`, err);
   }
 }
 
@@ -501,12 +234,12 @@ function buildDigestHtml(opts) {
           <td style="padding: 10px; color: #e65100; font-weight: bold;">${totalSkippedUsers}</td>
         </tr>
         <tr>
-          <td style="padding: 10px;"><strong>Domains flagged for review</strong></td>
-          <td style="padding: 10px; color: orange; font-weight: bold;">${totalReviewDomains}</td>
+          <td style="padding: 10px;"><strong>Domains for manual review</strong></td>
+          <td style="padding: 10px;">${totalReviewDomains}</td>
         </tr>
-        <tr style="background: #f9f9f9;">
+        <tr style="background: #f0f0f0;">
           <td style="padding: 10px;"><strong>Duration</strong></td>
-          <td style="padding: 10px;">${Math.round(durationMs / 1000)}s</td>
+          <td style="padding: 10px;">${durationMs}ms</td>
         </tr>
       </table>
     </div>
@@ -517,65 +250,52 @@ function buildDigestHtml(opts) {
   //
   if (Object.keys(categoryCounts).length > 0) {
     html += `
-      <h3>${
-        dryRun ? 'Category Breakdown (Would-Be Bans)' : 'Ban Category Breakdown'
-      }</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="width: 50%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="padding: 8px; text-align: left;">Category</th>
-            <th style="padding: 8px; text-align: left;">Domains</th>
-          </tr>
-        </thead>
-        <tbody>
+      <h3>Category Breakdown (${dryRun ? 'Would-Be ' : ''}Banned Domains)</h3>
+      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <tr style="background: #f0f0f0;">
+          <th style="padding: 10px; text-align: left;">Category</th>
+          <th style="padding: 10px; text-align: left;">Count</th>
+        </tr>
     `;
     for (const [cat, count] of Object.entries(categoryCounts).sort(
       (a, b) => b[1] - a[1]
     )) {
       html += `
-          <tr>
-            <td style="padding: 8px;"><code>${cat}</code></td>
-            <td style="padding: 8px;">${count}</td>
-          </tr>
+        <tr>
+          <td style="padding: 10px;">${cat}</td>
+          <td style="padding: 10px;">${count}</td>
+        </tr>
       `;
     }
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    html += '</table>';
   }
 
   //
-  // Banned domains detail table
+  // Banned domains table
   //
   if (bannedResults.length > 0) {
-    const bannedHeading = dryRun
-      ? `Domains That Would Be Banned (${bannedResults.length})`
-      : `Banned Domains (${bannedResults.length})`;
-
     html += `
-      <h3 style="color: red;">${bannedHeading}</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="padding: 8px; text-align: left;">#</th>
-            <th style="padding: 8px; text-align: left;">Domain</th>
-            <th style="padding: 8px; text-align: left;">Categories</th>
-            <th style="padding: 8px; text-align: left;">Title</th>
-            <th style="padding: 8px; text-align: left;">Aliases</th>
-            <th style="padding: 8px; text-align: left;">${
-              dryRun ? 'Users (would be banned)' : 'Banned Users'
-            }</th>
-            <th style="padding: 8px; text-align: left;">${
-              dryRun ? 'Emails (would be denylisted)' : 'Denylisted Emails'
-            }</th>
-          </tr>
-        </thead>
-        <tbody>
+      <h3>${dryRun ? 'Domains That Would Be Banned' : 'Banned Domains'}</h3>
+      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <tr style="background: #f0f0f0;">
+          <th style="padding: 10px; text-align: left;">Domain</th>
+          <th style="padding: 10px; text-align: left;">Categories</th>
+          <th style="padding: 10px; text-align: left;">${
+            dryRun ? 'Would Ban' : 'Banned'
+          } Categories</th>
+          <th style="padding: 10px; text-align: left;">Title</th>
+          <th style="padding: 10px; text-align: left;">HTTP</th>
+          <th style="padding: 10px; text-align: left;">Parked</th>
+          <th style="padding: 10px; text-align: left;">Legit Hosting</th>
+          <th style="padding: 10px; text-align: left;">${
+            dryRun ? 'Users That Would Be Banned' : 'Banned Users'
+          }</th>
+          <th style="padding: 10px; text-align: left;">Aliases</th>
+        </tr>
     `;
 
-    for (const [index, row] of bannedResults.entries()) {
+    for (const row of bannedResults) {
       const userLinks = row.users
         .map((u) => {
           const adminUrl = `${
@@ -583,203 +303,162 @@ function buildDigestHtml(opts) {
           }/admin/users?q=${encodeURIComponent(u.email)}`;
           return `<a href="${adminUrl}">${u.email}</a>`;
         })
-        .join('<br>');
-
-      const emails = row.bannedEmails
-        .map((e) => `<code>${e}</code>`)
-        .join('<br>');
-
-      const cats = row.categories
-        .map((c) => {
-          const color = BANNABLE_CATEGORIES.has(c) ? '#dc3545' : '#ffc107';
-          return `<span style="background:${color};color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;margin:1px;">${c}</span>`;
-        })
-        .join(' ');
+        .join(', ');
 
       html += `
-          <tr style="${index % 2 === 0 ? 'background: #f9f9f9;' : ''}">
-            <td style="padding: 8px;">${index + 1}</td>
-            <td style="padding: 8px;"><code>${row.domain}</code></td>
-            <td style="padding: 8px;">${cats}</td>
-            <td style="padding: 8px; max-width: 200px; word-wrap: break-word;">${
-              row.title || '<em>N/A</em>'
-            }</td>
-            <td style="padding: 8px;">${row.aliasCount}</td>
-            <td style="padding: 8px;">${userLinks}</td>
-            <td style="padding: 8px;">${emails}</td>
-          </tr>
+        <tr>
+          <td style="padding: 10px;"><strong>${row.domain}</strong></td>
+          <td style="padding: 10px;">${row.categories.join(', ')}</td>
+          <td style="padding: 10px; color: red;">${row.bannableCategories.join(
+            ', '
+          )}</td>
+          <td style="padding: 10px;">${row.title || '<em>N/A</em>'}</td>
+          <td style="padding: 10px;">${
+            row.statusCode === null ? 'N/A' : row.statusCode
+          } (${
+        row.contentLength === null
+          ? 'N/A'
+          : `${(row.contentLength / 1024).toFixed(1)}KB`
+      })</td>
+          <td style="padding: 10px;">${row.isParked ? 'Yes' : 'No'}</td>
+          <td style="padding: 10px;">${
+            row.hasLegitimateHosting ? 'Yes' : 'No'
+          }</td>
+          <td style="padding: 10px;">${userLinks}</td>
+          <td style="padding: 10px;">${row.aliasCount}</td>
+        </tr>
       `;
     }
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    html += '</table>';
   }
 
   //
-  // Skipped / Protected Users section
-  // These users matched bannable categories but were excluded from
-  // banning because they are admins, KYC-verified, or long-standing
-  // customers.  Admins should review these manually.
+  // Skipped / protected users table
   //
   if (skippedResults.length > 0) {
     html += `
-      <h3 style="color: #e65100;">Protected Users – Skipped from Ban (${skippedResults.length})</h3>
-      <p style="font-size: 13px; color: #555;">
-        The following users own domains that matched bannable categories but
-        were <strong>not banned</strong> because they are admins, have passed
-        KYC verification, or have been customers for longer than
-        ${ACCOUNT_AGE_THRESHOLD_MONTHS} months.  These should be reviewed
-        manually and may still warrant action.
+      <h3>Skipped / Protected Users</h3>
+      <p style="color: #e65100;">
+        These users are associated with domains that matched bannable
+        categories but were <strong>not banned</strong> because they meet
+        one or more exclusion criteria.
       </p>
-      <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background-color: #fff3e0;">
-            <th style="padding: 8px; text-align: left;">#</th>
-            <th style="padding: 8px; text-align: left;">Domain</th>
-            <th style="padding: 8px; text-align: left;">Categories</th>
-            <th style="padding: 8px; text-align: left;">Title</th>
-            <th style="padding: 8px; text-align: left;">User</th>
-            <th style="padding: 8px; text-align: left;">Account Age</th>
-            <th style="padding: 8px; text-align: left;">Aliases</th>
-            <th style="padding: 8px; text-align: left;">Reason Not Banned</th>
-          </tr>
-        </thead>
-        <tbody>
+      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <tr style="background: #f0f0f0;">
+          <th style="padding: 10px; text-align: left;">Domain</th>
+          <th style="padding: 10px; text-align: left;">Categories</th>
+          <th style="padding: 10px; text-align: left;">User</th>
+          <th style="padding: 10px; text-align: left;">Group</th>
+          <th style="padding: 10px; text-align: left;">KYC</th>
+          <th style="padding: 10px; text-align: left;">Account Age</th>
+          <th style="padding: 10px; text-align: left;">Exclusion Reasons</th>
+          <th style="padding: 10px; text-align: left;">Aliases</th>
+        </tr>
     `;
 
-    for (const [index, row] of skippedResults.entries()) {
-      const cats = row.categories
-        .map((c) => {
-          const color = BANNABLE_CATEGORIES.has(c) ? '#dc3545' : '#ffc107';
-          return `<span style="background:${color};color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;margin:1px;">${c}</span>`;
-        })
-        .join(' ');
-
+    for (const row of skippedResults) {
       const userAdminUrl = `${
         config.urls.web
       }/admin/users?q=${encodeURIComponent(row.user.email)}`;
-
       const domainAdminUrl = `${
         config.urls.web
       }/admin/domains?name=${encodeURIComponent(row.domain)}`;
-
-      const { accountAgeDays } = row.user;
-      const accountAgeStr =
-        accountAgeDays === null ? '<em>unknown</em>' : `${accountAgeDays} days`;
-
-      // Build protection reason badges
-      const reasonBadges = row.exclusionReasons
-        .map((r) => {
-          let badgeColor = '#0288d1'; // default blue
-          if (r.includes('admin')) badgeColor = '#7b1fa2'; // purple for admin
-          if (r.includes('KYC')) badgeColor = '#2e7d32'; // green for KYC
-          if (r.includes('months old')) badgeColor = '#ef6c00'; // orange for age
-          return `<span style="background:${badgeColor};color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;display:inline-block;margin:1px;">${r}</span>`;
-        })
-        .join('<br>');
+      const accountAgeDays =
+        row.user.accountAgeDays === null
+          ? 'N/A'
+          : `${row.user.accountAgeDays}d`;
 
       html += `
-          <tr style="${
-            index % 2 === 0 ? 'background: #fff8e1;' : 'background: #fffde7;'
-          }">
-            <td style="padding: 8px;">${index + 1}</td>
-            <td style="padding: 8px;"><a href="${domainAdminUrl}"><code>${
+        <tr style="background: #fff8e1;">
+          <td style="padding: 10px;"><a href="${domainAdminUrl}">${
         row.domain
-      }</code></a></td>
-            <td style="padding: 8px;">${cats}</td>
-            <td style="padding: 8px; max-width: 200px; word-wrap: break-word;">${
-              row.title || '<em>N/A</em>'
-            }</td>
-            <td style="padding: 8px;"><a href="${userAdminUrl}">${
+      }</a></td>
+          <td style="padding: 10px;">${row.categories.join(', ')}</td>
+          <td style="padding: 10px;"><a href="${userAdminUrl}">${
         row.user.email
       }</a></td>
-            <td style="padding: 8px;">${accountAgeStr}</td>
-            <td style="padding: 8px;">${row.aliasCount}</td>
-            <td style="padding: 8px;">${reasonBadges}</td>
-          </tr>
+          <td style="padding: 10px;">${row.user.group}</td>
+          <td style="padding: 10px;">${
+            row.user.hasPassedKyc ? 'Yes' : 'No'
+          }</td>
+          <td style="padding: 10px;">${accountAgeDays}</td>
+          <td style="padding: 10px;">${row.exclusionReasons.join('; ')}</td>
+          <td style="padding: 10px;">${row.aliasCount}</td>
+        </tr>
       `;
     }
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    html += '</table>';
   }
 
   //
-  // Review domains detail table
+  // Review domains table
   //
   if (reviewResults.length > 0) {
     html += `
-      <h3 style="color: orange;">Domains Flagged for Review (${reviewResults.length})</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="padding: 8px; text-align: left;">#</th>
-            <th style="padding: 8px; text-align: left;">Domain</th>
-            <th style="padding: 8px; text-align: left;">Categories</th>
-            <th style="padding: 8px; text-align: left;">Title</th>
-            <th style="padding: 8px; text-align: left;">Members</th>
-            <th style="padding: 8px; text-align: left;">Aliases</th>
-          </tr>
-        </thead>
-        <tbody>
+      <h3>Domains for Manual Review</h3>
+      <p>
+        These domains matched non-bannable categories and require manual
+        review by an admin.
+      </p>
+      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <tr style="background: #f0f0f0;">
+          <th style="padding: 10px; text-align: left;">Domain</th>
+          <th style="padding: 10px; text-align: left;">Categories</th>
+          <th style="padding: 10px; text-align: left;">Review Categories</th>
+          <th style="padding: 10px; text-align: left;">Title</th>
+          <th style="padding: 10px; text-align: left;">HTTP</th>
+          <th style="padding: 10px; text-align: left;">Parked</th>
+          <th style="padding: 10px; text-align: left;">Legit Hosting</th>
+          <th style="padding: 10px; text-align: left;">Members</th>
+          <th style="padding: 10px; text-align: left;">Aliases</th>
+        </tr>
     `;
 
-    for (const [index, row] of reviewResults.entries()) {
-      const cats = row.categories
-        .map((c) => {
-          const color = REVIEW_CATEGORIES.has(c) ? '#ffc107' : '#6c757d';
-          return `<span style="background:${color};color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;margin:1px;">${c}</span>`;
-        })
-        .join(' ');
-
+    for (const row of reviewResults) {
       const domainAdminUrl = `${
         config.urls.web
       }/admin/domains?name=${encodeURIComponent(row.domain)}`;
 
       html += `
-          <tr style="${index % 2 === 0 ? 'background: #f9f9f9;' : ''}">
-            <td style="padding: 8px;">${index + 1}</td>
-            <td style="padding: 8px;"><a href="${domainAdminUrl}"><code>${
+        <tr>
+          <td style="padding: 10px;"><a href="${domainAdminUrl}">${
         row.domain
-      }</code></a></td>
-            <td style="padding: 8px;">${cats}</td>
-            <td style="padding: 8px; max-width: 200px; word-wrap: break-word;">${
-              row.title || '<em>N/A</em>'
-            }</td>
-            <td style="padding: 8px;">${row.memberCount}</td>
-            <td style="padding: 8px;">${row.aliasCount}</td>
-          </tr>
+      }</a></td>
+          <td style="padding: 10px;">${row.categories.join(', ')}</td>
+          <td style="padding: 10px; color: #e65100;">${row.reviewCategories.join(
+            ', '
+          )}</td>
+          <td style="padding: 10px;">${row.title || '<em>N/A</em>'}</td>
+          <td style="padding: 10px;">${
+            row.statusCode === null ? 'N/A' : row.statusCode
+          } (${
+        row.contentLength === null
+          ? 'N/A'
+          : `${(row.contentLength / 1024).toFixed(1)}KB`
+      })</td>
+          <td style="padding: 10px;">${row.isParked ? 'Yes' : 'No'}</td>
+          <td style="padding: 10px;">${
+            row.hasLegitimateHosting ? 'Yes' : 'No'
+          }</td>
+          <td style="padding: 10px;">${row.memberCount}</td>
+          <td style="padding: 10px;">${row.aliasCount}</td>
+        </tr>
       `;
     }
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    html += '</table>';
   }
 
+  //
+  // Footer
+  //
   html += `
-    <hr style="margin: 30px 0; border: none; border-top: 2px solid #ddd;">
-    <p style="color: #666; font-size: 12px;">
-      <em>This is an automated report from the Cloudflare Family DNS &amp;
-      content categorisation job.  Domains that resolve to 0.0.0.0 via
-      Cloudflare Family DNS (1.1.1.3) are categorised as adult content or
-      malware.  Additional categories are detected by analysing the domain
-      name and HTTP page content.<br><br>
-      <strong>Exclusion rules:</strong> Admin users, KYC-verified users,
-      and customers with accounts older than ${ACCOUNT_AGE_THRESHOLD_MONTHS}
-      months are never auto-banned.  They appear in the "Protected Users"
-      section for manual review.  All other flagged users are banned and
-      their email addresses and domain names are added to the Redis denylist
-      for 30 days.${
-        dryRun
-          ? '<br><br><strong>NOTE:</strong> This report was generated in DRY RUN mode.  No ban or denylist actions were performed.'
-          : ''
-      }</em>
+    <p style="margin-top: 20px; color: #666; font-size: 12px;">
+      <em>Generated by check-domains-cloudflare-family job at ${dayjs().format(
+        'YYYY-MM-DD HH:mm:ss [UTC]'
+      )}${dryRun ? ' – DRY RUN MODE (no actions taken)' : ''}</em>
     </p>
   `;
 

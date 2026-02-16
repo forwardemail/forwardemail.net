@@ -29,6 +29,8 @@ const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isPort, isURL } = require('@forwardemail/validator');
+const Redis = require('@ladjs/redis');
+const sharedConfig = require('@ladjs/shared-config');
 const tlds = require('tlds');
 
 const pkg = require('../../package.json');
@@ -43,6 +45,9 @@ const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
+const checkDomainAndAct = require('#helpers/check-domain-and-act');
+const createTangerine = require('#helpers/create-tangerine');
+const emailHelper = require('#helpers/email');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const {
   hasReputableDNS,
@@ -53,6 +58,13 @@ const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
+
+// TODO: use a global redis/resolver approach like global mongoose
+const breeSharedConfig = sharedConfig('BREE');
+const domainClient = new Redis(breeSharedConfig.redis, logger);
+const familyResolver = createTangerine(domainClient, logger, {
+  servers: new Set(['1.1.1.3', '1.1.0.3'])
+});
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 const quotedEmailUserUtf8 = new RE2(
@@ -1405,6 +1417,140 @@ Domains.pre('save', function (next) {
         ? [...currentValue]
         : currentValue;
     }
+  }
+
+  next();
+});
+
+//
+// Track whether the document is new so the post-save hook can detect
+// newly created domains (after save, `isNew` is always false).
+//
+Domains.pre('save', function (next) {
+  this._isNew = this.isNew;
+  next();
+});
+
+//
+// Post-save hook: when a new domain is created, run Cloudflare Family
+// DNS + content categorisation in the background.  If the domain is
+// flagged as bannable, eligible users are banned and an admin alert
+// email is sent.  Protected users (admins, KYC-verified, accounts
+// older than 3 months) are excluded from banning but still reported.
+//
+// This mirrors the logic in `jobs/check-domains-cloudflare-family.js`
+// via the shared `helpers/check-domain-and-act.js` helper.
+//
+Domains.post('save', async (doc, next) => {
+  //
+  // Only run for newly created domains
+  //
+  if (!doc._isNew) return next();
+
+  try {
+    //
+    // Build a lean-like object from the document so the shared helper
+    // can read `_id`, `name`, and `members` consistently.
+    //
+    const domainDoc = {
+      _id: doc._id,
+      name: doc.name,
+      members: doc.members || []
+    };
+
+    const ctx = {
+      bannedResults: [],
+      reviewResults: [],
+      skippedResults: [],
+      dryRun: false
+    };
+
+    await checkDomainAndAct(domainDoc, ctx, {
+      client: domainClient,
+      familyResolver,
+      logger,
+      timeout: 10_000,
+      Users: conn.models.Users,
+      Aliases: conn.models.Aliases
+    });
+
+    //
+    // If anything was flagged, send an admin alert email
+    //
+    const totalFlagged =
+      ctx.bannedResults.length +
+      ctx.reviewResults.length +
+      ctx.skippedResults.length;
+
+    if (totalFlagged > 0) {
+      const parts = [];
+      if (ctx.bannedResults.length > 0)
+        parts.push(`${ctx.bannedResults.length} banned`);
+      if (ctx.skippedResults.length > 0)
+        parts.push(`${ctx.skippedResults.length} protected (skipped)`);
+      if (ctx.reviewResults.length > 0)
+        parts.push(`${ctx.reviewResults.length} for review`);
+
+      const summary = parts.join(', ');
+      const subject = `New domain created: ${doc.name} – ${summary}`;
+
+      //
+      // Build a simple HTML summary for the alert email
+      //
+      const lines = [
+        `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`
+      ];
+
+      for (const r of ctx.bannedResults) {
+        lines.push(
+          `<p><strong>Banned</strong> – categories: ${r.categories.join(
+            ', '
+          )}` +
+            ` | users banned: ${r.bannedEmails.join(', ') || 'none'}` +
+            ` | aliases: ${r.aliasCount}</p>`
+        );
+      }
+
+      for (const r of ctx.skippedResults) {
+        lines.push(
+          `<p><strong>Protected user skipped</strong> – ${r.user.email}` +
+            ` | categories: ${r.categories.join(', ')}` +
+            ` | reasons: ${r.exclusionReasons.join('; ')}</p>`
+        );
+      }
+
+      for (const r of ctx.reviewResults) {
+        lines.push(
+          `<p><strong>Review</strong> – categories: ${r.categories.join(
+            ', '
+          )}` +
+            ` | members: ${r.memberCount}` +
+            ` | aliases: ${r.aliasCount}</p>`
+        );
+      }
+
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject
+        },
+        locals: {
+          message: lines.join('\n')
+        }
+      });
+
+      logger.info(`Post-create domain check: ${doc.name} – ${summary}`);
+    }
+  } catch (err) {
+    //
+    // Never let the categorisation check block or fail the save.
+    // Log the error and move on.
+    //
+    logger.error(
+      `Post-create domain categorisation check failed for ${doc.name}:`,
+      err
+    );
   }
 
   next();
