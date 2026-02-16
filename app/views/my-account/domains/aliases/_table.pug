@@ -636,7 +636,8 @@ p.text-center.d-lg-none
                       if alias.has_imap
                         a.btn.btn-sm.btn-link.text-themed.btn-block(
                           href=`https://mail.forwardemail.net?email=${alias.name}@${domain.name}`,
-                          rel="noopener noreferrer"
+                          rel="noopener noreferrer",
+                          target="_blank"
                         )
                           i.fa.fa-inbox
                           = " "
@@ -877,7 +878,8 @@ p.text-center.d-lg-none
                     if alias.has_imap
                       a.btn.btn-sm.btn-link.text-themed.btn-block(
                         href=`https://mail.forwardemail.net?email=${alias.name}@${domain.name}`,
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer",
+                        target="_blank"
                       )
                         i.fa.fa-inbox
                         = " "
