@@ -198,7 +198,7 @@ router
   //
   .get('/ws', () => {
     throw Boom.badRequest(
-      'This endpoint requires a WebSocket connection. See https://forwardemail.net/docs/api#websocket-events for setup instructions.'
+      'This endpoint requires a WebSocket connection. See https://forwardemail.net/en/email-api#tag/websockets for setup instructions.'
     );
   })
 
