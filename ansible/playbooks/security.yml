@@ -15,6 +15,11 @@
     service_name: "System"
     disable_thp: false
 
+- name: Import Chrony time synchronization playbook
+  import_playbook: chrony-timesync.yml
+  vars:
+    target_hosts: all
+
 - hosts: all
   name: Security
   become: true
@@ -1417,10 +1422,11 @@
         - 8.8.4.4
         - 2001:4860:4860::8844
 
-    # https://github.com/Oefenweb/ansible-ntp
-    - role: ntp
-      ntp_servers:
-        - time.cloudflare.com
+    # NOTE: NTP is now handled by chrony (imported via chrony-timesync.yml above)
+    # The legacy oefenweb.ntp role (ntpd) has been removed because:
+    #   - ntpd does not integrate with systemd/timedatectl (shows "NTP service: n/a")
+    #   - chrony is the recommended NTP client for modern Ubuntu/Debian systems
+    #   - ntpd and chrony conflict with each other (both bind to NTP ports)
 
     # https://github.com/Oefenweb/ansible-timezone
     #- role: timezone

@@ -16,9 +16,6 @@ roles:
   - name: dns
     src: oefenweb.dns
     version: v1.1.41
-  - name: ntp
-    src: oefenweb.ntp
-    version: v1.1.38
   - name: fail2ban
     src: oefenweb.fail2ban
     version: v4.0.11

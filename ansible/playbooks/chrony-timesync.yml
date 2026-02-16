@@ -26,6 +26,19 @@
         enabled: no
       ignore_errors: yes
 
+    - name: Stop and disable legacy ntpd (conflicts with chrony)
+      systemd:
+        name: ntp
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Remove legacy ntp package (replaced by chrony)
+      apt:
+        name: ntp
+        state: absent
+        purge: yes
+
     - name: Configure chrony with reliable NTP servers
       copy:
         dest: /etc/chrony/chrony.conf
