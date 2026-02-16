@@ -99,6 +99,11 @@ let jobs = [
     timeout: 0
   },
   {
+    name: 'check-domains-cloudflare-family',
+    interval: '1h',
+    timeout: 0
+  },
+  {
     name: 'welcome-email',
     interval: '1m',
     timeout: 0
