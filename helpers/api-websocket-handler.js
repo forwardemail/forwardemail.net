@@ -19,6 +19,10 @@ const isEmail = require('#helpers/is-email');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const logger = require('#helpers/logger');
+const {
+  checkForNewMailAppRelease,
+  POLL_INTERVAL: RELEASE_POLL_INTERVAL
+} = require('#helpers/get-mail-app-releases');
 
 const WS_PATH = '/v1/ws';
 
@@ -113,6 +117,24 @@ class ApiWebSocketHandler {
         }
       }
     }, ms('1m'));
+
+    //
+    // Mail app release poller
+    // Polls GitHub releases for forwardemail/mail.forwardemail.net every
+    // RELEASE_POLL_INTERVAL (default 15m).  When a new release is detected,
+    // a `newRelease` event is broadcast to ALL connected WebSocket clients.
+    // This enables push notifications for app updates on Android, iOS,
+    // webmail, and desktop clients.
+    //
+    this._releasePollerInterval = setInterval(() => {
+      this._pollForNewRelease();
+    }, RELEASE_POLL_INTERVAL);
+
+    // Run the first check shortly after startup (5 s delay to let
+    // connections establish and Redis become ready)
+    this._releasePollerTimeout = setTimeout(() => {
+      this._pollForNewRelease();
+    }, ms('5s'));
   }
 
   /**
@@ -452,9 +474,15 @@ class ApiWebSocketHandler {
    * preferred encoding (msgpackr binary or JSON text).
    *
    * Only messages published to the WS_REDIS_CHANNEL_NAME channel are processed.
-   * The aliasId in the payload determines which connected clients receive the message.
-   * This ensures strict channel isolation — a client subscribed to alias A
-   * will never receive notifications for alias B.
+   *
+   * Two delivery modes are supported:
+   *   1. **Per-alias** (default): The `aliasId` in the payload determines which
+   *      connected clients receive the message.  This ensures strict channel
+   *      isolation — a client subscribed to alias A will never receive
+   *      notifications for alias B.
+   *   2. **Broadcast**: When `broadcast` is `true` in the payload, the message
+   *      is sent to ALL connected clients regardless of alias.  This is used
+   *      for global events such as `newRelease`.
    *
    * @param {Buffer} channel - Redis channel name as Buffer
    * @param {Buffer} message - msgpackr-encoded message Buffer
@@ -463,8 +491,21 @@ class ApiWebSocketHandler {
     if (channel.toString() !== config.WS_REDIS_CHANNEL_NAME) return;
 
     try {
-      const { aliasId, payload } = decoder.unpack(message);
-      if (!aliasId || !payload) return;
+      const decoded = decoder.unpack(message);
+      const { aliasId, payload, broadcast } = decoded;
+      if (!payload) return;
+
+      // Broadcast mode — send to every connected client
+      if (broadcast) {
+        for (const ws of this.wss.clients) {
+          this._send(ws, payload);
+        }
+
+        return;
+      }
+
+      // Per-alias mode
+      if (!aliasId) return;
 
       const aliasConnections = this.clients.get(aliasId);
       if (!aliasConnections || aliasConnections.size === 0) return;
@@ -474,6 +515,62 @@ class ApiWebSocketHandler {
       }
     } catch (err) {
       logger.error('Error processing WebSocket broadcast message', err);
+    }
+  }
+
+  /**
+   * Broadcast a payload to ALL connected WebSocket clients via Redis pub/sub.
+   * Used for global events that are not scoped to a single alias
+   * (e.g. `newRelease`).
+   *
+   * @param {Object} payload - The payload object to broadcast
+   */
+  _broadcast(payload) {
+    try {
+      const packed = encoder.pack({
+        broadcast: true,
+        payload
+      });
+      this.client.publishBuffer(config.WS_REDIS_CHANNEL_NAME, packed);
+    } catch (err) {
+      logger.error('Error broadcasting WebSocket message', err);
+    }
+  }
+
+  /**
+   * Poll GitHub for new releases of the mail app
+   * (https://github.com/forwardemail/mail.forwardemail.net).
+   * If a new release is detected, broadcast a `newRelease` event to all
+   * connected WebSocket clients.
+   */
+  async _pollForNewRelease() {
+    try {
+      const release = await checkForNewMailAppRelease({
+        client: this.client
+      });
+
+      if (!release) return;
+
+      logger.info(`Broadcasting newRelease event: ${release.tagName}`);
+
+      this._broadcast({
+        event: 'newRelease',
+        timestamp: Date.now(),
+        release: {
+          tagName: release.tagName,
+          name: release.name,
+          body: release.body,
+          htmlUrl: release.htmlUrl,
+          prerelease: release.prerelease,
+          publishedAt: release.publishedAt,
+          author: release.author,
+          assets: release.assets
+        }
+      });
+    } catch (err) {
+      logger.error(err, {
+        extra: { message: 'Failed to poll for new mail app release' }
+      });
     }
   }
 
@@ -490,6 +587,8 @@ class ApiWebSocketHandler {
   async close() {
     clearInterval(this._keepAliveInterval);
     clearInterval(this._cleanupInterval);
+    clearInterval(this._releasePollerInterval);
+    clearTimeout(this._releasePollerTimeout);
 
     // Send a close frame to all connected clients before terminating
     for (const ws of this.wss.clients) {

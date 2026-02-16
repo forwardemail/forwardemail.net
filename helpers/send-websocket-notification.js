@@ -34,6 +34,10 @@ const logger = require('#helpers/logger');
  *   - contactDeleted      Contact deleted (DELETE)
  *   - addressBookCreated  New address book created (MKCOL)
  *   - addressBookDeleted  Address book deleted (DELETE)
+ *
+ * App release events:
+ *   - newRelease          New GitHub release published for the mail app
+ *                         (https://github.com/forwardemail/mail.forwardemail.net)
  */
 const VALID_EVENTS = new Set([
   // IMAP
@@ -57,7 +61,9 @@ const VALID_EVENTS = new Set([
   'contactUpdated',
   'contactDeleted',
   'addressBookCreated',
-  'addressBookDeleted'
+  'addressBookDeleted',
+  // App releases
+  'newRelease'
 ]);
 
 /**

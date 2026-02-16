@@ -2625,7 +2625,8 @@
             "description": "The event type",
             "enum": [
               "connected",
-              "newMessage"
+              "newMessage",
+              "newRelease"
             ]
           },
           "aliasId": {
@@ -2641,6 +2642,24 @@
             "type": "integer",
             "description": "The message UID (present in newMessage event)",
             "example": 123
+          },
+          "release": {
+            "type": "object",
+            "description": "The release object (present in newRelease event)",
+            "properties": {
+              "tagName": {
+                "type": "string",
+                "description": "Git tag name of the release"
+              },
+              "name": {
+                "type": "string",
+                "description": "Release title"
+              },
+              "htmlUrl": {
+                "type": "string",
+                "description": "URL to the release page on GitHub"
+              }
+            }
           }
         }
       }
@@ -7000,7 +7019,7 @@
           "WebSockets"
         ],
         "summary": "WebSocket Notifications",
-        "description": "Connect to the WebSocket endpoint for real-time push notifications on IMAP, CalDAV, and CardDAV state changes.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication:** Pass credentials via query parameters:\n- **API Token:** `wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN`\n- **Alias Auth:** `wss://api.forwardemail.net/v1/ws?username=ALIAS_USERNAME&password=ALIAS_PASSWORD`\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth. When enabled, the client must decode messages using msgpackr.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful authentication\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit: 10 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, or `addressBook`) containing the full resource data mirroring the corresponding REST API response.\n\n**IMAP Events:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n\n**CalDAV Events:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n\n**CardDAV Events:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`",
+        "description": "Connect to the WebSocket endpoint for real-time push notifications on IMAP, CalDAV, and CardDAV state changes, as well as global app release notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication:** Pass credentials via query parameters:\n- **API Token:** `wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN`\n- **Alias Auth:** `wss://api.forwardemail.net/v1/ws?username=ALIAS_USERNAME&password=ALIAS_PASSWORD`\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth. When enabled, the client must decode messages using msgpackr.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful authentication\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit: 10 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**IMAP Events:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n\n**CalDAV Events:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n\n**CardDAV Events:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**App Release Events:** `newRelease` — Broadcast to all connected clients when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub, or when an existing release is updated (e.g. assets are added). The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear, ensuring clients are only notified when artifacts are ready for download.",
         "operationId": "websocketNotifications",
         "parameters": [
           {
@@ -8316,6 +8335,141 @@
                           }
                         }
                       }
+                    },
+                    {
+                      "title": "newRelease",
+                      "type": "object",
+                      "description": "A new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) has been published on GitHub, or an existing release has been updated. This is a broadcast event sent to ALL connected clients, regardless of alias. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: The broadcast is deferred until release assets are available, preventing notifications for releases that are still building.",
+                      "required": [
+                        "event",
+                        "timestamp",
+                        "release"
+                      ],
+                      "properties": {
+                        "event": {
+                          "type": "string",
+                          "enum": [
+                            "newRelease"
+                          ]
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "Unix timestamp in milliseconds when the event was emitted"
+                        },
+                        "release": {
+                          "type": "object",
+                          "description": "The GitHub release object for the mail app",
+                          "required": [
+                            "tagName",
+                            "name",
+                            "htmlUrl"
+                          ],
+                          "properties": {
+                            "tagName": {
+                              "type": "string",
+                              "description": "Git tag name of the release (e.g. \"v1.2.3\")"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Release title"
+                            },
+                            "body": {
+                              "type": "string",
+                              "description": "Release notes in Markdown format"
+                            },
+                            "htmlUrl": {
+                              "type": "string",
+                              "format": "uri",
+                              "description": "URL to the release page on GitHub"
+                            },
+                            "prerelease": {
+                              "type": "boolean",
+                              "description": "Whether this is a pre-release"
+                            },
+                            "publishedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "ISO 8601 timestamp of when the release was published"
+                            },
+                            "author": {
+                              "type": "object",
+                              "description": "GitHub user who published the release",
+                              "properties": {
+                                "login": {
+                                  "type": "string",
+                                  "description": "GitHub username"
+                                },
+                                "avatarUrl": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "description": "URL to the user's avatar image"
+                                },
+                                "htmlUrl": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "description": "URL to the user's GitHub profile"
+                                }
+                              }
+                            },
+                            "assets": {
+                              "type": "array",
+                              "description": "Downloadable assets attached to the release",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Asset file name"
+                                  },
+                                  "size": {
+                                    "type": "integer",
+                                    "description": "Asset file size in bytes"
+                                  },
+                                  "downloadCount": {
+                                    "type": "integer",
+                                    "description": "Number of times the asset has been downloaded"
+                                  },
+                                  "browserDownloadUrl": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "description": "Direct download URL for the asset"
+                                  },
+                                  "contentType": {
+                                    "type": "string",
+                                    "description": "MIME type of the asset"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": {
+                        "event": "newRelease",
+                        "timestamp": 1739348200000,
+                        "release": {
+                          "tagName": "v1.2.3",
+                          "name": "Release v1.2.3",
+                          "body": "This release includes several bug fixes and performance improvements.",
+                          "htmlUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/tag/v1.2.3",
+                          "prerelease": false,
+                          "publishedAt": "2026-02-15T12:00:00Z",
+                          "author": {
+                            "login": "niftylettuce",
+                            "avatarUrl": "https://avatars.githubusercontent.com/u/1127956",
+                            "htmlUrl": "https://github.com/niftylettuce"
+                          },
+                          "assets": [
+                            {
+                              "name": "mail.forwardemail.net-1.2.3.dmg",
+                              "size": 104857600,
+                              "downloadCount": 500,
+                              "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v1.2.3/mail.forwardemail.net-1.2.3.dmg",
+                              "contentType": "application/x-apple-diskimage"
+                            }
+                          ]
+                        }
+                      }
                     }
                   ],
                   "discriminator": {
@@ -8403,7 +8557,7 @@
     },
     {
       "name": "WebSockets",
-      "description": "Real-time push notifications via WebSocket. Connect to the /v1/ws endpoint to receive live events for all IMAP, CalDAV, and CardDAV state changes on a specific alias. Supports 19 distinct event types covering message delivery, moves, copies, flag changes, expunges, mailbox CRUD, calendar CRUD, calendar event CRUD, contact CRUD, and address book CRUD."
+      "description": "Real-time push notifications via WebSocket. Connect to the /v1/ws endpoint to receive live events for all IMAP, CalDAV, and CardDAV state changes on a specific alias, as well as global app release notifications. Supports 20 distinct event types covering message delivery, moves, copies, flag changes, expunges, mailbox CRUD, calendar CRUD, calendar event CRUD, contact CRUD, address book CRUD, and app release broadcasts from the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
     }
   ]
 }

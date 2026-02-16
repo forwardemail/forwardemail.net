@@ -1,6 +1,6 @@
 # Real-Time API Notifications via WebSocket
 
-This document outlines the WebSocket server implementation for the API, which provides real-time push notifications for all IMAP, CalDAV, and CardDAV operations.
+This document outlines the WebSocket server implementation for the API, which provides real-time push notifications for all IMAP, CalDAV, and CardDAV operations, as well as global app update events.
 
 
 ## Table of Contents
@@ -18,14 +18,24 @@ This document outlines the WebSocket server implementation for the API, which pr
 
 The WebSocket server is integrated into the main API server, listening for HTTP upgrade requests on the `/v1/ws` path. Authentication happens during the upgrade handshake, before a connection is established.
 
-When a state-changing operation occurs (e.g., a new email arrives, a calendar event is updated, a contact is deleted), the responsible handler calls `sendWebSocketNotification`. This function publishes a `msgpackr`-encoded message to a dedicated Redis pub/sub channel. A subscriber on each API server instance then broadcasts the notification to all relevant, authenticated WebSocket clients.
+The system supports two notification types:
+
+1. **Per-Alias Notifications**: When a state-changing operation occurs for a specific alias (e.g., a new email arrives, a calendar event is updated), the responsible handler calls `sendWebSocketNotification`. This function publishes a `msgpackr`-encoded message to a dedicated Redis pub/sub channel, scoped to a specific `aliasId`.
+2. **Broadcast Notifications**: A background poller periodically checks for new releases of the [Forward Email Mail App](https://github.com/forwardemail/mail.forwardemail.net). If a new release is found (or an existing one is updated), the `ApiWebSocketHandler` broadcasts a `newRelease` event to **all** connected clients.
+
+A subscriber on each API server instance listens to the Redis channel and forwards the notification to the appropriate WebSocket clients based on the delivery mode (per-alias or broadcast).
+
+To detect updates to an existing release (e.g., when a GitHub Actions workflow adds compiled assets after initial publication), the poller computes and stores a **content fingerprint** of the release in Redis. This fingerprint is a SHA-256 hash of the tag name, body content, and a sorted list of asset names and sizes. Any change to these properties will result in a new fingerprint, triggering a `newRelease` broadcast even if the tag name remains the same.
+
+**Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred. The poller stores the tag as "pending" and waits. Once assets appear (detected by a change in the fingerprint on a subsequent poll), the pending flag is cleared and the `newRelease` event is broadcast. This ensures clients are only notified when downloadable artifacts are actually available.
 
 ### Notification Flow
 
 ```mermaid
 graph TD
-    subgraph "Client-Side Action"
+    subgraph "Client-Side Action / Timed Poller"
         A[IMAP, CalDAV, or CardDAV Operation]
+        P[GitHub Release Poller]
     end
 
     subgraph "Server-Side Handler"
@@ -33,17 +43,24 @@ graph TD
         B --> C["sendWebSocketNotification(aliasId, event, data)"];
         C --> D["encoder.pack({ aliasId, payload })"];
         D --> E["redis.publishBuffer(channel, packed_message)"];
+
+        P --> Q["checkForNewMailAppRelease() → fingerprint + asset gating"];
+        Q --> R["_broadcast(payload)"];
+        R --> S["encoder.pack({ broadcast: true, payload })"];
+        S --> E;
     end
 
     subgraph "Redis Pub/Sub"
-        E -- "`WS_REDIS_CHANNEL_NAME`" --> F(["msgpackr-encoded Buffer"]);
+        E -- "`WS_REDIS_CHANNEL_NAME`" --> F([msgpackr-encoded Buffer]);
     end
 
     subgraph "API Server (ApiWebSocketHandler)"
-        F --> G["subscriber.on(&quot;messageBuffer&quot;)"];
+        F --> G["subscriber.on('messageBuffer')"];
         G --> H["decoder.unpack(message)"];
-        H --> I["Find clients for `aliasId`"];
-        I --> J["For each client..."];
+        H -- "broadcast: true" --> I_ALL["Broadcast to ALL clients"];
+        H -- "has aliasId" --> I_ALIAS["Find clients for `aliasId`"];
+        I_ALIAS --> J["For each client..."];
+        I_ALL --> J;
         J -- "`?msgpackr=true`" --> K["Send Binary Frame (msgpackr)"];
         J -- "default" --> L["Send Text Frame (JSON)"];
     end
@@ -54,6 +71,7 @@ graph TD
     end
 
     style A fill:#f9f,stroke:#333,stroke-width:2px
+    style P fill:#f9f,stroke:#333,stroke-width:2px
     style M fill:#ccf,stroke:#333,stroke-width:2px
 ```
 
@@ -74,6 +92,7 @@ To prevent clients from needing to make follow-up HTTP requests, notification pa
 * **IMAP message events** include the full raw email in an `eml` field.
 * **CalDAV events** include the full iCalendar data in an `ical` field.
 * **CardDAV events** include the full vCard data in a `content` field.
+* **App release events** include a `release` object with details from the GitHub Release.
 
 **Example `newMessage` Payload:**
 
@@ -92,10 +111,40 @@ To prevent clients from needing to make follow-up HTTP requests, notification pa
 }
 ```
 
+**Example `newRelease` Payload:**
+
+```json
+{
+  "event": "newRelease",
+  "timestamp": 1739348200000,
+  "release": {
+    "tagName": "v1.2.3",
+    "name": "Release v1.2.3",
+    "body": "This release includes several bug fixes and performance improvements.",
+    "htmlUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/tag/v1.2.3",
+    "prerelease": false,
+    "publishedAt": "2026-02-15T12:00:00Z",
+    "author": {
+      "login": "user",
+      "avatarUrl": "https://github.com/avatars/user.png",
+      "htmlUrl": "https://github.com/user"
+    },
+    "assets": [
+      {
+        "name": "mail.forwardemail.net-1.2.3.dmg",
+        "size": 104857600,
+        "downloadCount": 500,
+        "browserDownloadUrl": "https://github.com/forwardemail/mail.forwardemail.net/releases/download/v1.2.3/mail.forwardemail.net-1.2.3.dmg"
+      }
+    ]
+  }
+}
+```
+
 
 ## Supported Events
 
-The implementation covers 19 distinct event types across the three protocols.
+The implementation covers 20 distinct event types across three protocols and one global event type.
 
 #### IMAP Events
 
@@ -114,6 +163,12 @@ The implementation covers 19 distinct event types across the three protocols.
 
 Notifications are sent for all `Created`, `Updated`, and `Deleted` operations on calendars, calendar events, address books, and contacts.
 
+#### App Release Events
+
+| Event        | Trigger                                                                                                                                                                   | Key Payload Fields |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `newRelease` | A new version of the [Forward Email Mail App](https://github.com/forwardemail/mail.forwardemail.net) is published, or an existing release is updated (e.g. assets added). | `release`          |
+
 
 ## Security
 
@@ -121,7 +176,7 @@ Security is a primary design consideration, addressed through multiple layers:
 
 1. **Authentication at Handshake**: Auth is mandatory and occurs during the HTTP upgrade. Unauthenticated clients are rejected before the WebSocket connection is formed. Both API Token (`?alias_id=` required) and Alias Password auth are supported.
 2. **Read-Only Channel**: The connection is strictly for server-to-client push. Any data messages received from a client are silently ignored.
-3. **Strict Channel Isolation**: The server maps connections to a specific `alias_id` upon authentication. A client will only ever receive notifications for the alias it is subscribed to.
+3. **Strict Channel Isolation**: For alias-specific events, the server maps connections to a specific `alias_id` upon authentication. A client will only ever receive notifications for the alias it is subscribed to. Global events like `newRelease` are broadcast to all clients.
 4. **Rate Limiting & Connection Caps**: To prevent abuse, the server enforces a per-IP connection rate limit (30/minute), a per-alias connection limit (10), and a global connection limit (10,000).
 5. **Keep-Alive**: A 30-second ping/pong keep-alive mechanism terminates unresponsive or stale connections.
 
