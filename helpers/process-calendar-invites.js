@@ -43,6 +43,7 @@ const isEmail = require('#helpers/is-email');
 const CalendarInvites = require('#models/calendar-invites');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const config = require('#config');
 
 // Maximum invites to process per CalDAV interaction
 const MAX_INVITES_PER_BATCH = 10;
@@ -256,7 +257,7 @@ async function processReply(instance, ctx, invite) {
   });
 
   // Find the calendar event by UID
-  const { calendarEvent } = await findEventByUid(
+  const { calendarEvent, calendar: replyCal } = await findEventByUid(
     instance,
     ctx,
     invite.eventUid
@@ -297,11 +298,6 @@ async function processReply(instance, ctx, invite) {
   );
 
   // Bump calendar synctoken so CalDAV clients see the change
-  const { calendar: replyCal } = await findEventByUid(
-    instance,
-    ctx,
-    invite.eventUid
-  );
   if (replyCal) {
     await bumpSyncToken(instance, ctx, replyCal._id);
   }
@@ -737,8 +733,23 @@ async function findEventByUid(instance, ctx, eventUid) {
  */
 async function bumpSyncToken(instance, ctx, calendarId) {
   try {
+    // First read the current calendar to get its synctoken
+    const calendar = await Calendars.findById(
+      instance,
+      ctx.state.session,
+      calendarId
+    );
+    if (!calendar) {
+      ctx.logger.warn('Calendar not found for synctoken bump', { calendarId });
+      return;
+    }
+
+    // Increment the URL-based synctoken (e.g. https://forwardemail.net/ns/sync-token/1 -> /2)
+    // NOTE: synctoken is a URL string, not a number, so $inc would produce garbage.
+    //       We must parse the URL, extract the trailing number, increment it, and $set it.
+    const newSynctoken = incrementSynctoken(calendar.synctoken);
     await Calendars.findByIdAndUpdate(instance, ctx.state.session, calendarId, {
-      $inc: { synctoken: 1 }
+      $set: { synctoken: newSynctoken }
     });
   } catch (err) {
     ctx.logger.warn('Failed to bump calendar synctoken', {
@@ -746,6 +757,34 @@ async function bumpSyncToken(instance, ctx, calendarId) {
       error: err.message
     });
   }
+}
+
+/**
+ * Increment a URL-based synctoken string.
+ * Mirrors the bumpSyncToken() logic in caldav-server.js.
+ *
+ * @param {string} synctoken - e.g. "https://forwardemail.net/ns/sync-token/1"
+ * @returns {string} - e.g. "https://forwardemail.net/ns/sync-token/2"
+ */
+function incrementSynctoken(synctoken) {
+  const DEFAULT_SYNC_BASE = `${config.urls.web}/ns/sync-token`;
+  if (typeof synctoken !== 'string' || synctoken.trim() === '') {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
+  const parts = synctoken.split('/');
+  const lastPart = parts[parts.length - 1];
+  const num = Number.parseInt(lastPart, 10);
+  if (Number.isNaN(num)) {
+    return `${DEFAULT_SYNC_BASE}/1`;
+  }
+
+  const base = parts.slice(0, -1).join('/');
+  if (!base || !base.startsWith('http')) {
+    return `${DEFAULT_SYNC_BASE}/${num + 1}`;
+  }
+
+  return `${base}/${num + 1}`;
 }
 
 /**

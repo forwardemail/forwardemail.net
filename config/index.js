@@ -721,7 +721,7 @@ const config = {
   // 100 items (50 MB * 100 = 5000 MB = 5 GB)
   smtpMaxQueue: 100,
   smtpQueueTimeout: ms('180s'),
-  smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
+  smtpLimitMessages: env.NODE_ENV === 'test' ? 100 : 300,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
   smtpLimitAuthDuration: ms('1d'),
   smtpLimitDuration: ms('1d'),

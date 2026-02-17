@@ -17,6 +17,11 @@ const Calendars = require('#models/calendars');
 const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const {
+  detectAttendeePartstatChange,
+  resetPartstatsOnSignificantChange,
+  sendCalendarEmail
+} = require('#helpers/send-calendar-email');
 const _ = require('#helpers/lodash');
 
 const exdateRegex =
@@ -503,6 +508,11 @@ async function create(ctx) {
 
   ctx.body = json(calendarEvent, calendar);
 
+  // Send invite emails to attendees (non-blocking, mirrors CalDAV server behavior)
+  sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST').catch((err) =>
+    ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
+  );
+
   // Update storage in background (calendar events contribute to storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
     .then()
@@ -584,6 +594,9 @@ async function update(ctx) {
     calendarEvent.calendar = calendar._id;
   }
 
+  // Save old ICS for detecting removed attendees
+  const oldIcal = calendarEvent.ical;
+
   // Update iCal data if specified
   if (body.ical !== undefined) {
     calendarEvent.ical = body.ical;
@@ -604,6 +617,82 @@ async function update(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
 
   ctx.body = json(calendarEvent, calendar);
+
+  //
+  // Determine if this is an organizer update or an attendee PARTSTAT change.
+  // Mirrors CalDAV server behavior using the same shared helpers.
+  //
+  if (oldIcal && calendarEvent.ical) {
+    const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const orgProp = vevent ? vevent.getFirstProperty('organizer') : null;
+    const orgVal = orgProp ? orgProp.getFirstValue() : null;
+    const organizerEmail = orgVal
+      ? orgVal
+          .replace(/^mailto:/i, '')
+          .toLowerCase()
+          .trim()
+      : null;
+    const isOrganizer = organizerEmail === ctx.state.session.user.username;
+
+    if (!isOrganizer && organizerEmail) {
+      //
+      // Attendee-side REPLY generation (GAP 3)
+      // Uses shared helper to detect PARTSTAT changes across all VEVENTs.
+      //
+      const { changed, scheduleAgent } = detectAttendeePartstatChange(
+        calendarEvent.ical,
+        oldIcal,
+        ctx.state.session.user.username
+      );
+
+      if (
+        changed &&
+        (!scheduleAgent || scheduleAgent.toUpperCase() !== 'CLIENT')
+      ) {
+        sendCalendarEmail(ctx, calendar, calendarEvent, 'REPLY').catch((err) =>
+          ctx.logger.fatal(err, {
+            calendarEvent,
+            session: ctx.state.session
+          })
+        );
+      }
+    } else if (isOrganizer) {
+      //
+      // Organizer update (GAP 4 & 5)
+      // Uses shared helper to reset PARTSTATs and increment SEQUENCE
+      // on time/recurrence changes across all VEVENTs.
+      //
+      const { updatedIcal, resetCount } = resetPartstatsOnSignificantChange(
+        calendarEvent.ical,
+        oldIcal,
+        organizerEmail
+      );
+
+      if (resetCount > 0) {
+        // Save the updated iCal with reset PARTSTATs
+        calendarEvent.ical = updatedIcal;
+        calendarEvent.instance = ctx.instance;
+        calendarEvent.session = ctx.state.session;
+        calendarEvent.isNew = false;
+        calendarEvent.save().catch((err) =>
+          ctx.logger.fatal(err, {
+            calendarEvent,
+            session: ctx.state.session
+          })
+        );
+      }
+
+      // Send REQUEST to attendees (pass oldIcal so removed attendees get CANCEL)
+      sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST', oldIcal).catch(
+        (err) =>
+          ctx.logger.fatal(err, {
+            calendarEvent,
+            session: ctx.state.session
+          })
+      );
+    }
+  }
 
   // Update storage in background (calendar event size may have changed)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
@@ -649,6 +738,71 @@ async function remove(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
 
   ctx.body = json(calendarEvent, calendar);
+
+  //
+  // Determine if the user is the organizer or an attendee.
+  // Mirrors CalDAV server DELETE behavior using the same shared helpers.
+  //
+  if (calendarEvent.ical) {
+    const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const orgProp = vevent ? vevent.getFirstProperty('organizer') : null;
+    const orgVal = orgProp ? orgProp.getFirstValue() : null;
+    const organizerEmail = orgVal
+      ? orgVal
+          .replace(/^mailto:/i, '')
+          .toLowerCase()
+          .trim()
+      : null;
+    const isOrganizer = organizerEmail === ctx.state.session.user.username;
+
+    if (isOrganizer) {
+      // Organizer deleting - send CANCEL to all attendees
+      sendCalendarEmail(ctx, calendar, calendarEvent, 'CANCEL').catch((err) =>
+        ctx.logger.fatal(err, {
+          calendarEvent,
+          session: ctx.state.session
+        })
+      );
+    } else if (organizerEmail && vevent) {
+      // Attendee deleting - send DECLINED REPLY to organizer
+      // Check SCHEDULE-AGENT first
+      const attProps = vevent.getAllProperties('attendee');
+      let shouldSendReply = true;
+      for (const att of attProps) {
+        const email = (att.getFirstValue() || '')
+          .replace(/^mailto:/i, '')
+          .toLowerCase()
+          .trim();
+        if (email === ctx.state.session.user.username) {
+          const sa = att.getParameter('schedule-agent');
+          if (sa && sa.toUpperCase() === 'CLIENT') {
+            shouldSendReply = false;
+          }
+
+          // Set PARTSTAT to DECLINED before sending
+          att.setParameter('partstat', 'DECLINED');
+          break;
+        }
+      }
+
+      if (shouldSendReply) {
+        // Update the event ical with DECLINED status for the REPLY
+        const declinedEvent = {
+          ...(calendarEvent.toObject
+            ? calendarEvent.toObject()
+            : calendarEvent),
+          ical: comp.toString()
+        };
+        sendCalendarEmail(ctx, calendar, declinedEvent, 'REPLY').catch((err) =>
+          ctx.logger.fatal(err, {
+            calendarEvent,
+            session: ctx.state.session
+          })
+        );
+      }
+    }
+  }
 
   // Update storage in background (calendar event was deleted, reducing storage usage)
   updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)

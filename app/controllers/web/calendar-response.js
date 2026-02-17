@@ -142,6 +142,8 @@ async function processResponse(ctx) {
     organizerEmail: tokenData.organizerEmail,
     attendeeEmail: tokenData.attendeeEmail,
     response: partstat,
+    method: 'REPLY',
+    source: 'web',
     comment: ctx.request.body?.comment?.slice(0, 1000),
     ip: ctx.ip,
     userAgent: ctx.headers['user-agent'],

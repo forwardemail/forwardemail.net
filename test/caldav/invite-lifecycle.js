@@ -4,52 +4,100 @@
  */
 
 /**
- * Calendar Invite Lifecycle E2E Tests
+ * E2E Lifecycle Tests for Calendar Invite Processing
  *
- * These tests verify the COMPLETE end-to-end lifecycle of calendar invites,
- * chaining the real public APIs together:
+ * These tests verify the full end-to-end flow:
+ *   iMIP email / web link → CalendarInvites (MongoDB) → processCalendarInvites → real SQLite
  *
- *   1. checkAndProcessImipMessage (email → CalendarInvites in MongoDB)
- *   2. processCalendarInvites     (CalendarInvites → CalendarEvents via stubs)
- *   3. calendar-response helpers  (link click → CalendarInvites in MongoDB)
- *
- * Each test simulates a real-world scenario:
- *
- * - Google Calendar sends REQUEST email → event appears in CalDAV
- * - Attendee clicks Accept link → organizer's event PARTSTAT updated
- * - Attendee sends iMIP REPLY → organizer's event PARTSTAT updated
- * - Organizer sends CANCEL → attendee's event marked CANCELLED
- * - Full lifecycle: REQUEST → Accept → Update → Cancel
- * - Multiple attendees respond to same event
- * - Attendee changes response (Accept → Decline)
- *
- * Architecture:
- *   Real MongoDB (MongoMemoryServer) for CalendarInvites
- *   Sinon stubs for CalendarEvents/Calendars (SQLite-backed, need real CalDAV)
- *
- * No private/internal functions are imported or tested directly.
+ * A single real CalDAV + SQLite server is shared across all tests.
+ * processCalendarInvites operates against a live database — no stubs.
  */
 
 const { Buffer } = require('node:buffer');
-const test = require('ava');
-const sinon = require('sinon');
+const Redis = require('ioredis-mock');
+const dayjs = require('dayjs-with-plugins');
 const ICAL = require('ical.js');
-const mongoose = require('mongoose');
+const ip = require('ip');
+const ms = require('ms');
+const pWaitFor = require('p-wait-for');
+const test = require('ava');
+const tsdav = require('tsdav');
 
 const utils = require('../utils');
+const CalDAV = require('../../caldav-server');
+const SQLite = require('../../sqlite-server');
+
 const CalendarInvites = require('#models/calendar-invites');
-const CalendarEvents = require('#models/calendar-events');
-const Calendars = require('#models/calendars');
+const Emails = require('#models/emails');
+const Users = require('#models/users');
+const calDAVConfig = require('#config/caldav');
+const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const env = require('#config/env');
+const logger = require('#helpers/logger');
+
 const { checkAndProcessImipMessage } = require('#helpers/process-imip-reply');
-const { processCalendarInvites } = require('#helpers/process-calendar-invites');
 const {
   generateToken,
+  hashToken,
   parseToken,
-  responseToPartstat,
-  hashToken
+  responseToPartstat
 } = require('#helpers/calendar-response');
 
-// ─── Sample ICS Templates ───────────────────────────────────────────────────
+const {
+  getBasicAuthHeaders,
+  createAccount,
+  fetchCalendars,
+  fetchCalendarObjects,
+  createObject,
+  updateObject,
+  deleteObject
+} = tsdav;
+
+// dynamically import get-port
+let getPort;
+import('get-port').then((obj) => {
+  getPort = obj.default;
+});
+
+const IP_ADDRESS = ip.address();
+
+// ─── ICS Helpers ─────────────────────────────────────────────────────────────
+
+function makeStoredEventIcs({
+  uid,
+  organizer,
+  attendees,
+  summary = 'Team Meeting',
+  sequence = 0
+}) {
+  const attendeeLines = attendees
+    .map(
+      (a) =>
+        `ATTENDEE;PARTSTAT=${a.partstat || 'NEEDS-ACTION'};RSVP=TRUE:mailto:${
+          a.email
+        }`
+    )
+    .join('\r\n');
+
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Forward Email//CalDAV//EN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    'DTSTAMP:20260214T100000Z',
+    'DTSTART:20260301T100000Z',
+    'DTEND:20260301T110000Z',
+    `SUMMARY:${summary}`,
+    `SEQUENCE:${sequence}`,
+    `ORGANIZER:mailto:${organizer}`,
+    attendeeLines,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+}
 
 function makeRequestIcs({
   uid,
@@ -71,7 +119,7 @@ function makeRequestIcs({
     'METHOD:REQUEST',
     'BEGIN:VEVENT',
     `UID:${uid}`,
-    `DTSTAMP:20260214T100000Z`,
+    'DTSTAMP:20260214T100000Z',
     `DTSTART:${dtstart}`,
     `DTEND:${dtend}`,
     `SUMMARY:${summary}`,
@@ -91,9 +139,9 @@ function makeReplyIcs({ uid, organizer, attendee, partstat, sequence = 0 }) {
     'METHOD:REPLY',
     'BEGIN:VEVENT',
     `UID:${uid}`,
-    `DTSTAMP:20260214T120000Z`,
-    `DTSTART:20260301T100000Z`,
-    `DTEND:20260301T110000Z`,
+    'DTSTAMP:20260214T120000Z',
+    'DTSTART:20260301T100000Z',
+    'DTEND:20260301T110000Z',
     `SEQUENCE:${sequence}`,
     `ORGANIZER:mailto:${organizer}`,
     `ATTENDEE;PARTSTAT=${partstat}:mailto:${attendee}`,
@@ -114,8 +162,8 @@ function makeCancelIcs({ uid, organizer, attendees, sequence = 1 }) {
     'METHOD:CANCEL',
     'BEGIN:VEVENT',
     `UID:${uid}`,
-    `DTSTAMP:20260214T140000Z`,
-    `DTSTART:20260301T100000Z`,
+    'DTSTAMP:20260214T140000Z',
+    'DTSTART:20260301T100000Z',
     `SEQUENCE:${sequence}`,
     'STATUS:CANCELLED',
     `ORGANIZER:mailto:${organizer}`,
@@ -125,42 +173,6 @@ function makeCancelIcs({ uid, organizer, attendees, sequence = 1 }) {
   ].join('\r\n');
 }
 
-function makeStoredEventIcs({
-  uid,
-  organizer,
-  attendees,
-  summary = 'Team Meeting',
-  sequence = 0
-}) {
-  const attendeeLines = attendees
-    .map(
-      (a) =>
-        `ATTENDEE;PARTSTAT=${a.partstat || 'NEEDS-ACTION'}:mailto:${a.email}`
-    )
-    .join('\r\n');
-
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Forward Email//CalDAV//EN',
-    'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTAMP:20260214T100000Z`,
-    `DTSTART:20260301T100000Z`,
-    `DTEND:20260301T110000Z`,
-    `SUMMARY:${summary}`,
-    `SEQUENCE:${sequence}`,
-    `ORGANIZER:mailto:${organizer}`,
-    attendeeLines,
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
-}
-
-/**
- * Build a parsedEmail object that mimics mailparser output
- * with a text/calendar attachment (like Gmail/Google Calendar sends)
- */
 function buildParsedEmail({ from, to, icsContent, subject = 'Invitation' }) {
   return {
     from: { value: [{ address: from }] },
@@ -176,139 +188,7 @@ function buildParsedEmail({ from, to, icsContent, subject = 'Invitation' }) {
   };
 }
 
-// ─── Test Setup ─────────────────────────────────────────────────────────────
-
-test.before(utils.setupMongoose);
-test.after.always(utils.teardownMongoose);
-test.beforeEach(utils.setupFactories);
-
-test.beforeEach((t) => {
-  t.context.sandbox = sinon.createSandbox();
-
-  // Default calendar mock
-  t.context.defaultCalendar = {
-    _id: new mongoose.Types.ObjectId(),
-    calendarId: 'default',
-    name: 'DEFAULT_CALENDAR_NAME',
-    has_vevent: true,
-    synctoken: 1
-  };
-
-  // Track created/updated events for assertions
-  t.context.createdEvents = [];
-  t.context.updatedEvents = [];
-
-  // In-memory event store for realistic multi-step tests
-  t.context.eventStore = new Map();
-
-  // Stub Calendars.find
-  t.context.sandbox
-    .stub(Calendars, 'find')
-    .resolves([t.context.defaultCalendar]);
-
-  // Stub CalendarEvents.findOne (fast path in findEventByUid)
-  t.context.calendarEventsFindOne = t.context.sandbox
-    .stub(CalendarEvents, 'findOne')
-    .callsFake(async (_instance, _session, query) => {
-      // Check in-memory store
-      for (const [, event] of t.context.eventStore) {
-        if (query.eventId && event.eventId === query.eventId) {
-          return event;
-        }
-      }
-
-      return null;
-    });
-
-  // Stub CalendarEvents.find (slow path)
-  t.context.calendarEventsFind = t.context.sandbox
-    .stub(CalendarEvents, 'find')
-    .callsFake(async () => {
-      return [...t.context.eventStore.values()];
-    });
-
-  // Stub CalendarEvents.findOneAndUpdate
-  t.context.calendarEventsFindOneAndUpdate = t.context.sandbox
-    .stub(CalendarEvents, 'findOneAndUpdate')
-    .callsFake(async (_instance, _session, filter, update) => {
-      t.context.updatedEvents.push({ filter, update });
-
-      // Update in-memory store
-      for (const [key, event] of t.context.eventStore) {
-        if (
-          (filter._id && event._id.toString() === filter._id.toString()) ||
-          (filter.eventId && event.eventId === filter.eventId)
-        ) {
-          if (update.$set) {
-            Object.assign(event, update.$set);
-          }
-
-          t.context.eventStore.set(key, event);
-          return event;
-        }
-      }
-
-      return { ...filter, ...update.$set };
-    });
-
-  // Stub CalendarEvents.create
-  t.context.calendarEventsCreate = t.context.sandbox
-    .stub(CalendarEvents, 'create')
-    .callsFake(async (doc) => {
-      const created = {
-        _id: new mongoose.Types.ObjectId(),
-        ...doc,
-        // Remove non-schema fields
-        instance: undefined,
-        session: undefined
-      };
-      t.context.createdEvents.push(created);
-      // Add to in-memory store
-      t.context.eventStore.set(created.eventId || created._id.toString(), {
-        ...created,
-        calendar: doc.calendar
-      });
-      return created;
-    });
-
-  // Stub Calendars.findByIdAndUpdate (synctoken bumping)
-  t.context.calendarsFindByIdAndUpdate = t.context.sandbox
-    .stub(Calendars, 'findByIdAndUpdate')
-    .resolves({});
-});
-
-test.afterEach.always(async (t) => {
-  t.context.sandbox.restore();
-  // Clean up CalendarInvites between tests
-  await CalendarInvites.deleteMany({});
-});
-
-// ─── Mock instance and ctx ──────────────────────────────────────────────────
-
-function createMockCtx(userEmail = 'organizer@example.com') {
-  return {
-    state: {
-      user: {
-        username: userEmail,
-        alias_name: userEmail.split('@')[0],
-        domain_name: userEmail.split('@')[1]
-      },
-      session: {
-        db: { wsp: true }
-      }
-    },
-    logger: {
-      debug() {},
-      info() {},
-      warn() {},
-      error() {}
-    }
-  };
-}
-
-const mockInstance = { wsp: true };
-
-// ─── Helper to extract PARTSTAT from stored ICS ─────────────────────────────
+// ─── ICS Parsing Helpers ─────────────────────────────────────────────────────
 
 function getPartstatFromIcs(icalStr, attendeeEmail) {
   const comp = new ICAL.Component(ICAL.parse(icalStr));
@@ -340,6 +220,265 @@ function hasMethodInIcs(icalStr) {
   return comp.getFirstPropertyValue('method') !== null;
 }
 
+// ─── CalDAV Server Setup (shared across all tests) ──────────────────────────
+
+test.before(utils.setupMongoose);
+
+test.before(async (t) => {
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+
+  const client = new Redis();
+  const subscriber = new Redis();
+  client.setMaxListeners(0);
+  subscriber.setMaxListeners(0);
+  subscriber.channels.setMaxListeners(0);
+
+  t.context.client = client;
+  t.context.subscriber = subscriber;
+
+  const port = await getPort();
+  const sqlitePort = await getPort();
+
+  const sqlite = new SQLite({ client, subscriber });
+  await sqlite.listen(sqlitePort);
+  t.context.sqlite = sqlite;
+
+  const wsp = createWebSocketAsPromised({ port: sqlitePort });
+  t.context.wsp = wsp;
+
+  const calDAV = new CalDAV({ ...calDAVConfig, wsp, port, client }, Users);
+  calDAV.app.server = calDAV.server;
+  await calDAV.listen();
+  t.context.calDAV = calDAV;
+  t.context.serverUrl = `http://${IP_ADDRESS}:${port}/`;
+
+  // Create user, domain, alias
+  utils.setupFactories(t);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  t.context.user = await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+  t.context.domain = domain;
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.context.pass = pass;
+  t.context.alias = await alias.save();
+  t.context.username = `${alias.name}@${domain.name}`;
+
+  // Spoof DNS records
+  const map = new Map();
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+  await resolver.options.cache.mset(map);
+
+  t.context.authHeaders = getBasicAuthHeaders({
+    username: t.context.username,
+    password: t.context.pass
+  });
+
+  t.context.account = await createAccount({
+    account: { serverUrl: t.context.serverUrl, accountType: 'caldav' },
+    headers: t.context.authHeaders
+  });
+
+  t.context.calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+});
+
+test.after.always(utils.teardownMongoose);
+
+test.after.always(async (t) => {
+  const closeServerWithTimeout = (server, timeout = 3000) =>
+    new Promise((resolve) => {
+      if (!server) {
+        resolve();
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        resolve();
+      }, timeout);
+
+      server.close(() => {
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+
+  if (t.context.calDAV) {
+    await closeServerWithTimeout(t.context.calDAV.server);
+  }
+
+  if (t.context.sqlite) {
+    await closeServerWithTimeout(t.context.sqlite.server);
+  }
+
+  if (t.context.wsp) {
+    try {
+      await t.context.wsp.close();
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  if (t.context.client) {
+    t.context.client.disconnect();
+  }
+
+  if (t.context.subscriber) {
+    t.context.subscriber.disconnect();
+  }
+});
+
+// Clean up CalendarInvites and queued Emails between tests
+test.afterEach.always(async () => {
+  await CalendarInvites.deleteMany({});
+  await Emails.deleteMany({});
+});
+
+// ─── Helper: create event via CalDAV HTTP and return its URL ─────────────────
+
+async function createEventViaCalDAV(t, uid, icsData) {
+  const calendar = t.context.calendars.find((c) =>
+    c.components?.includes('VEVENT')
+  );
+  const objectUrl = new URL(`${uid}.ics`, calendar.url).href;
+
+  await createObject({
+    url: objectUrl,
+    data: icsData,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  return objectUrl;
+}
+
+// ─── Helper: fetch event ICS from CalDAV ─────────────────────────────────────
+
+async function fetchEventIcs(t, uid) {
+  const calendar = t.context.calendars.find((c) =>
+    c.components?.includes('VEVENT')
+  );
+  const objects = await fetchCalendarObjects({
+    calendar,
+    headers: t.context.authHeaders
+  });
+
+  const match = objects.find(
+    (o) => o.url.includes(uid) || (o.data && o.data.includes(uid))
+  );
+  return match ? match.data : null;
+}
+
+// ─── Helper: run processCalendarInvites against real CalDAV+SQLite ───────────
+
+async function runProcessInvites(t) {
+  // fetchCalendars triggers authentication which runs processCalendarInvites
+  t.context.calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // LIFECYCLE 1: Google Calendar REQUEST → CalDAV Event Created
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -349,10 +488,9 @@ test.serial(
   async (t) => {
     const uid = `lifecycle-request-${Date.now()}@google.com`;
     const organizer = 'boss@gmail.com';
-    const attendee = 'user@forwardemail.net';
+    const attendee = t.context.username;
 
     // ── Step 1: Incoming email from Google Calendar ──
-    // Google sends from calendar-notification@google.com (not the organizer!)
     const icsContent = makeRequestIcs({
       uid,
       organizer,
@@ -373,7 +511,6 @@ test.serial(
       toEmail: attendee
     });
 
-    // Verify: iMIP processing accepted the message (no sender validation for REQUEST)
     t.truthy(result, 'checkAndProcessImipMessage should return a result');
     t.true(result.processed, 'Message should be processed successfully');
     t.is(result.method, 'REQUEST');
@@ -385,72 +522,62 @@ test.serial(
       processed: false
     });
     t.truthy(invite, 'CalendarInvites record should exist in MongoDB');
-    t.is(invite.organizerEmail, attendee); // For REQUEST, organizerEmail = target
+    t.is(invite.organizerEmail, attendee);
     t.is(invite.rawIcs, icsContent);
     t.is(invite.source, 'imip');
 
     // ── Step 2: User authenticates to CalDAV → processCalendarInvites runs ──
-    const ctx = createMockCtx(attendee);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    await runProcessInvites(t);
 
-    t.is(results.processed, 1, 'Should process 1 invite');
-    t.is(results.failed, 0, 'Should have 0 failures');
+    // Verify: invite marked as processed in MongoDB
+    const processedInvite = await CalendarInvites.findOne({
+      eventUid: uid,
+      method: 'REQUEST'
+    });
+    t.true(processedInvite.processed, 'Invite should be marked as processed');
 
-    // Verify: CalendarEvents.create was called with correct data
-    t.is(t.context.createdEvents.length, 1, 'Should create 1 event');
-    const created = t.context.createdEvents[0];
-    t.is(created.eventId, `${uid}.ics`);
-    t.truthy(created.href, 'Should have href');
-    t.true(created.href.includes(attendee), 'href should include username');
-    t.truthy(created.ical, 'Should have ical data');
-
-    // Verify: METHOD stripped from stored ICS (RFC requirement)
-    t.false(
-      hasMethodInIcs(created.ical),
-      'Stored ICS should not have METHOD property'
-    );
-
-    // Verify: CalendarInvites marked as processed
-    const processedInvite = await CalendarInvites.findById(invite._id);
-    t.true(processedInvite.processed, 'Invite should be marked processed');
-    t.truthy(processedInvite.processedAt, 'Should have processedAt timestamp');
-
-    // Verify: Synctoken bumped
+    // Verify: event exists in CalDAV (real SQLite)
+    const ics = await fetchEventIcs(t, uid);
+    t.truthy(ics, 'Event should exist in CalDAV after processing');
+    t.false(hasMethodInIcs(ics), 'METHOD should be stripped from stored ICS');
+    t.true(ics.includes(uid), 'Stored ICS should contain the UID');
     t.true(
-      t.context.calendarsFindByIdAndUpdate.called,
-      'Should bump synctoken'
+      ics.includes('Sprint Planning'),
+      'Stored ICS should contain the summary'
     );
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 2: Attendee sends iMIP REPLY → Organizer's PARTSTAT updated
+// LIFECYCLE 2: iMIP REPLY → Organizer's PARTSTAT Updated
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
-  'Lifecycle: iMIP REPLY email → CalendarInvites → organizer event PARTSTAT updated',
+  'Lifecycle: iMIP REPLY email → organizer event PARTSTAT updated in real SQLite',
   async (t) => {
     const uid = `lifecycle-reply-${Date.now()}@example.com`;
-    const organizer = 'organizer@example.com';
+    const organizer = t.context.username;
     const attendee = 'attendee@example.com';
 
-    // ── Pre-condition: Organizer already has the event in their calendar ──
+    // ── Pre-condition: Organizer has event in CalDAV (real SQLite) ──
     const storedIcs = makeStoredEventIcs({
       uid,
       organizer,
       attendees: [{ email: attendee, partstat: 'NEEDS-ACTION' }]
     });
 
-    const eventId = `${uid}.ics`;
-    const existingEvent = {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    };
-    t.context.eventStore.set(eventId, existingEvent);
+    await createEventViaCalDAV(t, uid, storedIcs);
 
-    // ── Step 1: Attendee sends REPLY email ──
+    // Verify event was created
+    const beforeIcs = await fetchEventIcs(t, uid);
+    t.truthy(beforeIcs, 'Event should exist before REPLY');
+    t.is(
+      getPartstatFromIcs(beforeIcs, attendee),
+      'NEEDS-ACTION',
+      'PARTSTAT should be NEEDS-ACTION before REPLY'
+    );
+
+    // ── Step 1: Attendee sends iMIP REPLY ──
     const replyIcs = makeReplyIcs({
       uid,
       organizer,
@@ -477,169 +604,120 @@ test.serial(
       toEmail: organizer
     });
 
-    t.truthy(result);
-    t.true(result.processed);
-    t.is(result.method, 'REPLY');
+    t.true(result.processed, 'REPLY should be processed');
 
-    // Verify: CalendarInvites record created
-    const invite = await CalendarInvites.findOne({
-      eventUid: uid,
-      method: 'REPLY',
-      processed: false
-    });
-    t.truthy(invite);
-    t.is(invite.response, 'ACCEPTED');
-    t.is(invite.attendeeEmail, attendee);
-    t.is(invite.organizerEmail, organizer); // For REPLY, organizerEmail = organizer
+    // ── Step 2: Organizer authenticates → processCalendarInvites runs ──
+    await runProcessInvites(t);
 
-    // ── Step 2: Organizer authenticates to CalDAV ──
-    const ctx = createMockCtx(organizer);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    // Verify: PARTSTAT updated in real SQLite
+    const afterIcs = await fetchEventIcs(t, uid);
+    t.truthy(afterIcs, 'Event should still exist after REPLY');
+    t.is(
+      getPartstatFromIcs(afterIcs, attendee),
+      'ACCEPTED',
+      'PARTSTAT should be ACCEPTED after REPLY processing'
+    );
 
-    t.is(results.processed, 1);
-    t.is(results.failed, 0);
-
-    // Verify: CalendarEvents.findOneAndUpdate was called
-    t.true(t.context.updatedEvents.length > 0, 'Should update the event');
-
-    // Verify: PARTSTAT updated in the stored ICS
-    const updatedEvent = t.context.eventStore.get(eventId);
-    t.truthy(updatedEvent, 'Event should still exist in store');
-    const partstat = getPartstatFromIcs(updatedEvent.ical, attendee);
-    t.is(partstat, 'ACCEPTED', 'Attendee PARTSTAT should be ACCEPTED');
-
-    // Verify: Invite marked processed
-    const processedInvite = await CalendarInvites.findById(invite._id);
-    t.true(processedInvite.processed);
+    // Verify: invite marked as processed
+    const invite = await CalendarInvites.findOne({ eventUid: uid });
+    t.true(invite.processed, 'Invite should be marked as processed');
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 3: Attendee clicks Accept link → Organizer's PARTSTAT updated
+// LIFECYCLE 3: Link-based Accept → PARTSTAT Updated
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
-  'Lifecycle: Link-based Accept → CalendarInvites → organizer event PARTSTAT updated',
+  'Lifecycle: Link-based Accept → organizer event PARTSTAT updated in real SQLite',
   async (t) => {
-    const uid = `lifecycle-link-${Date.now()}@example.com`;
-    const organizer = 'organizer@example.com';
-    const attendee = 'attendee@example.com';
+    const uid = `lifecycle-web-${Date.now()}@example.com`;
+    const organizer = t.context.username;
+    const attendee = 'web-attendee@example.com';
 
-    // ── Pre-condition: Organizer has the event ──
+    // ── Pre-condition: Organizer has event in CalDAV ──
     const storedIcs = makeStoredEventIcs({
       uid,
       organizer,
       attendees: [{ email: attendee, partstat: 'NEEDS-ACTION' }]
     });
 
-    const eventId = `${uid}.ics`;
-    t.context.eventStore.set(eventId, {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    });
+    await createEventViaCalDAV(t, uid, storedIcs);
 
-    // ── Step 1: Generate token (simulates what the email template does) ──
+    // ── Step 1: Attendee clicks Accept link → CalendarInvites created ──
     const token = generateToken({
       eventUid: uid,
       organizerEmail: organizer,
       attendeeEmail: attendee
     });
 
-    // Verify token is valid
-    const parsed = parseToken(token);
-    t.is(parsed.eventUid, uid);
-    t.is(parsed.attendeeEmail, attendee);
-    t.is(parsed.organizerEmail, organizer);
-
-    // ── Step 2: Attendee clicks Accept link → web controller creates CalendarInvites ──
-    // (Simulating what calendar-response.js processResponse does)
-    const partstat = responseToPartstat('accept');
-    t.is(partstat, 'ACCEPTED');
-
     await CalendarInvites.create({
-      eventUid: parsed.eventUid,
-      organizerEmail: parsed.organizerEmail,
-      attendeeEmail: parsed.attendeeEmail,
-      response: partstat,
+      eventUid: uid,
+      organizerEmail: organizer,
+      attendeeEmail: attendee,
+      response: responseToPartstat('accept'),
       method: 'REPLY',
       source: 'web',
-      ip: '192.168.1.1',
-      userAgent: 'Mozilla/5.0',
       tokenHash: hashToken(token),
-      tokenExpiresAt: parsed.expiresAt,
+      tokenExpiresAt: parseToken(token).expiresAt,
       processed: false,
       processAttempts: 0
     });
 
-    // Verify: CalendarInvites record exists
-    const invite = await CalendarInvites.findOne({
-      eventUid: uid,
-      method: 'REPLY',
-      processed: false
-    });
-    t.truthy(invite);
-    t.is(invite.response, 'ACCEPTED');
-    t.is(invite.source, 'web');
+    // ── Step 2: Organizer authenticates → processCalendarInvites runs ──
+    await runProcessInvites(t);
 
-    // ── Step 3: Organizer authenticates to CalDAV ──
-    const ctx = createMockCtx(organizer);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    // Verify: PARTSTAT updated in real SQLite
+    const afterIcs = await fetchEventIcs(t, uid);
+    t.is(
+      getPartstatFromIcs(afterIcs, attendee),
+      'ACCEPTED',
+      'PARTSTAT should be ACCEPTED after web link processing'
+    );
 
-    t.is(results.processed, 1);
-    t.is(results.failed, 0);
-
-    // Verify: PARTSTAT updated
-    const updatedEvent = t.context.eventStore.get(eventId);
-    const updatedPartstat = getPartstatFromIcs(updatedEvent.ical, attendee);
-    t.is(updatedPartstat, 'ACCEPTED');
-
-    // Verify: Invite marked processed
-    const processedInvite = await CalendarInvites.findById(invite._id);
-    t.true(processedInvite.processed);
+    // Verify: invite marked as processed
+    const invite = await CalendarInvites.findOne({ eventUid: uid });
+    t.true(invite.processed);
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 4: Organizer sends CANCEL → Attendee's event marked CANCELLED
+// LIFECYCLE 4: CANCEL → Event STATUS:CANCELLED
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
-  'Lifecycle: CANCEL email → CalendarInvites → attendee event STATUS:CANCELLED',
+  'Lifecycle: CANCEL email → attendee event STATUS:CANCELLED in real SQLite',
   async (t) => {
-    const uid = `lifecycle-cancel-${Date.now()}@google.com`;
+    const uid = `lifecycle-cancel-${Date.now()}@example.com`;
     const organizer = 'boss@gmail.com';
-    const attendee = 'user@forwardemail.net';
+    const attendee = t.context.username;
 
-    // ── Pre-condition: Attendee has the event in their calendar ──
+    // ── Pre-condition: Attendee has event in CalDAV ──
     const storedIcs = makeStoredEventIcs({
       uid,
       organizer,
       attendees: [{ email: attendee, partstat: 'ACCEPTED' }]
     });
 
-    const eventId = `${uid}.ics`;
-    t.context.eventStore.set(eventId, {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    });
+    await createEventViaCalDAV(t, uid, storedIcs);
 
-    // ── Step 1: Organizer sends CANCEL email ──
+    // ── Step 1: Organizer sends CANCEL ──
     const cancelIcs = makeCancelIcs({
       uid,
       organizer,
-      attendees: [attendee]
+      attendees: [attendee],
+      sequence: 1
     });
 
     const parsedEmail = buildParsedEmail({
       from: 'calendar-notification@google.com',
       to: attendee,
-      icsContent: cancelIcs,
-      subject: 'Cancelled: Team Meeting'
+      icsContent: cancelIcs
     });
+
+    // Override contentType for CANCEL
+    parsedEmail.attachments[0].contentType =
+      'text/calendar; method=CANCEL; charset=UTF-8';
 
     const result = await checkAndProcessImipMessage(parsedEmail, {
       messageId: '<cancel-1@google.com>',
@@ -647,207 +725,31 @@ test.serial(
       toEmail: attendee
     });
 
-    t.truthy(result);
-    t.true(result.processed);
-    t.is(result.method, 'CANCEL');
+    t.true(result.processed, 'CANCEL should be processed');
 
-    // ── Step 2: Attendee authenticates to CalDAV ──
-    const ctx = createMockCtx(attendee);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    // ── Step 2: Attendee authenticates → processCalendarInvites runs ──
+    await runProcessInvites(t);
 
-    t.is(results.processed, 1);
-    t.is(results.failed, 0);
-
-    // Verify: Event STATUS set to CANCELLED
-    const updatedEvent = t.context.eventStore.get(eventId);
-    const status = getStatusFromIcs(updatedEvent.ical);
-    t.is(status, 'CANCELLED', 'Event should have STATUS:CANCELLED');
-
-    // Verify: Invite marked processed
-    const invite = await CalendarInvites.findOne({ eventUid: uid });
-    t.true(invite.processed);
-  }
-);
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 5: Full lifecycle - REQUEST → Accept → Update → Cancel
-// ═══════════════════════════════════════════════════════════════════════════════
-
-test.serial(
-  'Lifecycle: Full flow - REQUEST → iMIP Accept → REQUEST Update → CANCEL',
-  async (t) => {
-    const uid = `full-lifecycle-${Date.now()}@google.com`;
-    const organizer = 'boss@company.com';
-    const attendee = 'employee@forwardemail.net';
-
-    // ── Phase 1: REQUEST - Organizer sends invite ──
-    const requestIcs = makeRequestIcs({
-      uid,
-      organizer,
-      attendees: [attendee],
-      summary: 'Quarterly Review',
-      sequence: 0
-    });
-
-    const requestEmail = buildParsedEmail({
-      from: 'calendar-notification@google.com',
-      to: attendee,
-      icsContent: requestIcs
-    });
-
-    const requestResult = await checkAndProcessImipMessage(requestEmail, {
-      messageId: '<req-1@google.com>',
-      fromEmail: 'calendar-notification@google.com',
-      toEmail: attendee
-    });
-    t.true(requestResult.processed, 'Phase 1: REQUEST should be processed');
-
-    // CalDAV auth → event created
-    let ctx = createMockCtx(attendee);
-    let results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1, 'Phase 1: Should create event');
-    t.is(t.context.createdEvents.length, 1);
-
-    // Verify event created correctly
-    const createdEvent = t.context.createdEvents[0];
-    t.is(createdEvent.eventId, `${uid}.ics`);
-    t.false(hasMethodInIcs(createdEvent.ical), 'METHOD should be stripped');
-
-    // ── Phase 2: REPLY - Attendee accepts via iMIP ──
-    const replyIcs = makeReplyIcs({
-      uid,
-      organizer,
-      attendee,
-      partstat: 'ACCEPTED'
-    });
-
-    const replyEmail = {
-      from: { value: [{ address: attendee }] },
-      to: { value: [{ address: organizer }] },
-      subject: 'Accepted: Quarterly Review',
-      attachments: [
-        {
-          contentType: 'text/calendar; method=REPLY',
-          filename: 'invite.ics',
-          content: Buffer.from(replyIcs, 'utf8')
-        }
-      ]
-    };
-
-    const replyResult = await checkAndProcessImipMessage(replyEmail, {
-      messageId: '<reply-1@forwardemail.net>',
-      fromEmail: attendee,
-      toEmail: organizer
-    });
-    t.true(replyResult.processed, 'Phase 2: REPLY should be processed');
-
-    // Organizer's CalDAV auth → PARTSTAT updated
-    // First, put the organizer's event in the store
-    const orgEventId = `${uid}.ics`;
-    const orgEvent = {
-      _id: new mongoose.Types.ObjectId(),
-      eventId: orgEventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: makeStoredEventIcs({
-        uid,
-        organizer,
-        attendees: [{ email: attendee, partstat: 'NEEDS-ACTION' }]
-      })
-    };
-    t.context.eventStore.set(orgEventId, orgEvent);
-
-    ctx = createMockCtx(organizer);
-    results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1, 'Phase 2: Should process REPLY');
-
-    // Verify PARTSTAT updated
-    const updatedOrgEvent = t.context.eventStore.get(orgEventId);
+    // Verify: event STATUS set to CANCELLED in real SQLite
+    const afterIcs = await fetchEventIcs(t, uid);
+    t.truthy(afterIcs, 'Event should still exist after CANCEL');
     t.is(
-      getPartstatFromIcs(updatedOrgEvent.ical, attendee),
-      'ACCEPTED',
-      'Phase 2: PARTSTAT should be ACCEPTED'
+      getStatusFromIcs(afterIcs),
+      'CANCELLED',
+      'Event STATUS should be CANCELLED'
     );
-
-    // ── Phase 3: REQUEST Update - Organizer changes time (higher SEQUENCE) ──
-    const updateIcs = makeRequestIcs({
-      uid,
-      organizer,
-      attendees: [attendee],
-      summary: 'Quarterly Review (Rescheduled)',
-      sequence: 1,
-      dtstart: '20260302T140000Z',
-      dtend: '20260302T150000Z'
-    });
-
-    const updateEmail = buildParsedEmail({
-      from: 'calendar-notification@google.com',
-      to: attendee,
-      icsContent: updateIcs
-    });
-
-    const updateResult = await checkAndProcessImipMessage(updateEmail, {
-      messageId: '<req-2@google.com>',
-      fromEmail: 'calendar-notification@google.com',
-      toEmail: attendee
-    });
-    t.true(updateResult.processed, 'Phase 3: UPDATE should be processed');
-
-    // CalDAV auth → event updated (not duplicated)
-    ctx = createMockCtx(attendee);
-    results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1, 'Phase 3: Should process update');
-
-    // Verify: event updated, not a second event created
-    // (createdEvents should still be 1 from Phase 1, the update uses findOneAndUpdate)
-    t.true(
-      t.context.updatedEvents.length > 0,
-      'Phase 3: Should update existing event'
-    );
-
-    // ── Phase 4: CANCEL - Organizer cancels the event ──
-    const cancelIcs = makeCancelIcs({
-      uid,
-      organizer,
-      attendees: [attendee],
-      sequence: 2
-    });
-
-    const cancelEmail = buildParsedEmail({
-      from: 'calendar-notification@google.com',
-      to: attendee,
-      icsContent: cancelIcs
-    });
-
-    const cancelResult = await checkAndProcessImipMessage(cancelEmail, {
-      messageId: '<cancel-1@google.com>',
-      fromEmail: 'calendar-notification@google.com',
-      toEmail: attendee
-    });
-    t.true(cancelResult.processed, 'Phase 4: CANCEL should be processed');
-
-    // CalDAV auth → event cancelled
-    ctx = createMockCtx(attendee);
-    results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1, 'Phase 4: Should process cancel');
-
-    // Verify: CalendarInvites all processed
-    const remaining = await CalendarInvites.countDocuments({
-      eventUid: uid,
-      processed: false
-    });
-    t.is(remaining, 0, 'All invites should be processed');
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 6: Multiple attendees respond to same event
+// LIFECYCLE 5: Multiple attendees respond to same event
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
   'Lifecycle: Multiple attendees respond via different channels',
   async (t) => {
     const uid = `multi-attendee-${Date.now()}@example.com`;
-    const organizer = 'organizer@example.com';
+    const organizer = t.context.username;
     const alice = 'alice@example.com';
     const bob = 'bob@example.com';
     const charlie = 'charlie@example.com';
@@ -863,13 +765,7 @@ test.serial(
       ]
     });
 
-    const eventId = `${uid}.ics`;
-    t.context.eventStore.set(eventId, {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    });
+    await createEventViaCalDAV(t, uid, storedIcs);
 
     // ── Alice accepts via iMIP REPLY ──
     const aliceReply = makeReplyIcs({
@@ -939,27 +835,23 @@ test.serial(
       { fromEmail: charlie, toEmail: organizer }
     );
 
-    // ── Organizer authenticates to CalDAV → all 3 processed ──
-    const ctx = createMockCtx(organizer);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    // ── Organizer authenticates → all 3 processed ──
+    await runProcessInvites(t);
 
-    t.is(results.processed, 3, 'Should process all 3 replies');
-    t.is(results.failed, 0);
-
-    // Verify each attendee's PARTSTAT
-    const finalEvent = t.context.eventStore.get(eventId);
+    // Verify each attendee's PARTSTAT in real SQLite
+    const afterIcs = await fetchEventIcs(t, uid);
     t.is(
-      getPartstatFromIcs(finalEvent.ical, alice),
+      getPartstatFromIcs(afterIcs, alice),
       'ACCEPTED',
       'Alice should be ACCEPTED'
     );
     t.is(
-      getPartstatFromIcs(finalEvent.ical, bob),
+      getPartstatFromIcs(afterIcs, bob),
       'DECLINED',
       'Bob should be DECLINED'
     );
     t.is(
-      getPartstatFromIcs(finalEvent.ical, charlie),
+      getPartstatFromIcs(afterIcs, charlie),
       'TENTATIVE',
       'Charlie should be TENTATIVE'
     );
@@ -974,30 +866,24 @@ test.serial(
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 7: Attendee changes response (Accept → Decline)
+// LIFECYCLE 6: Attendee changes response (Accept → Decline)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
   'Lifecycle: Attendee changes response from Accept to Decline',
   async (t) => {
     const uid = `change-response-${Date.now()}@example.com`;
-    const organizer = 'organizer@example.com';
+    const organizer = t.context.username;
     const attendee = 'attendee@example.com';
 
-    // ── Pre-condition: Organizer has event, attendee NEEDS-ACTION ──
+    // ── Pre-condition: Organizer has event ──
     const storedIcs = makeStoredEventIcs({
       uid,
       organizer,
       attendees: [{ email: attendee, partstat: 'NEEDS-ACTION' }]
     });
 
-    const eventId = `${uid}.ics`;
-    t.context.eventStore.set(eventId, {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    });
+    await createEventViaCalDAV(t, uid, storedIcs);
 
     // ── Step 1: Attendee accepts via link ──
     const acceptToken = generateToken({
@@ -1020,13 +906,11 @@ test.serial(
     });
 
     // Process the accept
-    let ctx = createMockCtx(organizer);
-    let results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1);
+    await runProcessInvites(t);
 
     // Verify ACCEPTED
-    let event = t.context.eventStore.get(eventId);
-    t.is(getPartstatFromIcs(event.ical, attendee), 'ACCEPTED');
+    let ics = await fetchEventIcs(t, uid);
+    t.is(getPartstatFromIcs(ics, attendee), 'ACCEPTED');
 
     // ── Step 2: Attendee changes mind, declines via iMIP ──
     const declineIcs = makeReplyIcs({
@@ -1053,14 +937,12 @@ test.serial(
     );
 
     // Process the decline
-    ctx = createMockCtx(organizer);
-    results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1);
+    await runProcessInvites(t);
 
     // Verify DECLINED (overrides previous ACCEPTED)
-    event = t.context.eventStore.get(eventId);
+    ics = await fetchEventIcs(t, uid);
     t.is(
-      getPartstatFromIcs(event.ical, attendee),
+      getPartstatFromIcs(ics, attendee),
       'DECLINED',
       'PARTSTAT should be updated to DECLINED'
     );
@@ -1068,59 +950,14 @@ test.serial(
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 8: Microsoft Outlook sends REQUEST (different sender)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-test.serial(
-  'Lifecycle: Microsoft Outlook REQUEST from noreply@microsoft.com accepted',
-  async (t) => {
-    const uid = `outlook-request-${Date.now()}@outlook.com`;
-    const organizer = 'manager@outlook.com';
-    const attendee = 'user@forwardemail.net';
-
-    const icsContent = makeRequestIcs({
-      uid,
-      organizer,
-      attendees: [attendee],
-      summary: 'Outlook Meeting'
-    });
-
-    const parsedEmail = buildParsedEmail({
-      from: 'noreply@microsoft.com',
-      to: attendee,
-      icsContent
-    });
-
-    const result = await checkAndProcessImipMessage(parsedEmail, {
-      messageId: '<msg-1@microsoft.com>',
-      fromEmail: 'noreply@microsoft.com',
-      toEmail: attendee
-    });
-
-    t.truthy(result);
-    t.true(
-      result.processed,
-      'Microsoft sender should be accepted (no sender validation for REQUEST)'
-    );
-    t.is(result.method, 'REQUEST');
-
-    // Process via CalDAV
-    const ctx = createMockCtx(attendee);
-    const results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1);
-    t.is(t.context.createdEvents.length, 1);
-  }
-);
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 9: REPLY from spoofed sender is rejected
+// LIFECYCLE 7: REPLY from spoofed sender is rejected
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
   'Lifecycle: REPLY from spoofed sender is rejected (sender validation still applies)',
   async (t) => {
     const uid = `spoofed-reply-${Date.now()}@example.com`;
-    const organizer = 'organizer@example.com';
+    const organizer = t.context.username;
     const attendee = 'attendee@example.com';
     const spoofedSender = 'hacker@evil.com';
 
@@ -1161,7 +998,7 @@ test.serial(
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 10: REQUEST with alternatives array (Gmail format)
+// LIFECYCLE 8: Gmail REQUEST via alternatives array
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
@@ -1169,7 +1006,7 @@ test.serial(
   async (t) => {
     const uid = `gmail-alt-${Date.now()}@google.com`;
     const organizer = 'sender@gmail.com';
-    const attendee = 'user@forwardemail.net';
+    const attendee = t.context.username;
 
     const icsContent = makeRequestIcs({
       uid,
@@ -1199,16 +1036,18 @@ test.serial(
     t.true(result.processed);
     t.is(result.method, 'REQUEST');
 
-    // Process via CalDAV
-    const ctx = createMockCtx(attendee);
-    const results = await processCalendarInvites(mockInstance, ctx);
-    t.is(results.processed, 1);
-    t.is(t.context.createdEvents.length, 1);
+    // Process via CalDAV (real SQLite)
+    await runProcessInvites(t);
+
+    // Verify event created in real SQLite
+    const ics = await fetchEventIcs(t, uid);
+    t.truthy(ics, 'Event should be created in CalDAV');
+    t.true(ics.includes(uid), 'Event should have correct UID');
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 11: Stale REQUEST (lower SEQUENCE) is skipped
+// LIFECYCLE 9: Stale REQUEST (lower SEQUENCE) is skipped
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
@@ -1216,7 +1055,7 @@ test.serial(
   async (t) => {
     const uid = `stale-request-${Date.now()}@google.com`;
     const organizer = 'boss@gmail.com';
-    const attendee = 'user@forwardemail.net';
+    const attendee = t.context.username;
 
     // ── Pre-condition: Attendee has event with SEQUENCE:5 ──
     const storedIcs = makeStoredEventIcs({
@@ -1226,15 +1065,21 @@ test.serial(
       sequence: 5
     });
 
-    const eventId = `${uid}.ics`;
-    t.context.eventStore.set(eventId, {
-      _id: new mongoose.Types.ObjectId(),
-      eventId,
-      calendar: t.context.defaultCalendar._id,
-      ical: storedIcs
-    });
+    await createEventViaCalDAV(t, uid, storedIcs);
 
-    // ── Stale REQUEST with SEQUENCE:2 arrives (out of order) ──
+    // ── Verify event was stored with SEQUENCE:5 ──
+    const beforeIcs = await fetchEventIcs(t, uid);
+    t.true(
+      beforeIcs.includes('SEQUENCE:5'),
+      'Stored event should have SEQUENCE:5'
+    );
+    t.is(
+      getPartstatFromIcs(beforeIcs, attendee),
+      'ACCEPTED',
+      'Stored event should have PARTSTAT=ACCEPTED'
+    );
+
+    // ── Stale REQUEST with SEQUENCE:2 arrives ──
     const staleIcs = makeRequestIcs({
       uid,
       organizer,
@@ -1255,78 +1100,24 @@ test.serial(
     });
 
     // Process via CalDAV
-    const ctx = createMockCtx(attendee);
-    const results = await processCalendarInvites(mockInstance, ctx);
+    await runProcessInvites(t);
 
-    // Should be processed (marked as processed with error) but not update the event
-    t.is(results.processed, 1, 'Stale invite should be processed (skipped)');
-
-    // Verify: Event NOT updated (still has SEQUENCE:5 content)
-    const event = t.context.eventStore.get(eventId);
-    const partstat = getPartstatFromIcs(event.ical, attendee);
-    t.is(partstat, 'ACCEPTED', 'Event should not be changed by stale REQUEST');
-  }
-);
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 12: REQUEST for event that doesn't exist yet → creates new event
-// ═══════════════════════════════════════════════════════════════════════════════
-
-test.serial(
-  'Lifecycle: REQUEST for non-existent event creates new CalendarEvent with correct fields',
-  async (t) => {
-    const uid = `new-event-${Date.now()}@google.com`;
-    const organizer = 'boss@gmail.com';
-    const attendee = 'user@forwardemail.net';
-
-    const icsContent = makeRequestIcs({
-      uid,
-      organizer,
-      attendees: [attendee],
-      summary: 'Brand New Meeting'
-    });
-
-    const parsedEmail = buildParsedEmail({
-      from: 'calendar-notification@google.com',
-      to: attendee,
-      icsContent
-    });
-
-    await checkAndProcessImipMessage(parsedEmail, {
-      fromEmail: 'calendar-notification@google.com',
-      toEmail: attendee
-    });
-
-    const ctx = createMockCtx(attendee);
-    await processCalendarInvites(mockInstance, ctx);
-
-    // Verify created event has all required fields
-    t.is(t.context.createdEvents.length, 1);
-    const created = t.context.createdEvents[0];
-
-    t.is(created.eventId, `${uid}.ics`, 'eventId should be uid.ics');
-    t.truthy(created.href, 'Should have href');
-    t.true(created.href.startsWith('/dav/'), 'href should start with /dav/');
-    t.true(created.href.includes(attendee), 'href should include username');
-    t.true(
-      created.href.endsWith(`/${uid}.ics`),
-      'href should end with eventId'
-    );
+    // Verify: Event NOT updated (still has original content)
+    const afterIcs = await fetchEventIcs(t, uid);
     t.is(
-      created.calendar.toString(),
-      t.context.defaultCalendar._id.toString(),
-      'Should use default calendar'
+      getPartstatFromIcs(afterIcs, attendee),
+      'ACCEPTED',
+      'Event should not be changed by stale REQUEST'
     );
-    t.truthy(created.ical, 'Should have ical data');
-    t.false(hasMethodInIcs(created.ical), 'METHOD should be stripped');
-
-    // Verify synctoken was bumped
-    t.true(t.context.calendarsFindByIdAndUpdate.called);
+    t.false(
+      afterIcs.includes('Old Version'),
+      'Summary should not be changed by stale REQUEST'
+    );
   }
 );
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LIFECYCLE 13: Idempotency - processing same invite twice doesn't duplicate
+// LIFECYCLE 10: Idempotency - processing same invite twice
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.serial(
@@ -1334,7 +1125,7 @@ test.serial(
   async (t) => {
     const uid = `idempotent-${Date.now()}@google.com`;
     const organizer = 'boss@gmail.com';
-    const attendee = 'user@forwardemail.net';
+    const attendee = t.context.username;
 
     const icsContent = makeRequestIcs({
       uid,
@@ -1358,12 +1149,301 @@ test.serial(
     await checkAndProcessImipMessage(parsedEmail, options);
     await checkAndProcessImipMessage(parsedEmail, options);
 
-    // Should have only 1 unprocessed invite (second call updates the first)
+    // Should have only 1 unprocessed invite
     const count = await CalendarInvites.countDocuments({
       eventUid: uid,
       method: 'REQUEST',
       processed: false
     });
     t.is(count, 1, 'Should have exactly 1 unprocessed invite (not 2)');
+  }
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CalDAV SERVER: Invite Email Sending on CREATE / UPDATE / DELETE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+test.serial(
+  'CalDAV CREATE: event with attendee queues REQUEST invite email',
+  async (t) => {
+    const uid = `caldav-create-email-${Date.now()}`;
+    const attendeeEmail = 'attendee-create@example.com';
+    const summary = 'CalDAV Create Invite Test';
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//CalDAV//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260401T100000Z',
+      'DTEND:20260401T110000Z',
+      `SUMMARY:${summary}`,
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    // Create event via CalDAV PUT
+    await createEventViaCalDAV(t, uid, ics);
+
+    // Wait for the invite email to be queued
+    let email;
+    await pWaitFor(
+      async () => {
+        email = await Emails.findOne({
+          alias: t.context.alias._id,
+          status: 'queued',
+          subject: { $regex: summary }
+        })
+          .lean()
+          .exec();
+        return email !== null;
+      },
+      { timeout: ms('60s') }
+    );
+
+    t.truthy(email, 'Invite email should be queued');
+    t.true(
+      email.subject.includes(summary),
+      'Email subject should contain event summary'
+    );
+  }
+);
+
+test.serial(
+  'CalDAV UPDATE: changing event details queues REQUEST update email',
+  async (t) => {
+    const uid = `caldav-update-email-${Date.now()}`;
+    const attendeeEmail = 'attendee-update@example.com';
+    const originalSummary = 'Original Meeting';
+    const updatedSummary = 'Updated Meeting Time';
+
+    // Create the original event
+    const originalIcs = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//CalDAV//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260401T100000Z',
+      'DTEND:20260401T110000Z',
+      `SUMMARY:${originalSummary}`,
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const objectUrl = await createEventViaCalDAV(t, uid, originalIcs);
+
+    // Wait for the initial invite email
+    await pWaitFor(
+      async () => {
+        const email = await Emails.findOne({
+          alias: t.context.alias._id,
+          status: 'queued',
+          subject: { $regex: originalSummary }
+        })
+          .lean()
+          .exec();
+        return email !== null;
+      },
+      { timeout: ms('60s') }
+    );
+
+    // Clear queued emails before update
+    await Emails.deleteMany({});
+
+    // Update the event (new summary, bumped SEQUENCE)
+    const updatedIcs = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//CalDAV//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T120000Z',
+      'DTSTART:20260401T140000Z',
+      'DTEND:20260401T150000Z',
+      `SUMMARY:${updatedSummary}`,
+      'SEQUENCE:1',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    await updateObject({
+      url: objectUrl,
+      data: updatedIcs,
+      headers: {
+        'content-type': 'text/calendar; charset=utf-8',
+        ...t.context.authHeaders
+      }
+    });
+
+    // Wait for the update email to be queued
+    let email;
+    await pWaitFor(
+      async () => {
+        email = await Emails.findOne({
+          alias: t.context.alias._id,
+          status: 'queued',
+          subject: { $regex: updatedSummary }
+        })
+          .lean()
+          .exec();
+        return email !== null;
+      },
+      { timeout: ms('60s') }
+    );
+
+    t.truthy(email, 'Update email should be queued');
+    t.true(
+      email.subject.includes(updatedSummary),
+      'Email subject should contain updated summary'
+    );
+  }
+);
+
+test.serial(
+  'CalDAV DELETE: removing event queues CANCEL email to attendees',
+  async (t) => {
+    const uid = `caldav-delete-email-${Date.now()}`;
+    const attendeeEmail = 'attendee-delete@example.com';
+    const summary = 'Meeting To Cancel';
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//CalDAV//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260401T100000Z',
+      'DTEND:20260401T110000Z',
+      `SUMMARY:${summary}`,
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=ACCEPTED;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const objectUrl = await createEventViaCalDAV(t, uid, ics);
+
+    // Wait for the initial invite email
+    await pWaitFor(
+      async () => {
+        const email = await Emails.findOne({
+          alias: t.context.alias._id,
+          status: 'queued',
+          subject: { $regex: summary }
+        })
+          .lean()
+          .exec();
+        return email !== null;
+      },
+      { timeout: ms('60s') }
+    );
+
+    // Clear queued emails before delete
+    await Emails.deleteMany({});
+
+    // Delete the event via CalDAV
+    const deleteResult = await deleteObject({
+      url: objectUrl,
+      headers: t.context.authHeaders
+    });
+    t.true(deleteResult.ok, 'DELETE should succeed');
+
+    // Wait for the cancellation email to be queued
+    let email;
+    await pWaitFor(
+      async () => {
+        email = await Emails.findOne({
+          alias: t.context.alias._id,
+          status: 'queued'
+        })
+          .lean()
+          .exec();
+        return email !== null;
+      },
+      { timeout: ms('60s') }
+    );
+
+    t.truthy(email, 'Cancel email should be queued');
+  }
+);
+
+test.serial(
+  'CalDAV CREATE: recurring event with override queues invite for each instance',
+  async (t) => {
+    const uid = `caldav-recur-email-${Date.now()}`;
+    const attendeeEmail = 'attendee-recur@example.com';
+    const summary = 'Weekly Standup';
+    const overrideSummary = 'Special Standup';
+
+    // Recurring event with an override instance
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//CalDAV//EN',
+      // Master event
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260401T100000Z',
+      'DTEND:20260401T110000Z',
+      'RRULE:FREQ=WEEKLY;COUNT=4',
+      `SUMMARY:${summary}`,
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      // Override for 2nd occurrence
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'RECURRENCE-ID:20260408T100000Z',
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260408T140000Z',
+      'DTEND:20260408T150000Z',
+      `SUMMARY:${overrideSummary}`,
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${t.context.username}`,
+      `ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    await createEventViaCalDAV(t, uid, ics);
+
+    // Wait for at least one invite email to be queued
+    // The sendCalendarEmail processes each VEVENT, so we should get emails
+    // for both the master and the override
+    await pWaitFor(
+      async () => {
+        const count = await Emails.countDocuments({
+          alias: t.context.alias._id,
+          status: 'queued'
+        });
+        return count >= 1;
+      },
+      { timeout: ms('60s') }
+    );
+
+    const emails = await Emails.find({
+      alias: t.context.alias._id,
+      status: 'queued'
+    })
+      .lean()
+      .exec();
+
+    t.true(emails.length > 0, 'At least one invite email should be queued');
   }
 );

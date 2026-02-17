@@ -207,6 +207,15 @@ async function updateMany(
         if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
       }
 
+      // Auto-set updated_at so that ETags (derived from updated_at) change
+      // whenever a document is modified via updateMany.
+      if (mapping.updated_at && mapping.updated_at.setter) {
+        if (!update.$set) update.$set = {};
+        if (!update.$set.updated_at) {
+          update.$set.updated_at = mapping.updated_at.setter(new Date());
+        }
+      }
+
       const sql = builder.build({
         type: 'update',
         table,
@@ -1006,6 +1015,17 @@ async function findOneAndUpdate(
       }
 
       if (update.$set) update.$set = prepareQuery(mapping, update.$set);
+
+      // Auto-set updated_at so that ETags (derived from updated_at) change
+      // whenever a document is modified via findOneAndUpdate.
+      // Without this, CalDAV clients (e.g. macOS Calendar) that compare
+      // ETags during sync-collection will not detect PARTSTAT changes.
+      if (mapping.updated_at && mapping.updated_at.setter) {
+        if (!update.$set) update.$set = {};
+        if (!update.$set.updated_at) {
+          update.$set.updated_at = mapping.updated_at.setter(new Date());
+        }
+      }
 
       // If update is now empty (e.g., $addToSet had no changes), return early
       const updateKeys = Object.keys(update);
