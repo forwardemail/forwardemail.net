@@ -16,7 +16,7 @@ This document outlines the WebSocket server implementation for the API, which pr
 
 ## Architecture
 
-The WebSocket server is integrated into the main API server, listening for HTTP upgrade requests on the `/v1/ws` path. Authentication happens during the upgrade handshake, before a connection is established.
+The WebSocket server is integrated into the main API server, listening for HTTP upgrade requests on the `/v1/ws` path. Authentication is optional and, when provided, happens during the upgrade handshake before a connection is established. Unauthenticated clients are accepted and receive only global broadcast events (e.g. `newRelease`), while authenticated clients receive both per-alias events and broadcast events.
 
 The system supports two notification types:
 
@@ -174,10 +174,10 @@ Notifications are sent for all `Created`, `Updated`, and `Deleted` operations on
 
 Security is a primary design consideration, addressed through multiple layers:
 
-1. **Authentication at Handshake**: Auth is mandatory and occurs during the HTTP upgrade. Unauthenticated clients are rejected before the WebSocket connection is formed. Both API Token (`?alias_id=` required) and Alias Password auth are supported.
+1. **Optional Authentication**: Authentication is optional. Authenticated clients receive both per-alias events and global broadcast events. Unauthenticated clients are also accepted but only receive global broadcast events (e.g. `newRelease`). Both API Token (`?alias_id=` required) and Alias Password auth are supported for authenticated connections.
 2. **Read-Only Channel**: The connection is strictly for server-to-client push. Any data messages received from a client are silently ignored.
-3. **Strict Channel Isolation**: For alias-specific events, the server maps connections to a specific `alias_id` upon authentication. A client will only ever receive notifications for the alias it is subscribed to. Global events like `newRelease` are broadcast to all clients.
-4. **Rate Limiting & Connection Caps**: To prevent abuse, the server enforces a per-IP connection rate limit (30/minute), a per-alias connection limit (10), and a global connection limit (10,000).
+3. **Strict Channel Isolation**: For authenticated clients, the server maps connections to a specific `alias_id`. A client will only ever receive notifications for the alias it is subscribed to. Global events like `newRelease` are broadcast to all clients (both authenticated and unauthenticated).
+4. **Rate Limiting & Connection Caps**: To prevent abuse, the server enforces a per-IP connection rate limit (30/minute), a per-alias connection limit for authenticated clients (10), a per-IP limit for unauthenticated clients (3), and a global connection limit (10,000).
 5. **Keep-Alive**: A 30-second ping/pong keep-alive mechanism terminates unresponsive or stale connections.
 
 
@@ -185,13 +185,26 @@ Security is a primary design consideration, addressed through multiple layers:
 
 #### Browser (JSON)
 
+**Authenticated:**
+
 ```javascript
 const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
   headers: {
     Authorization: `Basic ${btoa("user@domain.com:alias-password")}`
   }
 });
+```
 
+**Unauthenticated (Broadcast-Only):**
+
+```javascript
+// No auth headers needed
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws");
+```
+
+Both authenticated and unauthenticated clients handle messages the same way:
+
+```javascript
 ws.onmessage = (event) => {
   const notification = JSON.parse(event.data);
   console.log(notification.event, notification);

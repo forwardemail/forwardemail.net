@@ -209,13 +209,18 @@ function publishNotification(client, aliasId, event, data = {}) {
 
 // ─── Connection & Auth Tests ────────────────────────────────────────────────
 
-test('fails WebSocket connection without auth', async (t) => {
+test('connects without auth in broadcast-only mode', async (t) => {
   const { apiURL } = t.context;
   const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
 
-  await t.throwsAsync(() => connectWebSocket(wsURL, {}), {
-    message: /Unexpected server response: 401/
-  });
+  const ws = await connectWebSocket(wsURL, {});
+  t.context._openWebSockets.push(ws);
+
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'connected');
+  t.is(msg.broadcastOnly, true);
+  t.falsy(msg.aliasId);
+  ws.close();
 });
 
 test('fails WebSocket connection with invalid API token', async (t) => {
@@ -1377,7 +1382,9 @@ test('VALID_EVENTS contains all expected event types', (t) => {
     'contactUpdated',
     'contactDeleted',
     'addressBookCreated',
-    'addressBookDeleted'
+    'addressBookDeleted',
+    // Broadcast
+    'newRelease'
   ];
 
   for (const event of expectedEvents) {

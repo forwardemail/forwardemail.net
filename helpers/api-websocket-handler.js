@@ -46,6 +46,10 @@ const MAX_INCOMING_PAYLOAD = 1024;
 // Maximum number of total concurrent connections across all aliases
 const MAX_TOTAL_CONNECTIONS = 10000;
 
+// Max unauthenticated connections per IP (prevents abuse from anonymous clients
+// that only receive broadcast events like newRelease)
+const MAX_UNAUTHENTICATED_PER_IP = 3;
+
 class ApiWebSocketHandler {
   constructor(options = {}) {
     const { server, client } = options;
@@ -64,6 +68,10 @@ class ApiWebSocketHandler {
 
     // Rate limit tracking: Map<ip, { count, resetAt }>
     this.connectAttempts = new Map();
+
+    // Unauthenticated connection tracking: Map<ip, Set<WebSocket>>
+    // These clients only receive broadcast events (e.g. newRelease)
+    this.unauthClients = new Map();
 
     // Create WebSocket server with noServer mode and security limits
     this.wss = new WebSocket.WebSocketServer({
@@ -303,12 +311,21 @@ class ApiWebSocketHandler {
   /**
    * Handle HTTP upgrade requests.
    *
+   * Authentication is optional.  When credentials are provided the client
+   * is authenticated and receives both per-alias events and broadcast
+   * events.  When no credentials are provided the connection is still
+   * accepted but the client only receives broadcast events (e.g.
+   * `newRelease`).  All other security measures (rate limiting,
+   * connection caps, keep-alive, read-only channel) apply equally to
+   * both authenticated and unauthenticated clients.
+   *
    * Security checks performed in order:
    *   1. Path validation (only /v1/ws)
    *   2. Global connection limit
    *   3. Per-IP rate limiting
-   *   4. Authentication (API token or alias auth)
-   *   5. Per-alias connection limit
+   *   4. Authentication (optional — API token or alias auth)
+   *   5. Per-alias connection limit (authenticated) or per-IP
+   *      unauthenticated connection limit
    */
   async _onUpgrade(request, socket, head) {
     const { pathname, query } = url.parse(request.url, true);
@@ -349,14 +366,61 @@ class ApiWebSocketHandler {
       return;
     }
 
-    try {
-      const { aliasId } = await this._authenticate(request);
+    // Determine whether the client supplied credentials
+    const creds = basicAuth(request);
+    // If the client sent an Authorization header (or token/username query
+    // params) we treat it as an authenticated request.  If auth fails the
+    // client receives a 401 — it does NOT fall through to the
+    // unauthenticated broadcast-only path.
+    const hasCredentials = Boolean(
+      (creds && creds.name) || query.token || query.username
+    );
 
-      // Check max connections per alias
-      const existing = this.clients.get(aliasId);
-      if (existing && existing.size >= MAX_CONNECTIONS_PER_ALIAS) {
-        logger.debug('WebSocket per-alias connection limit reached', {
-          aliasId,
+    if (hasCredentials) {
+      // --- Authenticated path ---
+      try {
+        const { aliasId } = await this._authenticate(request);
+
+        // Check max connections per alias
+        const existing = this.clients.get(aliasId);
+        if (existing && existing.size >= MAX_CONNECTIONS_PER_ALIAS) {
+          logger.debug('WebSocket per-alias connection limit reached', {
+            aliasId,
+            count: existing.size
+          });
+          socket.write(
+            'HTTP/1.1 429 Too Many Requests\r\nRetry-After: 60\r\n\r\n'
+          );
+          socket.destroy();
+          return;
+        }
+
+        this.wss.handleUpgrade(request, socket, head, (ws) => {
+          ws.aliasId = aliasId;
+          ws.ip = ip;
+          ws.connectedAt = Date.now();
+          ws.isAlive = true;
+          ws.useMsgpackr = query.msgpackr === 'true';
+          this.wss.emit('connection', ws, request);
+        });
+      } catch (err) {
+        const statusCode = err.statusCode || 401;
+        const message = err.message || 'Unauthorized';
+        logger.debug('WebSocket auth failed', { ip, error: message });
+        socket.write(
+          `HTTP/1.1 ${statusCode} ${
+            http.STATUS_CODES[statusCode] || message
+          }\r\n\r\n`
+        );
+        socket.destroy();
+      }
+    } else {
+      // --- Unauthenticated path (broadcast-only) ---
+      // Enforce per-IP limit for unauthenticated connections
+      const existing = this.unauthClients.get(ip);
+      if (existing && existing.size >= MAX_UNAUTHENTICATED_PER_IP) {
+        logger.debug('WebSocket per-IP unauthenticated limit reached', {
+          ip,
           count: existing.size
         });
         socket.write(
@@ -367,23 +431,14 @@ class ApiWebSocketHandler {
       }
 
       this.wss.handleUpgrade(request, socket, head, (ws) => {
-        ws.aliasId = aliasId;
+        // No aliasId — this client only receives broadcast events
+        ws.aliasId = null;
+        ws.ip = ip;
         ws.connectedAt = Date.now();
         ws.isAlive = true;
-        // Store whether the client wants msgpackr binary frames
         ws.useMsgpackr = query.msgpackr === 'true';
         this.wss.emit('connection', ws, request);
       });
-    } catch (err) {
-      const statusCode = err.statusCode || 401;
-      const message = err.message || 'Unauthorized';
-      logger.debug('WebSocket auth failed', { ip, error: message });
-      socket.write(
-        `HTTP/1.1 ${statusCode} ${
-          http.STATUS_CODES[statusCode] || message
-        }\r\n\r\n`
-      );
-      socket.destroy();
     }
   }
 
@@ -409,18 +464,29 @@ class ApiWebSocketHandler {
    *
    * Security measures:
    *   - Clients are read-only subscribers; any incoming data messages are ignored
-   *   - Connections are tracked per alias for targeted delivery
+   *   - Authenticated connections are tracked per alias for targeted delivery
+   *   - Unauthenticated connections are tracked per IP for limit enforcement
    *   - Keep-alive pong handling prevents stale connections
    */
   _onConnection(ws) {
-    const { aliasId } = ws;
+    const { aliasId, ip } = ws;
 
-    // Track the connection
-    if (!this.clients.has(aliasId)) {
-      this.clients.set(aliasId, new Set());
+    if (aliasId) {
+      // Authenticated client — track per alias
+      if (!this.clients.has(aliasId)) {
+        this.clients.set(aliasId, new Set());
+      }
+
+      this.clients.get(aliasId).add(ws);
+    } else {
+      // Unauthenticated client — track per IP
+      if (!this.unauthClients.has(ip)) {
+        this.unauthClients.set(ip, new Set());
+      }
+
+      this.unauthClients.get(ip).add(ws);
     }
 
-    this.clients.get(aliasId).add(ws);
     this.totalConnections++;
 
     // Handle pong for keep-alive
@@ -429,7 +495,7 @@ class ApiWebSocketHandler {
     });
 
     //
-    // SECURITY: Ignore all incoming data messages from clients.
+    // Ignore all incoming data messages from clients.
     // This is a read-only notification channel — clients cannot publish,
     // send commands, or interact with the server beyond maintaining
     // the connection. Any data frames received are silently discarded.
@@ -441,11 +507,21 @@ class ApiWebSocketHandler {
 
     // Handle close — clean up tracking
     ws.on('close', () => {
-      const aliasConnections = this.clients.get(aliasId);
-      if (aliasConnections) {
-        aliasConnections.delete(ws);
-        if (aliasConnections.size === 0) {
-          this.clients.delete(aliasId);
+      if (aliasId) {
+        const aliasConnections = this.clients.get(aliasId);
+        if (aliasConnections) {
+          aliasConnections.delete(ws);
+          if (aliasConnections.size === 0) {
+            this.clients.delete(aliasId);
+          }
+        }
+      } else if (ip) {
+        const ipConnections = this.unauthClients.get(ip);
+        if (ipConnections) {
+          ipConnections.delete(ws);
+          if (ipConnections.size === 0) {
+            this.unauthClients.delete(ip);
+          }
         }
       }
 
@@ -457,12 +533,20 @@ class ApiWebSocketHandler {
       logger.debug('WebSocket client error', { aliasId, error: err.message });
     });
 
-    // Send a welcome/connected event so the client knows auth succeeded
-    // and which alias this subscription is for
-    this._send(ws, {
-      event: 'connected',
-      aliasId
-    });
+    // Send a welcome event
+    // Authenticated clients receive their aliasId; unauthenticated clients
+    // receive a confirmation that they are connected in broadcast-only mode
+    if (aliasId) {
+      this._send(ws, {
+        event: 'connected',
+        aliasId
+      });
+    } else {
+      this._send(ws, {
+        event: 'connected',
+        broadcastOnly: true
+      });
+    }
   }
 
   /**
@@ -617,6 +701,7 @@ class ApiWebSocketHandler {
 
     this.totalConnections = 0;
     this.clients.clear();
+    this.unauthClients.clear();
   }
 }
 

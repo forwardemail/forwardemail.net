@@ -7019,7 +7019,7 @@
           "WebSockets"
         ],
         "summary": "WebSocket Notifications",
-        "description": "Connect to the WebSocket endpoint for real-time push notifications on IMAP, CalDAV, and CardDAV state changes, as well as global app release notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication:** Pass credentials via query parameters:\n- **API Token:** `wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN`\n- **Alias Auth:** `wss://api.forwardemail.net/v1/ws?username=ALIAS_USERNAME&password=ALIAS_PASSWORD`\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth. When enabled, the client must decode messages using msgpackr.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful authentication\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit: 10 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**IMAP Events:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n\n**CalDAV Events:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n\n**CardDAV Events:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**App Release Events:** `newRelease` — Broadcast to all connected clients when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub, or when an existing release is updated (e.g. assets are added). The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear, ensuring clients are only notified when artifacts are ready for download.",
+        "description": "Connect to the WebSocket endpoint for real-time push notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication (Optional):**\n- **Authenticated Clients:** Provide credentials to receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`).\n- **Unauthenticated Clients:** Connect without credentials to receive only global broadcast events (`newRelease`). This is useful for clients that only need to be notified of app updates.\n\n**Authentication Methods:**\n- **API Token:** `wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN`\n- **Alias Auth:** `wss://api.forwardemail.net/v1/ws?username=ALIAS_USERNAME&password=ALIAS_PASSWORD`\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful connection\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit (authenticated): 10 concurrent connections\n- Per-IP unauthenticated connection limit: 3 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**Per-Alias Events (Authenticated Only):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Broadcast Events (All Clients):**\n- `newRelease` \u2014 Broadcast when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear.",
         "operationId": "websocketNotifications",
         "parameters": [
           {
@@ -7074,10 +7074,9 @@
                     {
                       "title": "connected",
                       "type": "object",
-                      "description": "Sent immediately after successful authentication.",
+                      "description": "Sent immediately after a successful connection. The payload differs for authenticated and unauthenticated clients.",
                       "required": [
-                        "event",
-                        "alias_id"
+                        "event"
                       ],
                       "properties": {
                         "event": {
@@ -7088,18 +7087,35 @@
                         },
                         "alias_id": {
                           "type": "string",
-                          "description": "The authenticated alias ID"
+                          "description": "The authenticated alias ID (present only for authenticated clients)"
+                        },
+                        "broadcastOnly": {
+                          "type": "boolean",
+                          "description": "True if the client is unauthenticated and will only receive broadcast events (present only for unauthenticated clients)"
                         },
                         "msgpackr": {
                           "type": "boolean",
                           "description": "Whether msgpackr encoding is enabled"
                         }
                       },
-                      "example": {
-                        "event": "connected",
-                        "alias_id": "507f1f77bcf86cd799439011",
-                        "msgpackr": false
-                      }
+                      "oneOf": [
+                        {
+                          "title": "Authenticated Example",
+                          "example": {
+                            "event": "connected",
+                            "alias_id": "507f1f77bcf86cd799439011",
+                            "msgpackr": false
+                          }
+                        },
+                        {
+                          "title": "Unauthenticated Example",
+                          "example": {
+                            "event": "connected",
+                            "broadcastOnly": true,
+                            "msgpackr": false
+                          }
+                        }
+                      ]
                     },
                     {
                       "title": "newMessage",
@@ -8483,7 +8499,7 @@
             "description": "Bad Request - Missing or invalid authentication parameters"
           },
           "401": {
-            "description": "Unauthorized - Invalid API token or alias credentials"
+            "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
@@ -8557,7 +8573,7 @@
     },
     {
       "name": "WebSockets",
-      "description": "Real-time push notifications via WebSocket. Connect to the /v1/ws endpoint to receive live events for all IMAP, CalDAV, and CardDAV state changes on a specific alias, as well as global app release notifications. Supports 20 distinct event types covering message delivery, moves, copies, flag changes, expunges, mailbox CRUD, calendar CRUD, calendar event CRUD, contact CRUD, address book CRUD, and app release broadcasts from the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
+      "description": "Real-time push notifications via WebSocket. Connect to the /v1/ws endpoint to receive live events. Authentication is optional: authenticated clients receive per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events, while unauthenticated clients receive only global broadcast events (e.g. newRelease). Supports 20 distinct event types covering message delivery, moves, copies, flag changes, expunges, mailbox CRUD, calendar CRUD, calendar event CRUD, contact CRUD, address book CRUD, and app release broadcasts from the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net)."
     }
   ]
 }

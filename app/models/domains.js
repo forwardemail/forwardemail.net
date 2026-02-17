@@ -59,12 +59,34 @@ const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
 
+//
+// Lazy-initialised Redis client and Cloudflare Family DNS resolver
+// for the post-save domain categorisation hook.  Initialised on first
+// use so that module loading in the test environment never opens
+// real connections.
 // TODO: use a global redis/resolver approach like global mongoose
-const breeSharedConfig = sharedConfig('BREE');
-const domainClient = new Redis(breeSharedConfig.redis, logger);
-const familyResolver = createTangerine(domainClient, logger, {
-  servers: new Set(['1.1.1.3', '1.1.0.3'])
-});
+//
+let _domainClient;
+let _familyResolver;
+
+function getDomainClient() {
+  if (!_domainClient) {
+    const breeSharedConfig = sharedConfig('BREE');
+    _domainClient = new Redis(breeSharedConfig.redis, logger);
+  }
+
+  return _domainClient;
+}
+
+function getFamilyResolver() {
+  if (!_familyResolver) {
+    _familyResolver = createTangerine(getDomainClient(), logger, {
+      servers: new Set(['1.1.1.3', '1.1.0.3'])
+    });
+  }
+
+  return _familyResolver;
+}
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
 const quotedEmailUserUtf8 = new RE2(
@@ -1441,118 +1463,124 @@ Domains.pre('save', function (next) {
 // This mirrors the logic in `jobs/check-domains-cloudflare-family.js`
 // via the shared `helpers/check-domain-and-act.js` helper.
 //
-Domains.post('save', async (doc, next) => {
+Domains.post('save', (doc, next) => {
   //
-  // Only run for newly created domains
+  // Only run for newly created domains and skip in test environment
   //
-  if (!doc._isNew) return next();
+  if (!doc._isNew || config.env === 'test') return next();
 
-  try {
-    //
-    // Build a lean-like object from the document so the shared helper
-    // can read `_id`, `name`, and `members` consistently.
-    //
-    const domainDoc = {
-      _id: doc._id,
-      name: doc.name,
-      members: doc.members || []
-    };
+  //
+  // Fire-and-forget: run the categorisation check in the background
+  // so it never blocks or interferes with the domain save flow.
+  // The entire async operation is wrapped in a try/catch so that
+  // errors are logged but never propagate.
+  //
 
-    const ctx = {
-      bannedResults: [],
-      reviewResults: [],
-      skippedResults: [],
-      dryRun: false
-    };
+  Promise.resolve()
+    .then(async () => {
+      const domainDoc = {
+        _id: doc._id,
+        name: doc.name,
+        members: doc.members || []
+      };
 
-    await checkDomainAndAct(domainDoc, ctx, {
-      client: domainClient,
-      familyResolver,
-      logger,
-      timeout: 10_000,
-      Users: conn.models.Users,
-      Aliases: conn.models.Aliases
-    });
+      const ctx = {
+        bannedResults: [],
+        reviewResults: [],
+        skippedResults: [],
+        dryRun: false
+      };
 
-    //
-    // If anything was flagged, send an admin alert email
-    //
-    const totalFlagged =
-      ctx.bannedResults.length +
-      ctx.reviewResults.length +
-      ctx.skippedResults.length;
-
-    if (totalFlagged > 0) {
-      const parts = [];
-      if (ctx.bannedResults.length > 0)
-        parts.push(`${ctx.bannedResults.length} banned`);
-      if (ctx.skippedResults.length > 0)
-        parts.push(`${ctx.skippedResults.length} protected (skipped)`);
-      if (ctx.reviewResults.length > 0)
-        parts.push(`${ctx.reviewResults.length} for review`);
-
-      const summary = parts.join(', ');
-      const subject = `New domain created: ${doc.name} – ${summary}`;
-
-      //
-      // Build a simple HTML summary for the alert email
-      //
-      const lines = [
-        `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`
-      ];
-
-      for (const r of ctx.bannedResults) {
-        lines.push(
-          `<p><strong>Banned</strong> – categories: ${r.categories.join(
-            ', '
-          )}` +
-            ` | users banned: ${r.bannedEmails.join(', ') || 'none'}` +
-            ` | aliases: ${r.aliasCount}</p>`
-        );
-      }
-
-      for (const r of ctx.skippedResults) {
-        lines.push(
-          `<p><strong>Protected user skipped</strong> – ${r.user.email}` +
-            ` | categories: ${r.categories.join(', ')}` +
-            ` | reasons: ${r.exclusionReasons.join('; ')}</p>`
-        );
-      }
-
-      for (const r of ctx.reviewResults) {
-        lines.push(
-          `<p><strong>Review</strong> – categories: ${r.categories.join(
-            ', '
-          )}` +
-            ` | members: ${r.memberCount}` +
-            ` | aliases: ${r.aliasCount}</p>`
-        );
-      }
-
-      await emailHelper({
-        template: 'alert',
-        message: {
-          to: config.alertsEmail,
-          subject
-        },
-        locals: {
-          message: lines.join('\n')
-        }
+      await checkDomainAndAct(domainDoc, ctx, {
+        client: getDomainClient(),
+        familyResolver: getFamilyResolver(),
+        logger,
+        timeout: 10_000,
+        Users: conn.models.Users,
+        Aliases: conn.models.Aliases
       });
 
-      logger.info(`Post-create domain check: ${doc.name} – ${summary}`);
-    }
-  } catch (err) {
-    //
-    // Never let the categorisation check block or fail the save.
-    // Log the error and move on.
-    //
-    logger.error(
-      `Post-create domain categorisation check failed for ${doc.name}:`,
-      err
-    );
-  }
+      //
+      // If anything was flagged, send an admin alert email
+      //
+      const totalFlagged =
+        ctx.bannedResults.length +
+        ctx.reviewResults.length +
+        ctx.skippedResults.length;
 
+      if (totalFlagged > 0) {
+        const parts = [];
+        if (ctx.bannedResults.length > 0)
+          parts.push(`${ctx.bannedResults.length} banned`);
+        if (ctx.skippedResults.length > 0)
+          parts.push(`${ctx.skippedResults.length} protected (skipped)`);
+        if (ctx.reviewResults.length > 0)
+          parts.push(`${ctx.reviewResults.length} for review`);
+
+        const summary = parts.join(', ');
+        const subject = `New domain created: ${doc.name} – ${summary}`;
+
+        //
+        // Build a simple HTML summary for the alert email
+        //
+        const lines = [
+          `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`
+        ];
+
+        for (const r of ctx.bannedResults) {
+          lines.push(
+            `<p><strong>Banned</strong> – categories: ${r.categories.join(
+              ', '
+            )}` +
+              ` | users banned: ${r.bannedEmails.join(', ') || 'none'}` +
+              ` | aliases: ${r.aliasCount}</p>`
+          );
+        }
+
+        for (const r of ctx.skippedResults) {
+          lines.push(
+            `<p><strong>Protected user skipped</strong> – ${r.user.email}` +
+              ` | categories: ${r.categories.join(', ')}` +
+              ` | reasons: ${r.exclusionReasons.join('; ')}</p>`
+          );
+        }
+
+        for (const r of ctx.reviewResults) {
+          lines.push(
+            `<p><strong>Review</strong> – categories: ${r.categories.join(
+              ', '
+            )}` +
+              ` | members: ${r.memberCount}` +
+              ` | aliases: ${r.aliasCount}</p>`
+          );
+        }
+
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.alertsEmail,
+            subject
+          },
+          locals: {
+            message: lines.join('\n')
+          }
+        });
+
+        logger.info(`Post-create domain check: ${doc.name} – ${summary}`);
+      }
+    })
+    .catch((err) => {
+      //
+      // Never let the categorisation check block or fail the save.
+      // Log the error and move on.
+      //
+      logger.error(
+        `Post-create domain categorisation check failed for ${doc.name}:`,
+        err
+      );
+    });
+
+  // Return immediately — do not wait for the background check
   next();
 });
 
