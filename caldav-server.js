@@ -2628,43 +2628,56 @@ class CalDAV extends API {
             );
           });
         } else if (delOrgEmail && delVevent) {
-          // Attendee deleting - send DECLINED REPLY to organizer
-          // Check SCHEDULE-AGENT first
-          const attProps = delVevent.getAllProperties('attendee');
-          let shouldSendReply = true;
-          for (const att of attProps) {
-            const email = (att.getFirstValue() || '')
-              .replace(/^mailto:/i, '')
-              .toLowerCase()
-              .trim();
-            if (email === ctx.state.user.username) {
-              const sa = att.getParameter('schedule-agent');
-              if (sa && sa.toUpperCase() === 'CLIENT') {
-                shouldSendReply = false;
+          // Check if event is already cancelled by organizer
+          // If so, don't send DECLINED reply (organizer already knows event is cancelled)
+          const statusProp = delVevent.getFirstPropertyValue('status');
+          if (statusProp && statusProp.toUpperCase() === 'CANCELLED') {
+            ctx.logger.debug(
+              'Event already cancelled, skipping DECLINED reply',
+              {
+                eventId: event.eventId,
+                status: statusProp
               }
+            );
+          } else {
+            // Attendee deleting - send DECLINED REPLY to organizer
+            // Check SCHEDULE-AGENT first
+            const attProps = delVevent.getAllProperties('attendee');
+            let shouldSendReply = true;
+            for (const att of attProps) {
+              const email = (att.getFirstValue() || '')
+                .replace(/^mailto:/i, '')
+                .toLowerCase()
+                .trim();
+              if (email === ctx.state.user.username) {
+                const sa = att.getParameter('schedule-agent');
+                if (sa && sa.toUpperCase() === 'CLIENT') {
+                  shouldSendReply = false;
+                }
 
-              // Set PARTSTAT to DECLINED before sending
-              att.setParameter('partstat', 'DECLINED');
-              break;
+                // Set PARTSTAT to DECLINED before sending
+                att.setParameter('partstat', 'DECLINED');
+                break;
+              }
             }
-          }
 
-          if (shouldSendReply) {
-            // Update the event ical with DECLINED status for the REPLY
-            const declinedEvent = {
-              ...event,
-              ical: delComp.toString()
-            };
-            setImmediate(() => {
-              this.sendEmailWithICS(
-                ctx,
-                calendar,
-                declinedEvent,
-                'REPLY'
-              ).catch((err) => {
-                ctx.logger.error('sendEmailWithICS REPLY error', { err });
+            if (shouldSendReply) {
+              // Update the event ical with DECLINED status for the REPLY
+              const declinedEvent = {
+                ...event,
+                ical: delComp.toString()
+              };
+              setImmediate(() => {
+                this.sendEmailWithICS(
+                  ctx,
+                  calendar,
+                  declinedEvent,
+                  'REPLY'
+                ).catch((err) => {
+                  ctx.logger.error('sendEmailWithICS REPLY error', { err });
+                });
               });
-            });
+            }
           }
         }
       }

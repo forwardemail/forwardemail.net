@@ -780,42 +780,52 @@ async function remove(ctx) {
           })
         );
       } else if (organizerEmail && vevent) {
-        // Attendee deleting - send DECLINED REPLY to organizer
-        // Check SCHEDULE-AGENT first
-        const attProps = vevent.getAllProperties('attendee');
-        let shouldSendReply = true;
-        for (const att of attProps) {
-          const email = (att.getFirstValue() || '')
-            .replace(/^mailto:/i, '')
-            .toLowerCase()
-            .trim();
-          if (email === ctx.state.session.user.username) {
-            const sa = att.getParameter('schedule-agent');
-            if (sa && sa.toUpperCase() === 'CLIENT') {
-              shouldSendReply = false;
+        // Check if event is already cancelled by organizer
+        // If so, don't send DECLINED reply (organizer already knows event is cancelled)
+        const statusProp = vevent.getFirstPropertyValue('status');
+        if (statusProp && statusProp.toUpperCase() === 'CANCELLED') {
+          ctx.logger.debug('Event already cancelled, skipping DECLINED reply', {
+            eventId: calendarEvent.eventId,
+            status: statusProp
+          });
+        } else {
+          // Attendee deleting - send DECLINED REPLY to organizer
+          // Check SCHEDULE-AGENT first
+          const attProps = vevent.getAllProperties('attendee');
+          let shouldSendReply = true;
+          for (const att of attProps) {
+            const email = (att.getFirstValue() || '')
+              .replace(/^mailto:/i, '')
+              .toLowerCase()
+              .trim();
+            if (email === ctx.state.session.user.username) {
+              const sa = att.getParameter('schedule-agent');
+              if (sa && sa.toUpperCase() === 'CLIENT') {
+                shouldSendReply = false;
+              }
+
+              // Set PARTSTAT to DECLINED before sending
+              att.setParameter('partstat', 'DECLINED');
+              break;
             }
-
-            // Set PARTSTAT to DECLINED before sending
-            att.setParameter('partstat', 'DECLINED');
-            break;
           }
-        }
 
-        if (shouldSendReply) {
-          // Update the event ical with DECLINED status for the REPLY
-          const declinedEvent = {
-            ...(calendarEvent.toObject
-              ? calendarEvent.toObject()
-              : calendarEvent),
-            ical: comp.toString()
-          };
-          sendCalendarEmail(ctx, calendar, declinedEvent, 'REPLY').catch(
-            (err) =>
-              ctx.logger.fatal(err, {
-                calendarEvent,
-                session: ctx.state.session
-              })
-          );
+          if (shouldSendReply) {
+            // Update the event ical with DECLINED status for the REPLY
+            const declinedEvent = {
+              ...(calendarEvent.toObject
+                ? calendarEvent.toObject()
+                : calendarEvent),
+              ical: comp.toString()
+            };
+            sendCalendarEmail(ctx, calendar, declinedEvent, 'REPLY').catch(
+              (err) =>
+                ctx.logger.fatal(err, {
+                  calendarEvent,
+                  session: ctx.state.session
+                })
+            );
+          }
         }
       }
     }
