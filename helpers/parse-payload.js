@@ -1090,7 +1090,16 @@ async function parsePayload(data, ws) {
                       const rootNode = new MimeNode(
                         'text/plain; charset=utf-8'
                       );
-                      rootNode.setHeader('To', payload.sender);
+                      //
+                      // RFC 3464 compliance: The DSN MUST be addressed (in both the message
+                      // header and the transport envelope) to the return address from the
+                      // transport envelope which accompanied the original message.
+                      // <https://tools.ietf.org/html/rfc3464>
+                      //
+                      // Use checkSRS to unwrap any SRS-rewritten addresses so the To header
+                      // matches the transport envelope recipient address.
+                      //
+                      rootNode.setHeader('To', checkSRS(payload.sender));
                       rootNode.setHeader('From', session.user.username);
 
                       // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"

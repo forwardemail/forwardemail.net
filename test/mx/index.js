@@ -2944,3 +2944,698 @@ This is a test email using header :contains matching.
   await imap.close();
   await mx.close();
 });
+
+//
+// =============================================================================
+// RFC 3464 DSN Compliance Tests
+// =============================================================================
+//
+// These tests verify that all DSN-related emails (vacation responders, bounce
+// notifications, etc.) comply with RFC 3464 Section 2.2:
+//
+//   "The DSN MUST be addressed (in both the message header and the transport
+//    envelope) to the return address from the transport envelope which
+//    accompanied the original message for which the DSN was generated."
+//
+// Specifically, they assert:
+//   1. MAIL FROM is <> (empty/null sender) for all DSN messages
+//   2. RCPT TO (transport envelope) matches the original MAIL FROM address
+//   3. The To: header in the DSN message matches the original MAIL FROM address
+//   4. The message contains proper DSN headers (Auto-Submitted, Precedence)
+//
+// Reference: https://tools.ietf.org/html/rfc3464
+// =============================================================================
+//
+
+test('RFC 3464 compliance - vacation responder DSN addresses To header and envelope to original MAIL FROM', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'vactest',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Out of Office',
+        message: 'I am currently out of the office.'
+      }
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof sender MX records
+  map.set(
+    'mx:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof sender SPF so the message passes SPF check
+  map.set(
+    'txt:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // spoof sender DMARC with p=none so the message is not rejected
+  map.set(
+    'txt:_dmarc.sender.example.com',
+    resolver.spoofPacket(
+      '_dmarc.sender.example.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Send a message to the alias with vacation responder enabled
+  // The envelope MAIL FROM is 'sender@sender.example.com' — this is the address
+  // that the vacation responder DSN must be addressed to per RFC 3464
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        // This is the envelope MAIL FROM — the return address that the DSN
+        // must be addressed to per RFC 3464
+        from: 'sender@sender.example.com',
+        to: [`vactest@${domain.name}`]
+      },
+      raw: `
+To: vactest@${domain.name}
+From: Sender User <sender@sender.example.com>
+Subject: Hello from sender
+Message-ID: <rfc3464-vacation-test@sender.example.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello, this is a test message.`.trim()
+    })
+  );
+
+  // Wait for the vacation responder bounce email to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true
+      });
+      return Boolean(exists?._id);
+    },
+    { timeout: ms('15s') }
+  );
+
+  // Retrieve the vacation responder email
+  const vacationEmail = await Emails.findOne({
+    user: user._id,
+    is_bounce: true
+  });
+
+  t.truthy(vacationEmail, 'Vacation responder email should be created');
+  t.true(
+    vacationEmail.is_bounce,
+    'Vacation responder should be marked as bounce'
+  );
+
+  //
+  // RFC 3464 compliance assertion #1:
+  // The transport envelope 'to' must be the original MAIL FROM address
+  //
+  const envelopeTo = Array.isArray(vacationEmail.envelope.to)
+    ? vacationEmail.envelope.to
+    : [vacationEmail.envelope.to];
+  t.true(
+    envelopeTo.includes('sender@sender.example.com'),
+    `Envelope 'to' must be the original MAIL FROM address (sender@sender.example.com), got: ${JSON.stringify(
+      envelopeTo
+    )}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #2:
+  // The To: header in the DSN message must match the original MAIL FROM address
+  //
+  const rawMessage = await Emails.getMessage(vacationEmail.message, true);
+  t.true(
+    typeof rawMessage === 'string' && rawMessage.length > 0,
+    'Vacation responder message should have content'
+  );
+
+  // Extract the To: header from the raw message
+  const toHeaderMatch = rawMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(toHeaderMatch, 'Vacation responder message must have a To: header');
+  t.true(
+    toHeaderMatch[1].includes('sender@sender.example.com'),
+    `To: header must contain the original MAIL FROM address (sender@sender.example.com), got: ${toHeaderMatch[1]}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #3:
+  // Verify DSN-specific headers are present
+  //
+  t.true(
+    rawMessage.includes('Auto-Submitted: auto-replied'),
+    'Vacation responder must have Auto-Submitted: auto-replied header'
+  );
+  t.true(
+    rawMessage.includes('Precedence: bulk'),
+    'Vacation responder must have Precedence: bulk header'
+  );
+  t.true(
+    rawMessage.includes('X-Autoreply: yes'),
+    'Vacation responder must have X-Autoreply: yes header'
+  );
+
+  //
+  // RFC 3464 compliance assertion #4:
+  // Process the email through a dummy SMTP server and verify MAIL FROM is <>
+  // and RCPT TO is the original sender
+  //
+  const dummyPort = await getPort();
+  const capturedSessions = [];
+  const capturedMessages = [];
+  const dummyServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onMailFrom(address, session, fn) {
+      // RFC 3464: DSN must be sent with MAIL FROM:<> (null sender)
+      t.is(
+        address.address,
+        '',
+        'MAIL FROM must be empty (<>) for DSN messages per RFC 3464'
+      );
+      fn();
+    },
+    onRcptTo(address, session, fn) {
+      // RFC 3464: RCPT TO must be the original MAIL FROM address
+      t.is(
+        address.address,
+        'sender@sender.example.com',
+        'RCPT TO must be the original MAIL FROM address per RFC 3464'
+      );
+      capturedSessions.push({
+        mailFrom: session.envelope.mailFrom,
+        rcptTo: address
+      });
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        capturedMessages.push(buffer.toString());
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  await pify(dummyServer.listen.bind(dummyServer))(dummyPort);
+
+  // Process the vacation responder email through the dummy SMTP server
+  await processEmail({
+    email: vacationEmail,
+    port: dummyPort,
+    resolver,
+    client: t.context.client
+  });
+
+  // Verify the email was sent successfully
+  const updatedEmail = await Emails.findById(vacationEmail._id);
+  t.is(updatedEmail.status, 'sent', 'Vacation responder email should be sent');
+  t.deepEqual(
+    updatedEmail.accepted,
+    ['sender@sender.example.com'],
+    'Accepted recipient must be the original MAIL FROM address'
+  );
+
+  // Verify the captured message has correct To: header
+  t.is(capturedMessages.length, 1, 'Exactly one message should be captured');
+  const sentMessage = capturedMessages[0];
+  const sentToMatch = sentMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(sentToMatch, 'Sent message must have a To: header');
+  t.true(
+    sentToMatch[1].includes('sender@sender.example.com'),
+    `Sent message To: header must be the original MAIL FROM address, got: ${sentToMatch[1]}`
+  );
+
+  // Verify the In-Reply-To header references the original message
+  t.true(
+    sentMessage.includes(
+      'In-Reply-To: <rfc3464-vacation-test@sender.example.com>'
+    ),
+    'Vacation responder must have In-Reply-To referencing the original message'
+  );
+
+  await dummyServer.close();
+  await smtp.close();
+});
+
+test('RFC 3464 compliance - vacation responder with SRS-rewritten MAIL FROM addresses To header to unwrapped address', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'srstest',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Out of Office (SRS)',
+        message: 'I am currently out of the office (SRS test).'
+      }
+    })
+    .create();
+
+  // The original sender address before SRS rewriting
+  const originalSender = 'original@sender.example.com';
+
+  // Create an SRS-rewritten version of the sender address
+  // (this simulates what happens when a message is forwarded through an SRS-aware server)
+  const srsAddress = srs.forward(originalSender, env.WEB_HOST);
+
+  // spoof dns records
+  const map = new Map();
+
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spoof sender MX records (for the original sender domain)
+  map.set(
+    'mx:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof sender SPF so the message passes SPF check
+  map.set(
+    'txt:sender.example.com',
+    resolver.spoofPacket(
+      'sender.example.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // spoof sender DMARC with p=none so the message is not rejected
+  map.set(
+    'txt:_dmarc.sender.example.com',
+    resolver.spoofPacket(
+      '_dmarc.sender.example.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Send a message with an SRS-rewritten envelope MAIL FROM
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        // SRS-rewritten envelope MAIL FROM
+        // checkSRS should unwrap this to 'original@sender.example.com'
+        from: srsAddress,
+        to: [`srstest@${domain.name}`]
+      },
+      raw: `
+To: srstest@${domain.name}
+From: Original Sender <original@sender.example.com>
+Subject: Hello from SRS sender
+Message-ID: <rfc3464-srs-vacation-test@sender.example.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello, this is a test message with SRS-rewritten MAIL FROM.`.trim()
+    })
+  );
+
+  // Wait for the vacation responder bounce email to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true
+      });
+      return Boolean(exists?._id);
+    },
+    { timeout: ms('15s') }
+  );
+
+  const vacationEmail = await Emails.findOne({
+    user: user._id,
+    is_bounce: true
+  });
+
+  t.truthy(vacationEmail, 'Vacation responder email should be created');
+
+  //
+  // RFC 3464 compliance: When MAIL FROM is SRS-rewritten, the DSN must be
+  // addressed to the unwrapped original address (not the SRS address).
+  // Both the To: header and envelope 'to' must match.
+  //
+  const envelopeTo = Array.isArray(vacationEmail.envelope.to)
+    ? vacationEmail.envelope.to
+    : [vacationEmail.envelope.to];
+  t.true(
+    envelopeTo.includes(originalSender),
+    `Envelope 'to' must be the SRS-unwrapped original address (${originalSender}), got: ${JSON.stringify(
+      envelopeTo
+    )}`
+  );
+
+  const rawMessage = await Emails.getMessage(vacationEmail.message, true);
+  const toHeaderMatch = rawMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(toHeaderMatch, 'Vacation responder message must have a To: header');
+  t.true(
+    toHeaderMatch[1].includes(originalSender),
+    `To: header must contain the SRS-unwrapped original address (${originalSender}), got: ${toHeaderMatch[1]}`
+  );
+
+  //
+  // Verify consistency: To: header and envelope 'to' must match
+  //
+  t.true(
+    toHeaderMatch[1].includes(envelopeTo[0]),
+    'To: header and envelope to must be consistent (both the same address)'
+  );
+
+  await smtp.close();
+});

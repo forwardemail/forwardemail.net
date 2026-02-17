@@ -347,7 +347,19 @@ async function sendVacationResponder(vacationResponder, headers, session) {
 function createVacationResponder(vacationResponder, headers, session) {
   // NOTE: "Date" and "Message-ID" header will be automatically set
   const rootNode = new MimeNode('text/plain; charset=utf-8');
-  rootNode.setHeader('To', session.originalFromAddress);
+  //
+  // RFC 3464 compliance: The DSN MUST be addressed (in both the message
+  // header and the transport envelope) to the return address from the
+  // transport envelope which accompanied the original message.
+  // <https://tools.ietf.org/html/rfc3464>
+  //
+  // We use the envelope MAIL FROM (session.envelope.mailFrom.address)
+  // instead of the From header (session.originalFromAddress) because
+  // the receiving server validates that the To header matches the
+  // transport envelope recipient, and both must be the envelope return
+  // address of the original message.
+  //
+  rootNode.setHeader('To', checkSRS(session.envelope.mailFrom.address));
   rootNode.setHeader('From', vacationResponder.from);
   //
   // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"

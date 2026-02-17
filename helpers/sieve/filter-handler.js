@@ -555,10 +555,18 @@ class SieveFilterHandler {
    * @returns {Promise<Object|null>} Vacation response info or null
    */
   async handleVacation(action, message, context) {
-    // Get sender address - prefer headers.from for vacation checks
-    // as envelope.from may be different (e.g., bounce address)
+    //
+    // RFC 3464 compliance: The DSN MUST be addressed (in both the message
+    // header and the transport envelope) to the return address from the
+    // transport envelope which accompanied the original message.
+    // <https://tools.ietf.org/html/rfc3464>
+    //
+    // Prefer envelope.from (the MAIL FROM / return path) over headers.from
+    // because auto-replies sent with MAIL FROM:<> (is_bounce) are treated
+    // as DSNs by receiving servers and must comply with RFC 3464.
+    //
     const from =
-      message.headers?.from || message.envelope?.from || message.from;
+      message.envelope?.from || message.headers?.from || message.from;
 
     if (!from) {
       return null;

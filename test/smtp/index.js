@@ -4322,3 +4322,751 @@ Test REQUIRETLS
 
   await smtp.close();
 });
+
+//
+// =============================================================================
+// RFC 3464 DSN Compliance Tests
+// =============================================================================
+//
+// These tests verify that all DSN-related emails comply with RFC 3464 Section 2.2:
+//
+//   "The DSN MUST be addressed (in both the message header and the transport
+//    envelope) to the return address from the transport envelope which
+//    accompanied the original message for which the DSN was generated."
+//
+// Reference: https://tools.ietf.org/html/rfc3464
+// =============================================================================
+//
+
+test('RFC 3464 compliance - DSN failure bounce To header and envelope match original sender', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        `forward-email-port=${port.toString()}`,
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that rejects messages with 550 (permanent failure)
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const err = new Error('Mailbox not found');
+        err.responseCode = 550;
+        fn(err);
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    secure: false,
+    tls: { rejectUnauthorized: false },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com'
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: RFC 3464 Bounce Test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test message for RFC 3464 bounce compliance`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({ messageId }).lean().exec();
+    t.true(email !== null);
+
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    t.true(results[0].accepted.length === 0);
+    t.is(results[0].rejected, 'foo@foo.com');
+    t.is(results[0].rejectedErrors[0].responseCode, 550);
+  }
+
+  // Wait for bounce DSN to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true,
+        subject: 'Delivery Status Notification (Failure)'
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  // Retrieve the bounce DSN email
+  const bounceDSN = await Emails.findOne({
+    user: user._id,
+    is_bounce: true,
+    subject: 'Delivery Status Notification (Failure)'
+  });
+
+  t.truthy(bounceDSN, 'Bounce DSN email should be created');
+  t.true(bounceDSN.is_bounce, 'Bounce DSN should be marked as bounce');
+
+  //
+  // RFC 3464 compliance assertion #1:
+  // The envelope 'to' must be the original sender's return address
+  //
+  const envelopeTo = Array.isArray(bounceDSN.envelope.to)
+    ? bounceDSN.envelope.to
+    : [bounceDSN.envelope.to];
+  t.true(
+    envelopeTo.includes(`${alias.name}@${domain.name}`),
+    `Bounce DSN envelope 'to' must be the original sender (${alias.name}@${
+      domain.name
+    }), got: ${JSON.stringify(envelopeTo)}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #2:
+  // The To: header must match the original sender's return address
+  //
+  const rawMessage = await Emails.getMessage(bounceDSN.message, true);
+  const toHeaderMatch = rawMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(toHeaderMatch, 'Bounce DSN must have a To: header');
+  t.true(
+    toHeaderMatch[1].includes(`${alias.name}@${domain.name}`),
+    `Bounce DSN To: header must be the original sender, got: ${toHeaderMatch[1]}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #3:
+  // Verify the DSN contains proper multipart/report structure
+  //
+  t.true(
+    rawMessage.includes('multipart/report'),
+    'Bounce DSN must be multipart/report'
+  );
+  t.true(
+    rawMessage.includes('report-type=delivery-status'),
+    'Bounce DSN must have report-type=delivery-status'
+  );
+  t.true(
+    rawMessage.includes('message/delivery-status'),
+    'Bounce DSN must contain message/delivery-status part'
+  );
+  t.true(
+    rawMessage.includes('Action: failed'),
+    'Bounce DSN must contain Action: failed'
+  );
+  t.true(
+    rawMessage.includes('Final-Recipient: rfc822;foo@foo.com'),
+    'Bounce DSN must contain Final-Recipient field'
+  );
+
+  //
+  // RFC 3464 compliance assertion #4:
+  // Process through dummy SMTP server to verify MAIL FROM is <>
+  //
+  const dummyPort = await getPort();
+  const capturedMessages = [];
+  const dummyServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onMailFrom(address, session, fn) {
+      t.is(
+        address.address,
+        '',
+        'Bounce DSN MAIL FROM must be empty (<>) per RFC 3464'
+      );
+      fn();
+    },
+    onRcptTo(address, session, fn) {
+      t.is(
+        address.address,
+        `${alias.name}@${domain.name}`,
+        'Bounce DSN RCPT TO must be the original sender per RFC 3464'
+      );
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        capturedMessages.push(Buffer.concat(chunks).toString());
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  await pify(dummyServer.listen.bind(dummyServer))(dummyPort);
+
+  // spoof MX for the sender's domain so processEmail can deliver the bounce
+  const senderDomain = domain.name;
+  const bounceMap = new Map();
+  bounceMap.set(
+    `mx:${senderDomain}`,
+    resolver.spoofPacket(
+      senderDomain,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+  await resolver.options.cache.mset(bounceMap);
+
+  await processEmail({
+    email: bounceDSN,
+    port: dummyPort,
+    resolver,
+    client
+  });
+
+  const updatedBounce = await Emails.findById(bounceDSN._id);
+  t.is(updatedBounce.status, 'sent', 'Bounce DSN should be sent successfully');
+
+  // Verify the captured message has correct To: header
+  t.is(capturedMessages.length, 1, 'Exactly one bounce DSN should be captured');
+  const sentMessage = capturedMessages[0];
+  const sentToMatch = sentMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(sentToMatch, 'Sent bounce DSN must have a To: header');
+  t.true(
+    sentToMatch[1].includes(`${alias.name}@${domain.name}`),
+    `Sent bounce DSN To: header must be the original sender, got: ${sentToMatch[1]}`
+  );
+
+  await dummyServer.close();
+  await server.close();
+  await smtp.close();
+});
+
+test('RFC 3464 compliance - DSN success notification To header and envelope match original sender', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        `forward-email-port=${port.toString()}`,
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that accepts messages (triggers success DSN)
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        fn(); // 250 success
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    secure: false,
+    tls: { rejectUnauthorized: false },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+
+  // Send with DSN NOTIFY=SUCCESS to trigger success DSN
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      dsn: {
+        id: 'RFC3464-SUCCESS-TEST',
+        return: 'full',
+        notify: ['success', 'failure', 'delay'],
+        recipient: 'foo@foo.com'
+      }
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: RFC 3464 Success DSN Test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test message for RFC 3464 success DSN compliance`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({ messageId }).lean().exec();
+    t.true(email !== null);
+
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    t.true(results[0].accepted.length === 1);
+  }
+
+  // Wait for success DSN to be queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        user: user._id,
+        is_bounce: true,
+        subject: 'Delivery Status Notification (Success)'
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  // Retrieve the success DSN email
+  const successDSN = await Emails.findOne({
+    user: user._id,
+    is_bounce: true,
+    subject: 'Delivery Status Notification (Success)'
+  });
+
+  t.truthy(successDSN, 'Success DSN email should be created');
+  t.true(
+    successDSN.is_bounce,
+    'Success DSN should be marked as bounce (is_bounce)'
+  );
+
+  //
+  // RFC 3464 compliance assertion #1:
+  // The envelope 'to' must be the original sender's return address
+  //
+  const envelopeTo = Array.isArray(successDSN.envelope.to)
+    ? successDSN.envelope.to
+    : [successDSN.envelope.to];
+  t.true(
+    envelopeTo.includes(`${alias.name}@${domain.name}`),
+    `Success DSN envelope 'to' must be the original sender (${alias.name}@${
+      domain.name
+    }), got: ${JSON.stringify(envelopeTo)}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #2:
+  // The To: header must match the original sender's return address
+  //
+  const rawMessage = await Emails.getMessage(successDSN.message, true);
+  const toHeaderMatch = rawMessage.match(/^to:\s*(.+)$/im);
+  t.truthy(toHeaderMatch, 'Success DSN must have a To: header');
+  t.true(
+    toHeaderMatch[1].includes(`${alias.name}@${domain.name}`),
+    `Success DSN To: header must be the original sender, got: ${toHeaderMatch[1]}`
+  );
+
+  //
+  // RFC 3464 compliance assertion #3:
+  // Verify the DSN contains proper multipart/report structure
+  //
+  t.true(
+    rawMessage.includes('multipart/report'),
+    'Success DSN must be multipart/report'
+  );
+  t.true(
+    rawMessage.includes('report-type=delivery-status'),
+    'Success DSN must have report-type=delivery-status'
+  );
+  t.true(
+    rawMessage.includes('message/delivery-status'),
+    'Success DSN must contain message/delivery-status part'
+  );
+  t.true(
+    rawMessage.includes('Action: delivered'),
+    'Success DSN must contain Action: delivered'
+  );
+  t.true(
+    rawMessage.includes('Final-Recipient: rfc822;foo@foo.com'),
+    'Success DSN must contain Final-Recipient field'
+  );
+
+  //
+  // RFC 3464 compliance assertion #4:
+  // Verify consistency between To: header and envelope 'to'
+  //
+  t.true(
+    toHeaderMatch[1].includes(envelopeTo[0]) ||
+      envelopeTo[0].includes(toHeaderMatch[1].trim()),
+    `To: header (${toHeaderMatch[1]}) and envelope to (${envelopeTo[0]}) must be consistent`
+  );
+
+  await server.close();
+  await smtp.close();
+});

@@ -176,12 +176,23 @@ async function sendSuccessDSN(email, domain, info, raw, envelope, session) {
     { info, session }
   );
 
+  //
   // Queue the DSN success notification
+  //
+  // RFC 3464 compliance: The DSN MUST be addressed (in both the message
+  // header and the transport envelope) to the return address from the
+  // transport envelope which accompanied the original message.
+  // <https://tools.ietf.org/html/rfc3464>
+  //
+  // Use email.envelope.from (the original sender's return address) for the
+  // transport envelope recipient to ensure it matches the To header in the
+  // DSN message (which is also set to email.envelope.from in createDSNSuccess).
+  //
   await Emails.queue({
     message: {
       envelope: {
         from: punycode.toASCII(`mailer-daemon@${domain.name}`),
-        to: [checkSRS(envelope.from)]
+        to: [checkSRS(email.envelope.from)]
       },
       raw: dsnStream
     },
