@@ -19513,5 +19513,6 @@
   "Sieve Scripts": "Sieve Scripts",
   "<span class=\"notranslate\">WordPress</span> Email DNS Tutorial <span class=\"notranslate\">2026</span>": "<span class=\"notranslate\">WordPress</span> Email DNS Tutorial <span class=\"notranslate\">2026</span>",
   "User does not exist.": "User does not exist.",
-  "Cancelled": "Cancelled"
+  "Cancelled": "Cancelled",
+  "No valid vevent or vtodo component found": "No valid vevent or vtodo component found"
 }

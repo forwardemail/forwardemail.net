@@ -71,8 +71,16 @@ function detectAttendeePartstatChange(newIcal, oldIcal, userEmail) {
   const result = { changed: false, scheduleAgent: null };
   if (!newIcal || !oldIcal || !userEmail) return result;
 
-  const newComp = new ICAL.Component(ICAL.parse(newIcal));
-  const oldComp = new ICAL.Component(ICAL.parse(oldIcal));
+  let newComp;
+  let oldComp;
+  try {
+    newComp = new ICAL.Component(ICAL.parse(newIcal));
+    oldComp = new ICAL.Component(ICAL.parse(oldIcal));
+  } catch {
+    // Malformed ICAL data — cannot compare, treat as no change
+    return result;
+  }
+
   const newVevents = newComp.getAllSubcomponents('vevent');
   const oldVevents = oldComp.getAllSubcomponents('vevent');
   const email = userEmail.toLowerCase().trim();
@@ -144,8 +152,16 @@ function resetPartstatsOnSignificantChange(newIcal, oldIcal, organizerEmail) {
   const result = { updatedIcal: newIcal, resetCount: 0 };
   if (!newIcal || !oldIcal || !organizerEmail) return result;
 
-  const newComp = new ICAL.Component(ICAL.parse(newIcal));
-  const oldComp = new ICAL.Component(ICAL.parse(oldIcal));
+  let newComp;
+  let oldComp;
+  try {
+    newComp = new ICAL.Component(ICAL.parse(newIcal));
+    oldComp = new ICAL.Component(ICAL.parse(oldIcal));
+  } catch {
+    // Malformed ICAL data — cannot compare, return unchanged
+    return result;
+  }
+
   const newVevents = newComp.getAllSubcomponents('vevent');
   const oldVevents = oldComp.getAllSubcomponents('vevent');
   const orgEmail = organizerEmail.toLowerCase().trim();

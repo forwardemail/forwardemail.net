@@ -540,3 +540,309 @@ test.serial(
     t.true(emails.length > 0, 'At least one invite email should be queued');
   }
 );
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REST API: ICAL Parsing Edge Cases — No Connection Reset
+// ═══════════════════════════════════════════════════════════════════════════════
+
+test.serial(
+  'POST /v1/calendar-events with VTODO-only iCal succeeds without queuing email',
+  async (t) => {
+    // Clear any leftover emails from previous tests
+    await Emails.deleteMany({});
+    const { api } = t.context;
+    const { pass, username } = await createTestAlias(t);
+    const auth = createAliasAuth(username, pass);
+    const uid = `api-vtodo-${Date.now()}@example.com`;
+
+    // Create a calendar
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'VTODO Calendar' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // Create event with VTODO-only iCal (no VEVENT)
+    const ical = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VTODO',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DUE:20260501T100000Z',
+      'SUMMARY:Buy groceries',
+      'STATUS:NEEDS-ACTION',
+      'END:VTODO',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical });
+    t.is(createRes.status, 200);
+    t.is(createRes.body.object, 'calendar_event');
+
+    // Brief wait to ensure no email is queued (VTODO should not trigger invite)
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
+    const emailCount = await Emails.countDocuments({ status: 'queued' });
+    t.is(
+      emailCount,
+      0,
+      'No invite email should be queued for VTODO-only event'
+    );
+  }
+);
+
+test.serial(
+  'POST /v1/calendar-events with no organizer/attendee succeeds without queuing email',
+  async (t) => {
+    // Clear any leftover emails from previous tests
+    await Emails.deleteMany({});
+    const { api } = t.context;
+    const { pass, username } = await createTestAlias(t);
+    const auth = createAliasAuth(username, pass);
+    const uid = `api-no-org-${Date.now()}@example.com`;
+
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'No Org Calendar' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // Create event with no organizer and no attendees (personal event)
+    const ical = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260501T100000Z',
+      'DTEND:20260501T110000Z',
+      'SUMMARY:Personal Reminder',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical });
+    t.is(createRes.status, 200);
+    t.is(createRes.body.object, 'calendar_event');
+
+    // Brief wait to ensure no email is queued
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
+    const emailCount = await Emails.countDocuments({ status: 'queued' });
+    t.is(
+      emailCount,
+      0,
+      'No invite email should be queued for event without organizer/attendees'
+    );
+  }
+);
+
+test.serial(
+  'PUT /v1/calendar-events/:id update from VEVENT to VTODO-only does not crash',
+  async (t) => {
+    const { api } = t.context;
+    const { pass, username } = await createTestAlias(t);
+    const auth = createAliasAuth(username, pass);
+    const attendeeEmail = 'attendee-api-vtodo-update@example.com';
+    const uid = `api-vtodo-update-${Date.now()}@example.com`;
+
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'VTODO Update Calendar' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // Create event with VEVENT and attendee
+    const originalIcal = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260501T100000Z',
+      'DTEND:20260501T110000Z',
+      'SUMMARY:Meeting to convert',
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${username}`,
+      `ATTENDEE;PARTSTAT=ACCEPTED;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical: originalIcal });
+    t.is(createRes.status, 200);
+
+    // Wait for the initial invite email
+    await pWaitFor(
+      async () => {
+        const e = await Emails.findOne({ status: 'queued' }).lean().exec();
+        return e !== null;
+      },
+      { timeout: ms('30s') }
+    );
+
+    await Emails.deleteMany({});
+
+    // Update to VTODO-only (replacing VEVENT with VTODO)
+    const vtodoIcal = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VTODO',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T120000Z',
+      'DUE:20260501T100000Z',
+      'SUMMARY:Converted to task',
+      'STATUS:NEEDS-ACTION',
+      'END:VTODO',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    // This should NOT crash with connection reset — the try/catch handles it
+    const updateRes = await api
+      .put(`/v1/calendar-events/${uid}`)
+      .set('Authorization', auth)
+      .send({ ical: vtodoIcal });
+    t.is(updateRes.status, 200);
+    t.is(updateRes.body.object, 'calendar_event');
+  }
+);
+
+test.serial(
+  'DELETE /v1/calendar-events/:id with no organizer in iCal does not crash',
+  async (t) => {
+    const { api } = t.context;
+    const { pass, username } = await createTestAlias(t);
+    const auth = createAliasAuth(username, pass);
+    const uid = `api-no-org-delete-${Date.now()}@example.com`;
+
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'No Org Delete Calendar' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // Create event with no organizer (personal event)
+    const ical = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260501T100000Z',
+      'DTEND:20260501T110000Z',
+      'SUMMARY:Personal Event',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical });
+    t.is(createRes.status, 200);
+
+    // Delete the event — should NOT crash even though there's no organizer
+    const deleteRes = await api
+      .delete(`/v1/calendar-events/${uid}`)
+      .set('Authorization', auth);
+    t.is(deleteRes.status, 200);
+    t.truthy(deleteRes.body.deleted_at);
+  }
+);
+
+test.serial(
+  'PUT /v1/calendar-events/:id with empty VCALENDAR iCal does not crash',
+  async (t) => {
+    const { api } = t.context;
+    const { pass, username } = await createTestAlias(t);
+    const auth = createAliasAuth(username, pass);
+    const attendeeEmail = 'attendee-api-empty-cal@example.com';
+    const uid = `api-empty-cal-${Date.now()}@example.com`;
+
+    const calendarRes = await api
+      .post('/v1/calendars')
+      .set('Authorization', auth)
+      .send({ name: 'Empty Cal Calendar' });
+    t.is(calendarRes.status, 200);
+    const calendarId = calendarRes.body.id;
+
+    // Create a normal event first
+    const originalIcal = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      'DTSTAMP:20260214T100000Z',
+      'DTSTART:20260501T100000Z',
+      'DTEND:20260501T110000Z',
+      'SUMMARY:Meeting to empty',
+      'SEQUENCE:0',
+      `ORGANIZER:mailto:${username}`,
+      `ATTENDEE;PARTSTAT=ACCEPTED;RSVP=TRUE:mailto:${attendeeEmail}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const createRes = await api
+      .post('/v1/calendar-events')
+      .set('Authorization', auth)
+      .send({ calendar_id: calendarId, event_id: uid, ical: originalIcal });
+    t.is(createRes.status, 200);
+
+    // Wait for the initial invite email
+    await pWaitFor(
+      async () => {
+        const e = await Emails.findOne({ status: 'queued' }).lean().exec();
+        return e !== null;
+      },
+      { timeout: ms('30s') }
+    );
+
+    await Emails.deleteMany({});
+
+    // Update with empty VCALENDAR (no VEVENT, no VTODO)
+    const emptyIcal = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Forward Email//Test//EN',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    // Server should return a proper error (400), NOT crash with connection reset.
+    // An empty VCALENDAR is invalid iCal, so the server correctly rejects it.
+    const updateRes = await api
+      .put(`/v1/calendar-events/${uid}`)
+      .set('Authorization', auth)
+      .send({ ical: emptyIcal });
+    // Accept either 200 (server saves it) or 400 (server validates and rejects)
+    // The key assertion is that it does NOT return 500 or cause connection reset
+    t.true(
+      [200, 400].includes(updateRes.status),
+      `Expected 200 or 400, got ${updateRes.status}`
+    );
+  }
+);
