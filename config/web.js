@@ -292,8 +292,12 @@ module.exports = (redis) => ({
     },
     // <https://helmetjs.github.io/docs/referrer-policy>
     // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy>
+    // NOTE: changed from 'same-origin' to 'strict-origin-when-cross-origin'
+    // to fix YouTube embed Error 153 (YouTube requires a Referer header)
+    // 'strict-origin-when-cross-origin' is the browser default and only sends
+    // the origin (not full URL path) for cross-origin requests
     referrerPolicy: {
-      policy: 'same-origin'
+      policy: 'strict-origin-when-cross-origin'
     },
     xssFilter: false
   },
