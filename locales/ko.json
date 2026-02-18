@@ -4979,7 +4979,7 @@
   "evil maid attack": "사악한 하녀의 공격",
   "or rogue employee from a third-party vendor,": "또는 제3자 공급업체의 사기 직원,",
   "your mailbox can still only be opened with your generated password": "귀하의 사서함은 여전히 생성된 비밀번호로만 열 수 있습니다.",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "안심하세요. 저희는 Cloudflare, DataPacket, Digital Ocean, Vultr의 SOC 유형 2 규정 준수 서버 공급업체 외에는 다른 제3자 공급업체에 의존하지 않습니다.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "안심하세요. 저희는 Cloudflare, DataPacket, Digital Ocean, Vultr의 SOC 유형 2 규정 준수 서버 공급업체 외에는 다른 제3자 공급업체에 의존하지 않습니다.",
   "Our goal is to have as few": "우리의 목표는 가능한 한 적게 하는 것입니다",
   "single point of failures": "단일 실패 지점",
   "as possible.": "가능한 한.",

@@ -33,6 +33,7 @@ Forward Email هي شركة تركز على الخصوصية وتلتزم بحم
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: نعم | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: لا | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: لا | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: لا | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: نعم | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: لا | <https://www.paypal.com/uk/legalhub/privacy-full> |

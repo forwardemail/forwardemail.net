@@ -4979,7 +4979,7 @@
   "evil maid attack": "gonosz szobalány támadás",
   "or rogue employee from a third-party vendor,": "vagy egy harmadik féltől származó beszállító tisztességtelen alkalmazottja,",
   "your mailbox can still only be opened with your generated password": "a postaládád továbbra is csak a létrehozott jelszavaddal nyitható meg",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  Biztos lehet benne, hogy a Cloudflare, a DataPacket, a Digital Ocean és a Vultr SOC Type 2 panaszkiszolgálóinkon kívül nem támaszkodunk semmilyen harmadik félre.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ".  Biztos lehet benne, hogy a Cloudflare, a DataPacket, a Digital Ocean és a Vultr SOC Type 2 panaszkiszolgálóinkon kívül nem támaszkodunk semmilyen harmadik félre.",
   "Our goal is to have as few": "A célunk, hogy minél kevesebben legyenek",
   "single point of failures": "egyetlen meghibásodási pont",
   "as possible.": "amennyire csak lehetséges.",

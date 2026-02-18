@@ -33,6 +33,7 @@ Forward Email – це компанія, яка зосереджена на ко
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: Так | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Ні | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: Ні | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Ні | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: Так | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Ні | <https://www.paypal.com/uk/legalhub/privacy-full> |

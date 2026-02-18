@@ -245,6 +245,7 @@ Voici un tableau décrivant les projets que nous utilisons dans notre code sourc
 | Fournisseur | But |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Fournisseur DNS, contrôles de santé, équilibreurs de charge et stockage de sauvegarde à l'aide de [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hébergement de serveurs dédiés et bases de données gérées. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Hébergement de serveur dédié. |
 | [DataPacket](https://www.datapacket.com) | Hébergement de serveur dédié. |

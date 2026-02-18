@@ -245,6 +245,7 @@ Hier ist eine Tabelle mit einer Übersicht über die Projekte, die wir in unsere
 | Anbieter | Zweck |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-Anbieter, Integritätsprüfungen, Lastenausgleich und Sicherungsspeicher verwenden [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dediziertes Server-Hosting und verwaltete Datenbanken. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Dediziertes Server-Hosting. |
 | [DataPacket](https://www.datapacket.com) | Dediziertes Server-Hosting. |

@@ -246,6 +246,7 @@
 | مزود | غاية |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | مزود DNS، وفحوصات الصحة، وموازنات التحميل، وتخزين النسخ الاحتياطية باستخدام [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | استضافة خادم مخصص وقواعد بيانات مُدارة. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | استضافة خادم مخصص. |
 | [DataPacket](https://www.datapacket.com) | استضافة خادم مخصص. |

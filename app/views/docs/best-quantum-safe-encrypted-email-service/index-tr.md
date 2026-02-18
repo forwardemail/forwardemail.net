@@ -245,6 +245,7 @@ Kaynak kodumuzda ve geliştirme sürecimizde kullandığımız projeleri özetle
 | Sağlayıcı | Amaç |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS sağlayıcısı, sağlık kontrolleri, yük dengeleyiciler ve [Cloudflare R2](https://developers.cloudflare.com/r2) kullanılarak yedekleme depolaması. |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Özel sunucu barındırma ve yönetilen veritabanları. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Adanmış sunucu barındırma. |
 | [DataPacket](https://www.datapacket.com) | Adanmış sunucu barındırma. |

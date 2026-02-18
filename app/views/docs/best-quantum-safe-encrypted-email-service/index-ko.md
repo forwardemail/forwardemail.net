@@ -245,6 +245,7 @@
 | 공급자 | 목적 |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | [Cloudflare R2](https://developers.cloudflare.com/r2)을 사용한 DNS 제공자, 상태 점검, 로드 밸런서 및 백업 스토리지. |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 전용 서버 호스팅 및 관리형 데이터베이스. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | 전용 서버 호스팅. |
 | [DataPacket](https://www.datapacket.com) | 전용 서버 호스팅. |

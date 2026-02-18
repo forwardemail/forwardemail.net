@@ -4979,7 +4979,7 @@
   "evil maid attack": "هجوم الخادمة الشريرة",
   "or rogue employee from a third-party vendor,": "أو موظف مارق من بائع تابع لجهة خارجية،",
   "your mailbox can still only be opened with your generated password": "لا يزال بإمكانك فتح صندوق البريد الخاص بك فقط باستخدام كلمة المرور التي تم إنشاؤها",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "كن مطمئنًا، فنحن لا نعتمد على أي بائعين خارجيين غير موفري خوادم SOC Type 2 لدينا وهم Cloudflare وDataPacket وDigital Ocean وVultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "كن مطمئنًا، فنحن لا نعتمد على أي بائعين خارجيين غير موفري خوادم SOC Type 2 لدينا وهم Cloudflare وDataPacket وDigital Ocean وVultr.",
   "Our goal is to have as few": "هدفنا هو أن يكون لدينا أقل عدد",
   "single point of failures": "نقطة فشل واحدة",
   "as possible.": "قدر الإمكان.",

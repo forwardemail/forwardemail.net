@@ -33,6 +33,7 @@ Forward Email は、お客様のデータの保護に尽力しているプライ
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: はい | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: いいえ | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: いいえ | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: いいえ | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: はい | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: いいえ | <https://www.paypal.com/uk/legalhub/privacy-full> |

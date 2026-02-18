@@ -33,6 +33,7 @@ Forward Email 是一家注重隐私的公司，致力于保护您的数据。
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: 是 | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: 没有 | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: 没有 | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: 没有 | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: 是 | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: 没有 | <https://www.paypal.com/uk/legalhub/privacy-full> |

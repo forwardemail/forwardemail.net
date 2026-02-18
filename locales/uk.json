@@ -4979,7 +4979,7 @@
   "evil maid attack": "напад злої покоївки",
   "or rogue employee from a third-party vendor,": "або недобросовісного працівника від стороннього постачальника,",
   "your mailbox can still only be opened with your generated password": "вашу поштову скриньку все ще можна відкрити лише за допомогою згенерованого вами пароля",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  Будьте впевнені, ми не покладаємося на жодних сторонніх постачальників, окрім наших постачальників серверів скарг SOC типу 2 Cloudflare, DataPacket, Digital Ocean і Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ".  Будьте впевнені, ми не покладаємося на жодних сторонніх постачальників, окрім наших постачальників серверів скарг SOC типу 2 Cloudflare, DataPacket, Digital Ocean і Vultr.",
   "Our goal is to have as few": "Наша мета — мати якомога менше",
   "single point of failures": "єдина точка відмови",
   "as possible.": "якомога можливіше.",

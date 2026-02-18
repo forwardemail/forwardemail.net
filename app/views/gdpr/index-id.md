@@ -33,6 +33,7 @@ Di bawah ini tercantum penyedia yang kami gunakan untuk mentransfer data interna
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: Ya | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Tidak | <https://www.datapacket.com/kebijakan-privasi> |
 | [Digital Ocean](https://digitalocean.com) | :x: Tidak | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Tidak | <https://www.vultr.com/legal/eea-gdpr-privasi/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: Ya | <https://stripe.com/legal/pusat-privasi> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Tidak | <https://www.paypal.com/uk/legalhub/privasi-penuh> |

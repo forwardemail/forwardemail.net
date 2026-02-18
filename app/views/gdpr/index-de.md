@@ -33,6 +33,7 @@ Nachfolgend sind unsere Anbieter aufgeführt, die wir für die internationale Da
 | [Cloudflare](https://cloudflare.com) | :weißes Häkchen: Ja | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Nein | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: Nein | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Nein | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :weißes Häkchen: Ja | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Nein | <https://www.paypal.com/uk/legalhub/privacy-full> |

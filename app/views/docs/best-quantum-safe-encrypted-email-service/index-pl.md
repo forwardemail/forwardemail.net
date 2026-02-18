@@ -245,6 +245,7 @@ Poniżej znajduje się tabela przedstawiająca projekty, których używamy w nas
 | Dostawca | Zamiar |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Dostawca DNS, kontrole stanu, moduły równoważenia obciążenia i pamięć masowa kopii zapasowych wykorzystująca [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedykowany serwer hostingowy i zarządzane bazy danych. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Hosting na serwerze dedykowanym. |
 | [DataPacket](https://www.datapacket.com) | Hosting na serwerze dedykowanym. |

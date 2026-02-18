@@ -50,7 +50,7 @@
 | 学期 | 价值 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <strong>协议</strong> | 本 DPA 补充了 [Terms of Service](/terms) |
-| <strong>已批准的子处理商</strong> | [Cloudflare](https://cloudflare.com)（美国；DNS、网络和安全提供商）、[DataPacket](https://www.datapacket.com/)（美国/英国；托管服务提供商）、[Digital Ocean](https://digitalocean.com)（美国；托管服务提供商）、[Vultr](https://www.vultr.com)（美国；托管服务提供商）、[Stripe](https://stripe.com)（美国；支付处理器）、[PayPal](https://paypal.com)（美国；支付处理器） |
+| <strong>已批准的子处理商</strong> | [Cloudflare](https://cloudflare.com)（美国；DNS、网络和安全提供商）、[DataPacket](https://www.datapacket.com/)（美国/英国；托管服务提供商）、[Digital Ocean](https://digitalocean.com)（美国；托管服务提供商）、[GitHub](https://github.com) (US; source code hosting, CI/CD, and project management), [Vultr](https://www.vultr.com)（美国；托管服务提供商）、[Stripe](https://stripe.com)（美国；支付处理器）、[PayPal](https://paypal.com)（美国；支付处理器） |
 | <strong>提供商安全联系人</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | <strong>安全政策</strong> | 查看 [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | <strong>治理国家</strong> | 美国特拉华州 |

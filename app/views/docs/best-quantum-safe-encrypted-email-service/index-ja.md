@@ -245,6 +245,7 @@
 | プロバイダー | 目的 |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | [Cloudflare R2](https://developers.cloudflare.com/r2) を使用した DNS プロバイダー、ヘルスチェック、ロード バランサー、およびバックアップ ストレージ。 |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 専用サーバーホスティングと管理データベース。 |
 | [Vultr](https://www.vultr.com/?ref=7429848) | 専用サーバーホスティング。 |
 | [DataPacket](https://www.datapacket.com) | 専用サーバーホスティング。 |

@@ -33,6 +33,7 @@ Forward Email เป็นบริษัทที่เน้นเรื่อ
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: ใช่ | https://www.cloudflare.com/trust-hub/gdpr/ |
 | [DataPacket](https://www.datapacket.com/) | :x: ไม่ | <https://www.datapacket.com/นโยบายความเป็นส่วนตัว> |
 | [Digital Ocean](https://digitalocean.com) | :x: ไม่ | ลิขสิทธิ์ © 2018 digitalocean.com |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: ไม่ | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: ใช่ | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: ไม่ | <https://www.paypal.com/uk/legalhub/privacy-full> |

@@ -245,6 +245,7 @@ Aqui está uma tabela descrevendo os projetos que usamos em nosso código-fonte 
 | Provedor | Propósito |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Provedor de DNS, verificações de integridade, balanceadores de carga e armazenamento de backup usando [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hospedagem de servidores dedicados e bancos de dados gerenciados. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Hospedagem de servidor dedicado. |
 | [DataPacket](https://www.datapacket.com) | Hospedagem de servidor dedicado. |

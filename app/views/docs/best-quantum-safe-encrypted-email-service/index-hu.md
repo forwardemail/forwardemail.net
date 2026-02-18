@@ -251,6 +251,7 @@ Az indexek a keresési lekérdezésekben szereplő összes tulajdonsághoz is t�
 | Szolgáltató | Cél |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-szolgáltató, állapotellenőrzések, terheléselosztók és biztonsági mentési tárhely a [Cloudflare R2](https://developers.cloudflare.com/r2) használatával. |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikált szerver hosting és menedzselt adatbázisok. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Dedikált szerver hosting. |
 | [DataPacket](https://www.datapacket.com) | Dedikált szerver hosting. |

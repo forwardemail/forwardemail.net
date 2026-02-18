@@ -245,6 +245,7 @@
 | ספק | מַטָרָה |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | ספק DNS, בדיקות תקינות, מאזני עומסים ואחסון גיבוי באמצעות [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | אירוח שרתים ייעודיים וניהול מסדי נתונים. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | אירוח שרת ייעודי. |
 | [DataPacket](https://www.datapacket.com) | אירוח שרת ייעודי. |

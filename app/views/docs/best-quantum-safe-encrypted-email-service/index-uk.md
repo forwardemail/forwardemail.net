@@ -245,6 +245,7 @@
 | Постачальник | Мета |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Постачальник DNS, перевірки справності, балансувальники навантаження та сховище резервних копій за допомогою [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Хостинг на виділеному сервері та керовані бази даних. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Хостинг виділеного сервера. |
 | [DataPacket](https://www.datapacket.com) | Хостинг виділеного сервера. |

@@ -50,7 +50,7 @@
 | מוּנָח | עֵרֶך |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | הסכם | הסכם עיבוד נתונים זה משלים את [Terms of Service](/terms) |
-| מעבדי משנה מאושרים | [Cloudflare](https://cloudflare.com) (ארה"ב; ספק DNS, רשת ואבטחה), [DataPacket](https://www.datapacket.com/) (ארה"ב/בריטניה; ספק אירוח), [Digital Ocean](https://digitalocean.com) (ארה"ב; ספק אירוח), [Vultr](https://www.vultr.com) (ארה"ב; ספק אירוח), [Stripe](https://stripe.com) (ארה"ב; מעבד תשלומים), [PayPal](https://paypal.com) (ארה"ב; מעבד תשלומים) |
+| מעבדי משנה מאושרים | [Cloudflare](https://cloudflare.com) (ארה"ב; ספק DNS, רשת ואבטחה), [DataPacket](https://www.datapacket.com/) (ארה"ב/בריטניה; ספק אירוח), [Digital Ocean](https://digitalocean.com) (ארה"ב; ספק אירוח), [GitHub](https://github.com) (US; source code hosting, CI/CD, and project management), [Vultr](https://www.vultr.com) (ארה"ב; ספק אירוח), [Stripe](https://stripe.com) (ארה"ב; מעבד תשלומים), [PayPal](https://paypal.com) (ארה"ב; מעבד תשלומים) |
 | <strong>איש קשר לאבטחת ספק</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | מדיניות אבטחה | הצג [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | מדינה שולטת | מדינת דלאוור, ארצות הברית |

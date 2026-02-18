@@ -33,6 +33,7 @@ Forward Email은 귀하의 데이터를 보호하는 데 전념하는 개인 정
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: 예 | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: 아니요 | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: 아니요 | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: 아니요 | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: 예 | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: 아니요 | <https://www.paypal.com/uk/legalhub/privacy-full> |

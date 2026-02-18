@@ -50,7 +50,7 @@
 | Semester | Værdi |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Aftale** | Denne databehandleraftale supplerer [Terms of Service](/terms) |
-| Godkendte underdatabehandlere | [Cloudflare](https://cloudflare.com) (USA; DNS-, netværks- og sikkerhedsudbyder), [DataPacket](https://www.datapacket.com/) (USA/Storbritannien; hostingudbyder), [Digital Ocean](https://digitalocean.com) (USA; hostingudbyder), [Vultr](https://www.vultr.com) (USA; hostingudbyder), [Stripe](https://stripe.com) (USA; betalingsudbyder), [PayPal](https://paypal.com) (USA; betalingsudbyder) |
+| Godkendte underdatabehandlere | [Cloudflare](https://cloudflare.com) (USA; DNS-, netværks- og sikkerhedsudbyder), [DataPacket](https://www.datapacket.com/) (USA/Storbritannien; hostingudbyder), [Digital Ocean](https://digitalocean.com) (USA; hostingudbyder), [GitHub](https://github.com) (USA; vært for kildekode, CI/CD og projektstyring), [Vultr](https://www.vultr.com) (USA; hostingudbyder), [Stripe](https://stripe.com) (USA; betalingsudbyder), [PayPal](https://paypal.com) (USA; betalingsudbyder) |
 | <strong>Kontaktperson for udbydersikkerhed</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | Sikkerhedspolitik | Vis [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | **Styrende stat** | Staten Delaware, USA |

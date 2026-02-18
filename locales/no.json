@@ -4979,7 +4979,7 @@
   "evil maid attack": "ond hushjelpangrep",
   "or rogue employee from a third-party vendor,": "eller en uærlig ansatt fra en tredjepartsleverandør,",
   "your mailbox can still only be opened with your generated password": "Postboksen din kan fortsatt bare åpnes med det genererte passordet ditt",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  Vær trygg på at vi ikke stoler på noen tredjepartsleverandører andre enn våre SOC Type 2-klageserverleverandører av Cloudflare, DataPacket, Digital Ocean og Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ".  Vær trygg på at vi ikke stoler på noen tredjepartsleverandører andre enn våre SOC Type 2-klageserverleverandører av Cloudflare, DataPacket, Digital Ocean og Vultr.",
   "Our goal is to have as few": "Målet vårt er å ha så få",
   "single point of failures": "enkeltstående feilpunkt",
   "as possible.": "som mulig.",

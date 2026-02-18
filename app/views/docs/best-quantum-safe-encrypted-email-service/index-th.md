@@ -245,6 +245,7 @@
 | ผู้ให้บริการ | วัตถุประสงค์ |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | ผู้ให้บริการ DNS การตรวจสอบสุขภาพ ตัวปรับสมดุลการโหลด และที่เก็บข้อมูลสำรองโดยใช้ [Cloudflare R2](https://developers.cloudflare.com/r2) |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | การโฮสต์เซิร์ฟเวอร์เฉพาะและฐานข้อมูลที่ได้รับการจัดการ |
 | [Vultr](https://www.vultr.com/?ref=7429848) | การโฮสต์เซิร์ฟเวอร์เฉพาะ |
 | [DataPacket](https://www.datapacket.com) | การโฮสต์เซิร์ฟเวอร์เฉพาะ |

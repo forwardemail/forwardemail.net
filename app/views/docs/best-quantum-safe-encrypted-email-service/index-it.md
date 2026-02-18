@@ -245,6 +245,7 @@ Ecco una tabella che riassume i progetti che utilizziamo nel nostro codice sorge
 | Fornitore | Scopo |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Provider DNS, controlli di integrità, bilanciatori di carico e archiviazione di backup tramite [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting su server dedicati e database gestiti. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Hosting su server dedicato. |
 | [DataPacket](https://www.datapacket.com) | Hosting su server dedicato. |

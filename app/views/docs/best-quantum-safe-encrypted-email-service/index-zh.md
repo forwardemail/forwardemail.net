@@ -245,6 +245,7 @@
 | 提供者 | 目的 |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | 使用 [Cloudflare R2](https://developers.cloudflare.com/r2) 的 DNS 提供商、健康检查、负载均衡器和备份存储。 |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 专用服务器托管和管理数据库。 |
 | [Vultr](https://www.vultr.com/?ref=7429848) | 专用服务器托管。 |
 | [DataPacket](https://www.datapacket.com) | 专用服务器托管。 |

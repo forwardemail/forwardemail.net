@@ -4979,7 +4979,7 @@
   "evil maid attack": "cuộc tấn công của người hầu gái độc ác",
   "or rogue employee from a third-party vendor,": "hoặc nhân viên gian lận từ nhà cung cấp bên thứ ba,",
   "your mailbox can still only be opened with your generated password": "hộp thư của bạn vẫn chỉ có thể được mở bằng mật khẩu bạn đã tạo",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ". Hãy yên tâm, chúng tôi không dựa vào bất kỳ nhà cung cấp bên thứ ba nào ngoài các nhà cung cấp máy chủ tuân thủ SOC Loại 2 của chúng tôi là Cloudflare, DataPacket, Digital Ocean và Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ". Hãy yên tâm, chúng tôi không dựa vào bất kỳ nhà cung cấp bên thứ ba nào ngoài các nhà cung cấp máy chủ tuân thủ SOC Loại 2 của chúng tôi là Cloudflare, DataPacket, Digital Ocean và Vultr.",
   "Our goal is to have as few": "Mục tiêu của chúng tôi là có càng ít",
   "single point of failures": "điểm duy nhất của sự thất bại",
   "as possible.": "càng tốt.",

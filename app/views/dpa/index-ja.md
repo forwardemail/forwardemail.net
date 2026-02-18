@@ -50,7 +50,7 @@
 | 学期 | 価値 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <strong>合意</strong> | このDPAは[Terms of Service](/terms)を補足するものである。 |
-| <strong>承認されたサブプロセッサー</strong> | [Cloudflare](https://cloudflare.com) (米国; DNS、ネットワーク、およびセキュリティ プロバイダー)、[DataPacket](https://www.datapacket.com/) (米国/英国; ホスティング プロバイダー)、[Digital Ocean](https://digitalocean.com) (米国; ホスティング プロバイダー)、[Vultr](https://www.vultr.com) (米国; ホスティング プロバイダー)、[Stripe](https://stripe.com) (米国; 決済処理業者)、[PayPal](https://paypal.com) (米国; 決済処理業者) |
+| <strong>承認されたサブプロセッサー</strong> | [Cloudflare](https://cloudflare.com) (米国; DNS、ネットワーク、およびセキュリティ プロバイダー)、[DataPacket](https://www.datapacket.com/) (米国/英国; ホスティング プロバイダー)、[Digital Ocean](https://digitalocean.com) (米国; ホスティング プロバイダー), [GitHub](https://github.com) (US; source code hosting, CI/CD, and project management), [Vultr](https://www.vultr.com) (米国; ホスティング プロバイダー)、[Stripe](https://stripe.com) (米国; 決済処理業者)、[PayPal](https://paypal.com) (米国; 決済処理業者) |
 | <strong>プロバイダーのセキュリティ連絡先</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | <strong>セキュリティポリシー</strong> | [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) を表示 |
 | <strong>統治国</strong> | アメリカ合衆国デラウェア州 |

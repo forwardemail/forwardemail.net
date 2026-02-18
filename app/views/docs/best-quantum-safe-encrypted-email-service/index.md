@@ -117,7 +117,7 @@ We explored other possible database storage layers, however none satisfied our r
 
 At all times we use [encryption-at-rest](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [encryption-in-transit](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") using :tangerine: [Tangerine](https://tangeri.ne), and [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) encryption on mailboxes.  Additionally we use token-based two-factor authentication (as opposed to SMS which is suspectible to [man-in-the-middle-attacks](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), rotated SSH keys with root access disabled, exclusive access to servers through restricted IP addresses, and more.
 
-In the event of an [evil maid attack](https://en.wikipedia.org/wiki/Evil_maid_attack) or rogue employee from a third-party vendor, **your mailbox can still only be opened with your generated password**.  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.
+In the event of an [evil maid attack](https://en.wikipedia.org/wiki/Evil_maid_attack) or rogue employee from a third-party vendor, **your mailbox can still only be opened with your generated password**.  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.
 
 Our goal is to have as few [single point of failures](https://en.wikipedia.org/wiki/Single_point_of_failure) as possible.
 
@@ -250,6 +250,7 @@ Here's a table outlining projects we use in our source code and development proc
 | Provider                                        | Purpose                                                                                                                      |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS provider, health checks, load balancers, and backup storage using [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/)                   | Source code hosting, CI/CD, and project management.                                                                          |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedicated server hosting and managed databases.                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Dedicated server hosting.                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | Dedicated server hosting.                                                                                                    |

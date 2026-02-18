@@ -5206,7 +5206,7 @@
   "evil maid attack": "התקפת עוזרת בית רעה",
   "or rogue employee from a third-party vendor,": "או עובד סורר מספק צד שלישי,",
   "your mailbox can still only be opened with your generated password": "עדיין ניתן לפתוח את תיבת הדואר שלך רק באמצעות הסיסמה שיצרת",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  היה סמוך ובטוח, אנחנו לא מסתמכים על ספקי צד שלישי אחרים מלבד ספקי שרתי התלונות SOC Type 2 שלנו של Cloudflare, DataPacket, Digital Ocean ו-Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ".  היה סמוך ובטוח, אנחנו לא מסתמכים על ספקי צד שלישי אחרים מלבד ספקי שרתי התלונות SOC Type 2 שלנו של Cloudflare, DataPacket, Digital Ocean ו-Vultr.",
   "Our goal is to have as few": "המטרה שלנו היא שיהיו כמה שפחות",
   "single point of failures": "נקודת כשל אחת",
   "as possible.": "ככל האפשר.",

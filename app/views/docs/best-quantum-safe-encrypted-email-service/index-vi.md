@@ -245,6 +245,7 @@ Sau đây là bảng tóm tắt các dự án chúng tôi sử dụng trong mã 
 | Nhà cung cấp | Mục đích |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Nhà cung cấp DNS, kiểm tra tình trạng, bộ cân bằng tải và lưu trữ sao lưu bằng [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Máy chủ chuyên dụng lưu trữ và quản lý cơ sở dữ liệu. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Lưu trữ máy chủ chuyên dụng. |
 | [DataPacket](https://www.datapacket.com) | Lưu trữ máy chủ chuyên dụng. |

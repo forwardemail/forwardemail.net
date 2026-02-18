@@ -4979,7 +4979,7 @@
   "evil maid attack": "aanval van een kwaadaardige meid",
   "or rogue employee from a third-party vendor,": "of een malafide werknemer van een externe leverancier,",
   "your mailbox can still only be opened with your generated password": "uw mailbox kan nog steeds alleen worden geopend met uw gegenereerde wachtwoord",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "U kunt er zeker van zijn dat we niet afhankelijk zijn van andere externe leveranciers dan onze SOC Type 2-klachtserverproviders Cloudflare, DataPacket, Digital Ocean en Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "U kunt er zeker van zijn dat we niet afhankelijk zijn van andere externe leveranciers dan onze SOC Type 2-klachtserverproviders Cloudflare, DataPacket, Digital Ocean en Vultr.",
   "Our goal is to have as few": "Ons doel is om zo min mogelijk",
   "single point of failures": "enkelvoudig punt van falen",
   "as possible.": "zo goed mogelijk.",

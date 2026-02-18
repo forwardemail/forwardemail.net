@@ -245,6 +245,7 @@ Här är en tabell som beskriver projekt vi använder i vår källkod och utveck
 | Leverantör | Ändamål |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-leverantör, hälsokontroller, lastutjämnare och säkerhetskopieringslagring med [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikerad serverhosting och hanterade databaser. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Dedikerad serverhosting. |
 | [DataPacket](https://www.datapacket.com) | Dedikerad serverhosting. |

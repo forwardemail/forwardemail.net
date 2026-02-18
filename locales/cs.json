@@ -4979,7 +4979,7 @@
   "evil maid attack": "útok zlé služky",
   "or rogue employee from a third-party vendor,": "nebo nepoctivý zaměstnanec od dodavatele třetí strany,",
   "your mailbox can still only be opened with your generated password": "vaši poštovní schránku lze stále otevřít pouze pomocí vašeho vygenerovaného hesla",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  Ujišťujeme vás, že se nespoléháme na žádné dodavatele třetích stran kromě našich poskytovatelů serverů pro stížnosti SOC typu 2 Cloudflare, DataPacket, Digital Ocean a Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ".  Ujišťujeme vás, že se nespoléháme na žádné dodavatele třetích stran kromě našich poskytovatelů serverů pro stížnosti SOC typu 2 Cloudflare, DataPacket, Digital Ocean a Vultr.",
   "Our goal is to have as few": "Naším cílem je mít co nejméně",
   "single point of failures": "jediný bod selhání",
   "as possible.": "jak je to možné.",

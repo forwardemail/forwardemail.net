@@ -33,6 +33,7 @@ Aşağıda, verileri uluslararası olarak aktarmak için kullandığımız sağl
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: Evet | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Hayır | <https://www.datapacket.com/gizlilik-politikasi> |
 | [Digital Ocean](https://digitalocean.com) | :x: Hayır | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Hayır | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: Evet | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Hayır | <https://www.paypal.com/uk/legalhub/privacy-full> |

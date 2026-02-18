@@ -4979,7 +4979,7 @@
   "evil maid attack": "serangan pembantu jahat",
   "or rogue employee from a third-party vendor,": "atau karyawan nakal dari vendor pihak ketiga,",
   "your mailbox can still only be opened with your generated password": "kotak surat Anda masih hanya dapat dibuka dengan kata sandi yang Anda buat",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "Yakinlah, kami tidak bergantung pada vendor pihak ketiga mana pun selain penyedia server keluhan SOC Tipe 2 kami yaitu Cloudflare, DataPacket, Digital Ocean, dan Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "Yakinlah, kami tidak bergantung pada vendor pihak ketiga mana pun selain penyedia server keluhan SOC Tipe 2 kami yaitu Cloudflare, DataPacket, Digital Ocean, dan Vultr.",
   "Our goal is to have as few": "Tujuan kami adalah memiliki sesedikit mungkin",
   "single point of failures": "titik kegagalan tunggal",
   "as possible.": "mungkin.",

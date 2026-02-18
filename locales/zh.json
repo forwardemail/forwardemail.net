@@ -4979,7 +4979,7 @@
   "evil maid attack": "邪恶女仆袭击",
   "or rogue employee from a third-party vendor,": "或来自第三方供应商的流氓员工，",
   "your mailbox can still only be opened with your generated password": "您的邮箱仍然只能使用您生成的密码打开",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "。请放心，除了我们的 SOC Type 2 投诉服务器提供商 Cloudflare、DataPacket、Digital Ocean 和 Vultr 之外，我们不依赖任何第三方供应商。",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "。请放心，除了我们的 SOC Type 2 投诉服务器提供商 Cloudflare、DataPacket、Digital Ocean 和 Vultr 之外，我们不依赖任何第三方供应商。",
   "Our goal is to have as few": "我们的目标是尽可能少",
   "single point of failures": "单点故障",
   "as possible.": "尽可能。",

@@ -33,6 +33,7 @@ Hieronder vindt u de providers die wij gebruiken voor internationale gegevensove
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: Ja | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Nee | <https://www.datapacket.com/privacybeleid> |
 | [Digital Ocean](https://digitalocean.com) | :x: Nee | <https://www.digitalocean.com/legal/gdpr> |
+| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Nee | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: Ja | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Nee | <https://www.paypal.com/uk/legalhub/privacy-full> |

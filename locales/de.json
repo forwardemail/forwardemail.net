@@ -4979,7 +4979,7 @@
   "evil maid attack": "Angriff des bösen Dienstmädchens",
   "or rogue employee from a third-party vendor,": "oder betrügerischer Mitarbeiter eines Drittanbieters,",
   "your mailbox can still only be opened with your generated password": "Ihr Postfach kann weiterhin nur mit Ihrem generierten Passwort geöffnet werden",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ". Seien Sie versichert, wir sind auf keine Drittanbieter angewiesen, außer auf unsere SOC Type 2-konformen Serveranbieter Cloudflare, DataPacket, Digital Ocean und Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ". Seien Sie versichert, wir sind auf keine Drittanbieter angewiesen, außer auf unsere SOC Type 2-konformen Serveranbieter Cloudflare, DataPacket, Digital Ocean und Vultr.",
   "Our goal is to have as few": "Unser Ziel ist es, möglichst wenige",
   "single point of failures": "einzelner Fehlerpunkt",
   "as possible.": "wie möglich.",

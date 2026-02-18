@@ -5206,7 +5206,7 @@
   "evil maid attack": "kötü hizmetçi saldırısı",
   "or rogue employee from a third-party vendor,": "veya üçüncü taraf bir satıcıdan gelen sahte bir çalışan,",
   "your mailbox can still only be opened with your generated password": "posta kutunuz hala yalnızca oluşturduğunuz parolayla açılabilir",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ". Merak etmeyin, SOC Tip 2 şikayet sunucu sağlayıcılarımız olan Cloudflare, DataPacket, Digital Ocean ve Vultr dışında hiçbir üçüncü taraf satıcıya güvenmiyoruz.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ". Merak etmeyin, SOC Tip 2 şikayet sunucu sağlayıcılarımız olan Cloudflare, DataPacket, Digital Ocean ve Vultr dışında hiçbir üçüncü taraf satıcıya güvenmiyoruz.",
   "Our goal is to have as few": "Amacımız mümkün olduğunca az sayıda",
   "single point of failures": "tek bir arıza noktası",
   "as possible.": "mümkün olduğunca.",

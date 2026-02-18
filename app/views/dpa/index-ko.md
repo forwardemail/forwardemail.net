@@ -50,7 +50,7 @@
 | 용어 | 값 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <strong>동의</strong> | 이 DPA는 [Terms of Service](/terms)을 보완합니다. |
-| <strong>승인된 하위 프로세서</strong> | [Cloudflare](https://cloudflare.com) (미국; DNS, 네트워킹 및 보안 제공자), [DataPacket](https://www.datapacket.com/) (미국/영국; 호스팅 제공자), [Digital Ocean](https://digitalocean.com) (미국; 호스팅 제공자), [Vultr](https://www.vultr.com) (미국; 호스팅 제공자), [Stripe](https://stripe.com) (미국; 결제 처리업체), [PayPal](https://paypal.com) (미국; 결제 처리업체) |
+| <strong>승인된 하위 프로세서</strong> | [Cloudflare](https://cloudflare.com) (미국; DNS, 네트워킹 및 보안 제공자), [DataPacket](https://www.datapacket.com/) (미국/영국; 호스팅 제공자), [Digital Ocean](https://digitalocean.com) (미국; 호스팅 제공자), [GitHub](https://github.com) (US; source code hosting, CI/CD, and project management), [Vultr](https://www.vultr.com) (미국; 호스팅 제공자), [Stripe](https://stripe.com) (미국; 결제 처리업체), [PayPal](https://paypal.com) (미국; 결제 처리업체) |
 | <strong>공급자 보안 담당자</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | <strong>보안 정책</strong> | [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) 보기 |
 | <strong>통치 국가</strong> | 미국 델라웨어주 |

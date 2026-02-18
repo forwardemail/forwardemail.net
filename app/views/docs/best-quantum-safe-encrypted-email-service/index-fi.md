@@ -251,6 +251,7 @@ Tässä on taulukko, jossa esitetään lähdekoodissamme ja kehitysprosessissamm
 | Palveluntarjoaja | Tarkoitus |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-palveluntarjoaja, terveystarkastukset, kuormituksen tasaajat ja varmuuskopiointi [Cloudflare R2](https://developers.cloudflare.com/r2) -palvelun avulla. |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikoitu palvelinhosting ja hallinnoidut tietokannat. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Dedikoitu palvelinhosting. |
 | [DataPacket](https://www.datapacket.com) | Dedikoitu palvelinhosting. |

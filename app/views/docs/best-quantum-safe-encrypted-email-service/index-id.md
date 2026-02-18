@@ -245,6 +245,7 @@ Berikut tabel yang menguraikan proyek yang kami gunakan dalam kode sumber dan pr
 | Penyedia | Tujuan |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | Penyedia DNS, pemeriksaan kesehatan, penyeimbang beban, dan penyimpanan cadangan menggunakan [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/) | Source code hosting, CI/CD, and project management. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting server khusus dan basis data terkelola. |
 | [Vultr](https://www.vultr.com/?ref=7429848) | Hosting server khusus. |
 | [DataPacket](https://www.datapacket.com) | Hosting server khusus. |

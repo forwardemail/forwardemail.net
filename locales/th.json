@@ -5206,7 +5206,7 @@
   "evil maid attack": "แม่บ้านชั่วร้ายโจมตี",
   "or rogue employee from a third-party vendor,": "หรือพนักงานที่ไม่ซื่อสัตย์จากผู้ขายบุคคลที่สาม",
   "your mailbox can still only be opened with your generated password": "กล่องจดหมายของคุณยังคงเปิดได้โดยใช้รหัสผ่านที่คุณสร้างขึ้นเท่านั้น",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": "โปรดวางใจว่าเราไม่ได้พึ่งพาผู้ขายรายที่สามอื่นใดนอกเหนือจากผู้ให้บริการเซิร์ฟเวอร์ร้องเรียน SOC ประเภท 2 ของเรา ได้แก่ Cloudflare, DataPacket, Digital Ocean และ Vultr",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": "โปรดวางใจว่าเราไม่ได้พึ่งพาผู้ขายรายที่สามอื่นใดนอกเหนือจากผู้ให้บริการเซิร์ฟเวอร์ร้องเรียน SOC ประเภท 2 ของเรา ได้แก่ Cloudflare, DataPacket, Digital Ocean และ Vultr",
   "Our goal is to have as few": "เป้าหมายของเราคือการมีให้น้อยที่สุด",
   "single point of failures": "จุดล้มเหลวเพียงจุดเดียว",
   "as possible.": "เท่าที่จะเป็นไปได้",

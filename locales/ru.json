@@ -5206,7 +5206,7 @@
   "evil maid attack": "атака злой горничной",
   "or rogue employee from a third-party vendor,": "или недобросовестный сотрудник стороннего поставщика,",
   "your mailbox can still only be opened with your generated password": "Ваш почтовый ящик по-прежнему можно открыть только с помощью сгенерированного вами пароля.",
-  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ". Будьте уверены, мы не полагаемся ни на каких сторонних поставщиков, кроме наших поставщиков серверов для жалоб SOC Type 2: Cloudflare, DataPacket, Digital Ocean и Vultr.",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, GitHub, and Vultr.": ". Будьте уверены, мы не полагаемся ни на каких сторонних поставщиков, кроме наших поставщиков серверов для жалоб SOC Type 2: Cloudflare, DataPacket, Digital Ocean и Vultr.",
   "Our goal is to have as few": "Наша цель — иметь как можно меньше",
   "single point of failures": "единая точка отказа",
   "as possible.": "насколько это возможно.",
