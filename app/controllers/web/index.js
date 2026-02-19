@@ -66,13 +66,24 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
 
-const octokit = new Octokit({
-  auth: env.GITHUB_OCTOKIT_TOKEN
-});
+// only initialize octokit if we have a valid token
+const octokit = isSANB(env.GITHUB_OCTOKIT_TOKEN)
+  ? new Octokit({
+      auth: env.GITHUB_OCTOKIT_TOKEN
+    })
+  : null;
 
 // every 6 hours update github star count
 let STARS = 1000;
 async function checkGitHubStars() {
+  // skip if no octokit client (no token configured)
+  if (!octokit) {
+    logger.debug(
+      'Skipping GitHub star count check - GITHUB_OCTOKIT_TOKEN not configured'
+    );
+    return;
+  }
+
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}', {
       owner: 'forwardemail',
@@ -81,11 +92,35 @@ async function checkGitHubStars() {
         'X-GitHub-Api-Version': '2022-11-28'
       }
     });
-    if (Number.isFinite(response?.data?.stargazers_count))
+
+    if (Number.isFinite(response?.data?.stargazers_count)) {
       STARS = response.data.stargazers_count;
+      logger.info(
+        `GitHub star count updated: ${STARS} (rate limit: ${response.headers['x-ratelimit-remaining']}/${response.headers['x-ratelimit-limit']})`
+      );
+    }
+
+    // only reset to 1000 if we got a bad value, but preserve last known good value on errors
     if (STARS <= 0) STARS = 1000;
   } catch (err) {
-    logger.error(err);
+    // log rate limit errors more explicitly
+    if (
+      err.status === 403 &&
+      err.response?.headers['x-ratelimit-remaining'] === '0'
+    ) {
+      logger.error(
+        new Error(
+          `GitHub API rate limit exceeded. Limit resets at ${new Date(
+            Number.parseInt(err.response.headers['x-ratelimit-reset'], 10) *
+              1000
+          ).toISOString()}. Using cached star count: ${STARS}`
+        )
+      );
+    } else {
+      logger.error(err, {
+        message: `Failed to fetch GitHub stars, using cached value: ${STARS}`
+      });
+    }
   }
 }
 
