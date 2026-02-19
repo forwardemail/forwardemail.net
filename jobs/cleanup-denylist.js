@@ -462,7 +462,7 @@ ${errorsHtml}
       await emailHelper({
         template: 'alert',
         message: {
-          to: 'security@forwardemail.net',
+          to: config.securityEmail,
           subject: `Denylist Cleanup: ${deletedCount} keys deleted${
             truthSourceKeys.length > 0
               ? `, ${truthSourceKeys.length} truth sources preserved`
@@ -481,7 +481,7 @@ ${errorsHtml}
     await emailHelper({
       template: 'alert',
       message: {
-        to: 'security@forwardemail.net',
+        to: config.securityEmail,
         subject: 'Denylist Cleanup Job Failed'
       },
       locals: {

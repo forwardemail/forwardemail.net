@@ -38,8 +38,8 @@
 //   Usage:  DRY_RUN=true node jobs/check-domains-cloudflare-family.js
 //
 // At the end of the run an HTML digest email is sent to
-// `config.alertsEmail` summarising all actions taken (or that would
-// have been taken in dry-run mode).
+// security@forwardemail.net summarising all actions taken (or that
+// would have been taken in dry-run mode).
 //
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -487,22 +487,49 @@ function buildDigestHtml(opts) {
     );
 
     //
-    // Collect domain IDs using cursor + noCursorTimeout
+    // Batch processing: only check domains that haven't been checked
+    // recently (or never checked).  BATCH_SIZE controls how many domains
+    // to process per run (default: 1000).  REPUTATION_CHECK_INTERVAL_DAYS
+    // controls how often to re-check domains (default: 7 days).
     //
+    const BATCH_SIZE = Number.parseInt(process.env.BATCH_SIZE, 10) || 1000;
+    const REPUTATION_CHECK_INTERVAL_DAYS =
+      Number.parseInt(process.env.REPUTATION_CHECK_INTERVAL_DAYS, 10) || 7;
+
+    const checkThreshold = dayjs()
+      .subtract(REPUTATION_CHECK_INTERVAL_DAYS, 'days')
+      .toDate();
+
+    const query = {
+      is_global: { $ne: true },
+      $and: [
+        { $or: [{ has_txt_record: true }, { has_mx_record: true }] },
+        {
+          $or: [
+            { last_reputation_checked_at: { $exists: false } },
+            { last_reputation_checked_at: null },
+            { last_reputation_checked_at: { $lt: checkThreshold } }
+          ]
+        }
+      ]
+    };
+
     const ids = [];
 
-    for await (const domain of Domains.find({
-      is_global: { $ne: true },
-      $or: [{ has_txt_record: true }, { has_mx_record: true }]
-    })
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    for await (const domain of Domains.find(query)
       .select('_id')
+      .sort({ last_reputation_checked_at: 1, _id: 1 })
+      .limit(BATCH_SIZE)
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       ids.push(domain._id);
     }
 
-    logger.info(`Found ${ids.length} domains with TXT or MX records to check`);
+    logger.info(
+      `Found ${ids.length} domains to check (batch size: ${BATCH_SIZE}, interval: ${REPUTATION_CHECK_INTERVAL_DAYS} days)`
+    );
 
     if (ids.length === 0) {
       logger.info('No domains to check – exiting');
@@ -541,6 +568,11 @@ function buildDigestHtml(opts) {
           if (!domain) return;
 
           await processDomain(domain, ctx);
+
+          // Update last_reputation_checked_at timestamp after processing
+          await Domains.findByIdAndUpdate(id, {
+            $set: { last_reputation_checked_at: new Date() }
+          });
         } catch (err) {
           logger.error(`Error in mapper for domain ID ${id}:`, err);
         }
@@ -604,7 +636,7 @@ function buildDigestHtml(opts) {
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.alertsEmail,
+          to: config.securityEmail,
           subject: `${subjectPrefix}Cloudflare Family DNS & Content Check: ${ctx.bannedResults.length} domains ${bannedVerb} (${totalBannedUsers} users), ${ctx.skippedResults.length} protected users skipped, ${ctx.reviewResults.length} for review`
         },
         locals: {
@@ -625,7 +657,7 @@ function buildDigestHtml(opts) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.alertsEmail,
+        to: config.securityEmail,
         subject: `${subjectPrefix}Cloudflare Family DNS & Content Check Job Error`
       },
       locals: {

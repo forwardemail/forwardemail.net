@@ -395,6 +395,12 @@ const Domains = new mongoose.Schema({
   // When the txt/mx was last checked at
   last_checked_at: Date,
 
+  // When the domain reputation was last checked (Cloudflare Family DNS + content categorisation)
+  last_reputation_checked_at: {
+    type: Date,
+    index: true
+  },
+
   // If the user was suspended for non-payment, the date of notice sent
   email_suspended_sent_at: Date,
 
@@ -1558,7 +1564,7 @@ Domains.post('save', (doc, next) => {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.alertsEmail,
+            to: config.securityEmail,
             subject
           },
           locals: {
