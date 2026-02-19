@@ -11,7 +11,20 @@ This document outlines the WebSocket server implementation for the API, which pr
 * [Enriched Payloads](#enriched-payloads)
 * [Supported Events](#supported-events)
 * [Security](#security)
+* [Authentication](#authentication)
+  * [Authentication Methods](#authentication-methods)
+  * [Connection Responses](#connection-responses)
+  * [Important Notes](#important-notes)
 * [Client Integration](#client-integration)
+  * [Browser (JSON)](#browser-json)
+  * [Node.js (JSON)](#nodejs-json)
+  * [Node.js (msgpackr)](#nodejs-msgpackr)
+* [Troubleshooting](#troubleshooting)
+  * [Issue: Receiving `broadcastOnly: true` when expecting authentication](#issue-receiving-broadcastonly-true-when-expecting-authentication)
+  * [Issue: 401 Unauthorized error](#issue-401-unauthorized-error)
+  * [Issue: Not receiving per-alias events](#issue-not-receiving-per-alias-events)
+  * [Issue: Connection closes immediately](#issue-connection-closes-immediately)
+  * [Issue: Not receiving any events](#issue-not-receiving-any-events)
 
 
 ## Architecture
@@ -181,11 +194,22 @@ Security is a primary design consideration, addressed through multiple layers:
 5. **Keep-Alive**: A 30-second ping/pong keep-alive mechanism terminates unresponsive or stale connections.
 
 
-## Client Integration
+## Authentication
 
-#### Browser (JSON)
+Authentication is **optional** for WebSocket connections. The authentication method determines what events you receive:
 
-**Authenticated:**
+* **Authenticated connections**: Receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`)
+* **Unauthenticated connections**: Receive only global broadcast events (`newRelease`)
+
+### Authentication Methods
+
+Authentication **must** be provided via the `Authorization` header using HTTP Basic Authentication. There are two supported authentication methods:
+
+#### Option 1: Alias Password Authentication (Recommended)
+
+Use your alias email address and generated password for authentication.
+
+**Browser Example:**
 
 ```javascript
 const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
@@ -195,42 +219,315 @@ const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
 });
 ```
 
-**Unauthenticated (Broadcast-Only):**
+**Node.js Example:**
 
 ```javascript
-// No auth headers needed
+const WebSocket = require("ws");
+
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
+  headers: {
+    Authorization: `Basic ${Buffer.from("user@domain.com:alias-password").toString("base64")}`
+  }
+});
+```
+
+**Requirements:**
+
+* Username: Your alias email address (e.g., `user@domain.com`)
+* Password: Your generated alias password
+* The domain must have `has_smtp: true` enabled
+* The alias must exist and have tokens configured
+
+#### Option 2: API Token Authentication
+
+Use your API token for authentication. This method **requires** the `alias_id` query parameter to specify which alias to subscribe to.
+
+**Browser Example:**
+
+```javascript
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID", {
+  headers: {
+    Authorization: `Basic ${btoa("YOUR_API_TOKEN:")}`  // Note: password is empty
+  }
+});
+```
+
+**Node.js Example:**
+
+```javascript
+const WebSocket = require("ws");
+
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID", {
+  headers: {
+    Authorization: `Basic ${Buffer.from("YOUR_API_TOKEN:").toString("base64")}`
+  }
+});
+```
+
+**Requirements:**
+
+* Username: Your API token
+* Password: Empty string
+* Query parameter: `?alias_id=<your-alias-id>` (required)
+* The alias must belong to your user account or you must be a domain admin/member
+
+#### Option 3: Unauthenticated (Broadcast-Only)
+
+Connect without any authentication to receive only global broadcast events.
+
+**Browser Example:**
+
+```javascript
 const ws = new WebSocket("wss://api.forwardemail.net/v1/ws");
 ```
 
-Both authenticated and unauthenticated clients handle messages the same way:
+**Node.js Example:**
 
 ```javascript
+const WebSocket = require("ws");
+
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws");
+```
+
+### Connection Responses
+
+Upon successful connection, the server sends a `connected` event indicating the authentication status:
+
+**Authenticated Connection:**
+
+```json
+{
+  "event": "connected",
+  "aliasId": "67abcdef1234567890abcdef"
+}
+```
+
+This confirms you are authenticated and will receive both per-alias events for the specified alias and global broadcast events.
+
+**Unauthenticated Connection:**
+
+```json
+{
+  "event": "connected",
+  "broadcastOnly": true
+}
+```
+
+This confirms you are connected but will only receive global broadcast events (e.g., `newRelease`). You will **not** receive per-alias notifications.
+
+### Important Notes
+
+* **Query parameters for authentication are NOT supported**: Do not use `?token=`, `?username=`, or `?password=` query parameters for authentication. These will result in authentication failures.
+* **Authorization header is required**: All authentication must be done via the `Authorization` header using HTTP Basic Authentication.
+* **Failed authentication**: If authentication fails (invalid credentials, missing `alias_id` for token auth, etc.), you will receive a `401 Unauthorized` error or fall back to an unauthenticated connection with `broadcastOnly: true`.
+* **msgpackr encoding**: Add `?msgpackr=true` to the connection URL to receive binary msgpackr-encoded frames instead of JSON text frames for reduced bandwidth.
+
+
+## Client Integration
+
+### Browser (JSON)
+
+**Authenticated (Alias Password):**
+
+```javascript
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
+  headers: {
+    Authorization: `Basic ${btoa("user@domain.com:alias-password")}`
+  }
+});
+
+ws.onopen = () => {
+  console.log("WebSocket connection established");
+};
+
 ws.onmessage = (event) => {
   const notification = JSON.parse(event.data);
-  console.log(notification.event, notification);
+  console.log("Received event:", notification.event, notification);
+
+  // Check connection status
+  if (notification.event === "connected") {
+    if (notification.aliasId) {
+      console.log("Authenticated! Alias ID:", notification.aliasId);
+    } else if (notification.broadcastOnly) {
+      console.log("Connected in broadcast-only mode (unauthenticated)");
+    }
+  }
+};
+
+ws.onerror = (error) => {
+  console.error("WebSocket error:", error);
+};
+
+ws.onclose = (event) => {
+  console.log("WebSocket closed:", event.code, event.reason);
 };
 ```
 
-#### Node.js (msgpackr)
+**Unauthenticated (Broadcast-Only):**
+
+```javascript
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws");
+
+ws.onmessage = (event) => {
+  const notification = JSON.parse(event.data);
+  console.log("Received event:", notification.event, notification);
+};
+```
+
+### Node.js (JSON)
+
+**Authenticated (Alias Password):**
+
+```javascript
+const WebSocket = require("ws");
+
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws", {
+  headers: {
+    Authorization: `Basic ${Buffer.from("user@domain.com:alias-password").toString("base64")}`
+  }
+});
+
+ws.on("open", () => {
+  console.log("WebSocket connection established");
+});
+
+ws.on("message", (data) => {
+  const notification = JSON.parse(data.toString());
+  console.log("Received event:", notification.event, notification);
+
+  // Check connection status
+  if (notification.event === "connected") {
+    if (notification.aliasId) {
+      console.log("Authenticated! Alias ID:", notification.aliasId);
+    } else if (notification.broadcastOnly) {
+      console.log("Connected in broadcast-only mode (unauthenticated)");
+    }
+  }
+});
+
+ws.on("error", (error) => {
+  console.error("WebSocket error:", error);
+});
+
+ws.on("close", (code, reason) => {
+  console.log("WebSocket closed:", code, reason.toString());
+});
+```
+
+**Authenticated (API Token):**
+
+```javascript
+const WebSocket = require("ws");
+
+const aliasId = "YOUR_ALIAS_ID";
+const apiToken = "YOUR_API_TOKEN";
+
+const ws = new WebSocket(`wss://api.forwardemail.net/v1/ws?alias_id=${aliasId}`, {
+  headers: {
+    Authorization: `Basic ${Buffer.from(`${apiToken}:`).toString("base64")}`
+  }
+});
+
+ws.on("message", (data) => {
+  const notification = JSON.parse(data.toString());
+  console.log("Received event:", notification.event, notification);
+});
+```
+
+### Node.js (msgpackr)
+
+For high-performance applications, use msgpackr encoding to reduce bandwidth:
 
 ```javascript
 const WebSocket = require("ws");
 const { Decoder } = require("msgpackr");
 const decoder = new Decoder();
 
-const ws = new WebSocket(
-  "wss://api.forwardemail.net/v1/ws?msgpackr=true",
-  {
-    headers: {
-      Authorization: `Basic ${Buffer.from(
-        "user@domain.com:alias-password"
-      ).toString("base64")}`
-    }
+const ws = new WebSocket("wss://api.forwardemail.net/v1/ws?msgpackr=true", {
+  headers: {
+    Authorization: `Basic ${Buffer.from("user@domain.com:alias-password").toString("base64")}`
   }
-);
+});
 
 ws.on("message", (data, isBinary) => {
   const notification = isBinary ? decoder.unpack(data) : JSON.parse(data);
-  console.log(notification.event, notification);
+  console.log("Received event:", notification.event, notification);
 });
 ```
+
+
+## Troubleshooting
+
+### Issue: Receiving `broadcastOnly: true` when expecting authentication
+
+**Possible causes:**
+
+1. **Invalid credentials**: Your email/password or API token is incorrect
+2. **Missing `alias_id` parameter**: When using API token authentication, you must include `?alias_id=<your-alias-id>`
+3. **Domain not enabled**: The domain must have `has_smtp: true` enabled
+4. **Alias not configured**: The alias must exist and have tokens configured
+5. **Using query parameters for auth**: Query parameters like `?token=`, `?username=`, `?password=` are not supported
+
+**Solution:**
+
+* Verify your credentials are correct
+* For API token auth, ensure you include `?alias_id=<your-alias-id>` in the URL
+* Use the `Authorization` header for authentication, not query parameters
+* Check that your domain and alias are properly configured
+
+### Issue: 401 Unauthorized error
+
+**Possible causes:**
+
+1. **Attempting to use query parameters for authentication**: `?token=`, `?username=`, `?password=` are not supported
+2. **Invalid API token**: Your API token is incorrect or expired
+3. **Invalid alias credentials**: Your alias email or password is incorrect
+4. **Missing `alias_id` for token auth**: API token authentication requires `?alias_id=<your-alias-id>`
+
+**Solution:**
+
+* Use the `Authorization` header with Basic Authentication
+* Verify your credentials are correct
+* For API token auth, include `?alias_id=<your-alias-id>` in the URL
+
+### Issue: Not receiving per-alias events
+
+**Possible causes:**
+
+1. **Connected in broadcast-only mode**: Check if you received `broadcastOnly: true` in the `connected` event
+2. **Authentication failed silently**: Your credentials may be invalid
+3. **Wrong alias**: You may be authenticated to a different alias than expected
+
+**Solution:**
+
+* Check the `connected` event response for `aliasId` or `broadcastOnly`
+* If you see `broadcastOnly: true`, your authentication failed
+* Verify you're using the correct credentials and authentication method
+
+### Issue: Connection closes immediately
+
+**Possible causes:**
+
+1. **Rate limiting**: You've exceeded 30 connections per minute from your IP
+2. **Connection limit reached**: You've exceeded 10 concurrent connections per alias (authenticated) or 3 per IP (unauthenticated)
+3. **Global limit reached**: The server has reached 10,000 concurrent connections
+
+**Solution:**
+
+* Wait before attempting to reconnect
+* Close unused connections
+* Implement exponential backoff for reconnection attempts
+
+### Issue: Not receiving any events
+
+**Possible causes:**
+
+1. **No events are being generated**: The events you're expecting may not be occurring
+2. **Connected to wrong alias**: You may be authenticated to a different alias
+3. **Broadcast-only mode**: You're only receiving global broadcast events
+
+**Solution:**
+
+* Verify events are being generated (e.g., send a test email)
+* Check the `connected` event to confirm your `aliasId`
+* Ensure you're authenticated if you expect per-alias events

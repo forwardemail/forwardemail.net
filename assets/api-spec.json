@@ -2049,7 +2049,7 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Number of days to retain outbound SMTP logs (0\u201330, default: 0)"
+            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -4946,7 +4946,7 @@
       },
       "post": {
         "summary": "Create outbound SMTP email",
-        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: \ud83e\udd13 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.\n\n**Scheduled Sending:** To schedule an email for future delivery, set the `date` field to a future timestamp (must be at least 1 minute ahead and no more than 30 days from now). The email will be held until the specified time. You can cancel it using the Delete email endpoint.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication. You can authenticate using either your API key (recommended) or your alias email address and generated password. See the Authentication section in the API documentation for details.",
         "tags": [
           "Emails"
         ],
@@ -5069,7 +5069,7 @@
       },
       "delete": {
         "summary": "Delete outbound SMTP email",
-        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent \u2013 therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. This is useful for canceling emails scheduled via a future `date` before they are sent. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.\n\n**Authentication:** This endpoint supports both API token authentication and alias credentials authentication.",
         "tags": [
           "Emails"
         ],
@@ -7019,31 +7019,13 @@
           "WebSockets"
         ],
         "summary": "WebSocket Notifications",
-        "description": "Connect to the WebSocket endpoint for real-time push notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication (Optional):**\n- **Authenticated Clients:** Provide credentials to receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`).\n- **Unauthenticated Clients:** Connect without credentials to receive only global broadcast events (`newRelease`). This is useful for clients that only need to be notified of app updates.\n\n**Authentication Methods:**\n- **API Token:** `wss://api.forwardemail.net/v1/ws?token=YOUR_API_TOKEN`\n- **Alias Auth:** `wss://api.forwardemail.net/v1/ws?username=ALIAS_USERNAME&password=ALIAS_PASSWORD`\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful connection\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit (authenticated): 10 concurrent connections\n- Per-IP unauthenticated connection limit: 3 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**Per-Alias Events (Authenticated Only):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Broadcast Events (All Clients):**\n- `newRelease` \u2014 Broadcast when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear.",
+        "description": "Connect to the WebSocket endpoint for real-time push notifications.\n\n**Connection URL:** `wss://api.forwardemail.net/v1/ws`\n\n**Authentication (Optional):**\n- **Authenticated Clients:** Provide credentials via `Authorization` header to receive both per-alias events (IMAP, CalDAV, CardDAV) and global broadcast events (`newRelease`).\n- **Unauthenticated Clients:** Connect without credentials to receive only global broadcast events (`newRelease`). This is useful for clients that only need to be notified of app updates.\n\n**Authentication Methods:**\n\nAuthentication **must** be provided via the `Authorization` header using HTTP Basic Authentication. Query parameters for authentication are **NOT supported**.\n\n**Option 1: Alias Password Authentication (Recommended)**\n\nUse your alias email address and generated password:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"user@domain.com:alias-password\")}`\n  }\n});\n```\n\n**Option 2: API Token Authentication**\n\nUse your API token (requires `?alias_id=` query parameter):\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws?alias_id=YOUR_ALIAS_ID\", {\n  headers: {\n    Authorization: `Basic ${btoa(\"YOUR_API_TOKEN:\")}` // Note: password is empty\n  }\n});\n```\n\n**Option 3: Unauthenticated (Broadcast-Only)**\n\nConnect without authentication to receive only global broadcast events:\n\n```javascript\nconst ws = new WebSocket(\"wss://api.forwardemail.net/v1/ws\");\n```\n\n**Connection Responses:**\n\nUpon successful connection, the server sends a `connected` event:\n\n- **Authenticated:** `{\"event\":\"connected\",\"aliasId\":\"<your-alias-id>\"}`\n- **Unauthenticated:** `{\"event\":\"connected\",\"broadcastOnly\":true}`\n\nIf you receive `broadcastOnly: true`, your authentication failed or was not provided, and you will only receive global broadcast events.\n\n**msgpackr Encoding:** By default, messages are sent as JSON text frames. Pass `?msgpackr=true` to receive binary msgpackr-encoded frames for reduced bandwidth.\n\n**Behavior:**\n- Read-only channel: client messages are silently discarded\n- Server sends a `connected` event upon successful connection\n- Server sends periodic `ping` frames; client must respond with `pong`\n- Per-IP rate limit: 30 connections/minute\n- Per-alias connection limit (authenticated): 10 concurrent connections\n- Per-IP unauthenticated connection limit: 3 concurrent connections\n- Global connection limit: 10,000\n\n**Event Payloads:** Each event includes an `event` field indicating the type, plus a resource object (`message`, `contact`, `calendarEvent`, `calendar`, `addressBook`, or `release`) containing the full resource data mirroring the corresponding REST API response.\n\n**Per-Alias Events (Authenticated Only):**\n- **IMAP:** `newMessage`, `messagesMoved`, `messagesCopied`, `flagsUpdated`, `messagesExpunged`, `mailboxCreated`, `mailboxDeleted`, `mailboxRenamed`\n- **CalDAV:** `calendarCreated`, `calendarUpdated`, `calendarDeleted`, `calendarEventCreated`, `calendarEventUpdated`, `calendarEventDeleted`\n- **CardDAV:** `contactCreated`, `contactUpdated`, `contactDeleted`, `addressBookCreated`, `addressBookDeleted`\n\n**Broadcast Events (All Clients):**\n- `newRelease` — Broadcast when a new version of the Forward Email Mail App (https://github.com/forwardemail/mail.forwardemail.net) is published on GitHub. The server polls GitHub every 15 minutes and uses a content-based fingerprint to detect changes. **Asset Gating**: When a new release is detected but has no assets yet, the broadcast is deferred until assets appear.\n\n**Important Notes:**\n- Query parameters `?token=`, `?username=`, `?password=` are **NOT supported** for authentication\n- Authentication **must** be via `Authorization` header using HTTP Basic Authentication\n- If authentication fails, you will receive `broadcastOnly: true` or a `401 Unauthorized` error\n- For API token authentication, the `?alias_id=` query parameter is **required**",
         "operationId": "websocketNotifications",
         "parameters": [
           {
-            "name": "token",
+            "name": "alias_id",
             "in": "query",
-            "description": "API token for authentication (alternative to username/password)",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "username",
-            "in": "query",
-            "description": "Alias username for alias-based authentication",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "Alias password for alias-based authentication",
+            "description": "**Required for API token authentication.** The alias ID to subscribe to. This parameter is only used when authenticating with an API token via the Authorization header.",
             "required": false,
             "schema": {
               "type": "string"
@@ -8510,7 +8492,16 @@
           "503": {
             "description": "Service Unavailable - Global connection limit reached"
           }
-        }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "AliasAuth": []
+          },
+          {}
+        ]
       }
     }
   },
