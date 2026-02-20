@@ -556,6 +556,18 @@ async function sendCalendarEmail(
           .replace('mailto:', '')
           .trim()
           .toLowerCase();
+
+        // Don't send REPLY if organizer is the current user
+        // (defense-in-depth safeguard against organizer receiving their own acceptance emails)
+        if (organizerEmail === ctx.state.user.username) {
+          ctx.logger.debug('Skipping REPLY - organizer is the current user', {
+            organizerEmail,
+            username: ctx.state.user.username,
+            eventId: calendarEvent.eventId
+          });
+          return;
+        }
+
         if (organizerEmail && isEmail(organizerEmail)) {
           // Build a REPLY ICS containing only the attendee's VEVENT
           const vc = new ICAL.Component(['vcalendar', [], []]);
@@ -574,7 +586,7 @@ async function sendCalendarEmail(
           );
 
           // Get the attendee's current PARTSTAT for the subject line
-          let partstat = 'ACCEPTED';
+          let partstat = 'NEEDS-ACTION';
           if (event.attendees) {
             for (const att of event.attendees) {
               let attEmail = att.getFirstValue();
@@ -582,7 +594,7 @@ async function sendCalendarEmail(
                 attEmail = attEmail.replace('mailto:', '').toLowerCase().trim();
               if (attEmail === ctx.state.user.username) {
                 partstat = (
-                  att.getParameter('partstat') || 'ACCEPTED'
+                  att.getParameter('partstat') || 'NEEDS-ACTION'
                 ).toUpperCase();
                 break;
               }
