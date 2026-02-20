@@ -1,0 +1,67 @@
+include ../../_sort-header
+include ../../_pagination
+
+table.table.table-hover.table-bordered.table-sm
+  thead.thead-dark
+    tr
+      th(scope="col")
+        +sortHeader('created_at', 'Created', '#table-spam')
+      th(scope="col")
+        +sortHeader('meta.app.ip', 'IP', '#table-spam')
+      th(scope="col")
+        +sortHeader('meta.app.hostname', 'Hostname', '#table-spam')
+      th.align-middle(scope="col")= t("Error Message")
+      th.align-middle.text-center(scope="col")= t("Response Code")
+      th.align-middle(scope="col")= t("Domain")
+      th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if logs.length === 0
+        tr
+          td.alert.alert-info(colspan="7")
+            = t("No spam logs found for that search.")
+      else
+        each log in logs
+          tr
+            td.align-middle.text-center.dayjs(
+              data-time=new Date(log.created_at).getTime()
+            )
+              = dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+            td.align-middle
+              if log.meta && log.meta.app && log.meta.app.ip
+                code= log.meta.app.ip
+            td.align-middle
+              if log.meta && log.meta.app && log.meta.app.hostname
+                code= log.meta.app.hostname
+            td.align-middle.small
+              if log.err && log.err.message
+                != ansiHTML(log.err.message)
+              else
+                != ansiHTML(log.message)
+            td.align-middle.text-center
+              - let statusCode;
+              if log.err && log.err.responseCode
+                - statusCode = log.err.responseCode;
+              else if log.err && log.err.statusCode
+                - statusCode = log.err.statusCode;
+              else if log.err && log.err.status
+                - statusCode = log.err.status;
+
+              if statusCode
+                - let badgeClass = "badge-success";
+                if statusCode >= 500
+                  - badgeClass = "badge-danger";
+                else if statusCode >= 400
+                  - badgeClass = "badge-warning";
+                else if statusCode >= 300
+                  - badgeClass = "badge-primary";
+                span.badge.badge-pill(class=badgeClass)= statusCode
+            td.align-middle
+              if log.domains && log.domains.length > 0
+                each domain in log.domains
+                  span.badge.badge-secondary.mr-1= domain
+            td.align-middle.text-center
+              a.btn.btn-dark.btn-sm(
+                href=l(`/admin/logs/${log.id}`),
+                target="_blank"
+              ): i.fa.fa-search
++paginate('#table-spam')

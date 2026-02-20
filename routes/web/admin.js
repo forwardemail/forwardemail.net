@@ -89,6 +89,9 @@ router
   .get('/logs', paginate.middleware(10, 50), web.admin.logs.list)
   .get('/logs/:id', web.admin.logs.retrieve)
 
+  // spam
+  .get('/spam', paginate.middleware(10, 50), web.admin.spam.list)
+
   // jobs
   .get('/jobs', paginate.middleware(10, 50), web.admin.jobs.list)
   .get('/jobs/detail/:name', web.admin.jobs.jobDetail)
