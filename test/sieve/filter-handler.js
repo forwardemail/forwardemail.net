@@ -25,8 +25,14 @@ function createMessage(overrides = {}) {
       ...overrides.headers
     },
     envelope: {
-      from: overrides.envelope?.from || 'sender@example.com',
-      to: overrides.envelope?.to || 'recipient@example.com'
+      from:
+        overrides.envelope?.from ||
+        overrides.headers?.from ||
+        'sender@example.com',
+      to:
+        overrides.envelope?.to ||
+        overrides.headers?.to ||
+        'recipient@example.com'
     },
     size: overrides.size > 0 ? overrides.size : 1024,
     body: overrides.body || 'This is the message body.',
