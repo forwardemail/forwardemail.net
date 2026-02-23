@@ -22,6 +22,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
+const pMapSeries = require('p-map-series');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const _ = require('#helpers/lodash');
@@ -46,8 +47,9 @@ const THREE_SECONDS = ms('3s');
 
 graceful.listen();
 
-async function mapper(user) {
-  // safeguard
+async function mapper(id) {
+  const user = await Users.findById(id);
+  // it could have been deleted by the user mid-process
   if (!user) return;
 
   try {
@@ -308,6 +310,12 @@ async function mapper(user) {
         })
       ]);
 
+    //
+    // collect user IDs first via cursor, then process serially
+    // to avoid MongoDB CursorNotFound errors caused by slow per-user
+    // API calls (e.g. PayPal rate-limit delay) keeping the cursor open
+    //
+    const ids = [];
     for await (const user of Users.find({
       $or: [
         {
@@ -342,14 +350,14 @@ async function mapper(user) {
         }
       ]
     })
+      .select('_id')
+      .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
-      try {
-        await mapper(user);
-      } catch (err) {
-        logger.error(err);
-      }
+      ids.push(user._id);
     }
+
+    await pMapSeries(ids, mapper);
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error
