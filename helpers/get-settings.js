@@ -5,6 +5,7 @@
 
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const isBase64 = require('is-base64');
@@ -72,7 +73,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         );
 
       const domain = await Domains.findOne({
-        name,
+        name: punycode.toUnicode(name),
         verification_record: verifications[0]
       })
         .select(

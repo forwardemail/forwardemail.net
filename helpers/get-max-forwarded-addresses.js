@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -58,7 +60,7 @@ async function getMaxForwardedAddresses(
         );
 
       const domain = await Domains.findOne({
-        name,
+        name: punycode.toUnicode(name),
         verification_record: verifications[0],
         plan: { $in: ['enhanced_protection', 'team'] },
         max_recipients_per_alias: { $gt: maxForwardedAddresses }

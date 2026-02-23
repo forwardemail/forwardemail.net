@@ -5,6 +5,7 @@
 
 const { isIP } = require('node:net');
 const { Buffer } = require('node:buffer');
+const punycode = require('node:punycode');
 
 const RE2 = require('re2');
 const isBase64 = require('is-base64');
@@ -555,7 +556,7 @@ async function getForwardingAddresses(
               // find the alias by name pattern matching
               const aliasName = element.split(':')[0] || element;
               const domainDoc = await Domains.findOne({
-                name: domain
+                name: punycode.toUnicode(domain)
               })
                 .select('_id name id members')
                 .lean()
