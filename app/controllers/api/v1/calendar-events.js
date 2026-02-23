@@ -509,7 +509,15 @@ async function create(ctx) {
   ctx.body = json(calendarEvent, calendar);
 
   // Send invite emails to attendees (non-blocking, mirrors CalDAV server behavior)
-  sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST').catch((err) =>
+  // Pass ctx.instance for RFC 6638 §7.3 SCHEDULE-STATUS write-back
+  sendCalendarEmail(
+    ctx,
+    calendar,
+    calendarEvent,
+    'REQUEST',
+    undefined,
+    ctx.instance
+  ).catch((err) =>
     ctx.logger.fatal(err, { calendarEvent, session: ctx.state.session })
   );
 
@@ -648,11 +656,16 @@ async function update(ctx) {
           oldIcal,
           ctx.state.session.user.username
         );
-
-        if (
-          changed &&
-          (!scheduleAgent || scheduleAgent.toUpperCase() !== 'CLIENT')
-        ) {
+        //
+        // RFC 6638 §8.1: Schedule-Reply: F header suppresses the REPLY.
+        // RFC 6638 §7.1: SCHEDULE-AGENT=CLIENT or NONE on the attendee also suppresses it.
+        //
+        const scheduleReplyHeader = ctx.request.get('schedule-reply');
+        const suppressReply =
+          scheduleReplyHeader === 'F' ||
+          (scheduleAgent &&
+            ['CLIENT', 'NONE'].includes(scheduleAgent.toUpperCase()));
+        if (changed && !suppressReply) {
           sendCalendarEmail(ctx, calendar, calendarEvent, 'REPLY').catch(
             (err) =>
               ctx.logger.fatal(err, {
@@ -688,12 +701,14 @@ async function update(ctx) {
         }
 
         // Send REQUEST to attendees (pass oldIcal so removed attendees get CANCEL)
+        // Pass ctx.instance for RFC 6638 §7.3 SCHEDULE-STATUS write-back
         sendCalendarEmail(
           ctx,
           calendar,
           calendarEvent,
           'REQUEST',
-          oldIcal
+          oldIcal,
+          ctx.instance
         ).catch((err) =>
           ctx.logger.fatal(err, {
             calendarEvent,
@@ -790,9 +805,11 @@ async function remove(ctx) {
           });
         } else {
           // Attendee deleting - send DECLINED REPLY to organizer
-          // Check SCHEDULE-AGENT first
+          // RFC 6638 §8.1: Schedule-Reply: F header suppresses the REPLY.
+          // RFC 6638 §7.1: SCHEDULE-AGENT=CLIENT or NONE also suppresses it.
+          const delScheduleReplyHeader = ctx.request.get('schedule-reply');
           const attProps = vevent.getAllProperties('attendee');
-          let shouldSendReply = true;
+          let shouldSendReply = delScheduleReplyHeader !== 'F';
           for (const att of attProps) {
             const email = (att.getFirstValue() || '')
               .replace(/^mailto:/i, '')
@@ -800,7 +817,7 @@ async function remove(ctx) {
               .trim();
             if (email === ctx.state.session.user.username) {
               const sa = att.getParameter('schedule-agent');
-              if (sa && sa.toUpperCase() === 'CLIENT') {
+              if (sa && ['CLIENT', 'NONE'].includes(sa.toUpperCase())) {
                 shouldSendReply = false;
               }
 

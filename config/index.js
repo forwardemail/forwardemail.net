@@ -101,7 +101,7 @@ const brandAndCorporateDomains = [
   'bnl',
   'bnpparibas',
   'boehringer',
-  'bond',
+  // 'bond',
   'booking',
   'bosch',
   'bostik',

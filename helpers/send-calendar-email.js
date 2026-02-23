@@ -9,6 +9,7 @@ const uuid = require('uuid');
 const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
+const CalendarEvents = require('#models/calendar-events');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
@@ -432,6 +433,7 @@ function buildICS(ctx, events, calendar, method = false) {
  * @param {Object} calendarEvent - CalendarEvent object from SQLite (needs eventId, ical)
  * @param {string} method - iTIP method: 'REQUEST', 'CANCEL', or 'REPLY'
  * @param {string} [oldCalStr] - Previous ICS string (for detecting removed attendees on updates)
+ * @param {Object} [instance] - SQLite/WSP instance for SCHEDULE-STATUS write-back (optional)
  */
 // eslint-disable-next-line max-params
 async function sendCalendarEmail(
@@ -439,7 +441,8 @@ async function sendCalendarEmail(
   calendar,
   calendarEvent,
   method,
-  oldCalStr
+  oldCalStr,
+  instance
 ) {
   try {
     let alias;
@@ -535,6 +538,42 @@ async function sendCalendarEmail(
     const event = new ICAL.Event(vevent);
 
     let isValid = true;
+    //
+    // RFC 6638 §7.1 — SCHEDULE-AGENT on the ORGANIZER property.
+    // When an Attendee creates/modifies/removes a scheduling object resource,
+    // the server checks the ORGANIZER's SCHEDULE-AGENT parameter to decide
+    // whether to send scheduling messages.  Values CLIENT and NONE both mean
+    // "the server must not send any scheduling message".
+    //
+    {
+      const orgProp = vevent.getFirstProperty('organizer');
+      if (orgProp) {
+        const orgScheduleAgent = orgProp.getParameter('schedule-agent');
+        if (
+          orgScheduleAgent &&
+          ['CLIENT', 'NONE'].includes(orgScheduleAgent.toUpperCase())
+        ) {
+          ctx.logger.debug(
+            'Skipping calendar email — ORGANIZER;SCHEDULE-AGENT=' +
+              orgScheduleAgent.toUpperCase(),
+            { eventId: calendarEvent.eventId, method }
+          );
+          return;
+        }
+      }
+    }
+
+    //
+    // RFC 6638 §8.1 — Schedule-Reply request header.
+    // When an Attendee sends Schedule-Reply: F the server MUST NOT send
+    // a scheduling message as part of its normal scheduling operation.
+    //
+    if (method === 'REPLY' && ctx.get && ctx.get('schedule-reply') === 'F') {
+      ctx.logger.debug('Skipping REPLY — Schedule-Reply: F header present', {
+        eventId: calendarEvent.eventId
+      });
+      return;
+    }
 
     // Thunderbird sets X-MOZ-SEND-INVITATIONS to the string "TRUE" or "FALSE"
     // based on the "Send invitations to attendees" checkbox.
@@ -569,6 +608,32 @@ async function sendCalendarEmail(
         }
 
         if (organizerEmail && isEmail(organizerEmail)) {
+          //
+          // RFC 5546 §3.2.2 — RSVP=FALSE means the attendee does not want a
+          // reply to be sent to the organizer.  Skip the REPLY in that case.
+          //
+          let attendeeRsvp = true; // default per RFC is to send
+          if (event.attendees) {
+            for (const att of event.attendees) {
+              let attEmail = att.getFirstValue();
+              if (attEmail)
+                attEmail = attEmail.replace('mailto:', '').toLowerCase().trim();
+              if (attEmail === ctx.state.user.username) {
+                const rsvpParam = att.getParameter('rsvp');
+                if (rsvpParam && rsvpParam.toUpperCase() === 'FALSE')
+                  attendeeRsvp = false;
+                break;
+              }
+            }
+          }
+
+          if (!attendeeRsvp) {
+            ctx.logger.debug('Skipping REPLY — attendee RSVP=FALSE', {
+              eventId: calendarEvent.eventId
+            });
+            return;
+          }
+
           // Build a REPLY ICS containing only the attendee's VEVENT
           const vc = new ICAL.Component(['vcalendar', [], []]);
           vc.addSubcomponent(vevent);
@@ -584,7 +649,6 @@ async function sendCalendarEmail(
             calendar,
             'REPLY'
           );
-
           // Get the attendee's current PARTSTAT for the subject line
           let partstat = 'NEEDS-ACTION';
           if (event.attendees) {
@@ -784,10 +848,14 @@ async function sendCalendarEmail(
         }
 
         for (const attendee of attendees) {
-          // RFC 6638 Section 7.1: SCHEDULE-AGENT=CLIENT means the client
-          // handles scheduling itself, server should not send invites
+          // RFC 6638 §7.1: SCHEDULE-AGENT=CLIENT means the client handles
+          // scheduling itself; SCHEDULE-AGENT=NONE means no scheduling messages
+          // at all.  Both values mean the server must not send invites.
           const scheduleAgent = attendee.getParameter('schedule-agent');
-          if (scheduleAgent && scheduleAgent.toUpperCase() === 'CLIENT')
+          if (
+            scheduleAgent &&
+            ['CLIENT', 'NONE'].includes(scheduleAgent.toUpperCase())
+          )
             continue;
 
           // Skip attendees that were already DECLINED
@@ -974,8 +1042,60 @@ async function sendCalendarEmail(
             date: new Date()
           });
         }
-      }
-    }
+
+        //
+        // RFC 6638 §7.3 — SCHEDULE-STATUS write-back.
+        // After successfully queuing scheduling messages the server SHOULD
+        // write the delivery status back onto each ATTENDEE property as
+        // SCHEDULE-STATUS="1.1" (pending) so CalDAV clients can read it.
+        // We only do this for REQUEST (organizer → attendees) and only when
+        // an SQLite instance is available (i.e. not in unit-test stubs).
+        //
+        if (method === 'REQUEST' && instance && ctx.state.session) {
+          try {
+            // Read the freshest version of the event from the DB first so we
+            // do not overwrite any concurrent PARTSTAT updates (e.g. from
+            // processCalendarInvites) with a stale copy of calendarEvent.ical.
+            const freshEvent = await CalendarEvents.findOne(
+              instance,
+              ctx.state.session,
+              { eventId: calendarEvent.eventId }
+            );
+            if (freshEvent) {
+              const updatedComp = new ICAL.Component(
+                ICAL.parse(freshEvent.ical)
+              );
+              let statusWritten = false;
+              for (const uv of updatedComp.getAllSubcomponents('vevent')) {
+                for (const att of uv.getAllProperties('attendee')) {
+                  const attEmail = getAttendeeEmail(att);
+                  if (!attEmail || attEmail === organizerEmail) continue;
+                  const sa = att.getParameter('schedule-agent');
+                  if (sa && ['CLIENT', 'NONE'].includes(sa.toUpperCase()))
+                    continue;
+                  // 1.1 = "The scheduling message has been sent" (pending delivery)
+                  att.setParameter('schedule-status', '1.1');
+                  statusWritten = true;
+                }
+              }
+
+              if (statusWritten) {
+                freshEvent.ical = updatedComp.toString();
+                freshEvent.instance = instance;
+                freshEvent.session = ctx.state.session;
+                freshEvent.isNew = false;
+                await freshEvent.save();
+              }
+            }
+          } catch (scheduleStatusErr) {
+            ctx.logger.debug(
+              scheduleStatusErr,
+              'SCHEDULE-STATUS write-back failed (non-fatal)'
+            );
+          }
+        }
+      } // end if (to.length > 0)
+    } // end isValid
   } catch (err) {
     // temp debugging
     err.isCodeBug = true;

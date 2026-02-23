@@ -4216,7 +4216,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">bnl</code></li>
   <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li>
   <li class="list-inline-item"><code class="notranslate">boehringer</code></li>
-  <li class="list-inline-item"><code class="notranslate">bond</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">bond</code></li>-->
   <li class="list-inline-item"><code class="notranslate">booking</code></li>
   <li class="list-inline-item"><code class="notranslate">bosch</code></li>
   <li class="list-inline-item"><code class="notranslate">bostik</code></li>

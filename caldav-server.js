@@ -1061,7 +1061,14 @@ class CalDAV extends API {
   //
   // eslint-disable-next-line max-params
   async sendEmailWithICS(ctx, calendar, calendarEvent, method, oldCalStr) {
-    return sendCalendarEmail(ctx, calendar, calendarEvent, method, oldCalStr);
+    return sendCalendarEmail(
+      ctx,
+      calendar,
+      calendarEvent,
+      method,
+      oldCalStr,
+      this
+    );
   }
 
   async authenticate(ctx, { username, password, principalId }) {
@@ -2351,11 +2358,16 @@ class CalDAV extends API {
         oldCalStr,
         ctx.state.user.username
       );
-
-      if (
-        changed &&
-        (!scheduleAgent || scheduleAgent.toUpperCase() !== 'CLIENT')
-      ) {
+      //
+      // RFC 6638 §8.1: Schedule-Reply: F header suppresses the REPLY.
+      // RFC 6638 §7.1: SCHEDULE-AGENT=CLIENT or NONE on the attendee also suppresses it.
+      //
+      const scheduleReplyHeader = ctx.get('schedule-reply');
+      const suppressReply =
+        scheduleReplyHeader === 'F' ||
+        (scheduleAgent &&
+          ['CLIENT', 'NONE'].includes(scheduleAgent.toUpperCase()));
+      if (changed && !suppressReply) {
         setImmediate(() => {
           this.sendEmailWithICS(ctx, calendar, e, 'REPLY').catch((err) => {
             ctx.logger.error('sendEmailWithICS REPLY error', { err });
@@ -2641,9 +2653,11 @@ class CalDAV extends API {
             );
           } else {
             // Attendee deleting - send DECLINED REPLY to organizer
-            // Check SCHEDULE-AGENT first
+            // RFC 6638 §8.1: Schedule-Reply: F header suppresses the REPLY.
+            // RFC 6638 §7.1: SCHEDULE-AGENT=CLIENT or NONE also suppresses it.
+            const delScheduleReplyHeader = ctx.get('schedule-reply');
             const attProps = delVevent.getAllProperties('attendee');
-            let shouldSendReply = true;
+            let shouldSendReply = delScheduleReplyHeader !== 'F';
             for (const att of attProps) {
               const email = (att.getFirstValue() || '')
                 .replace(/^mailto:/i, '')
@@ -2651,7 +2665,7 @@ class CalDAV extends API {
                 .trim();
               if (email === ctx.state.user.username) {
                 const sa = att.getParameter('schedule-agent');
-                if (sa && sa.toUpperCase() === 'CLIENT') {
+                if (sa && ['CLIENT', 'NONE'].includes(sa.toUpperCase())) {
                   shouldSendReply = false;
                 }
 
