@@ -40,6 +40,7 @@ const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const isAllowlistTld = require('#helpers/is-allowlist-tld');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -69,6 +70,7 @@ const stats = {
   entriesBeforeDenylistCheck: 0,
   entriesFilteredDenylisted: 0,
   entriesFilteredHardcoded: 0,
+  entriesFilteredInvalidTld: 0,
   entriesAddedToAllowlist: 0,
   denylistRemovals: 0,
   backscatterRemovals: 0,
@@ -252,7 +254,15 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
             return;
           }
 
-          set.add(domainName);
+          if (isAllowlistTld(domainName)) {
+            set.add(domainName);
+          } else {
+            logger.debug(
+              'domain %s TLD is not allowlisted, skipping',
+              domainName
+            );
+            stats.entriesFilteredInvalidTld++;
+          }
 
           // Parse root domain
           const rootDomain = parseRootDomain(domain.name);
@@ -261,7 +271,15 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
             const rootDenylistCheck = await checkDenylisted(rootDomainAscii);
             // eslint-disable-next-line no-negated-condition
             if (!rootDenylistCheck.denylisted) {
-              set.add(rootDomainAscii);
+              if (isAllowlistTld(rootDomainAscii)) {
+                set.add(rootDomainAscii);
+              } else {
+                logger.debug(
+                  'root domain %s TLD is not allowlisted, skipping',
+                  rootDomainAscii
+                );
+                stats.entriesFilteredInvalidTld++;
+              }
             } else {
               logger.debug(
                 'root domain %s is denylisted (%s), skipping',
@@ -398,7 +416,15 @@ async function processAliasesBatch(
                   continue;
                 }
 
-                set.add(recipientDomainAscii);
+                if (isAllowlistTld(recipientDomainAscii)) {
+                  set.add(recipientDomainAscii);
+                } else {
+                  logger.debug(
+                    'recipient domain %s TLD is not allowlisted, skipping',
+                    recipientDomainAscii
+                  );
+                  stats.entriesFilteredInvalidTld++;
+                }
 
                 // Parse root domain
                 const rootDomain = parseRootDomain(recipientDomain);
@@ -409,7 +435,15 @@ async function processAliasesBatch(
                   );
                   // eslint-disable-next-line no-negated-condition
                   if (!rootDenylistCheck.denylisted) {
-                    set.add(rootDomainAscii);
+                    if (isAllowlistTld(rootDomainAscii)) {
+                      set.add(rootDomainAscii);
+                    } else {
+                      logger.debug(
+                        'recipient root domain %s TLD is not allowlisted, skipping',
+                        rootDomainAscii
+                      );
+                      stats.entriesFilteredInvalidTld++;
+                    }
                   } else {
                     logger.debug(
                       'recipient root domain %s is denylisted (%s), skipping',
@@ -456,7 +490,15 @@ async function processAliasesBatch(
                   continue;
                 }
 
-                set.add(recipientDomainAscii);
+                if (isAllowlistTld(recipientDomainAscii)) {
+                  set.add(recipientDomainAscii);
+                } else {
+                  logger.debug(
+                    'recipient domain %s TLD is not allowlisted, skipping',
+                    recipientDomainAscii
+                  );
+                  stats.entriesFilteredInvalidTld++;
+                }
 
                 // Parse root domain
                 const rootDomain = parseRootDomain(recipientDomain);
@@ -467,7 +509,15 @@ async function processAliasesBatch(
                   );
                   // eslint-disable-next-line no-negated-condition
                   if (!rootDenylistCheck.denylisted) {
-                    set.add(rootDomainAscii);
+                    if (isAllowlistTld(rootDomainAscii)) {
+                      set.add(rootDomainAscii);
+                    } else {
+                      logger.debug(
+                        'recipient root domain %s TLD is not allowlisted, skipping',
+                        rootDomainAscii
+                      );
+                      stats.entriesFilteredInvalidTld++;
+                    }
                   } else {
                     logger.debug(
                       'recipient email root domain %s is denylisted (%s), skipping',
@@ -657,7 +707,9 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
       message: {
         to: config.alertsEmail,
         subject: `Sync Paid Alias Allowlist Report - ${stats.entriesAddedToAllowlist.toLocaleString()} entries added, ${
-          stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
+          stats.entriesFilteredDenylisted +
+          stats.entriesFilteredHardcoded +
+          stats.entriesFilteredInvalidTld
         } filtered`,
         attachments: [
           {
@@ -699,8 +751,11 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
   <ul>
     <li><strong>Filtered by Hardcoded Denylist</strong>: ${stats.entriesFilteredHardcoded.toLocaleString()}</li>
     <li><strong>Filtered by Redis Denylist</strong>: ${stats.entriesFilteredDenylisted.toLocaleString()}</li>
+    <li><strong>Filtered by Invalid TLD</strong>: ${stats.entriesFilteredInvalidTld.toLocaleString()}</li>
     <li><strong>Total Filtered</strong>: ${(
-      stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
+      stats.entriesFilteredDenylisted +
+      stats.entriesFilteredHardcoded +
+      stats.entriesFilteredInvalidTld
     ).toLocaleString()}</li>
   </ul>
 
@@ -720,6 +775,7 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
     <li>Excludes aliases from banned users</li>
     <li>Excludes domains where all admins are banned</li>
     <li>Filters out any denylisted entries before adding to allowlist</li>
+    <li>Filters out domains and recipients with non-allowlisted TLDs (only goodDomains and restrictedDomains TLDs are permitted)</li>
     <li>Removes paid user entries from denylist, backscatter, and silent lists</li>
   </ul>
 
@@ -730,6 +786,7 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
     <li><code>denylisted-filtered.csv</code> - Entries that were filtered out due to being denylisted (${(
       stats.entriesFilteredDenylisted + stats.entriesFilteredHardcoded
     ).toLocaleString()} entries)</li>
+    <li>Invalid TLD entries filtered: ${stats.entriesFilteredInvalidTld.toLocaleString()}</li>
   </ul>
 </div>
         `.trim()

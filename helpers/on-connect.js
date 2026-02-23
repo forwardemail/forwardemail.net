@@ -132,7 +132,13 @@ function isTrustedPassthroughHost(
   if (env.CLIENT_IP_PASSTHROUGH_HOSTS.length === 0) return false;
 
   // Check if the remote IP is in the list
-  if (env.CLIENT_IP_PASSTHROUGH_HOSTS.includes(remoteAddress.toLowerCase())) {
+  // NOTE: remoteAddress may be undefined if the socket was destroyed before
+  //       the session was fully initialized (e.g. ManageSieve connections that
+  //       close immediately), so we guard against that here.
+  if (
+    remoteAddress &&
+    env.CLIENT_IP_PASSTHROUGH_HOSTS.includes(remoteAddress.toLowerCase())
+  ) {
     return true;
   }
 
@@ -161,9 +167,13 @@ function isTrustedPassthroughHost(
 
 async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
-
   if (this.isClosing) return fn(new ServerShutdownError());
-
+  // Guard against sessions where the socket was destroyed before the remote
+  // address could be determined (e.g. a ManageSieve connection that closes
+  // immediately during TLS negotiation). Without remoteAddress we cannot
+  // perform meaningful rate-limiting, denylist, or allowlist checks, so we
+  // simply accept the connection and let subsequent handlers deal with it.
+  if (!session.remoteAddress) return fn();
   const isPOP = this.server instanceof POP3Server;
   const isIMAP = this.server instanceof IMAPServer;
 
@@ -340,9 +350,12 @@ async function onConnect(session, fn) {
         allowlistCheckLabels.push('clientHostname');
       }
 
-      // Add IP address check
-      allowlistCheckValues.push(session.remoteAddress);
-      allowlistCheckLabels.push('remoteAddress');
+      // Add IP address check (remoteAddress is always defined here due to the
+      // early-exit guard above, but we keep the conditional for safety)
+      if (session.remoteAddress) {
+        allowlistCheckValues.push(session.remoteAddress);
+        allowlistCheckLabels.push('remoteAddress');
+      }
 
       // Run all checks in parallel
       const allowlistChecks = allowlistCheckValues.map((value) =>

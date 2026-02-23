@@ -18,6 +18,7 @@ const decrypt = require('#helpers/encrypt-decrypt');
 const { Inquiries } = require('#models');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const isAllowlistTld = require('#helpers/is-allowlist-tld');
 
 async function validate(ctx, next) {
   //
@@ -334,34 +335,45 @@ async function remove(ctx) {
     } else {
       // del email and/or domain
       await ctx.client.del(`denylist:${ctx.state.q}`);
-      await ctx.client.set(`allowlist:${ctx.state.q}`, 'true', 'PX', ms('30d'));
-      // del root domain
-      if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain) {
-        await ctx.client.del(`denylist:${ctx.state.rootDomain}`);
-        await ctx.client.set(
-          `allowlist:${ctx.state.rootDomain}`,
-          'true',
-          'PX',
-          ms('30d')
-        );
-      }
-
-      // if it was an email then delete the combo
-      if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
-        await ctx.client.del(`denylist:${ctx.state.q}`);
-        await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
+      if (
+        isAllowlistTld(isFQDN(ctx.state.q) ? ctx.state.q : ctx.state.rootDomain)
+      )
         await ctx.client.set(
           `allowlist:${ctx.state.q}`,
           'true',
           'PX',
           ms('30d')
         );
-        await ctx.client.set(
-          `allowlist:${ctx.state.rootDomain}:${ctx.state.q}`,
-          'true',
-          'PX',
-          ms('30d')
-        );
+      // del root domain
+      if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain) {
+        await ctx.client.del(`denylist:${ctx.state.rootDomain}`);
+        if (isAllowlistTld(ctx.state.rootDomain))
+          await ctx.client.set(
+            `allowlist:${ctx.state.rootDomain}`,
+            'true',
+            'PX',
+            ms('30d')
+          );
+      }
+
+      // if it was an email then delete the combo
+      if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
+        await ctx.client.del(`denylist:${ctx.state.q}`);
+        await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
+        if (isAllowlistTld(ctx.state.rootDomain)) {
+          await ctx.client.set(
+            `allowlist:${ctx.state.q}`,
+            'true',
+            'PX',
+            ms('30d')
+          );
+          await ctx.client.set(
+            `allowlist:${ctx.state.rootDomain}:${ctx.state.q}`,
+            'true',
+            'PX',
+            ms('30d')
+          );
+        }
       }
     }
   } catch (err) {
