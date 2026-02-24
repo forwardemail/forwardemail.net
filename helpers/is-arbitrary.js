@@ -232,8 +232,11 @@ if (
     // Check Microsoft's own spam classification to determine if this is a spam bounce
     const forefrontHeader = headers.getFirst('x-forefront-antispam-report');
 
-    // Default to blocking if no Forefront header (can't verify legitimacy)
-    let isSpamBounce = true;
+    // Default to NOT blocking if no Forefront header.
+    // A missing x-forefront-antispam-report header means this is a normal
+    // personal Hotmail/Outlook.com message (not a relay or bulk send), so
+    // there is no spam evidence and we should allow it through.
+    let isSpamBounce = false;
 
     if (forefrontHeader) {
       const lowerForefrontHeader = forefrontHeader.toLowerCase();
