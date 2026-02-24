@@ -440,6 +440,76 @@ if (
     const forefrontHeader = headers.getFirst('x-forefront-antispam-report');
 
     //
+    // CHECK 0: Anonymous Cross-Tenant Relay with Full Authentication Failure
+    // -----------------------------------------------------------------------
+    // Block messages where Microsoft's own headers reveal ALL of the following:
+    //
+    // Case 1 — spf=fail in ARC-Authentication-Results:
+    //   The originating IP is not authorized by the .onmicrosoft.com tenant's
+    //   SPF record. This means the message was injected by an external IP
+    //   spoofing the tenant domain, not sent by a legitimate tenant user.
+    //
+    // Case 2 — dkim=none in ARC-Authentication-Results:
+    //   The original sender never applied a DKIM signature. The only DKIM
+    //   present is Microsoft Exchange's own re-signing of the forwarded
+    //   message, which is not original-sender authentication.
+    //
+    // Case 3 — dmarc=none in ARC-Authentication-Results:
+    //   The .onmicrosoft.com tenant has no DMARC policy, providing zero
+    //   domain-level enforcement against spoofing.
+    //
+    // Case 4 — X-MS-Exchange-CrossTenant-AuthAs: Anonymous:
+    //   Microsoft itself flags the cross-tenant connection as anonymous,
+    //   meaning the sending IP connected to Microsoft's frontend without
+    //   authenticating as a legitimate tenant user. This is the definitive
+    //   indicator of a compromised or abused tenant being used to relay spam.
+    //
+    // All 4 cases together form an unambiguous spam signal. The combination
+    // of an anonymous cross-tenant connection with full SPF/DKIM/DMARC failure
+    // cannot occur for legitimate email and is the exact pattern seen in
+    // compromised .onmicrosoft.com tenant spam campaigns.
+    //
+    // NOTE: We check the ARC-Authentication-Results header (set by Microsoft's
+    // own servers) rather than X-MS-Exchange-Authentication-Results because
+    // ARC headers reflect the authentication state of the *original* message
+    // before it entered Microsoft's infrastructure, making them harder to forge
+    // and more representative of the true sender's authentication posture.
+    //
+    const arcAuthResults = headers.getFirst('arc-authentication-results');
+    const crossTenantAuthAs = headers.getFirst(
+      'x-ms-exchange-crosstenant-authas'
+    );
+
+    if (arcAuthResults && crossTenantAuthAs) {
+      const lowerArcAuth = arcAuthResults.toLowerCase();
+      const lowerCrossTenantAuthAs = crossTenantAuthAs.toLowerCase().trim();
+
+      // Case 1: SPF hard fail in ARC inner header
+      const arcSpfFail = lowerArcAuth.includes('spf=fail');
+
+      // Case 2: DKIM not signed (none) in ARC inner header
+      // We check for "dkim=none" explicitly — dkim=fail would also be caught
+      // but dkim=none (never signed) is the pattern in these spam campaigns
+      const arcDkimNone =
+        lowerArcAuth.includes('dkim=none') ||
+        lowerArcAuth.includes('dkim=fail');
+
+      // Case 3: DMARC has no policy (none) in ARC inner header
+      const arcDmarcNone =
+        lowerArcAuth.includes('dmarc=none') ||
+        lowerArcAuth.includes('dmarc=fail');
+
+      // Case 4: Cross-tenant connection was anonymous (unauthenticated relay)
+      const isCrossTenantAnonymous = lowerCrossTenantAuthAs === 'anonymous';
+
+      if (arcSpfFail && arcDkimNone && arcDmarcNone && isCrossTenantAnonymous) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
+        );
+      }
+    }
+
+    //
     // CHECK 1: Authentication Failures
     // --------------------------------
     // Block if Microsoft detected that the original sender failed authentication.
