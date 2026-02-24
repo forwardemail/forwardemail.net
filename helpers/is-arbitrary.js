@@ -15,7 +15,7 @@ const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
 const getHeaders = require('#helpers/get-headers');
-const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
+// const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -216,17 +216,17 @@ if (
   //
   // Check if this is a Microsoft bounce message
   const isMicrosoftBounce =
-    (session.originalFromAddress === 'postmaster@outlook.com' ||
-      (session.resolvedClientHostname &&
-        session.resolvedClientHostname.endsWith(
-          '.outbound.protection.outlook.com'
-        )) ||
-      (session.originalFromAddress.startsWith('postmaster@') &&
-        session.originalFromAddress.endsWith('.onmicrosoft.com'))) &&
-    isAutoReplyOrMailingList(headers) &&
-    subject &&
-    (subject.startsWith('Undeliverable: ') ||
-      subject.startsWith('No se puede entregar: '));
+    session.originalFromAddress === 'postmaster@outlook.com' ||
+    (session.resolvedClientHostname &&
+      session.resolvedClientHostname.endsWith(
+        '.outbound.protection.outlook.com'
+      )) ||
+    (session.originalFromAddress.startsWith('postmaster@') &&
+      session.originalFromAddress.endsWith('.onmicrosoft.com')); // &&
+  // isAutoReplyOrMailingList(headers); // &&
+  // subject &&
+  // (subject.startsWith('Undeliverable: ') ||
+  //   subject.startsWith('No se puede entregar: '));
 
   if (isMicrosoftBounce) {
     // Check Microsoft's own spam classification to determine if this is a spam bounce
