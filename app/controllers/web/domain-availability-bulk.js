@@ -13,7 +13,7 @@ import('@forwardemail/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
 
-const MAX_BULK = 10;
+const MAX_BULK = 50;
 
 // POST /domain-availability/bulk
 // body: { domains: ['example.com', 'example.net', ...] }

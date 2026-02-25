@@ -135,22 +135,19 @@ router
   // domain availability
   .post(
     '/domain-availability',
-    rateLimit(config.env === 'production' ? 10 : 100, 'domain-availability'),
+    rateLimit(100, 'domain-availability'),
     web.domainAvailability
   )
   .post(
     '/domain-availability/bulk',
-    rateLimit(
-      config.env === 'production' ? 10 : 100,
-      'domain-availability-bulk'
-    ),
+    rateLimit(100, 'domain-availability-bulk'),
     web.domainAvailabilityBulk
   )
 
   // domain suggestions
   .post(
     '/domain-suggestions',
-    rateLimit(config.env === 'production' ? 10 : 100, 'domain-suggestions'),
+    rateLimit(100, 'domain-suggestions'),
     web.domainSuggestions
   )
 
@@ -273,21 +270,18 @@ localeRouter
   // domain availability
   .post(
     '/domain-availability',
-    rateLimit(config.env === 'production' ? 10 : 100, 'domain-availability'),
+    rateLimit(100, 'domain-availability'),
     web.domainAvailability
   )
   .post(
     '/domain-availability/bulk',
-    rateLimit(
-      config.env === 'production' ? 10 : 100,
-      'domain-availability-bulk'
-    ),
+    rateLimit(100, 'domain-availability-bulk'),
     web.domainAvailabilityBulk
   )
   // domain suggestions
   .post(
     '/domain-suggestions',
-    rateLimit(config.env === 'production' ? 10 : 100, 'domain-suggestions'),
+    rateLimit(100, 'domain-suggestions'),
     web.domainSuggestions
   )
   // domain connect

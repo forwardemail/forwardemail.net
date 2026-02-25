@@ -259,8 +259,8 @@ function renderFinalResults(allResults, resultsContainer) {
 function processBulkCheck(domains, ctx) {
   const allResults = [];
   const batches = [];
-  for (let i = 0; i < domains.length; i += 10) {
-    batches.push(domains.slice(i, i + 10));
+  for (let i = 0; i < domains.length; i += 50) {
+    batches.push(domains.slice(i, i + 50));
   }
 
   if (ctx.statusText) {
