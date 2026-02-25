@@ -1,8 +1,26 @@
 extends layout
 
 include _onboard
+include _modal-domain-search
+
+block append scripts
+  if !isBot(ctx.get('User-Agent'))
+    if config.env === 'test'
+      script(
+        defer,
+        src=`${config.urls.web}/js/domain-search.js`,
+        crossorigin="anonymous"
+      )
+    else
+      script(
+        defer,
+        src=manifest("js/domain-search.js"),
+        integrity=manifest("js/domain-search.js", "integrity"),
+        crossorigin="anonymous"
+      )
 
 block body
+  +modalDomainSearch
   .min-vh-80.d-flex.flex-column
     .container.py-3
       .row
@@ -11,22 +29,13 @@ block body
             h1.h4.card-header.bg-dark.text-white.text-center= t("Register a domain name")
             .card-body
               .text-center
-                p= t("Enter a custom domain name below to register.")
-              form(
-                target="_blank",
-                action="https://www.namecheap.com/domains/registration/results.aspx"
-              )
-                .form-group.floating-label
-                  input#input-domain.form-control.form-control-lg(
-                    name="domain",
-                    autocomplete=config.env === "test" ? "off" : randomstring(),
-                    placeholder="example.com",
-                    autocorrect="off",
-                    spellcheck="false",
-                    autocapitalize="off",
-                    type="text"
-                  )
-                  label(for="input-domain")= t("Domain name")
-                button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
-              .alert.alert-secondary.small.mb-0.mt-3!= t('Submitting this form will take you to <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://www.namecheap.com/domains/registration/results.aspx">Namecheap.com</a> for registration.')
-    +onboard(t('Did you finish registering?'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), false, 'border-top').d-flex.flex-column.flex-grow-1.justify-content-end
+                p= t("Search for a domain name to check availability and register.")
+                button.btn.btn-success.btn-block.btn-lg(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#modal-domain-search"
+                )
+                  i.fa.fa-search.mr-2
+                  = t("Search Domain Availability")
+                p.text-muted.small.mt-3.mb-0= t("Check if your desired domain is available and register it through Cloudflare.")
+    +onboard(t('Already have a domain?'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), false, 'border-top').d-flex.flex-column.flex-grow-1.justify-content-end

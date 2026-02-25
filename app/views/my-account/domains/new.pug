@@ -31,7 +31,7 @@ block body
             if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
               input(type="hidden", name="plan", value=ctx.query.plan)
             .alert.alert-success.small
-              != t('If you have a domain with <a href="https://www.namecheap.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Namecheap</a>, <a href="https://developers.cloudflare.com/registrar/get-started/register-domain/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Cloudflare</a>, <a href="https://www.godaddy.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">GoDaddy</a>, or another <a href="https://en.wikipedia.org/wiki/Domain_name_registrar" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">registrar</a>, then enter it below:')
+              != t('If you have a domain with <a href="https://developers.cloudflare.com/registrar/get-started/register-domain/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Cloudflare</a>, <a href="https://www.godaddy.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">GoDaddy</a>, or another <a href="https://en.wikipedia.org/wiki/Domain_name_registrar" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">registrar</a>, then enter it below:')
             .form-group.floating-label
               input#input-domain.form-control.form-control-lg(
                 required,

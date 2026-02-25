@@ -92,7 +92,7 @@ block body
       .row
         .col-12
           .card.position-relative
-            .position-absolute.w-100.text-right.d-flex.justify-content-end.align-items-start
+            .position-absolute.w-100.text-right.d-flex.justify-content-end.align-items-center
               if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
                 span.badge.badge-pill.badge-success.mt-3.mr-1
                   i.fa.fa-check
@@ -104,6 +104,7 @@ block body
                 form.mr-1.mt-3(
                   action=l("/domain-connect"),
                   method="POST",
+                  target="_blank",
                   style="display: inline"
                 )
                   input(type="hidden", name="provider", value=provider.slug)
@@ -187,6 +188,7 @@ block body
                   form(
                     action=l("/domain-connect"),
                     method="POST",
+                    target="_blank",
                     style="display: inline"
                   )
                     input(type="hidden", name="provider", value=provider.slug)

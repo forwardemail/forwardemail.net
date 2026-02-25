@@ -520,35 +520,6 @@ const NS_PROVIDERS = {
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);
 const NS_PROVIDER_REGEXES = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'i'));
 
-function nsProviderLookup(domain) {
-  // return early if there were no NS providers set
-  if (!domain.ns || domain.ns.length === 0) return;
-
-  let provider;
-
-  for (const [i, NS_PROVIDER_REGEX] of NS_PROVIDER_REGEXES.entries()) {
-    if (domain.ns.some((r) => NS_PROVIDER_REGEX.test(r))) {
-      const [slug, name, url, gif, host, video, trailingPeriod] =
-        NS_PROVIDERS[NS_PROVIDER_KEYS[i]];
-      provider = { slug, name, url, gif, host, video, trailingPeriod };
-      break;
-    }
-  }
-
-  return provider;
-}
-
-let nsProviders = [];
-for (const key of _.sortBy(NS_PROVIDER_KEYS, (key) => NS_PROVIDERS[key].name)) {
-  const [slug, name, url, gif, host, video, trailingPeriod] = NS_PROVIDERS[key];
-  nsProviders.push({ slug, name, url, gif, host, video, trailingPeriod });
-}
-
-nsProviders = _.sortBy(
-  nsProviders,
-  (p) => (p.video || p.gif ? '0' : '1') + '_' + dashify(p.name)
-);
-
 // Domain Connect provider configuration
 // Maps known DNS providers to their Domain Connect urlSyncUX endpoints
 // These are used as shortcuts to avoid DNS discovery when the user selects a provider
@@ -566,6 +537,40 @@ const DOMAIN_CONNECT_PROVIDERS = {
     applyUrl: 'https://dns.glauca.digital/connect'
   }
 };
+
+function nsProviderLookup(domain) {
+  // return early if there were no NS providers set
+  if (!domain.ns || domain.ns.length === 0) return;
+
+  let provider;
+
+  for (const [i, NS_PROVIDER_REGEX] of NS_PROVIDER_REGEXES.entries()) {
+    if (domain.ns.some((r) => NS_PROVIDER_REGEX.test(r))) {
+      const [slug, name, url, gif, host, video, trailingPeriod] =
+        NS_PROVIDERS[NS_PROVIDER_KEYS[i]];
+      provider = { slug, name, url, gif, host, video, trailingPeriod };
+      // Add Domain Connect configuration if this provider supports it
+      if (DOMAIN_CONNECT_PROVIDERS[slug]) {
+        provider.domainConnect = DOMAIN_CONNECT_PROVIDERS[slug];
+      }
+
+      break;
+    }
+  }
+
+  return provider;
+}
+
+let nsProviders = [];
+for (const key of _.sortBy(NS_PROVIDER_KEYS, (key) => NS_PROVIDERS[key].name)) {
+  const [slug, name, url, gif, host, video, trailingPeriod] = NS_PROVIDERS[key];
+  nsProviders.push({ slug, name, url, gif, host, video, trailingPeriod });
+}
+
+nsProviders = _.sortBy(
+  nsProviders,
+  (p) => (p.video || p.gif ? '0' : '1') + '_' + dashify(p.name)
+);
 
 for (const provider of nsProviders) {
   if (DOMAIN_CONNECT_PROVIDERS[provider.slug]) {
