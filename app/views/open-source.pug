@@ -97,6 +97,20 @@ mixin renderCard(platform, provider)
         i.fa.fa-external-link.align-middle
 
 block append scripts
+  if !isBot(ctx.get('User-Agent'))
+    if config.env === 'test'
+      script(
+        defer,
+        src=`${config.urls.web}/js/domain-search.js`,
+        crossorigin="anonymous"
+      )
+    else
+      script(
+        defer,
+        src=manifest("js/domain-search.js"),
+        integrity=manifest("js/domain-search.js", "integrity"),
+        crossorigin="anonymous"
+      )
   script(
     defer,
     src=manifest("js/ekko-lightbox.js"),
@@ -105,6 +119,8 @@ block append scripts
   )
 
 block body
+  include _modal-domain-search
+  +modalDomainSearch
   include _modal-storage
   //-.
     if !user
