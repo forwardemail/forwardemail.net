@@ -6,6 +6,30 @@
 const sendRequest = require('./send-request');
 
 /**
+ * Check if the current viewport is mobile-sized
+ * @returns {boolean}
+ */
+function isMobile() {
+  return window.innerWidth < 768;
+}
+
+/**
+ * Show the "Powered by WHOIS/RDAP lookups" text
+ */
+function showPoweredBy() {
+  const el = document.querySelector('#domain-search-powered');
+  if (el) el.style.display = 'block';
+}
+
+/**
+ * Hide the "Powered by WHOIS/RDAP lookups" text
+ */
+function hidePoweredBy() {
+  const el = document.querySelector('#domain-search-powered');
+  if (el) el.style.display = 'none';
+}
+
+/**
  * Open a URL in a centered popup window
  * @param {string} url
  * @param {string} name
@@ -69,6 +93,60 @@ function hideRegistrationModal() {
 }
 
 /**
+ * Open the Cloudflare registration popup with a countdown on mobile
+ * @param {string} url - Cloudflare registration URL
+ * @param {string} domain - domain name being registered
+ */
+function openRegistration(url, domain) {
+  // Show the registration overlay immediately
+  showRegistrationModal(domain);
+
+  if (isMobile()) {
+    // On mobile, show a countdown before opening the popup
+    const overlay = document.querySelector('#domain-register-overlay');
+    if (!overlay) return;
+
+    // Create countdown element
+    const countdown = document.createElement('p');
+    countdown.className = 'text-muted mt-3';
+    countdown.id = 'domain-register-countdown';
+    const alertEl = overlay.querySelector('.alert');
+    if (alertEl) {
+      alertEl.parentNode.insertBefore(countdown, alertEl.nextSibling);
+    } else {
+      overlay.append(countdown);
+    }
+
+    let seconds = 3;
+    countdown.textContent = 'Opening Cloudflare in ' + seconds + ' seconds...';
+
+    const interval = setInterval(function () {
+      seconds--;
+      if (seconds > 0) {
+        countdown.textContent =
+          'Opening Cloudflare in ' +
+          seconds +
+          ' second' +
+          (seconds === 1 ? '' : 's') +
+          '...';
+      } else {
+        clearInterval(interval);
+        countdown.textContent = 'Cloudflare window opened!';
+        // Open in a new tab on mobile (popups are unreliable)
+        window.open(url, '_blank');
+        // Remove countdown after a moment
+        setTimeout(function () {
+          if (countdown.parentNode) countdown.remove();
+        }, 2000);
+      }
+    }, 1000);
+  } else {
+    // On desktop, open popup immediately
+    openPopup(url, 'cloudflare_register', 900, 700);
+  }
+}
+
+/**
  * Render a single domain result row
  * @param {Object} r - { domain, available, found, message }
  * @returns {string} HTML
@@ -84,7 +162,7 @@ function renderResult(r) {
   const registerUrl =
     'https://domains.cloudflare.com/?domain=' + encodeURIComponent(r.domain);
   const setupBtn = available
-    ? '<button type="button" class="btn btn-sm btn-success ml-auto text-nowrap domain-register-btn" ' +
+    ? '<button type="button" class="btn btn-sm btn-success ml-auto flex-shrink-0 text-nowrap domain-register-btn" ' +
       'data-domain="' +
       r.domain +
       '" data-url="' +
@@ -98,15 +176,15 @@ function renderResult(r) {
     '">' +
     '<i class="fa ' +
     iconClass +
-    ' fa-lg mr-3"></i>' +
-    '<div class="mr-2 text-truncate">' +
-    '<span class="font-weight-bold notranslate">' +
+    ' fa-lg mr-2 flex-shrink-0"></i>' +
+    '<div class="mr-2 text-truncate flex-grow-1" style="min-width: 0">' +
+    '<span class="font-weight-bold notranslate small">' +
     r.domain +
     '</span>' +
     '</div>' +
     '<span class="badge ' +
     badgeClass +
-    ' mr-2">' +
+    ' mr-2 flex-shrink-0">' +
     badgeText +
     '</span>' +
     setupBtn +
@@ -124,10 +202,7 @@ function attachRegisterHandlers(container) {
     if (!btn) return;
     e.preventDefault();
     const { url, domain } = btn.dataset;
-    // Open Cloudflare in a popup window (900x700)
-    openPopup(url, 'cloudflare_register', 900, 700);
-    // Show the follow-up registration modal
-    showRegistrationModal(domain);
+    openRegistration(url, domain);
   });
 }
 
@@ -171,6 +246,9 @@ function renderFinalResults(allResults, resultsContainer) {
     '</div>';
 
   resultsContainer.innerHTML = summary + html;
+
+  // Show powered-by text after results are rendered
+  showPoweredBy();
 }
 
 /**
@@ -265,6 +343,7 @@ function initDomainSearch() {
     loading.style.display = 'block';
     if (statusText) statusText.textContent = msg || 'Generating suggestions...';
     resultsContainer.innerHTML = '';
+    hidePoweredBy();
     if (searchBtn) searchBtn.disabled = true;
   }
 
@@ -361,6 +440,7 @@ function initDomainSearch() {
           }
 
           resultsContainer.innerHTML = renderResult(checkRes.body);
+          showPoweredBy();
         });
       } else {
         // Bulk check - process in batches of 10

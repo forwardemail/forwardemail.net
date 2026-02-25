@@ -53,14 +53,18 @@
       "type": "TXT",
       "host": "_dmarc",
       "data": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-%domainId%@forwardemail.net;",
-      "ttl": 3600
+      "ttl": 3600,
+      "txtConflictMatchingMode": "Prefix",
+      "txtConflictMatchingPrefix": "v=DMARC1"
     },
     {
       "groupId": "verification",
       "type": "TXT",
       "host": "@",
       "data": "forward-email-site-verification=%fwdEmailVerification%",
-      "ttl": 3600
+      "ttl": 3600,
+      "txtConflictMatchingMode": "Prefix",
+      "txtConflictMatchingPrefix": "forward-email-site-verification="
     },
     {
       "groupId": "autodiscovery",

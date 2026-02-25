@@ -33,7 +33,7 @@ mixin modalDomainSearch(attributes)
             p.text-muted.small.mb-3
               = t("Search for a domain name or enter a keyword to generate ideas.")
             form#form-domain-search(novalidate)
-              .input-group.input-group-lg.mb-3
+              .input-group.mb-3
                 input#domain-search-input.form-control(
                   type="text",
                   name="q",
@@ -47,14 +47,12 @@ mixin modalDomainSearch(attributes)
                   button#domain-search-btn.btn.btn-primary(type="submit")
                     i.fa.fa-search
                     span.d-none.d-sm-inline.ml-2= t("Search")
-              .d-flex.align-items-center.justify-content-between.mb-3
+              .mb-3
                 button#domain-search-random.btn.btn-sm.btn-outline-secondary(
                   type="button"
                 )
                   i.fa.fa-random.mr-1
                   = t("Random Ideas")
-                small.text-muted
-                  = t("Powered by WHOIS/RDAP lookups")
             //- Loading spinner
             #domain-search-loading.text-center.py-4(style="display: none")
               .spinner-border.text-primary(role="status")
@@ -63,6 +61,10 @@ mixin modalDomainSearch(attributes)
                 = t("Generating suggestions...")
             //- Results area
             #domain-search-results
+            //- Powered by text (shown after results render)
+            #domain-search-powered.text-center.mt-2(style="display: none")
+              small.text-muted
+                = t("Powered by WHOIS/RDAP lookups")
           //- Registration overlay (hidden by default, shown after clicking Register)
           #domain-register-overlay.text-center.py-4(style="display: none")
             .mb-4
