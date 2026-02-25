@@ -549,6 +549,30 @@ nsProviders = _.sortBy(
   (p) => (p.video || p.gif ? '0' : '1') + '_' + dashify(p.name)
 );
 
+// Domain Connect provider configuration
+// Maps known DNS providers to their Domain Connect urlSyncUX endpoints
+// These are used as shortcuts to avoid DNS discovery when the user selects a provider
+const DOMAIN_CONNECT_PROVIDERS = {
+  cloudflare: {
+    applyUrl: 'https://api.cloudflare.com/client/v4/dns/domainconnect'
+  },
+  godaddy: {
+    applyUrl: 'https://dcc.godaddy.com'
+  },
+  ionos: {
+    applyUrl: 'https://api.domainconnect.ionos.com'
+  },
+  'glauca-digital': {
+    applyUrl: 'https://dns.glauca.digital/connect'
+  }
+};
+
+for (const provider of nsProviders) {
+  if (DOMAIN_CONNECT_PROVIDERS[provider.slug]) {
+    provider.domainConnect = DOMAIN_CONNECT_PROVIDERS[provider.slug];
+  }
+}
+
 //
 // NOTE: inspiration was from wintersmith templating
 //

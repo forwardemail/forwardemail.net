@@ -760,15 +760,15 @@
     # WIREDTIGER CACHE CALCULATION
     # ========================================
 
-    - name: Calculate WiredTiger cache size (65% of RAM - 1GB)
+    - name: Calculate WiredTiger cache size (50% of RAM - 1GB, MongoDB default)
       set_fact:
-        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.65) | round(1), 0.25] | max }}"
+        wiredtiger_cache_gb: "{{ [(((total_mem_kb.stdout | int / 1024 / 1024) - 1) * 0.50) | round(1), 0.25] | max }}"
 
     - name: Display calculated WiredTiger cache size
       debug:
         msg: |
           System RAM: {{ (total_mem_kb.stdout | int / 1024 / 1024) | round(2) }}GB
-          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (65% of RAM - 1GB)
+          WiredTiger Cache: {{ wiredtiger_cache_gb }}GB (50% of RAM - 1GB, MongoDB default)
 
     # ========================================
     # BASE CONFIGURATION (NO TLS, NO AUTH)
@@ -788,7 +788,7 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 65% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB (MongoDB default)
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
@@ -1021,7 +1021,7 @@
             engine: wiredTiger
             wiredTiger:
               engineConfig:
-                # Cache size: 65% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB
+                # Cache size: 50% of (RAM - 1GB) = {{ wiredtiger_cache_gb }}GB (MongoDB default)
                 cacheSizeGB: {{ wiredtiger_cache_gb }}
                 journalCompressor: snappy
                 directoryForIndexes: false
@@ -1509,8 +1509,8 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
-          TimeoutStartSec=1800
-          TimeoutStopSec=30
+          TimeoutStartSec=3600
+          TimeoutStopSec=60
           Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
           Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
           Environment="AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}"
@@ -1523,6 +1523,11 @@
           Environment="MONGO_USER={{ lookup('env', 'MONGO_USER') }}"
           Environment="MONGO_PASS={{ lookup('env', 'MONGO_PASS') }}"
           Environment="MONGO_HOST={{ lookup('env', 'MONGO_HOST') }}"
+          # Run backups at lowest I/O and CPU priority to avoid starving MongoDB
+          IOSchedulingClass=idle
+          IOSchedulingPriority=7
+          Nice=19
+          CPUSchedulingPolicy=idle
           ExecStart=/usr/local/bin/backup-mongodb.sh
           ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
 

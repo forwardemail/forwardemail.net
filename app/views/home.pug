@@ -4,8 +4,26 @@ block append stylesheets
   if freddyCss
     style(nonce=nonce)!= freddyCss
 
+block append scripts
+  if !isBot(ctx.get('User-Agent'))
+    if config.env === 'test'
+      script(
+        defer,
+        src=`${config.urls.web}/js/domain-search.js`,
+        crossorigin="anonymous"
+      )
+    else
+      script(
+        defer,
+        src=manifest("js/domain-search.js"),
+        integrity=manifest("js/domain-search.js", "integrity"),
+        crossorigin="anonymous"
+      )
+
 block body
   include _modal-storage
+  include _modal-domain-search
+  +modalDomainSearch
   //- modal watch video
   if !isBot(ctx.get('User-Agent'))
     #modal-watch-video.modal.fade(

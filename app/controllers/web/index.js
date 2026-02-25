@@ -39,6 +39,11 @@ const report = require('./report');
 const denylist = require('./denylist');
 const guides = require('./guides');
 const sitemap = require('./sitemap');
+const { autoconfig, autodiscover } = require('./autoconfig');
+const domainAvailability = require('./domain-availability');
+const domainAvailabilityBulk = require('./domain-availability-bulk');
+const domainConnect = require('./domain-connect');
+const domainSuggestions = require('./domain-suggestions');
 const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
@@ -690,6 +695,12 @@ async function regenerateAliasPassword(ctx) {
 }
 
 module.exports = {
+  autoconfig,
+  autodiscover,
+  domainAvailability,
+  domainAvailabilityBulk,
+  domainConnect,
+  domainSuggestions,
   admin,
   api,
   auth,

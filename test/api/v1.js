@@ -93,6 +93,8 @@ const keys = _.sortBy([
   'has_dmarc_record',
   'has_strict_dmarc',
   'has_spf_record',
+  'has_autoconfig_record',
+  'has_autodiscover_record',
   'has_recipient_verification',
   'has_custom_verification',
   'require_tls_inbound',

@@ -500,6 +500,18 @@ const Domains = new mongoose.Schema({
     default: false,
     index: true
   },
+  // tracks if autoconfig CNAME is set (for Thunderbird autodiscovery)
+  has_autoconfig_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  // tracks if autodiscover CNAME is set (for Outlook autodiscovery)
+  has_autodiscover_record: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   missing_smtp_sent_at: Date,
   restrictions_reminder_sent_at: Date,
   onboard_email_sent_at: Date,
@@ -1722,6 +1734,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
   let dmarc = false;
   let strictDmarc = false;
   let spf = false;
+  let autoconfig = false;
+  let autodiscover = false;
   let hasLegitimateHosting = false;
   let reputableDNS = false;
   let legitimateA = false;
@@ -1988,9 +2002,74 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
           errors.push(err);
         }
       }
+    })(),
+    //
+    // fetch autoconfig CNAME record (for Thunderbird autodiscovery)
+    //
+    (async function () {
+      try {
+        const records = await resolver.resolveCname(
+          `autoconfig.${domain.name}`,
+          {
+            purgeCache: true
+          }
+        );
+        if (
+          Array.isArray(records) &&
+          records.some(
+            (r) =>
+              typeof r === 'string' &&
+              r.toLowerCase().includes('autoconfig.forwardemail.net')
+          )
+        ) {
+          autoconfig = true;
+        }
+      } catch (err) {
+        logger.debug(err);
+        // ignore DNS errors for optional records
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        }
+      }
+    })(),
+    //
+    // fetch autodiscover CNAME record (for Outlook autodiscovery)
+    //
+    (async function () {
+      try {
+        const records = await resolver.resolveCname(
+          `autodiscover.${domain.name}`,
+          {
+            purgeCache: true
+          }
+        );
+        if (
+          Array.isArray(records) &&
+          records.some(
+            (r) =>
+              typeof r === 'string' &&
+              r.toLowerCase().includes('autodiscover.forwardemail.net')
+          )
+        ) {
+          autodiscover = true;
+        }
+      } catch (err) {
+        logger.debug(err);
+        // ignore DNS errors for optional records
+        if (err.code && DNS_RETRY_CODES.has(err.code)) {
+          const error = Boom.badRequest(
+            i18n.translateError('DNS_RETRY', domain.locale, err.code)
+          );
+          error.code = err.code;
+          errors.push(error);
+        }
+      }
     })()
   ]);
-
   // domain has legitimate hosting if it has reputable DNS AND legitimate A records AND HTTP response
   hasLegitimateHosting = reputableDNS && legitimateA && httpResponds;
 
@@ -2031,6 +2110,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     dmarc,
     strictDmarc,
     spf,
+    autoconfig,
+    autodiscover,
     hasLegitimateHosting,
     errors: _.uniqBy(errors, 'message')
   };

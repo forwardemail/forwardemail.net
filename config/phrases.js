@@ -978,5 +978,64 @@ module.exports = {
   SIEVE_SECURITY_ERROR: 'Sieve script security validation failed: %s',
   INVALID_SIEVE_SCRIPT_ID: 'Invalid Sieve script ID.',
 
+  // Domain Connect
+  DOMAIN_CONNECT_NOT_SUPPORTED:
+    'Your domain %s does not appear to support Domain Connect. Please configure your DNS records manually.',
+  DOMAIN_CONNECT_PROVIDER_NOT_FOUND:
+    'We could not detect a Domain Connect provider for %s. Please select your DNS provider manually or configure your DNS records manually.',
+  DOMAIN_CONNECT_TEMPLATE_NOT_FOUND:
+    'Your DNS provider does not support the Forward Email Domain Connect template for %s. Please configure your DNS records manually.',
+  DOMAIN_CONNECT_ONE_CLICK_SETUP: '1-Click Setup',
+  DOMAIN_CONNECT_ONE_CLICK_TOOLTIP:
+    'Automatically configure all DNS records in one click',
+  DOMAIN_CONNECT_PAID_PLAN_REQUIRED:
+    '1-Click Setup is available for paid plans only. Please upgrade to a paid plan.',
+  DOMAIN_CONNECT_GO_MANUALLY: 'Go to %s manually',
+
+  // Domain availability
+  DOMAIN_NAME_REQUIRED: 'Domain name is required.',
+  DOMAINS_REQUIRED: 'An array of domain names is required.',
+  TOO_MANY_DOMAINS: 'Too many domains requested (maximum is %s).',
+  WHOIS_UNAVAILABLE:
+    'WHOIS service is temporarily unavailable. Please try again.',
+  DOMAIN_AVAILABLE: 'Great news! %s is available for registration.',
+  DOMAIN_NOT_AVAILABLE: '%s is already registered and not available.',
+
+  // Domain search UI
+  DOMAIN_SEARCH: 'Domain Search',
+  SEARCH_DOMAIN_AVAILABILITY: 'Search Domain Availability',
+  RANDOM_IDEAS: 'Random Ideas',
+  POWERED_BY_WHOIS_RDAP: 'Powered by WHOIS/RDAP lookups',
+  GENERATING_SUGGESTIONS: 'Generating suggestions...',
+  DOMAIN_SEARCH_DESCRIPTION:
+    'Search for a domain name or enter a keyword to generate ideas.',
+  DOMAIN_SEARCH_PLACEHOLDER: 'e.g. example.com or my-startup',
+
+  // Domain registration overlay
+  REGISTERING_YOUR_DOMAIN: 'Registering your domain',
+  CLOUDFLARE_WINDOW_OPENED: 'A Cloudflare window has opened for',
+  COMPLETE_PURCHASE_CLOUDFLARE: 'Complete your purchase on Cloudflare',
+  COME_BACK_WHEN_DONE: "Come back here when you're done",
+  SETUP_EMAIL_BELOW: 'Set up email below',
+  SET_UP_EMAIL: 'Set Up Email',
+  BACK_TO_RESULTS: 'Back to results',
+
+  // Autodiscovery
+  OPTIONAL_SETUP_AUTODISCOVERY: 'Optional: Set up email autodiscovery',
+  EMAIL_AUTODISCOVERY: 'Email Autodiscovery',
+  AUTODISCOVERY_DESCRIPTION:
+    'lets email clients like Thunderbird, Apple Mail, and Outlook automatically detect your server settings.',
+  OPTION_A_SIMPLEST: 'Option A (simplest):',
+  ADD_THESE_CNAME_RECORDS: 'Add these CNAME records:',
+  OPTION_B_DIRECT_SRV: 'Option B (direct SRV records):',
+  LEARN_MORE_AUTODISCOVERY: 'Learn more about autodiscovery in our FAQ',
+  AUTOCONFIG_CNAME_DESCRIPTION:
+    'Enables automatic email client configuration for Thunderbird, GNOME, and KDE.',
+  AUTODISCOVER_CNAME_DESCRIPTION:
+    'Enables automatic email client configuration for Outlook and other Microsoft clients.',
+  LEARN_MORE_IN_FAQ: 'Learn more in our FAQ',
+  CALDAV_CARDDAV_AUTODISCOVERY: 'CalDAV & CardDAV Autodiscovery',
+  CALDAV_CARDDAV_SRV_DESCRIPTION:
+    'For calendar and contact autodiscovery, you can also add these optional SRV records:',
   ...STATUSES
 };

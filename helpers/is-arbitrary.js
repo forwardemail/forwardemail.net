@@ -505,7 +505,43 @@ if (
       // Case 4: Cross-tenant connection was anonymous (unauthenticated relay)
       const isCrossTenantAnonymous = lowerCrossTenantAuthAs === 'anonymous';
 
-      if (arcSpfFail && arcDkimNone && arcDmarcNone && isCrossTenantAnonymous) {
+      //
+      // EXCEPTION: Hybrid On-Premises Mail Flow
+      // -----------------------------------------
+      // Microsoft 365 hybrid deployments (Exchange on-prem + EOP) use
+      // X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+      // In this configuration the on-premises server relays through EOP
+      // via a connector. The ARC-Authentication-Results reflect the state
+      // of the message *before* it entered Microsoft's infrastructure,
+      // so SPF/DKIM/DMARC will often show fail/none because the on-prem
+      // server's IP is not in the domain's SPF record and the message
+      // was not yet DKIM-signed. Microsoft then DKIM-signs the message
+      // on behalf of the tenant and the final outbound DKIM/SPF/DMARC
+      // all pass.
+      //
+      // CrossTenant-AuthAs is "Anonymous" for HybridOnPrem because the
+      // on-prem server connects to EOP's frontend transport without
+      // tenant-level OAuth — this is expected and legitimate.
+      //
+      // We also skip this check when the session already has aligned
+      // and passing DKIM, because that proves the message was properly
+      // signed by the claimed domain regardless of the ARC inner state.
+      //
+      const crossTenantFromEntity = headers.getFirst(
+        'x-ms-exchange-crosstenant-fromentityheader'
+      );
+      const isHybridOnPrem =
+        crossTenantFromEntity &&
+        /^(hybridonprem|internal)$/i.test(crossTenantFromEntity.trim());
+
+      if (
+        arcSpfFail &&
+        arcDkimNone &&
+        arcDmarcNone &&
+        isCrossTenantAnonymous &&
+        !isHybridOnPrem &&
+        !session.hadAlignedAndPassingDKIM
+      ) {
         throw new SMTPError(
           'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
         );

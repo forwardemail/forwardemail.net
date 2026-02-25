@@ -1,0 +1,84 @@
+{
+  "providerId": "forwardemail.net",
+  "providerName": "Forward Email",
+  "serviceId": "email",
+  "serviceName": "Email",
+  "version": 3,
+  "logoUrl": "https://forwardemail.net/img/logo-square.svg",
+  "description": "Configure your domain for email hosting with Forward Email. Sets up MX records, SPF, DKIM, DMARC, return-path, site verification, and email client autodiscovery (autoconfig and autodiscover) in one step. Supports IMAP, POP3, SMTP, CalDAV, CardDAV, and email forwarding.",
+  "variableDescription": "%domainId%: Your domain ID (found in your domain settings URL at https://forwardemail.net/my-account/domains); %fwdEmailVerification%: Forward Email site verification token (found in your domain settings); %fwdEmailDkimSelector%: DKIM key selector (e.g. fe-xxxxxxxx); %fwdEmailDkimValue%: DKIM public key TXT record value (the full v=DKIM1; p=... string)",
+  "syncPubKeyDomain": "forwardemail.net",
+  "syncRedirectDomain": "forwardemail.net",
+  "warnPhishing": false,
+  "records": [
+    {
+      "groupId": "mx",
+      "type": "MX",
+      "host": "@",
+      "pointsTo": "mx1.forwardemail.net",
+      "priority": 0,
+      "ttl": 3600
+    },
+    {
+      "groupId": "mx",
+      "type": "MX",
+      "host": "@",
+      "pointsTo": "mx2.forwardemail.net",
+      "priority": 0,
+      "ttl": 3600
+    },
+    {
+      "groupId": "spf",
+      "type": "SPFM",
+      "host": "@",
+      "ttl": 3600,
+      "spfRules": "include:spf.forwardemail.net"
+    },
+    {
+      "groupId": "dkim",
+      "type": "TXT",
+      "host": "%fwdEmailDkimSelector%._domainkey",
+      "data": "%fwdEmailDkimValue%",
+      "ttl": 3600
+    },
+    {
+      "groupId": "return-path",
+      "type": "CNAME",
+      "host": "fe-bounces",
+      "pointsTo": "forwardemail.net",
+      "ttl": 3600
+    },
+    {
+      "groupId": "dmarc",
+      "type": "TXT",
+      "host": "_dmarc",
+      "data": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-%domainId%@forwardemail.net;",
+      "ttl": 3600
+    },
+    {
+      "groupId": "verification",
+      "type": "TXT",
+      "host": "@",
+      "data": "forward-email-site-verification=%fwdEmailVerification%",
+      "ttl": 3600
+    },
+    {
+      "groupId": "autodiscovery",
+      "type": "CNAME",
+      "host": "autoconfig",
+      "pointsTo": "autoconfig.forwardemail.net",
+      "ttl": 3600,
+      "essential": "Always"
+    },
+    {
+      "groupId": "autodiscovery",
+      "type": "CNAME",
+      "host": "autodiscover",
+      "pointsTo": "autodiscover.forwardemail.net",
+      "ttl": 3600,
+      "essential": "Always"
+    }
+  ],
+  "syncBlock": false,
+  "hostRequired": false
+}

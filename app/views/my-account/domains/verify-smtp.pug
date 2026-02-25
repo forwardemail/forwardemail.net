@@ -92,14 +92,37 @@ block body
       .row
         .col-12
           .card.position-relative
-            if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
-              .position-absolute.w-100.text-right
-                span.badge.badge-pill.badge-success.mt-3.mr-3
+            .position-absolute.w-100.text-right.d-flex.justify-content-end.align-items-start
+              if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
+                span.badge.badge-pill.badge-success.mt-3.mr-1
                   i.fa.fa-check
                   = " "
                   = t("Completed")
-            else if provider && provider.name && provider.url
-              .position-absolute.w-100.text-right
+              //- 1-Click Setup button (only for providers that support Domain Connect)
+              //- verify-smtp is already gated by ensureUpgradedPlan middleware, so no plan check needed
+              if provider && provider.domainConnect
+                form.mr-1.mt-3(
+                  action=l("/domain-connect"),
+                  method="POST",
+                  style="display: inline"
+                )
+                  input(type="hidden", name="provider", value=provider.slug)
+                  input(type="hidden", name="domain", value=domain.name)
+                  input(
+                    type="hidden",
+                    name="redirect_to",
+                    value=`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+                  )
+                  button.badge.badge-pill.badge-success.border-0(
+                    type="submit",
+                    data-toggle="tooltip",
+                    title=t("Automatically configure all DNS records in one click")
+                  )
+                    i.fa.fa-magic
+                    = " "
+                    = t("1-Click Setup")
+              //- Go to DNS settings button
+              if provider && provider.name && provider.url
                 a.badge.badge-pill.badge-primary.mt-3.mr-3(
                   href=provider.url,
                   target="_blank",
@@ -108,8 +131,7 @@ block body
                   i.fa.fa-external-link
                   = " "
                   != t('Go to <span class="notranslate">%s</span>', provider.name)
-            else if modalFAQTable
-              .position-absolute.w-100.text-right
+              else if modalFAQTable
                 button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                   type="button",
                   data-toggle="modal",
@@ -119,8 +141,7 @@ block body
                   i.fa.fa-external-link
                   = " "
                   = t("Go to DNS settings")
-            else
-              .position-absolute.w-100.text-right
+              else
                 a.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                   href=l("/faq#table-dns-management-by-registrar"),
                   target="_blank"
@@ -159,7 +180,41 @@ block body
                     type="video/mp4"
                   )
                   = t("Your browser does not support the video tag.")
-              if provider && provider.name && provider.url
+              if provider && provider.domainConnect
+                //- 1-Click Setup: primary CTA for providers that support Domain Connect
+                //- verify-smtp is already gated by ensureUpgradedPlan middleware, so no plan check needed
+                .text-center.mt-3
+                  form(
+                    action=l("/domain-connect"),
+                    method="POST",
+                    style="display: inline"
+                  )
+                    input(type="hidden", name="provider", value=provider.slug)
+                    input(type="hidden", name="domain", value=domain.name)
+                    input(
+                      type="hidden",
+                      name="redirect_to",
+                      value=`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+                    )
+                    button.btn.btn-success.btn-lg(
+                      type="submit",
+                      data-toggle="tooltip",
+                      title=t("Automatically configure all DNS records in one click")
+                    )
+                      i.fa.fa-magic
+                      = " "
+                      = t("1-Click Setup")
+                if provider && provider.name && provider.url
+                  .text-center.mt-2
+                    a.btn.btn-outline-secondary.btn-sm(
+                      href=provider.url,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      i.fa.fa-external-link
+                      = " "
+                      != t('Go to <span class="notranslate">%s</span> manually', provider.name)
+              else if provider && provider.name && provider.url
                 .text-center.mt-3
                   a.btn.btn-primary(
                     href=provider.url,
@@ -509,6 +564,98 @@ block body
                             type="button",
                             data-toggle="clipboard",
                             data-clipboard-target="#copy-spf"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+
+                    //- Autoconfig CNAME (optional - for Thunderbird/GNOME/KDE autodiscovery)
+                    tr
+                      td(
+                        class=domain.has_autoconfig_record ? "bg-success" : "bg-warning"
+                      )
+                      th.align-middle.text-nowrap
+                        a.btn.btn-secondary.mx-2(
+                          href=l("/faq#how-do-i-set-up-email-autodiscovery-for-my-domain"),
+                          target="_blank",
+                          rel="noopener noreferrer",
+                          data-toggle="tooltip",
+                          data-placement="bottom",
+                          title=t("Learn more in our FAQ")
+                        )
+                          | Autoconfig
+                          = " "
+                          i.fa.fa-external-link
+                      td.align-middle.text-left
+                        code#copy-host-autoconfig.d-block
+                          = "autoconfig"
+                        if !domain.has_autoconfig_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-host-autoconfig"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      td.align-middle: strong.px-2 CNAME
+                      td.align-middle.text-left.py-3
+                        code#copy-autoconfig.d-block.text-break.small
+                          = "autoconfig.forwardemail.net"
+                        .small.text-muted.mt-1!= t("Enables automatic email client configuration for Thunderbird, GNOME, and KDE.")
+                        if !domain.has_autoconfig_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-autoconfig"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      if provider && provider.slug && provider.slug === 'cloudflare'
+                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+
+                    //- Autodiscover CNAME (optional - for Outlook autodiscovery)
+                    tr
+                      td(
+                        class=domain.has_autodiscover_record ? "bg-success" : "bg-warning"
+                      )
+                      th.align-middle.text-nowrap
+                        a.btn.btn-secondary.mx-2(
+                          href=l("/faq#how-do-i-set-up-email-autodiscovery-for-my-domain"),
+                          target="_blank",
+                          rel="noopener noreferrer",
+                          data-toggle="tooltip",
+                          data-placement="bottom",
+                          title=t("Learn more in our FAQ")
+                        )
+                          | Autodiscover
+                          = " "
+                          i.fa.fa-external-link
+                      td.align-middle.text-left
+                        code#copy-host-autodiscover.d-block
+                          = "autodiscover"
+                        if !domain.has_autodiscover_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-host-autodiscover"
+                          )
+                            i.fa.fa-clipboard
+                            = " "
+                            = t("Copy")
+                      td.align-middle: strong.px-2 CNAME
+                      td.align-middle.text-left.py-3
+                        code#copy-autodiscover.d-block.text-break.small
+                          = "autodiscover.forwardemail.net"
+                        .small.text-muted.mt-1!= t("Enables automatic email client configuration for Outlook and other Microsoft clients.")
+                        if !domain.has_autodiscover_record
+                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                            type="button",
+                            data-toggle="clipboard",
+                            data-clipboard-target="#copy-autodiscover"
                           )
                             i.fa.fa-clipboard
                             = " "

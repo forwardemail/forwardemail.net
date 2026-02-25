@@ -37,6 +37,17 @@
   * [Automated Setup via Ansible](#automated-setup-via-ansible)
   * [Environment Variables](#environment-variables)
   * [Manual Verification](#manual-verification)
+* [Email Autodiscovery](#email-autodiscovery)
+  * [Option A: CNAME Records (Recommended)](#option-a-cname-records-recommended)
+  * [Option B: SRV Records](#option-b-srv-records)
+  * [CalDAV and CardDAV Autodiscovery](#caldav-and-carddav-autodiscovery)
+* [Domain Connect Integration](#domain-connect-integration)
+  * [How It Works](#how-it-works)
+  * [Template File](#template-file)
+  * [Template Variables](#template-variables)
+  * [Environment Variables](#environment-variables-1)
+  * [Generating and Publishing the Signing Key](#generating-and-publishing-the-signing-key)
+  * [References](#references)
 * [License](#license)
 
 
@@ -887,6 +898,154 @@ sudo systemctl status lsyncd
 tail -f /var/log/lsyncd/lsyncd.log
 cat /var/log/lsyncd/lsyncd.status
 ```
+
+
+## Email Autodiscovery
+
+Forward Email supports automatic email client configuration through industry-standard autodiscovery protocols. This allows email clients like **Thunderbird**, **Apple Mail**, **Outlook**, **GNOME**, and **KDE** to automatically detect your IMAP, POP3, SMTP, CalDAV, and CardDAV server settings when a user enters their email address.
+
+There are two approaches to set up autodiscovery for your domain:
+
+### Option A: CNAME Records (Recommended)
+
+The simplest approach is to add two CNAME records that delegate autodiscovery to Forward Email's servers:
+
+| Type  | Name/Host      | Target/Value                    |
+| ----- | -------------- | ------------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net`   |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+These CNAME records enable:
+
+* **`autoconfig`** — Mozilla autoconfig protocol used by Thunderbird, GNOME, and KDE email clients
+* **`autodiscover`** — Microsoft Autodiscover (POX) protocol used by Outlook and other Microsoft clients
+
+Both endpoints automatically return the correct IMAP, POP3, SMTP, CalDAV, and CardDAV server settings for Forward Email.
+
+### Option B: SRV Records
+
+Alternatively, you can add SRV records per [RFC 6186](https://datatracker.ietf.org/doc/html/rfc6186) for direct service discovery:
+
+| Type | Name/Host          | Priority | Weight | Port | Target/Value            |
+| ---- | ------------------ | -------- | ------ | ---- | ----------------------- |
+| SRV  | `_imaps._tcp`      | 0        | 1      | 993  | `imap.forwardemail.net` |
+| SRV  | `_imap._tcp`       | 0        | 0      | 0    | `.`                     |
+| SRV  | `_submission._tcp` | 0        | 1      | 587  | `smtp.forwardemail.net` |
+| SRV  | `_pop3s._tcp`      | 10       | 1      | 995  | `pop3.forwardemail.net` |
+| SRV  | `_pop3._tcp`       | 0        | 0      | 0    | `.`                     |
+
+> **Note:** Records with a target of `.` (dot) explicitly disable the non-secure variant of the protocol, per RFC 6186 Section 3.4. This ensures clients only use the encrypted (TLS) connections.
+
+### CalDAV and CardDAV Autodiscovery
+
+For calendar and contact autodiscovery, add these optional SRV records per [RFC 6764](https://datatracker.ietf.org/doc/html/rfc6764):
+
+| Type | Name/Host        | Priority | Weight | Port | Target/Value               |
+| ---- | ---------------- | -------- | ------ | ---- | -------------------------- |
+| SRV  | `_caldavs._tcp`  | 0        | 1      | 443  | `caldav.forwardemail.net`  |
+| SRV  | `_caldav._tcp`   | 0        | 0      | 0    | `.`                        |
+| SRV  | `_carddavs._tcp` | 0        | 1      | 443  | `carddav.forwardemail.net` |
+| SRV  | `_carddav._tcp`  | 0        | 0      | 0    | `.`                        |
+
+These records allow CalDAV/CardDAV clients (such as GNOME Calendar, GNOME Contacts, Thunderbird, and DAVx5) to automatically discover the calendar and contact servers for your domain.
+
+
+## Domain Connect Integration
+
+Forward Email supports the [Domain Connect](https://domainconnect.org/) standard, which allows users to automatically configure their DNS records with a single click.
+
+### How It Works
+
+1. The user visits `/domain-connect` and enters their domain name.
+2. Forward Email discovers the domain's DNS provider by querying the `_domainconnect.<domain>` TXT record.
+3. If the provider supports Domain Connect, the user is redirected to the provider's interface to apply the Forward Email template.
+4. The template configures all required DNS records in one step:
+   * **MX records** — `mx1.forwardemail.net` (priority 0) and `mx2.forwardemail.net` (priority 0)
+   * **SPF** — `include:spf.forwardemail.net` (via SPFM merge)
+   * **DKIM** — `{selector}._domainkey` TXT record with the user's public key
+   * **Return-Path** — `fe-bounces` CNAME pointing to `forwardemail.net`
+   * **DMARC** — `_dmarc` TXT record with `p=reject`
+   * **Site verification** — `forward-email-site-verification={token}` TXT record
+
+### Template File
+
+The Domain Connect template is located at:
+
+```
+assets/.well-known/domain-connect/forwardemail.net.email.json
+```
+
+This file is served at `/.well-known/domain-connect/forwardemail.net.email.json` and should also be submitted to the [Domain Connect Templates repository](https://github.com/Domain-Connect/Templates).
+
+### Template Variables
+
+| Variable                 | Description                                                                                                                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `%domainId%`             | Your domain's MongoDB ObjectId (found in the domain settings URL at `/my-account/domains/{domainId}/settings`) — used in the DMARC `rua` address as `dmarc-{domainId}@forwardemail.net` |
+| `%fwdEmailVerification%` | Forward Email site verification token (found in domain settings)                                                                                                                        |
+| `%fwdEmailDkimSelector%` | DKIM key selector (e.g. `fe-xxxxxxxx`)                                                                                                                                                  |
+| `%fwdEmailDkimValue%`    | Full DKIM TXT record value (e.g. `v=DKIM1; p=...`)                                                                                                                                      |
+
+### Environment Variables
+
+| Variable                             | Description                                                                    | Default                                        |
+| ------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------- |
+| `DOMAIN_CONNECT_PROVIDER_ID`         | Provider ID (must match template `providerId`)                                 | `forwardemail.net`                             |
+| `DOMAIN_CONNECT_PROVIDER_NAME`       | Human-readable provider name                                                   | `Forward Email`                                |
+| `DOMAIN_CONNECT_SERVICE_ID`          | Service ID (must match template `serviceId`)                                   | `email`                                        |
+| `DOMAIN_CONNECT_SERVICE_NAME`        | Human-readable service name                                                    | `Email (Forwarding + SMTP)`                    |
+| `DOMAIN_CONNECT_LOGO_URL`            | URL to the provider logo                                                       | `https://forwardemail.net/img/logo-square.svg` |
+| `DOMAIN_CONNECT_DESCRIPTION`         | Short description of the service                                               | *(see `.env.defaults`)*                        |
+| `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` | Domain where the public key TXT record is published (for signed sync requests) | `forwardemail.net`                             |
+| `DOMAIN_CONNECT_PRIVATE_KEY`         | RSA private key (PEM) used to sign synchronous Domain Connect apply requests   | *(empty — signing disabled)*                   |
+
+### Generating and Publishing the Signing Key
+
+Some DNS providers (notably Cloudflare) require Domain Connect apply URLs to be cryptographically signed. This uses an RSA key pair where the private key signs the request and the public key is published as a DNS TXT record so the provider can verify the signature.
+
+**Step 1: Generate an RSA key pair**
+
+```sh
+# Generate a 2048-bit RSA private key
+openssl genrsa -f4 -out domain-connect-private.key 2048
+
+# Extract the public key in DER format, then base64-encode it
+openssl rsa -in domain-connect-private.key -outform der -pubout 2>/dev/null | openssl base64 -A
+```
+
+**Step 2: Publish the public key as a DNS TXT record**
+
+Add a TXT record on the domain specified by `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` (default: `forwardemail.net`):
+
+| Type | Name/Host        | Value                         |
+| ---- | ---------------- | ----------------------------- |
+| TXT  | `_domainconnect` | `{base64-encoded-public-key}` |
+
+The record name is `_domainconnect.{DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN}`. For example, if `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN=forwardemail.net`, the full record is `_domainconnect.forwardemail.net` with the base64-encoded public key as the value.
+
+> **Note:** The public key must be the raw base64-encoded DER format (no PEM headers, no line breaks). The `openssl base64 -A` flag in the command above ensures single-line output.
+
+**Step 3: Set the private key in your environment**
+
+Set `DOMAIN_CONNECT_PRIVATE_KEY` to the contents of the PEM file. For multi-line values in `.env` files, you can use `\n` to represent newlines:
+
+```sh
+DOMAIN_CONNECT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQ...\n-----END PRIVATE KEY-----"
+```
+
+Or set it as an environment variable directly:
+
+```sh
+export DOMAIN_CONNECT_PRIVATE_KEY=$(cat domain-connect-private.key)
+```
+
+When `DOMAIN_CONNECT_PRIVATE_KEY` is set, the server will sign all synchronous Domain Connect apply URLs with RSA-SHA256. The signature is appended as `&sig=...&key=...` parameters per the Domain Connect specification. When the key is empty or unset, apply URLs are generated without signatures (which works for providers that do not require signing).
+
+### References
+
+* [Domain Connect Specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec.md)
+* [Cloudflare Domain Connect](https://developers.cloudflare.com/dns/reference/domain-connect/)
+* [Domain Connect Templates Repository](https://github.com/Domain-Connect/Templates)
 
 
 ## License

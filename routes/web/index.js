@@ -85,6 +85,27 @@ router
   // K-9 config download
   .get('/c/:username.k9s', rateLimit(20, 'config download'), web.mobileConfig)
 
+  // email client autodiscovery
+  // <https://wiki.mozilla.org/Thunderbird:Autoconfiguration:ConfigFileFormat>
+  .get('/mail/config-v1.1.xml', rateLimit(50, 'autoconfig'), web.autoconfig)
+  .get(
+    '/.well-known/autoconfig/mail/config-v1.1.xml',
+    rateLimit(50, 'autoconfig'),
+    web.autoconfig
+  )
+  // <https://learn.microsoft.com/en-us/exchange/client-developer/web-service-reference/pox-autodiscover-request-for-exchange>
+  .post(
+    '/autodiscover/autodiscover.xml',
+    rateLimit(50, 'autodiscover'),
+    web.autodiscover
+  )
+  // support GET as well for clients that don't POST
+  .get(
+    '/autodiscover/autodiscover.xml',
+    rateLimit(50, 'autodiscover'),
+    web.autodiscover
+  )
+
   // ips
   .get('/ips.txt', web.ips)
   .get('/ips.json', web.ips)
@@ -110,6 +131,32 @@ router
   .post('/report', web.report)
 
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
+
+  // domain availability
+  .post(
+    '/domain-availability',
+    rateLimit(config.env === 'production' ? 10 : 100, 'domain-availability'),
+    web.domainAvailability
+  )
+  .post(
+    '/domain-availability/bulk',
+    rateLimit(
+      config.env === 'production' ? 10 : 100,
+      'domain-availability-bulk'
+    ),
+    web.domainAvailabilityBulk
+  )
+
+  // domain suggestions
+  .post(
+    '/domain-suggestions',
+    rateLimit(config.env === 'production' ? 10 : 100, 'domain-suggestions'),
+    web.domainSuggestions
+  )
+
+  // domain connect
+  .get('/domain-connect', render('domain-connect'))
+  .post('/domain-connect', rateLimit(10, 'domain-connect'), web.domainConnect)
 
   // mermaid charts
   // TODO: once svg fixed we can use that instead
@@ -223,7 +270,29 @@ localeRouter
   // encrypt domain txt record
   .get('/encrypt', render('encrypt'))
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
-
+  // domain availability
+  .post(
+    '/domain-availability',
+    rateLimit(config.env === 'production' ? 10 : 100, 'domain-availability'),
+    web.domainAvailability
+  )
+  .post(
+    '/domain-availability/bulk',
+    rateLimit(
+      config.env === 'production' ? 10 : 100,
+      'domain-availability-bulk'
+    ),
+    web.domainAvailabilityBulk
+  )
+  // domain suggestions
+  .post(
+    '/domain-suggestions',
+    rateLimit(config.env === 'production' ? 10 : 100, 'domain-suggestions'),
+    web.domainSuggestions
+  )
+  // domain connect
+  .get('/domain-connect', render('domain-connect'))
+  .post('/domain-connect', rateLimit(10, 'domain-connect'), web.domainConnect)
   //
   // ips
   //

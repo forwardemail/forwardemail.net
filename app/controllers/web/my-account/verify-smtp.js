@@ -71,6 +71,8 @@ async function verifySMTP(ctx) {
       dmarc,
       strictDmarc,
       spf,
+      autoconfig,
+      autodiscover,
       hasLegitimateHosting,
       errors
     } = await Domains.verifySMTP(domain, ctx.resolver);
@@ -304,6 +306,8 @@ async function verifySMTP(ctx) {
     domain.has_dmarc_record = dmarc;
     domain.has_strict_dmarc = strictDmarc;
     domain.has_spf_record = spf;
+    domain.has_autoconfig_record = autoconfig;
+    domain.has_autodiscover_record = autodiscover;
     if (ns) domain.ns = ns;
 
     //
@@ -342,7 +346,18 @@ async function verifySMTP(ctx) {
       // safeguard
       ctx.logger.fatal(
         new TypeError('Edge case occurred with SMTP verification'),
-        { domain, ns, dkim, returnPath, dmarc, strictDmarc, spf, errors }
+        {
+          domain,
+          ns,
+          dkim,
+          returnPath,
+          dmarc,
+          strictDmarc,
+          spf,
+          autoconfig,
+          autodiscover,
+          errors
+        }
       );
       throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
     }

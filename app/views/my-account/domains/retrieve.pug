@@ -137,14 +137,48 @@ block body
       .row
         .col-12
           .card.position-relative
-            if domain.has_mx_record && domain.has_txt_record
-              .position-absolute.w-100.text-right
-                span.badge.badge-pill.badge-success.mt-3.mr-3
+            .position-absolute.w-100.text-right.d-flex.justify-content-end.align-items-start
+              if domain.has_mx_record && domain.has_txt_record
+                span.badge.badge-pill.badge-success.mt-3.mr-1
                   i.fa.fa-check
                   = " "
                   = t("Completed")
-            else if provider && provider.name && provider.url
-              .position-absolute.w-100.text-right
+              //- 1-Click Setup button (only for providers that support Domain Connect)
+              if provider && provider.domainConnect
+                if domain.plan !== 'free'
+                  form.mr-1.mt-3(
+                    action=l("/domain-connect"),
+                    method="POST",
+                    style="display: inline"
+                  )
+                    input(type="hidden", name="provider", value=provider.slug)
+                    input(type="hidden", name="domain", value=domain.name)
+                    input(
+                      type="hidden",
+                      name="redirect_to",
+                      value=`/my-account/domains/${punycode.toASCII(domain.name)}`
+                    )
+                    button.badge.badge-pill.badge-success.border-0(
+                      type="submit",
+                      data-toggle="tooltip",
+                      title=t("Automatically configure all DNS records in one click")
+                    )
+                      i.fa.fa-magic
+                      = " "
+                      = t("1-Click Setup")
+                else
+                  span.mr-1.mt-3
+                    button.badge.badge-pill.badge-secondary.border-0(
+                      type="button",
+                      disabled,
+                      data-toggle="tooltip",
+                      title=t("1-Click Setup is available for paid plans only. Please upgrade to a paid plan.")
+                    )
+                      i.fa.fa-lock
+                      = " "
+                      = t("1-Click Setup")
+              //- Go to DNS settings button
+              if provider && provider.name && provider.url
                 a.badge.badge-pill.badge-primary.mt-3.mr-3(
                   href=provider.url,
                   target="_blank",
@@ -153,8 +187,7 @@ block body
                   i.fa.fa-external-link
                   = " "
                   != t('Go to <span class="notranslate">%s</span>', provider.name)
-            else if modalFAQTable
-              .position-absolute.w-100.text-right
+              else if modalFAQTable
                 button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                   type="button",
                   data-toggle="modal",
@@ -163,8 +196,7 @@ block body
                   i.fa.fa-external-link
                   = " "
                   = t("Go to DNS settings")
-            else
-              .position-absolute.w-100.text-right
+              else
                 a.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                   href=l("/faq#table-dns-management-by-registrar"),
                   target="_blank"
@@ -207,7 +239,66 @@ block body
                     type="video/mp4"
                   )
                   = t("Your browser does not support the video tag.")
-              if provider && provider.name && provider.url
+              if provider && provider.domainConnect
+                //- 1-Click Setup: primary CTA for providers that support Domain Connect
+                if domain.plan !== 'free'
+                  .text-center.mt-3
+                    form(
+                      action=l("/domain-connect"),
+                      method="POST",
+                      style="display: inline"
+                    )
+                      input(
+                        type="hidden",
+                        name="provider",
+                        value=provider.slug
+                      )
+                      input(type="hidden", name="domain", value=domain.name)
+                      input(
+                        type="hidden",
+                        name="redirect_to",
+                        value=`/my-account/domains/${punycode.toASCII(domain.name)}`
+                      )
+                      button.btn.btn-success.btn-lg(
+                        type="submit",
+                        data-toggle="tooltip",
+                        title=t("Automatically configure all DNS records in one click")
+                      )
+                        i.fa.fa-magic
+                        = " "
+                        = t("1-Click Setup")
+                  if provider && provider.name && provider.url
+                    .text-center.mt-2
+                      a.btn.btn-outline-secondary.btn-sm(
+                        href=provider.url,
+                        target="_blank",
+                        rel="noopener noreferrer"
+                      )
+                        i.fa.fa-external-link
+                        = " "
+                        != t('Go to <span class="notranslate">%s</span> manually', provider.name)
+                else
+                  .text-center.mt-3
+                    button.btn.btn-secondary.btn-lg(
+                      type="button",
+                      disabled,
+                      data-toggle="tooltip",
+                      title=t("1-Click Setup is available for paid plans only. Please upgrade to a paid plan.")
+                    )
+                      i.fa.fa-lock
+                      = " "
+                      = t("1-Click Setup")
+                  if provider && provider.name && provider.url
+                    .text-center.mt-2
+                      a.btn.btn-primary(
+                        href=provider.url,
+                        target="_blank",
+                        rel="noopener noreferrer"
+                      )
+                        i.fa.fa-external-link
+                        = " "
+                        != t('Go to <span class="notranslate">%s</span>', provider.name)
+              else if provider && provider.name && provider.url
                 .text-center.mt-3
                   a.btn.btn-primary(
                     href=provider.url,
@@ -486,6 +577,125 @@ block body
                         if provider && provider.slug && provider.slug === 'cloudflare'
                           td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
               .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
+              //- Autodiscovery SRV records (optional, shown as collapsible)
+              .mt-3
+                a.btn.btn-sm.btn-outline-info(
+                  data-toggle="collapse",
+                  href="#autodiscovery-records",
+                  role="button",
+                  aria-expanded="false",
+                  aria-controls="autodiscovery-records"
+                )
+                  i.fa.fa-magic.mr-1
+                  = t("Optional: Set up email autodiscovery")
+                #autodiscovery-records.collapse.mt-2
+                  .alert.alert-info.small.text-left
+                    p.mb-2
+                      strong= t("Email Autodiscovery")
+                      = " "
+                      = t("lets email clients like Thunderbird, Apple Mail, and Outlook automatically detect your server settings.")
+                    p.mb-2
+                      strong= t("Option A (simplest):")
+                      = " "
+                      = t("Add these CNAME records:")
+                    .table-responsive.mb-2
+                      table.table.table-sm.table-hover.mb-0
+                        thead
+                          tr
+                            th.border-0 Type
+                            th.border-0 Name/Host
+                            th.border-0 Target/Value
+                        tbody
+                          tr
+                            td: strong CNAME
+                            td.text-monospace.small autoconfig
+                            td.text-monospace.small autoconfig.forwardemail.net
+                          tr
+                            td: strong CNAME
+                            td.text-monospace.small autodiscover
+                            td.text-monospace.small autodiscover.forwardemail.net
+                    p.mb-2
+                      strong= t("Option B (direct SRV records):")
+                    .table-responsive.mb-2
+                      table.table.table-sm.table-hover.mb-0
+                        thead
+                          tr
+                            th.border-0 Type
+                            th.border-0 Name/Host
+                            th.border-0 Priority
+                            th.border-0 Weight
+                            th.border-0 Port
+                            th.border-0 Target/Value
+                        tbody
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _imaps._tcp
+                            td 0
+                            td 1
+                            td 993
+                            td.text-monospace.small imap.forwardemail.net
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _imap._tcp
+                            td 0
+                            td 0
+                            td 0
+                            td.text-monospace.small .
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _submission._tcp
+                            td 0
+                            td 1
+                            td 587
+                            td.text-monospace.small smtp.forwardemail.net
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _pop3s._tcp
+                            td 10
+                            td 1
+                            td 995
+                            td.text-monospace.small pop3.forwardemail.net
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _pop3._tcp
+                            td 0
+                            td 0
+                            td 0
+                            td.text-monospace.small .
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _caldavs._tcp
+                            td 0
+                            td 1
+                            td 443
+                            td.text-monospace.small caldav.forwardemail.net
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _caldav._tcp
+                            td 0
+                            td 0
+                            td 0
+                            td.text-monospace.small .
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _carddavs._tcp
+                            td 0
+                            td 1
+                            td 443
+                            td.text-monospace.small carddav.forwardemail.net
+                          tr
+                            td: strong SRV
+                            td.text-monospace.small _carddav._tcp
+                            td 0
+                            td 0
+                            td 0
+                            td.text-monospace.small .
+                    a.small(
+                      href=l("/faq#how-do-i-set-up-email-autodiscovery-for-my-domain"),
+                      target="_blank"
+                    )
+                      i.fa.fa-question-circle.mr-1
+                      = t("Learn more about autodiscovery in our FAQ")
               if domain.plan === 'free'
                 .alert.alert-primary.small
                   = t("Need to configure more aliases on the free plan?")

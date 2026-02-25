@@ -954,3 +954,150 @@ test('REPLY - skips deleted events (deleted_at set)', async (t) => {
 
   await CalendarInvites.deleteOne({ _id: invite._id });
 });
+
+// ─── Sequential RSVP Processing (stateful stubs) ───────────────────────────
+
+test('REPLY - sequential RSVPs preserve previous attendee updates', async (t) => {
+  // This test simulates the real-world scenario where:
+  // 1. Alice RSVPs ACCEPTED → processCalendarInvites updates Alice in SQLite
+  // 2. Bob RSVPs DECLINED → processCalendarInvites reads updated event (Alice=ACCEPTED)
+  //    and updates Bob to DECLINED
+  // Both PARTSTAT changes should be preserved.
+
+  const eventId = new mongoose.Types.ObjectId();
+  const MULTI_ATTENDEE_ICS = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Forward Email//CalDAV//EN',
+    'BEGIN:VEVENT',
+    'UID:sequential-rsvp-test@example.com',
+    'DTSTAMP:20260214T100000Z',
+    'DTSTART:20260301T100000Z',
+    'DTEND:20260301T110000Z',
+    'SUMMARY:Team Meeting',
+    'SEQUENCE:0',
+    'ORGANIZER:mailto:organizer@example.com',
+    'ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:alice@example.com',
+    'ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:bob@example.com',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  // Use a mutable variable to simulate SQLite state
+  let currentIcs = MULTI_ATTENDEE_ICS;
+
+  // Override stubs to maintain state across calls
+  t.context.sandbox.restore(); // Clear default stubs
+  t.context.sandbox = sinon.createSandbox();
+
+  t.context.sandbox
+    .stub(Calendars, 'find')
+    .resolves([t.context.defaultCalendar]);
+
+  // findOne (fast path) returns null to force slow path
+  t.context.sandbox.stub(CalendarEvents, 'findOne').resolves(null);
+
+  // find (slow path) returns the current state of the event
+  t.context.sandbox.stub(CalendarEvents, 'find').callsFake(async () => [
+    {
+      _id: eventId,
+      calendar: t.context.defaultCalendar._id,
+      ical: currentIcs,
+      deleted_at: null
+    }
+  ]);
+
+  // findOneAndUpdate persists the updated ICS to our mutable variable
+  t.context.sandbox
+    .stub(CalendarEvents, 'findOneAndUpdate')
+    .callsFake(async (_instance, _session, _filter, update) => {
+      if (update.$set && update.$set.ical) {
+        currentIcs = update.$set.ical;
+      }
+
+      return { _id: eventId, ...update.$set };
+    });
+
+  t.context.sandbox.stub(Calendars, 'findByIdAndUpdate').resolves({});
+  t.context.sandbox
+    .stub(Calendars, 'findById')
+    .resolves(t.context.defaultCalendar);
+
+  const ctx = createMockCtx();
+
+  // Step 1: Alice RSVPs ACCEPTED
+  const aliceInvite = await seedInvite({
+    eventUid: 'sequential-rsvp-test@example.com',
+    attendeeEmail: 'alice@example.com',
+    response: 'ACCEPTED',
+    method: 'REPLY'
+  });
+
+  await processCalendarInvites(mockInstance, ctx);
+
+  // Verify Alice's PARTSTAT was updated
+  {
+    const comp = new ICAL.Component(ICAL.parse(currentIcs));
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const attendees = vevent.getAllProperties('attendee');
+    for (const att of attendees) {
+      const email = att
+        .getFirstValue()
+        .replace(/^mailto:/i, '')
+        .toLowerCase();
+      if (email === 'alice@example.com') {
+        t.is(
+          att.getParameter('partstat'),
+          'ACCEPTED',
+          'Alice should be ACCEPTED after step 1'
+        );
+      } else if (email === 'bob@example.com') {
+        t.is(
+          att.getParameter('partstat'),
+          'NEEDS-ACTION',
+          'Bob should still be NEEDS-ACTION after step 1'
+        );
+      }
+    }
+  }
+
+  // Step 2: Bob RSVPs DECLINED
+  const bobInvite = await seedInvite({
+    eventUid: 'sequential-rsvp-test@example.com',
+    attendeeEmail: 'bob@example.com',
+    response: 'DECLINED',
+    method: 'REPLY'
+  });
+
+  await processCalendarInvites(mockInstance, ctx);
+
+  // Verify BOTH attendees have correct PARTSTAT
+  {
+    const comp = new ICAL.Component(ICAL.parse(currentIcs));
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const attendees = vevent.getAllProperties('attendee');
+    for (const att of attendees) {
+      const email = att
+        .getFirstValue()
+        .replace(/^mailto:/i, '')
+        .toLowerCase();
+      if (email === 'alice@example.com') {
+        t.is(
+          att.getParameter('partstat'),
+          'ACCEPTED',
+          'Alice should still be ACCEPTED after step 2'
+        );
+      } else if (email === 'bob@example.com') {
+        t.is(
+          att.getParameter('partstat'),
+          'DECLINED',
+          'Bob should be DECLINED after step 2'
+        );
+      }
+    }
+  }
+
+  // Cleanup
+  await CalendarInvites.deleteOne({ _id: aliceInvite._id });
+  await CalendarInvites.deleteOne({ _id: bobInvite._id });
+});

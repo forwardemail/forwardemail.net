@@ -96,8 +96,42 @@ block body
     .row
       .col-12
         .card.position-relative.mt-3.no-search
-          if provider && provider.name && provider.url
-            .position-absolute.w-100.text-right
+          .position-absolute.w-100.text-right.d-flex.justify-content-end.align-items-start
+            //- 1-Click Setup button (only for providers that support Domain Connect)
+            if provider && provider.domainConnect
+              if user && user.plan !== 'free'
+                form.mr-1.mt-3(
+                  action=l("/domain-connect"),
+                  method="POST",
+                  style="display: inline"
+                )
+                  input(type="hidden", name="provider", value=provider.slug)
+                  input(
+                    type="hidden",
+                    name="domain",
+                    value=domain ? domain.name : ""
+                  )
+                  button.badge.badge-pill.badge-success.border-0(
+                    type="submit",
+                    data-toggle="tooltip",
+                    title=t("Automatically configure all DNS records in one click")
+                  )
+                    i.fa.fa-magic
+                    = " "
+                    = t("1-Click Setup")
+              else
+                span.mr-1.mt-3
+                  button.badge.badge-pill.badge-secondary.border-0(
+                    type="button",
+                    disabled,
+                    data-toggle="tooltip",
+                    title=!user ? t("Sign in and upgrade to a paid plan to use 1-Click Setup") : t("1-Click Setup is available for paid plans only. Please upgrade to a paid plan.")
+                  )
+                    i.fa.fa-lock
+                    = " "
+                    = t("1-Click Setup")
+            //- Go to DNS settings button
+            if provider && provider.name && provider.url
               a.badge.badge-pill.badge-primary.mt-3.mr-3(
                 href=provider.url,
                 target="_blank",
@@ -106,8 +140,7 @@ block body
                 i.fa.fa-external-link
                 = " "
                 != t('Go to <span class="notranslate">%s</span>', provider.name)
-          else if !isBot(ctx.get('User-Agent')) && modalFAQTable
-            .position-absolute.w-100.text-right
+            else if !isBot(ctx.get('User-Agent')) && modalFAQTable
               button.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                 type="button",
                 data-toggle="modal",
@@ -116,8 +149,7 @@ block body
                 i.fa.fa-external-link
                 = " "
                 = t("Go to DNS settings")
-          else if !isBot(ctx.get('User-Agent'))
-            .position-absolute.w-100.text-right
+            else if !isBot(ctx.get('User-Agent'))
               a.badge.badge-pill.badge-primary.mt-3.mr-3.border-0(
                 href=l("/faq#table-dns-management-by-registrar"),
                 target="_blank"

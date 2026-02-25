@@ -116,8 +116,17 @@ async function mapper(id) {
     domain.locale = locale;
     domain.resolver = resolver;
 
-    const { ns, dkim, returnPath, dmarc, strictDmarc, spf, errors } =
-      await Domains.verifySMTP(domain, resolver);
+    const {
+      ns,
+      dkim,
+      returnPath,
+      dmarc,
+      strictDmarc,
+      spf,
+      autoconfig,
+      autodiscover,
+      errors
+    } = await Domains.verifySMTP(domain, resolver);
 
     // skip verification since this is separate from domain forwarding setup
     domain.skip_verification = true;
@@ -224,6 +233,8 @@ async function mapper(id) {
     domain.has_dmarc_record = dmarc;
     domain.has_strict_dmarc = strictDmarc;
     domain.has_spf_record = spf;
+    domain.has_autoconfig_record = autoconfig;
+    domain.has_autodiscover_record = autodiscover;
     if (ns) domain.ns = ns;
 
     // Set audit metadata for system-initiated background job

@@ -19,19 +19,31 @@
         state: present
         update_cache: yes
 
+    - name: Check if systemd-timesyncd service exists
+      command: systemctl list-unit-files systemd-timesyncd.service
+      register: timesyncd_exists
+      changed_when: false
+      failed_when: false
+
     - name: Stop and disable systemd-timesyncd (conflicts with chrony)
       systemd:
         name: systemd-timesyncd
         state: stopped
         enabled: no
-      ignore_errors: yes
+      when: timesyncd_exists.rc == 0 and 'systemd-timesyncd.service' in timesyncd_exists.stdout
+
+    - name: Check if legacy ntp service exists
+      command: systemctl list-unit-files ntp.service
+      register: ntp_exists
+      changed_when: false
+      failed_when: false
 
     - name: Stop and disable legacy ntpd (conflicts with chrony)
       systemd:
         name: ntp
         state: stopped
         enabled: no
-      ignore_errors: yes
+      when: ntp_exists.rc == 0 and 'ntp.service' in ntp_exists.stdout
 
     - name: Remove legacy ntp package (replaced by chrony)
       apt:

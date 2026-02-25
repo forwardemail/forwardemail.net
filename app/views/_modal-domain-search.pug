@@ -1,0 +1,91 @@
+//- Copyright (c) Forward Email LLC
+//- SPDX-License-Identifier: BUSL-1.1
+
+//- Domain Search Modal
+//- Usage: +modalDomainSearch()
+mixin modalDomainSearch(attributes)
+  - attributes = attributes || {};
+  - attributes.id = attributes.id || "modal-domain-search";
+  .modal.fade(
+    id=attributes.id,
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby=attributes.id + "-title",
+    aria-hidden="true"
+  )
+    .modal-dialog.modal-lg.modal-dialog-centered.modal-dialog-scrollable(
+      role="document"
+    )
+      .modal-content
+        .modal-header.bg-dark.text-white.border-0
+          h5.modal-title(id=attributes.id + "-title")
+            i.fa.fa-search.mr-2
+            = t("Domain Search")
+          button.close.text-white(
+            type="button",
+            data-dismiss="modal",
+            aria-label=t("Close")
+          )
+            span(aria-hidden="true") &times;
+        .modal-body
+          //- Search view (default)
+          #domain-search-body
+            p.text-muted.small.mb-3
+              = t("Search for a domain name or enter a keyword to generate ideas.")
+            form#form-domain-search(novalidate)
+              .input-group.input-group-lg.mb-3
+                input#domain-search-input.form-control(
+                  type="text",
+                  name="q",
+                  placeholder=t("e.g. example.com or my-startup"),
+                  required,
+                  autocomplete="off",
+                  autocapitalize="none",
+                  spellcheck="false"
+                )
+                .input-group-append
+                  button#domain-search-btn.btn.btn-primary(type="submit")
+                    i.fa.fa-search
+                    span.d-none.d-sm-inline.ml-2= t("Search")
+              .d-flex.align-items-center.justify-content-between.mb-3
+                button#domain-search-random.btn.btn-sm.btn-outline-secondary(
+                  type="button"
+                )
+                  i.fa.fa-random.mr-1
+                  = t("Random Ideas")
+                small.text-muted
+                  = t("Powered by WHOIS/RDAP lookups")
+            //- Loading spinner
+            #domain-search-loading.text-center.py-4(style="display: none")
+              .spinner-border.text-primary(role="status")
+                span.sr-only= t("Loading...")
+              p#domain-search-status.text-muted.small.mt-2
+                = t("Generating suggestions...")
+            //- Results area
+            #domain-search-results
+          //- Registration overlay (hidden by default, shown after clicking Register)
+          #domain-register-overlay.text-center.py-4(style="display: none")
+            .mb-4
+              i.fa.fa-external-link-square.text-success.fa-3x
+            h5.mb-3= t("Registering your domain")
+            p.text-muted.mb-2
+              = t("A Cloudflare window has opened for")
+            p.mb-3
+              strong#domain-register-name.h5.notranslate
+            .alert.alert-info.text-left.mx-auto(style="max-width: 420px")
+              ol.mb-0.pl-3
+                li.mb-1= t("Complete your purchase on Cloudflare")
+                li.mb-1= t("Come back here when you're done")
+                li.mb-0= t("Set up email below")
+            .mt-4
+              a#domain-register-setup.btn.btn-success.btn-lg.px-5(href="#")
+                i.fa.fa-envelope.mr-2
+                = t("Set Up Email")
+                = " "
+                i.fa.fa-angle-right
+            .mt-3
+              button#domain-register-back.btn.btn-sm.btn-outline-secondary(
+                type="button"
+              )
+                i.fa.fa-arrow-left.mr-1
+                = t("Back to results")

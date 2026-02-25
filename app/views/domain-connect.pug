@@ -1,0 +1,200 @@
+extends layout
+block body
+  .container.py-5
+    .row
+      .col-md-8.offset-md-2
+        h1.text-center= t("Domain Connect")
+        p.text-center.lead
+          != t("Automatically configure your DNS settings for email forwarding and outbound SMTP — including MX records, SPF, DKIM, DMARC, and site verification — in one step.")
+
+        //- 1-Click Provider Buttons
+        - const dcProviders = nsProviders.filter((p) => p.domainConnect && p.domainConnect.applyUrl);
+        if dcProviders.length > 0
+          .card.shadow-sm.mb-4
+            .card-header
+              h5.mb-0= t("1-Click Setup")
+            .card-body
+              p= t("Select your DNS provider below for instant 1-click configuration:")
+              if !user
+                .alert.alert-warning.mb-3
+                  i.fa.fa-lock.mr-1
+                  != t('Please <a href="%s">sign in</a> or <a href="%s">create a free account</a> to use 1-Click Setup.', l("/login"), l("/register"))
+              else if user.plan === 'free'
+                .alert.alert-warning.mb-3
+                  i.fa.fa-lock.mr-1
+                  != t('1-Click Setup is available on paid plans. <a href="%s">Upgrade your plan</a> to use this feature.', l("/my-account/billing"))
+              .row
+                each provider in dcProviders
+                  .col-md-4.col-6.mb-3
+                    if user && user.plan !== 'free'
+                      form(action=l("/domain-connect"), method="POST")
+                        input(
+                          type="hidden",
+                          name="provider",
+                          value=provider.slug
+                        )
+                        .input-group
+                          input.form-control.form-control-sm(
+                            type="text",
+                            name="domain",
+                            placeholder="yourdomain.com",
+                            required,
+                            autocomplete="off",
+                            autocapitalize="none",
+                            spellcheck="false"
+                          )
+                          .input-group-append
+                            button.btn.btn-sm.btn-primary(
+                              type="submit",
+                              title=provider.name
+                            )
+                              if provider.gif
+                                img.mr-1(
+                                  src="/img/dns-providers/" + provider.gif + ".svg",
+                                  alt=provider.name,
+                                  style="height: 1em; vertical-align: middle"
+                                )
+                              = provider.name
+                    else
+                      button.btn.btn-sm.btn-outline-secondary.btn-block.text-left(
+                        type="button",
+                        disabled,
+                        data-toggle="tooltip",
+                        title=!user ? t("Sign in to use 1-Click Setup") : t("Upgrade to a paid plan to use 1-Click Setup")
+                      )
+                        if provider.gif
+                          img.mr-1(
+                            src="/img/dns-providers/" + provider.gif + ".svg",
+                            alt=provider.name,
+                            style="height: 1em; vertical-align: middle"
+                          )
+                        = provider.name
+              p.mt-2.mb-0
+                small.text-muted
+                  = t("Not listed? Enter your domain below and we will auto-detect your provider.")
+
+        //- Manual / auto-detect form
+        .card.shadow-sm.mb-4
+          .card-header
+            h5.mb-0= t("Auto-Detect Provider")
+          .card-body
+            p
+              = t("Enter your domain name and we will automatically detect your DNS provider and configure everything in one step.")
+            form(action=l("/domain-connect"), method="POST")
+              .form-group
+                label(for="domain-auto")= t("Domain Name")
+                input#domain-auto.form-control(
+                  type="text",
+                  name="domain",
+                  placeholder="example.com",
+                  required,
+                  autocomplete="off",
+                  autocapitalize="none",
+                  spellcheck="false"
+                )
+                small.form-text.text-muted
+                  = t("Enter the domain name you want to configure (e.g. example.com)")
+              if !user
+                .alert.alert-warning.mb-3
+                  i.fa.fa-lock.mr-1
+                  != t('Please <a href="%s">sign in</a> or <a href="%s">create a free account</a> to use Auto-Detect.', l("/login"), l("/register"))
+                button.btn.btn-secondary.btn-block(type="button", disabled)
+                  i.fa.fa-bolt.mr-2
+                  = t("Auto-Configure DNS")
+              else if user.plan === 'free'
+                .alert.alert-warning.mb-3
+                  i.fa.fa-lock.mr-1
+                  != t('Auto-Configure DNS is available on paid plans. <a href="%s">Upgrade your plan</a> to use this feature.', l("/my-account/billing"))
+                button.btn.btn-secondary.btn-block(type="button", disabled)
+                  i.fa.fa-bolt.mr-2
+                  = t("Auto-Configure DNS")
+              else
+                button.btn.btn-primary.btn-block(type="submit")
+                  i.fa.fa-bolt.mr-2
+                  = t("Auto-Configure DNS")
+
+        //- What gets configured table
+        .card.shadow-sm.mb-4
+          .card-header
+            h5.mb-0= t("What gets configured?")
+          .card-body
+            p= t("The following DNS records will be automatically created or updated in one step:")
+            table.table.table-sm.table-bordered.mb-0
+              thead.thead-light
+                tr
+                  th= t("Type")
+                  th= t("Host")
+                  th= t("Value")
+                  th= t("Purpose")
+              tbody
+                tr
+                  td: code MX
+                  td: code @
+                  td
+                    code mx1.forwardemail.net
+                    |
+                    | (priority 0)
+                  td= t("Email receiving")
+                tr
+                  td: code MX
+                  td: code @
+                  td
+                    code mx2.forwardemail.net
+                    |
+                    | (priority 0)
+                  td= t("Email receiving (backup)")
+                tr
+                  td: code TXT
+                  td: code @
+                  td
+                    code v=spf1 include:spf.forwardemail.net ~all
+                    |
+                    | (merged safely via SPFM)
+                  td= t("Sender Policy Framework (SPF)")
+                tr
+                  td: code TXT
+                  td
+                    code {selector}._domainkey
+                  td
+                    em= t("(your unique DKIM public key)")
+                  td= t("DomainKeys Identified Mail (DKIM)")
+                tr
+                  td: code CNAME
+                  td: code fe-bounces
+                  td: code forwardemail.net
+                  td= t("Return-Path / bounce handling")
+                tr
+                  td: code TXT
+                  td: code _dmarc
+                  td
+                    code v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-{id}@forwardemail.net;
+                  td= t("Domain-based Message Authentication (DMARC)")
+                tr
+                  td: code TXT
+                  td: code @
+                  td
+                    code forward-email-site-verification={token}
+                  td= t("Forward Email domain verification")
+                tr
+                  td: code CNAME
+                  td: code autoconfig
+                  td: code autoconfig.forwardemail.net
+                  td= t("Email client autodiscovery (Thunderbird, GNOME, KDE)")
+                tr
+                  td: code CNAME
+                  td: code autodiscover
+                  td: code autodiscover.forwardemail.net
+                  td= t("Email client autodiscovery (Outlook, Microsoft)")
+
+        .mt-4.text-center
+          p.text-muted
+            = t("Domain Connect is supported by major DNS providers including Cloudflare, GoDaddy, IONOS, WordPress.com, NameSilo, and others.")
+          p
+            a.mr-3(
+              href=l("/faq") + "#how-do-i-get-started-and-set-up-email-forwarding"
+            )= t("Manual DNS setup instructions")
+            a(
+              href="https://github.com/Domain-Connect/Templates",
+              target="_blank",
+              rel="noopener noreferrer"
+            )= t("Domain Connect Templates on GitHub")

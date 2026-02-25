@@ -79,6 +79,7 @@
   * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
   * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
   * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
+  * [How do I set up email autodiscovery for my domain](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Security](#security)
   * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
   * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
@@ -3397,6 +3398,57 @@ It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for 
 In order to connect with POP3, the **POP3 user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **IMAP password** must be an alias-specific generated password.
 
 Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
+
+### How do I set up email autodiscovery for my domain
+
+Email autodiscovery allows email clients such as **Thunderbird**, **Apple Mail**, **Microsoft Outlook**, and mobile devices to automatically detect the correct IMAP, SMTP, POP3, CalDAV, and CardDAV server settings when a user adds their email account. This is defined by [RFC 6186](https://www.rfc-editor.org/rfc/rfc6186.html) (email) and [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) (CalDAV/CardDAV) and uses DNS SRV records.
+
+Forward Email publishes autodiscovery records on `forwardemail.net`. You can either add SRV records directly to your domain, or use a simpler CNAME approach.
+
+#### Option A: CNAME records (simplest)
+
+Add these two CNAME records to your domain's DNS. This delegates autodiscovery to Forward Email's servers:
+
+|  Type | Name/Host      | Target/Value                    |
+| :---: | -------------- | ------------------------------- |
+| CNAME | `autoconfig`   | `autoconfig.forwardemail.net`   |
+| CNAME | `autodiscover` | `autodiscover.forwardemail.net` |
+
+The `autoconfig` record is used by **Thunderbird** and other Mozilla-based clients. The `autodiscover` record is used by **Microsoft Outlook**.
+
+#### Option B: SRV records (direct)
+
+If you prefer to add the records directly (or your DNS provider does not support CNAME on subdomains), add these SRV records to your domain:
+
+| Type | Name/Host          | Priority | Weight | Port | Target/Value               | Purpose                       |
+| :--: | ------------------ | :------: | :----: | :--: | -------------------------- | ----------------------------- |
+|  SRV | `_imaps._tcp`      |     0    |    1   |  993 | `imap.forwardemail.net`    | IMAP over SSL/TLS (preferred) |
+|  SRV | `_imap._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext IMAP disabled       |
+|  SRV | `_submission._tcp` |     0    |    1   |  587 | `smtp.forwardemail.net`    | SMTP submission (STARTTLS)    |
+|  SRV | `_pop3s._tcp`      |    10    |    1   |  995 | `pop3.forwardemail.net`    | POP3 over SSL/TLS             |
+|  SRV | `_pop3._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext POP3 disabled       |
+|  SRV | `_caldavs._tcp`    |     0    |    1   |  443 | `caldav.forwardemail.net`  | CalDAV over TLS (calendars)   |
+|  SRV | `_caldav._tcp`     |     0    |    0   |   0  | `.`                        | Plaintext CalDAV disabled     |
+|  SRV | `_carddavs._tcp`   |     0    |    1   |  443 | `carddav.forwardemail.net` | CardDAV over TLS (contacts)   |
+|  SRV | `_carddav._tcp`    |     0    |    0   |   0  | `.`                        | Plaintext CardDAV disabled    |
+
+> \[!NOTE]
+> IMAP has a lower priority value (0) than POP3 (10), which tells email clients to prefer IMAP over POP3 when both are available. The records with a target of `.` (a single dot) indicate that the plaintext (non-encrypted) versions of those protocols are intentionally disabled per [RFC 6186 Section 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). The CalDAV and CardDAV SRV records follow [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) for calendar and contact autodiscovery.
+
+#### Which email clients support autodiscovery?
+
+| Client             | Email                                            | CalDAV/CardDAV                             |
+| ------------------ | ------------------------------------------------ | ------------------------------------------ |
+| Thunderbird        | `autoconfig` CNAME or SRV records                | `autoconfig` XML or SRV records (RFC 6764) |
+| Apple Mail (macOS) | SRV records (RFC 6186)                           | SRV records (RFC 6764)                     |
+| Apple Mail (iOS)   | SRV records (RFC 6186)                           | SRV records (RFC 6764)                     |
+| Microsoft Outlook  | `autodiscover` CNAME or `_autodiscover._tcp` SRV | Not supported                              |
+| GNOME (Evolution)  | SRV records (RFC 6186)                           | SRV records (RFC 6764)                     |
+| KDE (KMail)        | SRV records (RFC 6186)                           | SRV records (RFC 6764)                     |
+| eM Client          | `autoconfig` or `autodiscover`                   | SRV records (RFC 6764)                     |
+
+> \[!TIP]
+> For the best compatibility across all clients, we recommend using **Option A** (CNAME records) combined with the SRV records from **Option B**. The CNAME approach alone covers the majority of email clients. The CalDAV/CardDAV SRV records ensure that calendar and contact clients can also automatically discover your server settings.
 
 
 ## Security

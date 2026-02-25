@@ -902,6 +902,24 @@ const config = {
     require_protocol: true
   },
 
+  // Domain Connect integration
+  // <https://domainconnect.org/>
+  // <https://developers.cloudflare.com/dns/reference/domain-connect/>
+  domainConnect: {
+    providerId: env.DOMAIN_CONNECT_PROVIDER_ID,
+    providerName: env.DOMAIN_CONNECT_PROVIDER_NAME,
+    serviceId: env.DOMAIN_CONNECT_SERVICE_ID,
+    serviceName: env.DOMAIN_CONNECT_SERVICE_NAME,
+    logoUrl: env.DOMAIN_CONNECT_LOGO_URL,
+    description: env.DOMAIN_CONNECT_DESCRIPTION,
+    // syncPubKeyDomain is the domain where the public key TXT record is published
+    // for signing synchronous Domain Connect requests
+    // <https://developers.cloudflare.com/dns/reference/domain-connect/#template-definition>
+    syncPubKeyDomain: env.DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN,
+    // privateKey is the RSA private key (PEM) used to sign synchronous apply requests
+    // (required for Cloudflare; optional for other providers)
+    privateKey: env.DOMAIN_CONNECT_PRIVATE_KEY || null
+  },
   // app
   dkimKeySelector: 'forwardemail', // forwardemail._domainkey.example.com
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
