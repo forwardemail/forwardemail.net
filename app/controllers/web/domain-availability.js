@@ -5,6 +5,8 @@
 
 const Boom = require('@hapi/boom');
 const isFQDN = require('is-fqdn');
+const ms = require('ms');
+const pTimeout = require('p-timeout');
 
 // dynamically import @forwardemail/whois-rdap (ESM package)
 // <https://github.com/cleandns-inc/tool-whois>
@@ -12,6 +14,8 @@ let whois;
 import('@forwardemail/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
+
+const WHOIS_TIMEOUT = ms('30s');
 
 // POST /domain-availability
 // body: { domainName: 'example.com' }
@@ -33,7 +37,7 @@ module.exports = async (ctx) => {
     throw Boom.serverUnavailable(ctx.translateError('WHOIS_UNAVAILABLE'));
 
   try {
-    const result = await whois(name);
+    const result = await pTimeout(whois(name), WHOIS_TIMEOUT);
     // result.found = true  means the domain IS registered (not available)
     // result.found = false means the domain IS available
     ctx.body = {
@@ -45,7 +49,7 @@ module.exports = async (ctx) => {
         : ctx.translate('DOMAIN_AVAILABLE', name)
     };
   } catch (err) {
-    // if WHOIS lookup fails, we conservatively assume the domain is taken
+    // if WHOIS lookup fails or times out, we conservatively assume the domain is taken
     ctx.body = {
       found: true,
       available: false,

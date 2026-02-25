@@ -5,6 +5,8 @@
 
 const Boom = require('@hapi/boom');
 const isFQDN = require('is-fqdn');
+const ms = require('ms');
+const pTimeout = require('p-timeout');
 
 // dynamically import @forwardemail/whois-rdap (ESM package)
 // <https://github.com/cleandns-inc/tool-whois>
@@ -14,6 +16,7 @@ import('@forwardemail/whois-rdap').then((obj) => {
 });
 
 const MAX_BULK = 50;
+const WHOIS_TIMEOUT = ms('30s');
 
 // POST /domain-availability/bulk
 // body: { domains: ['example.com', 'example.net', ...] }
@@ -43,7 +46,7 @@ module.exports = async (ctx) => {
       }
 
       try {
-        const result = await whois(name);
+        const result = await pTimeout(whois(name), WHOIS_TIMEOUT);
         return {
           domain: name,
           found: result.found,

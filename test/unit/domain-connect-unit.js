@@ -242,6 +242,15 @@ test('buildApplyUrl RSA-SHA256 signature is valid', (t) => {
   t.true(isValid, 'RSA-SHA256 signature should be valid');
 });
 
+test('config.domainConnect.syncKeyId defaults to _dck1', (t) => {
+  const config = require('../../config');
+  t.is(
+    config.domainConnect.syncKeyId,
+    '_dck1',
+    'syncKeyId should default to _dck1'
+  );
+});
+
 // ---------------------------------------------------------------------------
 // nsProviders — Domain Connect config
 // ---------------------------------------------------------------------------

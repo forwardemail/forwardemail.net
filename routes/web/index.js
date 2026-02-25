@@ -132,22 +132,22 @@ router
 
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
 
-  // domain availability
+  // domain availability (50 requests per minute per IP)
   .post(
     '/domain-availability',
-    rateLimit(100, 'domain-availability'),
+    rateLimit(50, 'domain-availability', ms('1m')),
     web.domainAvailability
   )
   .post(
     '/domain-availability/bulk',
-    rateLimit(100, 'domain-availability-bulk'),
+    rateLimit(50, 'domain-availability-bulk', ms('1m')),
     web.domainAvailabilityBulk
   )
 
-  // domain suggestions
+  // domain suggestions (50 requests per minute per IP)
   .post(
     '/domain-suggestions',
-    rateLimit(100, 'domain-suggestions'),
+    rateLimit(50, 'domain-suggestions', ms('1m')),
     web.domainSuggestions
   )
 
@@ -267,21 +267,21 @@ localeRouter
   // encrypt domain txt record
   .get('/encrypt', render('encrypt'))
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
-  // domain availability
+  // domain availability (50 requests per minute per IP)
   .post(
     '/domain-availability',
-    rateLimit(100, 'domain-availability'),
+    rateLimit(50, 'domain-availability', ms('1m')),
     web.domainAvailability
   )
   .post(
     '/domain-availability/bulk',
-    rateLimit(100, 'domain-availability-bulk'),
+    rateLimit(50, 'domain-availability-bulk', ms('1m')),
     web.domainAvailabilityBulk
   )
-  // domain suggestions
+  // domain suggestions (50 requests per minute per IP)
   .post(
     '/domain-suggestions',
-    rateLimit(100, 'domain-suggestions'),
+    rateLimit(50, 'domain-suggestions', ms('1m')),
     web.domainSuggestions
   )
   // domain connect

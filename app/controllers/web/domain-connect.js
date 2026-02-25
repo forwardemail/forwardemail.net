@@ -90,7 +90,7 @@ function buildApplyUrl(urlSyncUX, params, privateKey) {
       sign.update(queryString);
       const sig = sign.sign(privateKey, 'base64');
       sigSuffix = `&sig=${encodeURIComponent(sig)}&key=${encodeURIComponent(
-        PROVIDER_ID
+        config.domainConnect.syncKeyId
       )}`;
     } catch {
       // if signing fails, proceed without signature

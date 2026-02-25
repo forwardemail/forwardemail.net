@@ -916,6 +916,9 @@ const config = {
     // for signing synchronous Domain Connect requests
     // <https://developers.cloudflare.com/dns/reference/domain-connect/#template-definition>
     syncPubKeyDomain: env.DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN,
+    // syncKeyId is the DNS host prefix where the public key TXT records are published
+    // The DNS provider looks up {syncKeyId}.{syncPubKeyDomain} to fetch the public key
+    syncKeyId: env.DOMAIN_CONNECT_SYNC_KEY_ID || '_dck1',
     // privateKey is the RSA private key (PEM) used to sign synchronous apply requests
     // (required for Cloudflare; optional for other providers)
     privateKey: env.DOMAIN_CONNECT_PRIVATE_KEY || null
