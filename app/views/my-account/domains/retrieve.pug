@@ -149,7 +149,6 @@ block body
                   form.mr-1.mt-3(
                     action=l("/domain-connect"),
                     method="POST",
-                    target="_blank",
                     style="display: inline"
                   )
                     input(type="hidden", name="provider", value=provider.slug)
@@ -247,7 +246,6 @@ block body
                     form(
                       action=l("/domain-connect"),
                       method="POST",
-                      target="_blank",
                       style="display: inline"
                     )
                       input(
@@ -579,125 +577,7 @@ block body
                         if provider && provider.slug && provider.slug === 'cloudflare'
                           td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
               .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
-              //- Autodiscovery SRV records (optional, shown as collapsible)
-              .mt-3
-                a.btn.btn-sm.btn-outline-info(
-                  data-toggle="collapse",
-                  href="#autodiscovery-records",
-                  role="button",
-                  aria-expanded="false",
-                  aria-controls="autodiscovery-records"
-                )
-                  i.fa.fa-magic.mr-1
-                  = t("Optional: Set up email autodiscovery")
-                #autodiscovery-records.collapse.mt-2
-                  .alert.alert-info.small.text-left
-                    p.mb-2
-                      strong= t("Email Autodiscovery")
-                      = " "
-                      = t("lets email clients like Thunderbird, Apple Mail, and Outlook automatically detect your server settings.")
-                    p.mb-2
-                      strong= t("Option A (simplest):")
-                      = " "
-                      = t("Add these CNAME records:")
-                    .table-responsive.mb-2
-                      table.table.table-sm.table-hover.mb-0
-                        thead
-                          tr
-                            th.border-0 Type
-                            th.border-0 Name/Host
-                            th.border-0 Target/Value
-                        tbody
-                          tr
-                            td: strong CNAME
-                            td.text-monospace.small autoconfig
-                            td.text-monospace.small autoconfig.forwardemail.net
-                          tr
-                            td: strong CNAME
-                            td.text-monospace.small autodiscover
-                            td.text-monospace.small autodiscover.forwardemail.net
-                    p.mb-2
-                      strong= t("Option B (direct SRV records):")
-                    .table-responsive.mb-2
-                      table.table.table-sm.table-hover.mb-0
-                        thead
-                          tr
-                            th.border-0 Type
-                            th.border-0 Name/Host
-                            th.border-0 Priority
-                            th.border-0 Weight
-                            th.border-0 Port
-                            th.border-0 Target/Value
-                        tbody
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _imaps._tcp
-                            td 0
-                            td 1
-                            td 993
-                            td.text-monospace.small imap.forwardemail.net
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _imap._tcp
-                            td 0
-                            td 0
-                            td 0
-                            td.text-monospace.small .
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _submission._tcp
-                            td 0
-                            td 1
-                            td 587
-                            td.text-monospace.small smtp.forwardemail.net
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _pop3s._tcp
-                            td 10
-                            td 1
-                            td 995
-                            td.text-monospace.small pop3.forwardemail.net
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _pop3._tcp
-                            td 0
-                            td 0
-                            td 0
-                            td.text-monospace.small .
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _caldavs._tcp
-                            td 0
-                            td 1
-                            td 443
-                            td.text-monospace.small caldav.forwardemail.net
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _caldav._tcp
-                            td 0
-                            td 0
-                            td 0
-                            td.text-monospace.small .
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _carddavs._tcp
-                            td 0
-                            td 1
-                            td 443
-                            td.text-monospace.small carddav.forwardemail.net
-                          tr
-                            td: strong SRV
-                            td.text-monospace.small _carddav._tcp
-                            td 0
-                            td 0
-                            td 0
-                            td.text-monospace.small .
-                    a.small(
-                      href=l("/faq#how-do-i-set-up-email-autodiscovery-for-my-domain"),
-                      target="_blank"
-                    )
-                      i.fa.fa-question-circle.mr-1
-                      = t("Learn more about autodiscovery in our FAQ")
+
               if domain.plan === 'free'
                 .alert.alert-primary.small
                   = t("Need to configure more aliases on the free plan?")

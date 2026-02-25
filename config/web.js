@@ -275,8 +275,13 @@ module.exports = (redis) => ({
               'base-uri': ["'self'"],
               'form-action': [
                 "'self'",
-                'https://www.namecheap.com',
-                'https://login.ubuntu.com'
+                'https://login.ubuntu.com',
+                // Domain Connect provider apply URLs
+                // (form POST to /domain-connect redirects to these external URLs)
+                'https://api.cloudflare.com',
+                'https://dcc.godaddy.com',
+                'https://api.domainconnect.ionos.com',
+                'https://dns.glauca.digital'
               ]
             }
           }
