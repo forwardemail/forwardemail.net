@@ -6,6 +6,13 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
+// TLDs whose WHOIS servers are frequently unreachable or return unreliable
+// results.  These are excluded from generated suggestions.
+const UNRELIABLE_TLDS = new Set([
+  'co', // whois.nic.co — DNS resolution frequently fails
+  'co.in' // whois.registry.in — DNS resolution frequently fails
+]);
+
 // Word lists for generating creative domain name suggestions
 // (Inspired by @ngneat/falso word data — inlined to avoid bundling the full library)
 const ADJECTIVES = [
@@ -199,12 +206,14 @@ const VERBS = [
 ];
 
 // Popular TLDs for generating suggestions
+// NOTE: .co and .co.in are excluded because their WHOIS servers
+// (whois.nic.co and whois.registry.in) are frequently unreachable,
+// causing availability checks to fail and show false negatives.
 const POPULAR_TLDS = [
   'com',
   'net',
   'org',
   'io',
-  'co',
   'dev',
   'app',
   'ai',
@@ -357,7 +366,7 @@ async function domainSuggestions(ctx) {
     tlds = ctx.request.body.tlds
       .split(',')
       .map((t) => t.trim().replace(/^\./, '').toLowerCase())
-      .filter((t) => t.length > 0)
+      .filter((t) => t.length > 0 && !UNRELIABLE_TLDS.has(t))
       .slice(0, 30);
   }
 
