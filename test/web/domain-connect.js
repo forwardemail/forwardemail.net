@@ -105,8 +105,8 @@ test('POST /domain-availability/bulk returns 400 when domains array is empty', a
 
 test('POST /domain-availability/bulk returns 400 when too many domains requested', async (t) => {
   const { web } = t.context;
-  // Send 11 domains (max is 10)
-  const domains = Array.from({ length: 11 }, (_, i) => `example${i}.com`);
+  // Send 51 domains (max is 50)
+  const domains = Array.from({ length: 51 }, (_, i) => `example${i}.com`);
   const res = await web
     .post('/en/domain-availability/bulk')
     .set('Accept', 'application/json')

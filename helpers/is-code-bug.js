@@ -35,6 +35,9 @@ const SYSCALLS = new Set([
 ]);
 
 function isCodeBug(err) {
+  // exclude transient DNS reverse lookup failures (not a code bug)
+  if (err.syscall === 'getHostByAddr') return false;
+
   const bool = boolean(
     // it was already marked as a code bug
     err.isCodeBug === true ||
@@ -95,7 +98,7 @@ function isCodeBug(err) {
       err.code === 'EOVERFLOW' ||
       err.code === 'EPERM' ||
       err.code === 'EPIPE' ||
-      err.code === 'EPROTO' ||
+      // NOTE: EPROTO is handled by isRetryableError (transient TLS/network issue)
       err.code === 'EPROTONOSUPPORT' ||
       err.code === 'EPROTOTYPE' ||
       err.code === 'ERANGE' ||

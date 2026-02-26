@@ -16,6 +16,7 @@ const constructorNames = [
   'MongoCursorExhaustedError',
   'MongoCursorInUseError',
   'MongoError',
+  'MongoGridFSChunkError',
   'MongoExpiredSessionError',
   'MongoInvalidArgumentError',
   'MongoMissingCredentialsError',

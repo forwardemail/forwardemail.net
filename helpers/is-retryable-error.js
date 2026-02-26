@@ -86,7 +86,8 @@ const MAIL_RETRY_ERROR_CODES = new Set([
   'ECONNECTION',
   'ETIMEDOUT',
   'EDNS',
-  'EPROTOCOL'
+  'EPROTOCOL',
+  'EPROTO'
 ]);
 
 //

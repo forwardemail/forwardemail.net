@@ -591,13 +591,24 @@ async function getDatabase(
               db.prepare(command).run();
               // await knexDatabase.raw(command);
             } catch (err) {
-              err.isCodeBug = true;
-              logger.fatal(err, {
-                command,
-                alias,
-                session,
-                resolver: instance.resolver
-              });
+              // duplicate column errors are expected when migration was already applied
+              if (err.message.startsWith('duplicate column name:')) {
+                logger.debug(err, {
+                  command,
+                  alias,
+                  session,
+                  resolver: instance.resolver
+                });
+              } else {
+                err.isCodeBug = true;
+                logger.fatal(err, {
+                  command,
+                  alias,
+                  session,
+                  resolver: instance.resolver
+                });
+              }
+
               // migration support in case existing rows
               if (
                 err.message.includes(

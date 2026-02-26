@@ -1560,6 +1560,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // (each err has `err.recipient` and `err.responseCode` per nodemailer)
     //
     err.isCodeBug = isCodeBug(err);
+    // MongoGridFSChunkError is a data integrity issue, not a code bug
+    if (err.name === 'MongoGridFSChunkError') err.isCodeBug = false;
     err.responseCode = getErrorCode(err);
 
     // create log

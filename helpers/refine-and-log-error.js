@@ -63,6 +63,13 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
 
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
+  } else if (
+    isIMAP &&
+    typeof err.imapResponse === 'string' &&
+    ['TRYCREATE', 'ALREADYEXISTS', 'CANNOT'].includes(err.imapResponse)
+  ) {
+    // IMAP client-side errors are not code bugs (e.g. mailbox does not exist, already exists, same source/target)
+    logger.debug(err, { session, resolver: instance?.resolver });
   } else {
     logger.error(err, { session, resolver: instance?.resolver });
   }

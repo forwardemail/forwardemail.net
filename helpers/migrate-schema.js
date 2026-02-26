@@ -355,11 +355,12 @@ async function migrateSchema(instance, db, session, tables) {
     }
   }
 
-  // we simply log a code bug for any migration errors (e.g. conflict on null/default values)
+  // NOTE: schema mismatch errors are expected for older databases
+  // (SQLite does not support ALTER COLUMN to change data types)
   if (errors.length > 0) {
     const err = combineErrors(errors);
-    err.isCodeBug = true; // will email admins and text them
-    logger.fatal(err, { session, resolver: instance.resolver });
+    err.isCodeBug = false;
+    logger.debug(err, { session, resolver: instance.resolver });
   }
 
   //

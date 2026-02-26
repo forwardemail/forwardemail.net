@@ -78,8 +78,14 @@ async function getTemporaryDatabase(session) {
         tmpDb.prepare(command).run();
         // await knexDatabase.raw(command);
       } catch (err) {
-        err.isCodeBug = true;
-        logger.fatal(err, { command });
+        // duplicate column errors are expected when migration was already applied
+        if (err.message.startsWith('duplicate column name:')) {
+          logger.debug(err, { command });
+        } else {
+          err.isCodeBug = true;
+          logger.fatal(err, { command });
+        }
+
         // migration support in case existing rows
         if (
           err.message.includes(
