@@ -50,7 +50,7 @@ const BANNABLE_CATEGORIES = new Set([
   'crypto_scam',
   'pharmacy',
   'gambling',
-  'url_shortener',
+  // 'url_shortener',
   'disposable_email',
   'piracy'
 ]);
