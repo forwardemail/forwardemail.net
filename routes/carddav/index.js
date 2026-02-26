@@ -501,6 +501,16 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
                   name: 'card:supported-address-data',
                   value:
                     '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+                },
+                {
+                  name: 'd:current-user-privilege-set',
+                  value:
+                    '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+                },
+                {
+                  name: 'd:supported-report-set',
+                  value:
+                    '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
                 }
               ],
               status: '200 OK'
@@ -856,9 +866,26 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
                   value: '<d:collection/><card:addressbook/>'
                 },
                 { name: 'd:sync-token', value: addressBook.synctoken },
+                // getctag is used by macOS/iOS to detect changes
+                { name: 'cs:getctag', value: addressBook.synctoken },
                 {
                   name: 'card:addressbook-description',
                   value: encodeXMLEntities(addressBook.description || '')
+                },
+                {
+                  name: 'card:supported-address-data',
+                  value:
+                    '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+                },
+                {
+                  name: 'd:current-user-privilege-set',
+                  value:
+                    '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+                },
+                {
+                  name: 'd:supported-report-set',
+                  value:
+                    '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
                 }
               ],
               status: '200 OK'
@@ -1234,6 +1261,21 @@ async function propFindPrincipal(ctx) {
                 value: `<d:href>/dav/${encodeXMLEntities(
                   ctx.state.session.user.username
                 )}/addressbooks/</d:href>`
+              },
+              {
+                name: 'd:principal-URL',
+                value: `<d:href>/dav/${encodeXMLEntities(
+                  ctx.state.session.user.username
+                )}/</d:href>`
+              },
+              {
+                name: 'd:principal-collection-set',
+                value: '<d:href>/dav/</d:href>'
+              },
+              {
+                name: 'd:supported-report-set',
+                value:
+                  '<d:supported-report><d:report><card:addressbook-multiget/></d:report></d:supported-report><d:supported-report><d:report><card:addressbook-query/></d:report></d:supported-report><d:supported-report><d:report><d:sync-collection/></d:report></d:supported-report>'
               }
             ],
             status: '200 OK'

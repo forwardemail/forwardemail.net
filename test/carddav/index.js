@@ -983,7 +983,10 @@ END:VCARD`;
   });
   t.is(createResponse.status, 400);
   const json = await createResponse.json();
-  t.is(json.message, 'vCard must contain FN (Formatted Name) property');
+  t.is(
+    json.message,
+    'vCard must contain FN (Formatted Name) or N (Name) property'
+  );
 });
 
 test('should reject invalid vCard (missing BEGIN:VCARD)', async (t) => {
@@ -1209,4 +1212,343 @@ test('sync-collection should return only modified contacts', async (t) => {
       headers: t.context.authHeaders
     });
   }
+});
+
+// =============================================================================
+// E2E tests for CardDAV fixes:
+// 1. macOS sync (REPORT body parsing, privilege-set, supported-report-set)
+// 2. Soft-deleted contacts filtered from API
+// 3. vCard with N: but no FN: accepted
+// =============================================================================
+
+test('REPORT body should be parsed (REPORT in parsedMethods)', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Create a contact so there is something to query
+  await createVCard({
+    addressBook,
+    filename: 'report-body-test.vcf',
+    vCardString: `BEGIN:VCARD
+VERSION:3.0
+FN:Report Body Test
+EMAIL;TYPE=INTERNET:report-body@example.com
+UID:report-body-uid-001
+END:VCARD`,
+    headers: t.context.authHeaders
+  });
+
+  // Send an addressbook-multiget REPORT with XML body
+  const reportResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '1',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<card:addressbook-multiget xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+  <d:href>${new URL('report-body-test.vcf', addressBook.url).pathname}</d:href>
+</card:addressbook-multiget>`,
+    validateStatus: () => true
+  });
+
+  // Should return 207 Multi-Status (not 400 or empty)
+  t.is(reportResponse.status, 207);
+  t.true(reportResponse.data.includes('report-body-test.vcf'));
+  t.true(reportResponse.data.includes('Report Body Test'));
+
+  // Clean up
+  const contacts = await fetchVCards({
+    addressBook,
+    headers: t.context.authHeaders
+  });
+  const created = contacts.find((c) => c.url.includes('report-body-test.vcf'));
+  if (created) {
+    await deleteVCard({ vCard: created, headers: t.context.authHeaders });
+  }
+});
+
+test('PROPFIND should include current-user-privilege-set for macOS', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBooks[0].url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:allprop/>
+</d:propfind>`
+  });
+
+  t.is(propfindResponse.status, 207);
+  // macOS requires current-user-privilege-set
+  t.true(propfindResponse.data.includes('current-user-privilege-set'));
+  // macOS requires supported-report-set
+  t.true(propfindResponse.data.includes('supported-report-set'));
+  // macOS requires write privilege
+  t.true(propfindResponse.data.includes('<d:write/>'));
+});
+
+test('PROPFIND should include supported-report-set with addressbook-multiget', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBooks[0].url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:allprop/>
+</d:propfind>`
+  });
+
+  t.is(propfindResponse.status, 207);
+  t.true(propfindResponse.data.includes('addressbook-multiget'));
+  t.true(propfindResponse.data.includes('addressbook-query'));
+  t.true(propfindResponse.data.includes('sync-collection'));
+});
+
+test('PROPFIND on principal should include principal-URL and principal-collection-set', async (t) => {
+  const axios = require('axios');
+
+  const principalUrl = `${t.context.serverUrl}/dav/${t.context.username}/`;
+
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: principalUrl,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:allprop/>
+</d:propfind>`
+  });
+
+  t.is(propfindResponse.status, 207);
+  t.true(propfindResponse.data.includes('principal-URL'));
+  t.true(propfindResponse.data.includes('principal-collection-set'));
+});
+
+test('PROPFIND on addressbooks collection should include getctag for macOS', async (t) => {
+  const axios = require('axios');
+
+  const addressBooksUrl = `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/`;
+
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBooksUrl,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '1',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:allprop/>
+</d:propfind>`
+  });
+
+  t.is(propfindResponse.status, 207);
+  // macOS/iOS uses getctag to detect changes
+  t.true(propfindResponse.data.includes('getctag'));
+});
+
+test('soft-deleted contacts should not appear in list API', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  // Create a contact
+  await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'soft-delete-test.vcf',
+    vCardString: `BEGIN:VCARD
+VERSION:3.0
+FN:Soft Delete Test
+EMAIL;TYPE=INTERNET:softdelete@example.com
+UID:soft-delete-uid-001
+END:VCARD`,
+    headers: t.context.authHeaders
+  });
+
+  // Verify contact exists
+  let contacts = await fetchVCards({
+    addressBook: addressBooks[0],
+    headers: t.context.authHeaders
+  });
+  const created = contacts.find((c) => c.url.includes('soft-delete-test.vcf'));
+  t.truthy(created);
+
+  // Delete the contact
+  await deleteVCard({
+    vCard: created,
+    headers: t.context.authHeaders
+  });
+
+  // Verify contact no longer appears in list
+  contacts = await fetchVCards({
+    addressBook: addressBooks[0],
+    headers: t.context.authHeaders
+  });
+  const deleted = contacts.find((c) => c.url.includes('soft-delete-test.vcf'));
+  t.falsy(deleted);
+});
+
+test('should accept vCard with N: property but no FN: property', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  // vCard with N: but no FN: (common in some Apple exports)
+  const vCardWithN = `BEGIN:VCARD
+VERSION:3.0
+N:Doe;Jane;;;
+EMAIL;TYPE=INTERNET:jane.doe@example.com
+UID:n-only-uid-001
+END:VCARD`;
+
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'n-only.vcf',
+    vCardString: vCardWithN,
+    headers: t.context.authHeaders
+  });
+
+  // Should succeed (not 400)
+  t.not(createResponse.status, 400);
+
+  // Verify contact was created and FN was derived from N
+  const contacts = await fetchVCards({
+    addressBook: addressBooks[0],
+    headers: t.context.authHeaders
+  });
+  const created = contacts.find((c) => c.url.includes('n-only.vcf'));
+  t.truthy(created);
+
+  // Clean up
+  if (created) {
+    await deleteVCard({ vCard: created, headers: t.context.authHeaders });
+  }
+});
+
+test('should reject vCard with neither FN: nor N: property', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const invalidVCard = `BEGIN:VCARD
+VERSION:3.0
+EMAIL:noname@example.com
+UID:noname-uid-001
+END:VCARD`;
+
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'noname.vcf',
+    vCardString: invalidVCard,
+    headers: t.context.authHeaders
+  });
+
+  t.is(createResponse.status, 400);
+  const json = await createResponse.json();
+  t.is(
+    json.message,
+    'vCard must contain FN (Formatted Name) or N (Name) property'
+  );
+});
+
+test('sync-collection REPORT should have parsed XML body', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Get initial sync token
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:sync-token/>
+  </d:prop>
+</d:propfind>`
+  });
+
+  const syncTokenMatch = propfindResponse.data.match(
+    /<d:sync-token>([^<]+)<\/d:sync-token>/
+  );
+  const initialSyncToken = syncTokenMatch ? syncTokenMatch[1] : null;
+  t.truthy(initialSyncToken);
+
+  // Send sync-collection REPORT (this requires body parsing to work)
+  const syncResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '1',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:sync-collection xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:sync-token>${initialSyncToken}</d:sync-token>
+  <d:sync-level>1</d:sync-level>
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+</d:sync-collection>`,
+    validateStatus: () => true
+  });
+
+  // Should return 207 (not 400 or 500 due to missing body)
+  t.is(syncResponse.status, 207);
+  t.true(syncResponse.data.includes('<d:sync-token>'));
 });

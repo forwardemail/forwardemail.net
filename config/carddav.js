@@ -44,7 +44,15 @@ module.exports = {
   ...config,
   bodyParser: {
     // <https://github.com/koajs/bodyparser/blob/008ec3072da9cbe7eebf091ef095dd83caa1af36/src/body-parser.types.ts#L14-L18>
-    parsedMethods: ['POST', 'PUT', 'PATCH', 'PROPFIND', 'PROPPATCH', 'MKCOL'],
+    parsedMethods: [
+      'POST',
+      'PUT',
+      'PATCH',
+      'PROPFIND',
+      'PROPPATCH',
+      'MKCOL',
+      'REPORT'
+    ],
     // <https://github.com/koajs/bodyparser/issues/45>
     extendTypes: {
       text: [

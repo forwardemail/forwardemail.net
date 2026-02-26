@@ -677,9 +677,12 @@ function validateVCard(vCardString) {
       'vCard must contain valid VERSION property (3.0 or 4.0)'
     );
 
-  // Validate FN property exists (required by RFC 6350)
-  if (!/^FN:/m.test(vCardString))
-    throw Boom.badRequest('vCard must contain FN (Formatted Name) property');
+  // Validate FN or N property exists (RFC 6350 requires FN,
+  // but many clients export only N; we accept either for compatibility)
+  if (!/^FN:/m.test(vCardString) && !/^N:/m.test(vCardString))
+    throw Boom.badRequest(
+      'vCard must contain FN (Formatted Name) or N (Name) property'
+    );
 
   return true;
 }
@@ -737,6 +740,18 @@ function parseVCard(vCardString) {
       } else {
         result[currentKey] = currentValue;
       }
+    }
+  }
+
+  // If FN is missing but N is present, derive FN from N
+  // This ensures compatibility with vCards exported by clients
+  // that only include the N property (e.g., some Apple exports)
+  if (!result.FN && result.N) {
+    const nValue = Array.isArray(result.N) ? result.N[0] : result.N;
+    const [last, first, additional, prefix, suffix] = nValue.split(';');
+    const parts = [prefix, first, additional, last, suffix].filter(Boolean);
+    if (parts.length > 0) {
+      result.FN = parts.join(' ').replace(/\s+/g, ' ').trim();
     }
   }
 

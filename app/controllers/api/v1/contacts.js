@@ -83,7 +83,11 @@ async function list(ctx) {
   if (!addressBook)
     throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
 
-  const query = { address_book: addressBook._id };
+  const query = {
+    address_book: addressBook._id,
+    // Filter out soft-deleted contacts (deleted via CardDAV sync)
+    $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
+  };
 
   // Get contacts with pagination
   const { results: contacts, count: itemCount } = await Contacts.findAndCount(
@@ -273,6 +277,31 @@ async function create(ctx) {
 
   // Generate vCard content if not provided
   let vCardContent = body.content;
+  if (vCardContent) {
+    // Parse vCard to extract fullName for indexing
+    // This also derives FN from N if FN is missing
+    const parsedVCard = xmlHelpers.parseVCard(vCardContent);
+    if (!body.full_name && parsedVCard.FN) {
+      body.full_name = parsedVCard.FN;
+    }
+
+    // Extract emails from vCard if not provided in body
+    if (!body.emails && parsedVCard.EMAIL) {
+      const emailValues = Array.isArray(parsedVCard.EMAIL)
+        ? parsedVCard.EMAIL
+        : [parsedVCard.EMAIL];
+      body.emails = emailValues.map((v) => ({ value: v, type: 'INTERNET' }));
+    }
+
+    // Extract phone numbers from vCard if not provided in body
+    if (!body.phone_numbers && parsedVCard.TEL) {
+      const telValues = Array.isArray(parsedVCard.TEL)
+        ? parsedVCard.TEL
+        : [parsedVCard.TEL];
+      body.phone_numbers = telValues.map((v) => ({ value: v, type: 'CELL' }));
+    }
+  }
+
   if (!vCardContent) {
     vCardContent = `BEGIN:VCARD
 VERSION:3.0
@@ -357,7 +386,8 @@ async function retrieve(ctx) {
     address_book: addressBook._id
   });
 
-  if (!contact) {
+  // Return 404 for non-existent or soft-deleted contacts
+  if (!contact || contact.deleted_at) {
     throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
   }
 
@@ -537,7 +567,8 @@ async function update(ctx) {
     address_book: addressBook._id
   });
 
-  if (!contact) {
+  // Return 404 for non-existent or soft-deleted contacts
+  if (!contact || contact.deleted_at) {
     throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
   }
 
@@ -663,7 +694,8 @@ async function remove(ctx) {
     address_book: addressBook._id
   });
 
-  if (!contact) {
+  // Return 404 for non-existent or soft-deleted contacts
+  if (!contact || contact.deleted_at) {
     throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
   }
 
