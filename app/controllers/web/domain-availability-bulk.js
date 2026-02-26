@@ -47,13 +47,18 @@ module.exports = async (ctx) => {
 
       try {
         const result = await pTimeout(whois(name), WHOIS_TIMEOUT);
+        // If the WHOIS lookup returned an error (e.g. statusCode >= 400
+        // or an error property), treat the domain as taken to avoid false positives
+        const hasError =
+          result.error || (result.statusCode && result.statusCode >= 400);
+        const isAvailable = !hasError && !result.found;
         return {
           domain: name,
-          found: result.found,
-          available: !result.found,
-          message: result.found
-            ? ctx.translate('DOMAIN_NOT_AVAILABLE', name)
-            : ctx.translate('DOMAIN_AVAILABLE', name)
+          found: hasError ? true : result.found,
+          available: isAvailable,
+          message: isAvailable
+            ? ctx.translate('DOMAIN_AVAILABLE', name)
+            : ctx.translate('DOMAIN_NOT_AVAILABLE', name)
         };
       } catch (err) {
         return {

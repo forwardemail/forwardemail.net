@@ -40,13 +40,18 @@ module.exports = async (ctx) => {
     const result = await pTimeout(whois(name), WHOIS_TIMEOUT);
     // result.found = true  means the domain IS registered (not available)
     // result.found = false means the domain IS available
+    // However, if the WHOIS lookup returned an error (e.g. statusCode >= 400
+    // or an error property), treat the domain as taken to avoid false positives
+    const hasError =
+      result.error || (result.statusCode && result.statusCode >= 400);
+    const isAvailable = !hasError && !result.found;
     ctx.body = {
-      found: result.found,
-      available: !result.found,
+      found: hasError ? true : result.found,
+      available: isAvailable,
       domain: name,
-      message: result.found
-        ? ctx.translate('DOMAIN_NOT_AVAILABLE', name)
-        : ctx.translate('DOMAIN_AVAILABLE', name)
+      message: isAvailable
+        ? ctx.translate('DOMAIN_AVAILABLE', name)
+        : ctx.translate('DOMAIN_NOT_AVAILABLE', name)
     };
   } catch (err) {
     // if WHOIS lookup fails or times out, we conservatively assume the domain is taken

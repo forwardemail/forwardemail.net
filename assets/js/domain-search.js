@@ -93,57 +93,23 @@ function hideRegistrationModal() {
 }
 
 /**
- * Open the Cloudflare registration popup with a countdown on mobile
+ * Open the Cloudflare registration page and show setup instructions
  * @param {string} url - Cloudflare registration URL
  * @param {string} domain - domain name being registered
  */
 function openRegistration(url, domain) {
-  // Show the registration overlay immediately
-  showRegistrationModal(domain);
-
   if (isMobile()) {
-    // On mobile, show a countdown before opening the popup
-    const overlay = document.querySelector('#domain-register-overlay');
-    if (!overlay) return;
-
-    // Create countdown element
-    const countdown = document.createElement('p');
-    countdown.className = 'text-muted mt-3';
-    countdown.id = 'domain-register-countdown';
-    const alertEl = overlay.querySelector('.alert');
-    if (alertEl) {
-      alertEl.parentNode.insertBefore(countdown, alertEl.nextSibling);
-    } else {
-      overlay.append(countdown);
-    }
-
-    let seconds = 3;
-    countdown.textContent = 'Opening Cloudflare in ' + seconds + ' seconds...';
-
-    const interval = setInterval(function () {
-      seconds--;
-      if (seconds > 0) {
-        countdown.textContent =
-          'Opening Cloudflare in ' +
-          seconds +
-          ' second' +
-          (seconds === 1 ? '' : 's') +
-          '...';
-      } else {
-        clearInterval(interval);
-        countdown.textContent = 'Cloudflare window opened!';
-        // Open in a new tab on mobile (popups are unreliable)
-        window.open(url, '_blank');
-        // Remove countdown after a moment
-        setTimeout(function () {
-          if (countdown.parentNode) countdown.remove();
-        }, 2000);
-      }
-    }, 1000);
+    // On mobile, open the URL immediately to preserve the user gesture.
+    // Mobile browsers block window.open() calls that are not directly
+    // triggered by a user interaction (e.g. from setTimeout/setInterval).
+    window.open(url, '_blank');
   } else {
-    // On desktop, open popup immediately
+    // On desktop, open a centered popup window
     openPopup(url, 'cloudflare_register', 900, 700);
   }
+
+  // Show the registration overlay with setup instructions
+  showRegistrationModal(domain);
 }
 
 /**
@@ -152,7 +118,7 @@ function openRegistration(url, domain) {
  * @returns {string} HTML
  */
 function renderResult(r) {
-  const available = r.available || !r.found;
+  const available = r.available === true;
   const borderClass = available ? 'border-success' : 'border-secondary';
   const iconClass = available
     ? 'fa-check-circle text-success'
@@ -223,15 +189,15 @@ function renderFinalResults(allResults, resultsContainer) {
 
   // Sort: available first, then registered
   allResults.sort(function (a, b) {
-    const aAvail = a.available || !a.found ? 1 : 0;
-    const bAvail = b.available || !b.found ? 1 : 0;
+    const aAvail = a.available === true ? 1 : 0;
+    const bAvail = b.available === true ? 1 : 0;
     return bAvail - aAvail;
   });
 
   let html = '';
   let availCount = 0;
   for (const result of allResults) {
-    if (result.available || !result.found) availCount++;
+    if (result.available === true) availCount++;
     html += renderResult(result);
   }
 
