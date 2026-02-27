@@ -84,9 +84,7 @@ async function list(ctx) {
     throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
 
   const query = {
-    address_book: addressBook._id,
-    // Filter out soft-deleted contacts (deleted via CardDAV sync)
-    $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
+    address_book: addressBook._id
   };
 
   // Get contacts with pagination
@@ -102,20 +100,26 @@ async function list(ctx) {
     }
   );
 
-  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+  // Filter out soft-deleted contacts (deleted via CardDAV sync)
+  // NOTE: we filter in JS because SQLite does not support $or/$exists
+  //       and json-sql-enhanced generates `= null` instead of `IS NULL`
+  const activeContacts = Array.isArray(contacts)
+    ? contacts.filter((contact) => !contact.deleted_at)
+    : [];
+
+  const activeCount = itemCount - (contacts.length - activeContacts.length);
+  const pageCount = Math.ceil(activeCount / ctx.query.limit);
 
   // Set pagination headers
   setPaginationHeaders(
     ctx,
     pageCount,
     ctx.query.page,
-    contacts.length,
-    itemCount
+    activeContacts.length,
+    activeCount
   );
 
-  ctx.body = Array.isArray(contacts)
-    ? contacts.map((contact) => json(contact))
-    : [];
+  ctx.body = activeContacts.map((contact) => json(contact));
 }
 
 async function create(ctx) {
