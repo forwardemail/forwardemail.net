@@ -171,12 +171,12 @@
     #    hour: '*'
     #    minute: '*/20'
     #    job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1'
-    - name: Reload pm2 daily at 02:00 Central (08:00 UTC)
+    - name: Reload pm2 every 6 hours
       become: true
       become_user: deploy
       cron:
         name: 'reload'
-        hour: '8'
+        hour: '*/6'
         minute: '0'
         job: '/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1'
     - name: Check if pnpm exists
