@@ -244,6 +244,47 @@ async function getTransporter(options = {}, err) {
           });
         },
         cache
+      },
+      //
+      // DANE/TLSA support (RFC 6698, RFC 7671, RFC 7672)
+      // <https://github.com/zone-eu/mx-connect/pull/22>
+      //
+      // Uses tangerine (the same resolver used for MX/A/AAAA lookups)
+      // to resolve TLSA records via DNS-over-HTTPS, which provides
+      // authenticated denial of existence (similar to DNSSEC validation).
+      //
+      // NOTE: DANE is disabled in test environments since test MX servers
+      //       do not publish TLSA records and DANE verification would fail.
+      //
+      dane: {
+        enabled: config.env !== 'test',
+        //
+        // Custom TLSA resolver using tangerine (DNS-over-HTTPS)
+        // This ensures TLSA lookups go through the same trusted resolver
+        // as all other DNS queries, providing DNSSEC-equivalent security.
+        //
+        // <https://github.com/zone-eu/mx-connect/blob/master/lib/dane.js>
+        //
+        async resolveTlsa(name) {
+          // tangerine's resolve method returns an array of records
+          // for TLSA type (52), the records contain usage, selector, mtype, cert
+          const records = await resolver.resolve(name, 'TLSA');
+          return records;
+        },
+        //
+        // Log DANE events for monitoring and debugging
+        // (mirrors the MTA-STS logger pattern)
+        //
+        logger(results) {
+          logger[results.success ? 'info' : 'error']('DANE', {
+            results
+          });
+        },
+        //
+        // Enforce DANE verification in production (reject on failure)
+        // In non-production environments, log but don't reject
+        //
+        verify: config.env === 'production'
       }
     });
   }
@@ -264,11 +305,15 @@ async function getTransporter(options = {}, err) {
   //
   // RFC 8689 Section 5: TLS-Required: No header overrides requireTLS
   //
+  // NOTE: DANE with valid TLSA records (mx.daneEnabled) also requires TLS
+  // per RFC 7672 Section 2.2 - "DANE clients MUST use TLS"
+  //
   const requireTLS = envelope?.tlsOptional
     ? false
     : Boolean(
         envelope?.requireTLS ||
           Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
+          mx.daneEnabled ||
           (truthSource && OUTLOOK_HOSTS.has(truthSource)) ||
           (truthSource && truthSource === 'google.com')
       );
@@ -285,6 +330,26 @@ async function getTransporter(options = {}, err) {
 
   if (isFQDN(mx.hostname)) tls.servername = mx.hostname;
 
+  //
+  // DANE/TLSA: if DANE is enabled and a verifier function is available,
+  // use it as the TLS checkServerIdentity callback (RFC 6698 Section 3)
+  //
+  // The daneVerifier function returned by mx-connect validates the server's
+  // certificate against the published TLSA records. When DANE-EE (usage=3)
+  // records are present, this replaces traditional PKIX validation, allowing
+  // self-signed certificates that match the TLSA record.
+  //
+  if (mx.daneEnabled && typeof mx.daneVerifier === 'function') {
+    tls.checkServerIdentity = mx.daneVerifier;
+    //
+    // RFC 7672 Section 3.1.1: When DANE-EE(3) TLSA records are matched,
+    // the client SHOULD NOT apply additional certificate name checks.
+    // We disable rejectUnauthorized since the DANE verifier handles
+    // certificate validation via TLSA record matching.
+    //
+    tls.rejectUnauthorized = false;
+  }
+
   // <https://github.com/nodemailer/nodemailer/issues/1517>
   // <https://gist.github.com/andris9/a13d9b327ea81d620ea89926d2097921>
   if (!mx.socket && !isIP(mx.host) && isFQDN(mx.host)) {
@@ -299,8 +364,13 @@ async function getTransporter(options = {}, err) {
   }
 
   // if there was a TLS, SSL, or ECONNRESET then attempt to ignore STARTTLS
+  //
+  // NOTE: when DANE is enabled (mx.daneEnabled), we must NOT ignore TLS
+  // per RFC 7672 Section 2.2 - DANE requires TLS regardless of prior errors
+  //
   const ignoreTLS = Boolean(
     !requireTLS &&
+      !mx.daneEnabled &&
       err &&
       (isSocketError(err) ||
         isSSLError(err) ||

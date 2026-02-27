@@ -14,6 +14,7 @@ const { SMTPServer } = require('smtp-server');
 
 const _ = require('#helpers/lodash');
 const config = require('#config');
+const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -49,6 +50,11 @@ class SMTP {
     const resolver = createTangerine(this.client, logger);
 
     this.resolver = resolver;
+
+    //
+    // MTA-STS cache (shared with mx-connect for outbound delivery)
+    //
+    this.cache = createMtaStsCache(this.client);
 
     //
     // NOTE: hard-coded values for now (switch to env later)
