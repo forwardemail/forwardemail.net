@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const ICAL = require('ical.js');
 const ms = require('ms');
 
@@ -15,6 +16,75 @@ const logger = require('#helpers/logger');
 let calendarCache = null;
 let cacheTimestamp = 0;
 const CACHE_DURATION = ms('1m'); // Regenerate every minute as requested
+
+/**
+ * Re-fold an ICS string so that no content line exceeds 75 octets
+ * (excluding the CRLF line ending).  The ical.js library has a bug
+ * where multi-byte UTF-8 characters can push a folded line to 76
+ * octets.  This function unfolds first, then re-folds correctly by
+ * counting bytes (Buffer.byteLength) instead of characters.
+ *
+ * @param {string} ics - The raw ICS string produced by ical.js
+ * @returns {string} - The re-folded ICS string
+ */
+function refoldICS(ics) {
+  // 1. Split into CRLF-terminated raw lines
+  const rawLines = ics.split('\r\n');
+
+  // 2. Unfold: merge continuation lines (starting with SPACE or TAB)
+  //    back into their parent logical line.
+  const logical = [];
+  for (const raw of rawLines) {
+    if (raw.length > 0 && (raw[0] === ' ' || raw[0] === '\t')) {
+      // Continuation – append without the leading whitespace
+      if (logical.length > 0) {
+        logical[logical.length - 1] += raw.slice(1);
+      } else {
+        logical.push(raw);
+      }
+    } else {
+      logical.push(raw);
+    }
+  }
+
+  // 3. Re-fold each logical line at 75 *octets*
+  const folded = [];
+  for (const line of logical) {
+    const bytes = Buffer.byteLength(line, 'utf8');
+    if (bytes <= 75) {
+      folded.push(line);
+      continue;
+    }
+
+    // Walk character-by-character, accumulating byte length
+    let currentLine = '';
+    let currentBytes = 0;
+    for (const ch of line) {
+      const chBytes = Buffer.byteLength(ch, 'utf8');
+
+      // On continuation lines the leading SPACE counts toward the 75
+      const limit = 75;
+
+      if (currentBytes + chBytes > limit) {
+        // Emit the current line
+        folded.push(currentLine);
+        // Start a new continuation line with leading SPACE
+        currentLine = ' ' + ch;
+        currentBytes = 1 + chBytes; // 1 for the SPACE
+      } else {
+        currentLine += ch;
+        currentBytes += chBytes;
+      }
+    }
+
+    // Emit the last segment
+    if (currentLine.length > 0) {
+      folded.push(currentLine);
+    }
+  }
+
+  return folded.join('\r\n');
+}
 
 /**
  * Create a VEVENT component for an X post
@@ -277,7 +347,31 @@ async function generateCalendar(client) {
     }
   }
 
-  return vcalendar.toString() + '\r\n';
+  // Get the raw ICS output from ical.js
+  let icsOutput = vcalendar.toString();
+
+  // Inject REFRESH-INTERVAL and X-PUBLISHED-TTL right after METHOD:PUBLISH
+  // These are required for Apple Calendar and Outlook subscription refresh.
+  // REFRESH-INTERVAL is the RFC 7986 standard property.
+  // X-PUBLISHED-TTL is the legacy property for older clients.
+  // ical.js does not support these properties natively, so we inject them.
+  icsOutput = icsOutput.replace(
+    'METHOD:PUBLISH\r\n',
+    'METHOD:PUBLISH\r\nREFRESH-INTERVAL;VALUE=DURATION:PT1H\r\nX-PUBLISHED-TTL:PT1H\r\n'
+  );
+
+  // Re-fold the entire ICS output to fix ical.js multi-byte folding bug.
+  // ical.js folds at 75 characters but RFC 5545 requires 75 *octets*.
+  // Multi-byte UTF-8 characters (emoji, CJK, etc.) cause lines to exceed
+  // the 75-octet limit.  Apple Calendar is strict about this.
+  icsOutput = refoldICS(icsOutput);
+
+  // Ensure the file ends with a CRLF
+  if (!icsOutput.endsWith('\r\n')) {
+    icsOutput += '\r\n';
+  }
+
+  return icsOutput;
 }
 
 /**
