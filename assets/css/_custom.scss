@@ -31,6 +31,12 @@ body.app {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// <https://github.com/forwardemail/forwardemail.net/issues/479>
+// Offset scroll target for hash navigation to account for fixed navbar
+[id^='table-'] {
+  scroll-margin-top: 66px;
+}
+
 .text-decoration-underline {
   text-decoration: underline !important;
 }
