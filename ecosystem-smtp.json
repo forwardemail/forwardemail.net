@@ -211,7 +211,7 @@
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
       "pre-deploy": "git reset --hard",
-      "post-deploy": "pm2 stop smtp-bree && pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-smtp.json --env production --update-env"
+      "post-deploy": "pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-smtp.json --env production --update-env"
     }
   }
 }
