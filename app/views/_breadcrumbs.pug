@@ -193,6 +193,18 @@ if breadcrumbs.length > 1
                             )
                           if ctx.query.q
                             input(type="hidden", name="q", value=ctx.query.q)
+                          if ctx.query.start_date
+                            input(
+                              type="hidden",
+                              name="start_date",
+                              value=ctx.query.start_date
+                            )
+                          if ctx.query.end_date
+                            input(
+                              type="hidden",
+                              name="end_date",
+                              value=ctx.query.end_date
+                            )
                           each code in responseCodes
                             .form-check
                               input.form-check-input(
@@ -207,11 +219,13 @@ if breadcrumbs.length > 1
                             button.btn.btn-primary.btn-sm.mr-1(type="submit")
                               = t("Apply")
                             if selectedCodes.length > 0
+                              - const clearCodesParams = Object.keys(ctx.query).filter((k) => k !== 'response_codes' && k !== 'response_code' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
                               a.btn.btn-secondary.btn-sm(
-                                href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ""}${ctx.query.bounce_category ? `${ctx.query.domains ? "&" : "?"}bounce_category=${ctx.query.bounce_category}` : ""}${ctx.query.show_errors ? `${ctx.query.domains || ctx.query.bounce_category ? "&" : "?"}show_errors=${ctx.query.show_errors}` : ""}${ctx.query.q ? `${ctx.query.domains || ctx.query.bounce_category || ctx.query.show_errors ? "&" : "?"}q=${ctx.query.q}` : ""}`)
+                                href=l(`/my-account/logs${clearCodesParams ? `?${clearCodesParams}` : ""}`)
                               )
                                 = t("Clear")
                 if bounceCategories && bounceCategories.length > 0
+                  - const catBaseParams = Object.keys(ctx.query).filter((k) => k !== 'bounce_category' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
                   li.list-inline-item.mb-1
                     .btn-group
                       button.btn.btn-dark.dropdown-toggle(
@@ -221,26 +235,39 @@ if breadcrumbs.length > 1
                         aria-haspopup="true",
                         aria-expanded="false"
                       )
-                        = t("Filter by category")
+                        if ctx.query.bounce_category
+                          = t("Category:")
+                          = " "
+                          = ctx.query.bounce_category === "dmarc" ? "DMARC" : titleize(humanize(ctx.query.bounce_category))
+                        else
+                          = t("Filter by category")
                       .dropdown-menu
                         h6.dropdown-header= t("Filter by category:")
                         each category in bounceCategories
                           a.dropdown-item(
-                            href=l(`/my-account/logs?bounce_category=${category}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ""}`)
+                            href=l(`/my-account/logs?bounce_category=${category}${catBaseParams ? `&${catBaseParams}` : ""}`)
                           )
                             = category === "dmarc" ? "DMARC" : titleize(humanize(category))
+                        if ctx.query.bounce_category
+                          .dropdown-divider
+                          - const clearCatParams = Object.keys(ctx.query).filter((k) => k !== 'bounce_category' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
+                          a.dropdown-item.text-danger(
+                            href=l(`/my-account/logs${clearCatParams ? `?${clearCatParams}` : ""}`)
+                          )
+                            = t("Clear category filter")
                 //- Show Errors Only button - filters to only bounced/rejected emails
+                - const errBaseParams = Object.keys(ctx.query).filter((k) => k !== 'show_errors' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
                 li.list-inline-item.mb-1
                   if ctx.query.show_errors === 'true'
                     a.btn.btn-danger(
-                      href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ""}`)
+                      href=l(`/my-account/logs${errBaseParams ? `?${errBaseParams}` : ""}`)
                     )
                       i.fa.fa-exclamation-triangle
                       = " "
                       = t("Showing Errors Only")
                   else
                     a.btn.btn-outline-danger(
-                      href=l(`/my-account/logs?show_errors=true${ctx.query.domains ? `&domains=${ctx.query.domains}` : ""}`)
+                      href=l(`/my-account/logs?show_errors=true${errBaseParams ? `&${errBaseParams}` : ""}`)
                     )
                       i.fa.fa-exclamation-triangle
                       = " "

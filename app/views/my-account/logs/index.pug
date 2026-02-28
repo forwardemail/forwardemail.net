@@ -19,7 +19,7 @@ block body
           action=ctx.path,
           method="GET",
           data-table="#table-logs",
-          data-search-params="q,start_date,end_date,response_codes,bounce_category,show_errors,domain,domains"
+          data-search-params="q,start_date,end_date,domain,domains"
         )
           .row.mb-3
             .col-md-6
@@ -49,38 +49,7 @@ block body
                   value=ctx.query.end_date ? ctx.query.end_date : ""
                 )
           .row.mb-3
-            .col-md-3
-              //- FIX: Handle both response_code (from email links) and response_codes (from UI)
-              - const selectedResponseCode = ctx.query.response_codes || ctx.query.response_code || "";
-              select#select-response-codes.form-control(name="response_codes")
-                option(value="", selected=!selectedResponseCode)= t("All Response Codes")
-                if responseCodes && responseCodes.length > 0
-                  each code in responseCodes
-                    option(
-                      value=code,
-                      selected=selectedResponseCode && selectedResponseCode.toString() === code.toString()
-                    )= code
-            .col-md-3
-              select#select-bounce-category.form-control(
-                name="bounce_category"
-              )
-                option(value="", selected=!ctx.query.bounce_category)= t("All Bounce Categories")
-                if bounceCategories && bounceCategories.length > 0
-                  each cat in bounceCategories
-                    option(
-                      value=cat,
-                      selected=ctx.query.bounce_category === cat
-                    )= titleize(humanize(cat))
-            .col-md-3
-              .form-check.mt-2
-                input#input-show-errors.form-check-input(
-                  type="checkbox",
-                  name="show_errors",
-                  value="true",
-                  checked=ctx.query.show_errors === "true"
-                )
-                label.form-check-label(for="input-show-errors")= t("Show errors only")
-            .col-md-3.text-right
+            .col-md-12.text-right
               button.btn.btn-success(type="submit")= t("Search")
         #table-logs
           include ./_table

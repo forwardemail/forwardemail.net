@@ -337,16 +337,8 @@ async function listLogs(ctx) {
   // Supports multiple codes via comma-separated string or array (e.g., ?response_codes=421,450,550)
   const responseCodesToFilter = [];
 
-  // Handle legacy single response_code parameter
-  if (
-    isSANB(ctx.query.response_code) &&
-    Number.parseInt(ctx.query.response_code, 10) >= 200 &&
-    Number.parseInt(ctx.query.response_code, 10) < 600
-  ) {
-    responseCodesToFilter.push(Number.parseInt(ctx.query.response_code, 10));
-  }
-
-  // Handle new multi-select response_codes parameter (comma-separated or array)
+  // Handle response_codes parameter (comma-separated or array)
+  // NOTE: response_code (singular) is already normalized to response_codes above
   if (ctx.query.response_codes) {
     let codes = ctx.query.response_codes;
     // If it's a string, split by comma
@@ -613,9 +605,13 @@ async function listLogs(ctx) {
       [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
       { maxTimeMS: SIXTY_SECONDS }
     ).then((result) => result[0]?.total || 0),
-    // KEEP: Distinct from entire collection (no query filter) - fast
-    Logs.distinct('err.responseCode'),
-    Logs.distinct('bounce_category')
+    // FIX: Scope distinct queries to user's domains to avoid leaking other users' data
+    Logs.distinct('err.responseCode', {
+      domains: { $in: filteredDomains.map((d) => d._id) }
+    }),
+    Logs.distinct('bounce_category', {
+      domains: { $in: filteredDomains.map((d) => d._id) }
+    })
   ]);
 
   ctx.state.logs = logs;
