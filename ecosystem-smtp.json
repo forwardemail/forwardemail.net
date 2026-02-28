@@ -206,7 +206,7 @@
   "deploy": {
     "production": {
       "user": "deploy",
-      "host": ["149.28.215.223","121.127.44.73"],
+      "host": ["149.28.215.223","121.127.44.73", "121.127.44.66"],
       "ref": "origin/master",
       "repo": "git@github.com:forwardemail/forwardemail.net.git",
       "path": "/var/www/production",
