@@ -294,6 +294,12 @@ let jobs = [
     interval: '1d',
     timeout: 0
   },
+  // update SMTP counters every hour
+  {
+    name: 'update-smtp-counters',
+    interval: '1h',
+    timeout: 0
+  },
   // session management
   {
     name: 'session-management',
