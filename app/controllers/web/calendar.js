@@ -29,7 +29,10 @@ function createXPostEvent(post) {
 
   // Set timestamps
   const dtstart = ICAL.Time.fromJSDate(new Date(post.createdAt), true);
-  vevent.addPropertyWithValue('dtstamp', ICAL.Time.now());
+  vevent.addPropertyWithValue(
+    'dtstamp',
+    ICAL.Time.fromJSDate(new Date(), true)
+  );
   vevent.addPropertyWithValue('dtstart', dtstart);
 
   // X posts are point-in-time events, set duration to 0
@@ -80,7 +83,10 @@ function createIncidentEvent(incident) {
 
   // Set timestamps
   const dtstart = ICAL.Time.fromJSDate(new Date(incident.createdAt), true);
-  vevent.addPropertyWithValue('dtstamp', ICAL.Time.now());
+  vevent.addPropertyWithValue(
+    'dtstamp',
+    ICAL.Time.fromJSDate(new Date(), true)
+  );
   vevent.addPropertyWithValue('dtstart', dtstart);
 
   // Set end time if resolved, otherwise use start time
@@ -89,7 +95,10 @@ function createIncidentEvent(incident) {
     vevent.addPropertyWithValue('dtend', dtend);
   } else {
     // Ongoing incident - set end to now
-    vevent.addPropertyWithValue('dtend', ICAL.Time.now());
+    vevent.addPropertyWithValue(
+      'dtend',
+      ICAL.Time.fromJSDate(new Date(), true)
+    );
   }
 
   // Set summary with status prefix
@@ -147,7 +156,10 @@ function createReleaseEvent(release) {
   // Set timestamps
   const releaseDate = new Date(release.publishedAt || release.createdAt);
   const dtstart = ICAL.Time.fromJSDate(releaseDate, true);
-  vevent.addPropertyWithValue('dtstamp', ICAL.Time.now());
+  vevent.addPropertyWithValue(
+    'dtstamp',
+    ICAL.Time.fromJSDate(new Date(), true)
+  );
   vevent.addPropertyWithValue('dtstart', dtstart);
 
   // Releases are point-in-time events
@@ -265,7 +277,7 @@ async function generateCalendar(client) {
     }
   }
 
-  return vcalendar.toString();
+  return vcalendar.toString() + '\r\n';
 }
 
 /**
