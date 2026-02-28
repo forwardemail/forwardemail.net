@@ -534,7 +534,7 @@ const DOMAIN_CONNECT_PROVIDERS = {
     applyUrl: 'https://api.domainconnect.ionos.com'
   },
   'glauca-digital': {
-    applyUrl: 'https://dns.glauca.digital/connect'
+    applyUrl: 'https://dns.glauca.digital/connect/sync'
   }
 };
 

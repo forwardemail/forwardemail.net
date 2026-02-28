@@ -369,7 +369,6 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     gh repo deploy-key add deployment-keys/smtp-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-dp-dv-co-1.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-dp-dv-co-2.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/smtp-dp-dv-co-3.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/imap-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/pop3-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/pop3-dp-dv-co.pub -R forwardemail/forwardemail.net
