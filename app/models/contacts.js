@@ -114,6 +114,11 @@ const Contacts = new mongoose.Schema(
 // Compound index for address_book + contact_id uniqueness
 Contacts.index({ address_book: 1, contact_id: 1 }, { unique: true });
 
+// Compound index for address_book + uid to support UID-based lookups
+// during PUT operations where macOS Contacts may use a new URL for
+// an existing contact (same UID, different contact_id)
+Contacts.index({ address_book: 1, uid: 1 });
+
 // Add SQLite virtual DB support
 Contacts.plugin(sqliteVirtualDB);
 Contacts.plugin(validationErrorTransform);

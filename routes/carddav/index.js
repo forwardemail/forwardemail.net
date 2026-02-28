@@ -184,8 +184,8 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       // Parse vCard to extract properties (this also validates the vCard)
       const vCard = xmlHelpers.parseVCard(vCardContent);
 
-      // Check if contact already exists
-      const existingContact = await Contacts.findOne(
+      // Check if contact already exists by contact_id (URL-based lookup)
+      let existingContact = await Contacts.findOne(
         ctx.instance,
         ctx.state.session,
         {
@@ -193,6 +193,26 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           contact_id: contact
         }
       );
+
+      // macOS Contacts may send a PUT to a new URL when editing a contact.
+      // The vCard UID remains the same, but the URL (contact_id) changes.
+      // Without this UID-based fallback, the server creates a new contact
+      // instead of updating the existing one, causing duplicates on iOS/iPadOS.
+      if (!existingContact && vCard.UID) {
+        const uidContact = await Contacts.findOne(
+          ctx.instance,
+          ctx.state.session,
+          {
+            address_book: addressBook._id,
+            uid: vCard.UID
+          }
+        );
+
+        // Only use UID match if it's not soft-deleted
+        if (uidContact && !uidContact.deleted_at) {
+          existingContact = uidContact;
+        }
+      }
 
       // Check If-None-Match header (RFC 2616 Section 14.26)
       const ifNoneMatch = ctx.request.headers['if-none-match'];
@@ -226,6 +246,13 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
               ctx.translateError('ETAG_DOES_NOT_MATCH')
             );
           }
+        }
+
+        // If the contact was found by UID but has a different contact_id,
+        // update the contact_id to match the new URL the client is using.
+        const oldContactId = existingContact.contact_id;
+        if (oldContactId !== contact) {
+          existingContact.contact_id = contact;
         }
 
         // Update existing contact
@@ -286,6 +313,14 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         );
 
         ctx.set('ETag', newEtag);
+        // Return the canonical URL of the updated resource so the client
+        // knows where the contact lives after a potential contact_id change.
+        ctx.set(
+          'Content-Location',
+          `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact}${vcf(
+            contact
+          )}`
+        );
         ctx.status = 204;
       } else {
         // Create new contact
@@ -345,6 +380,13 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         );
 
         ctx.set('ETag', newEtag);
+        // Return the canonical URL of the newly created resource
+        ctx.set(
+          'Content-Location',
+          `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact}${vcf(
+            contact
+          )}`
+        );
         ctx.status = 201;
       }
 
@@ -506,6 +548,15 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
                   name: 'd:current-user-privilege-set',
                   value:
                     '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+                },
+                // macOS Contacts uses d:owner to determine which principal owns
+                // the address book; without it, Mac may not allow setting the
+                // CardDAV account as the default account for new contacts.
+                {
+                  name: 'd:owner',
+                  value: `<d:href>/dav/${encodeXMLEntities(
+                    ctx.params.user
+                  )}/</d:href>`
                 },
                 {
                   name: 'd:supported-report-set',
@@ -835,7 +886,20 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           {
             props: [
               { name: 'd:displayname', value: 'Address Books' },
-              { name: 'd:resourcetype', value: '<d:collection/>' }
+              { name: 'd:resourcetype', value: '<d:collection/>' },
+              // macOS Contacts expects d:owner on the addressbook-home-set
+              // collection to determine ownership and write permissions.
+              {
+                name: 'd:owner',
+                value: `<d:href>/dav/${encodeXMLEntities(
+                  ctx.params.user
+                )}/</d:href>`
+              },
+              {
+                name: 'd:current-user-privilege-set',
+                value:
+                  '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+              }
             ],
             status: '200 OK'
           }
@@ -881,6 +945,14 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
                   name: 'd:current-user-privilege-set',
                   value:
                     '<d:privilege><d:read/></d:privilege><d:privilege><d:write/></d:privilege><d:privilege><d:write-content/></d:privilege><d:privilege><d:bind/></d:privilege><d:privilege><d:unbind/></d:privilege>'
+                },
+                // macOS Contacts uses d:owner to determine which principal
+                // owns the address book for write permission decisions.
+                {
+                  name: 'd:owner',
+                  value: `<d:href>/dav/${encodeXMLEntities(
+                    ctx.params.user
+                  )}/</d:href>`
                 },
                 {
                   name: 'd:supported-report-set',
@@ -1152,20 +1224,17 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   const changes = [];
 
   if (syncTimestamp && !Number.isNaN(syncTimestamp.getTime())) {
-    // Return only contacts modified after or at the sync token timestamp
-    // Using $gte instead of $gt to handle edge cases where a contact
-    // is modified at the exact same millisecond as the sync token
-    // This ensures no updates are missed during rapid syncs
-    //
-    // Per RFC 6578, we need to return:
-    // 1. Changed members (new or modified) - with 200 OK status and properties
-    // 2. Removed members (deleted) - with 404 Not Found status only
+    // Return only contacts modified strictly after the sync token timestamp.
+    // Using $gt ensures that contacts already reported at the sync token
+    // timestamp are not re-reported on subsequent syncs. Re-reporting
+    // unchanged contacts can confuse macOS Contacts into creating
+    // duplicates because it sees the same contact as a "change."
     const allModifiedContacts = await Contacts.find(
       ctx.instance,
       ctx.state.session,
       {
         address_book: addressBook._id,
-        updated_at: { $gte: syncTimestamp }
+        updated_at: { $gt: syncTimestamp }
       }
     );
 
