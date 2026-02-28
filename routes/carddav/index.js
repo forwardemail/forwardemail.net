@@ -194,11 +194,24 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         }
       );
 
+      // Check If-None-Match header (RFC 2616 Section 14.26)
+      // When If-None-Match: * is present, the client explicitly wants to
+      // create a new resource and expects a 412 if it already exists at
+      // this URL. We only check by contact_id (URL) in this case.
+      const ifNoneMatch = ctx.request.headers['if-none-match'];
+      if (ifNoneMatch === '*' && existingContact) {
+        throw Boom.preconditionFailed(
+          ctx.translateError('CONTACT_ALREADY_EXISTS')
+        );
+      }
+
       // macOS Contacts may send a PUT to a new URL when editing a contact.
       // The vCard UID remains the same, but the URL (contact_id) changes.
       // Without this UID-based fallback, the server creates a new contact
       // instead of updating the existing one, causing duplicates on iOS/iPadOS.
-      if (!existingContact && vCard.UID) {
+      // Only perform UID fallback when the client is NOT sending If-None-Match: *
+      // because that header signals explicit create-new intent (e.g. tsdav createVCard).
+      if (!existingContact && vCard.UID && ifNoneMatch !== '*') {
         const uidContact = await Contacts.findOne(
           ctx.instance,
           ctx.state.session,
@@ -212,14 +225,6 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         if (uidContact && !uidContact.deleted_at) {
           existingContact = uidContact;
         }
-      }
-
-      // Check If-None-Match header (RFC 2616 Section 14.26)
-      const ifNoneMatch = ctx.request.headers['if-none-match'];
-      if (ifNoneMatch === '*' && existingContact) {
-        throw Boom.preconditionFailed(
-          ctx.translateError('CONTACT_ALREADY_EXISTS')
-        );
       }
 
       // Generate ETag
