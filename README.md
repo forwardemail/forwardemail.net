@@ -965,6 +965,7 @@ Forward Email supports the [Domain Connect](https://domainconnect.org/) standard
    * **Return-Path** — `fe-bounces` CNAME pointing to `forwardemail.net`
    * **DMARC** — `_dmarc` TXT record with `p=reject`
    * **Site verification** — `forward-email-site-verification={token}` TXT record
+   * **Autodiscovery** — `autoconfig` and `autodiscover` CNAMEs for email client autoconfiguration
 
 ### Template File
 
@@ -987,20 +988,23 @@ This file is served at `/.well-known/domain-connect/forwardemail.net.email.json`
 
 ### Environment Variables
 
-| Variable                             | Description                                                                    | Default                                        |
-| ------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------- |
-| `DOMAIN_CONNECT_PROVIDER_ID`         | Provider ID (must match template `providerId`)                                 | `forwardemail.net`                             |
-| `DOMAIN_CONNECT_PROVIDER_NAME`       | Human-readable provider name                                                   | `Forward Email`                                |
-| `DOMAIN_CONNECT_SERVICE_ID`          | Service ID (must match template `serviceId`)                                   | `email`                                        |
-| `DOMAIN_CONNECT_SERVICE_NAME`        | Human-readable service name                                                    | `Email (Forwarding + SMTP)`                    |
-| `DOMAIN_CONNECT_LOGO_URL`            | URL to the provider logo                                                       | `https://forwardemail.net/img/logo-square.svg` |
-| `DOMAIN_CONNECT_DESCRIPTION`         | Short description of the service                                               | *(see `.env.defaults`)*                        |
-| `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` | Domain where the public key TXT record is published (for signed sync requests) | `forwardemail.net`                             |
-| `DOMAIN_CONNECT_PRIVATE_KEY`         | RSA private key (PEM) used to sign synchronous Domain Connect apply requests   | *(empty — signing disabled)*                   |
+| Variable                             | Description                                                                         | Default                                        |
+| ------------------------------------ | ----------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `DOMAIN_CONNECT_PROVIDER_ID`         | Provider ID (must match template `providerId`)                                      | `forwardemail.net`                             |
+| `DOMAIN_CONNECT_PROVIDER_NAME`       | Human-readable provider name                                                        | `Forward Email`                                |
+| `DOMAIN_CONNECT_SERVICE_ID`          | Service ID (must match template `serviceId`)                                        | `email`                                        |
+| `DOMAIN_CONNECT_SERVICE_NAME`        | Human-readable service name                                                         | `Email (Forwarding + SMTP)`                    |
+| `DOMAIN_CONNECT_LOGO_URL`            | URL to the provider logo                                                            | `https://forwardemail.net/img/logo-square.svg` |
+| `DOMAIN_CONNECT_DESCRIPTION`         | Short description of the service                                                    | *(see `.env.defaults`)*                        |
+| `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` | Domain where the public key TXT record is published (for signed sync requests)      | `forwardemail.net`                             |
+| `DOMAIN_CONNECT_SYNC_KEY_ID`         | DNS host prefix for the public key TXT record (the `key=` parameter in signed URLs) | `_dck1`                                        |
+| `DOMAIN_CONNECT_PRIVATE_KEY`         | RSA private key (PEM) used to sign synchronous Domain Connect apply requests        | *(empty — signing disabled)*                   |
 
 ### Generating and Publishing the Signing Key
 
 Some DNS providers (notably Cloudflare) require Domain Connect apply URLs to be cryptographically signed. This uses an RSA key pair where the private key signs the request and the public key is published as a DNS TXT record so the provider can verify the signature.
+
+> **Important:** Do not confuse the public key TXT record with the `_domainconnect` DNS Provider Discovery record. The `_domainconnect.<domain>` TXT record is used for discovering the DNS provider's API endpoint (step 2 in "How It Works" above). The public key record described below is a separate TXT record at `{DOMAIN_CONNECT_SYNC_KEY_ID}.{DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN}` used exclusively for signature verification.
 
 **Step 1: Generate an RSA key pair**
 
@@ -1014,15 +1018,23 @@ openssl rsa -in domain-connect-private.key -outform der -pubout 2>/dev/null | op
 
 **Step 2: Publish the public key as a DNS TXT record**
 
-Add a TXT record on the domain specified by `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN` (default: `forwardemail.net`):
+Add one or more TXT records at `{DOMAIN_CONNECT_SYNC_KEY_ID}.{DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN}`. With the defaults (`_dck1` and `forwardemail.net`), the record is:
 
-| Type | Name/Host        | Value                         |
-| ---- | ---------------- | ----------------------------- |
-| TXT  | `_domainconnect` | `{base64-encoded-public-key}` |
+| Type | Name/Host | Value                                       |
+| ---- | --------- | ------------------------------------------- |
+| TXT  | `_dck1`   | `p=1,a=RS256,d={base64-encoded-public-key}` |
 
-The record name is `_domainconnect.{DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN}`. For example, if `DOMAIN_CONNECT_SYNC_PUB_KEY_DOMAIN=forwardemail.net`, the full record is `_domainconnect.forwardemail.net` with the base64-encoded public key as the value.
+The full DNS name is `_dck1.forwardemail.net`. The DNS provider resolves `{key}.{syncPubKeyDomain}` (where `key` is the value of `DOMAIN_CONNECT_SYNC_KEY_ID`) to fetch the public key and verify the signature.
 
-> **Note:** The public key must be the raw base64-encoded DER format (no PEM headers, no line breaks). The `openssl base64 -A` flag in the command above ensures single-line output.
+The TXT record value follows the [Domain Connect specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec%20Draft.adoc#digitally-sign-requests) format:
+
+* `p` — part number (starting at 1; used to split large keys across multiple TXT records)
+* `a` — signing algorithm (`RS256` for RSA-SHA256, the default)
+* `d` — base64-encoded public key data (DER format, no PEM headers, no line breaks)
+
+For a key that fits in a single TXT record, use `p=1`. If the base64 string exceeds your DNS provider's TXT record size limit, split it across multiple records (`p=1`, `p=2`, etc.).
+
+> **Note:** The `openssl base64 -A` flag in Step 1 ensures single-line output with no line breaks, which is required for the `d=` value.
 
 **Step 3: Set the private key in your environment**
 
@@ -1038,13 +1050,15 @@ Or set it as an environment variable directly:
 export DOMAIN_CONNECT_PRIVATE_KEY=$(cat domain-connect-private.key)
 ```
 
-When `DOMAIN_CONNECT_PRIVATE_KEY` is set, the server will sign all synchronous Domain Connect apply URLs with RSA-SHA256. The signature is appended as `&sig=...&key=...` parameters per the Domain Connect specification. When the key is empty or unset, apply URLs are generated without signatures (which works for providers that do not require signing).
+When `DOMAIN_CONNECT_PRIVATE_KEY` is set, the server will sign all synchronous Domain Connect apply URLs with RSA-SHA256. The signature is appended as `&sig=...&key=...` parameters per the [Domain Connect specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec%20Draft.adoc#digitally-sign-requests), where `key` is the value of `DOMAIN_CONNECT_SYNC_KEY_ID` (default `_dck1`). The DNS provider uses this `key` value to look up the public key at `{key}.{syncPubKeyDomain}` and verify the signature. When the private key is empty or unset, apply URLs are generated without signatures (which works for providers that do not require signing).
 
 ### References
 
-* [Domain Connect Specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec.md)
+* [Domain Connect Specification](https://github.com/Domain-Connect/spec/blob/master/Domain%20Connect%20Spec%20Draft.adoc)
+* [Domain Connect IETF Draft](https://datatracker.ietf.org/doc/draft-kowalik-regext-domainconnect/)
 * [Cloudflare Domain Connect](https://developers.cloudflare.com/dns/reference/domain-connect/)
 * [Domain Connect Templates Repository](https://github.com/Domain-Connect/Templates)
+* [Domain Connect Signature Verification Tool](https://exampleservice.domainconnect.org/sig)
 
 
 ## License
