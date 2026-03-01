@@ -306,7 +306,10 @@ test('nsProviders glauca-digital has correct applyUrl', (t) => {
   t.truthy(glauca, 'Should have glauca-digital provider');
   t.truthy(glauca && glauca.domainConnect);
   if (glauca && glauca.domainConnect) {
-    t.is(glauca.domainConnect.applyUrl, 'https://dns.glauca.digital/connect');
+    t.is(
+      glauca.domainConnect.applyUrl,
+      'https://dns.glauca.digital/connect/sync'
+    );
   }
 });
 
