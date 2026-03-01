@@ -46,10 +46,12 @@ const {
   useCases
 } = require('#config/utilities');
 const { web } = require('#controllers');
+const getFaqSchema = require('#helpers/get-faq-schema');
 
 const MAX_AGE = ms('1y') / 1000;
 
 const filePath = path.join(config.views.root, '_tti.pug');
+const faqFilePath = path.join(config.views.root, 'faq', 'index.md');
 
 const router = new Router();
 
@@ -413,6 +415,17 @@ localeRouter
     '/faq',
     hasSidebar,
     async (ctx, next) => {
+      // Load FAQ structured data (JSON-LD) from Redis cache or parse from markdown
+      try {
+        ctx.state.faqSchemaData = await getFaqSchema(
+          ctx.client,
+          faqFilePath,
+          ctx.logger
+        );
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+
       // FAQ takes 30s+ to render in dev/test
       // (we need to rewrite and optimize it)
       if (_.isEmpty(ctx.query) && !ctx.isAuthenticated())

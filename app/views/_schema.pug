@@ -53,79 +53,83 @@ if ctx.pathWithoutLocale === '/'
       }
     }
 
-//- FAQPage Schema for FAQ page
+//- FAQPage Schema for FAQ page (dynamically generated from FAQ markdown with Redis caching)
 if ctx.pathWithoutLocale === '/faq'
-  script(type="application/ld+json").
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How do I set up email forwarding for my custom domain?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Setting up email forwarding takes just 2 minutes. Add our MX records to your domain's DNS settings, create a TXT record with your forwarding rules, and you're done. We provide step-by-step guides for all major DNS providers."
+  if faqSchemaData && faqSchemaData.mainEntity && faqSchemaData.mainEntity.length
+    script(type="application/ld+json")!= JSON.stringify(faqSchemaData)
+  else
+    //- Fallback to a minimal hardcoded FAQ schema if dynamic data is unavailable
+    script(type="application/ld+json").
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I set up email forwarding for my custom domain?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Setting up email forwarding takes just 2 minutes. Add our MX records to your domain's DNS settings, create a TXT record with your forwarding rules, and you're done. We provide step-by-step guides for all major DNS providers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Forward Email really free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Our email forwarding service is completely free for unlimited aliases and domains. We offer paid plans for additional features like IMAP/POP3 access, SMTP sending, and increased storage."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I send email from my custom domain?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! You can send email as you@yourdomain.com using our SMTP service or through Gmail's Send Mail As feature. We provide detailed setup guides for both methods."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Forward Email secure and private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolutely. We use TLS encryption for all connections, support SPF/DKIM/DMARC authentication, and our entire codebase is open source for transparency. We never read, store, or sell your emails."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between email forwarding and email hosting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Email forwarding redirects emails from your custom domain to an existing email account (like Gmail). Email hosting stores your emails on our servers with IMAP/POP3 access. We offer both services."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How many email aliases can I create?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can create unlimited email aliases with Forward Email. Use catch-all forwarding to receive email at any address on your domain, or create specific aliases for different purposes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Forward Email work with Gmail?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Forward Email works perfectly with Gmail. You can forward emails to your Gmail account and use Gmail's Send Mail As feature to send from your custom domain address."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What DNS records do I need to set up?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You need to add two MX records pointing to our servers and one TXT record containing your forwarding rules. We also recommend adding SPF, DKIM, and DMARC records for better deliverability."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Forward Email really free?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes! Our email forwarding service is completely free for unlimited aliases and domains. We offer paid plans for additional features like IMAP/POP3 access, SMTP sending, and increased storage."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I send email from my custom domain?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes! You can send email as you@yourdomain.com using our SMTP service or through Gmail's Send Mail As feature. We provide detailed setup guides for both methods."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Forward Email secure and private?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Absolutely. We use TLS encryption for all connections, support SPF/DKIM/DMARC authentication, and our entire codebase is open source for transparency. We never read, store, or sell your emails."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the difference between email forwarding and email hosting?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Email forwarding redirects emails from your custom domain to an existing email account (like Gmail). Email hosting stores your emails on our servers with IMAP/POP3 access. We offer both services."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How many email aliases can I create?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You can create unlimited email aliases with Forward Email. Use catch-all forwarding to receive email at any address on your domain, or create specific aliases for different purposes."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Forward Email work with Gmail?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes! Forward Email works perfectly with Gmail. You can forward emails to your Gmail account and use Gmail's Send Mail As feature to send from your custom domain address."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What DNS records do I need to set up?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You need to add two MX records pointing to our servers and one TXT record containing your forwarding rules. We also recommend adding SPF, DKIM, and DMARC records for better deliverability."
-          }
-        }
-      ]
-    }
+        ]
+      }
 
 //- Product Schema for pricing/comparison pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
