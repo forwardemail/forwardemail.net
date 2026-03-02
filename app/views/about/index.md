@@ -114,11 +114,27 @@ The simplicity and effectiveness of this solution attracted attention from promi
 
 **February 2025**: Forward Email switched to [DataPacket](https://www.datapacket.com) as their new primary data center provider, implementing custom, performance-focused, bare-metal hardware to further enhance service reliability and speed.
 
+**March 2025**: Version 1.0 of Forward Email was officially released.
+
+**April 2025**: The first version of the [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) was published, and the company began accepting cryptocurrency payments.
+
+**May 2025**: The service launched new API documentation using [Scalar](https://github.com/scalar/scalar).
+
 **June 2025**: Forward Email launched support for the [CardDAV protocol](/faq#do-you-support-contacts-carddav), expanding the platform's capabilities to include contact synchronization alongside existing email and calendar services.
+
+**August 2025**: The platform added [CalDAV VTODO/tasks support](https://en.wikipedia.org/wiki/ICalendar#To-do_\(VTODO\)), enabling task management alongside calendar events.
+
+**November 2025**: The platform's security was enhanced with a migration from PBKDF2 to [Argon2id](https://en.wikipedia.org/wiki/Argon2) for password hashing, and the infrastructure was migrated from Redis to [Valkey](https://github.com/valkey-io/valkey).
+
+**December 2025**: Version 2.0 was released, introducing [REQUIRETLS (RFC 8689)](/rfc#requiretls-support) support for enforced TLS encryption on email transport and upgrading to [OpenPGP.js](https://github.com/openpgpjs/openpgpjs) v6.
 
 ### 2026 - RFC Compliance and Advanced Filtering {#2026---rfc-compliance-and-advanced-filtering}
 
-**January 2026**: Forward Email released a comprehensive [RFC protocol compliance document](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) detailing complete standards support across SMTP, IMAP, POP3, and CalDAV. The platform also added [REQUIRETLS support (RFC 8689)](/faq#requiretls-support) for enforced TLS encryption on email transport, [S/MIME encryption (RFC 8551)](/faq#do-you-support-smime-encryption) for secure message signing and encryption, and comprehensive [Sieve email filtering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) with [ManageSieve protocol (RFC 5804)](/faq#do-you-support-sieve-email-filtering) support for server-side email filtering. Additionally, the [REST API](/email-api) was expanded to 39 endpoints covering messages, folders, contacts, calendars, and calendar events.
+**January 2026**: Forward Email released a comprehensive [RFC protocol compliance document](/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison) and added support for [S/MIME encryption (RFC 8551)](/faq#do-you-support-smime-encryption) and comprehensive [Sieve email filtering (RFC 5228)](/faq#do-you-support-sieve-email-filtering) with [ManageSieve protocol (RFC 5804)](/faq#do-you-support-sieve-email-filtering) support. The REST API was also expanded to 39 endpoints.
+
+**February 2026**: The official, open-source webmail client launched at [mail.forwardemail.net](https://mail.forwardemail.net) ([source code on GitHub](https://github.com/forwardemail/mail.forwardemail.net)). The platform also added support for [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), and [Domain Connect](https://domainconnect.org) for 1-click DNS setup. Real-time push notifications for IMAP, CalDAV, and CardDAV were launched using WebSockets.
+
+**March 2026**: Support for per-domain custom S3-compatible storage was added, along with a command-line tool for management. Work began on cross-platform desktop and mobile applications for macOS, Windows, Linux, iOS, and Android using the same open-source webmail codebase, built with [Tauri](https://tauri.app).
 
 
 ## Core Principles
@@ -138,7 +154,7 @@ Since its inception, Forward Email has maintained a steadfast commitment to priv
 
 ## Current Status
 
-As of 2025, Forward Email serves over 500,000 domains worldwide, including notable organizations and industry leaders such as:
+As of March 2026, Forward Email serves over 500,000 domains worldwide, including notable organizations and industry leaders such as:
 
 * **Technology Companies**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Media Organizations**: Fox News Radio, Disney Ad Sales
