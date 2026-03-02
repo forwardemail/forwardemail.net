@@ -101,10 +101,11 @@ block body
               //- 1-Click Setup button (only for providers that support Domain Connect)
               //- verify-smtp is already gated by ensureUpgradedPlan middleware, so no plan check needed
               if provider && provider.domainConnect
-                form.mr-1.mt-3(
+                form.domain-connect-form.mr-1.mt-3(
                   action=l("/domain-connect"),
                   method="POST",
-                  style="display: inline"
+                  style="display: inline",
+                  data-verify-url=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`)
                 )
                   input(type="hidden", name="provider", value=provider.slug)
                   input(type="hidden", name="domain", value=domain.name)
@@ -184,10 +185,11 @@ block body
                 //- 1-Click Setup: primary CTA for providers that support Domain Connect
                 //- verify-smtp is already gated by ensureUpgradedPlan middleware, so no plan check needed
                 .text-center.mt-3
-                  form(
+                  form.domain-connect-form(
                     action=l("/domain-connect"),
                     method="POST",
-                    style="display: inline"
+                    style="display: inline",
+                    data-verify-url=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`)
                   )
                     input(type="hidden", name="provider", value=provider.slug)
                     input(type="hidden", name="domain", value=domain.name)

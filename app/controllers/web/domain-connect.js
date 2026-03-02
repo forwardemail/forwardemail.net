@@ -160,7 +160,14 @@ function buildApplyUrl(urlSyncUX, params, privateKey) {
 
 // POST /domain-connect
 // Body: { domain, provider (optional slug), redirect_to (optional fallback URL on error) }
-// Redirects the user to the provider's Domain Connect apply URL
+//
+// For AJAX requests (Accept: application/json):
+//   Returns JSON { applyUrl } so the client can open it in a new tab
+//   and show a verification modal on the current page.
+//
+// For regular form submissions:
+//   Redirects the user to the provider's Domain Connect apply URL.
+//
 module.exports = async (ctx) => {
   const {
     domain: rawDomain,
@@ -295,19 +302,25 @@ module.exports = async (ctx) => {
 
   // Step 3: Show appropriate error
   if (templateDefinitelyNotFound) {
-    ctx.flash(
-      'error',
-      ctx.translate('DOMAIN_CONNECT_TEMPLATE_NOT_FOUND', domain)
-    );
-    return ctx.redirect(fallbackUrl);
+    const message = ctx.translate('DOMAIN_CONNECT_TEMPLATE_NOT_FOUND', domain);
+    if (ctx.accepts('html')) {
+      ctx.flash('error', message);
+      return ctx.redirect(fallbackUrl);
+    }
+
+    ctx.body = { message };
+    return;
   }
 
   if (!urlSyncUX) {
-    ctx.flash(
-      'error',
-      ctx.translate('DOMAIN_CONNECT_PROVIDER_NOT_FOUND', domain)
-    );
-    return ctx.redirect(fallbackUrl);
+    const message = ctx.translate('DOMAIN_CONNECT_PROVIDER_NOT_FOUND', domain);
+    if (ctx.accepts('html')) {
+      ctx.flash('error', message);
+      return ctx.redirect(fallbackUrl);
+    }
+
+    ctx.body = { message };
+    return;
   }
 
   // Build template variable params
@@ -325,7 +338,14 @@ module.exports = async (ctx) => {
         ? `v=DKIM1; k=rsa; p=${Buffer.from(
             userDomain.dkim_public_key.buffer || userDomain.dkim_public_key
           ).toString('base64')};`
-        : ''
+        : '',
+    // Per Domain Connect spec §7.2.2, redirect_uri tells the provider
+    // where to redirect the user after applying the template.
+    // Our template has syncRedirectDomain=forwardemail.net so the provider
+    // will validate that this URI is on that domain.
+    redirect_uri: `${config.urls.web}${ctx.state.l(
+      `/my-account/domains/${encodeURIComponent(domain)}`
+    )}`
   });
 
   const applyUrl = buildApplyUrl(
@@ -333,6 +353,13 @@ module.exports = async (ctx) => {
     params,
     config.domainConnect.privateKey || null
   );
+
+  // For AJAX requests, return JSON so the client can open the apply URL
+  // in a new tab and show a verification modal on the current page.
+  if (!ctx.accepts('html')) {
+    ctx.body = { applyUrl };
+    return;
+  }
 
   return ctx.redirect(applyUrl);
 };

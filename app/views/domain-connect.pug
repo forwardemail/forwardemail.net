@@ -27,7 +27,10 @@ block body
                 each provider in dcProviders
                   .col-md-4.col-6.mb-3
                     if user && user.plan !== 'free'
-                      form(action=l("/domain-connect"), method="POST")
+                      form.domain-connect-form(
+                        action=l("/domain-connect"),
+                        method="POST"
+                      )
                         input(
                           type="hidden",
                           name="provider",
@@ -80,7 +83,10 @@ block body
           .card-body
             p
               = t("Enter your domain name and we will automatically detect your DNS provider and configure everything in one step.")
-            form(action=l("/domain-connect"), method="POST")
+            form.domain-connect-form(
+              action=l("/domain-connect"),
+              method="POST"
+            )
               .form-group
                 label(for="domain-auto")= t("Domain Name")
                 input#domain-auto.form-control(

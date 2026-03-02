@@ -101,10 +101,11 @@ block body
             if provider && provider.domainConnect
               if user && user.plan !== 'free'
                 if domain && domain.name
-                  form.mr-1.mt-3(
+                  form.domain-connect-form.mr-1.mt-3(
                     action=l("/domain-connect"),
                     method="POST",
-                    style="display: inline"
+                    style="display: inline",
+                    data-verify-url=domain ? l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`) : ""
                   )
                     input(type="hidden", name="provider", value=provider.slug)
                     input(type="hidden", name="domain", value=domain.name)
@@ -519,7 +520,10 @@ block body
               span(aria-hidden="true") &times;
           .modal-body
             p.small.text-muted.mb-3= t("Enter your domain name to automatically configure all DNS records.")
-            form(action=l("/domain-connect"), method="POST")
+            form.domain-connect-form(
+              action=l("/domain-connect"),
+              method="POST"
+            )
               .form-group
                 label.sr-only(for="domain-connect-domain")= t("Domain")
                 input#domain-connect-domain.form-control(

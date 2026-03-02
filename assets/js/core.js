@@ -297,6 +297,59 @@ window.addEventListener(
     // Bind ajax link submission
     $body.on('click', 'a.ajax-form', ajaxForm);
 
+    // Domain Connect 1-Click Setup: open apply URL in new tab, show verify modal
+    $body.on('submit', 'form.domain-connect-form', async function (ev) {
+      ev.preventDefault();
+      const $form = $(this);
+      const $btn = $form.find('button[type="submit"]');
+      $btn.prop('disabled', true).addClass('disabled');
+      const spinner = new Spinner($);
+      spinner.show();
+      try {
+        const body = {};
+        for (const field of $form.serializeArray()) {
+          body[field.name] = field.value;
+        }
+
+        const response = await superagent
+          .post($form.attr('action'))
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/json')
+          .set('X-Requested-With', 'XMLHttpRequest')
+          .ok(() => true)
+          .send(body);
+        spinner.hide();
+        if (!response.ok || !response.body || !response.body.applyUrl) {
+          const msg =
+            (response.body && response.body.message) ||
+            'An error occurred. Please try again.';
+          Swal.fire(window._types.error, msg, 'error');
+          return;
+        }
+
+        // Open the provider's apply page in a new tab
+        window.open(response.body.applyUrl, '_blank');
+        // Show a modal telling the user to verify after applying DNS changes
+        await Swal.fire({
+          title: 'DNS Setup In Progress',
+          html:
+            'A new tab has been opened to apply your DNS records.' +
+            '<br><br>' +
+            'Once you have confirmed the DNS changes on that page, ' +
+            'close this dialog and click the green ' +
+            '<strong>Verify</strong> button on this page.',
+          icon: 'info',
+          confirmButtonText: 'Close',
+          allowOutsideClick: false
+        });
+      } catch (err) {
+        spinner.hide();
+        Swal.fire(window._types.error, err.message, 'error');
+      } finally {
+        $btn.prop('disabled', false).removeClass('disabled');
+      }
+    });
+
     window.addEventListener('tableAjaxFormReloaded', renderDayjs);
     window.addEventListener('tableAjaxFormReloaded', function () {
       // remove any elements that have `remove-on-table-ajax-form-reloaded`
