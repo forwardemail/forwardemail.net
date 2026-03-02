@@ -605,7 +605,7 @@ block body
                     i.fa.fa-question-circle
                     = " "
                     = t("Learn more about custom S3 storage in our FAQ")
-                .alert.alert-info.small.mb-3
+                .alert.alert-info.small.mb-3.text-dark
                   p.mb-1
                     strong= t("How backups work:")
                     = " "
@@ -628,9 +628,9 @@ block body
                   p.mb-1
                     strong= t("Convert backups:")
                     = " "
-                    != t('Use our standalone CLI tool <a href="https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml" target="_blank" rel="noopener noreferrer">convert-sqlite-to-eml</a> to convert .sqlite backups to .eml files locally. Works on Windows, Linux, and macOS.')
+                    != t('Use our standalone CLI tool <a class="alert-link" href="https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml" target="_blank" rel="noopener noreferrer">convert-sqlite-to-eml</a> to convert .sqlite backups to .eml files locally. Works on Windows, Linux, and macOS.')
                     = " "
-                    a(
+                    a.alert-link(
                       href=l("/faq#how-do-i-convert-sqlite-backups-to-eml-files"),
                       target="_blank",
                       rel="noopener noreferrer"

@@ -82,7 +82,7 @@
   * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
   * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
   * [How do I set up email autodiscovery for my domain](#how-do-i-set-up-email-autodiscovery-for-my-domain)
-* [Security](#security)
+* [Security](#security-1)
   * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
   * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
   * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
@@ -1166,7 +1166,7 @@ The backup process works as follows:
 Three backup formats are supported:
 
 | Format   | Extension | Description                                                                 |
-|----------|-----------|-----------------------------------------------------------------------------|
+| -------- | --------- | --------------------------------------------------------------------------- |
 | `sqlite` | `.sqlite` | Raw encrypted SQLite database snapshot (default for automatic IMAP backups) |
 | `mbox`   | `.zip`    | Password-protected ZIP containing mailbox in mbox format                    |
 | `eml`    | `.zip`    | Password-protected ZIP containing individual `.eml` files per message       |
@@ -1252,13 +1252,28 @@ You can either download a pre-built binary (no [Node.js](https://github.com/node
 
 **Pre-built binaries** — Download the latest release for your platform from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
 
-| Platform | Architecture | File |
-|----------|-------------|------|
-| Linux | x64 | `convert-sqlite-to-eml-linux-x64.tar.gz` |
-| Linux | arm64 | `convert-sqlite-to-eml-linux-arm64.tar.gz` |
-| macOS | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64.tar.gz` |
-| macOS | Intel | `convert-sqlite-to-eml-darwin-x64.tar.gz` |
-| Windows | x64 | `convert-sqlite-to-eml-win32-x64.zip` |
+| Platform | Architecture  | File                                 |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `convert-sqlite-to-eml-linux-x64`    |
+| Linux    | arm64         | `convert-sqlite-to-eml-linux-arm64`  |
+| macOS    | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64` |
+| Windows  | x64           | `convert-sqlite-to-eml-win-x64.exe`  |
+
+> **macOS users:** After downloading, you may need to remove the quarantine attribute before running the binary:
+>
+> ```bash
+> sudo xattr -rd com.apple.quarantine ./convert-sqlite-to-eml-darwin-arm64
+> ```
+>
+> (Replace `./convert-sqlite-to-eml-darwin-arm64` with the actual path to the downloaded file.)
+
+> **Linux users:** After downloading, you may need to make the binary executable:
+>
+> ```bash
+> chmod +x ./convert-sqlite-to-eml-linux-x64
+> ```
+>
+> (Replace `./convert-sqlite-to-eml-linux-x64` with the actual path to the downloaded file.)
 
 **From source** (requires [Node.js](https://github.com/nodejs/node) >= 18):
 
@@ -1296,12 +1311,12 @@ The tool supports both interactive and non-interactive modes.
   --output /path/to/output.zip
 ```
 
-| Flag | Description |
-|------|-------------|
-| `--path <path>` | Path to the encrypted SQLite backup file |
-| `--password <pass>` | IMAP/alias password for decryption |
-| `--output <path>` | Output path for the ZIP file (default: auto-generated with ISO 8601 timestamp) |
-| `--help` | Show help message |
+| Flag                | Description                                                                    |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `--path <path>`     | Path to the encrypted SQLite backup file                                       |
+| `--password <pass>` | IMAP/alias password for decryption                                             |
+| `--output <path>`   | Output path for the ZIP file (default: auto-generated with ISO 8601 timestamp) |
+| `--help`            | Show help message                                                              |
 
 #### Output Format
 
