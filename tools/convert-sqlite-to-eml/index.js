@@ -411,7 +411,8 @@ function openDatabase(databasePath, password) {
   try {
     database.pragma("cipher='chacha20'");
     database.pragma(`key="${password}"`);
-    database.pragma('journal_mode=WAL');
+    // Verify password is correct by reading schema (WAL not used since we open readonly)
+    database.prepare('SELECT count(*) FROM sqlite_master').get();
     return database;
   } catch (error_) {
     if (error_.code === 'SQLITE_NOTADB' || error_.code === 'SQLITE_ERROR') {
@@ -426,7 +427,8 @@ function openDatabase(databasePath, password) {
       try {
         database2.pragma("cipher='aes256cbc'");
         database2.pragma(`key="${password}"`);
-        database2.pragma('journal_mode=WAL');
+        // Verify password is correct by reading schema (WAL not used since we open readonly)
+        database2.prepare('SELECT count(*) FROM sqlite_master').get();
         return database2;
       } catch (error) {
         try {

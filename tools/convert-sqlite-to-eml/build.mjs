@@ -8,15 +8,14 @@
  *   node build.mjs           # Build for current platform
  *
  * This script:
- * 1. Bundles the CLI tool with esbuild (excluding native modules)
- * 2. Creates a Node.js SEA blob
- * 3. Injects the blob into a copy of the Node.js binary
+ * 1. Bundles the CLI tool with esbuild (excluding only the `bindings` module)
+ * 2. Embeds the native .node file as a SEA asset
+ * 3. Creates a Node.js SEA blob
+ * 4. Injects the blob into a copy of the Node.js binary
  *
- * Note: better-sqlite3-multiple-ciphers is a native module and cannot be
- * bundled into the SEA binary. It must be distributed alongside the binary
- * or users must have it installed. For the GitHub release workflow, we use
- * esbuild to bundle everything except native modules, then package the
- * native .node files alongside the binary.
+ * The native module (better-sqlite3-multiple-ciphers) is embedded as a SEA
+ * asset and extracted to a temp file at runtime. This produces a true
+ * single-file binary with no external dependencies.
  */
 
 import { execSync } from 'node:child_process';
@@ -37,22 +36,53 @@ fs.mkdirSync(distributionDirectory, { recursive: true });
 
 console.log('Building convert-sqlite-to-eml...');
 
-// Step 1: Bundle with esbuild (exclude native modules)
+// Find the native .node module
+const nativeModulePath = findNativeModule();
+console.log(`Found native module: ${nativeModulePath}`);
+
+// Step 1: Bundle with esbuild
+// We bundle everything EXCEPT the `bindings` module (which locates .node files).
+// In the banner, we intercept require('bindings') to extract the .node from
+// the SEA asset at runtime using node:sea getRawAsset().
 console.log('Step 1: Bundling with esbuild...');
 const { build } = await import('esbuild');
-// Banner that patches require() in SEA context to use createRequire
-// so native modules can be loaded from the binary's directory
+
+// Banner that intercepts require('bindings') in SEA context
+// to extract the native .node file from the embedded SEA asset
 const seaBanner = [
   '(function() {',
   '  if (typeof require !== "undefined") {',
   '    var origRequire = require;',
   '    var Module = origRequire("module");',
   '    if (typeof Module.createRequire === "function") {',
-  '      var path = origRequire("path");',
-  '      var realRequire = Module.createRequire(path.join(process.execPath, "..", "package.json"));',
   '      var origResolve = require.resolve;',
   '      require = function(id) {',
-  '        try { return origRequire(id); } catch(e) { return realRequire(id); }',
+  '        if (id === "bindings") {',
+  '          return function() {',
+  '            try {',
+  '              var sea = origRequire("node:sea");',
+  '              if (sea && sea.isSea && sea.isSea()) {',
+  '                var os = origRequire("os");',
+  '                var path = origRequire("path");',
+  '                var fs = origRequire("fs");',
+  '                var tmpPath = path.join(os.tmpdir(), "better_sqlite3_" + process.pid + ".node");',
+  '                var raw = sea.getRawAsset("better_sqlite3.node");',
+  '                fs.writeFileSync(tmpPath, Buffer.from(raw));',
+  '                var mod = { exports: {} };',
+  '                process.dlopen(mod, tmpPath);',
+  '                process.on("exit", function() { try { fs.unlinkSync(tmpPath); } catch(e) {} });',
+  '                return mod.exports;',
+  '              }',
+  '            } catch(e) {}',
+  '            var realReq = Module.createRequire(path.join(process.execPath, "..", "package.json"));',
+  '            return realReq("bindings")("better_sqlite3.node");',
+  '          };',
+  '        }',
+  '        try { return origRequire(id); } catch(e) {',
+  '          var p = origRequire("path");',
+  '          var rr = Module.createRequire(p.join(process.execPath, "..", "package.json"));',
+  '          return rr(id);',
+  '        }',
   '      };',
   '      require.resolve = origResolve;',
   '    }',
@@ -64,15 +94,12 @@ await build({
   entryPoints: [path.join(__dirname, 'index.js')],
   bundle: true,
   platform: 'node',
-  target: 'node18',
+  target: 'node20',
   outfile: path.join(distributionDirectory, 'bundle.cjs'),
   format: 'cjs',
   banner: { js: seaBanner },
-  // Native modules cannot be bundled - mark as external
-  external: [
-    'better-sqlite3-multiple-ciphers',
-    'better_sqlite3_multiple_ciphers'
-  ],
+  // Only externalize `bindings` - the JS wrapper code gets bundled
+  external: ['bindings'],
   // Minify for smaller binary
   minify: true,
   // Keep function names for better error messages
@@ -81,14 +108,17 @@ await build({
 
 console.log('Bundle created: dist/bundle.cjs');
 
-// Step 2: Create SEA config
+// Step 2: Create SEA config with native module as asset
 console.log('Step 2: Creating SEA configuration...');
 const seaConfig = {
   main: path.join(distributionDirectory, 'bundle.cjs'),
   output: path.join(distributionDirectory, 'sea-prep.blob'),
   disableExperimentalSEAWarning: true,
   useSnapshot: false,
-  useCodeCache: true
+  useCodeCache: true,
+  assets: {
+    'better_sqlite3.node': nativeModulePath
+  }
 };
 
 const seaConfigPath = path.join(distributionDirectory, 'sea-config.json');
@@ -160,7 +190,46 @@ if (process.platform === 'darwin') {
 }
 
 console.log(`\nBuild complete: ${binaryPath}`);
-console.log('\nNote: better-sqlite3-multiple-ciphers native module must be');
 console.log(
-  'available in the same directory or in NODE_PATH for the SEA binary to work.'
+  'The native module is embedded as a SEA asset - no external files needed.'
 );
+
+/**
+ * Find the native .node module for better-sqlite3-multiple-ciphers.
+ * Searches prebuilds first, then build/Release.
+ */
+function findNativeModule() {
+  const baseDirectory = path.join(
+    __dirname,
+    'node_modules',
+    'better-sqlite3-multiple-ciphers'
+  );
+
+  // Check prebuilds directory first
+  const prebuildsDirectory = path.join(baseDirectory, 'prebuilds');
+  if (fs.existsSync(prebuildsDirectory)) {
+    const platformArch = `${process.platform}-${process.arch}`;
+    const prebuildDirectory = path.join(prebuildsDirectory, platformArch);
+    if (fs.existsSync(prebuildDirectory)) {
+      const files = fs.readdirSync(prebuildDirectory);
+      const nodeFile = files.find((f) => f.endsWith('.node'));
+      if (nodeFile) {
+        return path.join(prebuildDirectory, nodeFile);
+      }
+    }
+  }
+
+  // Fall back to build/Release
+  const buildRelease = path.join(baseDirectory, 'build', 'Release');
+  if (fs.existsSync(buildRelease)) {
+    const files = fs.readdirSync(buildRelease);
+    const nodeFile = files.find((f) => f.endsWith('.node'));
+    if (nodeFile) {
+      return path.join(buildRelease, nodeFile);
+    }
+  }
+
+  throw new Error(
+    'Could not find better_sqlite3.node native module. Run npm install first.'
+  );
+}

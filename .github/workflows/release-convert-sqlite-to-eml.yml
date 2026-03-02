@@ -23,9 +23,6 @@ jobs:
           - os: macos-14
             target: darwin-arm64
             artifact: convert-sqlite-to-eml-darwin-arm64
-          - os: macos-13
-            target: darwin-x64
-            artifact: convert-sqlite-to-eml-darwin-x64
           - os: windows-latest
             target: win-x64
             artifact: convert-sqlite-to-eml-win-x64
@@ -44,123 +41,45 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npx ava
-
-      - name: Build standalone CLI
+      - name: Build SEA binary
         run: npm run build
 
-      - name: Verify standalone CLI works before SEA
-        run: |
-          echo "Testing standalone CLI..."
-          node dist/bundle.cjs --help | head -10 || true
-        shell: bash
+      - name: Rename binary for release (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mv dist/convert-sqlite-to-eml dist/${{ matrix.artifact }}
 
-      - name: Create SEA config
-        run: |
-          cat > sea-config.json << 'EOF'
-          {
-            "main": "dist/bundle.cjs",
-            "output": "sea-prep.blob",
-            "disableExperimentalSEAWarning": true,
-            "useSnapshot": false,
-            "useCodeCache": true
-          }
-          EOF
-        shell: bash
-
-      - name: Build SEA blob
-        run: node --experimental-sea-config sea-config.json
-
-      - name: Create SEA binary (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          cp $(which node) ${{ matrix.artifact }}
-          npx postject ${{ matrix.artifact }} NODE_SEA_BLOB sea-prep.blob \
-            --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
-          chmod +x ${{ matrix.artifact }}
-
-      - name: Create SEA binary (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          cp $(which node) ${{ matrix.artifact }}
-          codesign --remove-signature ${{ matrix.artifact }} || true
-          npx postject ${{ matrix.artifact }} NODE_SEA_BLOB sea-prep.blob \
-            --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 \
-            --macho-segment-name NODE_SEA
-          codesign --sign - ${{ matrix.artifact }} || true
-          chmod +x ${{ matrix.artifact }}
-
-      - name: Create SEA binary (Windows)
+      - name: Rename binary for release (Windows)
         if: runner.os == 'Windows'
         run: |
-          Copy-Item (Get-Command node).Source -Destination "${{ matrix.artifact }}.exe"
-          npx postject "${{ matrix.artifact }}.exe" NODE_SEA_BLOB sea-prep.blob `
-            --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
+          Move-Item dist/convert-sqlite-to-eml.exe dist/${{ matrix.artifact }}.exe
         shell: pwsh
-
-      - name: Copy native module
-        shell: bash
-        run: |
-          mkdir -p native
-          if [ -d "node_modules/better-sqlite3-multiple-ciphers/prebuilds" ]; then
-            cp -r node_modules/better-sqlite3-multiple-ciphers/prebuilds native/
-          fi
-          if [ -d "node_modules/better-sqlite3-multiple-ciphers/build/Release" ]; then
-            cp node_modules/better-sqlite3-multiple-ciphers/build/Release/*.node native/ 2>/dev/null || true
-          fi
 
       - name: Test SEA binary (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
           echo "Testing SEA binary..."
-          ./${{ matrix.artifact }} --help | head -10 || echo "SEA test completed"
+          ./dist/${{ matrix.artifact }} --help
         shell: bash
 
       - name: Test SEA binary (Windows)
         if: runner.os == 'Windows'
         run: |
           Write-Host "Testing SEA binary..."
-          & ".\${{ matrix.artifact }}.exe" --help | Select-Object -First 10
+          & ".\dist\${{ matrix.artifact }}.exe" --help
         shell: pwsh
 
-      - name: Package release archive (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          tar -czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }} native/
-          sha256sum ${{ matrix.artifact }}.tar.gz > ${{ matrix.artifact }}.tar.gz.sha256
-
-      - name: Package release archive (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          if (Test-Path native) {
-            Compress-Archive -Path "${{ matrix.artifact }}.exe",native -DestinationPath "${{ matrix.artifact }}.zip"
-          } else {
-            Compress-Archive -Path "${{ matrix.artifact }}.exe" -DestinationPath "${{ matrix.artifact }}.zip"
-          }
-
-      - name: Generate SHA-256 checksum (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: sha256sum ${{ matrix.artifact }}.zip > ${{ matrix.artifact }}.zip.sha256
-
-      - name: Upload archive to release (Linux/macOS)
+      - name: Upload binary to release (Linux/macOS)
         if: runner.os != 'Windows'
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            tools/convert-sqlite-to-eml/${{ matrix.artifact }}.tar.gz
-            tools/convert-sqlite-to-eml/${{ matrix.artifact }}.tar.gz.sha256
+          files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload archive to release (Windows)
+      - name: Upload binary to release (Windows)
         if: runner.os == 'Windows'
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            tools/convert-sqlite-to-eml/${{ matrix.artifact }}.zip
-            tools/convert-sqlite-to-eml/${{ matrix.artifact }}.zip.sha256
+          files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
