@@ -278,7 +278,7 @@ module.exports = (redis) => ({
                 'https://login.ubuntu.com',
                 // Domain Connect provider apply URLs
                 // (form POST to /domain-connect redirects to these external URLs)
-                'https://api.cloudflare.com',
+                'https://dash.cloudflare.com',
                 'https://dcc.godaddy.com',
                 'https://api.domainconnect.ionos.com',
                 'https://dns.glauca.digital'
