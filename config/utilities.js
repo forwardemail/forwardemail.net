@@ -525,7 +525,10 @@ const NS_PROVIDER_REGEXES = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'i'));
 // These are used as shortcuts to avoid DNS discovery when the user selects a provider
 const DOMAIN_CONNECT_PROVIDERS = {
   cloudflare: {
-    applyUrl: 'https://api.cloudflare.com/client/v4/dns/domainconnect'
+    // urlSyncUX returned by Cloudflare's settings endpoint
+    // (the API base is api.cloudflare.com/client/v4/dns/domainconnect
+    //  but the user-facing apply page is on the dashboard)
+    applyUrl: 'https://dash.cloudflare.com/domainconnect'
   },
   godaddy: {
     applyUrl: 'https://dcc.godaddy.com'

@@ -22,7 +22,13 @@ const { nsProviders } = require('#config/utilities');
 // 4. We build the signed apply URL and redirect the user
 //
 // Spec: https://github.com/Domain-Connect/spec
+// IETF Draft: https://www.ietf.org/archive/id/draft-kowalik-regext-domainconnect-00.html
 // Cloudflare: https://developers.cloudflare.com/dns/reference/domain-connect/
+//
+// Discovery flow (per spec §6):
+//   1. Query _domainconnect.<domain> TXT → returns API hostname/path
+//   2. GET https://{_domainconnect}/v2/{domain}/settings → returns JSON with urlSyncUX, urlAPI
+//   3. Use urlAPI for template checks, urlSyncUX for the user-facing apply redirect
 //
 // Apply URL format:
 //   {urlSyncUX}/v2/domainTemplates/providers/{providerId}/services/{serviceId}/apply?{params}
@@ -61,10 +67,12 @@ async function discoverDomainConnectUrl(domain) {
   }
 }
 
-// Fetch the Domain Connect settings JSON from the provider's well-known endpoint
-async function fetchProviderSettings(apiBase) {
+// Fetch the Domain Connect settings JSON from the provider's settings endpoint
+// Per spec §6: GET https://{_domainconnect}/v2/{domain}/settings
+// Returns JSON with urlSyncUX (UX URL for apply redirect) and urlAPI (API URL for template checks)
+async function fetchProviderSettings(apiBase, domain) {
   try {
-    const url = `${apiBase}/.well-known/domain-connect`;
+    const url = `${apiBase}/v2/${encodeURIComponent(domain)}/settings`;
     const { body, statusCode } = await undici.request(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
@@ -79,6 +87,7 @@ async function fetchProviderSettings(apiBase) {
 }
 
 // Check if a provider has our template by querying their template endpoint.
+// Per spec §7.2.1: GET {urlAPI}/v2/domainTemplates/providers/{providerId}/services/{serviceId}
 // Returns:
 //   'supported'  — provider returned 200 (template exists)
 //   'not_found'  — provider returned 404 (template definitively not onboarded)
@@ -107,6 +116,11 @@ function matchDiscoveredToKnownProvider(discoveredUrl) {
   try {
     const discoveredHost = new URL(discoveredUrl).hostname;
     for (const p of nsProviders) {
+      if (p.domainConnect && p.domainConnect.urlSyncUX) {
+        const knownHost = new URL(p.domainConnect.urlSyncUX).hostname;
+        if (discoveredHost === knownHost) return p;
+      }
+
       if (p.domainConnect && p.domainConnect.applyUrl) {
         const knownHost = new URL(p.domainConnect.applyUrl).hostname;
         if (discoveredHost === knownHost) return p;
@@ -201,15 +215,20 @@ module.exports = async (ctx) => {
   //    1-Click Setup on a different provider's guide page (e.g. user is on the
   //    Glauca guide page but the domain is actually on Cloudflare).
   //
-  // 2. If discovery succeeds, verify the provider has our template:
-  //    - 'supported' (200) → use the discovered provider
+  // 2. If discovery succeeds, fetch the provider's settings JSON to get:
+  //    - urlSyncUX: the user-facing UX URL for the apply redirect
+  //    - urlAPI: the API URL for template checks
+  //    Per spec §6, the settings endpoint is: {apiBase}/v2/{domain}/settings
+  //
+  // 3. Verify the provider has our template via urlAPI:
+  //    - 'supported' (200) → use the discovered provider's urlSyncUX
   //    - 'not_found' (404) → show DOMAIN_CONNECT_TEMPLATE_NOT_FOUND error
   //    - 'error' (network/timeout) → fall through to slug fallback
   //
-  // 3. If discovery fails (no TXT record) or template check had a network error,
+  // 4. If discovery fails (no TXT record) or template check had a network error,
   //    fall back to the hardcoded provider slug from the form.
   //
-  // 4. If nothing works, show DOMAIN_CONNECT_PROVIDER_NOT_FOUND error.
+  // 5. If nothing works, show DOMAIN_CONNECT_PROVIDER_NOT_FOUND error.
   //
   let urlSyncUX = null;
   let templateDefinitelyNotFound = false;
@@ -219,8 +238,8 @@ module.exports = async (ctx) => {
 
   if (discovered) {
     // We found a Domain Connect provider for this domain.
-    // Try to get their settings to find the correct urlSyncUX.
-    const settings = await fetchProviderSettings(discovered);
+    // Fetch their settings to get the correct urlSyncUX and urlAPI.
+    const settings = await fetchProviderSettings(discovered, domain);
 
     if (settings && settings.urlSyncUX) {
       // Provider has proper settings — check if our template is supported.
@@ -242,7 +261,15 @@ module.exports = async (ctx) => {
       // Check template at the discovered URL
       const templateResult = await checkTemplateSupport(discovered);
       if (templateResult === 'supported') {
-        urlSyncUX = matched ? matched.domainConnect.applyUrl : discovered;
+        // Use the known provider's urlSyncUX if available, then applyUrl, then discovered
+        urlSyncUX =
+          (matched &&
+            matched.domainConnect &&
+            matched.domainConnect.urlSyncUX) ||
+          (matched &&
+            matched.domainConnect &&
+            matched.domainConnect.applyUrl) ||
+          discovered;
       } else if (templateResult === 'not_found') {
         templateDefinitelyNotFound = true;
       }
@@ -256,9 +283,14 @@ module.exports = async (ctx) => {
   if (!urlSyncUX && !templateDefinitelyNotFound && isSANB(providerSlug)) {
     const knownProvider = nsProviders.find(
       (p) =>
-        p.slug === providerSlug && p.domainConnect && p.domainConnect.applyUrl
+        p.slug === providerSlug &&
+        p.domainConnect &&
+        (p.domainConnect.urlSyncUX || p.domainConnect.applyUrl)
     );
-    if (knownProvider) urlSyncUX = knownProvider.domainConnect.applyUrl;
+    if (knownProvider)
+      urlSyncUX =
+        knownProvider.domainConnect.urlSyncUX ||
+        knownProvider.domainConnect.applyUrl;
   }
 
   // Step 3: Show appropriate error

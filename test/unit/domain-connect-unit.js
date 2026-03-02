@@ -182,7 +182,7 @@ test('Domain Connect template has all required template variables documented', (
 
 test('buildApplyUrl produces correct URL format without signing', (t) => {
   // Test the URL format directly
-  const urlSyncUX = 'https://api.cloudflare.com/client/v4/dns/domainconnect';
+  const urlSyncUX = 'https://dash.cloudflare.com/domainconnect';
   const providerId = 'forwardemail.net';
   const serviceId = 'email';
   const params = new URLSearchParams({
@@ -295,7 +295,7 @@ test('nsProviders cloudflare has correct applyUrl', (t) => {
   if (cloudflare && cloudflare.domainConnect) {
     t.is(
       cloudflare.domainConnect.applyUrl,
-      'https://api.cloudflare.com/client/v4/dns/domainconnect'
+      'https://dash.cloudflare.com/domainconnect'
     );
   }
 });
