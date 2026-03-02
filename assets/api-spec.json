@@ -1850,6 +1850,22 @@
           "has_custom_verification": {
             "type": "boolean"
           },
+          "has_custom_s3": {
+            "type": "boolean",
+            "description": "Whether this domain uses custom S3-compatible storage for backups"
+          },
+          "s3_endpoint": {
+            "type": "string",
+            "description": "Custom S3-compatible endpoint URL (e.g. https://s3.us-east-1.amazonaws.com, https://<accountid>.r2.cloudflarestorage.com)"
+          },
+          "s3_region": {
+            "type": "string",
+            "description": "S3 region (e.g. us-east-1, auto). Defaults to auto if not specified."
+          },
+          "s3_bucket": {
+            "type": "string",
+            "description": "S3 bucket name for storing backups. The bucket must already exist."
+          },
           "require_tls_inbound": {
             "type": "boolean",
             "description": "When enabled, reject inbound emails not sent over TLS"
@@ -2139,6 +2155,31 @@
           "max_quota_per_alias": {
             "type": "string",
             "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+          },
+          "has_custom_s3": {
+            "type": "boolean",
+            "description": "Whether to enable custom S3-compatible storage for IMAP/SQLite backups on this domain"
+          },
+          "s3_endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "Custom S3-compatible endpoint URL (e.g. https://s3.us-east-1.amazonaws.com)"
+          },
+          "s3_access_key_id": {
+            "type": "string",
+            "description": "S3 access key ID. Encrypted at rest. Leave blank when updating to keep existing value."
+          },
+          "s3_secret_access_key": {
+            "type": "string",
+            "description": "S3 secret access key. Encrypted at rest. Leave blank when updating to keep existing value."
+          },
+          "s3_region": {
+            "type": "string",
+            "description": "S3 region (e.g. us-east-1, auto). Defaults to auto."
+          },
+          "s3_bucket": {
+            "type": "string",
+            "description": "S3 bucket name for storing backups. The bucket must already exist and must not be publicly accessible."
           }
         }
       },
@@ -5424,6 +5465,59 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/test-s3-connection": {
+      "post": {
+        "summary": "Test custom S3 connection",
+        "description": "Tests the custom S3 storage connection for the specified domain. Verifies that the configured credentials are valid, the bucket exists, and write permissions are available. The domain must have custom S3 storage enabled and configured before testing.",
+        "operationId": "testS3Connection",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fully qualified domain name (FQDN) or domain ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "S3 connection test successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully connected to your custom S3 storage. Credentials are valid and the bucket is accessible."
+                    }
+                  }
                 }
               }
             }

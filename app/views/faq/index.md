@@ -38,6 +38,8 @@
   * [Where are your servers located](#where-are-your-servers-located)
   * [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
   * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [How do I use my own S3-compatible storage for backups](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
+  * [How do I convert SQLite backups to EML files](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Do you support self-hosting](#do-you-support-self-hosting)
 * [Email Configuration](#email-configuration)
   * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
@@ -1129,6 +1131,202 @@ You can easily import your email to Forward Email (e.g. using [Thunderbird](http
     </span>
   </div>
 </div>
+
+### How do I use my own S3-compatible storage for backups
+
+Paid plan users can configure their own [S3](https://en.wikipedia.org/wiki/Amazon_S3)-compatible storage provider on a per-domain basis for IMAP/SQLite backups.  This means your encrypted mailbox backups can be stored on your own infrastructure instead of (or in addition to) our default storage.
+
+Supported providers include [Amazon S3](https://aws.amazon.com/s3/), [Cloudflare R2](https://developers.cloudflare.com/r2/), [MinIO](https://github.com/minio/minio), [Backblaze B2](https://www.backblaze.com/cloud-storage), [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces), and any other S3-compatible service.
+
+#### Setup
+
+1. Create a **private** bucket with your S3-compatible provider.  The bucket must not be publicly accessible.
+2. Create access credentials (access key ID and secret access key) with read/write permissions to the bucket.
+3. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Advanced Settings <i class="fa fa-angle-right"></i> Custom S3-Compatible Storage.
+4. Check **"Enable custom S3-compatible storage"** and fill in your endpoint URL, access key ID, secret access key, region, and bucket name.
+5. Click **"Test Connection"** to verify your credentials, bucket access, and write permissions.
+6. Click **"Save"** to apply the settings.
+
+#### How Backups Work
+
+Backups are triggered automatically for every connected IMAP alias.  The IMAP server checks all active connections once per hour and dispatches a backup for each connected alias.  A Redis-based lock prevents duplicate backups from running within 30 minutes of each other, and the actual backup is skipped if a successful backup was already completed within the last 24 hours (unless the backup was explicitly requested by a user for download).
+
+Backups can also be triggered manually by clicking **"Download Backup"** for any alias in the dashboard.  Manual backups always run regardless of the 24-hour window.
+
+The backup process works as follows:
+
+1. The SQLite database is copied using `VACUUM INTO`, which creates a consistent snapshot without interrupting active connections and preserves the database encryption.
+2. The backup file is verified by opening it to confirm encryption is still valid.
+3. A SHA-256 hash is computed and compared against the existing backup in storage.  If the hash matches, the upload is skipped (no changes since last backup).
+4. The backup is uploaded to S3 using multipart upload via the [@aws-sdk/lib-storage](https://github.com/aws/aws-sdk-js-v3/tree/main/lib/lib-storage) library.
+5. A signed download URL (valid for 4 hours) is generated and emailed to the user.
+
+#### Backup Formats
+
+Three backup formats are supported:
+
+| Format   | Extension | Description                                                                 |
+|----------|-----------|-----------------------------------------------------------------------------|
+| `sqlite` | `.sqlite` | Raw encrypted SQLite database snapshot (default for automatic IMAP backups) |
+| `mbox`   | `.zip`    | Password-protected ZIP containing mailbox in mbox format                    |
+| `eml`    | `.zip`    | Password-protected ZIP containing individual `.eml` files per message       |
+
+> **Tip:** If you have `.sqlite` backup files and want to convert them to `.eml` files locally, use our standalone CLI tool **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**.  It works on Windows, Linux, and macOS and does not require a network connection.
+
+#### File Naming and Key Structure
+
+When using **custom S3 storage**, backup files are stored with an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) timestamp prefix so that each backup is preserved as a separate object.  This gives you a full backup history in your own bucket.
+
+The key format is:
+
+```
+{ISO 8601 timestamp}-{alias_id}.{extension}
+```
+
+For example:
+
+```
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.zip
+2025-03-02T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+```
+
+The `alias_id` is the MongoDB ObjectId of the alias.  You can find it in the alias settings page or via the API.
+
+When using the **default (system) storage**, the key is flat (e.g. `65a31c53c36b75ed685f3fda.sqlite`) and each backup overwrites the previous one.
+
+> **Note:** Since custom S3 storage retains all backup versions, storage usage will grow over time.  We recommend configuring [lifecycle rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) on your bucket to automatically expire old backups (e.g. delete objects older than 30 or 90 days).
+
+#### Data Ownership and Deletion Policy
+
+Your custom S3 bucket is entirely under your control.  We **never delete or modify** files in your custom S3 bucket — not when an alias is deleted, not when a domain is removed, and not during any cleanup operations.  We only write new backup files to your bucket.
+
+This means:
+
+* **Alias deletion** — When you delete an alias, we remove the backup from our default system storage only.  Any backups previously written to your custom S3 bucket remain untouched.
+* **Domain removal** — Removing a domain does not affect files in your custom bucket.
+* **Retention management** — You are responsible for managing storage in your own bucket, including configuring lifecycle rules to expire old backups.
+
+If you disable custom S3 storage or switch back to our default storage, existing files in your bucket are preserved.  Future backups will simply be written to our default storage instead.
+
+#### Security
+
+* Your access key ID and secret access key are **encrypted at rest** using [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) before being stored in our database.  They are only decrypted at runtime when performing backup operations.
+* We automatically validate that your bucket is **not publicly accessible**.  If a public bucket is detected, the configuration will be rejected on save.  If public access is detected at backup time, we fall back to our default storage and notify all domain administrators by email.
+* Credentials are validated on save via a [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html) call to ensure the bucket exists and credentials are correct.  If validation fails, custom S3 storage is automatically disabled.
+* Each backup file includes a SHA-256 hash in its S3 metadata, which is used to detect unchanged databases and skip redundant uploads.
+
+#### Error Notifications
+
+If a backup fails when using your custom S3 storage (e.g. due to expired credentials or a connectivity issue), all domain administrators will be notified by email.  These notifications are rate-limited to once every 6 hours to prevent duplicate alerts.  If your bucket is detected as publicly accessible at backup time, administrators will be notified once daily.
+
+#### API
+
+You can also configure custom S3 storage via the API:
+
+```sh
+curl -X PUT https://api.forwardemail.net/v1/domains/example.com \
+  -u API_TOKEN: \
+  -d has_custom_s3=true \
+  -d s3_endpoint=https://s3.us-east-1.amazonaws.com \
+  -d s3_access_key_id=YOUR_ACCESS_KEY_ID \
+  -d s3_secret_access_key=YOUR_SECRET_ACCESS_KEY \
+  -d s3_region=us-east-1 \
+  -d s3_bucket=my-email-backups
+```
+
+To test the connection via the API:
+
+```sh
+curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connection \
+  -u API_TOKEN:
+```
+
+### How do I convert SQLite backups to EML files
+
+If you download or store SQLite backups (either from our default storage or your own [custom S3 bucket](#how-do-i-use-my-own-s3-compatible-storage-for-backups)), you can convert them to standard `.eml` files using our standalone CLI tool **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)**.  EML files can be opened with any email client ([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail), etc.) or imported into other mail servers.
+
+#### Installation
+
+You can either download a pre-built binary (no [Node.js](https://github.com/nodejs/node) required) or run it directly with [Node.js](https://github.com/nodejs/node):
+
+**Pre-built binaries** — Download the latest release for your platform from [GitHub Releases](https://github.com/forwardemail/forwardemail.net/releases):
+
+| Platform | Architecture | File |
+|----------|-------------|------|
+| Linux | x64 | `convert-sqlite-to-eml-linux-x64.tar.gz` |
+| Linux | arm64 | `convert-sqlite-to-eml-linux-arm64.tar.gz` |
+| macOS | Apple Silicon | `convert-sqlite-to-eml-darwin-arm64.tar.gz` |
+| macOS | Intel | `convert-sqlite-to-eml-darwin-x64.tar.gz` |
+| Windows | x64 | `convert-sqlite-to-eml-win32-x64.zip` |
+
+**From source** (requires [Node.js](https://github.com/nodejs/node) >= 18):
+
+```bash
+cd tools/convert-sqlite-to-eml
+npm install
+node index.js
+```
+
+#### Usage
+
+The tool supports both interactive and non-interactive modes.
+
+**Interactive mode** — run without arguments and you will be prompted for all inputs:
+
+```bash
+./convert-sqlite-to-eml
+```
+
+```
+  Forward Email - Convert SQLite Backup to EML
+  =============================================
+
+  Path to SQLite backup file: /path/to/backup.sqlite
+  IMAP/alias password: ********
+  Output ZIP path [/path/to/backup-2025-03-01T12-00-00-000Z.zip]:
+```
+
+**Non-interactive mode** — pass arguments via command-line flags for scripting and automation:
+
+```bash
+./convert-sqlite-to-eml \
+  --path /path/to/backup.sqlite \
+  --password "your-imap-password" \
+  --output /path/to/output.zip
+```
+
+| Flag | Description |
+|------|-------------|
+| `--path <path>` | Path to the encrypted SQLite backup file |
+| `--password <pass>` | IMAP/alias password for decryption |
+| `--output <path>` | Output path for the ZIP file (default: auto-generated with ISO 8601 timestamp) |
+| `--help` | Show help message |
+
+#### Output Format
+
+The tool produces a password-protected ZIP archive (AES-256 encrypted) containing:
+
+```
+README.txt
+INBOX/
+  <message-id-1>.eml
+  <message-id-2>.eml
+Sent/
+  <message-id-3>.eml
+Drafts/
+  <message-id-4>.eml
+```
+
+EML files are organized by mailbox folder.  The ZIP password is the same as your IMAP/alias password.  Each `.eml` file is a standard [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322) email message with full headers, body text, and attachments reconstructed from the SQLite database.
+
+#### How It Works
+
+1. Opens the encrypted SQLite database using your IMAP/alias password (supports both [ChaCha20](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) and [AES-256-CBC](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) ciphers).
+2. Reads the Mailboxes table to discover folder structure.
+3. For each message, decodes the mimeTree (stored as [Brotli](https://github.com/google/brotli)-compressed JSON) from the Messages table.
+4. Reconstructs the full EML by walking the MIME tree and fetching attachment bodies from the Attachments table.
+5. Packages everything into a password-protected ZIP archive using [archiver-zip-encrypted](https://github.com/artem-silaev/archiver-zip-encrypted).
 
 ### Do you support self-hosting
 

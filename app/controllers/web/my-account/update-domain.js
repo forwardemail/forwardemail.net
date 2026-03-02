@@ -14,6 +14,7 @@ const { isPort } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 
 const { Domains } = require('#models');
+const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 
 //
@@ -23,7 +24,9 @@ const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
 async function updateDomain(ctx, next) {
-  ctx.state.domain = await Domains.findById(ctx.state.domain._id);
+  ctx.state.domain = await Domains.findById(ctx.state.domain._id).select(
+    '+s3_access_key_id +s3_secret_access_key'
+  );
   if (!ctx.state.domain)
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
@@ -87,10 +90,51 @@ async function updateDomain(ctx, next) {
       'has_recipient_verification',
       'ignore_mx_check',
       'has_delivery_logs',
-      'require_tls_inbound'
+      'require_tls_inbound',
+      'has_custom_s3'
     ]) {
       if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
         ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
+    }
+
+    // Custom S3 storage fields (API)
+    if (
+      ctx.state.domain.has_custom_s3 ||
+      _.isBoolean(ctx.request.body.has_custom_s3) ||
+      isSANB(ctx.request.body.has_custom_s3)
+    ) {
+      for (const field of [
+        's3_endpoint',
+        's3_access_key_id',
+        's3_secret_access_key',
+        's3_region',
+        's3_bucket'
+      ]) {
+        if (typeof ctx.request.body[field] === 'string')
+          ctx.state.domain[field] = ctx.request.body[field];
+      }
+
+      // Validate that the bucket is not publicly accessible (API)
+      if (
+        ctx.state.domain.has_custom_s3 &&
+        isSANB(ctx.state.domain.s3_endpoint) &&
+        isSANB(ctx.state.domain.s3_bucket)
+      ) {
+        try {
+          const isPublic = await checkS3BucketAccess(
+            ctx.state.domain.s3_endpoint,
+            ctx.state.domain.s3_bucket
+          );
+          if (isPublic) {
+            throw Boom.badRequest(
+              ctx.translateError('CUSTOM_S3_PUBLIC_BUCKET')
+            );
+          }
+        } catch (err) {
+          if (err.isBoom) throw err;
+          ctx.logger.warn(err);
+        }
+      }
     }
   } else
     switch (ctx.request.body._section) {
@@ -216,6 +260,68 @@ async function updateDomain(ctx, next) {
         ctx.state.domain.require_tls_inbound = boolean(
           ctx.request.body.require_tls_inbound
         );
+
+        break;
+      }
+
+      case 'custom_s3_storage': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+
+        ctx.state.domain.has_custom_s3 = boolean(
+          ctx.request.body.has_custom_s3
+        );
+
+        if (ctx.state.domain.has_custom_s3) {
+          if (isSANB(ctx.request.body.s3_endpoint))
+            ctx.state.domain.s3_endpoint = ctx.request.body.s3_endpoint;
+          if (isSANB(ctx.request.body.s3_access_key_id))
+            ctx.state.domain.s3_access_key_id =
+              ctx.request.body.s3_access_key_id;
+          if (isSANB(ctx.request.body.s3_secret_access_key))
+            ctx.state.domain.s3_secret_access_key =
+              ctx.request.body.s3_secret_access_key;
+          if (isSANB(ctx.request.body.s3_region))
+            ctx.state.domain.s3_region = ctx.request.body.s3_region;
+          if (isSANB(ctx.request.body.s3_bucket))
+            ctx.state.domain.s3_bucket = ctx.request.body.s3_bucket;
+
+          //
+          // Validate that the bucket is not publicly accessible
+          // before allowing the user to save the configuration
+          //
+          if (
+            isSANB(ctx.state.domain.s3_endpoint) &&
+            isSANB(ctx.state.domain.s3_bucket)
+          ) {
+            try {
+              const isPublic = await checkS3BucketAccess(
+                ctx.state.domain.s3_endpoint,
+                ctx.state.domain.s3_bucket
+              );
+              if (isPublic) {
+                throw Boom.badRequest(
+                  ctx.translateError('CUSTOM_S3_PUBLIC_BUCKET')
+                );
+              }
+            } catch (err) {
+              if (err.isBoom) throw err;
+              // If the check itself fails (network error, etc.),
+              // log it but allow the save to proceed
+              ctx.logger.warn(err);
+            }
+          }
+        }
 
         break;
       }

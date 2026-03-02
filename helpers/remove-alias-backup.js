@@ -4,7 +4,6 @@
  */
 
 const {
-  S3Client,
   ListObjectsV2Command,
   DeleteObjectCommand
 } = require('@aws-sdk/client-s3');
@@ -15,17 +14,8 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
-const env = require('#config/env');
 const logger = require('#helpers/logger');
-
-const S3 = new S3Client({
-  region: env.AWS_REGION,
-  endpoint: env.AWS_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-  }
-});
+const { defaultS3Client } = require('#helpers/get-s3-client');
 
 /**
  * Remove alias backup files from R2 for a specific alias
@@ -53,7 +43,12 @@ async function removeAliasBackup(alias, options = {}) {
     );
   }
 
-  // Use the same bucket construction pattern as worker.js
+  //
+  // NOTE: We only delete backups from our default (system) S3 storage.
+  // We never modify or delete files in a user's custom S3 bucket.
+  // Users manage their own custom S3 bucket lifecycle (retention, deletion, etc.).
+  //
+  const s3 = defaultS3Client;
   const bucket = `${config.env}-${dashify(
     _.camelCase(aliasObject.storage_location)
   )}`;
@@ -61,23 +56,25 @@ async function removeAliasBackup(alias, options = {}) {
   const deletedFiles = [];
 
   try {
-    // List all objects in the bucket with the alias ID prefix
+    //
+    // List all objects in the bucket that match the alias ID.
+    // Default (system) S3 uses flat keys (e.g. "alias_id.sqlite")
+    // so prefix-based listing works correctly.
+    //
     const listCommand = new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: aliasId
     });
 
-    const response = await S3.send(listCommand);
+    const response = await s3.send(listCommand);
 
     if (response.Contents && response.Contents.length > 0) {
       // Delete each file that matches the alias ID
       for (const object of response.Contents) {
-        // Parse the filename to extract alias ID
         const key = object.Key;
-        const filename = key.split('/').pop() || key;
 
-        // Extract alias ID from filename (remove extensions and suffixes)
-        let extractedAliasId = filename;
+        // Extract the alias ID by removing known extensions
+        let extractedAliasId = key;
 
         // Remove common extensions including SQLite WAL/SHM files
         extractedAliasId = extractedAliasId.replace(
@@ -99,7 +96,7 @@ async function removeAliasBackup(alias, options = {}) {
               Key: key
             });
 
-            await S3.send(deleteCommand);
+            await s3.send(deleteCommand);
           }
 
           deletedFiles.push(key);
@@ -271,7 +268,10 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
         ContinuationToken: continuationToken
       });
 
-      const response = await S3.send(listCommand);
+      // NOTE: cleanupOrphanedBackups operates on the default (system) S3 storage
+      // since it iterates by storage_location, not by domain.
+      // Domains with custom S3 manage their own bucket lifecycle.
+      const response = await defaultS3Client.send(listCommand);
 
       if (response.Contents && response.Contents.length > 0) {
         // Extract alias IDs from all files
@@ -436,7 +436,7 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
           Prefix: aliasIdToDelete
         });
 
-        const response = await S3.send(listCommand);
+        const response = await defaultS3Client.send(listCommand);
 
         if (response.Contents && response.Contents.length > 0) {
           for (const object of response.Contents) {
@@ -466,7 +466,7 @@ async function cleanupOrphanedBackups(storageLocation, options = {}) {
                   Key: key
                 });
 
-                await S3.send(deleteCommand);
+                await defaultS3Client.send(deleteCommand);
               }
 
               deletedFiles.push(key);

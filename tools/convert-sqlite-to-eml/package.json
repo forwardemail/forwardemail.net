@@ -1,0 +1,58 @@
+{
+  "name": "@forwardemail/convert-sqlite-to-eml",
+  "description": "Standalone CLI tool to convert Forward Email encrypted SQLite mailbox backups to EML files packaged in a password-protected ZIP archive.",
+  "version": "1.0.0",
+  "author": "Forward Email LLC <support@forwardemail.net> (https://forwardemail.net)",
+  "bin": {
+    "convert-sqlite-to-eml": "./index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/forwardemail/forwardemail.net/issues"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "archiver-zip-encrypted": "^2.0.0",
+    "better-sqlite3-multiple-ciphers": "^11.5.0"
+  },
+  "devDependencies": {
+    "ava": "^6.2.0",
+    "esbuild": "^0.24.0",
+    "xo": "^0.60.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "homepage": "https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml",
+  "keywords": [
+    "backup",
+    "convert",
+    "email",
+    "eml",
+    "export",
+    "forward-email",
+    "imap",
+    "mailbox",
+    "sqlite"
+  ],
+  "license": "MPL-2.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forwardemail/forwardemail.net.git",
+    "directory": "tools/convert-sqlite-to-eml"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "lint": "xo",
+    "start": "node index.js",
+    "test": "ava"
+  },
+  "type": "module",
+  "xo": {
+    "prettier": true,
+    "space": true,
+    "rules": {
+      "unicorn/no-process-exit": "off"
+    }
+  }
+}

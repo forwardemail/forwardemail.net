@@ -466,6 +466,27 @@ module.exports = {
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   BACKUP_IN_PROGRESS:
     'We could not complete your request at this time to create a backup.  Either a backup is already in progress or the queue is currently full.  Please try again later, and if this problem persists please contact us for help.',
+  CUSTOM_S3_REQUIRED_FIELDS:
+    'Custom S3 storage requires all fields to be filled in: endpoint URL, access key ID, secret access key, and bucket name.',
+  CUSTOM_S3_CONNECTION_ERROR:
+    'Could not connect to the custom S3 storage provider. Please verify your credentials and endpoint URL. Error: %s',
+  CUSTOM_S3_BACKUP_ERROR_SUBJECT:
+    'Custom S3 backup error for <span class="notranslate">%s</span> on <span class="notranslate">%s</span>',
+  CUSTOM_S3_BACKUP_ERROR_MESSAGE:
+    '<p>An error occurred while backing up <span class="notranslate text-monospace font-weight-bold">%s</span> to your custom S3 storage for domain <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p>Please verify your custom S3 credentials and endpoint URL in your domain advanced settings.</p><p>The error received was:</p><pre><code>%s</code></pre>',
+  CUSTOM_S3_PUBLIC_BUCKET:
+    'The S3 bucket you specified is publicly accessible. This is a security risk for email backups. Please restrict public access on your bucket and try again.',
+  CUSTOM_S3_PUBLIC_BUCKET_SUBJECT:
+    'Your custom S3 bucket is publicly accessible for <span class="notranslate">%s</span>',
+  CUSTOM_S3_PUBLIC_BUCKET_MESSAGE:
+    '<p>We detected that the custom S3 bucket <span class="notranslate text-monospace font-weight-bold">%s</span> configured for domain <span class="notranslate text-monospace font-weight-bold">%s</span> is publicly accessible.</p><p>This is a serious security risk because your email backups could be accessed by anyone on the internet.</p><p>We have automatically fallen back to our default secure storage for your backups until this is resolved.</p><p>Please update your bucket permissions to restrict public access and then re-enable custom S3 storage in your domain advanced settings.</p>',
+  CUSTOM_S3_CREDENTIAL_ERROR:
+    'Could not validate your custom S3 credentials. The bucket may not exist or your credentials may be incorrect. Custom S3 storage has been disabled. Error: %s',
+  CUSTOM_S3_TEST_SUCCESS:
+    'Successfully connected to your custom S3 storage. Credentials are valid and the bucket is accessible.',
+  CUSTOM_S3_TEST_FAILED: 'Failed to connect to your custom S3 storage: %s',
+  CUSTOM_S3_NOT_ENABLED:
+    'Custom S3 storage is not enabled for this domain. Please enable it and save your credentials first.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_INQUIRY: 'Inquiry does not exist.',
   INVALID_INQUIRY_WEBHOOK_EMAIL:

@@ -583,6 +583,162 @@ block body
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(type="submit")= t("Save")
 
+          //- Custom S3-Compatible Storage
+          if domain.group === 'admin' && !domain.is_global
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(type="hidden", name="_section", value="custom_s3_storage")
+              h2.h6.card-header= t("Custom S3-Compatible Storage")
+              .card-body
+                +planRequired(false)
+                p.card-text!= t("Bring your own S3-compatible storage provider for backups. Supports any S3-compatible service such as Amazon S3, Backblaze B2, Cloudflare R2, DigitalOcean Spaces, or MinIO.")
+                p.card-text.small
+                  a(
+                    href=l("/faq#how-do-i-use-my-own-s3-compatible-storage-for-backups"),
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-question-circle
+                    = " "
+                    = t("Learn more about custom S3 storage in our FAQ")
+                .alert.alert-info.small.mb-3
+                  p.mb-1
+                    strong= t("How backups work:")
+                    = " "
+                    = t("IMAP backups run automatically every hour for connected aliases (skipped if unchanged within 24 hours). Backups use VACUUM INTO for consistent snapshots and include SHA-256 integrity verification.")
+                  p.mb-1
+                    strong= t("File naming:")
+                    = " "
+                    = t("Custom S3 backups are stored as")
+                    = " "
+                    code {timestamp}-{alias_id}.sqlite
+                    = " "
+                    = t("(e.g.")
+                    = " "
+                    code 2025-03-01T12:00:00.000Z-65a31c53c36b75ed685f3fda.sqlite
+                    = t("), preserving a full backup history. We recommend setting lifecycle rules on your bucket to expire old backups.")
+                  p.mb-1
+                    strong= t("Supported formats:")
+                    = " "
+                    = t("SQLite (.sqlite), mbox (.zip), and EML (.zip).")
+                  p.mb-1
+                    strong= t("Convert backups:")
+                    = " "
+                    != t('Use our standalone CLI tool <a href="https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml" target="_blank" rel="noopener noreferrer">convert-sqlite-to-eml</a> to convert .sqlite backups to .eml files locally. Works on Windows, Linux, and macOS.')
+                    = " "
+                    a(
+                      href=l("/faq#how-do-i-convert-sqlite-backups-to-eml-files"),
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )= t("Learn more")
+                  p.mb-0
+                    strong= t("Data ownership:")
+                    = " "
+                    = t("We never delete or modify files in your custom S3 bucket. You are responsible for managing retention and lifecycle rules. Deleting an alias or domain does not remove backups from your bucket.")
+                .form-group.form-check
+                  input#input-has-custom-s3.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="has_custom_s3",
+                    value="true",
+                    checked=domain.has_custom_s3
+                  )
+                  label.form-check-label(for="input-has-custom-s3")= t("Enable custom S3-compatible storage")
+                .custom-s3-fields(class=domain.has_custom_s3 ? "" : "d-none")
+                  .form-group.floating-label
+                    input#s3-endpoint.form-control.form-control-lg(
+                      type="url",
+                      name="s3_endpoint",
+                      disabled=isDisabled,
+                      autocomplete="off",
+                      placeholder=t("S3 Endpoint URL"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off",
+                      value=domain.s3_endpoint || ""
+                    )
+                    label(for="s3-endpoint")= t("S3 Endpoint URL")
+                  .small.form-text.text-muted.mb-3!= t("e.g. <code>https://s3.us-east-1.amazonaws.com</code> or <code>https://s3.eu-central-1.wasabisys.com</code>")
+                  .form-group.floating-label
+                    input#s3-access-key-id.form-control.form-control-lg(
+                      type="password",
+                      name="s3_access_key_id",
+                      disabled=isDisabled,
+                      autocomplete="new-password",
+                      placeholder=t("Access Key ID"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off"
+                    )
+                    label(for="s3-access-key-id")= t("Access Key ID")
+                  .small.form-text.text-muted.mb-3= domain.s3_access_key_id ? t("An access key ID is already stored. Leave blank to keep the existing key.") : t("Your access key ID will be encrypted at rest.")
+                  .form-group.floating-label
+                    input#s3-secret-access-key.form-control.form-control-lg(
+                      type="password",
+                      name="s3_secret_access_key",
+                      disabled=isDisabled,
+                      autocomplete="new-password",
+                      placeholder=t("Secret Access Key"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off"
+                    )
+                    label(for="s3-secret-access-key")= t("Secret Access Key")
+                  .small.form-text.text-muted.mb-3= domain.s3_secret_access_key ? t("A secret access key is already stored. Leave blank to keep the existing key.") : t("Your secret access key will be encrypted at rest.")
+                  .form-group.floating-label
+                    input#s3-region.form-control.form-control-lg(
+                      type="text",
+                      name="s3_region",
+                      disabled=isDisabled,
+                      autocomplete="off",
+                      placeholder=t("Region"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off",
+                      value=domain.s3_region || "auto"
+                    )
+                    label(for="s3-region")= t("Region")
+                  .small.form-text.text-muted.mb-3!= t("e.g. <code>us-east-1</code>, <code>eu-west-1</code>, or <code>auto</code>")
+                  .form-group.floating-label
+                    input#s3-bucket.form-control.form-control-lg(
+                      type="text",
+                      name="s3_bucket",
+                      disabled=isDisabled,
+                      autocomplete="off",
+                      placeholder=t("Bucket Name"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off",
+                      value=domain.s3_bucket || ""
+                    )
+                    label(for="s3-bucket")= t("Bucket Name")
+                  .small.form-text.text-muted.mb-3= t("The bucket must already exist. We will not create it automatically.")
+              .card-footer
+                .d-flex.justify-content-between.align-items-center
+                  button#btn-test-s3.btn.btn-lg.btn-outline-info(
+                    type="button",
+                    disabled=isDisabled,
+                    class=domain.has_custom_s3 ? "" : "d-none"
+                  )
+                    i.fa.fa-plug
+                    = " "
+                    = t("Test Connection")
+                  ul.list-inline.mb-0
+                    li.list-inline-item
+                      button.confirm-prompt.btn.btn-lg.btn-secondary(
+                        type="reset",
+                        disabled=isDisabled
+                      )= t("Reset")
+                    li.list-inline-item
+                      button.btn.btn-lg.btn-primary(
+                        type="submit",
+                        disabled=isDisabled
+                      )= t("Save")
+
           //- Bounce Webhook
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(

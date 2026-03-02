@@ -388,6 +388,14 @@ router
     api.v1.enforcePaidPlan,
     web.myAccount.verifySMTP
   )
+  .post(
+    '/domains/:domain_id/test-s3-connection',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.testS3Connection
+  )
   .put(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,

@@ -274,6 +274,14 @@ router
     rateLimit(20, 'reset domain webhook key'),
     web.myAccount.resetDomainWebhookKey
   )
+  .post(
+    '/domains/:domain_id/advanced-settings/test-s3-connection',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(10, 'test s3 connection'),
+    web.myAccount.testS3Connection
+  )
   .get(
     '/domains/:domain_id/verify-smtp',
     web.myAccount.checkVerifiedEmail,

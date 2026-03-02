@@ -11,6 +11,7 @@ const { isIP } = require('node:net');
 const { promisify } = require('node:util');
 
 const { setTimeout } = require('node:timers/promises');
+const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const bytes = require('@forwardemail/bytes');
@@ -582,6 +583,42 @@ const Domains = new mongoose.Schema({
   tokens: [Token],
 
   //
+  // Custom S3-compatible storage configuration for backups
+  // Allows users to bring their own S3-compatible storage provider
+  // (e.g. Amazon S3, Backblaze B2, Cloudflare R2, DigitalOcean Spaces, MinIO)
+  // All sensitive fields (access keys) are encrypted at rest
+  //
+  has_custom_s3: {
+    type: Boolean,
+    default: false
+  },
+  s3_endpoint: {
+    type: String,
+    trim: true,
+    validate: (value) =>
+      typeof value === 'string'
+        ? value === '' || isURL(value, config.isURLOptions)
+        : true
+  },
+  s3_access_key_id: {
+    type: String,
+    select: false
+  },
+  s3_secret_access_key: {
+    type: String,
+    select: false
+  },
+  s3_region: {
+    type: String,
+    trim: true,
+    default: 'auto'
+  },
+  s3_bucket: {
+    type: String,
+    trim: true
+  },
+
+  //
   // Domain audit log for tracking setting changes
   // Batched and sent to domain admins periodically
   //
@@ -704,6 +741,114 @@ Domains.pre('validate', function (next) {
   if (isSANB(this.webhook_key)) return next();
   try {
     this.webhook_key = encrypt(crypto.randomBytes(16).toString('hex'));
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Encrypt custom S3 credentials and validate S3 configuration
+// Both access key ID and secret access key are encrypted at rest
+// (similar to how catch-all tokens are protected, but using
+// reversible encryption since credentials must be recoverable
+// to authenticate with the S3 provider)
+//
+// After encryption, if credentials were modified, we validate them
+// by performing a HeadBucket call to ensure the bucket exists and
+// the credentials are correct. If validation fails, has_custom_s3
+// is set to false (auto-disabled).
+//
+Domains.pre('validate', async function (next) {
+  try {
+    // If custom S3 is disabled, skip validation
+    if (!this.has_custom_s3) {
+      return next();
+    }
+
+    // Validate that required fields are present when custom S3 is enabled
+    if (
+      !isSANB(this.s3_endpoint) ||
+      !isSANB(this.s3_access_key_id) ||
+      !isSANB(this.s3_secret_access_key) ||
+      !isSANB(this.s3_bucket)
+    ) {
+      throw Boom.badRequest(
+        i18n.translateError('CUSTOM_S3_REQUIRED_FIELDS', this.locale)
+      );
+    }
+
+    //
+    // Track whether credentials were modified so we know
+    // whether to run the HeadBucket validation after encryption
+    //
+    const credentialsModified =
+      this.isModified('s3_access_key_id') ||
+      this.isModified('s3_secret_access_key') ||
+      this.isModified('s3_endpoint') ||
+      this.isModified('s3_bucket') ||
+      this.isModified('s3_region');
+
+    // Encrypt the access key ID if it was modified
+    if (isSANB(this.s3_access_key_id) && this.isModified('s3_access_key_id')) {
+      this.s3_access_key_id = encrypt(this.s3_access_key_id);
+    }
+
+    // Encrypt the secret access key if it was modified
+    if (
+      isSANB(this.s3_secret_access_key) &&
+      this.isModified('s3_secret_access_key')
+    ) {
+      this.s3_secret_access_key = encrypt(this.s3_secret_access_key);
+    }
+
+    //
+    // If any S3 credentials or config were modified, validate them
+    // by performing a HeadBucket call to ensure the bucket exists
+    // and the credentials are correct.
+    //
+    // NOTE: we skip this in test environment to avoid network calls
+    //
+    if (credentialsModified && config.env !== 'test') {
+      // Decrypt credentials for the HeadBucket call
+      let accessKeyId;
+      try {
+        accessKeyId = decrypt(this.s3_access_key_id);
+      } catch {
+        accessKeyId = this.s3_access_key_id;
+      }
+
+      let secretAccessKey;
+      try {
+        secretAccessKey = decrypt(this.s3_secret_access_key);
+      } catch {
+        secretAccessKey = this.s3_secret_access_key;
+      }
+
+      const testClient = new S3Client({
+        region: this.s3_region || 'auto',
+        endpoint: this.s3_endpoint,
+        credentials: {
+          accessKeyId,
+          secretAccessKey
+        }
+      });
+
+      try {
+        await testClient.send(
+          new HeadBucketCommand({ Bucket: this.s3_bucket })
+        );
+      } catch (err) {
+        // Auto-disable custom S3 on credential/bucket validation failure
+        this.has_custom_s3 = false;
+        const errMsg = err.message || 'Unknown error';
+        throw Boom.badRequest(
+          i18n.translateError('CUSTOM_S3_CREDENTIAL_ERROR', this.locale, errMsg)
+        );
+      } finally {
+        testClient.destroy();
+      }
+    }
+
     next();
   } catch (err) {
     next(err);
@@ -1624,7 +1769,9 @@ Domains.plugin(mongooseCommonPlugin, {
     // 'has_dmarc_record',
     'smtp_emails_blocked',
     'tokens',
-    'webhook_key'
+    'webhook_key',
+    's3_access_key_id',
+    's3_secret_access_key'
   ],
   mongooseHidden: {
     virtuals: {

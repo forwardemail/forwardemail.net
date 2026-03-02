@@ -1108,7 +1108,15 @@ const config = {
 
     // Plan and status (admin-modifiable)
     'plan',
-    'is_smtp_suspended'
+    'is_smtp_suspended',
+
+    // Custom S3 storage settings
+    'has_custom_s3',
+    's3_endpoint',
+    's3_access_key_id',
+    's3_secret_access_key',
+    's3_region',
+    's3_bucket'
   ],
 
   // domain fields that should be redacted in domain update emails (security-sensitive)
@@ -1117,7 +1125,9 @@ const config = {
     'tokens',
     'verification_record',
     'dkim_private_key',
-    'return_path'
+    'return_path',
+    's3_access_key_id',
+    's3_secret_access_key'
   ],
 
   // reference crypto random

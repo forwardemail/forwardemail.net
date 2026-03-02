@@ -97,6 +97,8 @@ const keys = _.sortBy([
   'has_autodiscover_record',
   'has_recipient_verification',
   'has_custom_verification',
+  'has_custom_s3',
+  's3_region',
   'require_tls_inbound',
   'id',
   'object',

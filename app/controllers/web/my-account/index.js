@@ -69,6 +69,7 @@ const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
 const resetDomainWebhookKey = require('./reset-domain-webhook-key');
+const testS3Connection = require('./test-s3-connection');
 const retrieveQRCode = require('./retrieve-qrcode');
 const listAnalytics = require('./list-analytics');
 const listDmarcReports = require('./list-dmarc-reports');
@@ -140,6 +141,7 @@ module.exports = {
   updateTimezone,
   updateRestrictedAliasNames,
   resetDomainWebhookKey,
+  testS3Connection,
   retrieveQRCode,
   listAnalytics,
   listDmarcReports

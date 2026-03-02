@@ -32,7 +32,6 @@ const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const {
-  S3Client,
   GetObjectCommand,
   CreateBucketCommand,
   HeadBucketCommand,
@@ -45,6 +44,7 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const isEmail = require('#helpers/is-email');
 const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
@@ -54,7 +54,6 @@ const checkDiskSpace = require('#helpers/check-disk-space');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
 const email = require('#helpers/email');
-const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
@@ -63,6 +62,8 @@ const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
+const { getS3Client } = require('#helpers/get-s3-client');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder({ bufferAsNative: true });
@@ -72,14 +73,8 @@ const indexer = new Indexer({
   attachmentStorage
 });
 
-const S3 = new S3Client({
-  region: env.AWS_REGION,
-  endpoint: env.AWS_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-  }
-});
+// NOTE: default S3 client is imported from get-s3-client helper
+//       per-domain custom S3 clients are created via getS3Client(domain)
 
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
@@ -424,11 +419,96 @@ async function backup(payload) {
   let backup;
   let err;
 
+  //
+  // Look up domain to check for custom S3 configuration
+  // This allows per-domain S3-compatible storage providers
+  //
+  let domain;
+  try {
+    domain = await Domains.findById(payload.session.user.domain_id)
+      .select('+s3_access_key_id +s3_secret_access_key')
+      .lean()
+      .exec();
+  } catch (err) {
+    logger.warn(err, { payload });
+  }
+
+  let { client: s3, bucket: customBucket } = getS3Client(domain);
+
+  //
+  // If using custom S3, validate the bucket is not publicly accessible.
+  // Public buckets are a serious security risk for email backups.
+  // If public, fall back to default S3 and alert domain admins once daily.
+  //
+  if (domain && domain.has_custom_s3 === true && customBucket) {
+    try {
+      const isPublic = await checkS3BucketAccess(
+        domain.s3_endpoint,
+        customBucket
+      );
+      if (isPublic) {
+        // Save original bucket name for the email notification
+        const publicBucketName = customBucket;
+
+        logger.warn(
+          'Custom S3 bucket is publicly accessible, falling back to default',
+          {
+            domain_id: domain._id,
+            bucket: publicBucketName
+          }
+        );
+
+        // Fall back to default S3 client
+        const defaultResult = getS3Client();
+        s3 = defaultResult.client;
+        customBucket = null;
+
+        // Email domain admins once daily about the public bucket
+        const publicBucketKey = `custom_s3_public_bucket:${domain._id}`;
+        const publicBucketCache = await client.get(publicBucketKey);
+        if (!publicBucketCache) {
+          await client.set(publicBucketKey, 'true', 'PX', ms('1d'));
+          try {
+            const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+              domain
+            );
+            await email({
+              template: 'alert',
+              message: {
+                to,
+                subject: i18n.translate(
+                  'CUSTOM_S3_PUBLIC_BUCKET_SUBJECT',
+                  locale,
+                  domain.name
+                )
+              },
+              locals: {
+                message: i18n.translate(
+                  'CUSTOM_S3_PUBLIC_BUCKET_MESSAGE',
+                  locale,
+                  publicBucketName,
+                  domain.name
+                ),
+                locale
+              }
+            });
+          } catch (_err) {
+            logger.fatal(_err, { payload });
+          }
+        }
+      }
+    } catch (err) {
+      logger.warn(err, { payload });
+    }
+  }
+
   // create bucket on s3 if it doesn't already exist
   // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
-  const bucket = `${config.env}-${dashify(
-    _.camelCase(payload.session.user.storage_location)
-  )}`;
+  const bucket =
+    customBucket ||
+    `${config.env}-${dashify(
+      _.camelCase(payload.session.user.storage_location)
+    )}`;
 
   // determine extension format
   let extension;
@@ -457,9 +537,21 @@ async function backup(payload) {
     }
   }
 
+  //
   // the key is either `.sqlite` for "sqlite" value of `payload.format`
   // or it is `.mbox` for "mbox" value or `zip` for "eml" value
-  const key = `${payload.session.user.alias_id}.${extension}`;
+  //
+  // for custom S3 storage, prefix with ISO 8601 timestamp so users
+  // retain a full backup history in their own bucket
+  // (e.g. "2025-03-01T12:00:00.000Z-alias_id.sqlite")
+  //
+  // for default (system) S3 storage, use the flat key pattern
+  // (e.g. "alias_id.sqlite") which overwrites the previous backup
+  //
+  const baseKey = `${payload.session.user.alias_id}.${extension}`;
+  const key = customBucket
+    ? `${new Date(payload.backup_at).toISOString()}-${baseKey}`
+    : baseKey;
 
   try {
     // check how much space is remaining on storage location
@@ -538,7 +630,7 @@ async function backup(payload) {
     if (config.env !== 'test') {
       let res;
       try {
-        res = await S3.send(
+        res = await s3.send(
           new HeadBucketCommand({
             Bucket: bucket
           })
@@ -549,7 +641,7 @@ async function backup(payload) {
 
       if (res?.$metadata?.httpStatusCode !== 200) {
         try {
-          await S3.send(
+          await s3.send(
             new CreateBucketCommand({
               ACL: 'private',
               Bucket: bucket
@@ -837,7 +929,7 @@ async function backup(payload) {
 
     // check if hash already exists in s3
     try {
-      const obj = await S3.send(
+      const obj = await s3.send(
         new HeadObjectCommand({
           Bucket: bucket,
           Key: key
@@ -853,7 +945,7 @@ async function backup(payload) {
     if (isCancelled) throw new ServerShutdownError();
 
     const upload = new Upload({
-      client: S3,
+      client: s3,
       params: {
         Bucket: bucket,
         Key: key,
@@ -1030,12 +1122,55 @@ async function backup(payload) {
       }
     });
 
+    //
+    // if the domain has custom S3 configured, email domain admins
+    // with a friendly error message (with Redis 6-hour dedup)
+    //
+    if (domain && domain.has_custom_s3 === true) {
+      const domainAdminKey = `custom_s3_backup_error:${payload.session.user.domain_id}`;
+      const domainAdminCache = await client.get(domainAdminKey);
+      if (!domainAdminCache) {
+        await client.set(domainAdminKey, true, 'PX', ms('6h'));
+        try {
+          const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
+            domain
+          );
+          await email({
+            template: 'alert',
+            message: {
+              to,
+              subject: i18n.translate(
+                'CUSTOM_S3_BACKUP_ERROR_SUBJECT',
+                locale,
+                payload.session.user.username,
+                domain.name
+              )
+            },
+            locals: {
+              message: i18n.translate(
+                'CUSTOM_S3_BACKUP_ERROR_MESSAGE',
+                locale,
+                payload.session.user.username,
+                domain.name,
+                err.message === 'Database empty'
+                  ? err.message
+                  : refineAndLogError(err, payload.session).message
+              ),
+              locale
+            }
+          });
+        } catch (_err) {
+          logger.fatal(_err, { payload });
+        }
+      }
+    }
+
     throw err;
   }
 
   // include URL link in the email to download
   const link = await getSignedUrl(
-    S3,
+    s3,
     new GetObjectCommand({
       Bucket: bucket,
       Key: key

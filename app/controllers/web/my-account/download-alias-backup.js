@@ -8,7 +8,10 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const dashify = require('dashify');
 const isSANB = require('is-string-and-not-blank');
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const {
+  GetObjectCommand,
+  ListObjectsV2Command
+} = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const _ = require('#helpers/lodash');
 
@@ -17,20 +20,12 @@ const Domains = require('#models/domains');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
-const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-
-const S3 = new S3Client({
-  region: env.AWS_REGION,
-  endpoint: env.AWS_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-  }
-});
+const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
+const { getS3Client } = require('#helpers/get-s3-client');
 
 async function downloadAliasBackup(ctx) {
   const redirectTo = ctx.state.l(
@@ -183,13 +178,86 @@ async function downloadAliasBackup(ctx) {
       );
     } else {
       // otherwise get signed URL if password not specified
+      //
+      // Look up domain with custom S3 config for per-domain storage
+      //
+      const domainWithS3 = await Domains.findById(ctx.state.domain._id)
+        .select('+s3_access_key_id +s3_secret_access_key')
+        .lean()
+        .exec();
+      let { client: s3, bucket: customBucket } = getS3Client(domainWithS3);
+
+      // Validate the custom bucket is not publicly accessible
+      if (domainWithS3 && domainWithS3.has_custom_s3 === true && customBucket) {
+        try {
+          const isPublic = await checkS3BucketAccess(
+            domainWithS3.s3_endpoint,
+            customBucket
+          );
+          if (isPublic) {
+            ctx.logger.warn(
+              'Custom S3 bucket is publicly accessible, falling back to default',
+              { domain_id: domainWithS3._id, bucket: customBucket }
+            );
+            const defaultResult = getS3Client();
+            s3 = defaultResult.client;
+            customBucket = null;
+          }
+        } catch (err) {
+          ctx.logger.warn(err);
+        }
+      }
+
+      const bucket =
+        customBucket ||
+        `${config.env}-${dashify(_.camelCase(alias.storage_location))}`;
+
+      //
+      // for custom S3 storage, backups are stored with ISO 8601 timestamp
+      // prefixed keys (e.g. "2025-03-01T12:00:00.000Z-alias_id.sqlite")
+      // so we need to list objects and find the latest one
+      //
+      // for default (system) S3, the key is flat (e.g. "alias_id.sqlite")
+      //
+      let latestKey = `${alias.id}.sqlite`;
+
+      if (customBucket) {
+        try {
+          const listResponse = await s3.send(
+            new ListObjectsV2Command({
+              Bucket: bucket,
+              Prefix: '',
+              Delimiter: ''
+            })
+          );
+
+          if (listResponse.Contents && listResponse.Contents.length > 0) {
+            // filter to only .sqlite files matching this alias
+            const matchingKeys = listResponse.Contents.filter(
+              (obj) =>
+                obj.Key &&
+                (obj.Key.endsWith(`-${alias.id}.sqlite`) ||
+                  obj.Key === `${alias.id}.sqlite`)
+            ).sort(
+              (a, b) => new Date(b.LastModified) - new Date(a.LastModified)
+            );
+
+            if (matchingKeys.length > 0) {
+              latestKey = matchingKeys[0].Key;
+            }
+          }
+        } catch (err) {
+          ctx.logger.warn('Failed to list custom S3 objects, using flat key', {
+            error: err
+          });
+        }
+      }
+
       const link = await getSignedUrl(
-        S3,
+        s3,
         new GetObjectCommand({
-          Bucket: `${config.env}-${dashify(
-            _.camelCase(alias.storage_location)
-          )}`,
-          Key: `${alias.id}.sqlite`
+          Bucket: bucket,
+          Key: latestKey
         }),
         { expiresIn: 3600 }
       );
