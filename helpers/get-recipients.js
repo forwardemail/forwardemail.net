@@ -235,11 +235,15 @@ async function getRecipients(session, scan) {
               const tld = getPublicSuffix(session.resolvedRootClientHostname);
               if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
             }
-          } else if (
+          }
+
+          if (
+            !pass &&
             session.originalFromAddress &&
             customAllowlist.includes(session.originalFromAddress)
           )
             pass = true;
+
           if (!pass && session.originalFromAddress) {
             // check if the domain or root portion of the `session.originalFromAddress` matches
             const domain = session.originalFromAddress.split('@')[1];
