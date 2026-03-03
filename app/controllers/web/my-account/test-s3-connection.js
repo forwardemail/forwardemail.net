@@ -116,7 +116,11 @@ async function testS3Connection(ctx) {
     credentials: {
       accessKeyId,
       secretAccessKey
-    }
+    },
+    // Disable automatic checksum headers (x-amz-checksum-crc32)
+    // for compatibility with S3-compatible providers like Backblaze B2
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED'
   });
 
   try {
@@ -149,7 +153,7 @@ async function testS3Connection(ctx) {
     }
   } catch (err) {
     if (err.isBoom) throw err;
-    const errMsg = err.message || 'Unknown error';
+    const errMsg = err.message || err.Code || err.name || 'Unknown error';
     if (ctx.api) {
       throw Boom.badRequest(
         ctx.translateError('CUSTOM_S3_TEST_FAILED', errMsg)

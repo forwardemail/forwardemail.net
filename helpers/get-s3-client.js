@@ -18,7 +18,12 @@ const defaultS3Client = new S3Client({
   credentials: {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-  }
+  },
+  // Disable automatic checksum headers (x-amz-checksum-crc32)
+  // for compatibility with S3-compatible providers like Backblaze B2
+  // that reject unsupported headers with 400 Bad Request
+  requestChecksumCalculation: 'WHEN_REQUIRED',
+  responseChecksumValidation: 'WHEN_REQUIRED'
 });
 
 /**
@@ -68,7 +73,11 @@ function getS3Client(domain) {
       credentials: {
         accessKeyId,
         secretAccessKey
-      }
+      },
+      // Disable automatic checksum headers (x-amz-checksum-crc32)
+      // for compatibility with S3-compatible providers like Backblaze B2
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED'
     });
 
     return {

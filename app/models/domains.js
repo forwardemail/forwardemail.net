@@ -830,7 +830,11 @@ Domains.pre('validate', async function (next) {
         credentials: {
           accessKeyId,
           secretAccessKey
-        }
+        },
+        // Disable automatic checksum headers (x-amz-checksum-crc32)
+        // for compatibility with S3-compatible providers like Backblaze B2
+        requestChecksumCalculation: 'WHEN_REQUIRED',
+        responseChecksumValidation: 'WHEN_REQUIRED'
       });
 
       try {
@@ -840,7 +844,7 @@ Domains.pre('validate', async function (next) {
       } catch (err) {
         // Auto-disable custom S3 on credential/bucket validation failure
         this.has_custom_s3 = false;
-        const errMsg = err.message || 'Unknown error';
+        const errMsg = err.message || err.Code || err.name || 'Unknown error';
         throw Boom.badRequest(
           i18n.translateError('CUSTOM_S3_CREDENTIAL_ERROR', this.locale, errMsg)
         );
