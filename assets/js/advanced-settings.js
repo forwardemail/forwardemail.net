@@ -113,6 +113,18 @@ if ($btnTestS3.length > 0) {
         s3_bucket: $('#s3-bucket').val()
       };
 
+      //
+      // Client-side validation: ensure the endpoint URL includes
+      // a protocol (https:// or http://) before sending to the server.
+      // This matches the server-side isURL validation and prevents
+      // a confusing UX where the test succeeds but save fails.
+      //
+      if (body.s3_endpoint && !/^https?:\/\//i.test(body.s3_endpoint)) {
+        throw new Error(
+          'Endpoint URL must start with https:// (e.g. https://s3.us-east-1.amazonaws.com)'
+        );
+      }
+
       const response = await sendRequest(body, url);
       if (response.ok) {
         Swal.fire({

@@ -11,7 +11,9 @@ const {
 } = require('@aws-sdk/client-s3');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const { isURL } = require('@forwardemail/validator');
 
+const config = require('#config');
 const { Domains } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -26,10 +28,11 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
  *
  * Steps:
  * 1. Resolve credentials from request body or database
- * 2. Perform a HeadBucket call to verify bucket access
- * 3. Perform a PutObject + DeleteObject to verify write permissions
- * 4. Check that the bucket is not publicly accessible
- * 5. Return success/failure via JSON (AJAX) or flash (web)
+ * 2. Validate endpoint URL format (must include protocol)
+ * 3. Perform a HeadBucket call to verify bucket access
+ * 4. Perform a PutObject + DeleteObject to verify write permissions
+ * 5. Check that the bucket is not publicly accessible
+ * 6. Return success/failure via JSON (AJAX) or flash (web)
  *
  * @param {Object} ctx - Koa context
  */
@@ -97,6 +100,15 @@ async function testS3Connection(ctx) {
   // Validate that all required fields are present
   if (!isSANB(endpoint) || !accessKeyId || !secretAccessKey || !isSANB(bucket))
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_REQUIRED_FIELDS'));
+
+  //
+  // Validate endpoint URL format using the same isURL check
+  // as the domain model schema (requires http:// or https:// protocol).
+  // This prevents the test from succeeding with a bare hostname
+  // that would then fail on save due to schema validation.
+  //
+  if (!isURL(endpoint, config.isURLOptions))
+    throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
 
   const testClient = new S3Client({
     region,

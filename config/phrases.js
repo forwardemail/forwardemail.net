@@ -485,6 +485,8 @@ module.exports = {
   CUSTOM_S3_TEST_SUCCESS:
     'Successfully connected to your custom S3 storage. Credentials are valid and the bucket is accessible.',
   CUSTOM_S3_TEST_FAILED: 'Failed to connect to your custom S3 storage: %s',
+  CUSTOM_S3_INVALID_ENDPOINT:
+    'Endpoint URL must start with https:// (e.g. https://s3.us-east-1.amazonaws.com). Please include the full URL with protocol.',
   CUSTOM_S3_NOT_ENABLED:
     'Custom S3 storage is not enabled for this domain. Please enable it and save your credentials first.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
