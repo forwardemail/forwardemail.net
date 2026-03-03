@@ -185,7 +185,20 @@ class ApiWebSocketHandler {
    * @returns {Promise<Object>} - { aliasId } on success
    */
   async _authenticate(request) {
-    const creds = basicAuth(request);
+    // Prefer the standard Authorization header, but fall back to query
+    // parameters for browser WebSocket clients that cannot set custom
+    // headers on the upgrade request.
+    let creds = basicAuth(request);
+
+    if (!creds || !creds.name) {
+      const { query } = url.parse(request.url, true);
+      if (query.username) {
+        creds = { name: query.username, pass: query.password || '' };
+      } else if (query.token) {
+        // API token via query param (password-less; alias_id required)
+        creds = { name: query.token, pass: '' };
+      }
+    }
 
     if (!creds || !creds.name) {
       const err = new Error('Authentication required');
