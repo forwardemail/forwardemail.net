@@ -190,6 +190,8 @@ async function create(ctx) {
     } catch (err) {
       if (err.code === 'ERR_UNKNOWN_ENCODING')
         throw Boom.badRequest(err.message);
+      // Surface SMTP errors (e.g. rate limit exceeded) as 429 instead of 500
+      if (err.responseCode === 550) throw Boom.tooManyRequests(err.message);
       throw err;
     }
 
