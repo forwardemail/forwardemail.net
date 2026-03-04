@@ -112,7 +112,7 @@
 
 メールボックスでは、[保存時の暗号化](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard))、[転送中の暗号化](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security))、[DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (「DoH」) 暗号化を常に使用しています。:tangerine: [タンジェリン](https://tangeri.ne)、[sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-ポリ1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 暗号化も使用しています。さらに、トークンベースの2要素認証 ([中間者攻撃](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) の影響を受けやすいSMSではなく)、ルートアクセスを無効化したSSHキーのローテーション、制限されたIPアドレスによるサーバーへの排他的アクセスなどを採用しています。
 
-[邪悪なメイドの攻撃](https://en.wikipedia.org/wiki/Evil_maid_attack) やサードパーティベンダーの不正な従業員による不正アクセスがあった場合でも、**メールボックスは生成されたパスワードでのみ開けます**。SOC Type 2準拠のサーバープロバイダーであるCloudflare、DataPacket、Digital Ocean、Vultr以外のサードパーティベンダーには依存していませんのでご安心ください。
+[邪悪なメイドの攻撃](https://en.wikipedia.org/wiki/Evil_maid_attack) やサードパーティベンダーの不正な従業員による不正アクセスがあった場合でも、**メールボックスは生成されたパスワードでのみ開けます**。SOC Type 2準拠のサーバープロバイダーであるCloudflare、DataPacket、Digital Ocean、GitHub、Vultr以外のサードパーティベンダーには依存していませんのでご安心ください。
 
 私たちの目標は、[単一障害点](https://en.wikipedia.org/wiki/Single_point_of_failure) をできるだけ少なくすることです。
 

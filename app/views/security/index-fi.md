@@ -112,6 +112,7 @@ Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttäv
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS-suojaus, DNS | ✅ Kyllä | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Palvelininfrastruktuuri | ❌ Ei | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Pilvi-infrastruktuuri | ❌ Ei | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Lähdekoodin hosting, CI/CD | ✅ Kyllä | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Pilvi-infrastruktuuri | ❌ Ei | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Maksun käsittely | ✅ Kyllä | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Maksun käsittely | ❌ Ei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

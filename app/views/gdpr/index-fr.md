@@ -33,7 +33,7 @@ Vous trouverez ci-dessous nos fournisseurs que nous utilisons pour transférer d
 | [Cloudflare](https://cloudflare.com) | :white_check_mark: Oui | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | [DataPacket](https://www.datapacket.com/) | :x: Non | <https://www.datapacket.com/privacy-policy> |
 | [Digital Ocean](https://digitalocean.com) | :x: Non | <https://www.digitalocean.com/legal/gdpr> |
-| [GitHub](https://github.com) | :x: No | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| [GitHub](https://github.com) | :white_check_mark: Yes | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
 | [Vultr](https://www.vultr.com) | :x: Non | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 | [Stripe](https://stripe.com/) | :white_check_mark: Oui | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Non | <https://www.paypal.com/uk/legalhub/privacy-full> |

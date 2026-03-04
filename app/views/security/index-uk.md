@@ -112,6 +112,7 @@
 | [Cloudflare](https://www.cloudflare.com) | CDN, захист від DDoS-атак, DNS | ✅ Так | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Серверна інфраструктура | ❌ Ні | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Хмарна інфраструктура | ❌ Ні | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Хостинг вихідного коду, CI/CD | ✅ Так | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Хмарна інфраструктура | ❌ Ні | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Обробка платежів | ✅ Так | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Обробка платежів | ❌ Ні | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

@@ -112,6 +112,7 @@
 | [Cloudflare](https://www.cloudflare.com) | CDN, הגנה מפני DDoS, DNS | ✅ כן | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | תשתית שרתים | ❌ לא | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | תשתית ענן | ❌ לא | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | אירוח קוד מקור, CI/CD | ✅ כן | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | תשתית ענן | ❌ לא | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | עיבוד תשלומים | ✅ כן | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | עיבוד תשלומים | ❌ לא | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

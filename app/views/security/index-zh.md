@@ -112,6 +112,7 @@
 | [Cloudflare](https://www.cloudflare.com) | CDN、DDoS 保护、DNS | ✅ 是的 | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | 服务器基础设施 | ❌ 没有 | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | 云基础设施 | ❌ 没有 | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | 源代码托管、CI/CD | ✅ 是 | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | 云基础设施 | ❌ 没有 | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | 付款处理 | ✅ 是的 | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | 付款处理 | ❌ 没有 | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

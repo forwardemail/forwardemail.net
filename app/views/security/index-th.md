@@ -112,6 +112,7 @@
 | [Cloudflare](https://www.cloudflare.com) | CDN, การป้องกัน DDoS, DNS | ✅ ใช่ครับ | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | โครงสร้างพื้นฐานของเซิร์ฟเวอร์ | ❌ ไม่ | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | โครงสร้างพื้นฐานคลาวด์ | ❌ ไม่ | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | โฮสติ้งซอร์สโค้ด, CI/CD | ✅ ใช่ | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | โครงสร้างพื้นฐานคลาวด์ | ❌ ไม่ | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | การประมวลผลการชำระเงิน | ✅ ใช่ครับ | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | การประมวลผลการชำระเงิน | ❌ ไม่ | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

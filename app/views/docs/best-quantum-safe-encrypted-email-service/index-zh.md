@@ -112,7 +112,7 @@
 
 我们始终使用 [静态加密](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard))、[传输中加密](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security))、[通过 HTTPS 进行 DNS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (“DoH”) 和 [柑橘](https://tangeri.ne) (:tangerine:) 加密邮箱，以及 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 加密邮箱。此外，我们还使用基于令牌的双因素身份验证（而非易受 [中间人攻击](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 攻击的短信验证码）、禁用 root 访问权限的轮换 SSH 密钥、通过受限 IP 地址独占访问服务器等等。
 
-如果出现 [邪恶女仆袭击](https://en.wikipedia.org/wiki/Evil_maid_attack) 或第三方供应商的恶意员工，**您的邮箱仍然只能使用您生成的密码打开**。请放心，除了符合 SOC Type 2 投诉标准的服务器提供商 Cloudflare、DataPacket、Digital Ocean 和 Vultr 之外，我们不依赖任何第三方供应商。
+如果出现 [邪恶女仆袭击](https://en.wikipedia.org/wiki/Evil_maid_attack) 或第三方供应商的恶意员工，**您的邮箱仍然只能使用您生成的密码打开**。请放心，除了符合 SOC Type 2 投诉标准的服务器提供商 Cloudflare、DataPacket、Digital Ocean、GitHub 和 Vultr 之外，我们不依赖任何第三方供应商。
 
 我们的目标是尽可能少地使用 [单点故障](https://en.wikipedia.org/wiki/Single_point_of_failure)。
 

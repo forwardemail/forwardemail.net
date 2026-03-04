@@ -112,7 +112,7 @@
 
 בכל עת אנו משתמשים בהצפנות [הצפנה במנוחה](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [הצפנה בתהליך העברה](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS דרך HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") תוך שימוש בהצפנות :tangerine: [מַנדָרִינָה](https://tangeri.ne), ו-[סקליט](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([צ'אצ'ה20-פולי1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) בתיבות דואר. בנוסף, אנו משתמשים באימות דו-שלבי מבוסס טוקנים (בניגוד ל-SMS שחשוד ב-[התקפות אדם באמצע](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), במפתחות SSH מסתובבים עם גישת root מושבתת, גישה בלעדית לשרתים דרך כתובות IP מוגבלות ועוד.
 
-במקרה של עובד [התקפת עוזרת בית רעה](https://en.wikipedia.org/wiki/Evil_maid_attack) או עובד סורר מספק צד שלישי, **עדיין ניתן לפתוח את תיבת הדואר שלך רק באמצעות הסיסמה שיצרת**. היו סמוכים ובטוחים, איננו מסתמכים על ספקי צד שלישי מלבד ספקי שרתי התלונות מסוג SOC 2 שלנו, Cloudflare, DataPacket, Digital Ocean ו-Vultr.
+במקרה של עובד [התקפת עוזרת בית רעה](https://en.wikipedia.org/wiki/Evil_maid_attack) או עובד סורר מספק צד שלישי, **עדיין ניתן לפתוח את תיבת הדואר שלך רק באמצעות הסיסמה שיצרת**. היו סמוכים ובטוחים, איננו מסתמכים על ספקי צד שלישי מלבד ספקי שרתי התלונות מסוג SOC 2 שלנו, Cloudflare, DataPacket, Digital Ocean, GitHub ו-Vultr.
 
 המטרה שלנו היא שיהיו כמה שפחות [נקודת כשלים אחת](https://en.wikipedia.org/wiki/Single_point_of_failure).
 

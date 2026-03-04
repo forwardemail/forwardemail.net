@@ -108,6 +108,7 @@
 | [Cloudflare](https://www.cloudflare.com) | شبكة توصيل المحتوى (CDN)، حماية DDoS، DNS | ✅ نعم | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | البنية التحتية للخادم | ❌ لا | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | البنية التحتية السحابية | ❌ لا | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | استضافة الكود المصدري، CI/CD | ✅ نعم | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | البنية التحتية السحابية | ❌ لا | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | معالجة الدفع | ✅ نعم | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | معالجة الدفع | ❌ لا | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

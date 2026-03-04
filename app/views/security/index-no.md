@@ -108,6 +108,7 @@ Vi velger nøye ut tjenesteleverandørene våre for å sikre at de oppfyller vå
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS-beskyttelse, DNS | ✅ Ja | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Serverinfrastruktur | ❌ Nei | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Skyinfrastruktur | ❌ Nei | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Kildekode-hosting, CI/CD | ✅ Ja | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Skyinfrastruktur | ❌ Nei | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Betalingsbehandling | ✅ Ja | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Betalingsbehandling | ❌ Nei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

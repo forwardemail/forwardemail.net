@@ -112,6 +112,7 @@ Szolgáltatóinkat gondosan válogatjuk meg, hogy biztosan megfeleljenek magas b
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS védelem, DNS | ✅ Igen | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Szerver infrastruktúra | ❌ Nem | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Felhőinfrastruktúra | ❌ Nem | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Forráskód-hosting, CI/CD | ✅ Igen | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Felhőinfrastruktúra | ❌ Nem | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Fizetésfeldolgozás | ✅ Igen | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Fizetésfeldolgozás | ❌ Nem | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

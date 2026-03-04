@@ -3865,12 +3865,13 @@ Complete details are available on our GDPR compliance page: <https://forwardemai
 
 **Primary Infrastructure Subprocessors:**
 
-| Provider         | Data Privacy Framework Certified | GDPR Compliance Page                            |
-| ---------------- | -------------------------------- | ----------------------------------------------- |
-| **Cloudflare**   | ✅ Yes                            | <https://www.cloudflare.com/trust-hub/gdpr/>    |
-| **DataPacket**   | ❌ No                             | <https://www.datapacket.com/privacy-policy>     |
-| **DigitalOcean** | ❌ No                             | <https://www.digitalocean.com/legal/gdpr>       |
-| **Vultr**        | ❌ No                             | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Provider         | Data Privacy Framework Certified | GDPR Compliance Page                                                                       |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Cloudflare**   | ✅ Yes                            | <https://www.cloudflare.com/trust-hub/gdpr/>                                               |
+| **DataPacket**   | ❌ No                             | <https://www.datapacket.com/privacy-policy>                                                |
+| **DigitalOcean** | ❌ No                             | <https://www.digitalocean.com/legal/gdpr>                                                  |
+| **GitHub**       | ✅ Yes                            | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Vultr**        | ❌ No                             | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 
 **Detailed Certifications:**
 
@@ -3900,6 +3901,13 @@ Complete details are available on our GDPR compliance page: <https://forwardemai
 * Global network across 58 data centers
 * Details: <https://www.datapacket.com/datacenters/denver>
 
+**GitHub**
+
+* Data Privacy Framework certified (EU-U.S., Swiss-U.S., and UK Extension)
+* Source code hosting, CI/CD, and project management
+* GitHub Data Protection Agreement available
+* Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
 **Payment Processors:**
 
 * **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
@@ -3928,7 +3936,7 @@ For enterprise customers requiring custom DPA terms or specific contractual arra
 
 * **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
 * **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
-* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
+* **Subprocessor Frameworks**: DigitalOcean, GitHub, and Vultr maintain GDPR-compliant incident response procedures
 
 **GDPR Representative Information:**
 Forward Email has appointed GDPR representatives in accordance with Article 27:

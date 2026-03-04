@@ -113,14 +113,15 @@ We follow the principle of data minimization:
 
 We carefully select our service providers to ensure they meet our high security standards. Below are the providers we use for international data transfer and their GDPR compliance status:
 
-| Provider                                      | Purpose                   | DPF Certified | GDPR Compliance Page                                              |
-| --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com)      | CDN, DDoS protection, DNS | ✅ Yes         | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)     |
-| [DataPacket](https://www.datapacket.com)      | Server infrastructure     | ❌ No          | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)   |
-| [Digital Ocean](https://www.digitalocean.com) | Cloud infrastructure      | ❌ No          | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)      |
-| [Vultr](https://www.vultr.com)                | Cloud infrastructure      | ❌ No          | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)       |
-| [Stripe](https://stripe.com)                  | Payment processing        | ✅ Yes         | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)  |
-| [PayPal](https://www.paypal.com)              | Payment processing        | ❌ No          | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| Provider                                      | Purpose                    | DPF Certified | GDPR Compliance Page                                                                                    |
+| --------------------------------------------- | -------------------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com)      | CDN, DDoS protection, DNS  | ✅ Yes         | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/)                                           |
+| [DataPacket](https://www.datapacket.com)      | Server infrastructure      | ❌ No          | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
+| [Digital Ocean](https://www.digitalocean.com) | Cloud infrastructure       | ❌ No          | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
+| [GitHub](https://github.com)                  | Source code hosting, CI/CD | ✅ Yes         | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Vultr](https://www.vultr.com)                | Cloud infrastructure       | ❌ No          | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
+| [Stripe](https://stripe.com)                  | Payment processing         | ✅ Yes         | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
+| [PayPal](https://www.paypal.com)              | Payment processing         | ❌ No          | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |
 
 We use these providers to ensure reliable, secure service delivery while maintaining compliance with international data protection regulations. All data transfers are conducted with appropriate safeguards in place to protect your personal information.
 

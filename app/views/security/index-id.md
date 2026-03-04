@@ -112,6 +112,7 @@ Kami memilih penyedia layanan kami dengan cermat untuk memastikan mereka memenuh
 | [Cloudflare](https://www.cloudflare.com) | CDN, perlindungan DDoS, DNS | ✅ Ya | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Infrastruktur server | ❌ Tidak | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Infrastruktur awan | ❌ Tidak | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Hosting kode sumber, CI/CD | ✅ Ya | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Infrastruktur awan | ❌ Tidak | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Pemrosesan pembayaran | ✅ Ya | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Pemrosesan pembayaran | ❌ Tidak | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

@@ -112,6 +112,7 @@ Poskytovatele našich služeb pečlivě vybíráme, abychom zajistili, že splň
 | [Cloudflare](https://www.cloudflare.com) | CDN, ochrana proti DDoS, DNS | ✅ Ano | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Serverová infrastruktura | ❌ Ne | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Cloudová infrastruktura | ❌ Ne | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Hosting zdrojového kódu, CI/CD | ✅ Ano | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Cloudová infrastruktura | ❌ Ne | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Zpracování plateb | ✅ Ano | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Zpracování plateb | ❌ Ne | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

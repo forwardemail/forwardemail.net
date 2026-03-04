@@ -112,6 +112,7 @@ Yüksek güvenlik standartlarımızı karşıladıklarından emin olmak için hi
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS koruması, DNS | ✅ Evet | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Sunucu altyapısı | ❌ Hayır | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Bulut altyapısı | ❌ Hayır | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Kaynak kodu barındırma, CI/CD | ✅ Evet | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Bulut altyapısı | ❌ Hayır | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Ödeme işleme | ✅ Evet | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Ödeme işleme | ❌ Hayır | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

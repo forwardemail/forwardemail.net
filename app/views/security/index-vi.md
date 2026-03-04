@@ -112,6 +112,7 @@ Chúng tôi lựa chọn kỹ lưỡng các nhà cung cấp dịch vụ để đ
 | [Cloudflare](https://www.cloudflare.com) | CDN, bảo vệ DDoS, DNS | ✅ Có | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Cơ sở hạ tầng máy chủ | ❌ Không | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Cơ sở hạ tầng đám mây | ❌ Không | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Lưu trữ mã nguồn, CI/CD | ✅ Có | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Cơ sở hạ tầng đám mây | ❌ Không | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Xử lý thanh toán | ✅ Có | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Xử lý thanh toán | ❌ Không | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

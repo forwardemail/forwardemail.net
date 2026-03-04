@@ -112,6 +112,7 @@ Nous sélectionnons soigneusement nos prestataires de services afin de garantir 
 | [Cloudflare](https://www.cloudflare.com) | CDN, protection DDoS, DNS | ✅ Oui | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Infrastructure du serveur | ❌ Non | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Infrastructure cloud | ❌ Non | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [GitHub](https://github.com) | Hébergement de code source, CI/CD | ✅ Oui | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
 | [Vultr](https://www.vultr.com) | Infrastructure cloud | ❌ Non | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Traitement des paiements | ✅ Oui | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Traitement des paiements | ❌ Non | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |

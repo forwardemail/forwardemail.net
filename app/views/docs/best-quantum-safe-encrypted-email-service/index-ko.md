@@ -112,7 +112,7 @@
 
 저희는 항상 [저장 중 암호화](https://en.wikipedia.org/wiki/Data_at_rest)([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [전송 중 암호화](https://en.wikipedia.org/wiki/Data_in_transit)([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [HTTPS를 통한 DNS](https://en.wikipedia.org/wiki/DNS_over_HTTPS)("DoH")를 사용하며, [귤](https://tangeri.ne)와 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)([차차20-폴리1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 암호화를 적용합니다. 또한, 토큰 기반 2단계 인증([중간자 공격](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)에서 의심되는 SMS와는 대조적), 루트 접근이 비활성화된 순환 SSH 키, 제한된 IP 주소를 통한 서버 단독 접근 등을 사용합니다.
 
-[사악한 하녀의 공격](https://en.wikipedia.org/wiki/Evil_maid_attack) 또는 타사 공급업체의 악의적인 직원이 있는 경우, **생성된 비밀번호로만 메일함을 열 수 있습니다**. 저희는 SOC 유형 2 규정을 준수하는 Cloudflare, DataPacket, Digital Ocean, Vultr 서버 공급업체 외에는 다른 타사 공급업체에 의존하지 않으므로 안심하셔도 됩니다.
+[사악한 하녀의 공격](https://en.wikipedia.org/wiki/Evil_maid_attack) 또는 타사 공급업체의 악의적인 직원이 있는 경우, **생성된 비밀번호로만 메일함을 열 수 있습니다**. 저희는 SOC 유형 2 규정을 준수하는 Cloudflare, DataPacket, Digital Ocean, GitHub, Vultr 서버 공급업체 외에는 다른 타사 공급업체에 의존하지 않으므로 안심하셔도 됩니다.
 
 우리의 목표는 [단일 실패 지점](https://en.wikipedia.org/wiki/Single_point_of_failure)를 가능한 한 적게 만드는 것입니다.
 
