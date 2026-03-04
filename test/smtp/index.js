@@ -2306,8 +2306,8 @@ Test`.trim()
         })
       );
 
-      t.is(err.responseCode, 550);
-      t.is(err.response, '550 5.1.1 Rate limit exceeded');
+      t.is(err.responseCode, 421);
+      t.is(err.response, '421 4.4.2 Rate limit exceeded');
     } else {
       const info = await transporter.sendMail({
         envelope: {

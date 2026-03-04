@@ -11,6 +11,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
+const smtpCodeToHttpError = require('#helpers/smtp-code-to-http-error');
 const toObject = require('#helpers/to-object');
 const { Users } = require('#models');
 
@@ -190,9 +191,9 @@ async function create(ctx) {
     } catch (err) {
       if (err.code === 'ERR_UNKNOWN_ENCODING')
         throw Boom.badRequest(err.message);
-      // Surface SMTP errors (e.g. rate limit exceeded) as 429 instead of 500
-      if (err.responseCode === 550) throw Boom.tooManyRequests(err.message);
-      throw err;
+      // map SMTP response codes to proper HTTP status codes
+      // (e.g. 421 rate limit -> 429, 550 -> 400, 552 -> 413)
+      throw smtpCodeToHttpError(err);
     }
 
     ctx.logger.debug('email created', {

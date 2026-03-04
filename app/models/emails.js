@@ -1171,13 +1171,16 @@ Emails.pre('save', async function (next) {
         const count = await redis.zcard(
           `${config.smtpLimitNamespace}:${domain.id}`
         );
-        // return 550 error code
+        // return 421 error code (temporary failure, try again later)
         if (count >= max) {
           // send one-time email alert to admin + user
           sendRateLimitEmail(user)
             .then()
             .catch((err) => logger.fatal(err));
-          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+          throw new SMTPError('Rate limit exceeded', {
+            responseCode: 421,
+            ignoreHook: true
+          });
         }
       }
 
@@ -1186,13 +1189,17 @@ Emails.pre('save', async function (next) {
         const count = await redis.zcard(
           `${config.smtpLimitNamespace}:${user.id}`
         );
-        // return 550 error code
+
+        // return 421 error code (temporary failure, try again later)
         if (count >= max) {
           // send one-time email alert to admin + user
           sendRateLimitEmail(user)
             .then()
             .catch((err) => logger.fatal(err));
-          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+          throw new SMTPError('Rate limit exceeded', {
+            responseCode: 421,
+            ignoreHook: true
+          });
         }
       }
     }
@@ -1253,9 +1260,12 @@ Emails.post('save', async function (email, next) {
             max
           });
 
-          // return 550 error code
+          // return 421 error code (temporary failure, try again later)
           if (!limit.remaining)
-            throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+            throw new SMTPError('Rate limit exceeded', {
+              responseCode: 421,
+              ignoreHook: true
+            });
         }
 
         // rate limit to X emails per day by alias user id then denylist
@@ -1264,9 +1274,12 @@ Emails.post('save', async function (email, next) {
           max
         });
 
-        // return 550 error code
+        // return 421 error code (temporary failure, try again later)
         if (!limit.remaining)
-          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+          throw new SMTPError('Rate limit exceeded', {
+            responseCode: 421,
+            ignoreHook: true
+          });
       } catch (err) {
         // remove the job from the queue
         email.constructor
