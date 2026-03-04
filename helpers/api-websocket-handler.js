@@ -112,7 +112,12 @@ class ApiWebSocketHandler {
         }
 
         ws.isAlive = false;
+        // Protocol-level ping for server-side dead-connection detection
         ws.ping();
+        // Application-level ping for browser clients (browser WebSocket API
+        // cannot see protocol-level pings, so clients need a visible message
+        // to know the connection is alive)
+        this._send(ws, { event: 'ping' });
       }
     }, KEEP_ALIVE_INTERVAL);
 

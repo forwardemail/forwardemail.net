@@ -344,6 +344,88 @@ test('read-only channel: client messages are silently ignored', async (t) => {
   ws.close();
 });
 
+// ─── Keep-Alive Ping Tests ──────────────────────────────────────────────────
+
+test('keep-alive sends application-level ping event to connected clients', async (t) => {
+  const { apiURL, wsHandler } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+  });
+  t.context._openWebSockets.push(ws);
+
+  const connMsg = await waitForMessage(ws);
+  t.is(connMsg.event, 'connected');
+
+  // Manually trigger the keep-alive logic instead of waiting for the interval
+  for (const client of wsHandler.wss.clients) {
+    client.isAlive = false;
+    client.ping();
+    wsHandler._send(client, { event: 'ping' });
+  }
+
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'ping');
+
+  ws.close();
+});
+
+test('keep-alive sends application-level ping in msgpackr mode', async (t) => {
+  const { apiURL, wsHandler } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws?msgpackr=true';
+
+  const ws = await connectWebSocket(
+    wsURL,
+    {
+      Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    },
+    true
+  );
+  t.context._openWebSockets.push(ws);
+
+  const connMsg = await waitForMessage(ws);
+  t.is(connMsg.event, 'connected');
+
+  // Manually trigger the keep-alive logic
+  for (const client of wsHandler.wss.clients) {
+    client.isAlive = false;
+    client.ping();
+    wsHandler._send(client, { event: 'ping' });
+  }
+
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'ping');
+
+  ws.close();
+});
+
+test('unauthenticated clients also receive application-level ping', async (t) => {
+  const { apiURL, wsHandler } = t.context;
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {});
+  t.context._openWebSockets.push(ws);
+
+  const connMsg = await waitForMessage(ws);
+  t.is(connMsg.event, 'connected');
+  t.is(connMsg.broadcastOnly, true);
+
+  // Manually trigger the keep-alive logic
+  for (const client of wsHandler.wss.clients) {
+    client.isAlive = false;
+    client.ping();
+    wsHandler._send(client, { event: 'ping' });
+  }
+
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'ping');
+
+  ws.close();
+});
+
 // ─── msgpackr Encoding Tests ────────────────────────────────────────────────
 
 test('receives JSON text frames by default (msgpackr=false)', async (t) => {
