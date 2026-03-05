@@ -1441,6 +1441,129 @@ test('sendWebSocketNotification gracefully handles missing aliasId', (t) => {
   });
 });
 
+// ─── Backpressure Tests ──────────────────────────────────────────────────────
+
+test('terminates slow consumer when bufferedAmount exceeds limit', async (t) => {
+  const { apiURL, wsHandler } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+  });
+  t.context._openWebSockets.push(ws);
+
+  const connMsg = await waitForMessage(ws);
+  t.is(connMsg.event, 'connected');
+
+  // Find the server-side ws for this client and stub bufferedAmount
+  let serverWs;
+  for (const client of wsHandler.wss.clients) {
+    if (client.aliasId === alias.id) {
+      serverWs = client;
+      break;
+    }
+  }
+
+  t.truthy(serverWs);
+
+  // Stub bufferedAmount to exceed limit (> 1 MB)
+  Object.defineProperty(serverWs, 'bufferedAmount', {
+    get: () => 2 * 1024 * 1024
+  });
+
+  // _send should terminate the connection due to backpressure
+  wsHandler._send(serverWs, { event: 'test' });
+
+  // Wait for the close event on the client side
+  await new Promise((resolve) => {
+    ws.on('close', resolve);
+    setTimeout(resolve, 2000);
+  });
+
+  t.not(ws.readyState, WebSocket.OPEN);
+});
+
+// ─── Redis Rate Limit Tests ─────────────────────────────────────────────────
+
+test('rejects connection when Redis rate limit exceeded', async (t) => {
+  const { apiURL, client } = t.context;
+
+  // Pre-seed the Redis rate limit counter above the limit (30)
+  const key = `ws_rate:${config.env}:127.0.0.1`;
+  await client.set(key, '999');
+  await client.pexpire(key, 60_000);
+
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  await t.throwsAsync(() => connectWebSocket(wsURL, {}), {
+    message: /Unexpected server response: 429/
+  });
+
+  // Clean up
+  await client.del(key);
+});
+
+// ─── Payload Truncation Tests ───────────────────────────────────────────────
+
+test('truncates oversized payload fields (eml, content, ical)', async (t) => {
+  const { apiURL, client } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass)
+  });
+  t.context._openWebSockets.push(ws);
+
+  await waitForMessage(ws); // consume connected
+
+  // Create a 2 MB eml string to exceed the 1 MB limit
+  const largeEml = 'X'.repeat(2 * 1024 * 1024);
+
+  sendWebSocketNotification(client, alias.id, 'newMessage', {
+    data: {
+      mailbox: 'INBOX',
+      message: {
+        uid: 1,
+        subject: 'Large email',
+        eml: largeEml,
+        object: 'message'
+      }
+    }
+  });
+
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'newMessage');
+  t.is(msg.data.message.subject, 'Large email');
+  // eml should be truncated
+  t.deepEqual(msg.data.message.eml, { truncated: true });
+
+  ws.close();
+});
+
+// ─── Auth Timeout Tests ─────────────────────────────────────────────────────
+
+test('returns 504 when authentication times out', async (t) => {
+  const { apiURL, wsHandler } = t.context;
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  // Monkey-patch _authenticate to never resolve
+  const originalAuth = wsHandler._authenticate.bind(wsHandler);
+  wsHandler._authenticate = () => new Promise(() => {});
+
+  await t.throwsAsync(
+    () =>
+      connectWebSocket(wsURL, {
+        Authorization: createApiTokenAuth('some-token')
+      }),
+    { message: /Unexpected server response: 504/ }
+  );
+
+  // Restore original
+  wsHandler._authenticate = originalAuth;
+});
+
 test('VALID_EVENTS contains all expected event types', (t) => {
   const expectedEvents = [
     // IMAP

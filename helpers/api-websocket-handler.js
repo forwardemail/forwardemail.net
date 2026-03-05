@@ -39,6 +39,9 @@ const KEEP_ALIVE_INTERVAL = ms('30s');
 // Rate limit: max connection attempts per IP per minute
 const MAX_CONNECT_ATTEMPTS_PER_MINUTE = 30;
 
+// Rate limit TTL in milliseconds (60s window)
+const RATE_LIMIT_TTL_MS = 60_000;
+
 // Maximum incoming frame size (1 KB) — clients should only send pong frames,
 // not data; this prevents abuse via large payloads
 const MAX_INCOMING_PAYLOAD = 1024;
@@ -49,6 +52,12 @@ const MAX_TOTAL_CONNECTIONS = 10000;
 // Max unauthenticated connections per IP (prevents abuse from anonymous clients
 // that only receive broadcast events like newRelease)
 const MAX_UNAUTHENTICATED_PER_IP = 3;
+
+// Maximum outbound send buffer before terminating slow consumers (1 MB)
+const MAX_SEND_BUFFER = 1024 * 1024;
+
+// Authentication timeout (prevents hanging auth from blocking resources)
+const AUTH_TIMEOUT_MS = ms('10s');
 
 class ApiWebSocketHandler {
   constructor(options = {}) {
@@ -66,12 +75,13 @@ class ApiWebSocketHandler {
     // Total connection count for global limit enforcement
     this.totalConnections = 0;
 
-    // Rate limit tracking: Map<ip, { count, resetAt }>
-    this.connectAttempts = new Map();
-
     // Unauthenticated connection tracking: Map<ip, Set<WebSocket>>
     // These clients only receive broadcast events (e.g. newRelease)
     this.unauthClients = new Map();
+
+    // Pre-serialize ping payloads to avoid re-encoding per client
+    this._pingJsonFrame = safeStringify({ event: 'ping' });
+    this._pingMsgpackFrame = encoder.pack({ event: 'ping' });
 
     // Create WebSocket server with noServer mode and security limits
     this.wss = new WebSocket.WebSocketServer({
@@ -101,6 +111,7 @@ class ApiWebSocketHandler {
     this.subscriber.on('messageBuffer', this._onSubscriberMessage);
 
     // Keep-alive interval — terminates unresponsive connections
+    // Uses pre-serialized ping frames and inline backpressure checks
     this._keepAliveInterval = setInterval(() => {
       for (const ws of this.wss.clients) {
         if (ws.isAlive === false) {
@@ -114,22 +125,22 @@ class ApiWebSocketHandler {
         ws.isAlive = false;
         // Protocol-level ping for server-side dead-connection detection
         ws.ping();
-        // Application-level ping for browser clients (browser WebSocket API
-        // cannot see protocol-level pings, so clients need a visible message
-        // to know the connection is alive)
-        this._send(ws, { event: 'ping' });
-      }
-    }, KEEP_ALIVE_INTERVAL);
+        // Application-level ping for browser clients using pre-serialized frames
+        if (ws.readyState === WebSocket.OPEN) {
+          if (ws.bufferedAmount >= MAX_SEND_BUFFER) {
+            logger.debug('WebSocket slow consumer on ping, terminating', {
+              aliasId: ws.aliasId
+            });
+            ws.terminate();
+            continue;
+          }
 
-    // Cleanup stale rate limit entries every minute
-    this._cleanupInterval = setInterval(() => {
-      const now = Date.now();
-      for (const [ip, data] of this.connectAttempts) {
-        if (now >= data.resetAt) {
-          this.connectAttempts.delete(ip);
+          ws.send(
+            ws.useMsgpackr ? this._pingMsgpackFrame : this._pingJsonFrame
+          );
         }
       }
-    }, ms('1m'));
+    }, KEEP_ALIVE_INTERVAL);
 
     //
     // Mail app release poller
@@ -151,30 +162,23 @@ class ApiWebSocketHandler {
   }
 
   /**
-   * Check rate limit for connection attempts.
-   * Uses in-memory tracking per IP with a sliding window.
+   * Check rate limit for connection attempts using Redis.
+   * Uses pipeline().incr().pexpire().exec() for atomic, cross-worker counting.
    *
    * @param {string} ip - Client IP address
-   * @returns {boolean} true if allowed, false if rate limited
+   * @returns {Promise<boolean>} true if allowed, false if rate limited
    */
-  _checkRateLimit(ip) {
-    const now = Date.now();
-    const data = this.connectAttempts.get(ip);
+  async _checkRateLimit(ip) {
+    const key = `ws_rate:${config.env}:${ip}`;
+    const results = await this.client
+      .pipeline()
+      .incr(key)
+      .pexpire(key, RATE_LIMIT_TTL_MS)
+      .exec();
 
-    if (!data || now >= data.resetAt) {
-      this.connectAttempts.set(ip, {
-        count: 1,
-        resetAt: now + ms('1m')
-      });
-      return true;
-    }
-
-    data.count++;
-    if (data.count > MAX_CONNECT_ATTEMPTS_PER_MINUTE) {
-      return false;
-    }
-
-    return true;
+    // results is [[err, count], [err, ok]]
+    const count = results[0][1];
+    return count <= MAX_CONNECT_ATTEMPTS_PER_MINUTE;
   }
 
   /**
@@ -340,8 +344,8 @@ class ApiWebSocketHandler {
    * Security checks performed in order:
    *   1. Path validation (only /v1/ws)
    *   2. Global connection limit
-   *   3. Per-IP rate limiting
-   *   4. Authentication (optional — API token or alias auth)
+   *   3. Per-IP rate limiting (Redis-backed, shared across workers)
+   *   4. Authentication (optional — API token or alias auth, with timeout)
    *   5. Per-alias connection limit (authenticated) or per-IP
    *      unauthenticated connection limit
    */
@@ -359,10 +363,11 @@ class ApiWebSocketHandler {
       socket.destroy();
     });
 
-    // Get client IP (trust X-Forwarded-For behind reverse proxy)
-    const ip =
-      request.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-      request.socket.remoteAddress;
+    // Get client IP — only trust X-Forwarded-For when WS_TRUST_PROXY is enabled
+    const ip = config.WS_TRUST_PROXY
+      ? request.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+        request.socket.remoteAddress
+      : request.socket.remoteAddress;
 
     // Check global connection limit
     if (this.totalConnections >= MAX_TOTAL_CONNECTIONS) {
@@ -376,8 +381,8 @@ class ApiWebSocketHandler {
       return;
     }
 
-    // Check per-IP rate limit for connection attempts
-    if (!this._checkRateLimit(ip)) {
+    // Check per-IP rate limit for connection attempts (Redis-backed)
+    if (!(await this._checkRateLimit(ip))) {
       logger.debug('WebSocket rate limited', { ip });
       socket.write('HTTP/1.1 429 Too Many Requests\r\nRetry-After: 60\r\n\r\n');
       socket.destroy();
@@ -397,7 +402,20 @@ class ApiWebSocketHandler {
     if (hasCredentials) {
       // --- Authenticated path ---
       try {
-        const { aliasId } = await this._authenticate(request);
+        // Wrap authentication in a timeout to prevent hanging auth
+        let authTimer;
+        const { aliasId } = await Promise.race([
+          this._authenticate(request),
+          new Promise((_, reject) => {
+            authTimer = setTimeout(() => {
+              const err = new Error('Authentication timed out');
+              err.statusCode = 504;
+              reject(err);
+            }, AUTH_TIMEOUT_MS);
+          })
+        ]).finally(() => {
+          clearTimeout(authTimer);
+        });
 
         // Check max connections per alias
         const existing = this.clients.get(aliasId);
@@ -462,12 +480,24 @@ class ApiWebSocketHandler {
 
   /**
    * Send a payload to a WebSocket client, respecting its encoding preference.
+   * Terminates slow consumers whose send buffer exceeds MAX_SEND_BUFFER.
    *
    * @param {WebSocket} ws - The WebSocket client
    * @param {Object} payload - The payload object to send
    */
   _send(ws, payload) {
     if (ws.readyState !== WebSocket.OPEN) return;
+
+    // Backpressure: evict slow consumers before they exhaust server memory
+    if (ws.bufferedAmount >= MAX_SEND_BUFFER) {
+      logger.debug('WebSocket slow consumer, terminating', {
+        aliasId: ws.aliasId,
+        bufferedAmount: ws.bufferedAmount
+      });
+      ws.terminate();
+      return;
+    }
+
     if (ws.useMsgpackr) {
       // Send binary msgpackr frame
       ws.send(encoder.pack(payload));
@@ -677,18 +707,10 @@ class ApiWebSocketHandler {
   }
 
   /**
-   * Reset rate limit tracking (useful for testing).
-   */
-  resetRateLimits() {
-    this.connectAttempts.clear();
-  }
-
-  /**
    * Gracefully close all connections and clean up resources.
    */
   async close() {
     clearInterval(this._keepAliveInterval);
-    clearInterval(this._cleanupInterval);
     clearInterval(this._releasePollerInterval);
     clearTimeout(this._releasePollerTimeout);
 
