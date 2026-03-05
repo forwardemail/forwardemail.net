@@ -270,7 +270,16 @@
           - redis-tools
           - msmtp
           - msmtp-mta
+          - tpm2-tools
+          - libtss2-dev
         update_cache: true
+
+    # Verify TPM 2.0 availability
+    - name: Verify TPM 2.0 is available
+      command: cat /sys/class/tpm/tpm0/tpm_version_major
+      register: tpm_version
+      changed_when: false
+      failed_when: tpm_version.stdout != '2'
 
     # prevents port scanning
     # https://github.com/forwardemail/portscan-protection
