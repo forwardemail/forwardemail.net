@@ -610,9 +610,23 @@ router
 router
   .use('/messages', api.v1.aliasAuth)
   .get('/messages', paginate.middleware(25, 100), api.v1.messages.list)
-  .post('/messages', api.v1.messages.create)
+  .post(
+    '/messages',
+    bodyParser({
+      formLimit: bytes('51MB'),
+      jsonLimit: bytes('51MB')
+    }),
+    api.v1.messages.create
+  )
   .get('/messages/:id', api.v1.messages.retrieve)
-  .put('/messages/:id', api.v1.messages.update)
+  .put(
+    '/messages/:id',
+    bodyParser({
+      formLimit: bytes('51MB'),
+      jsonLimit: bytes('51MB')
+    }),
+    api.v1.messages.update
+  )
   .delete('/messages/:id', api.v1.messages.remove);
 
 // folders (IMAP/POP3)

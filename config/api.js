@@ -69,5 +69,10 @@ module.exports = {
     // Analytics middleware for tracking API calls (excludes bots)
     app.use(analyticsMiddleware({ service: 'api', trackAPICalls: true }));
   },
-  bodyParserIgnoredPathGlobs: ['/v1/log', '/v1/emails']
+  bodyParserIgnoredPathGlobs: [
+    '/v1/log',
+    '/v1/emails',
+    '/v1/messages',
+    '/v1/messages/**'
+  ]
 };

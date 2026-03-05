@@ -133,7 +133,12 @@ async function createTestAlias(t) {
  * Connect a WebSocket and buffer incoming messages to avoid race conditions.
  * Supports both JSON and msgpackr modes.
  */
-function connectWebSocket(wsURL, headers, useMsgpackr = false) {
+function connectWebSocket(
+  wsURL,
+  headers,
+  useMsgpackr = false,
+  timeoutMs = ms('10s')
+) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(wsURL, { headers });
     ws._messageBuffer = [];
@@ -157,7 +162,7 @@ function connectWebSocket(wsURL, headers, useMsgpackr = false) {
     const timeout = setTimeout(() => {
       ws.terminate();
       reject(new Error('WebSocket connection timeout'));
-    }, ms('10s'));
+    }, timeoutMs);
     ws.on('open', () => {
       clearTimeout(timeout);
       resolve(ws);
@@ -1552,11 +1557,16 @@ test('returns 504 when authentication times out', async (t) => {
   const originalAuth = wsHandler._authenticate.bind(wsHandler);
   wsHandler._authenticate = () => new Promise(() => {});
 
+  // Use a longer client-side timeout (30s) so the server's 10s auth
+  // timeout fires first and returns the 504 before the client gives up.
   await t.throwsAsync(
     () =>
-      connectWebSocket(wsURL, {
-        Authorization: createApiTokenAuth('some-token')
-      }),
+      connectWebSocket(
+        wsURL,
+        { Authorization: createApiTokenAuth('some-token') },
+        false,
+        ms('30s')
+      ),
     { message: /Unexpected server response: 504/ }
   );
 
