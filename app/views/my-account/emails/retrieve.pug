@@ -93,7 +93,7 @@ block body
                   - badgeClass = "badge-primary";
                 span.badge.badge-pill(class=badgeClass)= rejectedError.responseCode
                 = " "
-                span.small.text-monospace!= rejectedError.response ? ansiHTML(rejectedError.response) : ansiHTML(rejectedError.message)
+                span.small.text-monospace!= rejectedError.response ? safeAnsiHTML(rejectedError.response) : safeAnsiHTML(rejectedError.message)
         else
           .alert.alert-warning= t("No response available yet")
         h3.h5= t("Message Preview")

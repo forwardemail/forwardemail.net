@@ -34,9 +34,9 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle.small
               if !log.err && log.meta && log.meta.is_http
                 .markdown-body.ml-0.mb-0
-                  code!= ansiHTML(log.message)
+                  code!= safeAnsiHTML(log.message)
               else
-                != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+                != log.err && log.err.message ? safeAnsiHTML(log.err.message) : safeAnsiHTML(log.message)
             td.align-middle.text-center
               if log.meta && log.meta.level
                 - let levelBadgeClass = "badge-success";

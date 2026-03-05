@@ -42,6 +42,13 @@ const _ = require('#helpers/lodash');
 
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
+// wrapper around ansiHTML that escapes HTML entities first
+// to prevent raw HTML in log messages from being rendered
+// (ANSI escape codes use ESC char \x1b, not < or >, so escaping is safe)
+function safeAnsiHTML(str) {
+  return ansiHTML(_.escape(str));
+}
+
 // <https://github.com/ztmd/highlight-pug/issues/1>
 hljs.registerLanguage('pug', highlightPug);
 
@@ -2836,6 +2843,7 @@ module.exports = {
   _,
   ajc,
   ansiHTML,
+  safeAnsiHTML,
   boolean,
   capitalize,
   dashify,

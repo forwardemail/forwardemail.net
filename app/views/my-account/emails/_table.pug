@@ -80,7 +80,7 @@ table.table.table-hover.table-bordered.table-sm
                             = " "
                           span.badge.badge-pill(class=badgeClass)= rejectedError.responseCode
                           = " "
-                          span.small: code!= rejectedError.response ? ansiHTML(rejectedError.response) : ansiHTML(rejectedError.message)
+                          span.small: code!= rejectedError.response ? safeAnsiHTML(rejectedError.response) : safeAnsiHTML(rejectedError.message)
             td.align-middle.text-center
               //- pending (secondary)
               //- queued (dark)
