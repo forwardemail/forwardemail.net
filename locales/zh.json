@@ -18337,5 +18337,6 @@
   "e.g. <code>us-east-1</code>, <code>eu-west-1</code>, or <code>auto</code>": "e.g. <code>us-east-1</code>, <code>eu-west-1</code>, or <code>auto</code>",
   "Bucket Name": "Bucket Name",
   "The bucket must already exist. We will not create it automatically.": "The bucket must already exist. We will not create it automatically.",
-  "Test Connection": "Test Connection"
+  "Test Connection": "Test Connection",
+  "MCP Setup Guide": "MCP Setup Guide"
 }

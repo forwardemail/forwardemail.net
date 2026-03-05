@@ -1,7 +1,7 @@
 ## Talk to Your Email
 
-Our MCP Server lets you manage your email with natural language. No more clicking through dashboards or writing API calls. Just ask your AI assistant to send emails, check stats, or manage your domains.
+Our MCP Server connects AI assistants to the full Forward Email API — all 68 endpoints. Send emails, manage domains, read your inbox, organize contacts and calendars, and more. No dashboards, no code. Just ask.
 
 ### Get Started
 
-To get started, you'll need to install and configure the Forward Email MCP Server. Full instructions are available in our [MCP Server Documentation](/docs/mcp).
+Install and configure the server in under a minute. Full instructions are in our [MCP Server Documentation](/docs/mcp).
