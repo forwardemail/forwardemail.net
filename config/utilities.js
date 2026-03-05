@@ -2814,6 +2814,24 @@ for (const noun of nouns) {
   }
 }
 
+// AI and LLM use cases
+useCases['/ai-email-automation'] = [
+  'AI Email Automation',
+  'Use AI and LLMs to automate your email workflows. Connect with ChatGPT, Claude, and other AI assistants.'
+];
+useCases['/llm-email-integration'] = [
+  'LLM Email Integration',
+  'Integrate Large Language Models with your email. Use our API and MCP server to build AI-driven email applications.'
+];
+useCases['/chatgpt-email-plugin'] = [
+  'ChatGPT Email Plugin',
+  'Manage your email directly within the ChatGPT interface.'
+];
+useCases['/claude-email-tool'] = [
+  'Claude Email Tool',
+  'Connect Forward Email to Claude as a tool to manage your email with natural language.'
+];
+
 module.exports = {
   _,
   ajc,

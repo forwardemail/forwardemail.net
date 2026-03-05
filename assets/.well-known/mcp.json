@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "servers": [
+    {
+      "name": "forwardemail",
+      "description": "The official MCP server for Forward Email.",
+      "endpoint": "https://forwardemail.net/mcp"
+    }
+  ]
+}

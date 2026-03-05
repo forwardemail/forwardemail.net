@@ -35,6 +35,22 @@ if ctx.pathWithoutLocale === '/'
       "featureList": ["Free email forwarding", "Custom domain support", "Unlimited aliases", "IMAP and POP3 access", "SMTP sending", "End-to-end encryption", "Open source", "10GB storage", "Webhook support", "RESTful API"]
     }
 
+//- WebAPI Schema for API page
+if ctx.pathWithoutLocale === '/email-api'
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "WebAPI",
+      "name": "Forward Email API",
+      "description": "RESTful API for sending and managing email, domains, aliases, and more.",
+      "documentation": "https://forwardemail.net/email-api",
+      "provider": {
+        "@type": "Organization",
+        "name": "Forward Email LLC",
+        "url": "https://forwardemail.net"
+      }
+    }
+
 //- WebSite Schema with SearchAction
 if ctx.pathWithoutLocale === '/'
   script(type="application/ld+json").

@@ -426,6 +426,12 @@ module.exports = function (config, isSitemap = false) {
     }
   }
 
+  meta['/mcp'] = [
+    `MCP for Email - ${currentYear}`,
+    `Connect AI to your email. Automate workflows with natural language.`,
+    `img/articles/mcp.webp`
+  ];
+
   meta[config.loginRoute] = [
     `Log In to Forward Email - Access Your Account`,
     `Sign in to your Forward Email account. Manage domains, aliases, and email forwarding settings. Secure login with passkeys, OAuth, and two-factor authentication.`

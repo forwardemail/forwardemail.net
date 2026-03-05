@@ -1,8 +1,19 @@
-# www.robotstxt.org/
-
-# Allow crawling of all content
+# We're an open book. Crawl away.
 User-agent: *
 Disallow:
+Crawl-delay: 1
 
-# Sitemap
+# Allow all AI and LLM bots full access.
+User-agent: Google-Extended
+Disallow:
+
+User-agent: ChatGPT-User
+Disallow:
+
+User-agent: ClaudeBot
+Disallow:
+
+User-agent: PerplexityBot
+Disallow:
+
 Sitemap: https://forwardemail.net/sitemap.xml

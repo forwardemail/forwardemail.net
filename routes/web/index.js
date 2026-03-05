@@ -450,6 +450,7 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/email-api'));
   })
+  .get('/mcp', render('mcp'))
   .get('/email-forwarding-api', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/email-api'));

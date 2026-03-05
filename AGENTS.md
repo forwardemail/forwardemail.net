@@ -1,42 +1,21 @@
-# AGENTS.md for forwardemail.net
+# AGENTS.md
 
-> This file outlines the policies for AI agents accessing content on forwardemail.net and its subdomains. We believe in an open and accessible web, and this document provides guidelines for agents to interact with our content responsibly.
+> This file is for AI agents. It outlines our policies for web crawlers and provides instructions for coding agents working on our open-source repository.
 
+## For Web Crawlers
 
-## User-Agent
+We believe in an open web. All of our content is public and available for you to crawl and index. Please be respectful of our infrastructure and limit your request rate.
 
-All AI agents developed by or working on behalf of Forward Email will use the following User-Agent string:
+- **User-Agent**: Use a descriptive User-Agent string.
+- **Rate Limiting**: We recommend a crawl-delay of 1 second.
+- **Sitemap**: A sitemap is available at [forwardemail.net/sitemap.xml](https://forwardemail.net/sitemap.xml).
 
-`ForwardEmail-Agent/1.0`
+## For Coding Agents
 
-We encourage other AI agents to use a descriptive User-Agent string so we can better understand how our content is being used.
+> The following instructions are for AI coding agents contributing to our [GitHub repository](https://github.com/forwardemail/forwardemail.net).
 
-
-## Crawling
-
-We welcome AI agents to crawl and index our content. To ensure a positive experience for all users, we request that agents adhere to the following guidelines:
-
-* **Rate Limiting**: Please limit requests to a reasonable rate to avoid impacting server performance. We recommend a crawl-delay of at least 1 second between requests.
-* **Disallowed Paths**: Please do not crawl or index the following paths:
-  * `/login`
-  * `/register`
-  * `/my-account`
-  * `/admin`
-* **Allowed Paths**: All other paths are generally open for crawling, but we encourage agents to prioritize publicly accessible content and documentation.
-
-
-## Sitemap
-
-An XML sitemap is available at:
-
-* <https://forwardemail.net/sitemap.xml>
-
-
-## License
-
-[(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)
-
-
-## Contact
-
-If you have any questions or concerns about our agent policies, please contact us at <support@forwardemail.net>.
+- **Stack**: We use Koa.js, Pug, and SCSS. We use `pnpm` for package management.
+- **Setup**: Run `pnpm install` and `pnpm dev`.
+- **Testing**: Run `pnpm test` before submitting any changes.
+- **Linting**: Run `pnpm lint` to check for code style issues.
+- **Commits**: Follow the conventional commit format.
