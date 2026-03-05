@@ -703,6 +703,7 @@ const config = {
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
   WS_REDIS_CHANNEL_NAME: 'websocket_notifications',
+  WS_TRUST_PROXY: boolean(env.WS_TRUST_PROXY),
 
   srs: {
     separator: '=',

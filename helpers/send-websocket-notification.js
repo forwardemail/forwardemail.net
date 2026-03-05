@@ -7,6 +7,13 @@ const config = require('#config');
 const { encoder } = require('#helpers/encoder-decoder');
 const logger = require('#helpers/logger');
 
+// Maximum outbound payload size (1 MB) — payloads exceeding this limit
+// have large string fields stripped to prevent Redis pub/sub abuse
+const MAX_WS_PAYLOAD = 1024 * 1024;
+
+// Fields that may contain large string data (eml, vCard, iCal)
+const LARGE_FIELDS = ['eml', 'content', 'ical'];
+
 /**
  * Valid WebSocket event types.
  *
@@ -98,14 +105,43 @@ function sendWebSocketNotification(client, aliasId, event, data = {}) {
   }
 
   try {
-    const packed = encoder.pack({
+    const message = {
       aliasId: aliasId.toString(),
       payload: {
         event,
         timestamp: Date.now(),
         ...data
       }
-    });
+    };
+
+    let packed = encoder.pack(message);
+
+    // If the packed payload exceeds the size limit, strip large string fields
+    if (packed.length > MAX_WS_PAYLOAD) {
+      logger.warn('WebSocket payload exceeds size limit, truncating fields', {
+        aliasId,
+        event,
+        originalSize: packed.length
+      });
+
+      const { payload } = message;
+      // Walk one level into data.* objects to find large string fields
+      if (payload.data && typeof payload.data === 'object') {
+        for (const key of Object.keys(payload.data)) {
+          const val = payload.data[key];
+          if (val && typeof val === 'object') {
+            for (const field of LARGE_FIELDS) {
+              if (typeof val[field] === 'string') {
+                val[field] = { truncated: true };
+              }
+            }
+          }
+        }
+      }
+
+      packed = encoder.pack(message);
+    }
+
     client.publishBuffer(config.WS_REDIS_CHANNEL_NAME, packed);
   } catch (err) {
     logger.fatal(err, { aliasId, event });
