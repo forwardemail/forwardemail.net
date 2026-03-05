@@ -21,3 +21,8 @@ We believe in an open web. All of our content is public and available for you to
 * **Testing**: Run `pnpm test` before submitting any changes.
 * **Linting**: Run `pnpm lint` to check for code style issues.
 * **Commits**: Follow the conventional commit format.
+
+
+## MCP Server
+
+We provide an official [MCP server](https://github.com/forwardemail/mcp-server) that exposes all 68 Forward Email API endpoints as tools. Install it with `npx @forwardemail/mcp-server`. See [forwardemail.net/blog/docs/mcp](https://forwardemail.net/blog/docs/mcp) for setup instructions.

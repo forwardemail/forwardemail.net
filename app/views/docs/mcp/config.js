@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 module.exports = {
-  title: 'How to use MCP with Forward Email',
-  shortTitle: 'MCP Setup Guide',
+  title: 'Forward Email MCP Server - Connect AI to Your Email API',
+  shortTitle: 'MCP Server',
   description:
-    'A step-by-step guide to setting up and using the Model Context Protocol (MCP) with Forward Email to connect AI agents and LLMs to your inbox.',
+    'Open-source MCP server for Forward Email. 68 tools covering email, domains, aliases, contacts, calendars, and Sieve scripts. Works with Claude, ChatGPT, Cursor, and Windsurf.',
   icon: 'fas fa-fw fa-puzzle-piece',
   published: true,
   ogBtnText: 'MCP Setup Guide',

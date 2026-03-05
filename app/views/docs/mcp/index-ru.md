@@ -1,19 +1,69 @@
-# Talk to Your Email with MCP
+# Forward Email MCP Server {#forward-email-mcp-server}
 
 <img loading="lazy" src="/img/articles/mcp.webp" alt="Forward Email MCP Server" class="rounded-lg" />
 
-> Our MCP (Model Context Protocol) server lets you connect AI assistants like Claude and ChatGPT to your email. Instead of writing code, you can manage your email with natural language.
+<p class="lead mt-3">
+  <strong>TL;DR:</strong> Наш <a href="https://github.com/forwardemail/mcp-server">сервер MCP с открытым исходным кодом</a> позволяет ИИ-помощникам, таким как Claude, ChatGPT, Cursor и Windsurf, управлять вашей электронной почтой, доменами, псевдонимами, контактами и календарями с помощью естественного языка. Все 68 конечных точек API представлены как инструменты MCP. Он запускается локально через <code>npx @forwardemail/mcp-server</code> — ваши учетные данные никогда не покидают вашу машину.
+</p>
 
-This is email automation, simplified. It’s a direct, secure, and open-source way to build powerful workflows.
+## Оглавление {#table-of-contents}
 
-## What is MCP?
+* [Что такое MCP?](#what-is-mcp)
+* [Быстрый старт](#quick-start)
+  * [Получить ключ API](#get-an-api-key)
+  * [Claude Desktop](#claude-desktop)
+  * [Cursor](#cursor)
+  * [Windsurf](#windsurf)
+  * [Другие клиенты MCP](#other-mcp-clients)
+* [Аутентификация](#authentication)
+  * [Аутентификация по ключу API](#api-key-auth)
+  * [Аутентификация по псевдониму](#alias-auth)
+  * [Генерация пароля псевдонима](#generating-an-alias-password)
+* [Все 68 инструментов](#all-68-tools)
+  * [Учетная запись (ключ API или аутентификация по псевдониму)](#account-api-key-or-alias-auth)
+  * [Домены (ключ API)](#domains-api-key)
+  * [Псевдонимы (ключ API)](#aliases-api-key)
+  * [Электронные письма — исходящий SMTP (ключ API; отправка поддерживает оба)](#emails--outbound-smtp-api-key-send-supports-both)
+  * [Сообщения — IMAP (аутентификация по псевдониму)](#messages--imap-alias-auth)
+  * [Папки — IMAP (аутентификация по псевдониму)](#folders--imap-alias-auth)
+  * [Контакты — CardDAV (аутентификация по псевдониму)](#contacts--carddav-alias-auth)
+  * [Календари — CalDAV (аутентификация по псевдониму)](#calendars--caldav-alias-auth)
+  * [События календаря — CalDAV (аутентификация по псевдониму)](#calendar-events--caldav-alias-auth)
+  * [Скрипты Sieve (ключ API)](#sieve-scripts-api-key)
+  * [Скрипты Sieve (аутентификация по псевдониму)](#sieve-scripts-alias-auth)
+  * [Участники домена и приглашения (ключ API)](#domain-members-and-invites-api-key)
+  * [Пароли для всех адресов (ключ API)](#catch-all-passwords-api-key)
+  * [Журналы (ключ API)](#logs-api-key)
+  * [Шифрование (без аутентификации)](#encrypt-no-auth)
+* [20 реальных сценариев использования](#20-real-world-use-cases)
+* [Примеры запросов](#example-prompts)
+* [Переменные окружения](#environment-variables)
+* [Безопасность](#security)
+* [Программное использование](#programmatic-usage)
+* [Открытый исходный код](#open-source)
 
-MCP is an open standard that allows AI models to securely access external tools. Our MCP server exposes our entire API as a set of tools that AI assistants can use on your behalf. It runs locally, and your API key is never exposed to the model.
 
-## Quick Start
+## Что такое MCP? {#what-is-mcp}
 
-1.  **Get an API Key**: You can get one from your Forward Email account settings.
-2.  **Configure Your Client**: Add the server to your MCP client (e.g., Claude Desktop, Cursor, Windsurf).
+[Model Context Protocol](https://modelcontextprotocol.io) (MCP) — это открытый стандарт, созданный Anthropic, который позволяет моделям ИИ безопасно вызывать внешние инструменты. Вместо копирования и вставки ответов API в окно чата, MCP предоставляет модели прямой, структурированный доступ к вашим службам.
+
+Наш сервер MCP оборачивает весь [API Forward Email](/email-api) — каждую конечную точку, каждый параметр — и предоставляет их в качестве инструментов, которые может использовать любой MCP-совместимый клиент. Сервер работает локально на вашей машине, используя stdio-транспорт. Ваши учетные данные остаются в ваших переменных окружения и никогда не отправляются модели ИИ.
+
+
+## Быстрый старт {#quick-start}
+
+### Получить ключ API {#get-an-api-key}
+
+1. Войдите в свою [учетную запись Forward Email](/my-account/domains).
+2. Перейдите в раздел **Моя учетная запись** → **Безопасность** → **Ключи API**.
+3. Сгенерируйте новый ключ API и скопируйте его.
+
+### Claude Desktop {#claude-desktop}
+
+Добавьте это в файл конфигурации Claude Desktop:
+
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -22,19 +72,435 @@ MCP is an open standard that allows AI models to securely access external tools.
       "command": "npx",
       "args": ["-y", "@forwardemail/mcp-server"],
       "env": {
-        "FORWARD_EMAIL_API_KEY": "your-api-key-here"
+        "FORWARD_EMAIL_API_KEY": "your-api-key-here",
+        "FORWARD_EMAIL_ALIAS_USER": "you@example.com",
+        "FORWARD_EMAIL_ALIAS_PASSWORD": "your-generated-alias-password"
       }
     }
   }
 }
 ```
 
-## Example Prompts
+Перезапустите Claude Desktop. Вы должны увидеть инструменты Forward Email в списке инструментов.
 
-- "Send an email to hello@example.com from my domain."
-- "What were my top 5 bounced email addresses last week?"
-- "Verify the DNS for example.com."
+> **Примечание:** Переменные `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD` необязательны, но требуются для инструментов почтового ящика (сообщения, папки, контакты, календари). Подробности см. в разделе [Аутентификация](#authentication).
 
-## Open Source
+### Cursor {#cursor}
 
-The Forward Email MCP Server is open-source and available on [GitHub](https://github.com/forwardemail/mcp-server). We believe in transparency and community-driven development.
+Откройте Cursor Settings → MCP → Add Server:
+
+```json
+{
+  "mcpServers": {
+    "forwardemail": {
+      "command": "npx",
+      "args": ["-y", "@forwardemail/mcp-server"],
+      "env": {
+        "FORWARD_EMAIL_API_KEY": "your-api-key-here",
+        "FORWARD_EMAIL_ALIAS_USER": "you@example.com",
+        "FORWARD_EMAIL_ALIAS_PASSWORD": "your-generated-alias-password"
+      }
+    }
+  }
+}
+```
+
+### Windsurf {#windsurf}
+
+Откройте Windsurf Settings → MCP → Add Server с той же конфигурацией, что и выше.
+
+### Другие клиенты MCP {#other-mcp-clients}
+
+Любой клиент, поддерживающий stdio-транспорт MCP, будет работать. Команда:
+
+```sh
+FORWARD_EMAIL_API_KEY=your-api-key \
+  FORWARD_EMAIL_ALIAS_USER=you@example.com \
+  FORWARD_EMAIL_ALIAS_PASSWORD=your-generated-alias-password \
+  npx @forwardemail/mcp-server
+```
+
+
+## Аутентификация {#authentication}
+
+API Forward Email использует **базовую аутентификацию HTTP** с двумя различными типами учетных данных в зависимости от конечной точки. Сервер MCP обрабатывает это автоматически — вам просто нужно предоставить правильные учетные данные.
+
+### Аутентификация по ключу API {#api-key-auth}
+
+Большинство конечных точек управления (домены, псевдонимы, исходящие электронные письма, журналы) используют ваш **ключ API** в качестве имени пользователя для базовой аутентификации с пустым паролем.
+
+Это тот же ключ API, который вы используете для REST API. Установите его через переменную окружения `FORWARD_EMAIL_API_KEY`.
+
+### Аутентификация по псевдониму {#alias-auth}
+
+Конечные точки почтового ящика (сообщения, папки, контакты, календари, скрипты Sieve, привязанные к псевдонимам) используют **учетные данные псевдонима** — адрес электронной почты псевдонима в качестве имени пользователя и сгенерированный пароль в качестве пароля.
+
+Эти конечные точки получают доступ к данным по псевдонимам через протоколы IMAP, CalDAV и CardDAV. Для них требуется электронная почта псевдонима и сгенерированный пароль, а не ключ API.
+
+Вы можете предоставить учетные данные псевдонима двумя способами:
+
+1. **Переменные окружения** (рекомендуется для псевдонима по умолчанию): Установите `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+2. **Параметры для каждого вызова инструмента**: Передайте `alias_username` и `alias_password` в качестве аргументов любому инструменту аутентификации по псевдониму. Они переопределяют переменные окружения, что полезно при работе с несколькими псевдонимами.
+
+### Генерация пароля псевдонима {#generating-an-alias-password}
+
+Прежде чем вы сможете использовать инструменты аутентификации по псевдониму, вам необходимо сгенерировать пароль для псевдонима. Вы можете сделать это с помощью инструмента `generateAliasPassword` или через API:
+
+```sh
+curl -u "YOUR_API_KEY:" \
+  https://api.forwardemail.net/v1/domains/example.com/aliases/ALIAS_ID/generate-password \
+  -X POST
+```
+
+Ответ включает поля `username` (электронная почта псевдонима) и `password`. Используйте их в качестве учетных данных псевдонима.
+
+> **Совет:** Вы также можете спросить своего ИИ-помощника: *"Сгенерируй пароль для псевдонима user@example.com в домене example.com"* — он вызовет инструмент `generateAliasPassword` и вернет учетные данные.
+
+В таблице ниже приведено описание того, какой метод аутентификации требуется для каждой группы инструментов:
+
+| Группа инструментов | Метод аутентификации | Учетные данные |
+|-----------|-------------|-------------|
+| Учетная запись | Ключ API **или** аутентификация по псевдониму | Любой |
+| Домены, псевдонимы, участники домена, приглашения, пароли для всех адресов | Ключ API | `FORWARD_EMAIL_API_KEY` |
+| Исходящие электронные письма (список, получение, удаление, лимит) | Ключ API | `FORWARD_EMAIL_API_KEY` |
+| Отправка электронной почты | Ключ API **или** аутентификация по псевдониму | Любой |
+| Сообщения (IMAP) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Папки (IMAP) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Контакты (CardDAV) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Календари (CalDAV) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| События календаря (CalDAV) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Скрипты Sieve (область действия домена) | Ключ API | `FORWARD_EMAIL_API_KEY` |
+| Скрипты Sieve (область действия псевдонима) | Аутентификация по псевдониму | `FORWARD_EMAIL_ALIAS_USER` + `FORWARD_EMAIL_ALIAS_PASSWORD` |
+| Журналы | Ключ API | `FORWARD_EMAIL_API_KEY` |
+| Шифрование | Нет | Учетные данные не требуются |
+
+
+## Все 68 инструментов {#all-68-tools}
+
+Каждый инструмент напрямую сопоставляется с конечной точкой [API Forward Email](/email-api). Параметры используют те же имена, что и в документации API. Метод аутентификации указан в заголовке каждого раздела.
+
+### Учетная запись (ключ API или аутентификация по псевдониму) {#account-api-key-or-alias-auth}
+
+При аутентификации по ключу API они возвращают информацию о вашей учетной записи пользователя. При аутентификации по псевдониму они возвращают информацию о псевдониме/почтовом ящике, включая квоту хранения и настройки.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `getAccount` | `GET /v1/account` | Получить информацию о вашей учетной записи |
+| `updateAccount` | `PUT /v1/account` | Обновить настройки вашей учетной записи |
+
+### Домены (ключ API) {#domains-api-key}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listDomains` | `GET /v1/domains` | Перечислить все ваши домены |
+| `createDomain` | `POST /v1/domains` | Добавить новый домен |
+| `getDomain` | `GET /v1/domains/:domain_id` | Получить сведения о домене |
+| `updateDomain` | `PUT /v1/domains/:domain_id` | Обновить настройки домена |
+| `deleteDomain` | `DELETE /v1/domains/:domain_id` | Удалить домен |
+| `verifyDomainRecords` | `GET /v1/domains/:domain_id/verify-records` | Проверить записи DNS |
+| `verifySmtpRecords` | `GET /v1/domains/:domain_id/verify-smtp` | Проверить конфигурацию SMTP |
+| `testS3Connection` | `POST /v1/domains/:domain_id/test-s3-connection` | Проверить пользовательское хранилище S3 |
+
+### Псевдонимы (ключ API) {#aliases-api-key}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listAliases` | `GET /v1/domains/:domain_id/aliases` | Перечислить псевдонимы для домена |
+| `createAlias` | `POST /v1/domains/:domain_id/aliases` | Создать новый псевдоним |
+| `getAlias` | `GET /v1/domains/:domain_id/aliases/:alias_id` | Получить сведения о псевдониме |
+| `updateAlias` | `PUT /v1/domains/:domain_id/aliases/:alias_id` | Обновить псевдоним |
+| `deleteAlias` | `DELETE /v1/domains/:domain_id/aliases/:alias_id` | Удалить псевдоним |
+| `generateAliasPassword` | `POST /v1/domains/:domain_id/aliases/:alias_id/generate-password` | Сгенерировать пароль IMAP/SMTP для аутентификации по псевдониму |
+
+### Электронные письма — исходящий SMTP (ключ API; отправка поддерживает оба) {#emails--outbound-smtp-api-key-send-supports-both}
+
+| Инструмент | Конечная точка API | Аутентификация | Описание |
+|------|-------------|------|-------------|
+| `sendEmail` | `POST /v1/emails` | Ключ API или аутентификация по псевдониму | Отправить электронное письмо через SMTP |
+| `listEmails` | `GET /v1/emails` | Ключ API | Перечислить исходящие электронные письма |
+| `getEmail` | `GET /v1/emails/:id` | Ключ API | Получить сведения и статус электронного письма |
+| `deleteEmail` | `DELETE /v1/emails/:id` | Ключ API | Удалить электронное письмо из очереди |
+| `getEmailLimit` | `GET /v1/emails/limit` | Ключ API | Проверить лимит отправки |
+
+Инструмент `sendEmail` принимает `from`, `to`, `cc`, `bcc`, `subject`, `text`, `html` и `attachments`. Это то же самое, что и конечная точка `POST /v1/emails`.
+
+### Сообщения — IMAP (аутентификация по псевдониму) {#messages--imap-alias-auth}
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listMessages` | `GET /v1/messages` | Перечислить и найти сообщения в почтовом ящике |
+| `createMessage` | `POST /v1/messages` | Создать черновик или загрузить сообщение |
+| `getMessage` | `GET /v1/messages/:id` | Получить сообщение по ID |
+| `updateMessage` | `PUT /v1/messages/:id` | Обновить флаги (прочитано, помечено звездочкой и т. д.) |
+| `deleteMessage` | `DELETE /v1/messages/:id` | Удалить сообщение |
+
+Инструмент `listMessages` поддерживает более 15 параметров поиска, включая `subject`, `from`, `to`, `text`, `since`, `before`, `is_unread` и `has_attachment`. Полный список см. в [документации API](/email-api).
+
+### Папки — IMAP (аутентификация по псевдониму) {#folders--imap-alias-auth}
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listFolders` | `GET /v1/folders` | Перечислить все папки почтового ящика |
+| `createFolder` | `POST /v1/folders` | Создать новую папку |
+| `getFolder` | `GET /v1/folders/:id` | Получить сведения о папке |
+| `updateFolder` | `PUT /v1/folders/:id` | Переименовать папку |
+| `deleteFolder` | `DELETE /v1/folders/:id` | Удалить папку |
+
+### Контакты — CardDAV (аутентификация по псевдониму) {#contacts--carddav-alias-auth}
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listContacts` | `GET /v1/contacts` | Перечислить все контакты |
+| `createContact` | `POST /v1/contacts` | Создать новый контакт |
+| `getContact` | `GET /v1/contacts/:id` | Получить сведения о контакте |
+| `updateContact` | `PUT /v1/contacts/:id` | Обновить контакт |
+| `deleteContact` | `DELETE /v1/contacts/:id` | Удалить контакт |
+
+### Календари — CalDAV (аутентификация по псевдониму) {#calendars--caldav-alias-auth}
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listCalendars` | `GET /v1/calendars` | Перечислить все календари |
+| `createCalendar` | `POST /v1/calendars` | Создать новый календарь |
+| `getCalendar` | `GET /v1/calendars/:id` | Получить сведения о календаре |
+| `updateCalendar` | `PUT /v1/calendars/:id` | Обновить календарь |
+| `deleteCalendar` | `DELETE /v1/calendars/:id` | Удалить календарь |
+
+### События календаря — CalDAV (аутентификация по псевдониму) {#calendar-events--caldav-alias-auth}
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listCalendarEvents` | `GET /v1/calendar-events` | Перечислить все события |
+| `createCalendarEvent` | `POST /v1/calendar-events` | Создать новое событие |
+| `getCalendarEvent` | `GET /v1/calendar-events/:id` | Получить сведения о событии |
+| `updateCalendarEvent` | `PUT /v1/calendar-events/:id` | Обновить событие |
+| `deleteCalendarEvent` | `DELETE /v1/calendar-events/:id` | Удалить событие |
+
+### Скрипты Sieve (ключ API) {#sieve-scripts-api-key}
+
+Они используют пути с областью действия домена и аутентифицируются с помощью вашего ключа API.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listSieveScripts` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve` | Перечислить скрипты для псевдонима |
+| `createSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve` | Создать новый скрипт |
+| `getSieveScript` | `GET /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Получить сведения о скрипте |
+| `updateSieveScript` | `PUT /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Обновить скрипт |
+| `deleteSieveScript` | `DELETE /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id` | Удалить скрипт |
+| `activateSieveScript` | `POST /v1/domains/:domain_id/aliases/:alias_id/sieve/:script_id/activate` | Активировать скрипт |
+
+### Скрипты Sieve (аутентификация по псевдониму) {#sieve-scripts-alias-auth}
+
+Они используют аутентификацию на уровне псевдонима. Полезно для автоматизации на уровне псевдонима без необходимости использования ключа API.
+
+> **Требуются учетные данные псевдонима.** Передайте `alias_username` и `alias_password` или установите переменные окружения `FORWARD_EMAIL_ALIAS_USER` и `FORWARD_EMAIL_ALIAS_PASSWORD`.
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listSieveScriptsAliasAuth` | `GET /v1/sieve-scripts` | Перечислить скрипты |
+| `createSieveScriptAliasAuth` | `POST /v1/sieve-scripts` | Создать скрипт |
+| `getSieveScriptAliasAuth` | `GET /v1/sieve-scripts/:script_id` | Получить сведения о скрипте |
+| `updateSieveScriptAliasAuth` | `PUT /v1/sieve-scripts/:script_id` | Обновить скрипт |
+| `deleteSieveScriptAliasAuth` | `DELETE /v1/sieve-scripts/:script_id` | Удалить скрипт |
+| `activateSieveScriptAliasAuth` | `POST /v1/sieve-scripts/:script_id/activate` | Активировать скрипт |
+
+### Участники домена и приглашения (ключ API) {#domain-members-and-invites-api-key}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `updateDomainMember` | `PUT /v1/domains/:domain_id/members/:member_id` | Изменить роль участника |
+| `removeDomainMember` | `DELETE /v1/domains/:domain_id/members/:member_id` | Удалить участника |
+| `acceptDomainInvite` | `GET /v1/domains/:domain_id/invites` | Принять ожидающее приглашение |
+| `createDomainInvite` | `POST /v1/domains/:domain_id/invites` | Пригласить кого-либо в домен |
+| `removeDomainInvite` | `DELETE /v1/domains/:domain_id/invites` | Отозвать приглашение |
+
+### Пароли для всех адресов (ключ API) {#catch-all-passwords-api-key}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `listCatchAllPasswords` | `GET /v1/domains/:domain_id/catch-all-passwords` | Перечислить пароли для всех адресов |
+| `createCatchAllPassword` | `POST /v1/domains/:domain_id/catch-all-passwords` | Создать пароль для всех адресов |
+| `deleteCatchAllPassword` | `DELETE /v1/domains/:domain_id/catch-all-passwords/:token_id` | Удалить пароль для всех адресов |
+
+### Журналы (ключ API) {#logs-api-key}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `downloadLogs` | `GET /v1/logs/download` | Загрузить журналы доставки электронной почты |
+
+### Шифрование (без аутентификации) {#encrypt-no-auth}
+
+| Инструмент | Конечная точка API | Описание |
+|------|-------------|-------------|
+| `encryptRecord` | `POST /v1/encrypt` | Зашифровать запись DNS TXT |
+
+Этот инструмент не требует аутентификации. Он шифрует записи пересылки, такие как `forward-email=user@example.com`, для использования в записях DNS TXT.
+
+
+## 20 реальных сценариев использования {#20-real-world-use-cases}
+
+Вот практические способы использования сервера MCP с вашим ИИ-помощником:
+
+### 1. Сортировка электронной почты {#email-triage}
+
+Попросите вашего ИИ просканировать ваш почтовый ящик и суммировать непрочитанные сообщения. Он может пометить срочные электронные письма, классифицировать их по отправителю и составить черновики ответов — все это с помощью естественного языка. *(Требуются учетные данные псевдонима для доступа к почтовому ящику.)*
+
+### 2. Автоматизация настройки домена {#domain-setup-automation}
+
+Настраиваете новый домен? Попросите ИИ создать домен, добавить ваши псевдонимы, проверить записи DNS и протестировать конфигурацию SMTP. То, что обычно занимает 10 минут кликов по панелям управления, превращается в один разговор.
+
+### 3. Массовое управление псевдонимами {#bulk-alias-management}
+
+Нужно создать 20 псевдонимов для нового проекта? Опишите, что вам нужно, и позвольте ИИ справиться с повторяющейся работой. Он может создавать псевдонимы, устанавливать правила пересылки и генерировать пароли за один раз.
+
+### 4. Мониторинг почтовых кампаний {#email-campaign-monitoring}
+
+Попросите вашего ИИ проверить лимиты отправки, перечислить недавние исходящие электронные письма и сообщить о статусе доставки. Полезно для мониторинга состояния транзакционной электронной почты.
+
+### 5. Синхронизация и очистка контактов {#contact-sync-and-cleanup}
+
+Используйте инструменты CardDAV для перечисления всех контактов, поиска дубликатов, обновления устаревшей информации или массового создания контактов из электронной таблицы, которую вы вставляете в чат. *(Требуются учетные данные псевдонима.)*
+
+### 6. Управление календарем {#calendar-management}
+
+Создавайте календари, добавляйте события, обновляйте время встреч и удаляйте отмененные события — все это через разговор. Инструменты CalDAV поддерживают полный CRUD как для календарей, так и для событий. *(Требуются учетные данные псевдонима.)*
+
+### 7. Автоматизация скриптов Sieve {#sieve-script-automation}
+
+Скрипты Sieve мощны, но их синтаксис сложен. Попросите вашего ИИ написать скрипты Sieve для вас: "Отфильтровать все электронные письма от billing@example.com в папку Billing" становится рабочим скриптом без обращения к спецификации RFC 5228.
+
+### 8. Адаптация команды {#team-onboarding}
+
+Когда новый член команды присоединяется, попросите ИИ создать его псевдоним, сгенерировать пароль, отправить ему приветственное письмо с его учетными данными и добавить его в качестве члена домена. Один запрос, четыре вызова API.
+
+### 9. Аудит безопасности {#security-auditing}
+
+Попросите вашего ИИ перечислить все домены, проверить статус верификации DNS, просмотреть конфигурации псевдонимов и выявить любые домены с непроверенными записями. Быстрая проверка безопасности на естественном языке.
+
+### 10. Настройка пересылки электронной почты {#email-forwarding-setup}
+
+Настраиваете пересылку электронной почты для нового домена? Попросите ИИ создать домен, добавить псевдонимы пересылки, зашифровать записи DNS и проверить правильность конфигурации.
+
+### 11. Поиск и анализ почтового ящика {#inbox-search-and-analysis}
+
+Используйте инструменты поиска сообщений, чтобы найти конкретные электронные письма: "Найти все электронные письма от john@example.com за последние 30 дней, которые имеют вложения". Более 15 параметров поиска делают это мощным. *(Требуются учетные данные псевдонима.)*
+
+### 12. Организация папок {#folder-organization}
+
+Попросите вашего ИИ создать структуру папок для нового проекта, перемещать сообщения между папками или очищать старые папки, которые вам больше не нужны. *(Требуются учетные данные псевдонима.)*
+
+### 13. Смена паролей {#password-rotation}
+
+Генерируйте новые пароли псевдонимов по расписанию. Попросите вашего ИИ сгенерировать новый пароль для каждого псевдонима и сообщить новые учетные данные.
+
+### 14. Шифрование записей DNS {#dns-record-encryption}
+
+Зашифруйте ваши записи пересылки перед добавлением их в DNS. Инструмент `encryptRecord` обрабатывает это без аутентификации — полезно для быстрых одноразовых шифрований.
+
+### 15. Анализ журналов доставки {#delivery-log-analysis}
+
+Загрузите журналы доставки электронной почты и попросите ИИ проанализировать показатели отказов, выявить проблемных получателей или отследить время доставки.
+
+### 16. Управление несколькими доменами {#multi-domain-management}
+
+Если вы управляете несколькими доменами, попросите ИИ предоставить вам отчет о состоянии: какие домены проверены, какие имеют проблемы, сколько псевдонимов у каждого и как выглядят лимиты отправки.
+
+### 17. Конфигурация для всех адресов {#catch-all-configuration}
+
+Настройте пароли для всех адресов для доменов, которым необходимо получать электронную почту на любой адрес. ИИ может создавать, перечислять и управлять этими паролями для вас.
+
+### 18. Управление приглашениями в домен {#domain-invite-management}
+
+Приглашайте членов команды для управления доменами, проверяйте ожидающие приглашения и удаляйте просроченные. Полезно для организаций с несколькими администраторами доменов.
+
+### 19. Тестирование хранилища S3 {#s3-storage-testing}
+
+Если вы используете пользовательское хранилище S3 для резервного копирования электронной почты, попросите ИИ протестировать соединение и убедиться, что оно работает правильно.
+
+### 20. Составление черновиков электронных писем {#email-draft-composition}
+
+Создавайте черновики электронных писем в своем почтовом ящике, не отправляя их. Полезно для подготовки электронных писем, которые требуют проверки перед отправкой, или для создания шаблонов электронных писем. *(Требуются учетные данные псевдонима.)*
+
+
+## Примеры запросов {#example-prompts}
+
+Вот запросы, которые вы можете использовать непосредственно с вашим ИИ-помощником:
+
+**Отправка электронной почты:**
+> "Отправь электронное письмо с hello@mydomain.com на john@example.com с темой 'Встреча завтра' и текстом 'Привет, Джон, мы все еще встречаемся в 14:00?'"
+
+**Управление доменами:**
+> "Перечисли все мои домены и скажи, у каких из них есть непроверенные записи DNS."
+
+**Создание псевдонима:**
+> "Создай новый псевдоним support@mydomain.com, который пересылает на мою личную электронную почту."
+
+**Поиск в почтовом ящике (требуются учетные данные псевдонима):**
+> "Найди все непрочитанные электронные письма за последнюю неделю, в которых упоминается 'счет'."
+
+**Календарь (требуются учетные данные псевдонима):**
+> "Создай календарь под названием 'Работа' и добавь встречу на завтра в 14:00 под названием 'Ежедневное совещание команды'."
+
+**Скрипты Sieve:**
+> "Напиши скрипт Sieve для info@mydomain.com, который автоматически отвечает на электронные письма сообщением 'Спасибо за обращение, мы свяжемся с вами в течение 24 часов'."
+
+**Массовые операции:**
+> "Создай псевдонимы для sales@, support@, billing@ и info@ на mydomain.com, все пересылаются на team@mydomain.com."
+
+**Проверка безопасности:**
+> "Проверь статус верификации DNS и SMTP для всех моих доменов и скажи, если что-то требует внимания."
+
+**Генерация пароля псевдонима:**
+> "Сгенерируй пароль для псевдонима user@example.com, чтобы я мог получить доступ к своему почтовому ящику."
+
+
+## Переменные окружения {#environment-variables}
+
+| Переменная | Обязательно | По умолчанию | Описание |
+|----------|----------|---------|-------------|
+| `FORWARD_EMAIL_API_KEY` | Да | — | Ваш ключ API Forward Email (используется как имя пользователя для базовой аутентификации для конечных точек с ключом API) |
+| `FORWARD_EMAIL_ALIAS_USER` | Нет | — | Адрес электронной почты псевдонима для конечных точек почтового ящика (например, `user@example.com`) |
+| `FORWARD_EMAIL_ALIAS_PASSWORD` | Нет | — | Сгенерированный пароль псевдонима для конечных точек почтового ящика |
+| `FORWARD_EMAIL_API_URL` | Нет | `https://api.forwardemail.net` | Базовый URL API (для самостоятельного хостинга или тестирования) |
+
+
+## Безопасность {#security}
+
+Сервер MCP работает локально на вашей машине. Вот как работает безопасность:
+
+*   **Ваши учетные данные остаются локальными.** Как ваш ключ API, так и учетные данные псевдонима считываются из переменных окружения и используются для аутентификации запросов API через базовую аутентификацию HTTP. Они никогда не отправляются модели ИИ.
+*   **stdio-транспорт.** Сервер обменивается данными с клиентом ИИ через stdin/stdout. Сетевые порты не открываются.
+*   **Отсутствие хранения данных.** Сервер не имеет состояния. Он не кэширует, не регистрирует и не хранит никакие ваши данные электронной почты.
+*   **Открытый исходный код.** Весь код находится на [GitHub](https://github.com/forwardemail/mcp-server). Вы можете проверить каждую строку.
+
+
+## Программное использование {#programmatic-usage}
+
+Вы также можете использовать сервер как библиотеку:
+
+```js
+const { McpServer } = require('@forwardemail/mcp-server');
+
+const server = new McpServer({
+  apiKey: 'your-api-key',
+  aliasUser: 'user@example.com',
+  aliasPassword: 'generated-alias-password',
+});
+
+server.listen();
+```
+
+
+## Открытый исходный код {#open-source}
+
+Сервер Forward Email MCP является [открытым исходным кодом на GitHub](https://github.com/forwardemail/mcp-server) под лицензией BUSL-1.1. Мы верим в прозрачность. Если вы нашли ошибку или хотите новую функцию, [откройте проблему](https://github.com/forwardemail/mcp-server/issues).

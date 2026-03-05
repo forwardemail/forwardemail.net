@@ -10,4 +10,4 @@
 - **Developer Docs**: [forwardemail.net/blog/docs](https://forwardemail.net/blog/docs)
 - **API Reference**: [forwardemail.net/email-api](https://forwardemail.net/email-api)
 - **OpenAPI Spec**: [forwardemail.net/api-spec.json](https://forwardemail.net/api-spec.json)
-- **MCP Server**: [forwardemail.net/docs/mcp](https://forwardemail.net/docs/mcp)
+- **MCP Server**: [forwardemail.net/blog/docs/mcp](https://forwardemail.net/blog/docs/mcp)
