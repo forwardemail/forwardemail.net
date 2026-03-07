@@ -8,7 +8,11 @@
 # Based on: https://github.com/forwardemail/sslmonitor.com
 # Usage: Executed by systemd timer daily
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, openssl pipelines) legitimately return non-zero when
+# certificates cannot be retrieved, which would crash the script.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -107,13 +111,13 @@ check_certificate() {
         days_left=0
     else
         # Extract expiry date
-        expiry_date=$(echo "$cert_info" | grep "notAfter=" | sed -e 's/notAfter=//')
+        expiry_date=$(echo "$cert_info" | grep "notAfter=" 2>/dev/null | sed -e 's/notAfter=//' || true)
 
         # Extract issuer
-        issuer=$(echo "$cert_info" | grep "issuer=" | sed -e 's/issuer=//')
+        issuer=$(echo "$cert_info" | grep "issuer=" 2>/dev/null | sed -e 's/issuer=//' || true)
 
         # Extract subject
-        subject=$(echo "$cert_info" | grep "subject=" | sed -e 's/subject=//')
+        subject=$(echo "$cert_info" | grep "subject=" 2>/dev/null | sed -e 's/subject=//' || true)
 
         if [ -z "$expiry_date" ]; then
             status="ERROR"

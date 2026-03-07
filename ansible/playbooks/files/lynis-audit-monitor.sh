@@ -6,7 +6,11 @@
 # Runs Lynis system security audit and sends email alerts for findings
 # Usage: Executed by systemd timer daily
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, lynis) legitimately return non-zero when there are no
+# findings or when parsing report files, which would crash the script.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -142,7 +146,7 @@ get_warnings() {
         return
     fi
 
-    grep "^warning\[\]=" "$LYNIS_REPORT" | cut -d'=' -f2 | sed 's/|/ - /g' || echo "No warnings found"
+    { grep "^warning\[\]=" "$LYNIS_REPORT" 2>/dev/null || true; } | cut -d'=' -f2 | sed 's/|/ - /g'
 }
 
 # Get suggestions from Lynis report
@@ -152,7 +156,7 @@ get_suggestions() {
         return
     fi
 
-    grep "^suggestion\[\]=" "$LYNIS_REPORT" | cut -d'=' -f2 | head -20 | sed 's/|/ - /g' | sed 's/^- //g' || echo "No suggestions found"
+    { grep "^suggestion\[\]=" "$LYNIS_REPORT" 2>/dev/null || true; } | cut -d'=' -f2 | head -20 | sed 's/|/ - /g' | sed 's/^- //g'
 }
 
 # Get vulnerable packages
@@ -162,7 +166,7 @@ get_vulnerable_packages() {
         return
     fi
 
-    grep "^vulnerable_package\[\]=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "No vulnerable packages found"
+    { grep "^vulnerable_package\[\]=" "$LYNIS_REPORT" 2>/dev/null || true; } | cut -d'=' -f2
 }
 
 # Send audit report
@@ -195,11 +199,11 @@ send_audit_report() {
     fi
 
     # Extract additional system information from report
-    local os_fullname=$(grep "^os_fullname=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "Unknown")
-    local kernel_version=$(grep "^os_kernel_version_full=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "Unknown")
-    local uptime_days=$(grep "^uptime_in_days=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
-    local firewall_active=$(grep "^firewall_active=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
-    local lynis_tests_done=$(grep "^lynis_tests_done=" "$LYNIS_REPORT" | cut -d'=' -f2 || echo "0")
+    local os_fullname=$(grep "^os_fullname=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 || echo "Unknown")
+    local kernel_version=$(grep "^os_kernel_version_full=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 || echo "Unknown")
+    local uptime_days=$(grep "^uptime_in_days=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 || echo "0")
+    local firewall_active=$(grep "^firewall_active=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 || echo "0")
+    local lynis_tests_done=$(grep "^lynis_tests_done=" "$LYNIS_REPORT" 2>/dev/null | cut -d'=' -f2 || echo "0")
 
     local subject="[${severity}] Lynis Security Audit - $HOSTNAME ($HOST_IP)"
     local body="<html><body>

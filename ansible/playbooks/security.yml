@@ -274,12 +274,23 @@
           - libtss2-dev
         update_cache: true
 
-    # Verify TPM 2.0 availability
+    # Verify TPM 2.0 availability (optional — cloud/VPS hosts may not have TPM hardware)
+    - name: Check if TPM device exists
+      stat:
+        path: /sys/class/tpm/tpm0/tpm_version_major
+      register: tpm_device
+
     - name: Verify TPM 2.0 is available
       command: cat /sys/class/tpm/tpm0/tpm_version_major
       register: tpm_version
       changed_when: false
       failed_when: tpm_version.stdout != '2'
+      when: tpm_device.stat.exists
+
+    - name: Warn if TPM is not available
+      debug:
+        msg: "WARNING: TPM 2.0 is not available on this host. Hardware-backed security features will not be available. This is expected on cloud/VPS hosts."
+      when: not tpm_device.stat.exists
 
     # prevents port scanning
     # https://github.com/forwardemail/portscan-protection

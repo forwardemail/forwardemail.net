@@ -7,7 +7,11 @@
 # Sends email alerts for package changes
 # Usage: Executed by systemd timer every hour
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, awk pipelines) legitimately return non-zero when there
+# are no matches, which would crash the script when no packages changed.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -66,7 +70,7 @@ send_alert() {
 get_package_list() {
     if command -v dpkg &> /dev/null; then
         # Debian/Ubuntu
-        dpkg -l | grep '^ii' | awk '{print $2 " " $3}'
+        { dpkg -l | grep '^ii' || true; } | awk '{print $2 " " $3}'
     elif command -v rpm &> /dev/null; then
         # RedHat/CentOS
         rpm -qa --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n'
@@ -102,8 +106,8 @@ compare_packages() {
     local upgraded=""
     while IFS= read -r line; do
         local pkg_name=$(echo "$line" | awk '{print $1}')
-        local old_version=$(echo "$old_state" | grep "^$pkg_name " | awk '{print $2}')
-        local new_version=$(echo "$new_state" | grep "^$pkg_name " | awk '{print $2}')
+        local old_version=$(echo "$old_state" | grep "^$pkg_name " 2>/dev/null | awk '{print $2}' || true)
+        local new_version=$(echo "$new_state" | grep "^$pkg_name " 2>/dev/null | awk '{print $2}' || true)
 
         if [ -n "$old_version" ] && [ -n "$new_version" ] && [ "$old_version" != "$new_version" ]; then
             upgraded+="$pkg_name: $old_version → $new_version\n"

@@ -8,7 +8,11 @@
 # Sends email alerts for security events
 # Usage: Executed by systemd timer every 10 minutes
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, awk pipelines) legitimately return non-zero when there
+# are no matches, which would crash the script on quiet servers.
 
 # Configuration (with environment variable overrides)
 HOSTNAME="$(hostname)"
@@ -220,7 +224,7 @@ analyze_failed_logins() {
 
     if [ -n "$failed_logins" ]; then
         # Count failed attempts by IP
-        local failed_ips=$(echo "$failed_logins" | grep -oP "from \K[\d\.]+" | sort | uniq -c | sort -rn)
+        local failed_ips=$(echo "$failed_logins" | grep -oP "from \K[\d\.]+" 2>/dev/null | sort | uniq -c | sort -rn || true)
 
         while read -r count ip; do
             # Validate count is a valid number
@@ -488,8 +492,8 @@ main() {
     analyze_recent_commands "$new_entries"
 
     # Count activity for summary
-    local successful_count=$(echo "$new_entries" | grep -E "sshd.*Accepted" | wc -l)
-    local failed_count=$(echo "$new_entries" | grep -E "sshd.*(Failed|Invalid)" | wc -l)
+    local successful_count=$(echo "$new_entries" | grep -cE "sshd.*Accepted" 2>/dev/null || echo 0)
+    local failed_count=$(echo "$new_entries" | grep -cE "sshd.*(Failed|Invalid)" 2>/dev/null || echo 0)
     local logged_in_users=$(who)
 
     # Send periodic activity summary

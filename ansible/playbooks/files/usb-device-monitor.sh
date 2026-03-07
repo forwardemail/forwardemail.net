@@ -7,7 +7,11 @@
 # Sends email alerts when unknown devices are detected
 # Usage: Executed by systemd timer every 5 minutes or triggered by udev
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (lsusb, grep) legitimately return non-zero when there are no
+# USB devices or no matches, which would crash the script.
 
 # Configuration
 HOSTNAME="$(hostname)"

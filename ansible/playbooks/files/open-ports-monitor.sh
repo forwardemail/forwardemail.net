@@ -7,7 +7,11 @@
 # Sends email alerts for new or unexpected open ports
 # Usage: Executed by systemd timer every hour
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, awk pipelines) legitimately return non-zero when there
+# are no matches, which would crash the script on hosts with no open ports.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -77,9 +81,9 @@ is_authorized_port() {
 get_open_ports() {
     # Use ss (socket statistics) or fallback to netstat
     if command -v ss &> /dev/null; then
-        ss -tuln | grep LISTEN | awk '{print $5}' | sed 's/.*://' | sort -un
+        { ss -tuln | grep LISTEN || true; } | awk '{print $5}' | sed 's/.*://' | sort -un
     elif command -v netstat &> /dev/null; then
-        netstat -tuln | grep LISTEN | awk '{print $4}' | sed 's/.*://' | sort -un
+        { netstat -tuln | grep LISTEN || true; } | awk '{print $4}' | sed 's/.*://' | sort -un
     else
         log_message "ERROR: Neither ss nor netstat available"
         return 1
@@ -115,13 +119,13 @@ get_firewall_status() {
     local status="unknown"
 
     if command -v ufw &> /dev/null; then
-        if ufw status | grep -q "$port"; then
+        if ufw status 2>/dev/null | grep -q "$port"; then
             status="UFW: allowed"
         else
             status="UFW: not explicitly allowed"
         fi
     elif command -v iptables &> /dev/null; then
-        if iptables -L INPUT -n | grep -q "$port"; then
+        if iptables -L INPUT -n 2>/dev/null | grep -q "$port"; then
             status="iptables: rule exists"
         else
             status="iptables: no rule"

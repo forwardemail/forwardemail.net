@@ -7,7 +7,11 @@
 # Sends email alerts via rate-limited email system
 # Usage: Executed by systemd timer every 5 minutes
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, top, free pipelines) legitimately return non-zero when
+# parsing system stats, which would crash the script.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -63,7 +67,7 @@ get_cpu_usage() {
     local cpu_usage
     
     # Method 1: Use top command
-    cpu_usage=$(top -bn2 -d 1 | grep "Cpu(s)" | tail -1 | awk '{idle=$8; if (idle ~ /^[0-9]+\.?[0-9]*$/) print int(100 - idle); else print "ERROR"}')
+    cpu_usage=$({ top -bn2 -d 1 | grep "Cpu(s)" || true; } | tail -1 | awk '{idle=$8; if (idle ~ /^[0-9]+\.?[0-9]*$/) print int(100 - idle); else print "ERROR"}')
     
     # Validate the result
     if [[ "$cpu_usage" == "ERROR" ]] || [[ -z "$cpu_usage" ]] || ! [[ "$cpu_usage" =~ ^[0-9]+$ ]]; then
@@ -89,7 +93,7 @@ get_memory_usage() {
     local mem_usage
     
     # Get memory usage with validation
-    mem_usage=$(free | grep Mem | awk '{
+    mem_usage=$({ free | grep Mem || true; } | awk '{
         if ($2 > 0) {
             usage = ($3/$2) * 100;
             if (usage >= 0 && usage <= 100) {
@@ -153,7 +157,7 @@ get_memory_details() {
 # Get swap usage
 get_swap_usage() {
     local swap_line
-    swap_line=$(free -h | grep -i "^Swap:")
+    swap_line=$(free -h | grep -i "^Swap:" || true)
     if [ -z "$swap_line" ]; then
         echo "Swap disabled"
         return

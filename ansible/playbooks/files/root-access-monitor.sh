@@ -7,7 +7,12 @@
 # Sends email alerts for sudo usage, su to root, and direct root logins
 # Usage: Executed by systemd timer every 5 minutes
 
-set -euo pipefail
+set -o pipefail
+
+# NOTE: We intentionally do NOT use 'set -e' (errexit) here because many
+# commands (grep, awk pipelines) legitimately return non-zero when there
+# are no matches. With 'set -e' or 'set -euo pipefail', the script would
+# crash on every run where there are no sudo/su events to report.
 
 # Configuration
 HOSTNAME="$(hostname)"
@@ -158,7 +163,7 @@ get_su_to_root() {
 # Get console root logins
 get_console_root_logins() {
     if [ -f "$AUTH_LOG" ]; then
-        grep -E "login\[.*\].*ROOT LOGIN" "$AUTH_LOG" 2>/dev/null | \
+        { grep -E "login\[.*\].*ROOT LOGIN" "$AUTH_LOG" 2>/dev/null || true; } | \
             grep -v "grep" | \
             tail -20
     fi
@@ -166,7 +171,7 @@ get_console_root_logins() {
 
 # Get current root sessions
 get_active_root_sessions() {
-    who | grep "^root " || echo "No active root sessions"
+    who | grep "^root " 2>/dev/null || echo "No active root sessions"
 }
 
 # Send sudo usage alert
@@ -384,7 +389,7 @@ main() {
         while IFS= read -r recent_su; do
             if [ -n "$recent_su" ]; then
                 # Extract user who performed su
-                su_user=$(echo "$recent_su" | grep -oP 'by \K[^ ]+' | head -1)
+                su_user=$(echo "$recent_su" | grep -oP 'by \K[^ ]+' 2>/dev/null | head -1 || true)
 
                 if [ -n "$su_user" ]; then
                     log_message "Su to root detected by user: $su_user"
