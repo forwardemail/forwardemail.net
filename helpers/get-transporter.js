@@ -12,7 +12,7 @@ const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const mxConnect = require('mx-connect');
+const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
 const pify = require('pify');
 
@@ -270,6 +270,26 @@ async function getTransporter(options = {}, err) {
           // for TLSA type (52), the records contain usage, selector, mtype, cert
           const records = await resolver.resolve(name, 'TLSA');
           return records;
+        },
+        //
+        // RFC 7672 Section 2.2.2: Check DNSSEC validation status of MX host
+        // before attempting TLSA lookups. If the MX host's A/AAAA zone is
+        // not DNSSEC-signed ("insecure"), TLSA lookups are skipped to avoid
+        // SERVFAIL errors from nameservers that mishandle TLSA queries for
+        // unsigned zones (e.g., Microsoft EOP's mail.eo.outlook.com).
+        //
+        // Uses tangerine's `dnssecSecure` option to check the AD
+        // (Authenticated Data) flag in the DNS response.
+        //
+        async checkDnssecSecure(hostname) {
+          try {
+            return await resolver.resolve(hostname, 'A', {
+              dnssecSecure: true
+            });
+          } catch {
+            // Fall back to AAAA for IPv6-only hosts
+            return resolver.resolve(hostname, 'AAAA', { dnssecSecure: true });
+          }
         },
         //
         // Log DANE events for monitoring and debugging

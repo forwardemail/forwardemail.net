@@ -18328,5 +18328,6 @@
   "Bucket Name": "Bucket Name",
   "The bucket must already exist. We will not create it automatically.": "The bucket must already exist. We will not create it automatically.",
   "Test Connection": "Test Connection",
-  "MCP Setup Guide": "MCP Setup Guide"
+  "MCP Setup Guide": "MCP Setup Guide",
+  "MCP Server": "MCP Server"
 }
