@@ -279,11 +279,13 @@ async function getTransporter(options = {}, err) {
         // RFC 7672 Section 2.2.2: Check DNSSEC validation status of MX host
         // before attempting TLSA lookups. If the MX host's A/AAAA zone is
         // not DNSSEC-signed ("insecure"), TLSA lookups are skipped to avoid
-        // SERVFAIL errors from nameservers that mishandle TLSA queries for
-        // unsigned zones (e.g., Microsoft EOP's mail.eo.outlook.com).
+        // unnecessary TLSA queries for unsigned zones.
         //
-        // Uses tangerine's `dnssecSecure` option to check the AD
-        // (Authenticated Data) flag in the DNS response.
+        // Uses tangerine's `dnssecSecure` option which sets the EDNS0 DO
+        // (DNSSEC OK) flag in the outgoing DoH query. The upstream resolver
+        // (Cloudflare/Google) validates DNSSEC and sets the AD (Authenticated
+        // Data) flag in the response when the zone is signed.
+        // tangerine returns `{ secure: Boolean(flag_ad) }`.
         //
         async checkDnssecSecure(hostname) {
           try {
