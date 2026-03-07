@@ -22,6 +22,7 @@ const isDenylisted = require('./is-denylisted');
 const isEmail = require('./is-email');
 const isMessageEncrypted = require('./is-message-encrypted');
 const isRequireTLSError = require('./is-requiretls-error');
+const isDaneError = require('./is-dane-error');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
@@ -435,6 +436,19 @@ async function sendEmail(
     err.tls = session.tls;
 
     await shouldThrow(err, session, resolver);
+
+    //
+    // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
+    // Do NOT retry or downgrade to plaintext — the certificate did not match
+    // the TLSA record. Throw immediately with a 550 (permanent failure).
+    //
+    if (isDaneError(err)) {
+      err.responseCode = 550;
+      err.message = `550 DANE verification failed for ${
+        session?.mx?.host || 'unknown host'
+      }: ${err.message}`;
+      throw err;
+    }
 
     //
     // NOTE: this is handled because `MAIL_RETRY_ERROR_CODES` has `ECONNRESET`

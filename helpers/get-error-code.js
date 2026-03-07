@@ -7,6 +7,7 @@ const RE2 = require('re2');
 
 const getBounceInfo = require('./get-bounce-info');
 const isCodeBug = require('./is-code-bug');
+const isDaneError = require('./is-dane-error');
 const isRetryableError = require('./is-retryable-error');
 const logger = require('./logger');
 
@@ -30,6 +31,12 @@ function getErrorCode(err) {
 
   // if it was a code bug
   if (isCodeBug(err)) return 421;
+
+  //
+  // RFC 7672 Section 2.2: DANE verification failures are permanent.
+  // The certificate did not match the TLSA record — reject with 550.
+  //
+  if (isDaneError(err)) return 550;
 
   if (err.bounceInfo.category === 'virus') return 554;
   if (err.bounceInfo.category === 'spam') return 550;

@@ -880,3 +880,135 @@ test.serial(
     }
   }
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tests for DANE error classification and non-retryable behavior
+// ─────────────────────────────────────────────────────────────────────────────
+
+const isDaneError = require('../../helpers/is-dane-error');
+const isRetryableError = require('../../helpers/is-retryable-error');
+
+//
+// Test 17: isDaneError detects errors with category='dane'
+//
+test('isDaneError detects err.category === dane', (t) => {
+  const err = new Error('DANE verification failed: certificate mismatch');
+  err.code = 'ESOCKET'; // nodemailer overwrites the code
+  err.category = 'dane';
+  t.true(isDaneError(err));
+});
+
+//
+// Test 18: isDaneError detects errors with code='DANE_VERIFICATION_FAILED'
+//
+test('isDaneError detects err.code === DANE_VERIFICATION_FAILED', (t) => {
+  const err = new Error('cert mismatch');
+  err.code = 'DANE_VERIFICATION_FAILED';
+  t.true(isDaneError(err));
+});
+
+//
+// Test 19: isDaneError detects errors by message prefix
+//
+test('isDaneError detects err.message starting with DANE verification failed', (t) => {
+  const err = new Error('DANE verification failed for mx.example.com');
+  t.true(isDaneError(err));
+});
+
+//
+// Test 20: isDaneError returns false for non-DANE errors
+//
+test('isDaneError returns false for non-DANE socket errors', (t) => {
+  const err = new Error('Connection reset');
+  err.code = 'ECONNRESET';
+  t.false(isDaneError(err));
+});
+
+//
+// Test 21: isDaneError returns false for non-object input
+//
+test('isDaneError returns false for non-object input', (t) => {
+  t.false(isDaneError(null));
+  t.false(isDaneError(undefined));
+  t.false(isDaneError('string'));
+  t.false(isDaneError(42));
+});
+
+//
+// Test 22: isRetryableError returns false for DANE errors
+//
+// This is critical: DANE verification failures MUST NOT be retried.
+// The previous bug was that nodemailer wraps the error as ESOCKET,
+// which is in MAIL_RETRY_ERROR_CODES, causing infinite retries.
+//
+test('isRetryableError returns false for DANE errors (RFC 7672 2.2)', (t) => {
+  // Simulate the exact error that nodemailer produces
+  const err = new Error('DANE verification failed: certificate mismatch');
+  err.code = 'ESOCKET'; // nodemailer overwrites to ESOCKET
+  err.category = 'dane'; // our wrapper preserves this
+  err.command = 'CONN';
+  t.false(
+    isRetryableError(err),
+    'DANE errors must not be retryable even with ESOCKET code'
+  );
+});
+
+//
+// Test 23: isRetryableError still returns true for non-DANE ESOCKET errors
+//
+test('isRetryableError still returns true for non-DANE ESOCKET errors', (t) => {
+  const err = new Error('Connection reset by peer');
+  err.code = 'ECONNRESET';
+  t.true(
+    isRetryableError(err),
+    'Non-DANE socket errors should still be retryable'
+  );
+});
+
+//
+// Test 24: E2E DANE failure error has correct properties for error classification
+//
+// Verifies that when the DANE wrapper destroys the socket, the error
+// that reaches the sendMail catch block has the properties needed
+// for isDaneError to detect it and isRetryableError to exclude it.
+//
+test.serial(
+  'E2E: DANE failure error has category=dane and is not retryable',
+  async (t) => {
+    const certInfo = generateSelfSignedCert();
+    if (!getPort)
+      await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+    const port = await getPort();
+    const server = await createStarttlsSmtpServer(certInfo, port);
+
+    try {
+      const wrongHash = 'a'.repeat(64);
+      const daneVerifier = (_hostname, cert) => {
+        const certHash = crypto
+          .createHash('sha256')
+          .update(cert.raw)
+          .digest('hex');
+        if (certHash !== wrongHash) {
+          const err = new Error(
+            `DANE verification failed: expected ${wrongHash}, got ${certHash}`
+          );
+          err.code = 'DANE_VERIFICATION_FAILED';
+          err.category = 'dane';
+          return err;
+        }
+      };
+
+      const transporter = createDaneTransporter(port, daneVerifier);
+
+      const error = await t.throwsAsync(
+        sendTestEmail(transporter, 'DANE error properties test')
+      );
+
+      // Verify the error has the right properties for classification
+      t.true(isDaneError(error), 'Error should be detected as a DANE error');
+      t.false(isRetryableError(error), 'DANE error must not be retryable');
+    } finally {
+      server.close();
+    }
+  }
+);

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isDaneError = require('./is-dane-error');
 const isRequireTLSError = require('./is-requiretls-error');
 const isTimeoutError = require('./is-timeout-error');
 const isSocketError = require('./is-socket-error');
@@ -116,6 +117,13 @@ const TLS_RETRY_ERROR_CODES = new Set([
 ]);
 
 function isRetryableError(err) {
+  //
+  // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
+  // They MUST NOT be retried or downgraded to plaintext delivery.
+  // The certificate did not match the TLSA record — retrying will not help.
+  //
+  if (isDaneError(err)) return false;
+
   if (isTimeoutError(err)) return true;
   if (isSocketError(err)) return true;
 
