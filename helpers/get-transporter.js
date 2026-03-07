@@ -21,6 +21,10 @@ const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
 const isTLSError = require('./is-tls-error');
 const parseRootDomain = require('./parse-root-domain');
+const {
+  applyDaneTlsWrapper,
+  prepareDaneTlsOptions
+} = require('./dane-tls-wrapper');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -351,23 +355,12 @@ async function getTransporter(options = {}, err) {
   if (isFQDN(mx.hostname)) tls.servername = mx.hostname;
 
   //
-  // DANE/TLSA: if DANE is enabled and a verifier function is available,
-  // use it as the TLS checkServerIdentity callback (RFC 6698 Section 3)
+  // DANE/TLSA: Post-handshake certificate verification (RFC 6698, RFC 7672)
   //
-  // The daneVerifier function returned by mx-connect validates the server's
-  // certificate against the published TLSA records. When DANE-EE (usage=3)
-  // records are present, this replaces traditional PKIX validation, allowing
-  // self-signed certificates that match the TLSA record.
+  // See helpers/dane-tls-wrapper.js for detailed documentation.
   //
   if (mx.daneEnabled && typeof mx.daneVerifier === 'function') {
-    tls.checkServerIdentity = mx.daneVerifier;
-    //
-    // RFC 7672 Section 3.1.1: When DANE-EE(3) TLSA records are matched,
-    // the client SHOULD NOT apply additional certificate name checks.
-    // We disable rejectUnauthorized since the DANE verifier handles
-    // certificate validation via TLSA record matching.
-    //
-    tls.rejectUnauthorized = false;
+    prepareDaneTlsOptions(tls, mx.daneVerifier, mx.hostname);
   }
 
   // <https://github.com/nodemailer/nodemailer/issues/1517>
@@ -414,6 +407,14 @@ async function getTransporter(options = {}, err) {
     port: mx.port,
     ...(mx.socket ? { connection: mx.socket } : {})
   });
+
+  //
+  // DANE: Apply post-handshake DANE certificate verification wrapper.
+  // See helpers/dane-tls-wrapper.js for detailed documentation.
+  //
+  if (mx.daneEnabled && typeof mx.daneVerifier === 'function') {
+    applyDaneTlsWrapper(transporter);
+  }
 
   return {
     truthSource,
