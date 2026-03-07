@@ -226,6 +226,7 @@
           [Service]
           Type=oneshot
           RemainAfterExit=no
+          Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/update-{{ service_identifier }}-ufw-whitelist.sh
 
     - name: "Create UFW allowlist update systemd timer for {{ service_name }}"

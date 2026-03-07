@@ -3,7 +3,7 @@
 # Optimizes I/O scheduler and filesystem settings for database workloads
 
 - name: "I/O and Filesystem Tuning for {{ service_name }}"
-  hosts: all
+  hosts: "{{ target_hosts }}"
   become: true
   tasks:
     - name: "Check if {{ data_directory }} exists"

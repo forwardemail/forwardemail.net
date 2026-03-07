@@ -86,6 +86,11 @@
         state: enabled
         policy: deny
         direction: incoming
+    - name: Set UFW default forward policy to DROP
+      lineinfile:
+        dest: /etc/default/ufw
+        line: DEFAULT_FORWARD_POLICY="DROP"
+        regexp: ^DEFAULT_FORWARD_POLICY\=
     - name: Limit ufw ssh
       ufw:
         rule: limit

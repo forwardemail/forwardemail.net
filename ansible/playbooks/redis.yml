@@ -134,6 +134,9 @@
           - lookup('env', 'REDIS_HOST') != ''
           - lookup('env', 'REDIS_PASSWORD') != ''
           - lookup('env', 'REDIS_PORT') != ''
+          - lookup('env', 'SSL_CERT_PATH') != ''
+          - lookup('env', 'SSL_KEY_PATH') != ''
+          - lookup('env', 'SSL_CA_PATH') != ''
           - lookup('env', 'AWS_ACCESS_KEY_ID') != ''
           - lookup('env', 'AWS_SECRET_ACCESS_KEY') != ''
           - lookup('env', 'AWS_ENDPOINT_URL') != ''
@@ -1040,11 +1043,15 @@
           Environment="REDIS_BACKUP_BUCKET={{ lookup('env', 'REDIS_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
           Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
           Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
-          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default(lookup('env', 'REDIS_PORT'), true) }}"
-          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') }}"
+          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
           Environment="REDIS_DATA_DIR={{ lookup('env', 'REDIS_DATA_DIR') or '/var/lib/valkey' }}"
           Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
+          # Run backups at lowest I/O and CPU priority to avoid starving Redis
+          IOSchedulingClass=idle
+          IOSchedulingPriority=7
+          Nice=19
+          CPUSchedulingPolicy=idle
           ExecStart=/usr/local/bin/backup-redis.sh
           ExecStartPost=/usr/local/bin/cleanup-redis-backups.sh
 
@@ -1175,7 +1182,7 @@
           Type=oneshot
           RemainAfterExit=no
           Environment="REDIS_HOST={{ lookup('env', 'REDIS_HOST') }}"
-          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default(lookup('env', 'REDIS_PORT'), true) }}"
+          Environment="REDIS_PORT={{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
           Environment="REDIS_PASSWORD={{ lookup('env', 'REDIS_PASSWORD') }}"
           Environment="MSMTP_RCPTS={{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true) }}"
           ExecStart=/usr/local/bin/monitor-redis-commands.sh

@@ -468,6 +468,7 @@
           [Unit]
           Description=PM2 Health Check
           After=pm2-deploy.service
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot

@@ -2,6 +2,7 @@
 Description=System Resource Monitor
 After=network.target
 Docs=https://github.com/forwardemail/forwardemail.net
+OnFailure=failure-notification@%n.service
 
 [Service]
 Type=oneshot

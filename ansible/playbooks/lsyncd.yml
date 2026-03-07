@@ -377,6 +377,7 @@
           [Unit]
           Description=Lsyncd Health Monitor
           After=lsyncd.service
+          OnFailure=failure-notification@%n.service
 
           [Service]
           Type=oneshot

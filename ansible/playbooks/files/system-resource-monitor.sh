@@ -308,7 +308,7 @@ send_alert() {
         log_message "Alert sent: ${resource} ${current_value}% (threshold: ${threshold}%)"
     else
         # Fallback to sendmail
-        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "{{ lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net') }}"
+        echo -e "Subject: $subject\nContent-Type: text/html\n\n$body" | sendmail -t "${MSMTP_RCPTS:-security@forwardemail.net}"
         log_message "Alert sent via sendmail: ${resource} ${current_value}% (threshold: ${threshold}%)"
     fi
 }
