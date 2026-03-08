@@ -35,8 +35,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1(highlight.js@11.11.1)
       '@forwardemail/mx-connect':
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.3.0
+        version: 2.3.0
       '@forwardemail/passport-fido2-webauthn':
         specifier: 0.1.0
         version: 0.1.0
@@ -2411,8 +2411,8 @@ packages:
     peerDependencies:
       highlight.js: '*'
 
-  '@forwardemail/mx-connect@2.2.0':
-    resolution: {integrity: sha512-Y3gLrgEhDVYlMdxt8ECfvht4A0uto0lNVLYEjjkf6+XgSg6/PwP+tTaqoZbnU7RcJ2uWkDpQBVcb6VuMD1/2Xg==}
+  '@forwardemail/mx-connect@2.3.0':
+    resolution: {integrity: sha512-OLhjgRPCsf2N+b3u36UPZxsx9GYHvydVIlYQyVh2Xi3JZxdVSl9LkLT/chnzOSAs6g5ID0rjQPYN6CS1/PWFRA==}
     engines: {node: '>=14.0.0'}
 
   '@forwardemail/passport-fido2-webauthn@0.1.0':
@@ -20950,7 +20950,7 @@ snapshots:
     dependencies:
       highlight.js: 11.11.1
 
-  '@forwardemail/mx-connect@2.2.0':
+  '@forwardemail/mx-connect@2.3.0':
     dependencies:
       ipaddr.js: 2.3.0
       mailauth: 4.13.0

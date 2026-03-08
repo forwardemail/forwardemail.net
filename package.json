@@ -35,7 +35,7 @@
     "@fortawesome/fontawesome-free": "5.15.4",
     "@forwardemail/bytes": "4.0.0",
     "@forwardemail/highlight-pug": "1.0.1",
-    "@forwardemail/mx-connect": "2.2.0",
+    "@forwardemail/mx-connect": "2.3.0",
     "@forwardemail/passport-fido2-webauthn": "0.1.0",
     "@forwardemail/uuid-by-string": "5.0.0",
     "@forwardemail/validator": "14.0.0",
