@@ -18325,5 +18325,8 @@
   "The bucket must already exist. We will not create it automatically.": "The bucket must already exist. We will not create it automatically.",
   "Test Connection": "Test Connection",
   "MCP Setup Guide": "MCP Setup Guide",
-  "MCP Server": "MCP Server"
+  "MCP Server": "MCP Server",
+  "%d status updates": "%d status updates",
+  "1 article": "1 article",
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
 }
