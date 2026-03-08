@@ -515,7 +515,18 @@ async function sendEmail(
     // <https://github.com/nodejs/node/blob/1f9761f4cc027315376cd669ceed2eeaca865d76/lib/tls.js#L287>
     //
     //
-    if (isSSLError(err) || isTLSError(err) || isRetryableError(err)) {
+    //
+    // RFC 7672 Section 2.2: DANE errors MUST NOT enter the retry path.
+    // isDaneError(err) above already throws with 421, but as a
+    // belt-and-suspenders defence we also exclude DANE errors here.
+    // Without this guard, a DANE error whose `category` property was
+    // somehow lost (e.g. through error wrapping) could fall through
+    // to the retry path and be retried without DANE enforcement.
+    //
+    if (
+      !isDaneError(err) &&
+      (isSSLError(err) || isTLSError(err) || isRetryableError(err))
+    ) {
       const { truthSource, mx, requireTLS, ignoreTLS, tls, transporter } =
         await getTransporter(
           {
@@ -626,12 +637,25 @@ async function sendEmail(
         err.mxLastError = mxLastError;
         err.ignoreMXHosts = ignoreMXHosts;
 
+        //
+        // RFC 7672 Section 2.2: DANE verification failures in the retry
+        // path are also permanent. Set 421 and throw immediately so the
+        // error is not misclassified as a retryable TLS/SSL error below.
+        //
+        if (isDaneError(err)) {
+          err.responseCode = 421;
+          throw err;
+        }
+
         await shouldThrow(err, session, resolver);
 
         //
         // retry if code, tls, or ssl error
         //
-        if (isTLSError(err) || isSSLError(err) || isRetryableError(err))
+        if (
+          !isDaneError(err) &&
+          (isTLSError(err) || isSSLError(err) || isRetryableError(err))
+        )
           err.responseCode = 421;
 
         throw err;

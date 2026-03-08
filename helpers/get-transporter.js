@@ -310,7 +310,13 @@ async function getTransporter(options = {}, err) {
         // Enforce DANE verification in production (reject on failure)
         // In non-production environments, log but don't reject
         //
-        verify: config.env === 'production'
+        //
+        // RFC 7672 Section 2.2: DANE verification is always enforced
+        // when TLSA records are present and the zone is DNSSEC-signed.
+        // There is no opt-out — the `verify` flag has been removed from
+        // the underlying createDaneVerifier function.
+        //
+        verify: true
       }
     });
   }
