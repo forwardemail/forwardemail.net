@@ -36,7 +36,8 @@ function getErrorCode(err) {
   // RFC 7672 Section 2.2: DANE verification failures are permanent.
   // The certificate did not match the TLSA record — reject with 550.
   //
-  if (isDaneError(err)) return 550;
+  // if (isDaneError(err)) return 550;
+  if (isDaneError(err)) return 421;
 
   if (err.bounceInfo.category === 'virus') return 554;
   if (err.bounceInfo.category === 'spam') return 550;

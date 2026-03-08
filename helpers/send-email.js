@@ -435,20 +435,20 @@ async function sendEmail(
     err.opportunisticTLS = session.opportunisticTLS;
     err.tls = session.tls;
 
-    await shouldThrow(err, session, resolver);
-
     //
-    // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
-    // Do NOT retry or downgrade to plaintext — the certificate did not match
-    // the TLSA record. Throw immediately with a 550 (permanent failure).
+    // DANE verification failures should be treated as temporary (421) so that
+    // the message is retried later. This handles transient issues such as
+    // certificate rotation races or stale TLSA cache entries. The check MUST
+    // run before shouldThrow, which would otherwise throw with a 550 because
+    // getErrorCode returns 550 for DANE errors and isRetryableError returns
+    // false (per RFC 7672 Section 2.2).
     //
     if (isDaneError(err)) {
-      err.responseCode = 550;
-      err.message = `550 DANE verification failed for ${
-        session?.mx?.host || 'unknown host'
-      }: ${err.message}`;
+      err.responseCode = 421;
       throw err;
     }
+
+    await shouldThrow(err, session, resolver);
 
     //
     // NOTE: this is handled because `MAIL_RETRY_ERROR_CODES` has `ECONNRESET`
