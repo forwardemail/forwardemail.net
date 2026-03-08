@@ -929,7 +929,8 @@ Alternatively, you can add SRV records per [RFC 6186](https://datatracker.ietf.o
 | ---- | ------------------ | -------- | ------ | ---- | ----------------------- |
 | SRV  | `_imaps._tcp`      | 0        | 1      | 993  | `imap.forwardemail.net` |
 | SRV  | `_imap._tcp`       | 0        | 0      | 0    | `.`                     |
-| SRV  | `_submission._tcp` | 0        | 1      | 587  | `smtp.forwardemail.net` |
+| SRV  | `_submissions._tcp` | 0        | 1      | 465  | `smtp.forwardemail.net` |
+| SRV  | `_submission._tcp` | 0        | 5      | 587  | `smtp.forwardemail.net` |
 | SRV  | `_pop3s._tcp`      | 10       | 1      | 995  | `pop3.forwardemail.net` |
 | SRV  | `_pop3._tcp`       | 0        | 0      | 0    | `.`                     |
 

@@ -143,7 +143,7 @@ Tamamlandığında, bir başarı mesajı görmelisiniz. Bileşenlerin nasıl ça
 | Web | `443` | Tüm yönetici etkileşimleri için web arayüzü |
 | API | `4000` | Veritabanlarını soyutlamak için API katmanı |
 | Bree | Hiçbiri | Arka plan işi ve görev yürütücüsü |
-| SMTP | `465/587` | Giden e-posta için SMTP sunucusu |
+| SMTP | `465` (recommended) / `587` | Giden e-posta için SMTP sunucusu |
 | SMTP Bree | Hiçbiri | SMTP arka plan işi |
 | MX | `2525` | Gelen e-posta ve e-posta yönlendirme için posta değişimi |
 | IMAP | `993/2993` | Gelen e-posta ve posta kutusu yönetimi için IMAP sunucusu |

@@ -143,7 +143,7 @@ Ha kész, sikeres műveletről szóló üzenetet kell látnod. A `docker ps` par
 | Web | `443` | Webes felület az összes adminisztrációs interakcióhoz |
 | API | `4000` | API réteg absztrakt adatbázisokhoz |
 | Bree | Egyik sem | Háttérben futó feladatok és feladatok futtatása |
-| SMTP | `465/587` | SMTP-kiszolgáló a kimenő e-mailekhez |
+| SMTP | `465` (recommended) / `587` | SMTP-kiszolgáló a kimenő e-mailekhez |
 | SMTP Bree | Egyik sem | SMTP háttérfeladat |
 | MX | `2525` | Bejövő e-mailek levelezése és továbbítása |
 | IMAP | `993/2993` | IMAP szerver a bejövő e-mailek és postafiókok kezeléséhez |

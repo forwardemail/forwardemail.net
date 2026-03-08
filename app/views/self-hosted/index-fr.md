@@ -143,7 +143,7 @@ Une fois l'opération terminée, un message de réussite devrait s'afficher. Vou
 | Web | `443` | Interface Web pour toutes les interactions avec l'administrateur |
 | API | `4000` | Couche API pour abstraire les bases de données |
 | Bree | Aucun | Exécuteur de tâches et de tâches en arrière-plan |
-| SMTP | `465/587` | Serveur SMTP pour les e-mails sortants |
+| SMTP | `465` (recommended) / `587` | Serveur SMTP pour les e-mails sortants |
 | SMTP Bree | Aucun | Tâche d'arrière-plan SMTP |
 | MX | `2525` | Échange de courrier pour les e-mails entrants et les transferts d'e-mails |
 | IMAP | `993/2993` | Serveur IMAP pour la gestion des e-mails entrants et des boîtes aux lettres |

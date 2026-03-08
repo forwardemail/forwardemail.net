@@ -546,7 +546,7 @@ Use these settings in your camera, printer, scanner, or other legacy device:
 | --------------- | ------------------------------------------------ |
 | SMTP Server | `smtp.forwardemail.net` |
 | Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` |
+| Port (STARTTLS) | `2555` (alternative) |
 | Username | Your alias email (e.g., `camera@yourdomain.com`) |
 | 비밀번호 | The password from "Generate Password" |
 | Authentication | 필요합니다 |

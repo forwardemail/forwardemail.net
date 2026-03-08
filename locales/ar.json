@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "وارد: IMAP،",
   ", port 993, SSL/TLS": "، المنفذ 993، SSL/TLS",
   "Outgoing: SMTP,": "الصادر: SMTP،",
-  ", port 587, STARTTLS": "، المنفذ 587، STARTTLS",
   "Done": "منتهي",
   "Go to": "اذهب الى",
   "File → Add Account": "ملف → إضافة حساب",
@@ -7635,7 +7634,6 @@
   "Incoming:": "وارد:",
   ", port 993, SSL": "، المنفذ 993، SSL",
   "Outgoing:": "الصادر:",
-  ", port 587, TLS": "، المنفذ 587، TLS",
   "Username: Your full email address": "اسم المستخدم: عنوان بريدك الإلكتروني الكامل",
   "Password: Your generated password": "كلمة المرور: كلمة المرور التي تم إنشاؤها",
   "Mail → Preferences → Accounts → +": "البريد → التفضيلات → الحسابات → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "مهلة الاتصال",
   "Check your internet connection": "تحقق من اتصالك بالإنترنت",
   "Verify firewall settings aren't blocking SMTP traffic": "التحقق من أن إعدادات جدار الحماية لا تمنع حركة مرور SMTP",
-  "Try using a different port (587 with STARTTLS)": "حاول استخدام منفذ مختلف (587 مع STARTTLS)",
   "Message Rejected": "تم رفض الرسالة",
   "Ensure your \"From\" address matches your authenticated email": "تأكد من أن عنوان \"من\" الخاص بك يتطابق مع بريدك الإلكتروني المعتمد",
   "Check if your IP is blacklisted": "تحقق مما إذا كان عنوان IP الخاص بك مدرجًا في القائمة السوداء",
@@ -18323,5 +18320,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "حاول استخدام منفذ مختلف (587 مع STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": "، المنفذ 587، TLS"
 }

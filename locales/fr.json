@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Entrant : IMAP,",
   ", port 993, SSL/TLS": ", port 993, SSL/TLS",
   "Outgoing: SMTP,": "Sortant : SMTP,",
-  ", port 587, STARTTLS": ", port 587, STARTTLS",
   "Done": "Fait",
   "Go to": "Aller à",
   "File → Add Account": "Fichier → Ajouter un compte",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Entrant :",
   ", port 993, SSL": ", port 993, SSL",
   "Outgoing:": "Sortant:",
-  ", port 587, TLS": ", port 587, TLS",
   "Username: Your full email address": "Nom d'utilisateur : Votre adresse e-mail complète",
   "Password: Your generated password": "Mot de passe : Votre mot de passe généré",
   "Mail → Preferences → Accounts → +": "Mail → Préférences → Comptes → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Délai d'expiration de la connexion",
   "Check your internet connection": "Vérifiez votre connexion Internet",
   "Verify firewall settings aren't blocking SMTP traffic": "Vérifiez que les paramètres du pare-feu ne bloquent pas le trafic SMTP",
-  "Try using a different port (587 with STARTTLS)": "Essayez d'utiliser un autre port (587 avec STARTTLS)",
   "Message Rejected": "Message rejeté",
   "Ensure your \"From\" address matches your authenticated email": "Assurez-vous que votre adresse « De » correspond à votre adresse e-mail authentifiée",
   "Check if your IP is blacklisted": "Vérifiez si votre IP est sur liste noire",
@@ -18343,5 +18340,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Essayez d'utiliser un autre port (587 avec STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", port 465, SSL/TLS (recommended)"
 }

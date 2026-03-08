@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Đang đến: IMAP,",
   ", port 993, SSL/TLS": ", cổng 993, SSL/TLS",
   "Outgoing: SMTP,": "Gửi đi: SMTP,",
-  ", port 587, STARTTLS": ", cổng 587, STARTTLS",
   "Done": "Xong",
   "Go to": "Đi đến",
   "File → Add Account": "Tệp → Thêm tài khoản",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Đang đến:",
   ", port 993, SSL": ", cổng 993, SSL",
   "Outgoing:": "Hướng ngoại:",
-  ", port 587, TLS": ", cổng 587, TLS",
   "Username: Your full email address": "Tên người dùng: Địa chỉ email đầy đủ của bạn",
   "Password: Your generated password": "Mật khẩu: Mật khẩu bạn tạo",
   "Mail → Preferences → Accounts → +": "Thư → Tùy chọn → Tài khoản → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Hết thời gian kết nối",
   "Check your internet connection": "Kiểm tra kết nối internet của bạn",
   "Verify firewall settings aren't blocking SMTP traffic": "Xác minh cài đặt tường lửa không chặn lưu lượng SMTP",
-  "Try using a different port (587 with STARTTLS)": "Hãy thử sử dụng một cổng khác (587 với STARTTLS)",
   "Message Rejected": "Tin nhắn bị từ chối",
   "Ensure your \"From\" address matches your authenticated email": "Đảm bảo địa chỉ \"Từ\" của bạn khớp với email đã xác thực của bạn",
   "Check if your IP is blacklisted": "Kiểm tra xem IP của bạn có bị đưa vào danh sách đen không",
@@ -18302,5 +18299,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Hãy thử sử dụng một cổng khác (587 với STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", cổng 587, TLS"
 }

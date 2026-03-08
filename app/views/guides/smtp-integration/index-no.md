@@ -490,7 +490,7 @@ flowchart TD
 2. **Tidsavbrudd for tilkobling**
 * Sjekk internettforbindelsen din
 * Bekreft at brannmurinnstillingene ikke blokkerer SMTP-trafikk
-* Prøv å bruke en annen port (587 med STARTTLS)
+* Bruk port 465 med SSL/TLS (anbefalt) eller port 587 med STARTTLS
 
 3. **Melding avvist**
 * Sørg for at «Fra»-adressen din samsvarer med den autentiserte e-postadressen din.

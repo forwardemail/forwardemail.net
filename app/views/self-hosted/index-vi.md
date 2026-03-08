@@ -143,7 +143,7 @@ Sau khi hoàn tất, bạn sẽ thấy thông báo thành công. Bạn thậm ch
 | Web | `443` | Giao diện web cho tất cả các tương tác của quản trị viên |
 | API | `4000` | Lớp API để trừu tượng hóa cơ sở dữ liệu |
 | Bree | Không có | Trình chạy tác vụ và công việc nền |
-| SMTP | `465/587` | Máy chủ SMTP cho email gửi đi |
+| SMTP | `465` (recommended) / `587` | Máy chủ SMTP cho email gửi đi |
 | SMTP Bree | Không có | Công việc nền SMTP |
 | MX | `2525` | Trao đổi thư cho email đến và chuyển tiếp email |
 | IMAP | `993/2993` | Máy chủ IMAP để quản lý email đến và hộp thư |

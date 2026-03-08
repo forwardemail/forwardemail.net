@@ -143,7 +143,7 @@ Po zakończeniu powinien pojawić się komunikat o powodzeniu. Możesz nawet uru
 | Sieć | `443` | Interfejs internetowy do wszystkich interakcji administracyjnych |
 | API | `4000` | Warstwa API do abstrakcyjnych baz danych |
 | Bree | Nic | Praca w tle i wykonawca zadań |
-| SMTP | `465/587` | Serwer SMTP dla poczty wychodzącej |
+| SMTP | `465` (recommended) / `587` | Serwer SMTP dla poczty wychodzącej |
 | SMTP Bree | Nic | Zadanie SMTP w tle |
 | MX | `2525` | Wymiana poczty dla poczty przychodzącej i przekazywanie poczty e-mail |
 | IMAP | `993/2993` | Serwer IMAP do zarządzania pocztą przychodzącą i skrzynkami pocztowymi |

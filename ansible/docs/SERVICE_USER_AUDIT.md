@@ -21,7 +21,7 @@ This document audits all services in the Forward Email Ansible playbooks to ensu
 * Port 53 (DNS)
 * Port 80 (HTTP)
 * Port 443 (HTTPS)
-* Port 465, 587 (SMTP TLS/submission)
+* Port 465 (SMTP SSL/TLS submission, recommended), 587 (SMTP STARTTLS submission)
 * Port 993 (IMAPS)
 * Port 995 (POP3S)
 

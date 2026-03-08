@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "수신: IMAP,",
   ", port 993, SSL/TLS": ", 포트 993, SSL/TLS",
   "Outgoing: SMTP,": "발신: SMTP,",
-  ", port 587, STARTTLS": ", 포트 587, STARTTLS",
   "Done": "완료",
   "Go to": "로 가다",
   "File → Add Account": "파일 → 계정 추가",
@@ -7635,7 +7634,6 @@
   "Incoming:": "들어오는:",
   ", port 993, SSL": ", 포트 993, SSL",
   "Outgoing:": "나가는:",
-  ", port 587, TLS": ", 포트 587, TLS",
   "Username: Your full email address": "사용자 이름: 전체 이메일 주소",
   "Password: Your generated password": "비밀번호: 생성된 비밀번호",
   "Mail → Preferences → Accounts → +": "메일 → 환경 설정 → 계정 → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "연결 시간 초과",
   "Check your internet connection": "인터넷 연결을 확인하세요",
   "Verify firewall settings aren't blocking SMTP traffic": "방화벽 설정이 SMTP 트래픽을 차단하지 않는지 확인하세요.",
-  "Try using a different port (587 with STARTTLS)": "다른 포트(STARTTLS를 사용하는 587)를 사용해 보세요.",
   "Message Rejected": "메시지 거부됨",
   "Ensure your \"From\" address matches your authenticated email": "\"보낸 사람\" 주소가 인증된 이메일과 일치하는지 확인하세요.",
   "Check if your IP is blacklisted": "IP가 블랙리스트에 등록되었는지 확인하세요",
@@ -18335,5 +18332,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "다른 포트(STARTTLS를 사용하는 587)를 사용해 보세요.",
+  ", port 465, SSL/TLS (recommended)": ", 포트 587, TLS"
 }

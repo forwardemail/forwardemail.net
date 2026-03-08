@@ -7848,7 +7848,6 @@
   "Incoming: IMAP,": "Входящие: IMAP,",
   ", port 993, SSL/TLS": ", порт 993, SSL/TLS",
   "Outgoing: SMTP,": "Исходящие: SMTP,",
-  ", port 587, STARTTLS": ", порт 587, STARTTLS",
   "Done": "Сделанный",
   "Go to": "Перейти к",
   "File → Add Account": "Файл → Добавить учетную запись",
@@ -7862,7 +7861,6 @@
   "Incoming:": "Входящие:",
   ", port 993, SSL": ", порт 993, SSL",
   "Outgoing:": "Исходящий:",
-  ", port 587, TLS": ", порт 587, TLS",
   "Username: Your full email address": "Имя пользователя: Ваш полный адрес электронной почты",
   "Password: Your generated password": "Пароль: Ваш сгенерированный пароль",
   "Mail → Preferences → Accounts → +": "Почта → Настройки → Учетные записи → +",
@@ -11475,7 +11473,6 @@
   "Connection Timeout": "Истекло время ожидания соединения",
   "Check your internet connection": "Проверьте подключение к Интернету",
   "Verify firewall settings aren't blocking SMTP traffic": "Убедитесь, что настройки брандмауэра не блокируют SMTP-трафик.",
-  "Try using a different port (587 with STARTTLS)": "Попробуйте использовать другой порт (587 с STARTTLS)",
   "Message Rejected": "Сообщение отклонено",
   "Ensure your \"From\" address matches your authenticated email": "Убедитесь, что ваш адрес «От» соответствует вашему аутентифицированному адресу электронной почты.",
   "Check if your IP is blacklisted": "Проверьте, не занесен ли ваш IP-адрес в черный список",
@@ -18325,5 +18322,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Попробуйте использовать другой порт (587 с STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", порт 587, TLS"
 }

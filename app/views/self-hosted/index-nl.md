@@ -143,7 +143,7 @@ Zodra de installatie is voltooid, ziet u een bericht dat de installatie is volto
 | Web | `443` | Webinterface voor alle beheerdersinteracties |
 | API | `4000` | API-laag voor het abstraheren van databases |
 | Bree | Geen | Achtergrondtaak en taakrunner |
-| SMTP | `465/587` | SMTP-server voor uitgaande e-mail |
+| SMTP | `465` (recommended) / `587` | SMTP-server voor uitgaande e-mail |
 | SMTP Bree | Geen | SMTP-achtergrondtaak |
 | MX | `2525` | Mailuitwisseling voor inkomende e-mail en e-maildoorsturing |
 | IMAP | `993/2993` | IMAP-server voor inkomende e-mail en mailboxbeheer |

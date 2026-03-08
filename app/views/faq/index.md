@@ -262,7 +262,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 3. Enter your name, Forward Email address, and password
 4. Click **Configure manually** and enter:
    * Incoming: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-   * Outgoing: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+   * Outgoing: SMTP, `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
 5. Click **Done**
 
 ### Microsoft Outlook
@@ -273,7 +273,7 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
 4. Choose **Advanced options** and select **Let me set up my account manually**
 5. Select **IMAP** and enter:
    * Incoming: `imap.forwardemail.net`, port 993, SSL
-   * Outgoing: `smtp.forwardemail.net`, port 587, TLS
+   * Outgoing: `smtp.forwardemail.net`, port 465, SSL/TLS (recommended; port 587 with STARTTLS is also supported)
    * Username: Your full email address
    * Password: Your generated password
 6. Click **Connect**
@@ -351,7 +351,7 @@ You can configure Sendmail to relay emails through Forward Email's SMTP servers.
 
    ```
    define(`SMART_HOST', `smtp.forwardemail.net')dnl
-   define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+   define(`RELAY_MAILER_ARGS', `TCP $h 465')dnl
    define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
    FEATURE(`authinfo',`hash -o /etc/mail/authinfo.db')dnl
    ```
@@ -424,7 +424,7 @@ Exim4 is a popular MTA on Debian-based systems. You can configure it to use Forw
    * **IP-addresses to listen on for incoming SMTP connections:** 127.0.0.1 ; ::1
    * **Other destinations for which mail is accepted:** (leave blank)
    * **Domains to relay mail for:** (leave blank)
-   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::587
+   * **IP address or host name of the outgoing smarthost:** smtp.forwardemail.net::465
    * **Hide local mail name in outgoing mail?** No
    * **Keep number of DNS-queries minimal (Dial-on-Demand)?** No
    * **Delivery method for local mail:** Mbox format in /var/mail/
@@ -496,7 +496,8 @@ msmtp is a lightweight SMTP client that's useful for sending emails from scripts
 
    account        forwardemail
    host           smtp.forwardemail.net
-   port           587
+   port           465
+   tls_starttls   off
    from           your-alias@yourdomain.com
    user           your-alias@yourdomain.com
    password       your-generated-password
@@ -575,8 +576,9 @@ sudo nano /etc/postfix/main.cf
 
 ```
 # SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
+relayhost = [smtp.forwardemail.net]:465
+smtp_tls_wrappermode = yes
+smtp_tls_security_level = encrypt
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = noanonymous
@@ -592,7 +594,7 @@ sudo nano /etc/postfix/sasl_passwd
 4. Add your Forward Email credentials:
 
 ```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+[smtp.forwardemail.net]:465 your-alias@yourdomain.com:your-generated-password
 ```
 
 5. Secure and hash the password file:
@@ -672,13 +674,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 8. Click "Next Step" to proceed
 
-9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and leave the port as <code>587</code>
+9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
 
 10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
 
 11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
-12. Leave the radio button checked for "Secured connection using TLS"
+12. Select the radio button for "Secured connection using SSL"
 
 13. Click "Add Account" to proceed
 
@@ -898,7 +900,7 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 | Type |         Hostname        |                 Protocol                |                                         Ports                                        |
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
 | IMAP | `imap.forwardemail.net` |          SSL/TLS **Preferred**          |                                   `993` and `2993`                                   |
-| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
 
 ### Why are my emails landing in Spam and Junk and how can I check my domain reputation
 
@@ -3551,7 +3553,7 @@ Yes, please note that in order to maintain IP reputation and ensure deliverabili
 
 Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS (recommended) and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
 
 **As of October 2025**, we now support **legacy TLS 1.0** connections on ports `2455` (SSL/TLS) and `2555` (STARTTLS) for older devices such as printers, scanners, cameras, and legacy email clients that cannot support modern TLS versions. These ports are provided as an alternative to Gmail, Yahoo, Outlook, and other providers that have discontinued support for older TLS protocols.
 
@@ -3561,7 +3563,7 @@ It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for 
 |                                     Protocol                                     | Hostname                |            Ports            |        IPv4        |        IPv6        | Notes                                  |
 | :------------------------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: | -------------------------------------- |
 |                              `SSL/TLS` **Preferred**                             | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended)          |
-|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Modern TLS 1.2+ (Recommended)          |
+|         `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS))         | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: | Supported (prefer SSL/TLS port `465`)  |
 |                             `SSL/TLS` **Legacy Only**                            | `smtp.forwardemail.net` |            `2455`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
 | `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) **Legacy Only** | `smtp.forwardemail.net` |            `2555`           | :white_check_mark: | :white_check_mark: | :warning: TLS 1.0 for old devices only |
 
@@ -3637,7 +3639,8 @@ If you prefer to add the records directly (or your DNS provider does not support
 | :--: | ------------------ | :------: | :----: | :--: | -------------------------- | ----------------------------- |
 |  SRV | `_imaps._tcp`      |     0    |    1   |  993 | `imap.forwardemail.net`    | IMAP over SSL/TLS (preferred) |
 |  SRV | `_imap._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext IMAP disabled       |
-|  SRV | `_submission._tcp` |     0    |    1   |  587 | `smtp.forwardemail.net`    | SMTP submission (STARTTLS)    |
+|  SRV | `_submissions._tcp` |     0    |    1   |  465 | `smtp.forwardemail.net`    | SMTP submission (SSL/TLS, recommended) |
+|  SRV | `_submission._tcp` |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP submission (STARTTLS)    |
 |  SRV | `_pop3s._tcp`      |    10    |    1   |  995 | `pop3.forwardemail.net`    | POP3 over SSL/TLS             |
 |  SRV | `_pop3._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext POP3 disabled       |
 |  SRV | `_caldavs._tcp`    |     0    |    1   |  443 | `caldav.forwardemail.net`  | CalDAV over TLS (calendars)   |

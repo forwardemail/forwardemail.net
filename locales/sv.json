@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Inkommande: IMAP,",
   ", port 993, SSL/TLS": ", port 993, SSL/TLS",
   "Outgoing: SMTP,": "Utgående: SMTP,",
-  ", port 587, STARTTLS": ", port 587, STARTTLS",
   "Done": "Gjort",
   "Go to": "Gå till",
   "File → Add Account": "Arkiv → Lägg till konto",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Inkommande:",
   ", port 993, SSL": ", port 993, SSL",
   "Outgoing:": "Utgående:",
-  ", port 587, TLS": ", port 587, TLS",
   "Username: Your full email address": "Användarnamn: Din fullständiga e-postadress",
   "Password: Your generated password": "Lösenord: Ditt genererade lösenord",
   "Mail → Preferences → Accounts → +": "E-post → Inställningar → Konton → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Timeout för anslutning",
   "Check your internet connection": "Kontrollera din internetanslutning",
   "Verify firewall settings aren't blocking SMTP traffic": "Kontrollera att brandväggsinställningarna inte blockerar SMTP-trafik",
-  "Try using a different port (587 with STARTTLS)": "Prova att använda en annan port (587 med STARTTLS)",
   "Message Rejected": "Meddelande avvisats",
   "Ensure your \"From\" address matches your authenticated email": "Se till att din \"Från\"-adress matchar din autentiserade e-post",
   "Check if your IP is blacklisted": "Kontrollera om din IP är svartlistad",
@@ -18328,5 +18325,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Prova att använda en annan port (587 med STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", port 465, SSL/TLS (recommended)"
 }

@@ -490,7 +490,7 @@ flowchart TD
 2. **Verbindungs-Timeout**
 * Überprüfen Sie Ihre Internetverbindung.
 * Stellen Sie sicher, dass die Firewall-Einstellungen den SMTP-Verkehr nicht blockieren.
-* Versuchen Sie es mit einem anderen Port (587 mit STARTTLS).
+* Verwenden Sie Port 465 mit SSL/TLS (empfohlen) oder Port 587 mit STARTTLS.
 
 3. **Nachricht abgelehnt**
 * Stellen Sie sicher, dass Ihre Absenderadresse mit Ihrer authentifizierten E-Mail-Adresse übereinstimmt.

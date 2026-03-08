@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Bejövő: IMAP,",
   ", port 993, SSL/TLS": ", 993-as port, SSL/TLS",
   "Outgoing: SMTP,": "Kimenő: SMTP,",
-  ", port 587, STARTTLS": ", 587-es port, STARTTLS",
   "Done": "Kész",
   "Go to": "Menj ide",
   "File → Add Account": "Fájl → Fiók hozzáadása",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Bejövő:",
   ", port 993, SSL": ", 993-as port, SSL",
   "Outgoing:": "Kimenő:",
-  ", port 587, TLS": ", 587-es port, TLS",
   "Username: Your full email address": "Felhasználónév: A teljes e-mail címed",
   "Password: Your generated password": "Jelszó: Az Ön által generált jelszó",
   "Mail → Preferences → Accounts → +": "Levelezés → Beállítások → Fiókok → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Kapcsolat időtúllépése",
   "Check your internet connection": "Ellenőrizze az internetkapcsolatot",
   "Verify firewall settings aren't blocking SMTP traffic": "Ellenőrizze, hogy a tűzfal beállításai nem blokkolják-e az SMTP-forgalmat",
-  "Try using a different port (587 with STARTTLS)": "Próbáljon meg másik portot használni (587 STARTTLS-szel)",
   "Message Rejected": "Üzenet elutasítva",
   "Ensure your \"From\" address matches your authenticated email": "Győződjön meg arról, hogy a „Feladó” cím megegyezik a hitelesített e-mail-címével",
   "Check if your IP is blacklisted": "Ellenőrizze, hogy az IP-címe szerepel-e a feketelistán",
@@ -18343,5 +18340,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Próbáljon meg másik portot használni (587 STARTTLS-szel)",
+  ", port 465, SSL/TLS (recommended)": ", 587-es port, TLS"
 }

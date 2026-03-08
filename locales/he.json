@@ -7848,7 +7848,6 @@
   "Incoming: IMAP,": "נכנס: IMAP,",
   ", port 993, SSL/TLS": ", פורט 993, SSL/TLS",
   "Outgoing: SMTP,": "יוצא: SMTP,",
-  ", port 587, STARTTLS": ", פורט 587, STARTTLS",
   "Done": "נַעֲשָׂה",
   "Go to": "עבור אל",
   "File → Add Account": "קובץ → הוסף חשבון",
@@ -7862,7 +7861,6 @@
   "Incoming:": "נִכנָס:",
   ", port 993, SSL": ", פורט 993, SSL",
   "Outgoing:": "יוֹצֵא:",
-  ", port 587, TLS": ", פורט 587, TLS",
   "Username: Your full email address": "שם משתמש: כתובת הדוא\"ל המלאה שלך",
   "Password: Your generated password": "סיסמה: הסיסמה שיצרת",
   "Mail → Preferences → Accounts → +": "דואר ← העדפות ← חשבונות ← +",
@@ -11475,7 +11473,6 @@
   "Connection Timeout": "פסק זמן לחיבור",
   "Check your internet connection": "בדוק את חיבור האינטרנט שלך",
   "Verify firewall settings aren't blocking SMTP traffic": "ודא שהגדרות חומת האש אינן חוסמות תעבורת SMTP",
-  "Try using a different port (587 with STARTTLS)": "נסה להשתמש ביציאה אחרת (587 עם STARTTLS)",
   "Message Rejected": "ההודעה נדחתה",
   "Ensure your \"From\" address matches your authenticated email": "ודא שכתובת \"מאת\" שלך תואמת את הדוא\"ל המאומת שלך",
   "Check if your IP is blacklisted": "בדוק אם ה-IP שלך נמצא ברשימה השחורה",
@@ -18311,5 +18308,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "נסה להשתמש ביציאה אחרת (587 עם STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", פורט 587, TLS"
 }

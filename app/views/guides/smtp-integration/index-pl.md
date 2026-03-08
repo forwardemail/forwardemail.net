@@ -490,7 +490,7 @@ flowchart TD
 2. **Przekroczenie limitu czasu połączenia**
 * Sprawdź połączenie internetowe
 * Sprawdź, czy ustawienia zapory sieciowej nie blokują ruchu SMTP
-* Spróbuj użyć innego portu (587 z STARTTLS)
+* Użyj portu 465 z SSL/TLS (zalecane) lub portu 587 z STARTTLS
 
 3. **Wiadomość odrzucona**
 * Upewnij się, że adres „Od” jest zgodny z Twoim uwierzytelnionym adresem e-mail

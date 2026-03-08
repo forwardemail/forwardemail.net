@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Masuk: IMAP,",
   ", port 993, SSL/TLS": ", pelabuhan 993, SSL/TLS",
   "Outgoing: SMTP,": "Keluar: SMTP,",
-  ", port 587, STARTTLS": ", pelabuhan 587, STARTTLS",
   "Done": "Selesai",
   "Go to": "Pergi ke",
   "File → Add Account": "File → Tambahkan Akun",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Masuk:",
   ", port 993, SSL": ", pelabuhan 993, SSL",
   "Outgoing:": "Keluar:",
-  ", port 587, TLS": ", pelabuhan 587, TLS",
   "Username: Your full email address": "Nama pengguna: Alamat email lengkap Anda",
   "Password: Your generated password": "Kata Sandi: Kata sandi yang Anda buat",
   "Mail → Preferences → Accounts → +": "Email → Preferensi → Akun → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Waktu Koneksi Habis",
   "Check your internet connection": "Periksa koneksi internet Anda",
   "Verify firewall settings aren't blocking SMTP traffic": "Verifikasi pengaturan firewall tidak memblokir lalu lintas SMTP",
-  "Try using a different port (587 with STARTTLS)": "Coba gunakan port lain (587 dengan STARTTLS)",
   "Message Rejected": "Pesan Ditolak",
   "Ensure your \"From\" address matches your authenticated email": "Pastikan alamat \"Dari\" Anda cocok dengan email Anda yang diautentikasi",
   "Check if your IP is blacklisted": "Periksa apakah IP Anda masuk daftar hitam",
@@ -18332,5 +18329,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Coba gunakan port lain (587 dengan STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", pelabuhan 587, TLS"
 }

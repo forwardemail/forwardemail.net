@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Inkomend: IMAP,",
   ", port 993, SSL/TLS": ", poort 993, SSL/TLS",
   "Outgoing: SMTP,": "Uitgaand: SMTP,",
-  ", port 587, STARTTLS": ", poort 587, STARTTLS",
   "Done": "Klaar",
   "Go to": "Ga naar",
   "File → Add Account": "Bestand → Account toevoegen",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Inkomend:",
   ", port 993, SSL": ", poort 993, SSL",
   "Outgoing:": "Uitgaand:",
-  ", port 587, TLS": ", poort 587, TLS",
   "Username: Your full email address": "Gebruikersnaam: Uw volledige e-mailadres",
   "Password: Your generated password": "Wachtwoord: Uw gegenereerde wachtwoord",
   "Mail → Preferences → Accounts → +": "Mail → Voorkeuren → Accounts → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Verbindingstime-out",
   "Check your internet connection": "Controleer uw internetverbinding",
   "Verify firewall settings aren't blocking SMTP traffic": "Controleer of de firewallinstellingen SMTP-verkeer niet blokkeren",
-  "Try using a different port (587 with STARTTLS)": "Probeer een andere poort (587 met STARTTLS)",
   "Message Rejected": "Bericht afgewezen",
   "Ensure your \"From\" address matches your authenticated email": "Zorg ervoor dat uw \"Van\"-adres overeenkomt met uw geverifieerde e-mailadres",
   "Check if your IP is blacklisted": "Controleer of uw IP op de zwarte lijst staat",
@@ -18344,5 +18341,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Probeer een andere poort (587 met STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", poort 587, TLS"
 }

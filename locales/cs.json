@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Příchozí: IMAP,",
   ", port 993, SSL/TLS": ", port 993, SSL/TLS",
   "Outgoing: SMTP,": "Odchozí: SMTP,",
-  ", port 587, STARTTLS": ", port 587, STARTTLS",
   "Done": "Hotovo",
   "Go to": "Přejít na",
   "File → Add Account": "Soubor → Přidat účet",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Přicházející:",
   ", port 993, SSL": ", port 993, SSL",
   "Outgoing:": "Odchozí:",
-  ", port 587, TLS": ", port 587, TLS",
   "Username: Your full email address": "Uživatelské jméno: Vaše úplná e-mailová adresa",
   "Password: Your generated password": "Heslo: Vaše vygenerované heslo",
   "Mail → Preferences → Accounts → +": "Pošta → Předvolby → Účty → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Časový limit připojení",
   "Check your internet connection": "Zkontrolujte připojení k internetu",
   "Verify firewall settings aren't blocking SMTP traffic": "Ověřte, zda nastavení brány firewall neblokuje provoz SMTP",
-  "Try using a different port (587 with STARTTLS)": "Zkuste použít jiný port (587 s STARTTLS)",
   "Message Rejected": "Zpráva odmítnuta",
   "Ensure your \"From\" address matches your authenticated email": "Ujistěte se, že vaše adresa „Od“ odpovídá vašemu ověřenému e-mailu",
   "Check if your IP is blacklisted": "Zkontrolujte, zda je vaše IP adresa na černé listině",
@@ -18331,5 +18328,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Zkuste použít jiný port (587 s STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", port 465, SSL/TLS (recommended)"
 }

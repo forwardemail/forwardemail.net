@@ -148,7 +148,7 @@ Once complete, you should see a success message. You can even run `docker ps` to
 | Web          |     `443`    | Web interface for all admin interactions               |
 | API          |    `4000`    | Api layer to abstract databases                        |
 | Bree         |     None     | Background job and task runner                         |
-| SMTP         |   `465/587`  | SMTP server for outboound email                        |
+| SMTP         | `465` (recommended) / `587` | SMTP server for outbound email              |
 | SMTP Bree    |     None     | SMTP background job                                    |
 | MX           |    `2525`    | Mail exchange for inbound email and email forwarding   |
 | IMAP         |  `993/2993`  | IMAP server for inbound email and mailbox management   |

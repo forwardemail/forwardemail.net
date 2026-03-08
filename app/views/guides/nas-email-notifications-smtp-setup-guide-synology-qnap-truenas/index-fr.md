@@ -104,7 +104,7 @@ Synology devices with DSM are pretty straightforward to set up. They support mod
 
 4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the server address.
 
-5. **Set the port configuration** by choosing either port 465 for SSL/TLS connections or port 587 for STARTTLS connections, depending on your security preferences.
+5. **Set the port configuration** to port 465 for SSL/TLS connections (recommended). Port 587 with STARTTLS is also supported as an alternative.
 
 6. **Configure authentication** by selecting "SMTP authentication required" and entering your Forward Email alias in the username field.
 
@@ -136,9 +136,9 @@ QNAP devices with QTS work great with Forward Email. They support modern TLS and
 
 4. **Configure the SMTP server** by entering `smtp.forwardemail.net` as the SMTP server address.
 
-5. **Select the appropriate security protocol** - choose "SSL/TLS" for port `465` or "STARTTLS" for port `587` connections.
+5. **Select the appropriate security protocol** - choose "SSL/TLS" with port `465` (recommended). Port `587` with STARTTLS is also supported.
 
-6. **Configure the port number** based on your chosen security protocol. Port `465` provides implicit SSL/TLS encryption, while port `587` uses explicit STARTTLS encryption.
+6. **Configure the port number** - port `465` with SSL/TLS is recommended. Port `587` with STARTTLS is also available if needed.
 
 7. **Enter your authentication credentials** using your Forward Email alias as the username and your generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -160,7 +160,7 @@ If your QNAP device [fails to send notification emails](https://www.reddit.com/r
 
 * Verify your Forward Email credentials are correct
 * Ensure the SMTP server address is exactly `smtp.forwardemail.net`
-* Confirm the port matches your encryption method (`465` for SSL/TLS, `587` for STARTTLS)
+* Confirm the port matches your encryption method (`465` for SSL/TLS is recommended; `587` for STARTTLS is also supported)
 * Check that your [SMTP server configuration](https://www.qnap.com/en/how-to/faq/article/why-does-notification-center-fail-to-send-emails-to-my-smtp-server) allows the connection
 
 ## ReadyNAS Legacy Configuration {#readynas-legacy-configuration}
@@ -206,7 +206,7 @@ To configure email on ReadyNAS devices, access the device's web interface throug
 
 In the email configuration section, enable email notifications and enter smtp.forwardemail.net as the SMTP server. This is crucial - use Forward Email's legacy-compatible ports rather than standard SMTP ports.
 
-For SSL/TLS connections, configure port 2455 instead of the standard port 465. For STARTTLS connections, use port 2555 instead of port 587. These special ports maintain TLS 1.0 compatibility while providing the best available security for legacy devices.
+For SSL/TLS connections, configure port 2455 instead of the standard port 465 (recommended). For STARTTLS connections, use port 2555 instead of port 587. These special ports maintain TLS 1.0 compatibility while providing the best available security for legacy devices.
 
 Enter your Forward Email alias as the username and your generated password for authentication. ReadyNAS devices support SMTP authentication, which is required for Forward Email connections.
 
@@ -229,7 +229,7 @@ TerraMaster devices running TOS 6.x support modern TLS and work well with Forwar
 
 2. **Configure SMTP Settings**
    * Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS) or `587` (STARTTLS)
+   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
@@ -238,7 +238,7 @@ TerraMaster devices running TOS 6.x support modern TLS and work well with Forwar
    * Test the configuration with the built-in test function
 
 > \[!TIP]
-> TerraMaster devices work best with port `465` for SSL/TLS connections. If you experience issues, try port `587` with STARTTLS.
+> TerraMaster devices work best with port `465` for SSL/TLS connections (recommended). If you experience issues, port `587` with STARTTLS is also supported.
 
 ## ASUSTOR NAS Configuration {#asustor-nas-configuration}
 
@@ -253,7 +253,7 @@ ASUSTOR devices with ADM 4.x have solid email notification support and work seam
 
 2. **Set Up SMTP Configuration**
    * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (recommended) or `587`
+   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
    * Authentication: Enable
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
@@ -279,7 +279,7 @@ Buffalo TeraStation devices have limited but functional email notification capab
 
 2. **Configure Email Settings**
    * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` or `587`
+   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
    * Enable SSL/TLS encryption
@@ -305,7 +305,7 @@ Western Digital My Cloud devices running OS 5 support email notifications, thoug
 
 2. **Configure SMTP Details**
    * Mail Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL) or `587` (TLS)
+   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
    * Enable encryption
@@ -316,7 +316,7 @@ Western Digital My Cloud devices running OS 5 support email notifications, thoug
    * Test the email configuration
 
 > \[!TIP]
-> My Cloud devices work more reliably with port `587` and STARTTLS. If port `465` doesn't work, try the alternative.
+> We recommend using port `465` with SSL/TLS. If you experience issues, port `587` with STARTTLS is also supported.
 
 ## TrueNAS Email Configuration {#truenas-email-configuration}
 
@@ -331,8 +331,8 @@ TrueNAS (both SCALE and CORE) has excellent email notification support with deta
 
 2. **Configure SMTP Settings**
    * Outgoing Mail Server: `smtp.forwardemail.net`
-   * Mail Server Port: `465` or `587`
-   * Security: SSL (for 465) or TLS (for 587)
+   * Mail Server Port: `465` (recommended) or `587`
+   * Security: SSL/TLS (for 465, recommended) or STARTTLS (for 587)
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
@@ -358,7 +358,7 @@ OpenMediaVault provides solid email notification capabilities through its web in
 
 2. **Configure SMTP Parameters**
    * SMTP Server: `smtp.forwardemail.net`
-   * Port: `465` (SSL/TLS) or `587` (STARTTLS)
+   * Port: `465` (SSL/TLS, recommended) or `587` (STARTTLS)
    * Username: Your Forward Email alias
    * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
    * Enable SSL/TLS
@@ -428,7 +428,8 @@ logfile        /var/log/msmtp.log
 
 account        forwardemail
 host           smtp.forwardemail.net
-port           587
+port           465
+tls_starttls   off
 from           your-alias@yourdomain.com
 user           your-alias@yourdomain.com
 password       your-generated-password

@@ -490,7 +490,7 @@ MARCADOR DE TEMPERATURA 0 Apple Mail {MARCADOR DE TEMPERATURA 1
 2. **Tiempo de espera de conexión**
 * Verifique su conexión a internet
 * Verifique que la configuración del firewall no esté bloqueando el tráfico SMTP
-* Intente usar un puerto diferente (587 con STARTTLS)
+* Use el puerto 465 con SSL/TLS (recomendado) o el puerto 587 con STARTTLS
 
 3. **Mensaje rechazado**
 * Asegúrate de que tu dirección de remitente coincida con tu correo electrónico autenticado.

@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Saapuva: IMAP,",
   ", port 993, SSL/TLS": ", portti 993, SSL/TLS",
   "Outgoing: SMTP,": "Lähtevä: SMTP,",
-  ", port 587, STARTTLS": ", portti 587, STARTTLS",
   "Done": "Tehty",
   "Go to": "Siirry osoitteeseen",
   "File → Add Account": "Tiedosto → Lisää tili",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Saapuva:",
   ", port 993, SSL": ", portti 993, SSL",
   "Outgoing:": "Lähtevä:",
-  ", port 587, TLS": ", portti 587, TLS",
   "Username: Your full email address": "Käyttäjätunnus: Koko sähköpostiosoitteesi",
   "Password: Your generated password": "Salasana: Luomasi salasana",
   "Mail → Preferences → Accounts → +": "Sähköposti → Asetukset → Tilit → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Yhteyden aikakatkaisu",
   "Check your internet connection": "Tarkista Internet-yhteytesi",
   "Verify firewall settings aren't blocking SMTP traffic": "Varmista, että palomuuriasetukset eivät estä SMTP-liikennettä",
-  "Try using a different port (587 with STARTTLS)": "Kokeile toista porttia (587 ja STARTTLS)",
   "Message Rejected": "Viesti hylätty",
   "Ensure your \"From\" address matches your authenticated email": "Varmista, että Lähettäjä-osoitteesi vastaa todennettua sähköpostiasi",
   "Check if your IP is blacklisted": "Tarkista, onko IP-osoitteesi mustalla listalla",
@@ -18341,5 +18338,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Kokeile toista porttia (587 ja STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", portti 587, TLS"
 }

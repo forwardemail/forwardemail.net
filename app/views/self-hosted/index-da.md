@@ -143,7 +143,7 @@ Når det er færdigt, bør du se en succesmeddelelse. Du kan endda køre `docker
 | Web | `443` | Webgrænseflade til alle administrative interaktioner |
 | API | `4000` | API-lag til abstrakte databaser |
 | Bree | Ingen | Baggrundsjob og opgaveløber |
-| SMTP | `465/587` | SMTP-server til udgående e-mail |
+| SMTP | `465` (recommended) / `587` | SMTP-server til udgående e-mail |
 | SMTP Bree | Ingen | SMTP-baggrundsjob |
 | MX | `2525` | Postudveksling for indgående e-mail og videresendelse af e-mail |
 | IMAP | `993/2993` | IMAP-server til administration af indgående e-mail og postkasse |

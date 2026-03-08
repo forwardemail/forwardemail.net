@@ -490,7 +490,7 @@ flowchart TD
 2. **Bağlantı Zaman Aşımı**
 * İnternet bağlantınızı kontrol edin
 * Güvenlik duvarı ayarlarınızın SMTP trafiğini engellemediğini doğrulayın
-* Farklı bir port kullanmayı deneyin (STARTTLS ile 587)
+* 465 portunu SSL/TLS ile kullanın (önerilir) veya 587 portunu STARTTLS ile kullanın
 
 3. **Mesaj Reddedildi**
 * "Kimden" adresinizin kimliği doğrulanmış e-postanızla eşleştiğinden emin olun

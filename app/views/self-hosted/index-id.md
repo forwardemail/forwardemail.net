@@ -143,7 +143,7 @@ Setelah selesai, Anda akan melihat pesan sukses. Anda bahkan dapat menjalankan `
 | Jaringan | `443` | Antarmuka web untuk semua interaksi admin |
 | API | `4000` | Lapisan API ke database abstrak |
 | Bree | Tidak ada | Pekerjaan latar belakang dan pelari tugas |
-| SMTP | `465/587` | Server SMTP untuk email keluar |
+| SMTP | `465` (recommended) / `587` | Server SMTP untuk email keluar |
 | SMTP Bree | Tidak ada | Pekerjaan latar belakang SMTP |
 | MX | `2525` | Pertukaran email untuk email masuk dan penerusan email |
 | IMAP | `993/2993` | Server IMAP untuk manajemen email masuk dan kotak surat |

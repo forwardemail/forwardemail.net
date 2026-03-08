@@ -143,7 +143,7 @@ Nach Abschluss sollte eine Erfolgsmeldung angezeigt werden. Sie können auch `do
 | Web | `443` | Weboberfläche für alle Administratorinteraktionen |
 | API | `4000` | API-Schicht zum Abstraktion von Datenbanken |
 | Bree | Keiner | Hintergrundjob und Task-Runner |
-| SMTP | `465/587` | SMTP-Server für ausgehende E-Mails |
+| SMTP | `465` (recommended) / `587` | SMTP-Server für ausgehende E-Mails |
 | SMTP Bree | Keiner | SMTP-Hintergrundjob |
 | MX | `2525` | Mail-Austausch für eingehende E-Mails und E-Mail-Weiterleitung |
 | IMAP | `993/2993` | IMAP-Server für eingehende E-Mails und Postfachverwaltung |

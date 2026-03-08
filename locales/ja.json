@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "受信: IMAP、",
   ", port 993, SSL/TLS": "、ポート993、SSL/TLS",
   "Outgoing: SMTP,": "送信: SMTP、",
-  ", port 587, STARTTLS": "、ポート587、STARTTLS",
   "Done": "終わり",
   "Go to": "へ移動",
   "File → Add Account": "ファイル → アカウントの追加",
@@ -7635,7 +7634,6 @@
   "Incoming:": "着信:",
   ", port 993, SSL": "、ポート993、SSL",
   "Outgoing:": "発信:",
-  ", port 587, TLS": "、ポート587、TLS",
   "Username: Your full email address": "ユーザー名: あなたのメールアドレス",
   "Password: Your generated password": "パスワード: 生成されたパスワード",
   "Mail → Preferences → Accounts → +": "メール → 環境設定 → アカウント → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "接続タイムアウト",
   "Check your internet connection": "インターネット接続を確認してください",
   "Verify firewall settings aren't blocking SMTP traffic": "ファイアウォール設定がSMTPトラフィックをブロックしていないことを確認する",
-  "Try using a different port (587 with STARTTLS)": "別のポート（STARTTLS の場合は 587）を使用してみてください",
   "Message Rejected": "メッセージは拒否されました",
   "Ensure your \"From\" address matches your authenticated email": "「差出人」アドレスが認証されたメールと一致していることを確認してください",
   "Check if your IP is blacklisted": "IPがブラックリストに登録されていないか確認する",
@@ -18342,5 +18339,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "別のポート（STARTTLS の場合は 587）を使用してみてください",
+  ", port 465, SSL/TLS (recommended)": "、ポート587、TLS"
 }

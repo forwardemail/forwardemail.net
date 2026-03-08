@@ -490,7 +490,7 @@ flowchart TD
 2. **Timeout di connessione**
 * Controlla la tua connessione Internet
 * Verifica che le impostazioni del firewall non blocchino il traffico SMTP
-* Prova a utilizzare una porta diversa (587 con STARTTLS)
+* Usa la porta 465 con SSL/TLS (consigliato) o la porta 587 con STARTTLS
 
 3. **Messaggio rifiutato**
 * Assicurati che il tuo indirizzo "Da" corrisponda al tuo indirizzo email autenticato

@@ -143,7 +143,7 @@ När det är klart bör du se ett meddelande om att det lyckades. Du kan till oc
 | Web | `443` | Webbgränssnitt för alla administrativa interaktioner |
 | API | `4000` | API-lager till abstrakta databaser |
 | Bree | Ingen | Bakgrundsjobb och uppgiftslöpare |
-| SMTP | `465/587` | SMTP-server för utgående e-post |
+| SMTP | `465` (recommended) / `587` | SMTP-server för utgående e-post |
 | SMTP Bree | Ingen | SMTP-bakgrundsjobb |
 | MX | `2525` | E-postutbyte för inkommande e-post och vidarebefordran av e-post |
 | IMAP | `993/2993` | IMAP-server för hantering av inkommande e-post och brevlådor |

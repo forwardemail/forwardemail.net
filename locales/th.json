@@ -7848,7 +7848,6 @@
   "Incoming: IMAP,": "ขาเข้า: IMAP,",
   ", port 993, SSL/TLS": "พอร์ต 993, SSL/TLS",
   "Outgoing: SMTP,": "ขาออก: SMTP,",
-  ", port 587, STARTTLS": "พอร์ต 587 STARTTLS",
   "Done": "เสร็จแล้ว",
   "Go to": "ไปที่",
   "File → Add Account": "ไฟล์ → เพิ่มบัญชี",
@@ -7862,7 +7861,6 @@
   "Incoming:": "ขาเข้า:",
   ", port 993, SSL": "พอร์ต 993, SSL",
   "Outgoing:": "ขาออก:",
-  ", port 587, TLS": "พอร์ต 587, TLS",
   "Username: Your full email address": "ชื่อผู้ใช้ : ที่อยู่อีเมลเต็มของคุณ",
   "Password: Your generated password": "รหัสผ่าน : รหัสผ่านที่คุณสร้างขึ้น",
   "Mail → Preferences → Accounts → +": "เมล → การตั้งค่า → บัญชี → +",
@@ -11475,7 +11473,6 @@
   "Connection Timeout": "การหมดเวลาการเชื่อมต่อ",
   "Check your internet connection": "ตรวจสอบการเชื่อมต่ออินเตอร์เน็ตของคุณ",
   "Verify firewall settings aren't blocking SMTP traffic": "ตรวจสอบว่าการตั้งค่าไฟร์วอลล์ไม่ได้บล็อกการรับส่งข้อมูล SMTP",
-  "Try using a different port (587 with STARTTLS)": "ลองใช้พอร์ตอื่น (587 พร้อม STARTTLS)",
   "Message Rejected": "ข้อความถูกปฏิเสธ",
   "Ensure your \"From\" address matches your authenticated email": "ตรวจสอบให้แน่ใจว่าที่อยู่ \"จาก\" ของคุณตรงกับอีเมลที่ผ่านการตรวจสอบสิทธิ์ของคุณ",
   "Check if your IP is blacklisted": "ตรวจสอบว่า IP ของคุณอยู่ในบัญชีดำหรือไม่",
@@ -18325,5 +18322,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "ลองใช้พอร์ตอื่น (587 พร้อม STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": "พอร์ต 587, TLS"
 }

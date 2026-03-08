@@ -7848,7 +7848,6 @@
   "Incoming: IMAP,": "Gelen: IMAP,",
   ", port 993, SSL/TLS": ", 993 numaralı bağlantı noktası, SSL/TLS",
   "Outgoing: SMTP,": "Giden: SMTP,",
-  ", port 587, STARTTLS": ", 587 numaralı bağlantı noktası, STARTTLS",
   "Done": "Tamamlamak",
   "Go to": "Git",
   "File → Add Account": "Dosya → Hesap Ekle",
@@ -7862,7 +7861,6 @@
   "Incoming:": "Gelen:",
   ", port 993, SSL": ", 993 numaralı bağlantı noktası, SSL",
   "Outgoing:": "Dışa dönük:",
-  ", port 587, TLS": ", 587 numaralı bağlantı noktası, TLS",
   "Username: Your full email address": "Kullanıcı adı: Tam e-posta adresiniz",
   "Password: Your generated password": "Şifre: Oluşturduğunuz şifre",
   "Mail → Preferences → Accounts → +": "Posta → Tercihler → Hesaplar → +",
@@ -11475,7 +11473,6 @@
   "Connection Timeout": "Bağlantı Zaman Aşımı",
   "Check your internet connection": "İnternet bağlantınızı kontrol edin",
   "Verify firewall settings aren't blocking SMTP traffic": "Güvenlik duvarı ayarlarının SMTP trafiğini engellemediğini doğrulayın",
-  "Try using a different port (587 with STARTTLS)": "Farklı bir port kullanmayı deneyin (STARTTLS ile 587)",
   "Message Rejected": "Mesaj Reddedildi",
   "Ensure your \"From\" address matches your authenticated email": "\"Kimden\" adresinizin kimliği doğrulanmış e-postanızla eşleştiğinden emin olun",
   "Check if your IP is blacklisted": "IP'nizin kara listede olup olmadığını kontrol edin",
@@ -18325,5 +18322,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Farklı bir port kullanmayı deneyin (STARTTLS ile 587)",
+  ", port 465, SSL/TLS (recommended)": ", 587 numaralı bağlantı noktası, TLS"
 }

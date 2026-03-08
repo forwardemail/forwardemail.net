@@ -490,7 +490,7 @@ flowchart TD
 2. **Tempo limite de conexão**
 * Verifique sua conexão com a internet
 * Verifique se as configurações do firewall não estão bloqueando o tráfego SMTP
-* Tente usar uma porta diferente (587 com STARTTLS)
+* Use a porta 465 com SSL/TLS (recomendado) ou a porta 587 com STARTTLS
 
 3. **Mensagem rejeitada**
 * Certifique-se de que o seu endereço "De" corresponda ao seu e-mail autenticado

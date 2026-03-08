@@ -490,7 +490,7 @@ flowchart TD
 2. **Forbindelsestimeout**
 * Tjek din internetforbindelse
 * Bekræft, at firewallindstillingerne ikke blokerer SMTP-trafik
-* Prøv at bruge en anden port (587 med STARTTLS)
+* Brug port 465 med SSL/TLS (anbefalet) eller port 587 med STARTTLS
 
 3. **Besked afvist**
 * Sørg for, at din "Fra"-adresse matcher din godkendte e-mailadresse

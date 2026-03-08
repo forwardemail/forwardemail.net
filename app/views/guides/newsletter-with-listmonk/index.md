@@ -155,7 +155,7 @@ Next, configure Listmonk to send emails using your Forward Email account.
      | **TLS**           | `SSL/TLS`                                                                                                           |
      | **From e-mail**   | Your desired `From` address (e.g., `newsletter@yourdomain.com`). Ensure this domain is configured in Forward Email. |
 
-   * **Important**: Always use Port `465` with `SSL/TLS` for secure connections with Forward Email. Do not use STARTTLS (port 587).
+   * **Important**: Always use Port `465` with `SSL/TLS` for secure connections with Forward Email (recommended). Port `587` with STARTTLS is also supported but SSL/TLS is preferred.
 
    * Click **Save**.
 3. **Send Test Email**: Use the "Send Test E-mail" button within the SMTP settings page. Enter a recipient address you can access and click **Send**. Verify that the email arrives in the recipient's inbox.

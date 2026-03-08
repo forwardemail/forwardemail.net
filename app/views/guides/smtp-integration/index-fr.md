@@ -490,7 +490,7 @@ flowchart TD
 2. **Délai de connexion expiré**
 * Vérifiez votre connexion Internet
 * Vérifiez que les paramètres du pare-feu ne bloquent pas le trafic SMTP
-* Essayez d'utiliser un autre port (587 avec STARTTLS)
+* Utilisez le port 465 avec SSL/TLS (recommandé) ou le port 587 avec STARTTLS
 
 3. **Message rejeté**
 * Assurez-vous que votre adresse d'expéditeur correspond à votre adresse e-mail authentifiée.

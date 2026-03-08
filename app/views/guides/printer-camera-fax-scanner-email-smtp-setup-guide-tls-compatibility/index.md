@@ -7,7 +7,7 @@ Your office equipment needs to send emails - printers alert about toner levels, 
 Forward Email fixes this by supporting both modern and legacy devices. We have dedicated ports for current equipment and special legacy ports for older devices that can't be upgraded.
 
 > \[!IMPORTANT]
-> Forward Email supports both modern and legacy devices through our dual-port strategy. Use ports `465`/`587` for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
+> Forward Email supports both modern and legacy devices through our dual-port strategy. Use port `465` (SSL/TLS, recommended) or `587` (STARTTLS) for modern devices with TLS 1.2+ support, and ports `2455`/`2555` for legacy devices that only support TLS 1.0.
 
 
 ## Table of Contents
@@ -66,7 +66,7 @@ This affects real operations - security cameras can't send alerts during inciden
 
 Forward Email provides a comprehensive SMTP service designed specifically to address the unique challenges of device email configuration. Our infrastructure supports multiple connection types and security levels, ensuring compatibility with both cutting-edge equipment and legacy devices that remain in active use.
 
-For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
+For modern devices with TLS 1.2+ support, use our primary SMTP server at smtp.forwardemail.net with port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections. These ports provide enterprise-grade security and are compatible with all current device firmware versions.
 
 Legacy devices that only support TLS 1.0 can use our specialized compatibility ports. Port 2455 provides SSL/TLS connections with TLS 1.0 support, while port 2555 offers STARTTLS with legacy protocol compatibility. These ports maintain the highest possible security while ensuring continued functionality for older equipment.
 
@@ -163,7 +163,7 @@ Modern Canon printers provide extensive email notification features through the 
 
 3. **Configure the SMTP server** by clicking "Add Destination" and entering smtp.forwardemail.net as the server address. Select "SSL" or "TLS" as the encryption method.
 
-4. **Set the port number** to 465 for SSL/TLS connections or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
+4. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Canon printers clearly distinguish between these encryption methods in their interface.
 
 5. **Configure authentication** by enabling SMTP authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -210,7 +210,7 @@ Brother multifunction printers offer extensive email capabilities, but configura
 
 3. **Configure the SMTP server settings** by entering smtp.forwardemail.net as the server address. Brother printers support both SSL/TLS and STARTTLS encryption methods.
 
-4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
+4. **Set the appropriate port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption. Brother printers clearly label these options in their interface.
 
 5. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -231,7 +231,7 @@ If your Brother printer displays "Authentication Failed" errors when testing ema
 
 For printers that won't accept scan-to-email configuration settings, try configuring the settings through the web interface rather than the printer's control panel. The web interface often provides more detailed error messages and configuration options.
 
-When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS, while port 587 must use STARTTLS.
+When encountering SSL/TLS connection errors, verify that you're using the correct port and encryption combination. Brother printers require exact matches between port numbers and encryption methods - port 465 must use SSL/TLS (recommended), while port 587 must use STARTTLS.
 
 > \[!CAUTION]
 > Some Brother printer models have known issues with specific SMTP server configurations. If standard configuration fails, consult Brother's support documentation for model-specific workarounds.
@@ -347,7 +347,7 @@ Dahua cameras offer user-friendly email configuration through their web interfac
 
 3. **Configure the SMTP server** by entering smtp.forwardemail.net as the server address. Dahua cameras support both SSL and STARTTLS encryption methods.
 
-4. **Set the port and encryption** by selecting port 465 with SSL encryption or port 587 with STARTTLS encryption based on your preference. Both options provide equivalent security.
+4. **Set the port and encryption** by selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS encryption.
 
 5. **Enable SMTP authentication** and enter your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -370,7 +370,7 @@ Dahua Network Video Recorders (NVRs) provide centralized email notification mana
 
 2. **Navigate to the Email configuration** by selecting "Setup" > "Network" > "Email" from the main menu. NVRs typically organize email settings at the system level.
 
-3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting appropriate encryption and port settings (465 for SSL or 587 for STARTTLS).
+3. **Configure SMTP server settings** by entering smtp.forwardemail.net as the server address and selecting port 465 with SSL/TLS encryption (recommended) or port 587 with STARTTLS.
 
 4. **Set up authentication** using your Forward Email alias and generated password. NVRs support standard SMTP authentication methods.
 
@@ -397,7 +397,7 @@ Xerox multifunction devices offer sophisticated email configuration through thei
 
 4. **Set TLS configuration** by selecting TLS 1.2 or higher as the minimum supported version. Xerox devices allow administrators to configure specific TLS requirements for enhanced security.
 
-5. **Configure port and encryption** by setting port 465 for SSL/TLS connections or port 587 for STARTTLS connections. Xerox devices clearly distinguish between these encryption methods.
+5. **Configure port and encryption** by setting port 465 for SSL/TLS connections (recommended) or port 587 for STARTTLS connections.
 
 6. **Set up SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -427,7 +427,7 @@ Current Ricoh devices support modern TLS standards and provide comprehensive ema
 
 4. **Enable SSL on the SMTP server page** to activate TLS encryption. Ricoh's interface may be cryptic, but SSL enablement is required for secure email functionality.
 
-5. **Set the port number** to 465 for SSL connections or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
+5. **Set the port number** to 465 for SSL/TLS connections (recommended) or 587 for STARTTLS connections. Ensure the encryption method matches the selected port.
 
 6. **Configure SMTP authentication** by enabling authentication and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains).
 
@@ -476,7 +476,7 @@ Check that your Forward Email account has proper SMTP access enabled and that an
 
 TLS-related issues often occur when devices attempt to use unsupported encryption protocols or when there's a mismatch between port configuration and encryption settings.
 
-For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS or port 587 with STARTTLS. These settings must match exactly for successful connections.
+For modern devices experiencing TLS errors, verify that you're using the correct port and encryption combination: port 465 with SSL/TLS (recommended) or port 587 with STARTTLS. These settings must match exactly for successful connections.
 
 Legacy devices displaying certificate validation errors should use Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports. These ports maintain TLS 1.0 compatibility while providing appropriate security for older devices.
 

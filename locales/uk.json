@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Вхідні: IMAP,",
   ", port 993, SSL/TLS": ", порт 993, SSL/TLS",
   "Outgoing: SMTP,": "Вихідні: SMTP,",
-  ", port 587, STARTTLS": ", порт 587, STARTTLS",
   "Done": "Готово",
   "Go to": "Перейти до",
   "File → Add Account": "Файл → Додати обліковий запис",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Вхідні:",
   ", port 993, SSL": ", порт 993, SSL",
   "Outgoing:": "Вихідні:",
-  ", port 587, TLS": ", порт 587, TLS",
   "Username: Your full email address": "Ім'я користувача: Ваша повна адреса електронної пошти",
   "Password: Your generated password": "Пароль: Ваш згенерований пароль",
   "Mail → Preferences → Accounts → +": "Пошта → Налаштування → Облікові записи → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Час очікування підключення",
   "Check your internet connection": "Перевірте підключення до Інтернету",
   "Verify firewall settings aren't blocking SMTP traffic": "Переконайтеся, що налаштування брандмауера не блокують трафік SMTP",
-  "Try using a different port (587 with STARTTLS)": "Спробуйте використати інший порт (587 із STARTTLS)",
   "Message Rejected": "Повідомлення відхилено",
   "Ensure your \"From\" address matches your authenticated email": "Переконайтеся, що ваша адреса \"Від\" збігається з вашою автентифікованою електронною адресою",
   "Check if your IP is blacklisted": "Перевірте, чи є ваша IP у чорному списку",
@@ -18339,5 +18336,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Спробуйте використати інший порт (587 із STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", порт 587, TLS"
 }

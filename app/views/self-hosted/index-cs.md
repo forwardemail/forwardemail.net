@@ -142,7 +142,7 @@ Po dokončení byste měli vidět zprávu o úspěchu. Můžete dokonce spustit 
 | Web | `443` | Webové rozhraní pro veškeré interakce administrátora |
 | API | `4000` | Vrstva API pro abstraktní databáze |
 | Bree | Žádný | Úloha na pozadí a spouštěč úloh |
-| SMTP | `465/587` | SMTP server pro odchozí e-maily |
+| SMTP | `465` (recommended) / `587` | SMTP server pro odchozí e-maily |
 | SMTP Bree | Žádný | Úloha SMTP na pozadí |
 | MX | `2525` | Výměna pošty pro příchozí e-maily a přeposílání e-mailů |
 | IMAP | `993/2993` | IMAP server pro správu příchozích e-mailů a poštovních schránek |

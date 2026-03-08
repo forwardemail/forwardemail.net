@@ -143,7 +143,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 | 편물 | `443` | 모든 관리자 상호 작용을 위한 웹 인터페이스 |
 | API | `4000` | 추상화된 데이터베이스를 위한 API 계층 |
 | 브리 | 없음 | 백그라운드 작업 및 작업 실행자 |
-| SMTP | `465/587` | 발신 이메일용 SMTP 서버 |
+| SMTP | `465` (recommended) / `587` | 발신 이메일용 SMTP 서버 |
 | SMTP 브리 | 없음 | SMTP 백그라운드 작업 |
 | MX | `2525` | 수신 이메일 및 이메일 전달을 위한 메일 교환 |
 | IMAP | `993/2993` | 수신 이메일 및 사서함 관리를 위한 IMAP 서버 |

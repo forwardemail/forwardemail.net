@@ -500,7 +500,7 @@ flowchart TD
 2. **Connection Timeout**
    * Check your internet connection
    * Verify firewall settings aren't blocking SMTP traffic
-   * Try using a different port (587 with STARTTLS)
+   * Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS
 
 3. **Message Rejected**
    * Ensure your "From" address matches your authenticated email

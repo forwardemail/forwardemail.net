@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "Indgående: IMAP,",
   ", port 993, SSL/TLS": ", port 993, SSL/TLS",
   "Outgoing: SMTP,": "Udgående: SMTP,",
-  ", port 587, STARTTLS": ", port 587, STARTTLS",
   "Done": "Færdig",
   "Go to": "Gå til",
   "File → Add Account": "Fil → Tilføj konto",
@@ -7635,7 +7634,6 @@
   "Incoming:": "Indgående:",
   ", port 993, SSL": ", port 993, SSL",
   "Outgoing:": "Udgående:",
-  ", port 587, TLS": ", port 587, TLS",
   "Username: Your full email address": "Brugernavn: Din fulde e-mailadresse",
   "Password: Your generated password": "Adgangskode: Din genererede adgangskode",
   "Mail → Preferences → Accounts → +": "Mail → Indstillinger → Konti → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "Forbindelsestimeout",
   "Check your internet connection": "Tjek din internetforbindelse",
   "Verify firewall settings aren't blocking SMTP traffic": "Kontroller, at firewall-indstillingerne ikke blokerer SMTP-trafik",
-  "Try using a different port (587 with STARTTLS)": "Prøv at bruge en anden port (587 med STARTTLS)",
   "Message Rejected": "Besked afvist",
   "Ensure your \"From\" address matches your authenticated email": "Sørg for, at din \"Fra\"-adresse matcher din godkendte e-mail",
   "Check if your IP is blacklisted": "Tjek om din IP er sortlistet",
@@ -18326,5 +18323,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Prøv at bruge en anden port (587 med STARTTLS)",
+  ", port 465, SSL/TLS (recommended)": ", port 465, SSL/TLS (recommended)"
 }

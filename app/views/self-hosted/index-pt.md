@@ -143,7 +143,7 @@ Após a conclusão, você verá uma mensagem de sucesso. Você pode até executa
 | Rede | `443` | Interface web para todas as interações administrativas |
 | API | `4000` | Camada de API para abstrair bancos de dados |
 | Bri | Nenhum | Trabalho em segundo plano e executor de tarefas |
-| SMTP | `465/587` | Servidor SMTP para e-mail de saída |
+| SMTP | `465` (recommended) / `587` | Servidor SMTP para e-mail de saída |
 | SMTP Bree | Nenhum | Trabalho em segundo plano SMTP |
 | MX | `2525` | Troca de e-mail para e-mail de entrada e encaminhamento de e-mail |
 | IMAP | `993/2993` | Servidor IMAP para e-mail de entrada e gerenciamento de caixa de correio |

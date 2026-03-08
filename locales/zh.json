@@ -7621,7 +7621,6 @@
   "Incoming: IMAP,": "传入：IMAP，",
   ", port 993, SSL/TLS": "、端口 993、SSL/TLS",
   "Outgoing: SMTP,": "传出：SMTP，",
-  ", port 587, STARTTLS": "，端口 587，STARTTLS",
   "Done": "完毕",
   "Go to": "前往",
   "File → Add Account": "文件→添加帐户",
@@ -7635,7 +7634,6 @@
   "Incoming:": "传入：",
   ", port 993, SSL": "、端口 993、SSL",
   "Outgoing:": "传出：",
-  ", port 587, TLS": "、端口 587、TLS",
   "Username: Your full email address": "用户名：您的完整电子邮件地址",
   "Password: Your generated password": "密码：您生成的密码",
   "Mail → Preferences → Accounts → +": "邮件 → 偏好设置 → 账户 → +",
@@ -11286,7 +11284,6 @@
   "Connection Timeout": "连接超时",
   "Check your internet connection": "检查你的互联网连接",
   "Verify firewall settings aren't blocking SMTP traffic": "验证防火墙设置未阻止 SMTP 流量",
-  "Try using a different port (587 with STARTTLS)": "尝试使用其他端口（使用 STARTTLS 的 587）",
   "Message Rejected": "消息被拒绝",
   "Ensure your \"From\" address matches your authenticated email": "确保您的“发件人”地址与经过验证的电子邮件相符",
   "Check if your IP is blacklisted": "检查你的 IP 是否被列入黑名单",
@@ -18342,5 +18339,7 @@
   "MCP Server": "MCP Server",
   "%d status updates": "%d status updates",
   "1 article": "1 article",
-  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email"
+  "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
+  "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "尝试使用其他端口（使用 STARTTLS 的 587）",
+  ", port 465, SSL/TLS (recommended)": "、端口 587、TLS"
 }

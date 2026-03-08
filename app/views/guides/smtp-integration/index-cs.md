@@ -490,7 +490,7 @@ flowchart TD
 2. **Časový limit připojení**
 * Zkontrolujte připojení k internetu
 * Ověřte, zda nastavení firewallu neblokuje provoz SMTP
-* Zkuste použít jiný port (587 se STARTTLS)
+* Použijte port 465 s SSL/TLS (doporučeno) nebo port 587 se STARTTLS
 
 3. **Zpráva odmítnuta**
 * Ujistěte se, že vaše adresa v poli „Od“ odpovídá vaší ověřené e-mailové adrese.

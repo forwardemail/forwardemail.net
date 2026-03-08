@@ -143,7 +143,7 @@ Kun prosessi on valmis, sinun pitäisi nähdä onnistumisviesti. Voit jopa ajaa 
 | Verkko | `443` | Verkkokäyttöliittymä kaikille järjestelmänvalvojan vuorovaikutuksille |
 | API | `4000` | API-kerros abstrakteihin tietokantoihin |
 | Bree | Ei mitään | Taustatyö ja tehtävien suorittaja |
-| SMTP | `465/587` | SMTP-palvelin lähtevälle sähköpostille |
+| SMTP | `465` (recommended) / `587` | SMTP-palvelin lähtevälle sähköpostille |
 | SMTP Bree | Ei mitään | SMTP-taustatyö |
 | MX | `2525` | Saapuvan sähköpostin vaihto ja sähköpostin edelleenlähetys |
 | IMAP | `993/2993` | IMAP-palvelin saapuvan sähköpostin ja postilaatikon hallintaan |

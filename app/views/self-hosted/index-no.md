@@ -143,7 +143,7 @@ Når det er fullført, skal du se en suksessmelding. Du kan til og med kjøre `d
 | Nett | `443` | Nettgrensesnitt for alle administratorinteraksjoner |
 | API | `4000` | API-lag til abstrakte databaser |
 | Bree | Ingen | Bakgrunnsjobb og oppgaveløper |
-| SMTP | `465/587` | SMTP-server for utgående e-post |
+| SMTP | `465` (recommended) / `587` | SMTP-server for utgående e-post |
 | SMTP Bree | Ingen | SMTP-bakgrunnsjobb |
 | MX | `2525` | Postutveksling for innkommende e-post og videresending av e-post |
 | IMAP | `993/2993` | IMAP-server for innkommende e-post og postkasseadministrasjon |

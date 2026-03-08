@@ -490,7 +490,7 @@ flowchart TD
 2. **Time-out van verbinding**
 * Controleer je internetverbinding
 * Controleer of de firewallinstellingen SMTP-verkeer niet blokkeren
-* Probeer een andere poort (587 met STARTTLS)
+* Gebruik poort 465 met SSL/TLS (aanbevolen) of poort 587 met STARTTLS
 
 3. **Bericht geweigerd**
 * Zorg ervoor dat uw afzenderadres overeenkomt met uw geverifieerde e-mailadres

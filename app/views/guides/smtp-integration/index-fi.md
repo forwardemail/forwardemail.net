@@ -490,7 +490,7 @@ flowchart TD
 2. **Yhteyden aikakatkaisu**
 * Tarkista internetyhteytesi
 * Varmista, että palomuuriasetukset eivät estä SMTP-liikennettä
-* Kokeile käyttää toista porttia (587 ja STARTTLS)
+* Käytä porttia 465 SSL/TLS:llä (suositeltu) tai porttia 587 STARTTLS:llä
 
 3. **Viesti hylätty**
 * Varmista, että "Lähettäjä"-osoite vastaa todennettua sähköpostiosoitettasi

@@ -490,7 +490,7 @@ flowchart TD
 2. **Kapcsolati időtúllépés**
 * Ellenőrizze az internetkapcsolatát.
 * Ellenőrizze, hogy a tűzfal beállításai nem blokkolják-e az SMTP forgalmat.
-* Próbáljon meg másik portot használni (587 STARTTLS-sel).
+* Használja a 465-ös portot SSL/TLS-sel (ajánlott) vagy a 587-es portot STARTTLS-sel.
 
 3. **Üzenet elutasítva**
 * Győződjön meg arról, hogy a „Feladó” címe megegyezik a hitelesített e-mail címével.

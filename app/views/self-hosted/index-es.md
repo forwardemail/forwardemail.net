@@ -143,7 +143,7 @@ Una vez completado, debería ver un mensaje de éxito. Incluso puede ejecutar `d
 | Web | `443` | Interfaz web para todas las interacciones de administración |
 | API | `4000` | Capa de API para abstraer bases de datos |
 | Bree | Ninguno | Ejecutor de tareas y trabajos en segundo plano |
-| SMTP | `465/587` | Servidor SMTP para correo electrónico saliente |
+| SMTP | `465` (recommended) / `587` | Servidor SMTP para correo electrónico saliente |
 | SMTP Bree | Ninguno | Trabajo en segundo plano SMTP |
 | MX | `2525` | Intercambio de correo para correo electrónico entrante y reenvío de correo electrónico |
 | IMAP | `993/2993` | Servidor IMAP para la gestión de correo electrónico entrante y buzones de correo |

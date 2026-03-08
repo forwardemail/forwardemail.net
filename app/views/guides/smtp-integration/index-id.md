@@ -490,7 +490,7 @@ flowchart TD
 2. **Waktu Koneksi Habis**
 * Periksa koneksi internet Anda
 * Pastikan pengaturan firewall tidak memblokir lalu lintas SMTP
-* Coba gunakan port lain (587 dengan STARTTLS)
+* Gunakan port 465 dengan SSL/TLS (disarankan) atau port 587 dengan STARTTLS
 
 3. **Pesan Ditolak**
 * Pastikan alamat "Dari" Anda sesuai dengan alamat email terautentikasi Anda

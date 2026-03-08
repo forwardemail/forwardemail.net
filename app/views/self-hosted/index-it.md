@@ -143,7 +143,7 @@ Una volta completato, dovresti visualizzare un messaggio di successo. Puoi anche
 | Rete | `443` | Interfaccia web per tutte le interazioni amministrative |
 | API | `4000` | Livello API per database astratti |
 | Bree | Nessuno | Esecuzione di attività e lavori in background |
-| SMTP | `465/587` | Server SMTP per la posta elettronica in uscita |
+| SMTP | `465` (recommended) / `587` | Server SMTP per la posta elettronica in uscita |
 | SMTP Bree | Nessuno | Lavoro in background SMTP |
 | MX | `2525` | Scambio di posta per posta in entrata e inoltro di posta elettronica |
 | IMAP | `993/2993` | Server IMAP per la gestione della posta elettronica in entrata e delle caselle di posta |

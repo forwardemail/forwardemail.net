@@ -546,7 +546,7 @@ Use these settings in your camera, printer, scanner, or other legacy device:
 | --------------- | ------------------------------------------------ |
 | SMTP Server | `smtp.forwardemail.net` |
 | Port (SSL/TLS) | `2455` |
-| Port (STARTTLS) | `2555` |
+| Port (STARTTLS) | `2555` (alternative) |
 | Username | Your alias email (e.g., `camera@yourdomain.com`) |
 | Password | The password from "Generate Password" |
 | Authentication | Krævet |
