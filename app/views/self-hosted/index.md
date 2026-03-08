@@ -143,23 +143,23 @@ Once complete, you should see a success message. You can even run `docker ps` to
 
 ## Services
 
-| Service Name | Default Port | Description                                            |
-| ------------ | :----------: | ------------------------------------------------------ |
-| Web          |     `443`    | Web interface for all admin interactions               |
-| API          |    `4000`    | Api layer to abstract databases                        |
-| Bree         |     None     | Background job and task runner                         |
-| SMTP         | `465` (recommended) / `587` | SMTP server for outbound email              |
-| SMTP Bree    |     None     | SMTP background job                                    |
-| MX           |    `2525`    | Mail exchange for inbound email and email forwarding   |
-| IMAP         |  `993/2993`  | IMAP server for inbound email and mailbox management   |
-| POP3         |  `995/2995`  | POP3 server for inbound email and mailbox management   |
-| SQLite       |    `3456`    | SQLite server for interactions with sqlite database(s) |
-| SQLite Bree  |     None     | SQLite background job                                  |
-| CalDAV       |    `5000`    | CalDAV server for calendar management                  |
-| CardDAV      |    `6000`    | CardDAV server for calendar management                 |
-| MongoDB      |    `27017`   | MongoDB database for most data management              |
-| Redis        |    `6379`    | Redis for caching and state management                 |
-| SQLite       |     None     | SQLite database(s) for encrypted mailboxes             |
+| Service Name |         Default Port        | Description                                            |
+| ------------ | :-------------------------: | ------------------------------------------------------ |
+| Web          |            `443`            | Web interface for all admin interactions               |
+| API          |            `4000`           | Api layer to abstract databases                        |
+| Bree         |             None            | Background job and task runner                         |
+| SMTP         | `465` (recommended) / `587` | SMTP server for outbound email                         |
+| SMTP Bree    |             None            | SMTP background job                                    |
+| MX           |            `2525`           | Mail exchange for inbound email and email forwarding   |
+| IMAP         |          `993/2993`         | IMAP server for inbound email and mailbox management   |
+| POP3         |          `995/2995`         | POP3 server for inbound email and mailbox management   |
+| SQLite       |            `3456`           | SQLite server for interactions with sqlite database(s) |
+| SQLite Bree  |             None            | SQLite background job                                  |
+| CalDAV       |            `5000`           | CalDAV server for calendar management                  |
+| CardDAV      |            `6000`           | CardDAV server for calendar management                 |
+| MongoDB      |           `27017`           | MongoDB database for most data management              |
+| Redis        |            `6379`           | Redis for caching and state management                 |
+| SQLite       |             None            | SQLite database(s) for encrypted mailboxes             |
 
 ### Important file paths
 

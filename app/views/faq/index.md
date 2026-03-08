@@ -897,9 +897,9 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Type |         Hostname        |                 Protocol                |                                         Ports                                        |
-| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` |          SSL/TLS **Preferred**          |                                   `993` and `2993`                                   |
+| Type |         Hostname        |         Protocol        |                                            Ports                                           |
+| :--: | :---------------------: | :---------------------: | :----------------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |  SSL/TLS **Preferred**  |                                      `993` and `2993`                                      |
 | SMTP | `smtp.forwardemail.net` | SSL/TLS **Recommended** | `465` and `2465` for SSL/TLS (recommended) or `587`, `2587`, `2525`, and `25` for STARTTLS |
 
 ### Why are my emails landing in Spam and Junk and how can I check my domain reputation
@@ -3635,18 +3635,18 @@ The `autoconfig` record is used by **Thunderbird** and other Mozilla-based clien
 
 If you prefer to add the records directly (or your DNS provider does not support CNAME on subdomains), add these SRV records to your domain:
 
-| Type | Name/Host          | Priority | Weight | Port | Target/Value               | Purpose                       |
-| :--: | ------------------ | :------: | :----: | :--: | -------------------------- | ----------------------------- |
-|  SRV | `_imaps._tcp`      |     0    |    1   |  993 | `imap.forwardemail.net`    | IMAP over SSL/TLS (preferred) |
-|  SRV | `_imap._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext IMAP disabled       |
+| Type | Name/Host           | Priority | Weight | Port | Target/Value               | Purpose                                |
+| :--: | ------------------- | :------: | :----: | :--: | -------------------------- | -------------------------------------- |
+|  SRV | `_imaps._tcp`       |     0    |    1   |  993 | `imap.forwardemail.net`    | IMAP over SSL/TLS (preferred)          |
+|  SRV | `_imap._tcp`        |     0    |    0   |   0  | `.`                        | Plaintext IMAP disabled                |
 |  SRV | `_submissions._tcp` |     0    |    1   |  465 | `smtp.forwardemail.net`    | SMTP submission (SSL/TLS, recommended) |
-|  SRV | `_submission._tcp` |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP submission (STARTTLS)    |
-|  SRV | `_pop3s._tcp`      |    10    |    1   |  995 | `pop3.forwardemail.net`    | POP3 over SSL/TLS             |
-|  SRV | `_pop3._tcp`       |     0    |    0   |   0  | `.`                        | Plaintext POP3 disabled       |
-|  SRV | `_caldavs._tcp`    |     0    |    1   |  443 | `caldav.forwardemail.net`  | CalDAV over TLS (calendars)   |
-|  SRV | `_caldav._tcp`     |     0    |    0   |   0  | `.`                        | Plaintext CalDAV disabled     |
-|  SRV | `_carddavs._tcp`   |     0    |    1   |  443 | `carddav.forwardemail.net` | CardDAV over TLS (contacts)   |
-|  SRV | `_carddav._tcp`    |     0    |    0   |   0  | `.`                        | Plaintext CardDAV disabled    |
+|  SRV | `_submission._tcp`  |     5    |    1   |  587 | `smtp.forwardemail.net`    | SMTP submission (STARTTLS)             |
+|  SRV | `_pop3s._tcp`       |    10    |    1   |  995 | `pop3.forwardemail.net`    | POP3 over SSL/TLS                      |
+|  SRV | `_pop3._tcp`        |     0    |    0   |   0  | `.`                        | Plaintext POP3 disabled                |
+|  SRV | `_caldavs._tcp`     |     0    |    1   |  443 | `caldav.forwardemail.net`  | CalDAV over TLS (calendars)            |
+|  SRV | `_caldav._tcp`      |     0    |    0   |   0  | `.`                        | Plaintext CalDAV disabled              |
+|  SRV | `_carddavs._tcp`    |     0    |    1   |  443 | `carddav.forwardemail.net` | CardDAV over TLS (contacts)            |
+|  SRV | `_carddav._tcp`     |     0    |    0   |   0  | `.`                        | Plaintext CardDAV disabled             |
 
 > \[!NOTE]
 > IMAP has a lower priority value (0) than POP3 (10), which tells email clients to prefer IMAP over POP3 when both are available. The records with a target of `.` (a single dot) indicate that the plaintext (non-encrypted) versions of those protocols are intentionally disabled per [RFC 6186 Section 3.4](https://www.rfc-editor.org/rfc/rfc6186.html#section-3.4). The CalDAV and CardDAV SRV records follow [RFC 6764](https://www.rfc-editor.org/rfc/rfc6764.html) for calendar and contact autodiscovery.

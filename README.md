@@ -925,14 +925,14 @@ Both endpoints automatically return the correct IMAP, POP3, SMTP, CalDAV, and Ca
 
 Alternatively, you can add SRV records per [RFC 6186](https://datatracker.ietf.org/doc/html/rfc6186) for direct service discovery:
 
-| Type | Name/Host          | Priority | Weight | Port | Target/Value            |
-| ---- | ------------------ | -------- | ------ | ---- | ----------------------- |
-| SRV  | `_imaps._tcp`      | 0        | 1      | 993  | `imap.forwardemail.net` |
-| SRV  | `_imap._tcp`       | 0        | 0      | 0    | `.`                     |
+| Type | Name/Host           | Priority | Weight | Port | Target/Value            |
+| ---- | ------------------- | -------- | ------ | ---- | ----------------------- |
+| SRV  | `_imaps._tcp`       | 0        | 1      | 993  | `imap.forwardemail.net` |
+| SRV  | `_imap._tcp`        | 0        | 0      | 0    | `.`                     |
 | SRV  | `_submissions._tcp` | 0        | 1      | 465  | `smtp.forwardemail.net` |
-| SRV  | `_submission._tcp` | 0        | 5      | 587  | `smtp.forwardemail.net` |
-| SRV  | `_pop3s._tcp`      | 10       | 1      | 995  | `pop3.forwardemail.net` |
-| SRV  | `_pop3._tcp`       | 0        | 0      | 0    | `.`                     |
+| SRV  | `_submission._tcp`  | 0        | 5      | 587  | `smtp.forwardemail.net` |
+| SRV  | `_pop3s._tcp`       | 10       | 1      | 995  | `pop3.forwardemail.net` |
+| SRV  | `_pop3._tcp`        | 0        | 0      | 0    | `.`                     |
 
 > **Note:** Records with a target of `.` (dot) explicitly disable the non-secure variant of the protocol, per RFC 6186 Section 3.4. This ensures clients only use the encrypted (TLS) connections.
 
