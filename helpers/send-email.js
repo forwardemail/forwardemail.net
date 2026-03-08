@@ -435,20 +435,10 @@ async function sendEmail(
     err.opportunisticTLS = session.opportunisticTLS;
     err.tls = session.tls;
 
-    await shouldThrow(err, session, resolver);
+    // TODO: remove this once we confirm DANE is working properly
+    if (isDaneError(err)) err.responseCode = 421;
 
-    //
-    // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
-    // Do NOT retry or downgrade to plaintext — the certificate did not match
-    // the TLSA record. Throw immediately with a 550 (permanent failure).
-    //
-    if (isDaneError(err)) {
-      err.responseCode = 550;
-      err.message = `550 DANE verification failed for ${
-        session?.mx?.host || 'unknown host'
-      }: ${err.message}`;
-      throw err;
-    }
+    await shouldThrow(err, session, resolver);
 
     //
     // NOTE: this is handled because `MAIL_RETRY_ERROR_CODES` has `ECONNRESET`
@@ -491,7 +481,7 @@ async function sendEmail(
       // NOTE: if MTA-STS was enforced and it was TLS error then throw if not a retry code
       // (safeguard is here for keeping retry codes in conditional in case this moves around)
       //
-      err.message = `421 TLS is required due to MTA-STS policy${
+      err.message = `TLS is required due to MTA-STS policy${
         isSANB(err.reason) ? ` (${err.reason})` : ''
       }`;
       err.responseCode = 421;
