@@ -87,9 +87,31 @@ function applyDaneTlsWrapper(transporter) {
               certObj = peerCert;
             }
 
+            // Extract the certificate chain for DANE-TA verification.
+            // getPeerCertificate(true) returns the full chain via
+            // issuerCertificate links.  Walk the chain and convert each
+            // cert to an X509Certificate so verifyCertAgainstTlsa can
+            // match DANE-TA (usage 2) records against the CA certs.
+            const chain = [];
+            const seen = new Set();
+            if (peerCert.fingerprint256) seen.add(peerCert.fingerprint256);
+            let issuer = peerCert.issuerCertificate;
+            while (issuer && issuer.raw) {
+              const fp = issuer.fingerprint256;
+              if (fp && seen.has(fp)) break;
+              if (fp) seen.add(fp);
+              try {
+                chain.push(new crypto.X509Certificate(issuer.raw));
+              } catch {
+                // skip malformed certs
+              }
+
+              issuer = issuer.issuerCertificate;
+            }
+
             // Call the DANE verifier (same signature as checkServerIdentity)
             // Returns undefined on success, Error on failure
-            const error = daneVerifier(daneHostname, certObj);
+            const error = daneVerifier(daneHostname, certObj, chain);
             if (error) {
               // DANE verification failed — destroy the TLS socket.
               // nodemailer will see this as a socket error via _onSocketError.
