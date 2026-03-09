@@ -6,10 +6,15 @@
 /**
  * Detect DANE verification errors.
  *
- * DANE verification failures are permanent errors that MUST NOT be retried
- * or downgraded to plaintext. Per RFC 7672 Section 2.2, when DANE TLSA
- * records are present and the certificate does not match, the connection
- * MUST be aborted and the message MUST NOT be delivered.
+ * DANE verification failures are treated as temporary (421) errors so
+ * the message queue can retry delivery later (e.g. after the remote
+ * server rotates its certificate or updates its TLSA records).
+ *
+ * Per RFC 7672 Section 2.2, when DANE TLSA records are present and the
+ * certificate does not match, the connection MUST be aborted and the
+ * message MUST NOT be delivered on that attempt.  However, the failure
+ * is not necessarily permanent — transient DNS issues or key rollovers
+ * may resolve on a subsequent attempt.
  *
  * Our DANE TLS wrapper (helpers/dane-tls-wrapper.js) sets `err.category`
  * to `'dane'` on all DANE verification failures. Nodemailer may overwrite

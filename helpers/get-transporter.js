@@ -21,10 +21,7 @@ const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
 const isTLSError = require('./is-tls-error');
 const parseRootDomain = require('./parse-root-domain');
-const {
-  applyDaneTlsWrapper,
-  prepareDaneTlsOptions
-} = require('./dane-tls-wrapper');
+const { prepareDaneTlsOptions } = require('./dane-tls-wrapper');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -365,10 +362,14 @@ async function getTransporter(options = {}, err) {
   //
   // DANE/TLSA: Post-handshake certificate verification (RFC 6698, RFC 7672)
   //
-  // See helpers/dane-tls-wrapper.js for detailed documentation.
+  // When DANE is enabled, prepareDaneTlsOptions installs a persistent
+  // tls.connect wrapper (on first call) and stores the DANE verifier,
+  // hostname, and TLSA records on the per-connection TLS options object.
+  // The TLSA records are passed through for DANE-TA (usage 2) chain
+  // verification — see helpers/dane-tls-wrapper.js for details.
   //
   if (mx.daneEnabled && typeof mx.daneVerifier === 'function') {
-    prepareDaneTlsOptions(tls, mx.daneVerifier, mx.hostname);
+    prepareDaneTlsOptions(tls, mx.daneVerifier, mx.hostname, mx.tlsaRecords);
   }
 
   // <https://github.com/nodemailer/nodemailer/issues/1517>
@@ -415,14 +416,6 @@ async function getTransporter(options = {}, err) {
     port: mx.port,
     ...(mx.socket ? { connection: mx.socket } : {})
   });
-
-  //
-  // DANE: Apply post-handshake DANE certificate verification wrapper.
-  // See helpers/dane-tls-wrapper.js for detailed documentation.
-  //
-  if (mx.daneEnabled && typeof mx.daneVerifier === 'function') {
-    applyDaneTlsWrapper(transporter);
-  }
 
   return {
     truthSource,

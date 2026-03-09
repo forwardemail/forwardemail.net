@@ -115,12 +115,11 @@ test('mx-connect returns daneEnabled and tlsaRecords when DANE is enabled with M
       },
       logger(results) {
         daneLog.push(results);
-      },
-      verify: false
+      }
     }
   });
 
-  t.truthy(mx, 'mx-connect should return a connection');
+  t.truthy(mx, 'mx-connect should return a connection on MX server');
   t.truthy(mx.socket, 'Connection should have a socket');
 
   // Verify DANE properties are set on the connection
@@ -210,12 +209,11 @@ test('mx-connect with DANE enabled but no TLSA records on MX server', async (t) 
       async resolveTlsa() {
         return [];
       },
-      logger() {},
-      verify: false
+      logger() {}
     }
   });
 
-  t.truthy(mx, 'mx-connect should return a connection');
+  t.truthy(mx, 'mx-connect should return a connection on MX server');
   t.truthy(mx.socket, 'Connection should have a socket');
   t.falsy(
     mx.daneEnabled,
@@ -249,14 +247,13 @@ test('mx-connect with DANE handles ENODATA gracefully on MX server', async (t) =
       },
       logger(results) {
         daneLog.push(results);
-      },
-      verify: false
+      }
     }
   });
 
   t.truthy(
     mx,
-    'Connection should succeed even when TLSA lookup returns ENODATA'
+    'Connection should succeed even when TLSA lookup returns ENODATA on MX server'
   );
   t.truthy(mx.socket, 'Connection should have a socket');
   t.falsy(mx.daneEnabled, 'daneEnabled should not be set for ENODATA');
@@ -309,35 +306,42 @@ test('mx-connect with DANE verify=true rejects on SERVFAIL on MX server', async 
   await smtp.close();
 });
 
-test('mx-connect with DANE verify=false allows connection on SERVFAIL on MX server', async (t) => {
+test('mx-connect with DANE rejects on SERVFAIL on MX server regardless of verify flag', async (t) => {
+  //
+  // RFC 7672 Section 2.2: A DNS lookup failure (SERVFAIL, timeout) is NOT
+  // the same as "no records".  mx-connect v2.4.0+ always rejects with a
+  // temporary DANE error so the message can be retried later.  The `verify`
+  // option is deprecated and ignored.
+  //
   const smtp = new MX({ client: t.context.client });
   const { resolver } = smtp;
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
-  const mx = await asyncMxConnect({
-    target: IP_ADDRESS,
-    port: smtp.server.address().port,
-    dnsOptions: {
-      resolve: util.callbackify(resolver.resolve.bind(resolver))
-    },
-    dane: {
-      enabled: true,
-      async resolveTlsa() {
-        const err = new Error('queryTlsa SERVFAIL');
-        err.code = 'ESERVFAIL';
-        throw err;
+  const err = await t.throwsAsync(
+    asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
       },
-      logger() {},
-      verify: false
-    }
-  });
+      dane: {
+        enabled: true,
+        async resolveTlsa() {
+          const err = new Error('queryTlsa SERVFAIL');
+          err.code = 'ESERVFAIL';
+          throw err;
+        },
+        logger() {}
+      }
+    })
+  );
 
-  t.truthy(mx, 'Connection should succeed with verify=false even on SERVFAIL');
-  t.truthy(mx.socket, 'Connection should have a socket');
+  t.truthy(err, 'Should reject connection on SERVFAIL even with verify=false');
+  t.is(err.category, 'dane', 'Error should have category=dane');
+  t.true(err.temporary === true, 'Error should be temporary (retriable)');
 
-  mx.socket.destroy();
   await smtp.close();
 });
 
@@ -414,12 +418,11 @@ test('mx-connect DANE with multiple TLSA records on MX server', async (t) => {
       async resolveTlsa(name) {
         return resolver.resolve(name, 'TLSA');
       },
-      logger() {},
-      verify: false
+      logger() {}
     }
   });
 
-  t.truthy(mx, 'mx-connect should return a connection');
+  t.truthy(mx, 'mx-connect should return a connection on MX server');
   t.true(mx.daneEnabled === true, 'Connection should have daneEnabled=true');
   t.is(mx.tlsaRecords.length, 2, 'Should have 2 TLSA records');
   t.is(mx.tlsaRecords[0].usage, 3, 'First record usage should be 3');
@@ -462,7 +465,6 @@ test('mx-connect DANE with pre-resolved MX entries and tlsaRecords on MX server'
     ],
     dane: {
       enabled: true,
-      verify: false,
       logger() {}
     }
   });
@@ -894,7 +896,7 @@ test('E2E: DANE verification fails with wrong hash and verify=true after STARTTL
   }
 });
 
-test('E2E: DANE verification with wrong hash and verify=false logs failure but allows connection on MX server', async (t) => {
+test('E2E: DANE verification with wrong hash always rejects on MX server (verify flag deprecated)', async (t) => {
   const certInfo = generateSelfSignedCert();
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
@@ -941,8 +943,7 @@ test('E2E: DANE verification with wrong hash and verify=false logs failure but a
         },
         logger(results) {
           daneLog.push(results);
-        },
-        verify: false
+        }
       }
     });
 
@@ -955,14 +956,21 @@ test('E2E: DANE verification with wrong hash and verify=false logs failure but a
     const peerCert = tlsSocket.getPeerCertificate(true);
     const verifyResult = mx.daneVerifier(IP_ADDRESS, peerCert);
 
-    // With verify=false, should return undefined (no rejection)
-    t.is(
+    //
+    // mx-connect v2.4.0+: the `verify` option is deprecated and ignored.
+    // DANE verification is always enforced per RFC 7672 Section 2.2.
+    // The verifier returns an Error on mismatch regardless of verify flag.
+    //
+    t.truthy(
       verifyResult,
-      undefined,
-      'daneVerifier should return undefined (no rejection)'
+      'daneVerifier should return an error on cert mismatch'
+    );
+    t.true(
+      verifyResult instanceof Error,
+      'daneVerifier return value should be an Error'
     );
 
-    // But failure should still be logged
+    // Failure should be logged
     const failLog = daneLog.find((l) => l.msg === 'DANE verification failed');
     t.truthy(failLog, 'Should log DANE verification failed');
     t.false(failLog.success, 'Failure log should have success=false');
