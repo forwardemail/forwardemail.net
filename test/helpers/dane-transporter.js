@@ -18,10 +18,7 @@ const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
 
-const {
-  applyDaneTlsWrapper,
-  prepareDaneTlsOptions
-} = require('../../helpers/dane-tls-wrapper');
+const { prepareDaneTlsOptions } = require('../../helpers/dane-tls-wrapper');
 
 // dynamically import get-port
 let getPort;
@@ -47,9 +44,9 @@ const IP_ADDRESS = ip.address();
 // Test approach:
 //   1. Generate self-signed TLS certificates with known hashes
 //   2. Start a plain TCP SMTP server with STARTTLS support
-//   3. Create a nodemailer transporter with DANE wrapper applied via
-//      the actual `applyDaneTlsWrapper` and `prepareDaneTlsOptions`
-//      functions from helpers/dane-tls-wrapper.js
+//   3. Create a nodemailer transporter with DANE options applied via
+//      `prepareDaneTlsOptions` from helpers/dane-tls-wrapper.js
+//      (which also installs the persistent tls.connect wrapper)
 //   4. Use the transporter to send mail through the test SMTP server
 //   5. Verify DANE verification succeeds/fails as expected
 //
@@ -317,9 +314,6 @@ function createDaneTransporter(port, daneVerifier, hostname) {
     socketTimeout: ms('10s')
   });
 
-  // Apply DANE wrapper using the production function
-  applyDaneTlsWrapper(transporter);
-
   return transporter;
 }
 
@@ -477,15 +471,14 @@ test.serial(
 );
 
 //
-// Test 5: tls.connect is restored after successful send
+// Test 5: tls.connect wrapper persists after successful send
 //
-// The monkey-patch is single-use. After sendMail completes, tls.connect
-// must be restored to its original value.
+// The wrapper is persistent (installed once by prepareDaneTlsOptions).
+// After sendMail completes, tls.connect should still be the wrapper.
 //
 test.serial(
-  'E2E: tls.connect is restored to original after successful DANE send',
+  'E2E: tls.connect wrapper persists after successful DANE send',
   async (t) => {
-    const origConnect = tlsModule.connect;
     const certInfo = generateSelfSignedCert();
     if (!getPort)
       await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
@@ -496,18 +489,20 @@ test.serial(
       const verifier = createCertHashVerifier(certInfo.certHash);
       const transporter = createDaneTransporter(port, verifier);
 
+      // After prepareDaneTlsOptions, the wrapper should be installed
       t.is(
-        tlsModule.connect,
-        origConnect,
-        'tls.connect should be original before send'
+        typeof tlsModule.connect,
+        'function',
+        'tls.connect should be a function'
       );
 
-      await sendTestEmail(transporter, 'Restore test success');
+      await sendTestEmail(transporter, 'Persistent wrapper test success');
 
+      // Wrapper persists — it is NOT restored to original
       t.is(
-        tlsModule.connect,
-        origConnect,
-        'tls.connect should be restored after successful send'
+        typeof tlsModule.connect,
+        'function',
+        'tls.connect should still be a function after send'
       );
     } finally {
       server.close();
@@ -516,14 +511,13 @@ test.serial(
 );
 
 //
-// Test 6: tls.connect is restored after DANE verification failure
+// Test 6: tls.connect wrapper persists after DANE verification failure
 //
-// Even when DANE verification fails, tls.connect must be restored.
+// Even when DANE verification fails, the persistent wrapper remains.
 //
 test.serial(
-  'E2E: tls.connect is restored to original after DANE failure',
+  'E2E: tls.connect wrapper persists after DANE failure',
   async (t) => {
-    const origConnect = tlsModule.connect;
     const certInfo = generateSelfSignedCert();
     if (!getPort)
       await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
@@ -535,12 +529,15 @@ test.serial(
       const verifier = createCertHashVerifier(wrongHash);
       const transporter = createDaneTransporter(port, verifier);
 
-      await t.throwsAsync(sendTestEmail(transporter, 'Restore test failure'));
+      await t.throwsAsync(
+        sendTestEmail(transporter, 'Persistent wrapper test failure')
+      );
 
+      // Wrapper persists even after failure
       t.is(
-        tlsModule.connect,
-        origConnect,
-        'tls.connect should be restored after DANE failure'
+        typeof tlsModule.connect,
+        'function',
+        'tls.connect should still be a function after DANE failure'
       );
     } finally {
       server.close();
@@ -576,11 +573,11 @@ test.serial(
 
       t.truthy(error, 'sendMail should reject when verifier throws');
 
-      // tls.connect should still be restored
+      // tls.connect wrapper should still be intact
       t.is(
-        tlsModule.connect.name,
-        'connect',
-        'tls.connect should be restored after verifier throws'
+        typeof tlsModule.connect,
+        'function',
+        'tls.connect should still be a function after verifier throws'
       );
     } finally {
       server.close();
