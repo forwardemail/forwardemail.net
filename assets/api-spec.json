@@ -2450,9 +2450,10 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Array of valid recipients"
+                "description": "Array of valid recipients. Pass an empty array to remove all forwarding recipients (e.g. for IMAP-only aliases)."
               }
-            ]
+            ],
+            "description": "If omitted, existing recipients are preserved. Pass an empty array to clear all forwarding recipients."
           },
           "description": {
             "type": "string",

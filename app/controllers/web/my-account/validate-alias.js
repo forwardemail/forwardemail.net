@@ -155,6 +155,16 @@ function validateAlias(ctx, next) {
   if (typeof ctx.request.body.has_smime !== 'undefined' || !ctx.api)
     body.has_smime = boolean(ctx.request.body.has_smime);
 
+  //
+  // NOTE: for API updates (PUT), if the caller did not include `recipients`
+  //       in the request body at all we must leave the existing value intact
+  //       instead of resetting it to an empty array or the user's own email.
+  //       `ctx.state.alias` is only set when an alias is being updated
+  //       (the retrieveAlias middleware runs before validateAlias on PUT).
+  //
+  const recipientsProvidedInBody =
+    typeof ctx.request.body.recipients !== 'undefined';
+
   if (isSANB(body.recipients))
     body.recipients = _.compact(
       _.uniq(
@@ -174,12 +184,23 @@ function validateAlias(ctx, next) {
         )
       )
     );
-  else body.recipients = [];
+  else if (ctx.api && ctx.state.alias && !recipientsProvidedInBody) {
+    // API update without recipients in the body – keep existing recipients
+    delete body.recipients;
+  } else {
+    body.recipients = [];
+  }
 
   if (typeof ctx.request.body.has_imap !== 'undefined' || !ctx.api)
     body.has_imap = boolean(ctx.request.body.has_imap);
 
-  if (ctx.api && _.isEmpty(body.recipients))
+  //
+  // Only default empty recipients to the user's email when *creating*
+  // a new alias via the API (ctx.state.alias is falsy on POST/create).
+  // On updates the caller may legitimately want an empty recipients list
+  // (e.g. IMAP-only aliases that do not forward anywhere).
+  //
+  if (ctx.api && !ctx.state.alias && _.isEmpty(body.recipients))
     body.recipients = [ctx.state.user.email];
 
   //
