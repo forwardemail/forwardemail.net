@@ -672,10 +672,20 @@ async function getDatabase(
         if (mailboxes.length === 0)
           throw new TypeError('Trash folder(s) do not exist');
 
-        const [storageUsed, maxQuotaPerAlias] = await Promise.all([
-          Domains.getStorageUsed(session.user.domain_id),
+        // Use alias-specific storage (not pooled) for trash cleanup
+        // so each alias cleans trash based on its own usage vs its own cap
+        const [aliasDoc, maxQuotaPerAlias] = await Promise.all([
+          Aliases.findOne({ id: session.user.alias_id })
+            .select('storage_used')
+            .lean()
+            .exec(),
           Domains.getMaxQuota(session.user.domain_id, session.user.alias_id)
         ]);
+
+        const storageUsed =
+          aliasDoc && typeof aliasDoc.storage_used === 'number'
+            ? aliasDoc.storage_used
+            : 0;
 
         const percentageUsed = Math.round(
           (storageUsed / maxQuotaPerAlias) * 100

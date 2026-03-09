@@ -42,7 +42,7 @@ const MONITORED_PREFIXES = [
   'v1_settings:',
   'v1_max_forwarded:',
   'vacuum_check:',
-  'alias_quota:',
+  'alias_quota_v2:',
   'backscatter:',
   'whois:'
 ];

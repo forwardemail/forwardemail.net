@@ -80,9 +80,7 @@ async function updateStorageUsed(id, client) {
             storage_used: size
           }
         }),
-        // reset cache for alias
-        // client.del(`alias_quota:${alias.id}`),
-        // TODO: may want to rewrite this part here (?)
+        // reset cache for alias with alias-specific storage and quota values
         Aliases.isOverQuota(
           {
             id: alias.id,

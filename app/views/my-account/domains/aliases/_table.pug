@@ -5,9 +5,8 @@ mixin renderProgressBar(domain, alias, isMobile = false)
   if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
     - alias.storage_used = typeof alias.storage_used === "number" ? alias.storage_used : 0;0
     - const storageUsedBySpecificAlias = Math.round((alias.storage_used / domain.storage_quota) * 100);
-    - const storageUsedByAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
-    - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
-    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
+    - const storageUsedByOtherAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
+    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used_by_aliases) / domain.storage_quota) * 100);
 
     //- if alias had a specific limit then render that as its own progress bar
     if Number.isFinite(alias.max_quota) && alias.max_quota < domain.storage_quota
@@ -56,8 +55,8 @@ mixin renderProgressBar(domain, alias, isMobile = false)
           = t("alias quota")
 
     //- render normal progress bar
-    - let percentage = Math.round((domain.storage_used / domain.storage_quota) * 100);
-    if domain.storage_used >= domain.storage_quota
+    - let percentage = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
+    if domain.storage_used_by_aliases >= domain.storage_quota
       - percentage = 100;
     - let progressClass = "bg-primary";
     - let textClass = "text-muted";
@@ -106,32 +105,18 @@ mixin renderProgressBar(domain, alias, isMobile = false)
             role="button"
           )= storageUsedBySpecificAlias === 0 ? "<1%" : `${storageUsedBySpecificAlias}%`
 
-        //- Render Storage Used By Aliases
-        if storageUsedByAliases > 0
+        //- Render Storage Used By Other Aliases
+        if storageUsedByOtherAliases > 0
           .progress-bar.bg-primary.min-width-25(
-            data-width=`${storageUsedByAliases}%`,
-            aria-valuenow=storageUsedByAliases,
+            data-width=`${storageUsedByOtherAliases}%`,
+            aria-valuenow=storageUsedByOtherAliases,
             aria-valuemin=0,
             aria-valuemax=100,
             data-toggle="tooltip",
             data-title=t("Storage used by other aliases"),
             data-placement="bottom",
             role="button"
-          )= `${storageUsedByAliases}%`
-
-        //- Render Pooled Storage Used
-        if pooledStorageUsed > 0
-          .progress-bar.min-width-25(
-            class=progressClass,
-            data-width=`${pooledStorageUsed}%`,
-            aria-valuenow=pooledStorageUsed,
-            aria-valuemin=0,
-            aria-valuemax=100,
-            data-toggle="tooltip",
-            data-title=t("Storage used by other domains"),
-            data-placement="bottom",
-            role="button"
-          )= `${pooledStorageUsed}%`
+          )= `${storageUsedByOtherAliases}%`
 
         //- Render Available Storage
         if availableStorage > 0
@@ -151,19 +136,14 @@ mixin renderProgressBar(domain, alias, isMobile = false)
           = bytes(alias.storage_used)
           = " "
           = t("alias")
-      if storageUsedByAliases > 0
+      if storageUsedByOtherAliases > 0
         li.text-primary
           = bytes(domain.storage_used_by_aliases - alias.storage_used)
           = " "
-          = t("domain")
-      if pooledStorageUsed > 0
-        li(class=textClass)
-          = bytes(domain.storage_used)
-          = " "
-          = t("pooled")
+          = t("other aliases")
       if availableStorage > 0
         li.text-success
-          = bytes(domain.storage_quota - domain.storage_used)
+          = bytes(domain.storage_quota - domain.storage_used_by_aliases)
           = " "
           = t("available")
   else

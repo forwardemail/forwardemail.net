@@ -7,10 +7,9 @@ mixin renderProgressBar(domain, isMobile = false)
     = t("Not Available")
   else if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
     - const storageUsedByAliases = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
-    - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases) / domain.storage_quota) * 100);
-    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
-    - let percentage = Math.round((domain.storage_used / domain.storage_quota) * 100);
-    if domain.storage_used >= domain.storage_quota
+    - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used_by_aliases) / domain.storage_quota) * 100);
+    - let percentage = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
+    if domain.storage_used_by_aliases >= domain.storage_quota
       - percentage = 100;
     - let progressClass = "bg-primary";
     - let textClass = "text-muted";
@@ -46,9 +45,10 @@ mixin renderProgressBar(domain, isMobile = false)
           = " "
           = t("available")
       else
-        //- Render Storage Used By Aliases
+        //- Render Storage Used By Domain's Aliases
         if storageUsedByAliases > 0
-          .progress-bar.bg-primary.min-width-25(
+          .progress-bar.min-width-25(
+            class=progressClass,
             data-width=`${storageUsedByAliases}%`,
             aria-valuenow=storageUsedByAliases,
             aria-valuemin=0,
@@ -58,20 +58,6 @@ mixin renderProgressBar(domain, isMobile = false)
             data-placement="bottom",
             role="button"
           )= `${storageUsedByAliases}%`
-
-        //- Render Pooled Storage Used
-        if pooledStorageUsed > 0
-          .progress-bar.min-width-25(
-            class=progressClass,
-            data-width=`${pooledStorageUsed}%`,
-            aria-valuenow=pooledStorageUsed,
-            aria-valuemin=0,
-            aria-valuemax=100,
-            data-toggle="tooltip",
-            data-title=t("Storage used by other domains"),
-            data-placement="bottom",
-            role="button"
-          )= `${pooledStorageUsed}%`
 
         //- Render Available Storage
         if availableStorage > 0
@@ -87,18 +73,13 @@ mixin renderProgressBar(domain, isMobile = false)
           )= `${availableStorage}%`
     ul.list-unstyled.small.mt-1.mb-0
       if storageUsedByAliases > 0
-        li.text-primary
+        li(class=textClass)
           = bytes(domain.storage_used_by_aliases)
           = " "
-          = t("domain")
-      if pooledStorageUsed > 0
-        li(class=textClass)
-          = bytes(domain.storage_used)
-          = " "
-          = t("pooled")
+          = t("used")
       if availableStorage > 0
         li.text-success
-          = bytes(domain.storage_quota - domain.storage_used)
+          = bytes(domain.storage_quota - domain.storage_used_by_aliases)
           = " "
           = t("available")
   else

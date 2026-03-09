@@ -324,8 +324,8 @@ const Aliases = new mongoose.Schema({
   imap_backup_at: Date,
   last_vacuum_at: Date,
   //
-  // TODO: job under sqlite-bree that checks and updates storage
-  //       and alerts admins if the size difference is larger than 1 GB
+  // NOTE: storage is checked and updated by `cleanup-sqlite.js` (runs `updateStorageUsed`
+  //       for every alias) and threshold notifications are sent at 50/60/70/80/90/100%.
   //
   // TODO: on copy and on move need in-memory storage checks
   //
@@ -1213,29 +1213,19 @@ Aliases.post('deleteOne', updateDomainCatchallRegexBooleans);
 Aliases.post('save', updateDomainCatchallRegexBooleans);
 
 //
-// TODO: storage quota for any given alias is the sum
-//       of all admins for the domain (if not a paid plan domain then error)
-//       (we sum the `user.storage_quota` or fallback to the default `config.maxQuotaPerAlias`)
-//       (we only sum the storage quota if the alias' domain is on a team plan)
+// NOTE: `Aliases.getStorageUsed` below still returns pooled storage
+//       (sum of all aliases across all domains sharing the same admins)
+//       via `Domains.getStorageUsed`. It is kept for backward compatibility
+//       but is NOT used by `isOverQuota` anymore.
 //
-
-//
-// NOTE: storage used calculation for any given alias is
-//       the sum of all aliases across all domains from admins on the same domain
-//       (e.g. user A is admin of 10 domains and user B is admin of 10 domains)
-//       (even though 5 of them may not overlap, the sum of all 20 domains is combined)
-//       (this isn't best case scenario right now, and instead we should allow users to allocate restrictions)
-//       (note that we filter it for admins that are on matching paid plans only as well)
-//       (so this edge case would really only apply to users that on team plans with multiple admins that have signed up for the team plan)
-//       (but even then that's such a small edge case, but we still at least pool together the 10 GB each that both get)
-//
-//       shared storage pooling would only apply for domains that are on the team plan
-//       if the domain has two admins that are both on paid plans then the max quota should be maxQuota * 2 (or sum of `user.storage_quota`)
-//
-//       basically if a member of a domain is a user and not an admin, then this means the domain is on the team plan
-//       and if the user has other aliases on other domains of their own on their own enhanced protection plan
-//       then the storage quota for the aliases on the domain that the user belongs to under the team plan
-//       won't affect their storage quota for their own domains on their own enhanced plan
+// NOTE: `isOverQuota` performs a dual check:
+//       1. Alias-specific: alias.storage_used + size > getMaxQuota(domainId, aliasId)
+//          This catches an individual alias exceeding its own per-alias cap.
+//       2. Domain pool: domainStorageUsed + size > getMaxQuota(domainId)
+//          This catches the domain's total usage (sum of all aliases on the domain)
+//          exceeding the domain-level quota, even if the individual alias is under
+//          its own cap. This handles the case where other aliases have consumed
+//          the domain's shared storage pool.
 //
 async function getStorageUsed(alias, locale = i18n.config.defaultLocale) {
   return conn.models.Domains.getStorageUsed(
@@ -1254,16 +1244,23 @@ Aliases.statics.isOverQuota = async function (
 ) {
   let storageUsed;
   let maxQuotaPerAlias;
+  let domainStorageUsed;
+  let domainMaxQuota;
 
   // check cache
   if (client && !reset) {
     try {
-      const cache = await client.get(`alias_quota:${alias.id}`);
+      const cache = await client.get(`alias_quota_v2:${alias.id}`);
       if (cache) {
         const json = JSON.parse(cache);
         if (json.storageUsed && json.maxQuotaPerAlias) {
           storageUsed = json.storageUsed;
           maxQuotaPerAlias = json.maxQuotaPerAlias;
+        }
+
+        if (json.domainStorageUsed && json.domainMaxQuota) {
+          domainStorageUsed = json.domainStorageUsed;
+          domainMaxQuota = json.domainMaxQuota;
         }
       }
     } catch (err) {
@@ -1271,42 +1268,79 @@ Aliases.statics.isOverQuota = async function (
     }
   }
 
-  [storageUsed, maxQuotaPerAlias] = await Promise.all([
-    //
-    // TODO: this gets the storage used across the entire domain
-    // so we need to check this + `size` against either
-    // the larger value of either user.storage_quota
-    // or the sum of all admins's storage quota on team plan if domain is on team plan
-    //
-    storageUsed || getStorageUsed.call(this, alias),
-    // TODO: allow users to purchase more storage (tied to their user.storage_quota)
-    //       but this is only relative here if the user is an admin of their aliases domain
-    maxQuotaPerAlias ||
-      conn.models.Domains.getMaxQuota(alias?.domain?._id || alias.domain)
-  ]);
+  const domainId = alias?.domain?._id || alias.domain;
 
-  // TODO: if user is on team plan then check if any other user is on team plan
-  //       and multiply that user count by the max quota (pooling concept for teams)
-  const isOverQuota = storageUsed + size > maxQuotaPerAlias;
+  // Fetch any uncached values in parallel
+  const [_storageUsed, _maxQuotaPerAlias, _domainStorageUsed, _domainMaxQuota] =
+    await Promise.all([
+      // Alias-specific storage_used (not pooled across domains)
+      storageUsed === undefined
+        ? conn.models.Aliases.findOne({ id: alias.id })
+            .select('storage_used')
+            .lean()
+            .exec()
+            .then((doc) =>
+              doc && typeof doc.storage_used === 'number' ? doc.storage_used : 0
+            )
+        : storageUsed,
+      // Alias-specific quota cap (getMaxQuota with alias id for per-alias limit)
+      maxQuotaPerAlias || conn.models.Domains.getMaxQuota(domainId, alias.id),
+      // Total storage used by all aliases on this domain
+      domainStorageUsed ||
+        conn.models.Domains.getStorageUsed(
+          domainId,
+          alias.locale || i18n.config.defaultLocale,
+          true // aliasesOnly = true (this domain's aliases only, not pooled across admin's domains)
+        ),
+      // Domain-level quota (without alias-specific cap applied)
+      domainMaxQuota || conn.models.Domains.getMaxQuota(domainId)
+    ]);
+
+  storageUsed = _storageUsed;
+  maxQuotaPerAlias = _maxQuotaPerAlias;
+  domainStorageUsed = _domainStorageUsed;
+  domainMaxQuota = _domainMaxQuota;
+
+  //
+  // Dual check:
+  // 1. Is this alias over its own per-alias cap?
+  // 2. Is the domain's total usage (all aliases) over the domain-level quota?
+  //    This catches the case where other aliases have consumed the shared pool.
+  //
+  const aliasOverQuota = storageUsed + size > maxQuotaPerAlias;
+  const domainOverQuota = domainStorageUsed + size > domainMaxQuota;
+  const isOverQuota = aliasOverQuota || domainOverQuota;
 
   // log fatal error to admins (so they will get notified by email/text)
-  if (isOverQuota)
-    logger.fatal(
-      new Error(
-        `Alias ${alias.id} is over quota (${bytes(storageUsed + size)}/${bytes(
-          maxQuotaPerAlias
-        )})`
-      )
-    );
+  if (isOverQuota) {
+    if (aliasOverQuota)
+      logger.fatal(
+        new Error(
+          `Alias ${alias.id} is over its per-alias quota (${bytes(
+            storageUsed + size
+          )}/${bytes(maxQuotaPerAlias)})`
+        )
+      );
+    if (domainOverQuota)
+      logger.fatal(
+        new Error(
+          `Alias ${alias.id} is over domain quota (domain total: ${bytes(
+            domainStorageUsed + size
+          )}/${bytes(domainMaxQuota)})`
+        )
+      );
+  }
 
-  // cache the values of storageUsed and isOverQuota for 1d
+  // cache the values for 1d (only when size === 0 to avoid stale data during writes)
   if (size === 0)
     client
       .set(
-        `alias_quota:${alias.id}`,
+        `alias_quota_v2:${alias.id}`,
         JSON.stringify({
           storageUsed,
-          maxQuotaPerAlias
+          maxQuotaPerAlias,
+          domainStorageUsed,
+          domainMaxQuota
         }),
         'PX',
         ms('1d')

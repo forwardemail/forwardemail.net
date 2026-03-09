@@ -607,8 +607,12 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
               return;
             }
 
+            // Use alias-specific storage (not pooled) for notifications
+            // so each alias gets notified based on its own usage vs its own cap
             const [storageUsed, maxQuotaPerAlias] = await Promise.all([
-              Aliases.getStorageUsed(alias),
+              Promise.resolve(
+                typeof alias.storage_used === 'number' ? alias.storage_used : 0
+              ),
               Domains.getMaxQuota(alias.domain, alias)
             ]);
 

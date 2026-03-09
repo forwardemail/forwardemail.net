@@ -54,6 +54,7 @@ const {
   hasReputableDNS,
   respondsToHTTP
 } = require('#helpers/check-domain-reputation');
+const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -3011,7 +3012,7 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     this.findById(_id)
       .populate(
         'members.user',
-        `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
+        `_id id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.maxQuotaPerAlias} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
       )
       .lean()
       .exec(),
@@ -3069,13 +3070,32 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     throw err;
   }
 
-  // Filter out a domain's members without actual users
+  //
+  // Filter for valid paying admin members
+  // (mirrors the validation in helpers/validate-domain.js):
+  // - user object is populated and has a valid ObjectId
+  // - user is not banned
+  // - user has verified email
+  // - user is an admin
+  // - user is on a paid plan matching the domain type
+  // - user has active payment (plan not expired, or active subscription, or within grace period)
+  //
+  const validPlans =
+    domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+
   const adminMembers = domain.members.filter(
     (member) =>
       _.isObject(member.user) &&
+      mongoose.isObjectIdOrHexString(member.user._id) &&
       !member.user[config.userFields.isBanned] &&
+      member.user[config.userFields.hasVerifiedEmail] &&
       member.group === 'admin' &&
-      mongoose.isObjectIdOrHexString(member.user._id)
+      validPlans.includes(member.user.plan) &&
+      (new Date(member.user[config.userFields.planExpiresAt]).getTime() >=
+        Date.now() ||
+        isSANB(member.user[config.userFields.stripeSubscriptionID]) ||
+        isSANB(member.user[config.userFields.paypalSubscriptionID]) ||
+        isWithinGracePeriod(member.user))
   );
 
   if (adminMembers.length === 0) {
@@ -3108,12 +3128,8 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     max = domain.max_quota_per_alias;
 
   // if alias passed, and had a max value set, and it was less than `max`, then set new max
-  if (
-    alias &&
-    Number.isFinite(alias.max_quota) &&
-    alias.max_quota_per_alias < max
-  )
-    max = alias.max_quota_per_alias;
+  if (alias && Number.isFinite(alias.max_quota) && alias.max_quota < max)
+    max = alias.max_quota;
 
   //
   // NOTE: hard-coded max of 100 GB (safeguard)
@@ -3130,7 +3146,10 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   // (e.g. multi-accounts when users on team plan edge case)
   //
   const domain = await this.findById(_id)
-    .populate('members.user', `_id id plan ${config.userFields.isBanned}`)
+    .populate(
+      'members.user',
+      `_id id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+    )
     .lean()
     .exec();
 
@@ -3172,13 +3191,26 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
     );
   }
 
-  // Filter out a domain's members without actual users
+  //
+  // Filter for valid paying admin members
+  // (mirrors the validation in helpers/validate-domain.js)
+  //
+  const validPlans =
+    domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+
   const adminMembers = domain.members.filter(
     (member) =>
       _.isObject(member.user) &&
+      mongoose.isObjectIdOrHexString(member.user._id) &&
       !member.user[config.userFields.isBanned] &&
+      member.user[config.userFields.hasVerifiedEmail] &&
       member.group === 'admin' &&
-      mongoose.isObjectIdOrHexString(member.user._id)
+      validPlans.includes(member.user.plan) &&
+      (new Date(member.user[config.userFields.planExpiresAt]).getTime() >=
+        Date.now() ||
+        isSANB(member.user[config.userFields.stripeSubscriptionID]) ||
+        isSANB(member.user[config.userFields.paypalSubscriptionID]) ||
+        isWithinGracePeriod(member.user))
   );
 
   if (adminMembers.length === 0) {

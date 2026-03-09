@@ -15,7 +15,7 @@ async function clearAliasQuotaCache(client, domainIds) {
 
   if (aliasIds.length === 0) return;
 
-  const keys = aliasIds.map((id) => `alias_quota:${id}`);
+  const keys = aliasIds.map((id) => `alias_quota_v2:${id}`);
   await client.del(keys);
 }
 
