@@ -2791,8 +2791,22 @@ const nouns = [
   'Zoos and Aquariums'
 ];
 
-for (const noun of nouns) {
-  for (const title of [
+// Description templates for programmatic pages — rotated for content variety
+const descTemplates = [
+  (desc, noun) =>
+    `We provide ${desc} for ${noun.toLowerCase()} with IMAP, POP3, SMTP, and unlimited aliases. Open-source email with quantum-resistant encryption. Setup in minutes.`,
+  (desc, noun) =>
+    `${noun} can use our ${desc} with custom domain support, encrypted storage, and a developer API. Trusted by 500,000+ users worldwide. Free to start.`,
+  (desc, noun) =>
+    `Get ${desc} built for ${noun.toLowerCase()}. Includes IMAP/POP3 mailbox access, SMTP sending, and zero-knowledge encryption. 100% open source.`,
+  (desc, noun) =>
+    `Forward Email offers ${desc} designed for ${noun.toLowerCase()}. Privacy-focused with quantum-resistant encryption, unlimited aliases, and full email hosting from $3/mo.`,
+  (desc, noun) =>
+    `Professional ${desc} for ${noun.toLowerCase()} with custom domains. Send and receive as you@yourdomain.com with IMAP, POP3, SMTP, and encrypted storage.`
+];
+
+for (const [nounIdx, noun] of nouns.entries()) {
+  for (const [titleIdx, title] of [
     'Free Email Forwarding',
     'Free Email Provider',
     'Free Email Hosting',
@@ -2809,15 +2823,13 @@ for (const noun of nouns) {
     'Free Email Management',
     'Free Email Platform',
     'Free Email Solutions'
-  ]) {
+  ].entries()) {
     let desc = title.toLowerCase().replace('free', '').trim();
-    if (desc === 'email api') desc = 'an email api';
+    if (desc === 'email api') desc = 'an email API';
     else if (desc === 'email provider') desc = 'an email platform';
+    const templateIdx = (nounIdx + titleIdx) % descTemplates.length;
     useCases[`/${dashify(noun)}-${dashify(title.replace('Free', '').trim())}`] =
-      [
-        `${title} for ${noun}`,
-        `We provide ${desc} for ${noun.toLowerCase()} and more. Sign up today for free and setup email hosting and forwarding in seconds.`
-      ];
+      [`${title} for ${noun}`, descTemplates[templateIdx](desc, noun)];
   }
 }
 

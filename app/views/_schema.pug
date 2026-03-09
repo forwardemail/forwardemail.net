@@ -26,13 +26,28 @@ if ctx.pathWithoutLocale === '/'
       "url": "https://forwardemail.net",
       "downloadUrl": "https://github.com/forwardemail/forwardemail.net",
       "screenshot": "https://forwardemail.net/img/og.png",
-      "softwareVersion": "2.0",
+      "softwareVersion": "#{pkgVersion}",
+      "releaseNotes": "https://forwardemail.net/en/event-feed",
       "author": {
         "@type": "Organization",
         "name": "Forward Email LLC",
         "url": "https://forwardemail.net"
       },
       "featureList": ["Free email forwarding", "Custom domain support", "Unlimited aliases", "IMAP and POP3 access", "SMTP sending", "End-to-end encryption", "Open source", "10GB storage", "Webhook support", "RESTful API"]
+    }
+
+//- Speakable Schema (homepage)
+if ctx.pathWithoutLocale === '/'
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Forward Email - Free Email Forwarding for Custom Domains",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", ".lead", ".h3"]
+      },
+      "url": "https://forwardemail.net"
     }
 
 //- WebAPI Schema for API page
@@ -67,6 +82,28 @@ if ctx.pathWithoutLocale === '/'
         },
         "query-input": "required name=search_term_string"
       }
+    }
+
+//- BreadcrumbList Schema for non-homepage pages
+if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://forwardemail.net"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "#{ctx.state.meta && ctx.state.meta.title ? ctx.state.meta.title.split(' - ')[0] : 'Page'}",
+          "item": "https://forwardemail.net/#{ctx.locale}#{ctx.pathWithoutLocale}"
+        }
+      ]
     }
 
 //- FAQPage Schema for FAQ page (dynamically generated from FAQ markdown with Redis caching)
@@ -186,12 +223,6 @@ if ctx.pathWithoutLocale === '/about'
       "url": "https://forwardemail.net",
       "logo": "https://forwardemail.net/img/logo-square.svg",
       "foundingDate": "2017",
-      "founders": [
-        {
-          "@type": "Person",
-          "name": "Nick Baugh"
-        }
-      ],
       "address": {
         "@type": "PostalAddress",
         "addressCountry": "US"
@@ -202,5 +233,5 @@ if ctx.pathWithoutLocale === '/about'
         "url": "https://forwardemail.net/help",
         "availableLanguage": ["English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Japanese", "Korean", "Chinese"]
       },
-      "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://twitter.com/fwdemail"]
+      "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism"]
     }
