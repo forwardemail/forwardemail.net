@@ -679,18 +679,7 @@ for (const route of Object.keys(useCases)) {
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
     (ctx, next) => {
-      // Determine if this is a static (hand-written) use case or a programmatic one
-      const isStaticUseCase =
-        !/-(email-forwarding|email-provider|email-hosting|email-service|email-newsletters|email-api|email-masking|email-marketing|bulk-email-service|mass-email-service|email-automation|email-security|email-management|email-platform|email-solutions)$/.test(
-          ctx.pathWithoutLocale
-        );
-
-      // Static use cases get self-referencing canonical (unique content)
-      // Programmatic pages canonicalize to /private-business-email (thin/duplicate content)
-      ctx.state.canonical = isStaticUseCase
-        ? `${config.urls.web}/${ctx.locale}${ctx.pathWithoutLocale}`
-        : `${config.urls.web}/${ctx.locale}/private-business-email`;
-
+      ctx.state.canonical = `${config.urls.web}/${ctx.locale}/private-business-email`;
       return next();
     },
     render('pricing')

@@ -1,41 +1,13 @@
-# Forward Email
+> We are an open-source and privacy-focused email service. This file provides context for AI models about our services.
 
-> Free email forwarding and hosting for custom domains. Open-source, privacy-focused, and trusted by 500,000+ users.
+- We do not store logs or emails. We value your privacy.
+- Our full codebase is on [GitHub](https://github.com/forwardemail/forwardemail.net).
+- We support modern email standards like DMARC and MTA-STS.
 
-Forward Email provides email forwarding, IMAP/POP3 hosting, SMTP sending, newsletters, and a developer API for custom domains. Free forwarding with unlimited aliases. Paid plans from $3/mo for full hosting with 10GB encrypted storage. 100% open-source on GitHub. Founded in 2017.
+## Key Links
 
-## Key Facts
-
-- Free email forwarding for unlimited custom domains and aliases
-- Full email hosting with IMAP, POP3, and SMTP access
-- Quantum-resistant, end-to-end encrypted storage
-- 100% open-source codebase on GitHub
-- RESTful API and MCP server for developers
-- Supports SPF, DKIM, DMARC, BIMI, MTA-STS, and DANE
-- Trusted by Netflix Games, Disney, The Linux Foundation, and Ubuntu
-
-## Docs
-
-- [FAQ](https://forwardemail.net/en/faq): Frequently asked questions and troubleshooting
-- [Developer Docs](https://forwardemail.net/en/blog/docs): Comprehensive developer documentation
-- [Email API](https://forwardemail.net/en/email-api): RESTful API reference and examples
-- [OpenAPI Spec](https://forwardemail.net/en/api-spec.json): Machine-readable API specification
-- [MCP Server](https://forwardemail.net/en/blog/docs/mcp): Model Context Protocol server for AI integration
-
-## Guides
-
-- [Quick Start](https://forwardemail.net/en/faq#how-do-i-get-started-and-set-up-email-forwarding): Setup email forwarding in 2 minutes
-- [DNS Setup Guides](https://forwardemail.net/en/guides): Step-by-step guides for 100+ DNS providers
-- [Self-Hosting](https://forwardemail.net/en/blog/docs/self-hosted-email): Run your own Forward Email instance
-
-## Product
-
-- [Pricing](https://forwardemail.net/en/private-business-email): Free, Enhanced ($3/mo), and Team ($9/mo) plans
-- [About](https://forwardemail.net/en/about): Our story and mission
-- [Privacy Policy](https://forwardemail.net/en/privacy): How we protect your data
-- [Event Feed](https://forwardemail.net/en/event-feed): Release notes and changelog
-
-## Optional
-
-- [Full Documentation](https://forwardemail.net/llms-full.txt): Comprehensive context for AI models
-- [GitHub](https://github.com/forwardemail/forwardemail.net): Source code repository
+- **FAQ**: [forwardemail.net/faq](https://forwardemail.net/faq)
+- **Developer Docs**: [forwardemail.net/blog/docs](https://forwardemail.net/blog/docs)
+- **API Reference**: [forwardemail.net/email-api](https://forwardemail.net/email-api)
+- **OpenAPI Spec**: [forwardemail.net/api-spec.json](https://forwardemail.net/api-spec.json)
+- **MCP Server**: [forwardemail.net/blog/docs/mcp](https://forwardemail.net/blog/docs/mcp)

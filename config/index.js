@@ -1813,8 +1813,6 @@ config.views.locals.manifest = manifestRev({
 
 config.alternatives = alternatives;
 
-config.views.locals.pkgVersion = pkg.version;
-
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
   'smtpMessageMaxSize',

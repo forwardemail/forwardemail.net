@@ -450,12 +450,7 @@ module.exports = function (config, isSitemap = false) {
       'Free Email Masking',
       'Free Email Marketing',
       'Free Bulk Email Service',
-      'Free Mass Email Service',
-      'Free Email Automation',
-      'Free Email Security',
-      'Free Email Management',
-      'Free Email Platform',
-      'Free Email Solutions'
+      'Free Mass Email Service'
     ].map((s) => dashify(s.replace('Free', '').trim()));
     for (const key of Object.keys(useCases)) {
       if (titleSlugs.some((s) => key.endsWith(s))) continue;
