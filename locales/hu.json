@@ -18342,5 +18342,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Próbáljon meg másik portot használni (587 STARTTLS-szel)",
-  ", port 465, SSL/TLS (recommended)": ", 587-es port, TLS"
+  ", port 465, SSL/TLS (recommended)": ", 587-es port, TLS",
+  "used": "used"
 }

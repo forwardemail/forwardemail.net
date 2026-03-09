@@ -18324,5 +18324,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Farklı bir port kullanmayı deneyin (STARTTLS ile 587)",
-  ", port 465, SSL/TLS (recommended)": ", 587 numaralı bağlantı noktası, TLS"
+  ", port 465, SSL/TLS (recommended)": ", 587 numaralı bağlantı noktası, TLS",
+  "used": "used"
 }

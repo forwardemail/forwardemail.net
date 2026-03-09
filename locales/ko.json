@@ -18334,5 +18334,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "다른 포트(STARTTLS를 사용하는 587)를 사용해 보세요.",
-  ", port 465, SSL/TLS (recommended)": ", 포트 587, TLS"
+  ", port 465, SSL/TLS (recommended)": ", 포트 587, TLS",
+  "used": "used"
 }

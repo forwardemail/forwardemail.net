@@ -18341,5 +18341,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "尝试使用其他端口（使用 STARTTLS 的 587）",
-  ", port 465, SSL/TLS (recommended)": "、端口 587、TLS"
+  ", port 465, SSL/TLS (recommended)": "、端口 587、TLS",
+  "used": "used"
 }

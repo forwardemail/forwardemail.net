@@ -18341,5 +18341,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "別のポート（STARTTLS の場合は 587）を使用してみてください",
-  ", port 465, SSL/TLS (recommended)": "、ポート587、TLS"
+  ", port 465, SSL/TLS (recommended)": "、ポート587、TLS",
+  "used": "used"
 }

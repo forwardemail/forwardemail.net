@@ -18340,5 +18340,6 @@
   "1 article": "1 article",
   "EU and GDPR Compliant Email": "EU and GDPR Compliant Email",
   "Try using port 465 with SSL/TLS (recommended) or port 587 with STARTTLS": "Kokeile toista porttia (587 ja STARTTLS)",
-  ", port 465, SSL/TLS (recommended)": ", portti 587, TLS"
+  ", port 465, SSL/TLS (recommended)": ", portti 587, TLS",
+  "used": "used"
 }
