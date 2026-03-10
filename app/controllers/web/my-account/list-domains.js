@@ -77,7 +77,18 @@ async function getCharts(ctx) {
       ? Promise.resolve([])
       : Logs.aggregate([
           {
-            $match: logQuery
+            $match: {
+              $and: [
+                logQuery,
+                {
+                  $or: [
+                    { err: { $exists: false } },
+                    { 'err.isCodeBug': { $ne: true } },
+                    { message: 'delivered' }
+                  ]
+                }
+              ]
+            }
           },
           { $group: { _id: null, total: { $sum: 1 } } }
         ])
