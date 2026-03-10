@@ -145,6 +145,12 @@ async function listLogs(ctx) {
   if (_.isEmpty(query))
     throw Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND'));
 
+  //
+  // exclude DMARC reports from the logs listing
+  // (DMARC reports are shown on the dedicated DMARC Reports page instead)
+  //
+  query.is_dmarc_report = { $ne: true };
+
   let subject;
   let date;
 

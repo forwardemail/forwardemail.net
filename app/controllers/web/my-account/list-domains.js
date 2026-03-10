@@ -23,7 +23,7 @@ const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 async function getCharts(ctx) {
   const query = { $or: [] };
-  const logQuery = { $or: [] };
+  const logQuery = { $or: [], is_dmarc_report: { $ne: true } };
 
   // filter out vanity domains if they don't have aliases
   const filteredDomains = ctx.state.domains.filter((domain) => {
