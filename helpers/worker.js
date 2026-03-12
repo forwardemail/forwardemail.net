@@ -23,6 +23,7 @@ const bytes = require('@forwardemail/bytes');
 const dashify = require('dashify');
 const getStream = require('get-stream');
 const hasha = require('hasha');
+const mimeTypes = require('mime-types');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
@@ -950,6 +951,11 @@ async function backup(payload) {
         Bucket: bucket,
         Key: key,
         Body: fs.createReadStream(tmp),
+        ContentType:
+          mimeTypes.lookup(extension) ||
+          (extension === 'sqlite'
+            ? 'application/vnd.sqlite3'
+            : 'application/octet-stream'),
         Metadata: { hash }
       }
     });
