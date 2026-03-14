@@ -2180,6 +2180,20 @@
           "s3_bucket": {
             "type": "string",
             "description": "S3 bucket name for storing backups. The bucket must already exist and must not be publicly accessible."
+          },
+          "allowlist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of allowlisted senders (IP addresses, fully qualified domain names, email addresses, or wildcard TLDs). When set, only mail from these senders will be accepted. Replaces the existing list."
+          },
+          "denylist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of denylisted senders (IP addresses, fully qualified domain names, email addresses, or wildcard TLDs). Mail from these senders will be rejected. Replaces the existing list."
           }
         }
       },
@@ -8597,6 +8611,150 @@
           },
           {}
         ]
+      }
+    },
+    "/v1/domains/{domain_id}/allowlist": {
+      "put": {
+        "summary": "Update domain allowlist",
+        "description": "Replace the allowlist for a domain. The allowlist restricts inbound mail to only the specified senders. Each entry must be a valid IP address, fully qualified domain name (FQDN), email address, or wildcard top-level domain (e.g. `*.com`). A maximum of 1000 entries is allowed.",
+        "operationId": "updateDomainAllowlist",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fully qualified domain name (FQDN) or domain ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allowlist": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of allowlisted senders (IP addresses, FQDNs, email addresses, or wildcard TLDs such as `*.com`). Pass an empty array to clear the allowlist."
+                  }
+                },
+                "required": [
+                  "allowlist"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/denylist": {
+      "put": {
+        "summary": "Update domain denylist",
+        "description": "Replace the denylist for a domain. Mail from denylisted senders will be rejected. Each entry must be a valid IP address, fully qualified domain name (FQDN), email address, or wildcard top-level domain (e.g. `*.com`). A maximum of 1000 entries is allowed.",
+        "operationId": "updateDomainDenylist",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fully qualified domain name (FQDN) or domain ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "denylist": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of denylisted senders (IP addresses, FQDNs, email addresses, or wildcard TLDs such as `*.com`). Pass an empty array to clear the denylist."
+                  }
+                },
+                "required": [
+                  "denylist"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
       }
     }
   },

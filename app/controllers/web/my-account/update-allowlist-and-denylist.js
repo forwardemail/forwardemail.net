@@ -16,11 +16,21 @@ async function updateAllowlistAndDenylist(ctx, next) {
   if (!ctx.state.domain)
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
-  const kind = ctx.pathWithoutLocale.endsWith('/allowlist')
+  const kind = (ctx.pathWithoutLocale || ctx.path).endsWith('/allowlist')
     ? 'allowlist'
     : 'denylist';
 
-  if (isSANB(ctx.request.body[kind])) {
+  // Support both string input (web textarea: comma/space/newline delimited)
+  // and array input (API: JSON array of strings)
+  if (Array.isArray(ctx.request.body[kind])) {
+    ctx.state.domain[kind] = _.compact(
+      _.uniq(
+        _.map(ctx.request.body[kind], (v) =>
+          typeof v === 'string' ? v.toLowerCase().trim() : ''
+        )
+      )
+    );
+  } else if (isSANB(ctx.request.body[kind])) {
     ctx.state.domain[kind] = _.compact(
       _.uniq(
         _.map(

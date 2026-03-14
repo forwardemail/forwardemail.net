@@ -2749,3 +2749,322 @@ test('alias pagination', async (t) => {
     t.is(res.headers['x-item-count'], '15');
   }
 });
+
+test('updates domain allowlist via API', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-allowlist.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  // set allowlist with array of entries
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-allowlist.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: ['1.2.3.4', 'example.com', 'test@example.com']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+    t.deepEqual(res.body.allowlist, [
+      '1.2.3.4',
+      'example.com',
+      'test@example.com'
+    ]);
+    t.deepEqual(res.body.denylist, []);
+  }
+
+  // update allowlist with new entries (replaces previous)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-allowlist.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: ['5.6.7.8']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.allowlist, ['5.6.7.8']);
+  }
+
+  // clear allowlist by sending empty array
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-allowlist.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: []
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.allowlist, []);
+  }
+});
+
+test('updates domain denylist via API', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-denylist.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  // set denylist with array of entries
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-denylist.com/denylist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        denylist: ['10.0.0.1', 'spam.example.com', 'spammer@example.com']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+    t.deepEqual(res.body.denylist, [
+      '10.0.0.1',
+      'spam.example.com',
+      'spammer@example.com'
+    ]);
+    t.deepEqual(res.body.allowlist, []);
+  }
+
+  // update denylist with new entries (replaces previous)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-denylist.com/denylist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        denylist: ['192.168.1.1']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.denylist, ['192.168.1.1']);
+  }
+
+  // clear denylist by sending empty array
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-denylist.com/denylist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        denylist: []
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.denylist, []);
+  }
+});
+
+test('allowlist and denylist are independent of each other', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-both-lists.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  // set allowlist
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-both-lists.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: ['good.example.com']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.allowlist, ['good.example.com']);
+    t.deepEqual(res.body.denylist, []);
+  }
+
+  // set denylist (should not affect allowlist)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-both-lists.com/denylist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        denylist: ['bad.example.com']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.allowlist, ['good.example.com']);
+    t.deepEqual(res.body.denylist, ['bad.example.com']);
+  }
+
+  // update allowlist (should not affect denylist)
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-both-lists.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: ['trusted.example.com']
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body.allowlist, ['trusted.example.com']);
+    t.deepEqual(res.body.denylist, ['bad.example.com']);
+  }
+});
+
+test('allowlist deduplicates and lowercases entries', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain-dedup.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  // set allowlist with duplicates and mixed case
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-dedup.com/allowlist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        allowlist: ['Example.COM', 'example.com', 'EXAMPLE.COM']
+      });
+
+    t.is(res.status, 200);
+    // model pre-validate hook deduplicates and lowercases
+    t.is(res.body.allowlist.length, 1);
+    t.is(res.body.allowlist[0], 'example.com');
+  }
+});

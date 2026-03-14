@@ -416,6 +416,30 @@ router
     api.v1.domains.retrieve
   )
 
+  // allowlist / denylist
+  .put(
+    '/domains/:domain_id/allowlist',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(100, 'update allowlist'),
+    web.myAccount.updateAllowlistAndDenylist,
+    web.myAccount.retrieveDomains,
+    api.v1.domains.retrieve
+  )
+  .put(
+    '/domains/:domain_id/denylist',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(100, 'update denylist'),
+    web.myAccount.updateAllowlistAndDenylist,
+    web.myAccount.retrieveDomains,
+    api.v1.domains.retrieve
+  )
+
   // invites
   .get('/domains/:domain_id/invites', web.myAccount.retrieveInvite)
   .post(
