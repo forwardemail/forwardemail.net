@@ -4,7 +4,7 @@
  */
 
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const revHash = require('rev-hash');
 const { simpleParser } = require('mailparser');
 

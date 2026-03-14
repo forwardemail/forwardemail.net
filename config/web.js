@@ -16,7 +16,7 @@ const isbot = require('isbot');
 
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const openpgp = require('openpgp');
 const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');

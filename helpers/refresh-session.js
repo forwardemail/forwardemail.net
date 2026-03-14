@@ -4,7 +4,7 @@
  */
 
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');

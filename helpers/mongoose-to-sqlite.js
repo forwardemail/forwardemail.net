@@ -6,7 +6,7 @@
 const Database = require('better-sqlite3-multiple-ciphers');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
-const pRetry = require('p-retry');
+const pRetry = require('tiny-pretry');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');

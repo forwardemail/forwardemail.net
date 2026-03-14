@@ -6,7 +6,7 @@
 const $ = require('jquery');
 const Apex = require('apexcharts');
 const dayjs = require('dayjs');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const superagent = require('superagent');
 
 const logger = require('./logger');

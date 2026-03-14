@@ -13,7 +13,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');

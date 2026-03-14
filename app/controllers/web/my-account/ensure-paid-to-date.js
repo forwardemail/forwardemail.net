@@ -4,7 +4,7 @@
  */
 
 const Boom = require('@hapi/boom');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('#helpers/lodash');
 

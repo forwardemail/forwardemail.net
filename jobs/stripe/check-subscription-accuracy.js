@@ -7,8 +7,8 @@ const os = require('node:os');
 
 const { setTimeout } = require('node:timers/promises');
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
-const pMap = require('p-map');
+const ms = require('ms-tiny');
+const pMap = require('tiny-pmap');
 const pMapSeries = require('p-map-series');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');

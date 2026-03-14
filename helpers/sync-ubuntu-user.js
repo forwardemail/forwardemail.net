@@ -5,9 +5,9 @@
 
 const Redis = require('@ladjs/redis');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pEvent = require('p-event');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const revHash = require('rev-hash');
 const sharedConfig = require('@ladjs/shared-config');
 const _ = require('#helpers/lodash');

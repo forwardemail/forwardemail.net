@@ -7,7 +7,7 @@ const os = require('node:os');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 

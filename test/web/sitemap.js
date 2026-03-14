@@ -5,7 +5,7 @@
 
 const ip = require('ip');
 // const isCI = require('is-ci');
-// const ms = require('ms');
+// const ms = require('ms-tiny');
 const test = require('ava');
 // const undici = require('undici');
 const { Semaphore } = require('@shopify/semaphore');

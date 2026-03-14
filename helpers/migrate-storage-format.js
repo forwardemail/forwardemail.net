@@ -5,7 +5,7 @@
 
 const { Buffer } = require('node:buffer');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const { boolean } = require('boolean');
 
 const logger = require('#helpers/logger');

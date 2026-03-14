@@ -4,7 +4,7 @@
  */
 
 const { isIP } = require('node:net');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const pkg = require('../package.json');
 

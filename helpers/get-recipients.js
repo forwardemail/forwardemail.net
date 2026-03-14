@@ -4,8 +4,8 @@
  */
 
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
-const pMap = require('p-map');
+const ms = require('ms-tiny');
+const pMap = require('tiny-pmap');
 const safeStringify = require('fast-safe-stringify');
 const { getPublicSuffix } = require('tldts');
 const { isPort, isURL, isIP, isFQDN } = require('@forwardemail/validator');

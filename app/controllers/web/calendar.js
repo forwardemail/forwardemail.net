@@ -4,7 +4,7 @@
  */
 
 const ICAL = require('ical.js');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const getGitHubReleases = require('#helpers/get-github-releases');
 const getStatusIncidents = require('#helpers/get-status-incidents');

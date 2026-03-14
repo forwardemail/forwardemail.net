@@ -11,7 +11,7 @@ require('#config/env');
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');

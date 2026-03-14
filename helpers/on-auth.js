@@ -7,7 +7,7 @@ const punycode = require('node:punycode');
 
 const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pify = require('pify');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');

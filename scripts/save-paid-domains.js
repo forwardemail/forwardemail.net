@@ -13,7 +13,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 
 const Domains = require('#models/domains');
 const config = require('#config');

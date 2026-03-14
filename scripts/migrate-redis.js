@@ -13,7 +13,7 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
 

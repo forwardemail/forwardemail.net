@@ -8,7 +8,7 @@ const { Buffer } = require('node:buffer');
 const ObjectID = require('bson-objectid');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const test = require('ava');
 
 const utils = require('../utils');

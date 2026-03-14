@@ -6,7 +6,7 @@
 const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
 

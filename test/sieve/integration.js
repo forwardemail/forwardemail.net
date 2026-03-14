@@ -12,7 +12,7 @@
 /* eslint-disable ava/no-ignored-test-files */
 
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
 

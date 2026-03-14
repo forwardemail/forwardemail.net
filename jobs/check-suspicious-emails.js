@@ -19,7 +19,7 @@ const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const { distance } = require('fastest-levenshtein');
 const mongoose = require('mongoose');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const sharedConfig = require('@ladjs/shared-config');
 
 const config = require('#config');

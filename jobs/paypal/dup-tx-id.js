@@ -14,7 +14,7 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const parseErr = require('parse-err');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 

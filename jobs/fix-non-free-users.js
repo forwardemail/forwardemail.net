@@ -17,7 +17,7 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
-const pMap = require('p-map');
+const pMap = require('tiny-pmap');
 const mongoose = require('mongoose');
 const _ = require('#helpers/lodash');
 

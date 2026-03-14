@@ -4,7 +4,7 @@
  */
 
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
 
 const logger = require('./logger');

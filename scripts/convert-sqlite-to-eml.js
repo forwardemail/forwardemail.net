@@ -25,7 +25,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('ioredis-mock');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const sharedConfig = require('@ladjs/shared-config');
 const { Builder } = require('json-sql-enhanced');
 

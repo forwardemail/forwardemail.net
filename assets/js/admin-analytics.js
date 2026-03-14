@@ -7,7 +7,7 @@
 
 const $ = require('jquery');
 const Apex = require('apexcharts');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const superagent = require('superagent');
 
 const logger = require('./logger');

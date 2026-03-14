@@ -5,7 +5,7 @@
 
 const process = require('node:process');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 module.exports = {
   // <https://github.com/pillarjs/cookies#cookiesset-name--value---options-->

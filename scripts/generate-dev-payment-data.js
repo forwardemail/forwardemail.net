@@ -17,7 +17,7 @@ const Graceful = require('@ladjs/graceful');
 const falso = require('@ngneat/falso');
 const mongoose = require('mongoose');
 const dayjs = require('dayjs-with-plugins');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const { Payments, Users } = require('#models');
 const setupMongoose = require('#helpers/setup-mongoose');

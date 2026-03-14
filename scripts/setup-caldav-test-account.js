@@ -38,7 +38,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('ioredis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

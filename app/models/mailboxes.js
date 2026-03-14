@@ -14,7 +14,7 @@
  */
 
 const mongoose = require('mongoose');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const validationErrorTransform = require('mongoose-validation-error-transform');
 
 // <https://github.com/Automattic/mongoose/issues/5534>

@@ -6,7 +6,7 @@
 const punycode = require('node:punycode');
 
 const isFQDN = require('is-fqdn');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const pWaitFor = require('p-wait-for');
 const safeStringify = require('fast-safe-stringify');
 const undici = require('undici');

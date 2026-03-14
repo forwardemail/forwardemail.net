@@ -6,9 +6,9 @@
 const os = require('node:os');
 const path = require('node:path');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const test = require('ava');
-const { default: PQueue } = require('p-queue');
+const PQueue = require('tiny-pqueue');
 
 const config = require('#config');
 

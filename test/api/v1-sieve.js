@@ -7,7 +7,7 @@ const { Buffer } = require('node:buffer');
 
 const dayjs = require('dayjs-with-plugins');
 
-const ms = require('ms');
+const ms = require('ms-tiny');
 const test = require('ava');
 
 const utils = require('../utils');

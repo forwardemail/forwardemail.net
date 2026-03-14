@@ -8,7 +8,7 @@ const { setTimeout } = require('node:timers/promises');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
+const ms = require('ms-tiny');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');

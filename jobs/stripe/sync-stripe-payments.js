@@ -7,8 +7,8 @@ const os = require('node:os');
 
 const { setTimeout } = require('node:timers/promises');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
-const pMap = require('p-map');
+const ms = require('ms-tiny');
+const pMap = require('tiny-pmap');
 const pReduce = require('p-reduce');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
