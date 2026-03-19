@@ -10,6 +10,7 @@ const safeStringify = require('fast-safe-stringify');
 const { getPublicSuffix } = require('tldts');
 const { isPort, isURL, isIP, isFQDN } = require('@forwardemail/validator');
 
+const checkSRS = require('#helpers/check-srs');
 const DenylistError = require('#helpers/denylist-error');
 const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
@@ -246,20 +247,41 @@ async function getRecipients(session, scan) {
 
           if (!pass && session.originalFromAddress) {
             // check if the domain or root portion of the `session.originalFromAddress` matches
-            const domain = session.originalFromAddress.split('@')[1];
-            const root = parseRootDomain(domain);
-            if (customAllowlist.includes(domain)) pass = true;
-            else if (customAllowlist.includes(root)) pass = true;
+            const fromDomain = session.originalFromAddress.split('@')[1];
+            const fromRoot = parseRootDomain(fromDomain);
+            if (customAllowlist.includes(fromDomain)) pass = true;
+            else if (customAllowlist.includes(fromRoot)) pass = true;
             else {
               // Check wildcard TLD
-              const tld = getPublicSuffix(domain);
+              const tld = getPublicSuffix(fromDomain);
               if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
+            }
+          }
+
+          // Check MAIL FROM / envelope sender (email)
+          if (!pass && isSANB(session.envelope.mailFrom.address)) {
+            const envelopeSender = checkSRS(
+              session.envelope.mailFrom.address
+            ).toLowerCase();
+            if (customAllowlist.includes(envelopeSender)) pass = true;
+
+            if (!pass) {
+              const envelopeDomain =
+                parseHostFromDomainOrAddress(envelopeSender);
+              const envelopeRoot = parseRootDomain(envelopeDomain);
+              if (customAllowlist.includes(envelopeDomain)) pass = true;
+              else if (customAllowlist.includes(envelopeRoot)) pass = true;
+              else {
+                // Check wildcard TLD
+                const tld = getPublicSuffix(envelopeDomain);
+                if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
+              }
             }
           }
 
           if (!pass)
             throw new SMTPError(
-              `Your IP address, client hostname, or From header is not yet allowlisted by admins of ${domain}`,
+              `Your IP address, client hostname, From header, or envelope sender is not yet allowlisted by admins of ${domain}`,
               { ignore_hook: true }
             );
         }
@@ -299,20 +321,42 @@ async function getRecipients(session, scan) {
 
           // Check domain and root domain of From address
           if (pass && session.originalFromAddress) {
-            const domain = session.originalFromAddress.split('@')[1];
-            const root = parseRootDomain(domain);
-            if (customDenylist.includes(domain)) pass = false;
-            else if (customDenylist.includes(root)) pass = false;
+            const fromDomain = session.originalFromAddress.split('@')[1];
+            const fromRoot = parseRootDomain(fromDomain);
+            if (customDenylist.includes(fromDomain)) pass = false;
+            else if (customDenylist.includes(fromRoot)) pass = false;
             else {
               // Check wildcard TLD
-              const tld = getPublicSuffix(domain);
+              const tld = getPublicSuffix(fromDomain);
               if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
+            }
+          }
+
+          // Check MAIL FROM / envelope sender (email)
+          if (pass && isSANB(session.envelope.mailFrom.address)) {
+            const envelopeSender = checkSRS(
+              session.envelope.mailFrom.address
+            ).toLowerCase();
+            if (customDenylist.includes(envelopeSender)) pass = false;
+
+            // Check domain and root domain of envelope sender
+            if (pass) {
+              const envelopeDomain =
+                parseHostFromDomainOrAddress(envelopeSender);
+              const envelopeRoot = parseRootDomain(envelopeDomain);
+              if (customDenylist.includes(envelopeDomain)) pass = false;
+              else if (customDenylist.includes(envelopeRoot)) pass = false;
+              else {
+                // Check wildcard TLD
+                const tld = getPublicSuffix(envelopeDomain);
+                if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
+              }
             }
           }
 
           if (!pass)
             throw new SMTPError(
-              `Your IP address, client hostname, or From header was denylisted by admins of ${domain}`,
+              `Your IP address, client hostname, From header, or envelope sender was denylisted by admins of ${domain}`,
               { ignore_hook: true }
             );
         }

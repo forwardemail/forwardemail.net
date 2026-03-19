@@ -77,7 +77,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         verification_record: verifications[0]
       })
         .select(
-          'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection require_tls_inbound webhook_key'
+          'plan allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection require_tls_inbound webhook_key'
         )
         .lean()
         .exec();
