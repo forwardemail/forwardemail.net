@@ -213,11 +213,24 @@ async function listAnalytics(ctx) {
     throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   //
+  // Filter out logs with err.isCodeBug=true to match the logs page behavior.
+  // Internal system errors should not inflate user-facing bounce metrics.
+  // This mirrors the codebugFilter used in list-logs.js.
+  //
+  const codebugFilter = {
+    $or: [
+      { err: { $exists: false } },
+      { 'err.isCodeBug': { $ne: true } },
+      { message: 'delivered' }
+    ]
+  };
+
+  //
   // Base match conditions
   //
   const baseMatch = {
     created_at: { $gte: SEVEN_DAYS_AGO },
-    $or: domainOrQuery
+    $and: [{ $or: domainOrQuery }, codebugFilter]
   };
 
   const outboundBaseMatch = {
