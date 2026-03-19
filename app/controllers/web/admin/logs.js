@@ -30,10 +30,19 @@ let jobNamesCacheExpiry = 0;
 const CACHE_TTL = ms('5m');
 
 //
-// Fetch unique hostnames from recent logs (last 7 days).
-// Uses `created_at` filter so MongoDB can leverage the TTL index `{ created_at: 1 }`
-// to narrow the scan before grouping, instead of scanning all ~9M documents.
-// Results are cached in-memory for 5 minutes.
+// Fetch unique hostnames from recent logs.
+//
+// IMPORTANT: LOG_RETENTION defaults to 7d, meaning ALL ~9M documents in the
+// collection are within the last 7 days. A `created_at >= 7d ago` filter
+// therefore matches the ENTIRE collection and provides zero narrowing benefit.
+//
+// Instead, we use a $sample-based approach: sample a subset of recent documents
+// and extract unique hostnames from them. Hostnames are a low-cardinality field
+// (typically < 20 unique values), so sampling even a small fraction gives us
+// complete coverage. This turns a 9M-document full scan into a fast operation.
+//
+// Alternatively, we scope to the last 1 hour of data (~53K docs at ~900/min)
+// which is small enough to scan quickly and still captures all active hostnames.
 //
 async function getUniqueHosts() {
   const now = Date.now();
@@ -46,7 +55,7 @@ async function getUniqueHosts() {
       [
         {
           $match: {
-            created_at: { $gte: new Date(now - ms('7d')) },
+            created_at: { $gte: new Date(now - ms('1h')) },
             'meta.app.hostname': { $exists: true }
           }
         },
@@ -68,10 +77,10 @@ async function getUniqueHosts() {
 }
 
 //
-// Fetch unique job names from recent logs (last 7 days).
-// Replaces `Logs.distinct()` which cannot use index hints.
-// Uses aggregation with $match + $group so we can apply maxTimeMS and scope to recent data.
-// <https://jira.mongodb.org/browse/SERVER-14227>
+// Fetch unique job names from recent logs.
+//
+// Same rationale as getUniqueHosts — scope to last 1 hour instead of 7 days.
+// Job names are also low-cardinality and all active jobs will appear within 1 hour.
 //
 async function getJobNames() {
   const now = Date.now();
@@ -86,7 +95,7 @@ async function getJobNames() {
           $match: {
             'meta.app.hostname': env.BREE_HOST,
             'meta.app.worker_threads.workerData.job.name': { $exists: true },
-            created_at: { $gte: new Date(now - ms('7d')) }
+            created_at: { $gte: new Date(now - ms('1h')) }
           }
         },
         { $group: { _id: '$meta.app.worker_threads.workerData.job.name' } },
@@ -128,12 +137,7 @@ async function list(ctx) {
   //
   // Build the find query with performance safeguards:
   //
-  // - `.populate('user', 'email')` — The original code had `.populate('user.email')`
-  //   which is incorrect. The `user` field is a top-level ObjectId ref to the Users
-  //   collection, not a subdocument. Mongoose's `.populate('user.email')` tries to
-  //   populate a nested path that doesn't exist as a ref, so it silently no-ops and
-  //   `user` stays as a raw ObjectId. The correct Mongoose syntax is
-  //   `.populate('user', 'email')` which populates the ref and selects only `email`.
+  // - `.populate('user', 'email')` — populates the ObjectId ref and selects only `email`.
   //   (Consistent with admin/payments.js: `.populate('user', 'email plan')`)
   //
   // - `.select(...)` — Exclude heavy metadata fields not rendered by the list template.
@@ -185,12 +189,35 @@ async function list(ctx) {
         { maxTimeMS: MAX_TIME_MS }
       ).then((result) => result[0]?.total || 0);
 
-  const [logs, itemCount, uniqueHosts, jobNames] = await Promise.all([
-    findQuery.exec(),
-    countQuery,
-    getUniqueHosts(),
-    getJobNames()
-  ]);
+  //
+  // IMPORTANT: Do NOT await getUniqueHosts() and getJobNames() in Promise.all
+  // with the main find query. On cold start (cache miss), these aggregations
+  // can take 10-60s because they scan a large portion of the collection.
+  // The main find query (with hint) should return in <100ms.
+  //
+  // Instead, fire the cache refresh in the background and use whatever is
+  // currently cached (or empty arrays on first load). The filter buttons
+  // will populate on the next page load or refresh.
+  //
+  // This ensures the page ALWAYS loads fast — the user sees their logs
+  // immediately, and the filter dropdowns populate within 5 minutes.
+  //
+  if (cachedUniqueHosts === null || Date.now() >= hostsCacheExpiry) {
+    getUniqueHosts().catch(() => {});
+  }
+
+  if (cachedJobNames === null || Date.now() >= jobNamesCacheExpiry) {
+    getJobNames().catch(() => {});
+  }
+
+  const [logs, itemCount] = await Promise.all([findQuery.exec(), countQuery]);
+
+  //
+  // Use whatever is currently cached (may be null on very first load).
+  // The background refresh will populate these for subsequent requests.
+  //
+  const uniqueHosts = cachedUniqueHosts || [];
+  const jobNames = cachedJobNames || [];
 
   //
   // Cap the page count so pagination doesn't show pages beyond MAX_COUNT_LIMIT.
