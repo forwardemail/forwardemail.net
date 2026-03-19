@@ -41,7 +41,7 @@ async function list(ctx) {
       );
     }
 
-    // filter for non-banned and verified users
+    // Filter for non-banned and verified users
     // query[config.userFields.isBanned] = false;
     // query[config.userFields.hasVerifiedEmail] = true;
     query.$or.push({ is_resolved: false });
@@ -58,8 +58,9 @@ async function list(ctx) {
   if (isSANB(ctx.query.mongodb_query)) {
     try {
       query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0)
+      if (!query || Object.keys(query).length === 0) {
         throw new Error('Query was not parsed propery');
+      }
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);
@@ -106,7 +107,7 @@ async function list(ctx) {
           },
           email: { $ifNull: ['$user.email', '$sender_email'] },
           plan: { $ifNull: ['$user.plan', null] }
-          // mostRecentMessage: {
+          // MostRecentMessage: {
           //   $ifNull: [
           //     { $arrayElemAt: [{ $sortArray: { input: '$messages', sortBy: { created_at: 1 } } }, -1] },
           //     { content: '$message', created_at: '$created_at', updated_at: '$updated_at' }
@@ -143,13 +144,14 @@ async function list(ctx) {
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-  if (ctx.accepts('html'))
+  if (ctx.accepts('html')) {
     return ctx.render('admin/inquiries', {
       inquiries,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
+  }
 
   const table = await ctx.render('admin/inquiries/_table', {
     inquiries,
@@ -182,14 +184,18 @@ async function retrieve(ctx) {
     })
   );
 
-  if (!ctx.state.messages)
+  if (!ctx.state.messages) {
     throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+  }
+
   return ctx.render('admin/inquiries/retrieve');
 }
 
 async function resolve(ctx) {
   const inquiry = await Inquiries.findById(ctx.params.id);
-  if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+  if (!inquiry) {
+    throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+  }
 
   await Inquiries.findByIdAndUpdate(inquiry._id, {
     $set: { is_resolved: true }
@@ -205,22 +211,28 @@ async function resolve(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 async function reply(ctx) {
   const inquiry = await Inquiries.findById(ctx.params.id);
-  if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+  if (!inquiry) {
+    throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+  }
 
   const user = await Users.findById(inquiry.user);
   if (!user) {
     ctx.logger.warn('no user found, trying sender_email');
-    if (!inquiry.sender_email)
+    if (!inquiry.sender_email) {
       throw Boom.notFound(ctx.translateError('INVALID_USER'));
+    }
   }
 
-  // rely on historical user.email or fall back to newer sender_email
+  // Rely on historical user.email or fall back to newer sender_email
   // for those sending direct emails instead of creating an inquiry
   const address = user?.email ?? inquiry.sender_email;
 
@@ -263,8 +275,8 @@ async function reply(ctx) {
   if (email) {
     raw = await Emails.getMessage(email.message);
   } else {
-    const obj = await transporter.sendMail(info.originalMessage);
-    raw = obj.message;
+    const object = await transporter.sendMail(info.originalMessage);
+    raw = object.message;
   }
 
   inquiry.messages.push({ raw });
@@ -281,8 +293,11 @@ async function reply(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
-  else ctx.body = { redirectTo: '/admin/inquiries' };
+  if (ctx.accepts('html')) {
+    ctx.redirect('/admin/inquiries');
+  } else {
+    ctx.body = { redirectTo: '/admin/inquiries' };
+  }
 }
 
 async function bulkReply(ctx) {
@@ -293,20 +308,23 @@ async function bulkReply(ctx) {
   try {
     for (const id of ids) {
       const inquiry = await Inquiries.findById(id);
-      if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+      if (!inquiry) {
+        throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
+      }
 
       const user = await Users.findById(inquiry.user);
       if (!user) {
         ctx.logger.warn('no user found, trying sender_email');
-        if (!inquiry.sender_email)
+        if (!inquiry.sender_email) {
           throw Boom.notFound(ctx.translateError('INVALID_USER'));
+        }
       }
 
-      // rely on historical user.email or fall back to newer sender_email
+      // Rely on historical user.email or fall back to newer sender_email
       // for those sending direct emails instead of creating an inquiry
       const address = user?.email ?? inquiry.sender_email;
 
-      // if the user has multiple inquiries and we've just responded
+      // If the user has multiple inquiries and we've just responded
       // in bulk to a previous message then let's skip the email
       if (!repliedTo.has(address)) {
         const { email, info } = await emailHelper({
@@ -329,8 +347,8 @@ async function bulkReply(ctx) {
         if (email) {
           raw = await Emails.getMessage(email.message);
         } else {
-          const obj = await transporter.sendMail(info.originalMessage);
-          raw = obj.message;
+          const object = await transporter.sendMail(info.originalMessage);
+          raw = object.message;
         }
 
         inquiry.messages.push({ raw });
@@ -357,8 +375,11 @@ async function bulkReply(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
-  else ctx.body = { redirectTo: '/admin/inquiries' };
+  if (ctx.accepts('html')) {
+    ctx.redirect('/admin/inquiries');
+  } else {
+    ctx.body = { redirectTo: '/admin/inquiries' };
+  }
 }
 
 module.exports = { list, retrieve, resolve, reply, bulkReply };

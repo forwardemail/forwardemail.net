@@ -30,7 +30,9 @@ const MAX_COUNT_LIMIT = 10_000;
  * @returns {Object|null} - Index hint object or null if no specific hint needed
  */
 function getIndexHint(query) {
-  if (!query || typeof query !== 'object') return null;
+  if (!query || typeof query !== 'object') {
+    return null;
+  }
 
   // Check for envelope.from query
   if (query['envelope.from']) {
@@ -85,13 +87,14 @@ async function list(ctx) {
   const cappedItemCount = Math.min(itemCount, MAX_COUNT_LIMIT);
   const pageCount = Math.ceil(cappedItemCount / ctx.query.limit);
 
-  if (ctx.accepts('html'))
+  if (ctx.accepts('html')) {
     return ctx.render('admin/emails', {
       emails,
       pageCount,
       itemCount: cappedItemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
+  }
 
   const table = await ctx.render('admin/emails/_table', {
     emails,
@@ -106,10 +109,11 @@ async function list(ctx) {
 async function retrieve(ctx) {
   ctx.state.email = await Emails.findById(ctx.params.id.replace('.eml', ''));
 
-  if (!ctx.state.email)
+  if (!ctx.state.email) {
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
+  }
 
-  // eml download
+  // Eml download
   if (ctx.params.id.endsWith('.eml')) {
     ctx.type = 'message/rfc822';
     ctx.body = await Emails.getMessage(ctx.state.email.message);
@@ -130,10 +134,11 @@ async function retrieve(ctx) {
 async function update(ctx) {
   ctx.state.email = await Emails.findById(ctx.params.id);
 
-  if (!ctx.state.email)
+  if (!ctx.state.email) {
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
+  }
 
-  // we can only modify if either pending or deferred
+  // We can only modify if either pending or deferred
   // or queued with locked_at or locked_by
   if (
     !['pending', 'deferred'].includes(ctx.state.email.status) &&
@@ -141,10 +146,11 @@ async function update(ctx) {
       ctx.state.email.status === 'queued' &&
       (_.isDate(ctx.state.email.locked_at) || ctx.state.email.locked_by)
     )
-  )
+  ) {
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'));
+  }
 
-  // set status to queued
+  // Set status to queued
   await Emails.findByIdAndUpdate(ctx.state.email._id, {
     $set: {
       is_locked: false,
@@ -156,7 +162,7 @@ async function update(ctx) {
     }
   });
 
-  // ctx.logger.info('email queued', {
+  // Ctx.logger.info('email queued', {
   //   session: createSession(ctx.state.email),
   //   user: ctx.state.email.user,
   //   email: ctx.state.email._id,
@@ -174,24 +180,29 @@ async function update(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 async function remove(ctx) {
   ctx.state.email = await Emails.findById(ctx.params.id);
 
-  if (!ctx.state.email)
+  if (!ctx.state.email) {
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
+  }
 
-  if (!['pending', 'queued', 'deferred'].includes(ctx.state.email.status))
+  if (!['pending', 'queued', 'deferred'].includes(ctx.state.email.status)) {
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'));
+  }
 
   // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
-  const err = Boom.notFound(ctx.translateError('EMAIL_REMOVED'));
+  const error_ = Boom.notFound(ctx.translateError('EMAIL_REMOVED'));
   ctx.state.email.rejectedErrors.push(
     ...ctx.state.email.envelope.to.map((recipient) => {
-      const error = parseErr(err);
+      const error = parseErr(error_);
       error.recipient = recipient;
       return error;
     })
@@ -221,8 +232,11 @@ async function remove(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 module.exports = {

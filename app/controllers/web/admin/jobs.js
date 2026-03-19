@@ -257,7 +257,7 @@ async function list(ctx) {
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-  if (ctx.accepts('html'))
+  if (ctx.accepts('html')) {
     return ctx.render('admin/jobs', {
       logs,
       pageCount,
@@ -269,6 +269,7 @@ async function list(ctx) {
       summary,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
+  }
 
   const table = await ctx.render('admin/jobs/_table', {
     logs,
@@ -285,7 +286,10 @@ async function list(ctx) {
  */
 async function retrieve(ctx) {
   ctx.state.result = await Logs.findById(ctx.params.id);
-  if (!ctx.state.result) throw Boom.notFound(ctx.translateError('INVALID_LOG'));
+  if (!ctx.state.result) {
+    throw Boom.notFound(ctx.translateError('INVALID_LOG'));
+  }
+
   return ctx.render('admin/jobs/retrieve');
 }
 

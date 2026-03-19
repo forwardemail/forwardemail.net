@@ -19,36 +19,42 @@ async function list(ctx) {
   if (isSANB(ctx.query.key)) {
     const regex = new RE2(_.escapeRegExp(ctx.query.key), 'i');
 
-    // go in reverse so we can mutate the array
+    // Go in reverse so we can mutate the array
     let i = results.length;
     while (i--) {
-      if (!regex.test(results[i].replace('denylist:', '')))
+      if (!regex.test(results[i].replace('denylist:', ''))) {
         results.splice(i, 1);
+      }
     }
   }
 
   if (isSANB(ctx.query.sort)) {
-    if (ctx.query.sort === 'key' || ctx.query.sort === '-key')
+    if (ctx.query.sort === 'key' || ctx.query.sort === '-key') {
       results = results.sort();
-    if (ctx.query.sort === '-key') results = results.reverse();
+    }
+
+    if (ctx.query.sort === '-key') {
+      results = results.reverse();
+    }
   }
 
   const itemCount = results.length;
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-  // slice for page
+  // Slice for page
   results = results.slice(
     ctx.paginate.skip,
     ctx.query.limit + ctx.paginate.skip
   );
 
-  if (ctx.accepts('html'))
+  if (ctx.accepts('html')) {
     return ctx.render('admin/denylist', {
       results,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
+  }
 
   const table = await ctx.render('admin/denylist/_table', {
     results,
@@ -70,21 +76,23 @@ async function validate(ctx, next) {
   // "fqdn:email"
   // "ip:email"
   //
-  if (!isSANB(ctx.request.body.value))
+  if (!isSANB(ctx.request.body.value)) {
     throw Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE'));
+  }
 
   if (
     ctx.request.body.value
       .split(':')
-      .some((val) => !isFQDN(val) && !isEmail(val) && !isIP(val))
-  )
+      .some((value) => !isFQDN(value) && !isEmail(value) && !isIP(value))
+  ) {
     throw Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE'));
+  }
 
   return next();
 }
 
 async function create(ctx) {
-  // store in the denylist
+  // Store in the denylist
   await ctx.client.set(
     `denylist:${ctx.request.body.value.toLowerCase()}`,
     'true'
@@ -100,12 +108,15 @@ async function create(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 async function remove(ctx) {
-  // remove it from the denylist
+  // Remove it from the denylist
   await ctx.client.del(`denylist:${ctx.request.body.value.toLowerCase()}`);
 
   ctx.flash('custom', {
@@ -118,8 +129,11 @@ async function remove(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 module.exports = {

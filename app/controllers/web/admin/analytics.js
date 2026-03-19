@@ -554,7 +554,7 @@ async function exportData(ctx) {
   })
     .select('-_id -__v')
     .sort({ hour: -1 })
-    .limit(10000)
+    .limit(10_000)
     .lean();
 
   ctx.set('Content-Type', 'application/json');

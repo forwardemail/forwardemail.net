@@ -21,7 +21,7 @@ const { Users, Domains } = require('#models');
 async function list(ctx) {
   let query = {};
 
-  // filter based on regex name
+  // Filter based on regex name
   if (isSANB(ctx.query.name)) {
     if (isEmail(ctx.query.name)) {
       const ids = await Users.distinct('_id', {
@@ -50,8 +50,9 @@ async function list(ctx) {
   if (isSANB(ctx.query.mongodb_query)) {
     try {
       query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0)
+      if (!query || Object.keys(query).length === 0) {
         throw new Error('Query was not parsed propery');
+      }
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);
@@ -72,13 +73,14 @@ async function list(ctx) {
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-  if (ctx.accepts('html'))
+  if (ctx.accepts('html')) {
     return ctx.render('admin/domains', {
       domains,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
+  }
 
   const table = await ctx.render('admin/domains/_table', {
     domains,
@@ -93,20 +95,23 @@ async function list(ctx) {
 async function update(ctx) {
   const domain = await Domains.findById(ctx.params.id);
 
-  if (!domain)
+  if (!domain) {
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE'));
+  }
 
   const { body } = ctx.request;
 
-  // save max recipients or if null keep the same
+  // Save max recipients or if null keep the same
   domain.max_recipients_per_alias =
     body.max_recipients_per_alias || domain.max_recipients_per_alias;
 
-  // has_smtp
+  // Has_smtp
   const hadSMTPAccess = Boolean(domain.has_smtp);
-  if (isSANB(body.has_smtp)) domain.has_smtp = boolean(body.has_smtp);
+  if (isSANB(body.has_smtp)) {
+    domain.has_smtp = boolean(body.has_smtp);
+  }
 
-  // has_newsletter
+  // Has_newsletter
   const hadNewsletterAccess = Boolean(domain.has_newsletter);
   if (isSANB(body.has_newsletter)) {
     if (!hadSMTPAccess) {
@@ -116,7 +121,7 @@ async function update(ctx) {
     domain.has_newsletter = boolean(body.has_newsletter);
   }
 
-  // smtp_suspended_sent_at
+  // Smtp_suspended_sent_at
   const hadSMTPSuspension = _.isDate(domain.smtp_suspended_sent_at);
   if (isSANB(body.smtp_suspended_sent_at)) {
     domain.smtp_suspended_sent_at = boolean(body.smtp_suspended_sent_at)
@@ -140,15 +145,16 @@ async function update(ctx) {
 
   await domain.save();
 
-  // clear cache for max forwarding addresses (used by SMTP)
-  if (domain.plan !== 'free' && domain.has_mx_record && domain.has_txt_record)
+  // Clear cache for max forwarding addresses (used by SMTP)
+  if (domain.plan !== 'free' && domain.has_mx_record && domain.has_txt_record) {
     ctx.client
       .del(`v1_max_forwarded:${domain.name}`)
       .then()
       .catch((err) => ctx.logger.fatal(err));
+  }
 
-  // send an email to all admins of the domain
-  const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+  // Send an email to all admins of the domain
+  const object = await Domains.getToAndMajorityLocaleByDomain(domain);
 
   //
   // NOTE: we don't try/catch around emailHelper so admins will know to manually email users
@@ -160,37 +166,37 @@ async function update(ctx) {
   if (!hadSMTPSuspension && _.isDate(domain.smtp_suspended_sent_at)) {
     const subject = i18n.translate(
       'DOMAIN_IS_ADMIN_SUSPENDED',
-      obj.locale,
+      object.locale,
       domain.name
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
+        to: object.to,
         bcc: config.email.message.from,
         subject
       },
       locals: {
         message: subject,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   } else if (hadSMTPSuspension && !_.isDate(domain.smtp_suspended_sent_at)) {
     const subject = i18n.translate(
       'DOMAIN_SUSPENSION_REMOVED',
-      obj.locale,
+      object.locale,
       domain.name
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
-        // bcc: config.email.message.from,
+        to: object.to,
+        // Bcc: config.email.message.from,
         subject
       },
       locals: {
         message: subject,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   }
@@ -201,45 +207,45 @@ async function update(ctx) {
   if (!hadSMTPAccess && domain.has_smtp) {
     const subject = i18n.translate(
       'EMAIL_SMTP_ACCESS_ENABLED_SUBJECT',
-      obj.locale,
+      object.locale,
       domain.name
     );
     const message = i18n.translate(
       'EMAIL_SMTP_ACCESS_ENABLED_MESSAGE',
-      obj.locale,
+      object.locale,
       domain.name,
-      `${config.urls.web}/${obj.locale}/my-account/domains/${punycode.toASCII(
-        domain.name
-      )}/verify-smtp`
+      `${config.urls.web}/${
+        object.locale
+      }/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
-        // bcc: config.email.message.from,
+        to: object.to,
+        // Bcc: config.email.message.from,
         subject
       },
       locals: {
         message,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   } else if (hadSMTPAccess && !domain.has_smtp) {
     const subject = i18n.translate(
       'EMAIL_SMTP_ACCESS_DISABLED',
-      obj.locale,
+      object.locale,
       domain.name
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
+        to: object.to,
         bcc: config.email.message.from,
         subject
       },
       locals: {
         message: subject,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   }
@@ -247,43 +253,43 @@ async function update(ctx) {
   if (!hadNewsletterAccess && domain.has_newsletter) {
     const subject = i18n.translate(
       'EMAIL_NEWSLETTER_ACCESS_ENABLED_SUBJECT',
-      obj.locale,
+      object.locale,
       domain.name
     );
     const message = i18n.translate(
       'EMAIL_NEWSLETTER_ACCESS_ENABLED_MESSAGE',
-      obj.locale,
+      object.locale,
       domain.name,
-      `${config.urls.web}/${obj.locale}/my-account/domains/${domain.name}/verify-smtp`
+      `${config.urls.web}/${object.locale}/my-account/domains/${domain.name}/verify-smtp`
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
-        // bcc: config.email.message.from,
+        to: object.to,
+        // Bcc: config.email.message.from,
         subject
       },
       locals: {
         message,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   } else if (hadNewsletterAccess && !domain.has_newsletter) {
     const subject = i18n.translate(
       'EMAIL_NEWSLETTER_ACCESS_DISABLED',
-      obj.locale,
+      object.locale,
       domain.name
     );
     await emailHelper({
       template: 'alert',
       message: {
-        to: obj.to,
+        to: object.to,
         bcc: config.email.message.from,
         subject
       },
       locals: {
         message: subject,
-        locale: obj.locale
+        locale: object.locale
       }
     });
   }
@@ -298,15 +304,19 @@ async function update(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 async function remove(ctx) {
   const domain = await Domains.findById(ctx.params.id);
 
-  if (!domain)
+  if (!domain) {
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE'));
+  }
 
   await domain.remove();
   ctx.flash('custom', {
@@ -319,8 +329,11 @@ async function remove(ctx) {
     position: 'top'
   });
 
-  if (ctx.accepts('html')) ctx.redirect('back');
-  else ctx.body = { reloadPage: true };
+  if (ctx.accepts('html')) {
+    ctx.redirect('back');
+  } else {
+    ctx.body = { reloadPage: true };
+  }
 }
 
 module.exports = {

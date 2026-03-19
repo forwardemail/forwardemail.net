@@ -78,8 +78,9 @@ async function list(ctx) {
   if (isSANB(ctx.query.mongodb_query)) {
     try {
       const mongoQuery = parser.parseFilter(ctx.query.mongodb_query);
-      if (!mongoQuery || Object.keys(mongoQuery).length === 0)
+      if (!mongoQuery || Object.keys(mongoQuery).length === 0) {
         throw new Error('Query was not parsed properly');
+      }
 
       query =
         ctx.query.q && Object.keys(query).length > 0
@@ -151,7 +152,9 @@ async function retrieve(ctx) {
     .lean()
     .exec();
 
-  if (!payment) throw Boom.notFound('Payment does not exist');
+  if (!payment) {
+    throw Boom.notFound('Payment does not exist');
+  }
 
   // Fetch other payments for the same user (excluding current payment)
   const userPayments = payment.user
@@ -182,11 +185,14 @@ async function retrieve(ctx) {
 
 async function refund(ctx) {
   const payment = await Payments.findById(ctx.params.id).populate('user');
-  if (!payment) throw Boom.notFound('Payment does not exist');
+  if (!payment) {
+    throw Boom.notFound('Payment does not exist');
+  }
 
   // Check if already refunded
-  if (payment.amount_refunded > 0)
+  if (payment.amount_refunded > 0) {
     throw Boom.badRequest('Payment already refunded');
+  }
 
   // Use existing refund helper
   await refundHelper(payment._id);
@@ -211,25 +217,32 @@ async function refund(ctx) {
 async function freeCredit(ctx) {
   let { email, plan, duration } = ctx.request.body;
 
-  if (!isSANB(email)) throw Boom.badRequest('Invalid email');
+  if (!isSANB(email)) {
+    throw Boom.badRequest('Invalid email');
+  }
 
-  if (!PAYMENT_DURATIONS.has(duration))
+  if (!PAYMENT_DURATIONS.has(duration)) {
     throw Boom.badRequest('Invalid duration');
+  }
 
   // Convert to milliseconds using ms() function (like main billing controller)
   const durationMs = ms(duration);
 
   // Validate against allowed durations
-  if (!config.validDurations.includes(durationMs))
+  if (!config.validDurations.includes(durationMs)) {
     throw Boom.badRequest('Invalid request');
+  }
 
   duration = durationMs;
 
   const user = await Users.findOne({ email: email.toLowerCase() });
-  if (!user) throw Boom.notFound('User does not exist');
+  if (!user) {
+    throw Boom.notFound('User does not exist');
+  }
 
-  if (user.plan === 'free' || user.plan !== plan)
+  if (user.plan === 'free' || user.plan !== plan) {
     user.plan_set_at = dayjs().startOf('day').toDate();
+  }
 
   user.plan = plan;
   await user.save();

@@ -300,7 +300,9 @@ async function calculateLTV() {
     }
   ]);
 
-  if (!totalRevenue[0]) return 0;
+  if (!totalRevenue[0]) {
+    return 0;
+  }
 
   const revenue = totalRevenue[0].total / 100;
   const uniqueUsers = totalRevenue[0].uniqueUsers.length;
@@ -321,7 +323,9 @@ async function calculateARPU() {
     [config.userFields.planExpiresAt]: { $gte: now }
   });
 
-  if (activeUsers === 0) return 0;
+  if (activeUsers === 0) {
+    return 0;
+  }
 
   const currentMRR = await getCurrentMRR();
   return Math.round((currentMRR / activeUsers) * 100) / 100;
@@ -341,7 +345,10 @@ async function calculateQuickRatio() {
   const numerator = breakdown.newMRR + breakdown.expansionMRR;
   const denominator = breakdown.churnMRR + breakdown.contractionMRR;
 
-  if (denominator === 0) return numerator > 0 ? 999 : 0;
+  if (denominator === 0) {
+    return numerator > 0 ? 999 : 0;
+  }
+
   return Math.round((numerator / denominator) * 100) / 100;
 }
 
@@ -533,7 +540,9 @@ async function getNetRevenueRetention() {
   const currentMRR = await getCurrentMRR();
   const previousMRR = currentMRR - breakdown.netMRR;
 
-  if (previousMRR === 0) return 100;
+  if (previousMRR === 0) {
+    return 100;
+  }
 
   // NRR = (Current MRR from existing customers) / (Previous MRR) * 100
   const existingCustomerMRR = currentMRR - breakdown.newMRR;
@@ -602,7 +611,7 @@ async function getGrowthChart() {
 
 async function getDeliverabilityChart(ctx) {
   const series = [];
-  // iterate over past 7 days (starting from oldest)
+  // Iterate over past 7 days (starting from oldest)
   // mail_accepted:2023-01-27
   // mail_rejected:2023-01-27
   // mail_error:2023-01-27
@@ -668,7 +677,7 @@ async function getMRRChart() {
   // Get MRR for each of the past 12 months
   for (let i = 11; i >= 0; i--) {
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY-MM');
 
     // Count active users at end of month
     const [enhancedCount, teamCount] = await Promise.all([
@@ -687,7 +696,7 @@ async function getMRRChart() {
     const mrr =
       enhancedCount * PLAN_PRICES.enhanced_protection +
       teamCount * PLAN_PRICES.team;
-    data.push([dateStr, mrr]);
+    data.push([dateString, mrr]);
   }
 
   return {
@@ -702,14 +711,14 @@ async function getMRRChart() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `$${numeral(val).format('0,0')}`
+      formatter: (value) => `$${numeral(value).format('0,0')}`
     },
     xaxis: {
       type: 'datetime'
     },
     yaxis: {
       labels: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     tooltip: {
@@ -717,7 +726,7 @@ async function getMRRChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     colors: ['#20C1ED']
@@ -753,7 +762,7 @@ async function getChurnChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY-MM');
 
     // Churned users in this month with their plans
     const churnedUsers = await Users.find({
@@ -793,8 +802,11 @@ async function getChurnChart() {
         : 0;
     const revenueChurnRate = startMRR > 0 ? (churnedMRR / startMRR) * 100 : 0;
 
-    userChurnData.push([dateStr, Math.round(userChurnRate * 100) / 100]);
-    revenueChurnData.push([dateStr, Math.round(revenueChurnRate * 100) / 100]);
+    userChurnData.push([dateString, Math.round(userChurnRate * 100) / 100]);
+    revenueChurnData.push([
+      dateString,
+      Math.round(revenueChurnRate * 100) / 100
+    ]);
   }
 
   return {
@@ -807,14 +819,14 @@ async function getChurnChart() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `${val}%`
+      formatter: (value) => `${value}%`
     },
     xaxis: {
       type: 'datetime'
     },
     yaxis: {
       labels: {
-        formatter: (val) => `${val}%`
+        formatter: (value) => `${value}%`
       }
     },
     tooltip: {
@@ -822,7 +834,7 @@ async function getChurnChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `${val}%`
+        formatter: (value) => `${value}%`
       }
     },
     colors: ['#FF6B6B', '#FFA94D']
@@ -861,7 +873,7 @@ async function getForecastChart() {
     },
     yaxis: {
       labels: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     tooltip: {
@@ -869,7 +881,7 @@ async function getForecastChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     colors: ['#20C1ED', '#8CC63F']
@@ -886,7 +898,7 @@ async function getQuickRatioChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY-MM');
 
     const breakdown = await getMRRBreakdown(
       monthStart.toDate(),
@@ -897,7 +909,7 @@ async function getQuickRatioChart() {
     const quickRatio =
       denominator > 0 ? numerator / denominator : numerator > 0 ? 4 : 0;
 
-    data.push([dateStr, Math.round(quickRatio * 100) / 100]);
+    data.push([dateString, Math.round(quickRatio * 100) / 100]);
   }
 
   return {
@@ -954,7 +966,7 @@ async function getLTVChart() {
   // Calculate LTV trend over past 12 months
   for (let i = 11; i >= 0; i--) {
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY-MM');
 
     // Get total revenue up to this point
     const totalRevenue = await Payments.aggregate([
@@ -977,7 +989,7 @@ async function getLTVChart() {
     const users = totalRevenue[0]?.uniqueUsers?.length || 1;
     const ltv = Math.round(revenue / users);
 
-    data.push([dateStr, ltv]);
+    data.push([dateString, ltv]);
   }
 
   return {
@@ -992,14 +1004,14 @@ async function getLTVChart() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `$${numeral(val).format('0,0')}`
+      formatter: (value) => `$${numeral(value).format('0,0')}`
     },
     xaxis: {
       type: 'datetime'
     },
     yaxis: {
       labels: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     tooltip: {
@@ -1007,7 +1019,7 @@ async function getLTVChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `$${numeral(val).format('0,0')}`
+        formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
     colors: ['#E74C3C']
@@ -1023,7 +1035,7 @@ async function getARPUChart() {
 
   for (let i = 11; i >= 0; i--) {
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthEnd.format('YYYY-MM');
+    const dateString = monthEnd.format('YYYY-MM');
 
     // Get active users at end of month
     const activeUsers = await Users.countDocuments({
@@ -1051,7 +1063,7 @@ async function getARPUChart() {
       teamCount * PLAN_PRICES.team;
     const arpu = activeUsers > 0 ? mrr / activeUsers : 0;
 
-    data.push([dateStr, Math.round(arpu * 100) / 100]);
+    data.push([dateString, Math.round(arpu * 100) / 100]);
   }
 
   return {
@@ -1066,14 +1078,14 @@ async function getARPUChart() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `$${val}`
+      formatter: (value) => `$${value}`
     },
     xaxis: {
       type: 'datetime'
     },
     yaxis: {
       labels: {
-        formatter: (val) => `$${val}`
+        formatter: (value) => `$${value}`
       }
     },
     tooltip: {
@@ -1081,7 +1093,7 @@ async function getARPUChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `$${val}`
+        formatter: (value) => `$${value}`
       }
     },
     colors: ['#3498DB']
@@ -1098,7 +1110,7 @@ async function getNRRChart() {
   for (let i = 11; i >= 0; i--) {
     const monthStart = now.subtract(i, 'month').startOf('month');
     const monthEnd = now.subtract(i, 'month').endOf('month');
-    const dateStr = monthStart.format('YYYY-MM');
+    const dateString = monthStart.format('YYYY-MM');
 
     // Simplified NRR calculation
     const breakdown = await getMRRBreakdown(
@@ -1130,7 +1142,7 @@ async function getNRRChart() {
       breakdown.churnMRR;
     const nrr = startMRR > 0 ? (endMRR / startMRR) * 100 : 100;
 
-    data.push([dateStr, Math.round(nrr)]);
+    data.push([dateString, Math.round(nrr)]);
   }
 
   return {
@@ -1145,7 +1157,7 @@ async function getNRRChart() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val) => `${val}%`
+      formatter: (value) => `${value}%`
     },
     xaxis: {
       type: 'datetime'
@@ -1154,7 +1166,7 @@ async function getNRRChart() {
       min: 0,
       max: 150,
       labels: {
-        formatter: (val) => `${val}%`
+        formatter: (value) => `${value}%`
       }
     },
     tooltip: {
@@ -1162,7 +1174,7 @@ async function getNRRChart() {
         format: 'yyyy-MM'
       },
       y: {
-        formatter: (val) => `${val}%`
+        formatter: (value) => `${value}%`
       }
     },
     colors: ['#27AE60'],
@@ -1214,7 +1226,7 @@ async function getBody(ctx) {
     pieChart,
     localeChart,
     mrrChart,
-    arrChart,
+    arrayChart,
     churnChart,
     forecastChart,
     quickRatioChart,
@@ -1345,7 +1357,7 @@ async function getBody(ctx) {
       };
     })(),
     (async () => {
-      // revenue chart (payments over time grouped by invoice_at)
+      // Revenue chart (payments over time grouped by invoice_at)
       const [docs, stripe, paypal] = await Promise.all([
         Payments.aggregate([
           {
@@ -1373,7 +1385,7 @@ async function getBody(ctx) {
             }
           }
         ]),
-        // stripe
+        // Stripe
         Payments.aggregate([
           {
             $match: {
@@ -1405,7 +1417,7 @@ async function getBody(ctx) {
             }
           }
         ]),
-        // paypal
+        // Paypal
         Payments.aggregate([
           {
             $match: {
@@ -1469,11 +1481,11 @@ async function getBody(ctx) {
         colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
-    // growth chart
+    // Growth chart
     getGrowthChart(),
-    // deliverability chart
+    // Deliverability chart
     getDeliverabilityChart(ctx),
-    // line chart
+    // Line chart
     (async () => {
       const series = [];
       await Promise.all(
@@ -1539,7 +1551,7 @@ async function getBody(ctx) {
         colors: ['#20C1ED', '#269C32', '#ffc107']
       };
     })(),
-    // pie chart
+    // Pie chart
     (async () => {
       const [free, enhancedProtection, team] = await Promise.all([
         Domains.countDocuments({
@@ -1570,7 +1582,7 @@ async function getBody(ctx) {
         colors: ['#20C1ED', '#8CC63F', '#ffc107']
       };
     })(),
-    // locale chart
+    // Locale chart
     (async () => {
       const labels = await Users.distinct(config.lastLocaleField, {
         [config.userFields.hasVerifiedEmail]: true,
@@ -1606,7 +1618,7 @@ async function getBody(ctx) {
   ]);
 
   // Calculate ARR
-  const arr = currentMRR * 12;
+  const array = currentMRR * 12;
 
   // Calculate MRR growth rate (compare to previous month)
   const previousMonthMRR =
@@ -1618,7 +1630,7 @@ async function getBody(ctx) {
       ? ((currentMRR - previousMonthMRR) / previousMonthMRR) * 100
       : 0;
 
-  // localize line chart
+  // Localize line chart
   if (lineChart) {
     lineChart.series = lineChart.series.map((s) => ({
       ...s,
@@ -1680,7 +1692,7 @@ async function getBody(ctx) {
       },
       {
         selector: '#metrics-arr',
-        value: arr ? numeral(arr).format('$0,0') : '-'
+        value: array ? numeral(array).format('$0,0') : '-'
       },
       {
         selector: '#metrics-mrr-growth',
@@ -1761,7 +1773,7 @@ async function getBody(ctx) {
       },
       {
         selector: '#arr-chart',
-        options: _.merge({}, options, arrChart || {})
+        options: _.merge({}, options, arrayChart || {})
       },
       {
         selector: '#forecast-chart',
@@ -1820,7 +1832,7 @@ async function getBody(ctx) {
     ]
   };
 
-  // store a hash so we know if data changes to refresh
+  // Store a hash so we know if data changes to refresh
   body.hash = revHash(encoder.pack(body));
 
   return body;
@@ -1829,7 +1841,10 @@ async function getBody(ctx) {
 const getBodyMemoized = memoize(getBody, { length: 1, maxAge: ms('60m') });
 
 async function dashboard(ctx) {
-  if (ctx.accepts('html')) return ctx.render('admin');
+  if (ctx.accepts('html')) {
+    return ctx.render('admin');
+  }
+
   ctx.body = await getBodyMemoized(ctx);
 }
 
