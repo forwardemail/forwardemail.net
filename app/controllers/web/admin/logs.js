@@ -30,19 +30,15 @@ let jobNamesCacheExpiry = 0;
 const CACHE_TTL = ms('5m');
 
 //
-// Fetch unique hostnames from recent logs.
+// Fetch unique hostnames from recent logs (last 1 hour).
 //
-// IMPORTANT: LOG_RETENTION defaults to 7d, meaning ALL ~9M documents in the
-// collection are within the last 7 days. A `created_at >= 7d ago` filter
-// therefore matches the ENTIRE collection and provides zero narrowing benefit.
+// NOTE: LOG_RETENTION defaults to 7d, meaning all ~9M documents in the
+// collection are within the last 7 days. A 7-day scope therefore matches
+// the entire collection and provides zero narrowing benefit.
 //
-// Instead, we use a $sample-based approach: sample a subset of recent documents
-// and extract unique hostnames from them. Hostnames are a low-cardinality field
-// (typically < 20 unique values), so sampling even a small fraction gives us
-// complete coverage. This turns a 9M-document full scan into a fast operation.
-//
-// Alternatively, we scope to the last 1 hour of data (~53K docs at ~900/min)
-// which is small enough to scan quickly and still captures all active hostnames.
+// Hostnames are low-cardinality (typically < 20 unique values), so all
+// active values appear within any 1-hour window (~60K docs at ~900/min).
+// Results are cached in-memory for 5 minutes.
 //
 async function getUniqueHosts() {
   const now = Date.now();
@@ -77,7 +73,7 @@ async function getUniqueHosts() {
 }
 
 //
-// Fetch unique job names from recent logs.
+// Fetch unique job names from recent logs (last 1 hour).
 //
 // Same rationale as getUniqueHosts — scope to last 1 hour instead of 7 days.
 // Job names are also low-cardinality and all active jobs will appear within 1 hour.
@@ -137,13 +133,23 @@ async function list(ctx) {
   //
   // Build the find query with performance safeguards:
   //
-  // - `.populate('user', 'email')` — populates the ObjectId ref and selects only `email`.
-  //   (Consistent with admin/payments.js: `.populate('user', 'email plan')`)
+  // - NO `.populate('user', ...)` — The Logs model is on the LOGS_URI connection
+  //   while Users is on the MONGO_URI connection. Mongoose `.populate()` across
+  //   separate connections issues a secondary query to the Users database for
+  //   every batch of log documents. This cross-database populate was the primary
+  //   cause of the page timeout. The template already has a fallback that reads
+  //   `log.meta.user.email` (embedded in the log document) when `log.user.email`
+  //   is not available, so populate is not needed for the list view.
+  //   (Note: admin/payments.js uses `.populate('user', 'email plan')` safely
+  //   because Payments is on the same MONGO_URI connection as Users.)
   //
-  // - `.select(...)` — Exclude heavy metadata fields not rendered by the list template.
-  //   The template only accesses: id, created_at, message, err, meta.level, meta.is_http,
-  //   meta.request.{method,url}, meta.response.status_code, meta.user.email, and user.email.
-  //   (Consistent with my-account/list-logs.js and admin/emails.js which also use .select())
+  // - `.select(...)` — Use an inclusion projection to fetch ONLY the fields the
+  //   list template actually accesses. Average doc size is ~14.5 KB; the template
+  //   only needs ~1 KB of that (id, created_at, message, err, meta.level,
+  //   meta.is_http, meta.request, meta.response.status_code, meta.user.email).
+  //   This dramatically reduces BSON deserialization and network transfer.
+  //   (Consistent with my-account/list-logs.js and admin/emails.js which also
+  //   use .select() to exclude heavy fields.)
   //
   // - `.maxTimeMS(60s)` — Prevent any single query from running indefinitely and
   //   exhausting the connection pool. (Consistent with admin/emails.js)
@@ -152,8 +158,9 @@ async function list(ctx) {
   let findQuery = Logs.find(query)
     .limit(ctx.query.limit)
     .skip(Math.max(0, cappedSkip))
-    .populate('user', 'email')
-    .select('-meta.os -meta.cpus -meta.networkInterfaces -meta.worker')
+    .select(
+      'id created_at message err meta.level meta.is_http meta.request.method meta.request.url meta.response.status_code meta.user.email'
+    )
     .sort(ctx.query.sort || '-created_at')
     .lean()
     .maxTimeMS(MAX_TIME_MS);
